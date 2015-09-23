@@ -1,7 +1,7 @@
 #License
 
 The MonteMedia library is Copyright (c) Werner Randelshofer, Switzerland.
-You may use this library only in accordance with the license terms.
+You may only use this library in accordance with the license terms.
 
 You can choose from the following licenses:
 
