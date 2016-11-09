@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="build-montemedia" default="all" basedir=".">
+    <target name="init">
+        <property name="author" value="Werner Randelshofer"/>
+        <property name="version" value="0.8"/>
+        <property name="buildnb" value=""/>
+        <property name="name" value="MonteMedia"/>
+        <property name="date" value="2015-09-23"/>
+        <property name="versionLong" value="${version} ${date}"/>
+        <property name="lib" value="lib"/>
+        <property name="dist" value="dist"/>
+        <property name="classes" value="build/classes"/>
+        <property name="src.main" value="src/main"/>
+        <property name="src.main.jmf" value="src/main.jmf"/>
+        <property name="src.main.jmf.gpl" value="src/main.jmf.gpl"/>
+        <property name="src.fmj" value="src/fmj"/>
+        <property name="src.fmj.ejmf" value="src/fmj.ejmf"/>
+        <property name="src.fmj.rtp" value="src/fmj.rtp"/>
+        <property name="src.fmj.utils" value="src/fmj.utils"/>
+        <property name="src.jai.core" value="src/jai.core"/>
+        <property name="src.jffmpeg" value="src/jffmpeg"/>
+        <property name="src.jmf" value="src/jmf"/>
+        <property name="proj" value="MonteMediaCC"/>
+    </target>
+    
+    <target name="copy sources from JAI-Core" depends="init">
+        <copy todir="${src.jai.core}">
+            <fileset dir="${project.jai-core.src}">
+                <exclude name="**/.*"/>
+            </fileset>
+        </copy>
+    </target>
+    <target depends="init" description="Try running it." name="run JMF Registry">
+        <java classname="JMFRegistry"
+         classpath="${classes}:${lib}/jmf.jar"
+         failonerror="true" fork="true"
+         >
+            <jvmarg value="-Xmx1024M"/>
+            <jvmarg value="-Dapple.laf.useScreenMenuBar=true"/>
+            <jvmarg value="-Dcom.apple.macos.useScreenMenuBar=true"/>
+            <jvmarg value="-Djava.library.path=${lib}"/>
+        </java>
+    </target>
+    <target depends="init" description="Try running it." name="run JMF Player">
+        <java classname="JMStudio"
+         classpath="${lib}/jffmpeg-1.1.0.jar:${lib}/mp3plugin.jar:${classes}:${lib}/jmf.jar"
+         failonerror="true" fork="true"
+         >
+            <!--jvmarg value="-verbose"/-->
+            <jvmarg value="-Xmx1024M"/>
+            <jvmarg value="-Dapple.laf.useScreenMenuBar=true"/>
+            <jvmarg value="-Dcom.apple.macos.useScreenMenuBar=true"/>
+            <jvmarg value="-Djava.library.path=${lib}"/>
+        </java>
+    </target>
+    <target depends="init" description="Javadoc" name="javadoc">
+        <delete dir="${dist}/javadoc"/>
+        <mkdir dir="${dist}/javadoc"/>
+        <javadoc destdir="${dist}/javadoc" doctitle="${name} ${version}"
+        footer="Copyright ${date} ${author}"
+        header="Copyright ${date} ${author}"
+        windowtitle="Monte Media ${version}"
+        encoding="UTF-8"
+        >
+            <packageset dir="${src.main}">
+                <include name="org/monte/**"/>
+            </packageset>
+            <!--
+            <sourcepath>
+                <pathelement location="${src.main}"/>
+                <pathelement location="${src.fmj}"/>
+                <pathelement location="${src.fmj.ejmf}"/>
+                <pathelement location="${src.fmj.rtp}"/>
+                <pathelement location="${src.fmj.utils}"/>
+            </sourcepath>
+            -->
+            <classpath>
+                <fileset dir="${lib}">
+                    <include name="**/*.jar"/>
+                </fileset>
+                <fileset dir="/System/Library/Java/Extensions">
+                    <include name="QTJava.zip"/>
+                </fileset>
+            </classpath>
+        </javadoc>
+    </target>
+   <target depends="init"
+    description="Bundle the software." name="bundle Src">
+       <mkdir dir="${dist}"/>
+        <zip destfile="${dist}/${name}-${version}src.zip">
+            <fileset dir="..">
+                <include name="${proj}/**"/>
+                <exclude name="${proj}/build/**"/>
+                <exclude name="${proj}/dist/**"/>
+                <exclude name="**/.*"/>
+            </fileset>
+        </zip>
+    </target>
+   <target depends="init,clean,jar CC,javadoc"
+    description="Bundle the software." name="bundle Src CC">
+       <mkdir dir="${dist}"/>
+        <zip destfile="${dist}/${name}-${version}src-cc.zip">
+            <fileset dir="..">
+                <include name="${proj}/**"/>
+                <exclude name="${proj}/dist/**"/>
+                <exclude name="${proj}/build/**"/>
+                <exclude name="**/.*"/>
+            </fileset>
+            <fileset dir="..">
+                <include name="${proj}/dist/monte*.jar"/>
+                <include name="${proj}/dist/javadoc/**"/>
+            </fileset>
+        </zip>
+    </target>
+    <target name="clean" depends="init">
+        <delete dir="${classes}" />
+        <delete dir="${dist}/TSCCDemo ${version}" />
+    </target>
+    <target name="compile" depends="init,clean">
+        <mkdir dir="${classes}"/>
+        <javac
+                destdir="${classes}"
+                srcdir="${src.main}"
+                debug="true"
+                source="1.8"
+                target="1.8"
+                optimize="true"
+                encoding="UTF-8"
+                includeantruntime="false"
+         >
+            <classpath>
+                <fileset dir="${lib}">
+                    <include name="jai_core.jar"/>
+                    <include name="jmf.jar"/>
+                </fileset>
+            </classpath>
+            
+            <exclude name="**/package-info.java"/>
+        </javac>
+        <copy todir="${classes}">
+            <fileset dir="${src.main}" >
+                <exclude name="**/*.java"/>
+                <exclude name="**/.*"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="jar-all" depends="init,compile">
+        <mkdir dir="${dist}"/>
+        <jar destfile="${dist}/monte-all.jar" basedir="${classes}" compress="true">
+            <manifest>
+                <attribute name="Built-By" value="${author}"/>
+                <attribute name="Main-Class" value="MovieMaker"/>
+                <attribute name="Class-Path" value="jmf.jar,jdom.jar,jai_codec.jar,jai_core.jar"/>
+                <attribute name="Implementation-Version" value="${versionLong}"/>
+            </manifest>
+            <!--include name="org/monte/**"/-->
+            <!--include name="*.class"/-->
+        </jar>
+    </target>
+    <target name="jar CC" depends="init,compile">
+        <mkdir dir="${dist}"/>
+        <jar destfile="${dist}/monte-cc.jar" basedir="${classes}" compress="true">
+            <manifest>
+                <attribute name="Built-By" value="${author}"/>
+                <attribute name="Main-Class" value="MovieMaker"/>
+                <attribute name="Class-Path" value="jmf.jar,jdom.jar,jai_codec.jar,jai_core.jar"/>
+                <attribute name="Implementation-Version" value="${versionLong}"/>
+            </manifest>
+            <include name="org/monte/**"/>
+            <include name="*.class"/>
+            <exclude name="org/monte/media/jmf/demux/vob/**"/>
+        </jar>
+    </target>
+</project>
