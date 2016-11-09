@@ -1526,6 +1526,7 @@ public abstract class AbstractAVIStream {
          * ImageOutputStream.
          *
          * @param chunkType The chunkType of the chunk.
+         * @param fixedSize the fixed size of the chunk
          */
         public FixedSizeDataChunk(int chunkType, long fixedSize) throws IOException {
             super(chunkType);

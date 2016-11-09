@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import static org.monte.media.VideoFormatKeys.*;
 import static org.monte.media.BufferFlag.*;
+import org.monte.media.io.IOStreams;
 
 /**
  * {@code ImageSequenceWriter}.
@@ -158,21 +159,7 @@ public class ImageSequenceWriter implements MovieWriter {
                 out.close();
             }
         } else if (buf.data instanceof File) {
-            FileInputStream in = new FileInputStream((File) buf.data);
-            try {
-                FileOutputStream out = new FileOutputStream(file);
-                try {
-                    byte[] b = new byte[2048];
-                    int len;
-                    while ((len = in.read(b)) != -1) {
-                        out.write(b, 0, len);
-                    }
-                } finally {
-                    out.close();
-                }
-            } finally {
-                in.close();
-            }
+            IOStreams.copy((File)buf.data,file);
         } else {
             throw new IllegalArgumentException("Can't process buffer data:" + buf.data);
         }

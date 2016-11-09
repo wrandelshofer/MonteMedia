@@ -7,7 +7,6 @@
  */
 package org.monte.media.jpeg;
 
-import org.monte.media.io.ByteArrayImageInputStream;
 import java.awt.color.ColorSpace;
 import java.awt.color.ICC_ColorSpace;
 import java.awt.color.ICC_Profile;
@@ -15,6 +14,7 @@ import java.awt.image.*;
 import java.io.*;
 import javax.imageio.*;
 import javax.imageio.stream.*;
+import org.monte.media.io.IOStreams;
 
 /**
  * JPEGImageIO supports reading of JPEG images with YUV, CMYK and YCCK color 
@@ -55,10 +55,7 @@ public class JPEGImageIO {
         // We do this, because we need to perform multiple passes over the
         // stream in order to decode it.
         ByteArrayOutputStream buf = new ByteArrayOutputStream();
-        byte[] b = new byte[512];
-        for (int count = in.read(b); count != -1; count = in.read(b)) {
-            buf.write(b, 0, count);
-        }
+        IOStreams.copy(in,buf);
         byte[] byteArray = buf.toByteArray();
 
         // Extract metadata from the JFIF stream. 
@@ -102,9 +99,7 @@ public class JPEGImageIO {
 
                         // Read Adobe ICC_PROFILE int buffer. The profile is split up over
                         // multiple APP2 marker segments.
-                        for (int count = dis.read(b); count != -1; count = dis.read(b)) {
-                            app2ICCProfile.write(b, 0, count);
-                        }
+                        IOStreams.copy(dis, app2ICCProfile);
                     }
                 }
             } else if (seg.marker == 0xffee) {

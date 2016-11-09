@@ -22,6 +22,7 @@ import static java.lang.Math.*;
 import static org.monte.media.FormatKeys.*;
 import static org.monte.media.AudioFormatKeys.*;
 import static org.monte.media.VideoFormatKeys.*;
+import org.monte.media.io.IOStreams;
 
 /**
  * Provides low-level support for writing already encoded audio and video
@@ -437,11 +438,7 @@ public class AVIOutputStream extends AbstractAVIStream {
         moviChunk.add(dc);
         ImageOutputStream mdatOut = dc.getOutputStream();
         long offset = getRelativeStreamPosition();
-        byte[] buf = new byte[512];
-        int len;
-        while ((len = in.read(buf)) != -1) {
-            mdatOut.write(buf, 0, len);
-        }
+        IOStreams.copy(in, mdatOut);
         long length = getRelativeStreamPosition() - offset;
         dc.finish();
         Sample s = new Sample(dc.chunkType, 1, offset, length, isKeyframe);
@@ -545,6 +542,8 @@ public class AVIOutputStream extends AbstractAVIStream {
 
     /**
      * Returns the duration of the track in media time scale units.
+     * @param track track number
+     * @return duration in time scale units
      */
     public long getMediaDuration(int track) {
         Track tr = tracks.get(track);

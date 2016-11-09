@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import javax.imageio.ImageIO;
@@ -31,6 +32,7 @@ import org.monte.media.ilbm.ColorCyclingMemoryImageSource;
 import org.monte.media.ilbm.ILBMDecoder;
 import org.monte.media.pbm.PBMDecoder;
 import org.monte.media.io.ByteArrayImageInputStream;
+import org.monte.media.io.IOStreams;
 
 /**
  * PBM and ILBM Image Viewer.
@@ -167,17 +169,7 @@ public class PBMViewer extends javax.swing.JPanel {
     }
 
     protected byte[] getData(File f) throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        FileInputStream in = new FileInputStream(f);
-        try {
-            byte[] buf = new byte[512];
-            for (int len = in.read(buf); len != -1; len = in.read(buf)) {
-                out.write(buf, 0, len);
-            }
-        } finally {
-            in.close();
-        }
-        return out.toByteArray();
+        return Files.readAllBytes(f.toPath());
     }
 
     protected BufferedImage getAmigaPicture(byte[] data) throws IOException {

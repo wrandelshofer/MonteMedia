@@ -5,7 +5,6 @@
 package org.monte.media.quicktime;
 
 import java.awt.image.ColorModel;
-import java.util.Arrays;
 import org.monte.media.Format;
 import org.monte.media.io.ImageOutputStreamAdapter;
 import org.monte.media.math.Rational;
@@ -18,6 +17,7 @@ import javax.imageio.stream.*;
 import static java.lang.Math.*;
 import static org.monte.media.VideoFormatKeys.*;
 import static org.monte.media.AudioFormatKeys.*;
+import org.monte.media.io.IOStreams;
 
 /**
  * This class provides low-level support for writing already encoded audio and
@@ -641,11 +641,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         ensureStarted();
         long offset = getRelativeStreamPosition();
         OutputStream mdatOut = mdatAtom.getOutputStream();
-        byte[] buf = new byte[4096];
-        int len;
-        while ((len = in.read(buf)) != -1) {
-            mdatOut.write(buf, 0, len);
-        }
+        IOStreams.copy(in, mdatOut);
         long length = getRelativeStreamPosition() - offset;
         t.addSample(new Sample(duration, offset, length), 1, isSync);
     }

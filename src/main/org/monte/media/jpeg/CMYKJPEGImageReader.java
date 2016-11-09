@@ -39,6 +39,7 @@ import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.MemoryCacheImageInputStream;
 import org.monte.media.color.ICCPackedColorModel;
 import org.monte.media.io.ByteArrayImageInputStream;
+import org.monte.media.io.IOStreams;
 import org.monte.media.io.ImageInputStreamAdapter;
 
 /**
@@ -218,10 +219,7 @@ public class CMYKJPEGImageReader extends ImageReader {
 
             // Read Adobe ICC_PROFILE int buffer. The profile is split up over
             // multiple APP2 marker segments.
-            byte[] b = new byte[1024];
-            for (int count = dis.read(b); count != -1; count = dis.read(b)) {
-              app2ICCProfile.write(b, 0, count);
-            }
+            IOStreams.copy(dis,app2ICCProfile);
           }
         }
       } else if (seg.marker == 0xffee) {

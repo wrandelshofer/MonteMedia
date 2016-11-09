@@ -29,6 +29,7 @@ import org.monte.media.gui.Worker;
 import org.monte.media.ilbm.ColorCyclingMemoryImageSource;
 import org.monte.media.ilbm.ILBMDecoder;
 import org.monte.media.io.ByteArrayImageInputStream;
+import org.monte.media.io.IOStreams;
 
 /**
  * ILBMViewer.
@@ -37,13 +38,15 @@ import org.monte.media.io.ByteArrayImageInputStream;
  * @version $Id: ILBMViewer.java 364 2016-11-09 19:54:25Z werner $
  */
 public class ILBMViewer extends javax.swing.JPanel {
+
     private final static long serialVersionUID = 1L;
 
     private class Handler implements DropTargetListener {
 
         /**
          * Called when a drag operation has encountered the
-         * <code>DropTarget</code>. <P>
+         * <code>DropTarget</code>.
+         * <P>
          *
          * @param dtde the <code>DropTargetDragEvent</code>
          */
@@ -57,8 +60,9 @@ public class ILBMViewer extends javax.swing.JPanel {
         }
 
         /**
-         * The drag operation has departed the
-         * <code>DropTarget</code> without dropping. <P>
+         * The drag operation has departed the <code>DropTarget</code> without
+         * dropping.
+         * <P>
          *
          * @param dte the <code>DropTargetEvent</code>
          */
@@ -69,7 +73,8 @@ public class ILBMViewer extends javax.swing.JPanel {
 
         /**
          * Called when a drag operation is ongoing on the
-         * <code>DropTarget</code>. <P>
+         * <code>DropTarget</code>.
+         * <P>
          *
          * @param dtde the <code>DropTargetDragEvent</code>
          */
@@ -88,21 +93,25 @@ public class ILBMViewer extends javax.swing.JPanel {
          * the transfer of the data associated with the gesture. The
          * <code>DropTargetDropEvent</code> provides a means to obtain a
          * <code>Transferable</code> object that represents the data object(s)
-         * to be transfered.<P> From this method, the
-         * <code>DropTargetListener</code> shall accept or reject the drop via
-         * the acceptDrop(int dropAction) or rejectDrop() methods of the
-         * <code>DropTargetDropEvent</code> parameter. <P> Subsequent to
-         * acceptDrop(), but not before,
+         * to be transfered.<P>
+         * From this method, the <code>DropTargetListener</code> shall accept or
+         * reject the drop via the acceptDrop(int dropAction) or rejectDrop()
+         * methods of the <code>DropTargetDropEvent</code> parameter.
+         * <P>
+         * Subsequent to acceptDrop(), but not before,
          * <code>DropTargetDropEvent</code>'s getTransferable() method may be
          * invoked, and data transfer may be performed via the returned
-         * <code>Transferable</code>'s getTransferData() method. <P> At the
-         * completion of a drop, an implementation of this method is required to
-         * signal the success/failure of the drop by passing an appropriate
-         * <code>boolean</code> to the
+         * <code>Transferable</code>'s getTransferData() method.
+         * <P>
+         * At the completion of a drop, an implementation of this method is
+         * required to signal the success/failure of the drop by passing an
+         * appropriate <code>boolean</code> to the
          * <code>DropTargetDropEvent</code>'s dropComplete(boolean success)
-         * method. <P> Note: The actual processing of the data transfer is not
-         * required to finish before this method returns. It may be deferred
-         * until later. <P>
+         * method.
+         * <P>
+         * Note: The actual processing of the data transfer is not required to
+         * finish before this method returns. It may be deferred until later.
+         * <P>
          *
          * @param dtde the <code>DropTargetDropEvent</code>
          */
@@ -136,7 +145,8 @@ public class ILBMViewer extends javax.swing.JPanel {
         }
 
         /**
-         * Called if the user has modified the current drop gesture. <P>
+         * Called if the user has modified the current drop gesture.
+         * <P>
          *
          * @param dtde the <code>DropTargetDragEvent</code>
          */
@@ -165,17 +175,11 @@ public class ILBMViewer extends javax.swing.JPanel {
     }
 
     protected byte[] getData(File f) throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        FileInputStream in = new FileInputStream(f);
-        try {
-            byte[] buf = new byte[512];
-            for (int len = in.read(buf); len != -1; len = in.read(buf)) {
-                out.write(buf, 0, len);
-            }
-        } finally {
-            in.close();
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream();
+                FileInputStream in = new FileInputStream(f)) {
+            IOStreams.copy(in, out);
+            return out.toByteArray();
         }
-        return out.toByteArray();
     }
 
     protected BufferedImage getAmigaPicture(byte[] data) throws IOException {

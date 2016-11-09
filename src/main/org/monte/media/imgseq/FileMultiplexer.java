@@ -10,7 +10,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import static org.monte.media.BufferFlag.*;
+import org.monte.media.io.IOStreams;
 
 /**
  * Multiplexes samples into individual files.
@@ -42,28 +45,11 @@ public class FileMultiplexer implements Multiplexer {
         File file = new File(dir, baseName + numToString(position + 1) + extension);
 
         if (buf.data instanceof byte[]) {
-            FileOutputStream out = new FileOutputStream(file);
-            try {
+            try (FileOutputStream out = new FileOutputStream(file)) {
                 out.write((byte[]) buf.data, buf.offset, buf.length);
-            } finally {
-                out.close();
             }
         } else if (buf.data instanceof File) {
-            FileInputStream in = new FileInputStream((File) buf.data);
-            try {
-                FileOutputStream out = new FileOutputStream(file);
-                try {
-                    byte[] b = new byte[2048];
-                    int len;
-                    while ((len = in.read(b)) != -1) {
-                        out.write(b, 0, len);
-                    }
-                } finally {
-                    out.close();
-                }
-            } finally {
-                in.close();
-            }
+            IOStreams.copy((File)buf.data, file);
         } else {
             throw new IllegalArgumentException("Can't process buffer data:" + buf.data);
         }

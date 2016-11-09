@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import javax.imageio.*;
 import javax.imageio.stream.*;
+import org.monte.media.io.IOStreams;
 
 /**
  * This class supports writing of images into an AVI 1.0 video file.
@@ -1030,11 +1031,7 @@ System.out.println("sizeBefore:"+sizeBefore);
         moviChunk.add(videoFrameChunk);
         OutputStream mdatOut = videoFrameChunk.getOutputStream();
         long offset = getRelativeStreamPosition();
-        byte[] buf = new byte[512];
-        int len;
-        while ((len = in.read(buf)) != -1) {
-            mdatOut.write(buf, 0, len);
-        }
+        IOStreams.copy(in, mdatOut);
         long length = getRelativeStreamPosition() - offset;
         videoFrameChunk.finish();
         videoFrames.add(new Sample(videoFrameChunk.chunkType, frameRate, offset, length - 8, true));
