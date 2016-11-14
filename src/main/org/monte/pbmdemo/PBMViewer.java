@@ -179,8 +179,6 @@ public class PBMViewer extends javax.swing.JPanel {
     protected Image getAmigaPictureWithColorCycling(File f) throws IOException {
         FileInputStream in = new FileInputStream(f);
         try {
-
-
             ArrayList<ColorCyclingMemoryImageSource> imageList = new PBMDecoder(in).produce();
             if (imageList.isEmpty()) {
                 in.close();
