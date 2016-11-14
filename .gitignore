@@ -2,3 +2,6 @@
 /src/main/.svn/
 /src/main.jmf/x.svn/
 /src/main.jmf/.svn/
+/build/
+/dist/
+/nbproject/private/
