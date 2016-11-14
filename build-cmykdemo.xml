@@ -9,7 +9,7 @@
         <property name="classdir" value="${builddir}/classes"/>
         <property name="distdir" value="dist/CMYKDemo"/>
         <property name="author" value="Werner Randelshofer"/>
-        <property name="version" value="2.0"/>
+        <property name="version" value="2.0.1"/>
         <property name="versionDate" value="2016-10-23"/>
         <property name="versionLong" value="${version}"/>
         <property name="versionLong" value="${version} ${versionDate}"/>
@@ -36,6 +36,7 @@
           <compilerarg value="-Xlint"/>
             <include name="org/monte/cmykdemo/MainFX.java"/> 
             <include name="org/monte/media/jpeg/CMYK*.java"/> 
+            <include name="org/monte/media/jpeg/JPEGImageIO.java"/> 
         </javac>
         <copy todir="${classdir}">
             <fileset dir="${srcdir}" >
@@ -45,10 +46,14 @@
                 <include name="org/monte/media/jpeg/CMYK*.java"/>
                 <include name="org/monte/media/jpeg/Generic CMYK Profile.icc"/>
                 <include name="org/monte/media/jpeg/JFIFInputStream.java"/>
+                <include name="org/monte/media/jpeg/JPEGImageIO.java"/>
                 <include name="org/monte/media/io/ByteArrayImageInputStream.java"/>
                 <include name="org/monte/media/io/ImageInputStreamAdapter.java"/>
                 <include name="org/monte/media/io/ImageInputStreamImpl2.java"/>
+                <include name="org/monte/media/io/IOStreams.java"/>
                 <include name="org/monte/cmykdemo/*.java"/>
+                <include name="org/monte/util/BiIntConsumer.java"/>
+                <include name="org/monte/util/RangeStream.java"/>
                 <exclude name="**/.*"/>
             </fileset>
         </copy>
