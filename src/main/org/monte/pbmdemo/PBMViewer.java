@@ -184,7 +184,6 @@ public class PBMViewer extends javax.swing.JPanel {
                 in.close();
                 in = new FileInputStream(f);
                 imageList = new ILBMDecoder(in).produce();
-
             }
             ColorCyclingMemoryImageSource ccmis = imageList.get(0);
             if (ccmis.isColorCyclingAvailable()) {
