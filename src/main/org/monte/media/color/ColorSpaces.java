@@ -1,4 +1,4 @@
- /* @(#)ColorSpaces.java
+/* @(#)ColorSpaces.java
  * Copyright © 2014 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
@@ -29,44 +29,8 @@ public class ColorSpaces {
         b.append("components=" + cs.getNumComponents());
         //
         ICC_Profile p = cs.getProfile();
-        b.append(",colorSpaceType=");
-        switch (p.getColorSpaceType()) {
-            case ColorSpace.TYPE_CMYK:
-                b.append("CMYK");
-                break;
-            case ColorSpace.TYPE_RGB :
-                b.append("RGB");
-                break;
-            default:
-                b.append(p.getColorSpaceType());
-
-        }
-        b.append(",profileClass=");
-        switch(p.getProfileClass()) {
-          case ICC_Profile.CLASS_ABSTRACT:
-            b.append("abstract");
-            break;
-          case ICC_Profile.CLASS_COLORSPACECONVERSION:
-            b.append("colorspace conversion");
-            break;
-          case ICC_Profile.CLASS_DEVICELINK:
-            b.append("device link");
-            break;
-          case ICC_Profile.CLASS_DISPLAY:
-            b.append("display");
-            break;
-          case ICC_Profile.CLASS_INPUT:
-            b.append("input");
-            break;
-          case ICC_Profile.CLASS_NAMEDCOLOR:
-            b.append("named color");
-            break;
-          case ICC_Profile.CLASS_OUTPUT:
-            b.append("output");
-            break;
-          default:
-                b.append(p.getProfileClass());
-        }
+        b.append(",colorSpaceType=").append(colorSpaceTypeToString(p.getColorSpaceType()));
+        b.append(",profileClass=").append(profileClassToString(p.getProfileClass()));
         /*
         b.append(",pcsType=");
         switch(p.getPCSType()) {
@@ -78,4 +42,55 @@ public class ColorSpaces {
         b.append('}');
         return b.toString();
     }
+
+    private static String profileClassToString(int profileClass) {
+        switch (profileClass) {
+            case ICC_Profile.CLASS_ABSTRACT:
+                return "abstract";
+            case ICC_Profile.CLASS_COLORSPACECONVERSION:
+                return "colorspace conversion";
+            case ICC_Profile.CLASS_DEVICELINK:
+                return "device link";
+            case ICC_Profile.CLASS_DISPLAY:
+                return "display";
+            case ICC_Profile.CLASS_INPUT:
+                return "input";
+            case ICC_Profile.CLASS_NAMEDCOLOR:
+                return "named color";
+            case ICC_Profile.CLASS_OUTPUT:
+                return "output";
+            default:
+                return Integer.toString(profileClass);
+        }
+    }
+
+    private static String colorSpaceTypeToString(int colorSpaceType) {
+        switch (colorSpaceType) {
+            case ColorSpace.TYPE_CMYK:
+                return "CMYK";
+            case ColorSpace.TYPE_RGB:
+                return "RGB";
+            default:
+                return Integer.toString(colorSpaceType);
+        }
+    }
+
+    public static String toString(ICC_Profile p) {
+        StringBuilder b = new StringBuilder();
+        b.append("ICC_Profile{");
+        b.append("version:");
+        b.append(p.getMajorVersion());
+        b.append('.');
+        b.append(p.getMinorVersion());
+        b.append(" numComponents:");
+        b.append(p.getNumComponents());
+        b.append(",colorSpaceType=").append(colorSpaceTypeToString(p.getColorSpaceType()));
+        b.append(",profileClass=").append(profileClassToString(p.getProfileClass()));
+        b.append(p.getPCSType());
+        b.append(p.getProfileClass());
+        b.append('}');
+        return b.toString();
+
+    }
+
 }

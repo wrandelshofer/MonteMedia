@@ -21,10 +21,13 @@ import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.MemoryCacheImageInputStream;
 
 /**
- * Reads an image in the Motion JPEG (MJPG) format. <p>. This class can read
- * Motion JPEG files with omitted Huffmann table. <p> For more information see:
- * Microsoft Windows Bitmap Format. Multimedia Technical Note: JPEG DIB Format.
- * (c) 1993 Microsoft Corporation. All rights reserved. <a
+ * Reads an image in the Motion JPEG (MJPG) format.
+ * <p>
+ * . This class can read Motion JPEG files with omitted Huffmann table.
+ * <p>
+ * For more information see: Microsoft Windows Bitmap Format. Multimedia
+ * Technical Note: JPEG DIB Format. (c) 1993 Microsoft Corporation. All rights
+ * reserved. <a
  * href="http://www.fileformat.info/format/bmp/spec/b7c72ebab8064da48ae5ed0c053c67a4/BMPDIB.TXT">BMPDIB.txt</a>
  *
  * @author Werner Randelshofer
@@ -98,7 +101,6 @@ public class MJPGImageReader extends ImageReader {
     private void readHeader() throws IOException {
         if (image == null) {
 
-
             ImageReader r = getBasicJPEGImageReader();
             Object in = getInput();
             /*if (in instanceof Buffer) {
@@ -123,16 +125,17 @@ public class MJPGImageReader extends ImageReader {
      * not implement the actual decoding.
      */
     private static ImageReader getBasicJPEGImageReader() {
-        ImageReader r = null;
-        for (Iterator<ImageReader> i = ImageIO.getImageReadersByMIMEType("image/jpeg"); i.hasNext();) {
-            r = i.next();
-            if (!r.getClass().getName().startsWith("org.monte.media")) {
-                break;
+        for (ImageReader r : (Iterable<ImageReader>) () -> ImageIO.getImageReadersByFormatName("jpeg")) {
+            if ("com.sun.imageio.plugins.jpeg.JPEGImageReader".equals(r.getClass().getName())) {
+                return r;
             }
         }
-        return r;
+        throw new InternalError("could not find native JPEG Reader");
     }
-    /** Disposes of resources held internally by the reader. */
+
+    /**
+     * Disposes of resources held internally by the reader.
+     */
     @Override
     public void dispose() {
         try {

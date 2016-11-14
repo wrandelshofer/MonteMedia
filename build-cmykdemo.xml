@@ -42,11 +42,10 @@
             <fileset dir="${srcdir}" >
                 <include name="org/monte/media/color/ColorSpaces.java"/>
                 <include name="org/monte/media/color/ICCPackedColorModel.java"/>
+                <include name="org/monte/media/image/CMYKImages.java"/>
                 <include name="org/monte/media/image/Images.java"/>
                 <include name="org/monte/media/jpeg/CMYK*.java"/>
-                <include name="org/monte/media/jpeg/Generic CMYK Profile.icc"/>
                 <include name="org/monte/media/jpeg/JFIFInputStream.java"/>
-                <include name="org/monte/media/jpeg/JPEGImageIO.java"/>
                 <include name="org/monte/media/io/ByteArrayImageInputStream.java"/>
                 <include name="org/monte/media/io/ImageInputStreamAdapter.java"/>
                 <include name="org/monte/media/io/ImageInputStreamImpl2.java"/>
