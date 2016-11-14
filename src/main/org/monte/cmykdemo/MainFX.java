@@ -241,8 +241,6 @@ public class MainFX extends Application {
 
     long end = System.currentTimeMillis();
     System.out.println("  convert to RGB ms:" + (end - start));
-    System.out.println("  source image CM:" + bufferedImage.getColorModel());
-    System.out.println("  RGB image CM:" + rgbImage.getColorModel());
     return rgbImage;
   }
 
