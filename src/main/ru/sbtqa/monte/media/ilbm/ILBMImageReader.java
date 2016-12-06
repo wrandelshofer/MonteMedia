@@ -69,7 +69,7 @@ public class ILBMImageReader extends ImageReader {
      * versa.  For non-resizable images, the true width and height
      * are used.
      *
-     * <p> The default implementation simply returns
+     *  The default implementation simply returns
      * <code>(float)getWidth(imageIndex)/getHeight(imageIndex)</code>.
      *
      * @param imageIndex the index of the image to be queried.

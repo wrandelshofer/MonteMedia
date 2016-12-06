@@ -26,22 +26,22 @@ import static org.monte.media.VideoFormatKeys.*;
 /**
  * Provides low-level support for reading encoded audio and video samples from
  * an AVI 1.0 or an AVI 2.0 file. 
- * <p> 
+ *  
  * The length of an AVI 1.0 file is limited to 1 GB.
  * This class supports lengths of up to 4 GB, but such files may not work on
  * all players.
- * <p>
+ * 
  * Support for AVI 2.0 file is incomplete.
  * This class currently ignores the extended index chunks. Instead all chunks
  * in the "movi" list are scanned. With scanning, the reader is not able to
  * distinguish between keyframes and non-keyframes. As a consequence opening an
  * AVI 2.0 file is very slow, and decoding of frames may fail.
- * <p>
+ * 
  * For detailed information about the AVI 1.0 file format see:<br>
  * <a href="http://msdn.microsoft.com/en-us/library/ms779636.aspx">msdn.microsoft.com AVI RIFF</a><br>
  * <a href="http://www.microsoft.com/whdc/archive/fourcc.mspx">www.microsoft.com FOURCC for Video Compression</a><br>
  * <a href="http://www.saettler.com/RIFFMCI/riffmci.html">www.saettler.com RIFF</a><br>
- * <p>
+ * 
  * For detailed information about the AVI 2.0 file format see:<br>
  * <a href="http://www.the-labs.com/Video/odmlff2-avidef.pdf">OpenDML AVI File Format Extensions, Version 1.02</a><br>
  *
@@ -151,9 +151,9 @@ public class AVIInputStream extends AbstractAVIStream {
      * chunks which do not affect the timing of the media, such as palette
      * changes.
      *
-     * @param track
+     * @param track TODO
      * @return the number of chunks
-     * @throws IOException
+     * @throws IOException TODO
      */
     public long getChunkCount(int track) throws IOException {
         ensureRealized();
@@ -172,10 +172,10 @@ public class AVIInputStream extends AbstractAVIStream {
      * Returns the contents of the extra track header. Returns null if the
      * header is not present.
      *
-     * @param track
-     * @param fourcc
+     * @param track TODO
+     * @param fourcc TODO
      * @return The extra header as a byte array
-     * @throws IOException
+     * @throws IOException TODO
      */
     public byte[] getExtraHeader(int track, String fourcc) throws IOException {
         ensureRealized();
@@ -191,9 +191,9 @@ public class AVIInputStream extends AbstractAVIStream {
     /**
      * Returns the fourcc's of all extra stream headers.
      *
-     * @param track
+     * @param track TODO
      * @return An array of fourcc's of all extra stream headers.
-     * @throws IOException
+     * @throws IOException TODO
      */
     public String[] getExtraHeaderFourCCs(int track) throws IOException {
         Track tr = tracks.get(track);
@@ -440,22 +440,22 @@ public class AVIInputStream extends AbstractAVIStream {
     }
 
     /**
-     * <pre>
+     * 
      * typedef struct {
      *   cstring name;
      * } STREAMNAME;
-     * </pre>
+     * 
      *
-     * @param tr
-     * @param data
-     * @throws IOException
+     * @param tr TODO
+     * @param data TODO
+     * @throws IOException TODO
      */
     private void readSTRN(Track tr, byte[] data) throws IOException {
         tr.name = new String(data, 0, data.length - 1, "ASCII");
     }
 
     /**
-     * </pre> //---------------------- // AVI Bitmap Info Header //
+     *  //---------------------- // AVI Bitmap Info Header //
      * ---------------------- typedef struct { BYTE blue; BYTE green; BYTE red;
      * BYTE reserved; } RGBQUAD;
      *
@@ -472,12 +472,12 @@ public class AVIInputStream extends AbstractAVIStream {
      * imageSizeInBytes; DWORD xPelsPerMeter; DWORD yPelsPerMeter; DWORD
      * numberOfColorsUsed; DWORD numberOfColorsImportant; RGBQUAD colors[]; }
      * BITMAPINFOHEADER;
-     * </pre>
+     * 
      *
      *
-     * @param tr
-     * @param data
-     * @throws IOException
+     * @param tr TODO
+     * @param data TODO
+     * @throws IOException TODO
      */
     private void readVideoSTRF(VideoTrack tr, byte[] data) throws IOException {
         ByteArrayImageInputStream in = new ByteArrayImageInputStream(data, ByteOrder.LITTLE_ENDIAN);
@@ -514,9 +514,9 @@ public class AVIInputStream extends AbstractAVIStream {
 
     /**
      * /**
-     * <p> The format of a video track is defined in a "strf" chunk, which
+     *  The format of a video track is defined in a "strf" chunk, which
      * contains a {@code WAVEFORMATEX} struct.
-     * <pre>
+     * 
      * ----------------------
      * AVI Wave Format Header
      * ----------------------
@@ -543,12 +543,12 @@ public class AVIInputStream extends AbstractAVIStream {
      *     // is ignored.
      *   byte[cbSize] extra;
      * } WAVEFORMATEX;
-     * </pre>
+     * 
      *
      *
-     * @param tr
-     * @param data
-     * @throws IOException
+     * @param tr TODO
+     * @param data TODO
+     * @throws IOException TODO
      */
     private void readAudioSTRF(AudioTrack tr, byte[] data) throws IOException {
         ByteArrayImageInputStream in = new ByteArrayImageInputStream(data, ByteOrder.LITTLE_ENDIAN);
@@ -579,7 +579,7 @@ public class AVIInputStream extends AbstractAVIStream {
     }
 
     /**
-     * <pre>
+     * 
      * // The values for this set have been taken from:
      * // http://graphics.cs.uni-sb.de/NMM/dist-0.4.0/Docs/Doxygen/html/avifmt_8h.html
      * set {
@@ -609,12 +609,12 @@ public class AVIInputStream extends AbstractAVIStream {
      *       DWORD   size;
      *       // Specifies the size of the data chunk, in bytes.
      * } avioldindex_entry;
-     * </pre>
+     * 
      *
-     * @param tracks
-     * @param data
+     * @param tracks TODO
+     * @param data TODO
      * @return The idx1 list of samples.
-     * @throws IOException
+     * @throws IOException TODO
      */
     private void readIDX1(ArrayList<Track> tracks, ArrayList<Sample> idx1, byte[] data) throws IOException {
         ByteArrayImageInputStream in = new ByteArrayImageInputStream(data, ByteOrder.LITTLE_ENDIAN);

@@ -19,6 +19,7 @@ import static ru.sbtqa.monte.media.iff.IFFParser.stringToID;
  * @version $Id: PBMImageReaderSpi.java 364 2016-11-09 19:54:25Z werner $
  */
 public class PBMImageReaderSpi extends ImageReaderSpi {
+
     protected final static int FORM_ID = stringToID("FORM");
     protected final static int CAT_ID = stringToID("CAT ");
     protected final static int LIST_ID = stringToID("LIST");
@@ -26,24 +27,24 @@ public class PBMImageReaderSpi extends ImageReaderSpi {
 
     public PBMImageReaderSpi() {
         super("Werner Randelshofer",//vendor name
-                "1.0",//version
-                new String[]{"PBM"},//names
-                new String[]{"pbm","PBM","lbm","LBM"},//suffixes,
-                new String[]{"image/pbm"},// MIMETypes,
-                "org.monte.media.pbm.PBMImageReader",// readerClassName,
-                new Class<?>[]{ImageInputStream.class},// inputTypes,
-                null,// writerSpiNames,
-                false,// supportsStandardStreamMetadataFormat,
-                null,// nativeStreamMetadataFormatName,
-                null,// nativeStreamMetadataFormatClassName,
-                null,// extraStreamMetadataFormatNames,
-                null,// extraStreamMetadataFormatClassNames,
-                false,// supportsStandardImageMetadataFormat,
-                null,// nativeImageMetadataFormatName,
-                null,// nativeImageMetadataFormatClassName,
-                null,// extraImageMetadataFormatNames,
-                null// extraImageMetadataFormatClassNames
-                );
+              "1.0",//version
+              new String[]{"PBM"},//names
+              new String[]{"pbm", "PBM", "lbm", "LBM"},//suffixes,
+              new String[]{"image/pbm"},// MIMETypes,
+              "org.monte.media.pbm.PBMImageReader",// readerClassName,
+              new Class<?>[]{ImageInputStream.class},// inputTypes,
+              null,// writerSpiNames,
+              false,// supportsStandardStreamMetadataFormat,
+              null,// nativeStreamMetadataFormatName,
+              null,// nativeStreamMetadataFormatClassName,
+              null,// extraStreamMetadataFormatNames,
+              null,// extraStreamMetadataFormatClassNames,
+              false,// supportsStandardImageMetadataFormat,
+              null,// nativeImageMetadataFormatName,
+              null,// nativeImageMetadataFormatClassName,
+              null,// extraImageMetadataFormatNames,
+              null// extraImageMetadataFormatClassNames
+        );
     }
 
     @Override
@@ -54,14 +55,14 @@ public class PBMImageReaderSpi extends ImageReaderSpi {
 
             // Check if file starts with "FORM", "CAT " or "LIST"
             int fileID = in.readInt();
-            if (fileID != FORM_ID && fileID!=CAT_ID&&fileID!=LIST_ID) {
+            if (fileID != FORM_ID && fileID != CAT_ID && fileID != LIST_ID) {
                 in.reset();
                 return false;
             }
             // Check if file content is "ILBM" or "ANIM"
             int contentSize = in.readInt();
             int contentID = in.readInt();
-            if (contentID != PBM_ID ) {
+            if (contentID != PBM_ID) {
                 in.reset();
                 return false;
             }

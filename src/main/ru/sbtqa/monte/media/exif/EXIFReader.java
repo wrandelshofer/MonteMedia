@@ -43,15 +43,15 @@ import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
 
 /**
- * Reads EXIF and MP meta data from a JPEG, MPO or AVI file. <p> Creates a tree
+ * Reads EXIF and MP meta data from a JPEG, MPO or AVI file.  Creates a tree
  * structure of {@code DefaultMutableTreeNode}s. Nodes with a String user object
  * describe the hierarchy of the meta data. Nodes with an MetaDataEntry as user
- * object hold the actual meta data. <p> Sources: <p> Exchangeable image file
+ * object hold the actual meta data.  Sources:  Exchangeable image file
  * format for digital still cameras: EXIF Version 2.2. (April, 2002). Standard
  * of Japan Electronics and Information Technology Industries Association. JEITA
  * CP-3451. <a
  * href="http://www.exif.org/Exif2-2.PDF">http://www.exif.org/Exif2-2.PDF</a>
- * <p> Multi-Picture Format (February 4, 2009). Standard of the Camera & Imaging
+ *  Multi-Picture Format (February 4, 2009). Standard of the Camera & Imaging
  * Products Association. CIPA DC-007-Translation-2009. <a
  * href="http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf">
  * http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf</a>
@@ -703,12 +703,12 @@ public class EXIFReader {
     }
 
     /**
-     * Gets the metadata as an ImageIO structure. <p> Format description
+     * Gets the metadata as an ImageIO structure.  Format description
      * replicated from <a
      * href="http://download.java.net/media/jai-imageio/javadoc/1.1/com/sun/media/imageio/plugins/tiff/package-summary.html"
      * >http://download.java.net/media/jai-imageio/javadoc/1.1/com/sun/media/imageio/plugins/tiff/package-summary.html</a>:
-     * <p> The DTD for the native image metadata format is as follows:
-     * <pre>
+     *  The DTD for the native image metadata format is as follows:
+     * 
      * The DTD for the native image metadata format is as follows:
      * &lt;!DOCTYPE "com_sun_media_imageio_plugins_tiff_image_1.0" [
      *
@@ -851,7 +851,7 @@ public class EXIFReader {
      *            &lt;!-- A list of comma-separated byte values --&gt;
      *            &lt;!-- Data type: String --&gt;
      *]&gt;
-     * </pre>
+     * 
      */
     public IIOMetadataNode getIIOMetadataTree(String formatName, int imageIndex) {
         if (formatName != null && !formatName.equals("com_sun_media_imageio_plugins_tiff_image_1.0")) {

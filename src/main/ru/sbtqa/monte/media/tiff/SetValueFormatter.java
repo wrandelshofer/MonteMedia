@@ -48,15 +48,15 @@ public class SetValueFormatter implements ValueFormatter {
     /** Creates a new enumeration.
      * The enumeration consists of a list of String=Integer,
      * String=Integer Integer, or String=String pairs.
-     * <p>
-     * <ul>
-     * <li>String=Integer. If only one integer is provided, it specifies the bits which must
-     * be set.</li>
-     * <li>String=Integer Integer.
-     * If two integers are provided, the second value specifies a bit mask.</li>
-     * <li>String=String.
-     * If a String is provided, it specifies the String that must be set.</li>
-     * </ul>
+     * 
+     * 
+     * String=Integer. If only one integer is provided, it specifies the bits which must
+     * be set.
+     * String=Integer Integer.
+     * If two integers are provided, the second value specifies a bit mask.
+     * String=String.
+     * If a String is provided, it specifies the String that must be set.
+     * 
      */
     public SetValueFormatter(Object... set) {
         setDefinition = new LinkedList<Entry>();

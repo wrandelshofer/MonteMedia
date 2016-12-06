@@ -17,8 +17,8 @@ import java.util.ArrayList;
  * Creates a collection of EightSVXAudioClip objects by
  * reading an IFF 8SVX file.
  *
- * <p><b>8SVX Type Definitions</b>
- * <pre>
+ * <b>8SVX Type Definitions</b>
+ * 
  * #define ID_8SVX MakeID('8', 'S', 'V', 'X')
  * #define ID_VHDR MakeID('V', 'H', 'D', 'R')
  *
@@ -83,10 +83,10 @@ import java.util.ArrayList;
  * #define ID_BODY MakeID('B', 'O', 'D', 'Y')
  * typedef character BYTE; // 8 bit signed number, -128 thru 127.
  * // BODY chunk contains a BYTE[], array of audio data samples
- * </pre>
+ * 
  *
- * <p><b>8SVX Regular Expression</b>
- * <pre>
+ * <b>8SVX Regular Expression</b>
+ * 
  * 8SVX       ::= "FORM" #{ "8SVX" VHDR [NAME] [Copyright] [AUTH] ANNO* [ATAK] [RLSE] [CHAN] [PAN] BODY }
  *
  * VHDR       ::= "VHDR" #{ Voice8Header }
@@ -100,7 +100,7 @@ import java.util.ArrayList;
  * CHAN       ::= "CHAN" #{ sampletype }
  * PAN        ::= "PAN " #{ sposition }
  * BODY       ::= "BODY" #{ BYTE* } [0]
- * </pre>
+ * 
  * The token "#" represents a ckSize LONG count of the following {braced} data bytes.
  * E.g., a VHDR's "#" should equal sizeof(Voicd8Header). Literal items are shown in
  * "quotes", [square bracket items] are optional, and "*" means 0 ore more replications.
@@ -232,7 +232,7 @@ implements IFFVisitor {
     /**
      * The Voice 8 Header (VHDR) property chunk holds the playback parameters for the
      * sampled waveform.
-     * <pre>
+     * 
      * typedef LONG Fixed;     // A Fixed-point value, 16 bits to the left of
      * // the point and 16 to the right. A Fixed is a number
      * // of 2^16ths, i.e., 65536ths.
@@ -254,7 +254,7 @@ implements IFFVisitor {
      * // volume). Map this value into the output
      * // hardware's dynamic range.
      * } Voice8Header;
-     * </pre>
+     * 
      */
     protected void decodeVHDR(EightSVXAudioClip sample,IFFChunk chunk)
     throws ParseException {

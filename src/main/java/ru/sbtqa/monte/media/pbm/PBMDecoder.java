@@ -27,8 +27,9 @@ import ru.sbtqa.monte.media.ilbm.DRNGColorCycle;
 /**
  * Creates Image objects by reading an IFF PBM stream.
  *
- * <p><b>PBM regular expression</b>
- * <pre>
+ * 
+ * <b>PBM regular expression</b>
+ * 
  * PBM ::= "FORM" #{ "PBM" BMHD [CMAP] [GRAB] [DEST] [SPRT] [CAMG] CRNG* CCRT* [BODY] }
  *
  * BMHD ::= "BMHD" #{ BitMapHeader }
@@ -41,9 +42,8 @@ import ru.sbtqa.monte.media.ilbm.DRNGColorCycle;
  * CRNG ::= "CRNG" #{ CRange }
  * CCRT ::= "CCRT" #{ CycleInfo }
  * BODY ::= "BODY" #{ UBYTE* } [0]
- * </pre> The token "#" represents a
- * <code>ckSize</code> LONG count of the following braced data bytes. E.g., a
- * BMHD's "#" should equal
+ *  The token "#" represents a <code>ckSize</code> LONG count of the
+ * following braced data bytes. E.g., a BMHD's "#" should equal
  * <code>sizeof(BitMapHeader)</code>. Literal strings are shown in "quotes",
  * [square bracket items] are optional, and "*" means 0 or more repetitions. A
  * sometimes-needed pad byte is shown as "[0]".
@@ -54,6 +54,7 @@ import ru.sbtqa.monte.media.ilbm.DRNGColorCycle;
  * Created.
  */
 public class PBMDecoder implements IFFVisitor {
+
     /* ---- constants ---- */
 
     /**
@@ -72,14 +73,14 @@ public class PBMDecoder implements IFFVisitor {
      * PBM BMHD chunk: masking technique.
      */
     protected final static int MSK_NONE = 0,
-            MSK_HAS_MASK = 1,
-            MSK_HAS_TRANSPARENT_COLOR = 2,
-            MSK_LASSO = 3;
+          MSK_HAS_MASK = 1,
+          MSK_HAS_TRANSPARENT_COLOR = 2,
+          MSK_LASSO = 3;
     /**
      * PBM BMHD chunk: compression algorithm.
      */
     protected final static int CMP_NONE = 0,
-            CMP_BYTE_RUN_1 = 1;
+          CMP_BYTE_RUN_1 = 1;
     /* ---- instance variables ---- */
     /**
      * Input stream to decode from.
@@ -94,7 +95,7 @@ public class PBMDecoder implements IFFVisitor {
      * MemoryImageSource.
      */
     protected ArrayList<ColorCyclingMemoryImageSource> sources;
-   
+
     /**
      * BMHD data.
      */
@@ -135,6 +136,8 @@ public class PBMDecoder implements IFFVisitor {
 
     /**
      * Constructors
+     *
+     * @param in TODO
      */
     public PBMDecoder(InputStream in) {
         inputStream = in;
@@ -149,9 +152,10 @@ public class PBMDecoder implements IFFVisitor {
      * instances.
      *
      * @return A vector of java.awt.img.MemoryImageSource.
+     * @throws java.io.IOException TODO
      */
     public ArrayList<ColorCyclingMemoryImageSource> produce()
-            throws IOException {
+          throws IOException {
         InputStream in = null;
         sources = new ArrayList<>();
         boolean mustCloseStream;
@@ -169,10 +173,9 @@ public class PBMDecoder implements IFFVisitor {
             iff.parse(in, this);
         } catch (ParseException | AbortException e1) {
             e1.printStackTrace();//System.out.println(e1);
-        }
-        //System.out.println(e);
-         finally {
-             if (mustCloseStream) {
+        } //System.out.println(e);
+        finally {
+            if (mustCloseStream) {
                 in.close();
             }
         }
@@ -201,7 +204,7 @@ public class PBMDecoder implements IFFVisitor {
 
     @Override
     public void visitChunk(IFFChunk group, IFFChunk chunk)
-            throws ParseException, AbortException {
+          throws ParseException, AbortException {
         decodeBMHD(group.getPropertyChunk(BMHD_ID));
         decodeCMAP(group.getPropertyChunk(CMAP_ID));
         decodeBODY(chunk);
@@ -211,7 +214,7 @@ public class PBMDecoder implements IFFVisitor {
             aspect = 1d;
         }
         @SuppressWarnings("unchecked")
-        Hashtable<Object,Object> props = (Hashtable<Object,Object>) memoryImageSource.getProperties();
+        Hashtable<Object, Object> props = (Hashtable<Object, Object>) memoryImageSource.getProperties();
 
         props.put("aspect", aspect);
         String s = "Indexed Colors";
@@ -281,7 +284,7 @@ public class PBMDecoder implements IFFVisitor {
     /**
      * Decodes the bitmap header (PBM BMHD).
      *
-     * <pre>
+     * 
      * typedef UBYTE Masking; // Choice of masking technique
      *
      * #define mskNone                 0
@@ -297,7 +300,7 @@ public class PBMDecoder implements IFFVisitor {
      * #define cmpByteRun1  1
      *
      * typedef struct {
-     *   UWORD       w, h; // raster width & height in pixels
+     *   UWORD       w, h; // raster width &amp; height in pixels
      *   WORD        x, y; // pixel position for this image
      *   UBYTE       nbPlanes; // # source bitplanes
      *   Masking     masking;
@@ -307,10 +310,13 @@ public class PBMDecoder implements IFFVisitor {
      *   UBYTE       xAspect, yAspect; // pixel aspect, a ratio width : height
      *   WORD        pageWidth, pageHeight; // source "page" size in pixels
      *   } BitmapHeader;
-     * </pre>
+     * 
+     *
+     * @param chunk TODO
+     * @throws ru.sbtqa.monte.media.ParseException TODO
      */
     protected void decodeBMHD(IFFChunk chunk)
-            throws ParseException {
+          throws ParseException {
         if (chunk == null) {
             throw new ParseException("no BMHD -> no Picture");
         }
@@ -336,7 +342,7 @@ public class PBMDecoder implements IFFVisitor {
     }
 
     protected void decodeCMAP(IFFChunk chunk)
-            throws ParseException {
+          throws ParseException {
         byte[] red;
         byte[] green;
         byte[] blue;
@@ -346,7 +352,6 @@ public class PBMDecoder implements IFFVisitor {
 
         size = ((bmhdMasking & MSK_HAS_MASK) != 0) ? 2 << bmhdNbPlanes : 1 << bmhdNbPlanes;
         colorsToRead = min(size, (int) chunk.getSize() / 3);
-
 
         red = new byte[size];
         green = new byte[size];
@@ -379,7 +384,7 @@ public class PBMDecoder implements IFFVisitor {
     /**
      * Decodes the color range cycling (ILBM CRNG).
      *
-     * <pre>
+     * 
      * #define RNG_NORATE  36   // Dpaint uses this rate to mean non-active
      *  set {
      *  active = 1, reverse = 2
@@ -392,10 +397,14 @@ public class PBMDecoder implements IFFVisitor {
      *  WORD set crngActive flags;     // bit0 set = active, bit 1 set = reverse
      *  UBYTE low; UBYTE high;         // lower and upper color registers selected
      *  } ilbmColorRegisterRangeChunk;
-     * </pre>
+     * 
+     *
+     * @param chunk TODO
+     * @return TODO
+     * @throws ru.sbtqa.monte.media.ParseException TODO
      */
     protected ColorCycle decodeCRNG(IFFChunk chunk)
-            throws ParseException {
+          throws ParseException {
         ColorCycle cc;
         try {
             try (MC68000InputStream in = new MC68000InputStream(new ByteArrayInputStream(chunk.getData()))) {
@@ -405,9 +414,9 @@ public class PBMDecoder implements IFFVisitor {
                 int low = in.readUBYTE();
                 int high = in.readUBYTE();
 //System.out.println("CRNG pad1:"+pad1+" rate:"+rate+" flags:"+flags+" low:"+low+" high:"+high);
-cc = new CRNGColorCycle(rate, 273, low, high,//
-        (flags & 1) != 0 && rate > 36 && high > low, //
-        (flags & 2) != 0, false);
+                cc = new CRNGColorCycle(rate, 273, low, high,//
+                      (flags & 1) != 0 && rate > 36 && high > low, //
+                      (flags & 2) != 0, false);
             }
         } catch (IOException e) {
             throw new ParseException(e.toString());
@@ -416,12 +425,13 @@ cc = new CRNGColorCycle(rate, 273, low, high,//
     }
 
     /**
-     * Decodes the DPaint IV enhanced color cycle chunk (ILBM DRNG) <p> The
-     * RNG_ACTIVE flag is set when the range is cyclable. A range should only
-     * have the RNG _ACTIVE if it: <ol> <li>contains at least one color
-     * register</li> <li>has a defined rate</li> <li>has more than one color
-     * and/or color register</li> </ol>
-     * <pre>
+     * Decodes the DPaint IV enhanced color cycle chunk (ILBM DRNG)
+     * 
+     * The RNG_ACTIVE flag is set when the range is cyclable. A range should
+     * only have the RNG _ACTIVE if it:  contains at least one color
+     * register has a defined rate has more than one color
+     * and/or color register 
+     * 
      * ILBM DRNG DPaint IV enhanced color cycle chunk
      * --------------------------------------------
      *
@@ -454,10 +464,14 @@ cc = new CRNGColorCycle(rate, 273, low, high,//
      *     ilbmDRNGDColor[ntrue] trueColorCells;
      *     ilbmDRNGDIndex[ntregs] colorRegisterCells;
      * } ilbmDRangeChunk;
-     * </pre>
+     * 
+     *
+     * @param chunk TODO
+     * @return TODO
+     * @throws ru.sbtqa.monte.media.ParseException TODO
      */
     protected ColorCycle decodeDRNG(IFFChunk chunk)
-            throws ParseException {
+          throws ParseException {
         ColorCycle cc;
         try {
             try (MC68000InputStream in = new MC68000InputStream(new ByteArrayInputStream(chunk.getData()))) {
@@ -468,7 +482,7 @@ cc = new CRNGColorCycle(rate, 273, low, high,//
                 int ntrue = in.readUBYTE();
                 int nregs = in.readUBYTE();
                 DRNGColorCycle.Cell[] cells = new DRNGColorCycle.Cell[ntrue + nregs];
-                
+
                 for (int i = 0; i < ntrue; i++) {
                     int cell = in.readUBYTE();
                     int rgb = (in.readUBYTE() << 16) | (in.readUBYTE() << 8) | in.readUBYTE();
@@ -479,11 +493,11 @@ cc = new CRNGColorCycle(rate, 273, low, high,//
                     int index = in.readUBYTE();
                     cells[i + ntrue] = new DRNGColorCycle.DIndexCell(cell, index);
                 }
-                
+
 //System.out.println("DRNG min:"+min+" max:"+max+" rate:"+rate+" flags:"+flags+" ntrue:"+ntrue+" nregs:"+nregs);
-cc = new DRNGColorCycle(rate, 273, min, max, //
-        (flags & 1) != 0 && rate > 36 && min <= max && ntrue + nregs > 1,//
-        false, cells);
+                cc = new DRNGColorCycle(rate, 273, min, max, //
+                      (flags & 1) != 0 && rate > 36 && min <= max && ntrue + nregs > 1,//
+                      false, cells);
             }
         } catch (IOException e) {
             throw new ParseException(e.toString());
@@ -492,7 +506,7 @@ cc = new DRNGColorCycle(rate, 273, min, max, //
     }
 
     protected void decodeBODY(IFFChunk chunk)
-            throws ParseException {
+          throws ParseException {
         int pixmapWidth = (bmhdWidth % 2 == 1) ? bmhdWidth + 1 : bmhdWidth;
         byte[] pixels = new byte[pixmapWidth * bmhdHeight];
 
@@ -509,7 +523,7 @@ cc = new DRNGColorCycle(rate, 273, min, max, //
                 throw new ParseException("unknown compression method: " + bmhdCompression);
         }
 
-        Hashtable<?,?> props = new Hashtable<>();
+        Hashtable<?, ?> props = new Hashtable<>();
         if ((bmhdMasking & MSK_HAS_MASK) != 0) {
             // XXX - Handle image creation with mask
             out.println("PBMDecoder Images with Mask not supported");
@@ -520,10 +534,12 @@ cc = new DRNGColorCycle(rate, 273, min, max, //
     }
 
     /**
-     * ByteRun1 run decoder. <p> The run encoding scheme by <em>byteRun1</em> is
-     * best described by pseudo code for the decoder <em>Unpacker</em> (called
+     * ByteRun1 run decoder.
+     * 
+     * The run encoding scheme by <em>byteRun1</em> is best described by pseudo
+     * code for the decoder <em>Unpacker</em> (called
      * <em>UnPackBits</em> in the Macintosh toolbox.
-     * <pre>
+     * 
      * UnPacker:
      *  LOOP until produced the desired number of bytes
      *      Read the next source byte into n
@@ -533,14 +549,15 @@ cc = new DRNGColorCycle(rate, 273, min, max, //
      *          -128    =&gt; no operation
      *      ENDCASE;
      *   ENDLOOP;
-     * </pre>
+     * 
      *
-     * @param in
-     * @param out
-     * @throws ParseException
+     * @param in TODO
+     * @param out TODO
+     * @return TODO
+     * @throws ParseException TODO
      */
     public static int unpackByteRun1(byte[] in, byte[] out)
-            throws ParseException {
+          throws ParseException {
         try {
             return MC68000InputStream.unpackByteRun1(in, out);
         } catch (IOException ex) {

@@ -22,6 +22,7 @@ public class SEQDemultiplexer extends SEQReader implements Demultiplexer {
     public SEQDemultiplexer(File file) throws IOException {
         super(file);
     }
+
     public SEQDemultiplexer(File file, boolean variableFramerate) throws IOException {
         super(file, variableFramerate);
     }

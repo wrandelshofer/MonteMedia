@@ -33,11 +33,12 @@ public class QuickTimeInputStream {
     protected long streamOffset = 0;
 
     protected long currentTime = 0;
-    
+
     /**
      * Creates a new instance.
      *
      * @param file the input file
+     * @throws java.io.IOException TODO
      */
     public QuickTimeInputStream(File file) throws IOException {
 
@@ -50,6 +51,7 @@ public class QuickTimeInputStream {
      * Creates a new instance.
      *
      * @param in the input stream.
+     * @throws java.io.IOException TODO
      */
     public QuickTimeInputStream(ImageInputStream in) throws IOException {
         this.in = in;
@@ -65,7 +67,7 @@ public class QuickTimeInputStream {
     public long getMovieDuration() throws IOException {
         ensureRealized();
         long duration = 0;
-        long movieTimeScale=meta.getTimeScale();
+        long movieTimeScale = meta.getTimeScale();
         for (QuickTimeMeta.Track t : meta.tracks) {
             duration = max(duration, t.getTrackDuration(movieTimeScale));
         }
@@ -74,6 +76,9 @@ public class QuickTimeInputStream {
 
     /**
      * Gets the creation time of the movie.
+     *
+     * @return TODO
+     * @throws java.io.IOException TODO
      */
     public Date getCreationTime() throws IOException {
         ensureRealized();
@@ -82,6 +87,9 @@ public class QuickTimeInputStream {
 
     /**
      * Gets the modification time of the movie.
+     *
+     * @return TODO
+     * @throws java.io.IOException TODO
      */
     public Date getModificationTime() throws IOException {
         ensureRealized();
@@ -91,6 +99,9 @@ public class QuickTimeInputStream {
     /**
      * Gets the preferred rate at which to play this movie. A value of 1.0
      * indicates normal rate.
+     *
+     * @return TODO
+     * @throws java.io.IOException TODO
      */
     public double getPreferredRate() throws IOException {
         ensureRealized();
@@ -100,6 +111,9 @@ public class QuickTimeInputStream {
     /**
      * Gets the preferred volume of this movie’s sound. A value of 1.0 indicates
      * full volume.
+     *
+     * @return TODO
+     * @throws java.io.IOException TODO
      */
     public double getPreferredVolume() throws IOException {
         ensureRealized();
@@ -108,6 +122,9 @@ public class QuickTimeInputStream {
 
     /**
      * Gets the time value for current time position within the movie.
+     *
+     * @return TODO
+     * @throws java.io.IOException TODO
      */
     public long getCurrentTime() throws IOException {
         ensureRealized();
@@ -116,6 +133,9 @@ public class QuickTimeInputStream {
 
     /**
      * Gets the time value of the time of the movie poster.
+     *
+     * @return TODO
+     * @throws java.io.IOException TODO
      */
     public long getPosterTime() throws IOException {
         ensureRealized();
@@ -124,6 +144,9 @@ public class QuickTimeInputStream {
 
     /**
      * Gets the duration of the movie preview in movie time scale units.
+     *
+     * @return TODO
+     * @throws java.io.IOException TODO
      */
     public long getPreviewDuration() throws IOException {
         ensureRealized();
@@ -132,6 +155,9 @@ public class QuickTimeInputStream {
 
     /**
      * Gets the time value in the movie at which the preview begins.
+     *
+     * @return TODO
+     * @throws java.io.IOException TODO
      */
     public long getPreviewTime() throws IOException {
         ensureRealized();
@@ -142,6 +168,7 @@ public class QuickTimeInputStream {
      * Gets the transformation matrix of the entire movie.
      *
      * @return The transformation matrix.
+     * @throws java.io.IOException TODO
      */
     public double[] getMovieTransformationMatrix() throws IOException {
         ensureRealized();
@@ -149,10 +176,13 @@ public class QuickTimeInputStream {
     }
 
     /**
-     * Returns the time scale of the movie. <p> The movie time scale is used for
-     * editing tracks. Such as for specifying the start time of a track.
+     * Returns the time scale of the movie.
+     * 
+     * The movie time scale is used for editing tracks. Such as for specifying
+     * the start time of a track.
      *
      * @return time scale
+     * @throws java.io.IOException TODO
      */
     public long getMovieTimeScale() throws IOException {
         ensureRealized();
@@ -160,11 +190,14 @@ public class QuickTimeInputStream {
     }
 
     /**
-     * Returns the time scale of the media in a track. <p> The media time scale
-     * is used for specifying the duration of samples in a track.
+     * Returns the time scale of the media in a track.
+     * 
+     * The media time scale is used for specifying the duration of samples in a
+     * track.
      *
      * @param track Track index.
      * @return time scale
+     * @throws java.io.IOException TODO
      */
     public long getMediaTimeScale(int track) throws IOException {
         ensureRealized();
@@ -176,6 +209,7 @@ public class QuickTimeInputStream {
      *
      * @param track Track index.
      * @return media duration
+     * @throws java.io.IOException TODO
      */
     public long getMediaDuration(int track) throws IOException {
         ensureRealized();
@@ -187,6 +221,7 @@ public class QuickTimeInputStream {
      *
      * @param track The track number.
      * @return The transformation matrix.
+     * @throws java.io.IOException TODO
      */
     public double[] getTransformationMatrix(int track) throws IOException {
         ensureRealized();
@@ -195,30 +230,32 @@ public class QuickTimeInputStream {
 
     /**
      * Ensures that all meta-data has been read from the file.
+     *
+     * @throws java.io.IOException TODO
      */
     protected void ensureRealized() throws IOException {
-        if (in==null) {
+        if (in == null) {
             throw new IOException("Stream is closed.");
         }
-        if (meta==null) {
-            meta=new QuickTimeMeta();
+        if (meta == null) {
+            meta = new QuickTimeMeta();
             readAllMetadata();
         }
     }
 
     private void readAllMetadata() throws IOException {
         in.seek(streamOffset);
-        QuickTimeDeserializer d=new QuickTimeDeserializer();
+        QuickTimeDeserializer d = new QuickTimeDeserializer();
         d.parse(new QTFFImageInputStream(in), meta);
     }
-    
+
     public void close() throws IOException {
-        if (in!=null) {
+        if (in != null) {
             in.close();
-            in=null;
+            in = null;
         }
-        if (meta!=null) {
-            meta=null;
+        if (meta != null) {
+            meta = null;
         }
     }
 }

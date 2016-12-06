@@ -2,7 +2,6 @@
  * Copyright © 2010 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-
 package ru.sbtqa.monte.media.exif;
 
 import javax.imageio.metadata.IIOInvalidTreeException;
@@ -17,16 +16,18 @@ import org.w3c.dom.Node;
  * @version 1.0 2010-09-07 Created.
  */
 public class DefaultIIOMetadata extends IIOMetadata {
+
     private final IIOMetadataNode root;
     private final String formatName;
+
     public DefaultIIOMetadata(String formatName, IIOMetadataNode root) {
         super(true,// standardMetadataFormatSupported
-                          formatName,
-                          "javax.imageio.metadata.IIOMetadataNode",
-                          null,
-                          null);
-        this.formatName=formatName;
-        this.root=root;
+              formatName,
+              "javax.imageio.metadata.IIOMetadataNode",
+              null,
+              null);
+        this.formatName = formatName;
+        this.root = root;
     }
 
     @Override

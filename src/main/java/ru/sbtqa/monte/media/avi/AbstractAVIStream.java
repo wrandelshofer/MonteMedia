@@ -46,8 +46,8 @@ public abstract class AbstractAVIStream {
     protected final static int DB_ID = 0x62640000;//0x00006462;// "??db"
     protected final static int DC_ID = 0x63640000;//0x00006463;// "??dc"
     protected final static int WB_ID = 0x62770000;//0x00007762;// "??wb"
-    */
-    protected final static int RIFF_ID =0x52494646;// "RIFF"
+     */
+    protected final static int RIFF_ID = 0x52494646;// "RIFF"
     protected final static int AVI_ID = 0x41564920;// "AVI "
     protected final static int AVIX_ID = 0x41564958;// "AVIX"
     protected final static int LIST_ID = 0x4c495354;// "LIST"
@@ -66,7 +66,7 @@ public abstract class AbstractAVIStream {
     protected final static int DB_ID = 0x00006462;// "??db"
     protected final static int DC_ID = 0x00006463;// "??dc"
     protected final static int WB_ID = 0x00007762;// "??wb"
-    
+
     /**
      * Indicates the AVI file has an index.
      */
@@ -144,23 +144,27 @@ public abstract class AbstractAVIStream {
     protected ArrayList<Track> tracks = new ArrayList<Track>();
 
     /**
-     * Gets the position relative to the beginning of the QuickTime stream. <p>
+     * Gets the position relative to the beginning of the QuickTime stream.
+     * 
      * Usually this value is equal to the stream position of the underlying
      * ImageOutputStream, but can be larger if the underlying stream already
      * contained data.
      *
      * @return The relative stream position.
-     * @throws IOException
+     * @throws IOException TODO
      */
     protected long getRelativeStreamPosition() throws IOException {
         return out.getStreamPosition() - streamOffset;
     }
 
     /**
-     * Seeks relative to the beginning of the AVI stream. <p> Usually this equal
-     * to seeking in the underlying ImageOutputStream, but can be different if
-     * the underlying stream already contained data.
+     * Seeks relative to the beginning of the AVI stream.
+     * 
+     * Usually this equal to seeking in the underlying ImageOutputStream, but
+     * can be different if the underlying stream already contained data.
      *
+     * @param newPosition TODO
+     * @throws java.io.IOException TODO
      */
     protected void seekRelative(long newPosition) throws IOException {
         out.seek(newPosition + streamOffset);
@@ -175,7 +179,8 @@ public abstract class AbstractAVIStream {
 
         int chunkType;
         /**
-         * Byte offset of the sample chunk relative to the startTime of the AVI file.
+         * Byte offset of the sample chunk relative to the startTime of the AVI
+         * file.
          */
         long offset;
         /**
@@ -190,7 +195,7 @@ public abstract class AbstractAVIStream {
          * Whether the sample is a sync-sample.
          */
         boolean isKeyframe;
-        
+
         long timeStamp;
         /**
          * Palette change sample.
@@ -200,10 +205,12 @@ public abstract class AbstractAVIStream {
         /**
          * Creates a new sample.
          *
+         * @param chunkId TODO
          * @param duration The number of media samples contained in the sample
          * chunk.
          * @param offset The offset in the AVI stream.
          * @param length The length in the AVI stream.
+         * @param isSync TODO
          */
         public Sample(int chunkId, int duration, long offset, long length, boolean isSync) {
             this.chunkType = chunkId;
@@ -215,13 +222,16 @@ public abstract class AbstractAVIStream {
     }
 
     /**
-     * Represents a track (or "stream") in an AVI file. <p> A track is defined
-     * by an "strh" chunk, which contains an {@code AVISTREAMHEADER} struct.
-     * Additional chunks can be provided depending on the media type of the
-     * track. <p> See <a
+     * Represents a track (or "stream") in an AVI file.
+     * 
+     * A track is defined by an "strh" chunk, which contains an
+     * {@code AVISTREAMHEADER} struct. Additional chunks can be provided
+     * depending on the media type of the track.
+     * 
+     * See <a
      * href="http://msdn.microsoft.com/en-us/library/ms779638(VS.85).aspx">
-     * http://msdn.microsoft.com/en-us/library/ms779638(VS.85).aspx</a> </p>
-     * <pre>
+     * http://msdn.microsoft.com/en-us/library/ms779638(VS.85).aspx</a> 
+     * 
      * -----------------
      * AVI Stream Header
      * -----------------
@@ -319,7 +329,7 @@ public abstract class AbstractAVIStream {
      *        // update the whole movie rectangle. Units for this member are pixels.
      *        // The upper-left corner of the destination rectangle is relative to the
      *        // upper-left corner of the movie rectangle.
-     * } AVISTREAMHEADER; * </pre>
+     * } AVISTREAMHEADER; * 
      */
     protected abstract class Track {
 
@@ -331,15 +341,17 @@ public abstract class AbstractAVIStream {
         protected Format format;
         // Common metadata
         /**
-         * The scale of the media in the track. <p> Used with rate to specify
-         * the time scale that this stream will use. Dividing rate by scale
-         * gives the number of samples per second. For video streams, this is
-         * the frame rate. For audio streams, this rate corresponds to the time
-         * needed to play blockAlign bytes of audio, which for PCM audio is just
-         * the sample rate.
+         * The scale of the media in the track.
+         * 
+         * Used with rate to specify the time scale that this stream will use.
+         * Dividing rate by scale gives the number of samples per second. For
+         * video streams, this is the frame rate. For audio streams, this rate
+         * corresponds to the time needed to play blockAlign bytes of audio,
+         * which for PCM audio is just the sample rate.
          */
         /**
-         * The rate of the media in scale units. <p>
+         * The rate of the media in scale units.
+         * 
          *
          * @see scale
          */
@@ -515,8 +527,8 @@ public abstract class AbstractAVIStream {
 
         public Track(int trackIndex, AVIMediaType mediaType, int fourCC) {
             this.mediaType = mediaType;
-            twoCC = (('0'+trackIndex/10)<<24) | (('0'+trackIndex%10)<<16);
-            
+            twoCC = (('0' + trackIndex / 10) << 24) | (('0' + trackIndex % 10) << 16);
+
             this.fccHandler = fourCC;
             this.samples = new ArrayList<Sample>();
             this.extraHeaders = new ArrayList<RIFFChunk>();
@@ -536,11 +548,11 @@ public abstract class AbstractAVIStream {
     }
 
     /**
-     * Represents a video track in an AVI file. <p> The format of a video track
-     * is defined in a "strf" chunk, which contains a {@code BITMAPINFOHEADER}
+     * Represents a video track in an AVI file. The format of a video track is
+     * defined in a "strf" chunk, which contains a {@code BITMAPINFOHEADER}
      * struct.
      *
-     * </pre> //---------------------- // AVI Bitmap Info Header //
+     *  //---------------------- // AVI Bitmap Info Header //
      * ---------------------- typedef struct { BYTE blue; BYTE green; BYTE red;
      * BYTE reserved; } RGBQUAD;
      *
@@ -610,7 +622,7 @@ public abstract class AbstractAVIStream {
      * "clrUsed" member. If "clrUsed" is zero, the array contains the // maximum
      * number of colors for the given bitdepth; that is, // 2^"bitCount" colors.
      * } BITMAPINFOHEADER;
-     * </pre>
+     *
      */
     protected class VideoTrack extends Track {
         // Video metadata
@@ -733,9 +745,10 @@ public abstract class AbstractAVIStream {
     }
 
     /**
-     * <p> The format of a video track is defined in a "strf" chunk, which
-     * contains a {@code WAVEFORMATEX} struct.
-     * <pre>
+     * 
+     * The format of a video track is defined in a "strf" chunk, which contains
+     * a {@code WAVEFORMATEX} struct.
+     * 
      * ----------------------
      * AVI Wave Format Header
      * ----------------------
@@ -858,17 +871,17 @@ public abstract class AbstractAVIStream {
      *         WAVE_FORMAT_FM_TOWNS_SND = 0x0300,
      *         //  Brooktree Corporation
      *         WAVE_FORMAT_BTV_DIGITAL = 0x0400,
-     *         //  Ing C. Olivetti & C., S.p.A.
+     *         //  Ing C. Olivetti &amp; C., S.p.A.
      *         WAVE_FORMAT_OLIGSM = 0x1000,
-     *         //  Ing C. Olivetti & C., S.p.A.
+     *         //  Ing C. Olivetti &amp; C., S.p.A.
      *         WAVE_FORMAT_OLIADPCM = 0x1001,
-     *         //  Ing C. Olivetti & C., S.p.A.
+     *         //  Ing C. Olivetti &amp; C., S.p.A.
      *         WAVE_FORMAT_OLICELP = 0x1002,
-     *         //  Ing C. Olivetti & C., S.p.A.
+     *         //  Ing C. Olivetti &amp; C., S.p.A.
      *         WAVE_FORMAT_OLISBC = 0x1003,
-     *         //  Ing C. Olivetti & C., S.p.A.
+     *         //  Ing C. Olivetti &amp; C., S.p.A.
      *         WAVE_FORMAT_OLIOPR = 0x1004,
-     *         //  Lernout & Hauspie
+     *         //  Lernout &amp; Hauspie
      *         WAVE_FORMAT_LH_CODEC = 0x1100,
      *         //  Norris Communications, Inc.
      *         WAVE_FORMAT_NORRIS = 0x1400,
@@ -929,7 +942,7 @@ public abstract class AbstractAVIStream {
      *     // is ignored.
      *   byte[cbSize] extra;
      * } WAVEFORMATEX;
-     * </pre>
+     * 
      */
     protected class AudioTrack extends Track {
 
@@ -1237,27 +1250,27 @@ public abstract class AbstractAVIStream {
          */
         protected final static int WAVE_FORMAT_BTV_DIGITAL = 0x0400;
         /**
-         * Ing C. Olivetti & C., S.p.A.
+         * Ing C. Olivetti &amp; C., S.p.A.
          */
         protected final static int WAVE_FORMAT_OLIGSM = 0x1000;
         /**
-         * Ing C. Olivetti & C., S.p.A.
+         * Ing C. Olivetti &amp; C., S.p.A.
          */
         protected final static int WAVE_FORMAT_OLIADPCM = 0x1001;
         /**
-         * Ing C. Olivetti & C., S.p.A.
+         * Ing C. Olivetti &amp; C., S.p.A.
          */
         protected final static int WAVE_FORMAT_OLICELP = 0x1002;
         /**
-         * Ing C. Olivetti & C., S.p.A.
+         * Ing C. Olivetti &amp; C., S.p.A.
          */
         protected final static int WAVE_FORMAT_OLISBC = 0x1003;
         /**
-         * Ing C. Olivetti & C., S.p.A.
+         * Ing C. Olivetti &amp; C., S.p.A.
          */
         protected final static int WAVE_FORMAT_OLIOPR = 0x1004;
         /**
-         * Lernout & Hauspie
+         * Lernout &amp; Hauspie
          */
         protected final static int WAVE_FORMAT_LH_CODEC = 0x1100;
         /**
@@ -1310,6 +1323,7 @@ public abstract class AbstractAVIStream {
          *
          * @param chunkType The chunkType of the chunk. A string with a length
          * of 4 characters.
+         * @throws java.io.IOException TODO
          */
         public Chunk(int chunkType) throws IOException {
             this.chunkType = chunkType;
@@ -1318,6 +1332,8 @@ public abstract class AbstractAVIStream {
 
         /**
          * Writes the chunk to the ImageOutputStream and disposes it.
+         *
+         * @throws java.io.IOException TODO
          */
         public abstract void finish() throws IOException;
 
@@ -1347,6 +1363,7 @@ public abstract class AbstractAVIStream {
          *
          * @param compositeType The type of the composite.
          * @param chunkType The type of the chunk.
+         * @throws java.io.IOException TODO
          */
         public CompositeChunk(int compositeType, int chunkType) throws IOException {
             super(chunkType);
@@ -1368,7 +1385,7 @@ public abstract class AbstractAVIStream {
          * Writes the chunk and all its children to the ImageOutputStream and
          * disposes of all resources held by the chunk.
          *
-         * @throws java.io.IOException
+         * @throws java.io.IOException TODO
          */
         @Override
         public void finish() throws IOException {
@@ -1422,6 +1439,7 @@ public abstract class AbstractAVIStream {
          * ImageOutputStream.
          *
          * @param name The name of the chunk.
+         * @throws java.io.IOException TODO
          */
         public DataChunk(int name) throws IOException {
             this(name, -1);
@@ -1433,6 +1451,7 @@ public abstract class AbstractAVIStream {
          *
          * @param name The name of the chunk.
          * @param dataSize The size of the chunk data, or -1 if not known.
+         * @throws java.io.IOException TODO
          */
         public DataChunk(int name, long dataSize) throws IOException {
             super(name);
@@ -1440,9 +1459,9 @@ public abstract class AbstractAVIStream {
              data = new SubImageOutputStream(out, ByteOrder.LITTLE_ENDIAN, false);
              data.writeInt(typeToInt(chunkType));
              data.writeInt((int)Math.max(0, dataSize)); */
-                out.setByteOrder(ByteOrder.BIG_ENDIAN);
+            out.setByteOrder(ByteOrder.BIG_ENDIAN);
             out.writeInt(chunkType);
-                out.setByteOrder(ByteOrder.LITTLE_ENDIAN);
+            out.setByteOrder(ByteOrder.LITTLE_ENDIAN);
             out.writeInt((int) Math.max(0, dataSize));
             finishedSize = dataSize == -1 ? -1 : dataSize + 8;
         }
@@ -1458,6 +1477,8 @@ public abstract class AbstractAVIStream {
         /**
          * Returns the offset of this chunk to the beginning of the random
          * access file
+         *
+         * @return TODO
          */
         public long getOffset() {
             return offset;
@@ -1476,15 +1497,12 @@ public abstract class AbstractAVIStream {
                     seekRelative(offset + 4);
                     out.writeInt((int) (finishedSize - 8));
                     seekRelative(offset + finishedSize);
-                } else {
-                    if (size() != finishedSize) {
-                        throw new IOException("DataChunk \"" + chunkType + "\" actual size differs from given size: actual size:" + size() + " given size:" + finishedSize);
-                    }
+                } else if (size() != finishedSize) {
+                    throw new IOException("DataChunk \"" + chunkType + "\" actual size differs from given size: actual size:" + size() + " given size:" + finishedSize);
                 }
                 if (size() % 2 == 1) {
                     out.writeByte(0); // write pad byte
                 }
-
 
                 //data.dispose();
                 //data = null;
@@ -1523,13 +1541,14 @@ public abstract class AbstractAVIStream {
          *
          * @param chunkType The chunkType of the chunk.
          * @param fixedSize the fixed size of the chunk
+         * @throws java.io.IOException TODO
          */
         public FixedSizeDataChunk(int chunkType, long fixedSize) throws IOException {
             super(chunkType);
             this.fixedSize = fixedSize;
-                out.setByteOrder(ByteOrder.BIG_ENDIAN);
+            out.setByteOrder(ByteOrder.BIG_ENDIAN);
             out.writeInt(chunkType);
-                out.setByteOrder(ByteOrder.LITTLE_ENDIAN);
+            out.setByteOrder(ByteOrder.LITTLE_ENDIAN);
             out.writeInt((int) fixedSize);
 
             // Fill fixed size with nulls
@@ -1555,6 +1574,8 @@ public abstract class AbstractAVIStream {
         /**
          * Returns the offset of this chunk to the beginning of the random
          * access file
+         *
+         * @return TODO
          */
         public long getOffset() {
             return offset;
@@ -1625,9 +1646,10 @@ public abstract class AbstractAVIStream {
     }
 
     /**
-     * <p>Holds information about the entire movie. </p>
+     * 
+     * Holds information about the entire movie. 
      *
-     * <pre>
+     * 
      * ---------------
      * AVI Main Header
      * ---------------
@@ -1676,7 +1698,7 @@ public abstract class AbstractAVIStream {
      *     DWORD[]  reserved;
      *             // Reserved. Set this array to zero.
      * } AVIMAINHEADER;
-     * </pre>
+     * 
      */
     protected static class MainHeader {
 
@@ -1704,17 +1726,21 @@ public abstract class AbstractAVIStream {
     }
 
     protected static String intToType(int id) {
-        char[] b=new char[4];
-        
-            b[0] = (char) ((id >>> 24) & 0xff);
-            b[1] = (char) ((id >>> 16) & 0xff);
-            b[2] = (char) ((id >>> 8) & 0xff);
-            b[3] = (char) (id & 0xff);
-            return String.valueOf(b);
+        char[] b = new char[4];
+
+        b[0] = (char) ((id >>> 24) & 0xff);
+        b[1] = (char) ((id >>> 16) & 0xff);
+        b[2] = (char) ((id >>> 8) & 0xff);
+        b[3] = (char) (id & 0xff);
+        return String.valueOf(b);
     }
 
     /**
      * Returns true, if the specified mask is set on the flag.
+     *
+     * @param flag TODO
+     * @param mask TODO
+     * @return TODO
      */
     protected static boolean isFlagSet(int flag, int mask) {
         return (flag & mask) == mask;

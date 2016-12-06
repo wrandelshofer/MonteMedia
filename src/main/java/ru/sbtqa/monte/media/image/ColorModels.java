@@ -14,7 +14,7 @@ import static java.util.Arrays.sort;
 /**
  * Utility methods for ColorModels.
  *
- * @author  Werner Randelshofer
+ * @author Werner Randelshofer
  * @version $Id: ColorModels.java 364 2016-11-09 19:54:25Z werner $
  */
 public class ColorModels {
@@ -27,6 +27,9 @@ public class ColorModels {
 
     /**
      * Returns a descriptive string for the provided color model.
+     *
+     * @param cm TODO
+     * @return TODO
      */
     public static String toString(ColorModel cm) {
         StringBuffer buf = new StringBuffer();
@@ -83,7 +86,8 @@ public class ColorModels {
     }
 
     private static class MaskEntry implements Comparable<MaskEntry> {
-    private final static long serialVersionUID = 1L;
+
+        private final static long serialVersionUID = 1L;
 
         private int mask;
         private int bits;
@@ -104,19 +108,23 @@ public class ColorModels {
             return bits;
         }
 
-    @Override
+        @Override
         public String toString() {
             return name;
         }
 
-    @Override
+        @Override
         public int compareTo(MaskEntry that) {
             return that.mask - this.mask;
         }
     }
 
-    /** RGB in the range [0,1] to YCC in the range Y=[0,1], Cb=[-0.5,0.5],
+    /**
+     * RGB in the range [0,1] to YCC in the range Y=[0,1], Cb=[-0.5,0.5],
      * Cr=[-0.5,0.5]
+     *
+     * @param rgb TODO
+     * @param ycc TODO
      */
     public static void RGBtoYCC(float[] rgb, float[] ycc) {
         float R = max(0f, min(1f, rgb[0]));
@@ -132,8 +140,13 @@ public class ColorModels {
         ycc[2] = Cr;
     }
 
-    /** YCC in the range Y=[0,1], Cb=[-0.5,0.5], Cr=[-0.5,0.5] 
-     * to RGB in the range [0,1] */
+    /**
+     * YCC in the range Y=[0,1], Cb=[-0.5,0.5], Cr=[-0.5,0.5] to RGB in the
+     * range [0,1]
+     *
+     * @param ycc TODO
+     * @param rgb TODO
+     */
     public static void YCCtoRGB(float[] ycc, float[] rgb) {
         float Y = max(0f, min(1f, ycc[0]));
         float Cb = max(-0.5f, min(0.5f, ycc[1]));
@@ -148,7 +161,12 @@ public class ColorModels {
         rgb[2] = max(0f, min(1f, B));
     }
 
-    /** RGB 8-bit per channel to YCC 16-bit per channel. */
+    /**
+     * RGB 8-bit per channel to YCC 16-bit per channel.
+     *
+     * @param rgb TODO
+     * @param ycc TODO
+     */
     public static void RGBtoYCC(int[] rgb, int[] ycc) {
         int R = rgb[0];
         int G = rgb[1];
@@ -163,7 +181,12 @@ public class ColorModels {
         ycc[2] = Cr;
     }
 
-    /** RGB 8-bit per channel to YCC 16-bit per channel. */
+    /**
+     * RGB 8-bit per channel to YCC 16-bit per channel.
+     *
+     * @param rgb TODO
+     * @param ycc TODO
+     */
     public static void RGBtoYCC(int rgb, int[] ycc) {
         int R = (rgb & 0xff0000) >>> 16;
         int G = (rgb & 0xff00) >>> 8;
@@ -178,8 +201,12 @@ public class ColorModels {
         ycc[2] = Cr;
     }
 
-    /** RGB in the range [0,1] to YUV in the range Y=[0,1], U=[-0.5,0.5],
+    /**
+     * RGB in the range [0,1] to YUV in the range Y=[0,1], U=[-0.5,0.5],
      * V=[-0.5,0.5]
+     *
+     * @param rgb TODO
+     * @param yuv TODO
      */
     public static void RGBtoYUV(float[] rgb, float[] yuv) {
         float R = max(0f, min(1f, rgb[0]));
@@ -191,8 +218,13 @@ public class ColorModels {
         yuv[2] = 0.615f * R - 0.51499f * G - 0.10001f * B;
     }
 
-    /** YUV in the range Y=[0,1], U=[-0.5,0.5], V=[-0.5,0.5] 
-     * to RGB in the range [0,1] */
+    /**
+     * YUV in the range Y=[0,1], U=[-0.5,0.5], V=[-0.5,0.5] to RGB in the range
+     * [0,1]
+     *
+     * @param yuv TODO
+     * @param rgb TODO
+     */
     public static void YUVtoRGB(float[] yuv, float[] rgb) {
         float Y = max(0f, min(1f, yuv[0]));
         float U = max(-0.5f, min(0.5f, yuv[1]));
@@ -200,12 +232,17 @@ public class ColorModels {
         float R = 1 * Y + 0 * U + 1.13983f * V;
         float G = 1 * Y - 0.39465f * U - 0.58060f * V;
         float B = 1 * Y + 2.03211f * U + 0 * V;
-        rgb[0]=min(1,max(0,R));
-        rgb[1]=min(1,max(0,G));
-        rgb[2]=min(1,max(0,B));
+        rgb[0] = min(1, max(0, R));
+        rgb[1] = min(1, max(0, G));
+        rgb[2] = min(1, max(0, B));
     }
 
-    /** YCC 16-bit per channel to RGB 8-bit per channel. */
+    /**
+     * YCC 16-bit per channel to RGB 8-bit per channel.
+     *
+     * @param ycc TODO
+     * @param rgb TODO
+     */
     public static void YCCtoRGB(int[] ycc, int[] rgb) {
         int Y = ycc[0];
         int Cb = ycc[1];
@@ -220,7 +257,12 @@ public class ColorModels {
         rgb[2] = B;
     }
 
-    /** YCC 16-bit per channel to RGB 8-bit per channel. */
+    /**
+     * YCC 16-bit per channel to RGB 8-bit per channel.
+     *
+     * @param ycc TODO
+     * @return TODO
+     */
     public static int YCCtoRGB(int[] ycc) {
         int Y = ycc[0];
         int Cb = ycc[1];
@@ -233,10 +275,14 @@ public class ColorModels {
         return R << 16 | G << 8 | B;
     }
 
-    /** RGB in the range [0,1] to YIQ in the range Y in [0,1],
-     * I in [-0.5957,0.5957], Q in [-0.5226,0.5226].
-     * <p>
+    /**
+     * RGB in the range [0,1] to YIQ in the range Y in [0,1], I in
+     * [-0.5957,0.5957], Q in [-0.5226,0.5226].
+     * 
      * http://en.wikipedia.org/wiki/YIQ
+     *
+     * @param rgb TODO
+     * @param yiq TODO
      */
     public static void RGBtoYIQ(float[] rgb, float[] yiq) {
         float R = max(0f, min(1f, rgb[0]));
@@ -250,10 +296,14 @@ public class ColorModels {
         yiq[2] = Q;
     }
 
-    /** YIQ in the range Y in [0,1], I in [-0.5957,0.5957], Q in [-0.5226,0.5226] 
-     * to RGB in the range [0,1] 
-     * <p>
+    /**
+     * YIQ in the range Y in [0,1], I in [-0.5957,0.5957], Q in [-0.5226,0.5226]
+     * to RGB in the range [0,1]
+     * 
      * http://en.wikipedia.org/wiki/YIQ
+     *
+     * @param yiq TODO
+     * @param rgb TODO
      */
     public static void YIQtoRGB(float[] yiq, float[] rgb) {
         float Y = max(0f, min(1f, yiq[0]));

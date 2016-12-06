@@ -8,8 +8,8 @@ import java.util.Arrays;
 
 /**
  * Implements DRNG color cycling for an IFF ILBM image.
- * <p>
- * <pre>
+ * 
+ * 
  * ILBM DRNG DPaint IV enhanced color cycle chunk
  * --------------------------------------------
  *
@@ -42,7 +42,7 @@ import java.util.Arrays;
  *     ilbmDRNGDColor[ntrue] trueColorCells;
  *     ilbmDRNGDIndex[ntregs] colorRegisterCells;
  * } ilbmDRangeChunk;
- * </pre>
+ * 
  *
  * @author Werner Randelshofer
  * @version 1.0.1 2010-11-08 Fixed color cycling rate.
@@ -154,12 +154,12 @@ public class DRNGColorCycle extends ColorCycle {
 
     /**
      *
-     * @param rate
-     * @param timeScale
-     * @param min
-     * @param max
-     * @param isActive
-     * @param isEHB
+     * @param rate TODO
+     * @param timeScale TODO
+     * @param min TODO
+     * @param max TODO
+     * @param isActive TODO
+     * @param isEHB TODO
      * @param cells 
      */
     public DRNGColorCycle(int rate, int timeScale, int min, int max, boolean isActive, boolean isEHB, Cell[] cells) {

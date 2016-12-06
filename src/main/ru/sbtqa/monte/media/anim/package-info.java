@@ -10,7 +10,7 @@
  */
 /**
  * Provides media handlers for the ANIM file format.
- * <p>
+ * 
  * Reference:<br>
  * Commodore-Amiga, Inc. (1991) Amiga ROM Kernel Reference Manual. Devices.
  * Third Edition. Reading: Addison-Wesley.

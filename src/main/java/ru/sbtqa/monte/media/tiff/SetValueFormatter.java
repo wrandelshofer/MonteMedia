@@ -16,7 +16,9 @@ import java.util.LinkedList;
  */
 public class SetValueFormatter implements ValueFormatter {
 
-    /** Defines an entry of the set. */
+    /**
+     * Defines an entry of the set.
+     */
     private class Entry {
 
         public Entry(String name, int bits) {
@@ -30,6 +32,7 @@ public class SetValueFormatter implements ValueFormatter {
             this.bits = bits;
             this.mask = mask;
         }
+
         public Entry(String name, String stringValue) {
             this.name = name;
             this.stringValue = stringValue;
@@ -46,23 +49,25 @@ public class SetValueFormatter implements ValueFormatter {
     }
     private LinkedList<Entry> setDefinition;
 
-    /** Creates a new enumeration.
-     * The enumeration consists of a list of String=Integer,
-     * String=Integer Integer, or String=String pairs.
-     * <p>
-     * <ul>
-     * <li>String=Integer. If only one integer is provided, it specifies the bits which must
-     * be set.</li>
-     * <li>String=Integer Integer.
-     * If two integers are provided, the second value specifies a bit mask.</li>
-     * <li>String=String.
-     * If a String is provided, it specifies the String that must be set.</li>
-     * </ul>
+    /**
+     * Creates a new enumeration. The enumeration consists of a list of
+     * String=Integer, String=Integer Integer, or String=String pairs.
+     * 
+     * 
+     * String=Integer. If only one integer is provided, it specifies the
+     * bits which must be set.
+     * String=Integer Integer. If two integers are provided, the second
+     * value specifies a bit mask.
+     * String=String. If a String is provided, it specifies the String that
+     * must be set.
+     * 
+     *
+     * @param set TODO
      */
     public SetValueFormatter(Object... set) {
         setDefinition = new LinkedList<>();
         for (int i = 0; i < set.length;) {
-            if (i < set.length - 2 && (set[i + 1] instanceof Integer)&& (set[i + 2] instanceof Integer)) {
+            if (i < set.length - 2 && (set[i + 1] instanceof Integer) && (set[i + 2] instanceof Integer)) {
                 setDefinition.add(new Entry((String) set[i], (Integer) set[i + 1], (Integer) set[i + 2]));
                 i += 3;
             } else if ((set[i + 1] instanceof Integer)) {
@@ -72,7 +77,7 @@ public class SetValueFormatter implements ValueFormatter {
                 setDefinition.add(new Entry((String) set[i], (String) set[i + 1]));
                 i += 2;
             } else {
-                throw new IllegalArgumentException("illegal set:"+set);
+                throw new IllegalArgumentException("illegal set:" + set);
             }
         }
     }

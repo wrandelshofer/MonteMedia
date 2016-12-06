@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * A <em>FormatKey</em> provides type-safe access to an attribute of
  * a {@link Format}.
- * <p>
+ * 
  * A format key has a name, a type and a value.
  * 
  * @author Werner Randelshofer
@@ -79,7 +79,7 @@ public class FormatKey<T> implements Serializable, Comparable<FormatKey<T> > {
     /**
      * Returns true if the specified value is assignable with this key.
      *
-     * @param value
+     * @param value TODO
      * @return True if assignable.
      */
     public boolean isAssignable(Object value) {

@@ -4,7 +4,6 @@
  */
 package ru.sbtqa.monte.media;
 
-
 import java.beans.*;
 import javax.swing.event.*;
 import ru.sbtqa.monte.media.concurrent.SequentialDispatcher;
@@ -12,69 +11,77 @@ import ru.sbtqa.monte.media.concurrent.SequentialDispatcher;
 /**
  * Generic interface for media players.
  *
- * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
  * @version 3.1 2011-02-17 Merged with CubeTwister.
  * <br>2.1 2009-12-25 Added support for color cycling.
  * <br>2.0.1 2009-11-23 Removed unused imports.
- * <br>2.0 2005-07-09 Uses now a SequentialDispatcher for multithreading
- * instead of individual threads. The SequentialDispatcher guarantees, that all
+ * <br>2.0 2005-07-09 Uses now a SequentialDispatcher for multithreading instead
+ * of individual threads. The SequentialDispatcher guarantees, that all
  * animation steps are performed sequentially. This removes the need for clients
  * to wait until a specific state has been reached, before they can request
  * another state from the player.
  * <br>1.1 2002-02-06 Support for ChangeListeners added.
- * <br>1.0  1999-10-19
+ * <br>1.0 1999-10-19
  */
 public abstract class AbstractPlayer
-implements Player, Runnable {
+      implements Player, Runnable {
+
     /**
-     * Current state of the player.
-     * Note: Only method run() may change the value of
-     * this variable.
+     * Current state of the player. Note: Only method run() may change the value
+     * of this variable.
      */
     private int state = UNREALIZED;
-    
+
     /**
      * Target state of the player.
      */
     private int targetState = UNREALIZED;
-    
+
     /**
      * Listener support.
      */
     protected EventListenerList listenerList = new EventListenerList();
-    
-    /** Support for property change listeners. */
+
+    /**
+     * Support for property change listeners.
+     */
     protected PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-    
+
     /**
      * The dispatcher.
      */
     protected SequentialDispatcher dispatcher = new SequentialDispatcher();
-    
+
     /**
      * Creates a new instance.
      */
     public AbstractPlayer() {
     }
-    
+
     /**
      * Gets the current state of the player.
+     *
+     * @return TODO
      */
     @Override
     public int getState() {
         return state;
     }
-    
+
     /**
      * Gets the target state.
+     *
+     * @return TODO
      */
     @Override
     public int getTargetState() {
         return targetState;
     }
-    
+
     /**
      * Sets the desired target state.
+     *
+     * @param state TODO
      */
     @Override
     public void setTargetState(final int state) {
@@ -86,185 +93,191 @@ implements Player, Runnable {
             }
         }
     }
-    
+
     /**
-     * Initiates the following asynchronous
-     * state transitions:
-     *   unrealized -> realizing -> realized
-     *                 realizing -> realized
-     *                              realized
-     *   started -> throws IllegalStateException
-     *   closed -> throws IllegalStateException
+     * Initiates the following asynchronous state transitions: unrealized
+     * -{@literal >} realizing -{@literal >} realized realizing -{@literal >}
+     * realized realized started -{@literal >} throws IllegalStateException
+     * closed -{@literal >} throws IllegalStateException
      */
     @Override
     public void realize() {
         switch (getState()) {
-            case CLOSED :
+            case CLOSED:
                 throw new IllegalStateException("Realize closed player.");
-                //  break; not reached
-            case STARTED :
+            //  break; not reached
+            case STARTED:
                 throw new IllegalStateException("Realize started player.");
-                //  break; not reached
+            //  break; not reached
         }
         setTargetState(REALIZED);
     }
-    
+
     /**
-     * Initiates the following asynchronous
-     * state transitions:
-     *   unrealized -> realizing -> realized -> prefetching -> prefetched
-     *                 realizing -> realized -> prefetching -> prefetched
-     *                              realized -> prefetching -> prefetched
-     *                                          prefetching -> prefetched
-     *                                                         prefetched
-     *   started -> throws IllegalStateException
-     *   closed -> throws IllegalStateException
+     * Initiates the following asynchronous state transitions: unrealized
+     * -{@literal >} realizing -{@literal >} realized -{@literal >} prefetching
+     * -{@literal >} prefetched realizing -{@literal >} realized -{@literal >}
+     * prefetching -{@literal >} prefetched realized -{@literal >} prefetching
+     * -{@literal >} prefetched prefetching -{@literal >} prefetched prefetched
+     * started -{@literal >} throws IllegalStateException closed -{@literal >}
+     * throws IllegalStateException
      */
     public void prefetch() {
         switch (getState()) {
-            case CLOSED :
+            case CLOSED:
                 throw new IllegalStateException("Prefetch closed player.");
-                //  break; not reached
-            case STARTED :
+            //  break; not reached
+            case STARTED:
                 throw new IllegalStateException("Prefetch started player.");
-                //  break; not reached
+            //  break; not reached
         }
         setTargetState(PREFETCHED);
     }
-    
+
     /**
-     * Initiates the following asynchronous
-     * state transitions:
-     *   realizing -> unrealized
-     *   prefetching -> realized
-     *   prefetched -> realized
-     *   realized
-     *   started -> throws IllegalStateException
-     *   closed -> throws IllegalStateException
+     * Initiates the following asynchronous state transitions: realizing
+     * -{@literal >} unrealized prefetching -{@literal >} realized prefetched
+     * -{@literal >} realized realized started -{@literal >} throws
+     * IllegalStateException closed -{@literal >} throws IllegalStateException
      */
     public void deallocate() {
         switch (getState()) {
-            case CLOSED :
+            case CLOSED:
                 throw new IllegalStateException("Deallocate closed player.");
-                //  break; not reached
-            case REALIZING :
+            //  break; not reached
+            case REALIZING:
                 setTargetState(UNREALIZED);
                 break;
-            case PREFETCHING :
+            case PREFETCHING:
                 setTargetState(REALIZED);
                 break;
-            case PREFETCHED :
+            case PREFETCHED:
                 setTargetState(REALIZED);
                 break;
-            case STARTED :
+            case STARTED:
                 throw new IllegalStateException("Deallocate started player.");
-                //   break; not reached
+            //   break; not reached
         }
     }
-    
-    
+
     /**
-     * Initiates the following asynchronous
-     * state transitions:
-     * unrealized -> realizing -> realized -> prefetching -> prefetched -> started
-     *               realizing -> realized -> prefetching -> prefetched -> started
-     *                            realized -> prefetching -> prefetched -> started
-     *                                        prefetching -> prefetched -> started
-     *                                                       prefetched -> started
-     *                                                                     started
-     * closed -> throws IllegalStateException
+     * Initiates the following asynchronous state transitions: unrealized
+     * -{@literal {@literal {@literal >}}} realizing
+     * -{@literal {@literal {@literal >}}} realized
+     * -{@literal {@literal {@literal >}}} prefetching
+     * -{@literal {@literal {@literal >}}} prefetched
+     * -{@literal {@literal {@literal >}}} started realizing
+     * -{@literal {@literal {@literal >}}} realized
+     * -{@literal {@literal {@literal >}}} prefetching
+     * -{@literal {@literal {@literal >}}} prefetched
+     * -{@literal {@literal {@literal >}}} started realized
+     * -{@literal {@literal {@literal >}}} prefetching
+     * -{@literal {@literal {@literal >}}} prefetched
+     * -{@literal {@literal {@literal >}}} started prefetching
+     * -{@literal {@literal {@literal >}}} prefetched
+     * -{@literal {@literal {@literal >}}} started prefetched
+     * -{@literal {@literal {@literal >}}} started started closed
+     * -{@literal {@literal {@literal >}}} throws IllegalStateException
      */
     public void start() {
         switch (getState()) {
-            case CLOSED :
+            case CLOSED:
                 throw new IllegalStateException("Can't start closed player.");
-                //  break; not reached
+            //  break; not reached
         }
         setTargetState(STARTED);
     }
-    
+
     /**
-     * Initiates the following asynchronous
-     * state transitions:
-     * started -> prefetched
-     * unrealized
-     * realizing
-     * prefetching
-     * prefetched
-     * closed -> throws IllegalStateException
+     * Initiates the following asynchronous state transitions: started
+     * -{@literal >} prefetched unrealized realizing prefetching prefetched
+     * closed -{@literal >} throws IllegalStateException
      */
     public void stop() {
         switch (getState()) {
-            case CLOSED :
+            case CLOSED:
                 //throw new IllegalStateException("Stop closed player.");
                 //allow stop on closed player
                 break;
-            case STARTED :
+            case STARTED:
                 setTargetState(PREFETCHED);
                 break;
         }
     }
-    
+
     /**
-     * Initiates the following asynchronous
-     * state transitions:
-     * any state -> closed
+     * Initiates the following asynchronous state transitions: any state
+     * -{@literal >} closed
      */
     public void close() {
         setTargetState(CLOSED);
     }
-    
+
     /**
-     * Adds a listener that wants to be notified about
-     * state changes of the player.
+     * Adds a listener that wants to be notified about state changes of the
+     * player.
+     *
+     * @param l TODO
      */
     public void addStateListener(StateListener l) {
         listenerList.add(StateListener.class, l);
     }
-    
+
     /**
      * Removes a listener.
+     *
+     * @param l TODO
      */
     public void removeStateListener(StateListener l) {
         listenerList.remove(StateListener.class, l);
     }
-    
+
     /**
      * Adds a listener who is interested in changes of this object.
+     *
+     * @param listener TODO
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
-    
+
     /**
      * Removes a previously registered listener.
+     *
+     * @param listener TODO
      */
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
-    
-    
+
     /**
-     * Notifies all registered state listeners and
-     * all registered change listeners.
+     * Notifies all registered state listeners and all registered change
+     * listeners.
+     *
+     * @param newState TODO
      */
     protected void fireStateChanged(int newState) {
         StateEvent stateEvent = null;
         ChangeEvent changeEvent = null;
         Object[] listeners = listenerList.getListenerList();
-        for (int i = listeners.length - 2; i >= 0; i -=2 ) {
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
             if (listeners[i] == StateListener.class) {
                 // lazily create the event object
-                if (stateEvent == null) stateEvent = new StateEvent(this, newState);
-                ((StateListener)listeners[i+1]).stateChanged(stateEvent);
+                if (stateEvent == null) {
+                    stateEvent = new StateEvent(this, newState);
+                }
+                ((StateListener) listeners[i + 1]).stateChanged(stateEvent);
             }
             if (listeners[i] == ChangeListener.class) {
                 // lazily create the event object
-                if (changeEvent == null) changeEvent = new ChangeEvent(this);
-                ((ChangeListener)listeners[i+1]).stateChanged(changeEvent);
+                if (changeEvent == null) {
+                    changeEvent = new ChangeEvent(this);
+                }
+                ((ChangeListener) listeners[i + 1]).stateChanged(changeEvent);
             }
         }
     }
+
     /**
      * Notifies all registered change listeners.
      */
@@ -272,17 +285,20 @@ implements Player, Runnable {
         StateEvent stateEvent = null;
         ChangeEvent changeEvent = null;
         Object[] listeners = listenerList.getListenerList();
-        for (int i = listeners.length - 2; i >= 0; i -=2 ) {
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
             if (listeners[i] == ChangeListener.class) {
                 // lazily create the event object
-                if (changeEvent == null) changeEvent = new ChangeEvent(this);
-                ((ChangeListener)listeners[i+1]).stateChanged(changeEvent);
+                if (changeEvent == null) {
+                    changeEvent = new ChangeEvent(this);
+                }
+                ((ChangeListener) listeners[i + 1]).stateChanged(changeEvent);
             }
         }
     }
-    /** Most of the real work goes here. We have to decide when
-     *  to post events like EndOfMediaEvent and StopAtTimeEvent
-     *  and TimeLineEvent.
+
+    /**
+     * Most of the real work goes here. We have to decide when to post events
+     * like EndOfMediaEvent and StopAtTimeEvent and TimeLineEvent.
      */
     public void run() {
         while (state != targetState) {
@@ -292,86 +308,92 @@ implements Player, Runnable {
                 state = targetState;
             }
             fireStateChanged(state);
-            
+
             switch (state) {
-                case CLOSED :
+                case CLOSED:
                     doClosed();
                     break;
-                case UNREALIZED :
+                case UNREALIZED:
                     doUnrealized();
                     break;
-                case REALIZING :
+                case REALIZING:
                     doRealizing();
                     break;
-                case REALIZED :
+                case REALIZED:
                     doRealized();
                     break;
-                case PREFETCHING :
+                case PREFETCHING:
                     doPrefetching();
                     break;
-                case PREFETCHED :
+                case PREFETCHED:
                     doPrefetched();
                     break;
-                case STARTED :
+                case STARTED:
                     doStarted();
                     setTargetState(PREFETCHED);
                     break;
             }
         }
     }
-    
+
     /**
      * Does the work for the closed state.
      */
     abstract protected void doClosed();
-    
+
     /**
      * Does the work for the unrealized state.
      */
     abstract protected void doUnrealized();
-    
+
     /**
      * Does the work for the realizing state.
      */
     abstract protected void doRealizing();
-    
+
     /**
      * Does the work for the realized state.
      */
     abstract protected void doRealized();
-    
+
     /**
      * Does the work for the prefetching state.
      */
     abstract protected void doPrefetching();
-    
+
     /**
      * Does the work for the prefetched state.
      */
     abstract protected void doPrefetched();
-    
+
     /**
      * Does the work for the started state.
      */
     abstract protected void doStarted();
-    
+
     /**
-     * Adds a listener that wants to be notified about
-     * state changes of the player.
+     * Adds a listener that wants to be notified about state changes of the
+     * player.
+     *
+     * @param listener TODO
      */
     public void addChangeListener(ChangeListener listener) {
         listenerList.add(ChangeListener.class, listener);
     }
-    
+
     /**
      * Removes a listener.
+     *
+     * @param listener TODO
      */
     public void removeChangeListener(ChangeListener listener) {
         listenerList.remove(ChangeListener.class, listener);
     }
-    
+
     /**
      * Returns true when the target state of the player is equal to STARTED.
+     *
+     * @return TODO
      */
     public boolean isActive() {
         return getTargetState() == STARTED;

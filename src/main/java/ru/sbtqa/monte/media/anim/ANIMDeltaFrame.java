@@ -17,32 +17,32 @@ import ru.sbtqa.monte.media.image.BitmapImage;
  * <br> 1.0 1999-10-19
  */
 public class ANIMDeltaFrame
-        extends ANIMFrame {
+      extends ANIMFrame {
 
     private int leftBound, topBound, rightBound, bottomBound;
     private final static int //
-            ENCODING_ILBM = 0,
-            ENCODING_XOR_ILBM = 1,
-            ENCODING_LONG_DELTA = 2,
-            ENCODING_SHORT_DELTA = 3,
-            ENCODING_GENERALIZED_SHORTLONG_DELTA = 4,
-            ENCODING_BYTE_VERTICAL = 5,
-            ENCODING_VERTICAL_7_SHORT = 6,
-            ENCODING_VERTICAL_7_LONG = 7,
-            ENCODING_VERTICAL_8_SHORT = 8,
-            ENCODING_VERTICAL_8_LONG = 9,
-            ENCODING_J = 74;
+          ENCODING_ILBM = 0,
+          ENCODING_XOR_ILBM = 1,
+          ENCODING_LONG_DELTA = 2,
+          ENCODING_SHORT_DELTA = 3,
+          ENCODING_GENERALIZED_SHORTLONG_DELTA = 4,
+          ENCODING_BYTE_VERTICAL = 5,
+          ENCODING_VERTICAL_7_SHORT = 6,
+          ENCODING_VERTICAL_7_LONG = 7,
+          ENCODING_VERTICAL_8_SHORT = 8,
+          ENCODING_VERTICAL_8_LONG = 9,
+          ENCODING_J = 74;
     public final static int //
-            OP_Direct = 0,
-            OP_XOR = 1,
-            OP_LongDelta = 2,
-            OP_ShortDelta = 3,
-            OP_GeneralDelta = 4,
-            OP_ByteVertical = 5,
-            OP_StereoDelta = 6,
-            OP_Vertical7 = 7,
-            OP_Vertical8 = 8,
-            OP_J = 74;
+          OP_Direct = 0,
+          OP_XOR = 1,
+          OP_LongDelta = 2,
+          OP_ShortDelta = 3,
+          OP_GeneralDelta = 4,
+          OP_ByteVertical = 5,
+          OP_StereoDelta = 6,
+          OP_Vertical7 = 7,
+          OP_Vertical8 = 8,
+          OP_J = 74;
     /**
      * Wether we already printed a warning about a broken encoding.
      */
@@ -110,40 +110,36 @@ public class ANIMDeltaFrame
     /**
      * 2.2.1 Format for methods 2 & 3.
      *
-     *    This chunk is a basic data chunk used to hold the delta
-     *    compression data.  The minimum size of this chunk is 32 bytes
-     *    as the first 8 long-words are byte pointers into the chunk for
-     *    the data for each of up to 8 bitplanes.  The pointer for the
-     *    plane data starting immediately following these 8 pointers will
-     *    have a value of 32 as the data starts in the 33-rd byte of the
-     *    chunk (index value of 32 due to zero-base indexing).
-     * 
-     *    The data for a given plane consists of groups of data words.  In
-     *    Long Delta mode, these groups consist of both short and long
-     *    words - short words for offsets and numbers, and long words for
-     *    the actual data.  In Short Delta mode, the groups are identical
-     *    except data words are also shorts so all data is short words.
-     *    Each group consists of a starting word which is an offset.  If
-     *    the offset is positive then it indicates the increment in long
-     *    or short words (whichever is appropriate) through the bitplane.
-     *    In other words, if you were reconstructing the plane, you would
-     *    start a pointer (to shorts or longs depending on the mode) to
-     *    point to the first word of the bitplane.  Then the offset would
-     *    be added to it and the following data word would be placed at
-     *    that position.  Then the next offset would be added to the
-     *    pointer and the following data word would be placed at that
-     *    position.  And so on...  The data terminates with an offset
-     *    equal to 0xFFFF.
-     * 
-     *    A second interpretation is given if the offset is negative.  In
-     *    that case, the absolute value is the offset+2.  Then the 
-     *    following short-word indicates the number of data words that
-     *    follow.  Following that is the indicated number of contiguous
-     *    data words (longs or shorts depending on mode) which are to
-     *    be placed in contiguous locations of the bitplane.
-     * 
-     *    If there are no changed words in a given plane, then the pointer
-     *    in the first 32 bytes of the chunk is =0.
+     * This chunk is a basic data chunk used to hold the delta compression data.
+     * The minimum size of this chunk is 32 bytes as the first 8 long-words are
+     * byte pointers into the chunk for the data for each of up to 8 bitplanes.
+     * The pointer for the plane data starting immediately following these 8
+     * pointers will have a value of 32 as the data starts in the 33-rd byte of
+     * the chunk (index value of 32 due to zero-base indexing).
+     *
+     * The data for a given plane consists of groups of data words. In Long
+     * Delta mode, these groups consist of both short and long words - short
+     * words for offsets and numbers, and long words for the actual data. In
+     * Short Delta mode, the groups are identical except data words are also
+     * shorts so all data is short words. Each group consists of a starting word
+     * which is an offset. If the offset is positive then it indicates the
+     * increment in long or short words (whichever is appropriate) through the
+     * bitplane. In other words, if you were reconstructing the plane, you would
+     * start a pointer (to shorts or longs depending on the mode) to point to
+     * the first word of the bitplane. Then the offset would be added to it and
+     * the following data word would be placed at that position. Then the next
+     * offset would be added to the pointer and the following data word would be
+     * placed at that position. And so on... The data terminates with an offset
+     * equal to 0xFFFF.
+     *
+     * A second interpretation is given if the offset is negative. In that case,
+     * the absolute value is the offset+2. Then the following short-word
+     * indicates the number of data words that follow. Following that is the
+     * indicated number of contiguous data words (longs or shorts depending on
+     * mode) which are to be placed in contiguous locations of the bitplane.
+     *
+     * If there are no changed words in a given plane, then the pointer in the
+     * first 32 bytes of the chunk is =0.
      */
     private void decodeMethod2(BitmapImage bitmap, ANIMMovieTrack track) {
         throw new UnsupportedOperationException();
@@ -152,21 +148,20 @@ public class ANIMDeltaFrame
 
     /**
      * 2.2.2 Format for method 4.
-     *    
-     *    The DLTA chunk is modified slightly to have 16 long pointers at
-     *    the start.  The first 8 are as before - pointers to the start of
-     *    the data for each of the bitplanes (up to a theoretical max of 8
-     *    planes).  The next 8 are pointers to the start of the offset/numbers
-     *    data list.  If there is only one list of offset/numbers for all
-     *    planes, then the pointer to that list is repeated in all positions
-     *    so the playback code need not even be aware of it.  In fact, one
-     *    could get fancy and have some bitplanes share lists while others
-     *    have different lists, or no lists (the problems in these schemes
-     *    lie in the generation, not in the playback).
      *
-     *    The best way to show the use of this format is in a sample playback
-     *    routine.
-     * <pre>
+     * The DLTA chunk is modified slightly to have 16 long pointers at the
+     * start. The first 8 are as before - pointers to the start of the data for
+     * each of the bitplanes (up to a theoretical max of 8 planes). The next 8
+     * are pointers to the start of the offset/numbers data list. If there is
+     * only one list of offset/numbers for all planes, then the pointer to that
+     * list is repeated in all positions so the playback code need not even be
+     * aware of it. In fact, one could get fancy and have some bitplanes share
+     * lists while others have different lists, or no lists (the problems in
+     * these schemes lie in the generation, not in the playback).
+     *
+     * The best way to show the use of this format is in a sample playback
+     * routine.
+     * 
      *           SetDLTAshort(bm,deltaword)
      *           struct BitMap *bm;
      *           WORD *deltaword;
@@ -204,16 +199,13 @@ public class ANIMDeltaFrame
      *              }
      *              return(0);
      *           }
-     *</pre>
-     *    The above routine is for short word vertical compression with
-     *    run length compression.  The most efficient way to support 
-     *    the various options is to replicate this routine and make 
-     *    alterations for, say, long word or XOR.  The variable nw
-     *    indicates the number of words to skip to go down the vertical
-     *    column.  This one routine could easily handle horizontal
-     *    compression by simply setting nw=1.  For ultimate playback
-     *    speed, the core, at least, of this routine should be coded in
-     *    assembly language.
+     *  The above routine is for short word vertical compression with run
+     * length compression. The most efficient way to support the various options
+     * is to replicate this routine and make alterations for, say, long word or
+     * XOR. The variable nw indicates the number of words to skip to go down the
+     * vertical column. This one routine could easily handle horizontal
+     * compression by simply setting nw=1. For ultimate playback speed, the
+     * core, at least, of this routine should be coded in assembly language.
      */
     private void decodeMethod4(BitmapImage bitmap, ANIMMovieTrack track) {
         throw new UnsupportedOperationException();
@@ -223,43 +215,38 @@ public class ANIMDeltaFrame
     /**
      * 2.2.2 Format for method 5.
      *
-     *    In this method the same 16 pointers are used as in option 4.
-     *    The first 8 are pointers to the data for up to 8 planes.
-     *    The second set of 8 are not used but were retained for several
-     *    reasons.  First to be somewhat compatible with code for option
-     *    4 (although this has not proven to be of any benefit) and 
-     *    second, to allow extending the format for more bitplanes (code
-     *    has been written for up to 12 planes).  
+     * In this method the same 16 pointers are used as in option 4. The first 8
+     * are pointers to the data for up to 8 planes. The second set of 8 are not
+     * used but were retained for several reasons. First to be somewhat
+     * compatible with code for option 4 (although this has not proven to be of
+     * any benefit) and second, to allow extending the format for more bitplanes
+     * (code has been written for up to 12 planes).
      *
-     *    Compression/decompression is performed on a plane-by-plane basis.
-     *    For each plane, compression can be handled by the skip.c code
-     *    (provided Public Domain by Jim Kent) and decompression can be
-     *    handled by unvscomp.asm (also provided Public Domain by Jim Kent).
-     *    
-     *    Compression/decompression is performed on a plane-by-plane basis.
-     *    The following description of the method is taken directly from
-     *    Jim Kent's code with minor re-wording.  Please refer to Jim's
-     *    code (skip.c and unvscomp.asm) for more details:
+     * Compression/decompression is performed on a plane-by-plane basis. For
+     * each plane, compression can be handled by the skip.c code (provided
+     * Public Domain by Jim Kent) and decompression can be handled by
+     * unvscomp.asm (also provided Public Domain by Jim Kent).
      *
-     *           Each column of the bitplane is compressed separately.
-     *           A 320x200 bitplane would have 40 columns of 200 bytes each.
-     *           Each column starts with an op-count followed by a number
-     *           of ops.  If the op-count is zero, that's ok, it just means
-     *           there's no change in this column from the last frame.
-     *           The ops are of three classes, and followed by a varying
-     *           amount of data depending on which class:
-     *             1. Skip ops - this is a byte with the hi bit clear that
-     *                says how many rows to move the "dest" pointer forward,
-     *                ie to skip. It is non-zero.
-     *             2. Uniq ops - this is a byte with the hi bit set.  The hi
-     *                bit is masked down and the remainder is a count of the
-     *                number of bytes of data to copy literally.  It's of
-     *                course followed by the data to copy.
-     *             3. Same ops - this is a 0 byte followed by a count byte,
-     *                followed by a byte value to repeat count times.
-     *           Do bear in mind that the data is compressed vertically rather
-     *           than horizontally, so to get to the next byte in the destination
-     *           we add the number of bytes per row instead of one!
+     * Compression/decompression is performed on a plane-by-plane basis. The
+     * following description of the method is taken directly from Jim Kent's
+     * code with minor re-wording. Please refer to Jim's code (skip.c and
+     * unvscomp.asm) for more details:
+     *
+     * Each column of the bitplane is compressed separately. A 320x200 bitplane
+     * would have 40 columns of 200 bytes each. Each column starts with an
+     * op-count followed by a number of ops. If the op-count is zero, that's ok,
+     * it just means there's no change in this column from the last frame. The
+     * ops are of three classes, and followed by a varying amount of data
+     * depending on which class: 1. Skip ops - this is a byte with the hi bit
+     * clear that says how many rows to move the "dest" pointer forward, ie to
+     * skip. It is non-zero. 2. Uniq ops - this is a byte with the hi bit set.
+     * The hi bit is masked down and the remainder is a count of the number of
+     * bytes of data to copy literally. It's of course followed by the data to
+     * copy. 3. Same ops - this is a 0 byte followed by a count byte, followed
+     * by a byte value to repeat count times. Do bear in mind that the data is
+     * compressed vertically rather than horizontally, so to get to the next
+     * byte in the destination we add the number of bytes per row instead of
+     * one!
      */
     private void decodeByteVertical(BitmapImage bitmap, ANIMMovieTrack track) {
         int columns = 0;
@@ -283,9 +270,9 @@ public class ANIMDeltaFrame
 
             // iOp is the pointer (index) to the op-codes.
             iOp = ((data[i * 4] & 0xff) << 24)
-                    + ((data[i * 4 + 1] & 0xff) << 16)
-                    + ((data[i * 4 + 2] & 0xff) << 8)
-                    + (data[i * 4 + 3] & 0xff);
+                  + ((data[i * 4 + 1] & 0xff) << 16)
+                  + ((data[i * 4 + 2] & 0xff) << 8)
+                  + (data[i * 4 + 3] & 0xff);
             try {
                 if (iOp > 0) {
                     // Each column of the plane is coded on its own.
@@ -305,10 +292,8 @@ public class ANIMDeltaFrame
                             opCode = data[iOp];
                             if (opCode <= 0) {
                                 topBound = 0;
-                            } else {
-                                if (opCode < topBound) {
-                                    topBound = opCode;
-                                }
+                            } else if (opCode < topBound) {
+                                topBound = opCode;
                             }
 
                             if (isXOR) {
@@ -364,10 +349,8 @@ public class ANIMDeltaFrame
                                 if (bottom > bottomBound) {
                                     bottomBound = bottom;
                                 }
-                            } else {
-                                if (height - opCode > bottomBound) {
-                                    bottomBound = height - opCode;
-                                }
+                            } else if (height - opCode > bottomBound) {
+                                bottomBound = height - opCode;
                             }
                         }
                     }
@@ -405,9 +388,9 @@ public class ANIMDeltaFrame
 
             // iOp points to the Op-Codes.
             iOp = ((data[i * 4] & 0xff) << 24)
-                    + ((data[i * 4 + 1] & 0xff) << 16)
-                    + ((data[i * 4 + 2] & 0xff) << 8)
-                    + (data[i * 4 + 3] & 0xff);
+                  + ((data[i * 4 + 1] & 0xff) << 16)
+                  + ((data[i * 4 + 2] & 0xff) << 8)
+                  + (data[i * 4 + 3] & 0xff);
 
             if (iOp > 0) {
                 // Each column has its own Op-codes.
@@ -427,10 +410,8 @@ public class ANIMDeltaFrame
                         opCode = (data[iOp] << 8) | (data[iOp + 1] & 0xff);
                         if (opCode <= 0) {
                             topBound = 0;
-                        } else {
-                            if (opCode < topBound) {
-                                topBound = opCode;
-                            }
+                        } else if (opCode < topBound) {
+                            topBound = opCode;
                         }
 
                         for (; opCount > 0; opCount--) {
@@ -464,10 +445,8 @@ public class ANIMDeltaFrame
                             if (bottom > bottomBound) {
                                 bottomBound = bottom;
                             }
-                        } else {
-                            if (height - opCode > bottomBound) {
-                                bottomBound = height - opCode;
-                            }
+                        } else if (height - opCode > bottomBound) {
+                            bottomBound = height - opCode;
                         }
                     }
                 }
@@ -503,9 +482,9 @@ public class ANIMDeltaFrame
 
             // iOp points to the op-codes.
             iOp = ((data[i * 4] & 0xff) << 24)
-                    + ((data[i * 4 + 1] & 0xff) << 16)
-                    + ((data[i * 4 + 2] & 0xff) << 8)
-                    + (data[i * 4 + 3] & 0xff);
+                  + ((data[i * 4 + 1] & 0xff) << 16)
+                  + ((data[i * 4 + 2] & 0xff) << 8)
+                  + (data[i * 4 + 3] & 0xff);
 
             if (iOp > 0) {
                 // Decode each column of the plane separately.
@@ -514,9 +493,9 @@ public class ANIMDeltaFrame
                     // iPl points to the column in the bitmap.
                     iPl = columns + i * widthInBytes;
                     opCount = ((data[iOp++] & 0xff) << 24)
-                            + ((data[iOp++] & 0xff) << 16)
-                            + ((data[iOp++] & 0xff) << 8)
-                            + (data[iOp++] & 0xff);
+                          + ((data[iOp++] & 0xff) << 16)
+                          + ((data[iOp++] & 0xff) << 8)
+                          + (data[iOp++] & 0xff);
 
                     if (opCount > 0) {
                         if (columns < leftBound) {
@@ -526,22 +505,20 @@ public class ANIMDeltaFrame
                             rightBound = columns;
                         }
                         opCode = ((data[iOp] & 0xff) << 24)
-                                + ((data[iOp + 1] & 0xff) << 16)
-                                + ((data[iOp + 2] & 0xff) << 8)
-                                + (data[iOp + 3] & 0xff);
+                              + ((data[iOp + 1] & 0xff) << 16)
+                              + ((data[iOp + 2] & 0xff) << 8)
+                              + (data[iOp + 3] & 0xff);
                         if (opCode <= 0) {
                             topBound = 0;
-                        } else {
-                            if (opCode < topBound) {
-                                topBound = opCode;
-                            }
+                        } else if (opCode < topBound) {
+                            topBound = opCode;
                         }
 
                         for (; opCount > 0; opCount--) {
                             opCode = ((data[iOp++] & 0xff) << 24)
-                                    + ((data[iOp++] & 0xff) << 16)
-                                    + ((data[iOp++] & 0xff) << 8)
-                                    + (data[iOp++] & 0xff);
+                                  + ((data[iOp++] & 0xff) << 16)
+                                  + ((data[iOp++] & 0xff) << 8)
+                                  + (data[iOp++] & 0xff);
                             if (opCode > 0) { // Skip ops
                                 iPl += opCode * interleave;
                             } else if (opCode < 0) { // Uniq ops
@@ -555,9 +532,9 @@ public class ANIMDeltaFrame
                                 }
                             } else { // Repeat ops
                                 opCode = ((data[iOp++] & 0xff) << 24)
-                                        + ((data[iOp++] & 0xff) << 16)
-                                        + ((data[iOp++] & 0xff) << 8)
-                                        + (data[iOp++] & 0xff);
+                                      + ((data[iOp++] & 0xff) << 16)
+                                      + ((data[iOp++] & 0xff) << 8)
+                                      + (data[iOp++] & 0xff);
                                 if (opCode == 0) {
                                     return;
                                 } //throw new InterpretException("Error in Delta Chunk: copy bytes with count 0.");
@@ -580,10 +557,8 @@ public class ANIMDeltaFrame
                             if (bottom > bottomBound) {
                                 bottomBound = bottom;
                             }
-                        } else {
-                            if (height - opCode > bottomBound) {
-                                bottomBound = height - opCode;
-                            }
+                        } else if (height - opCode > bottomBound) {
+                            bottomBound = height - opCode;
                         }
                     }
                 }
@@ -615,14 +590,14 @@ public class ANIMDeltaFrame
 
         for (int i = 0; i < track.getNbPlanes(); i++) {
             iOp = ((data[i * 4] & 0xff) << 24)
-                    + ((data[i * 4 + 1] & 0xff) << 16)
-                    + ((data[i * 4 + 2] & 0xff) << 8)
-                    + (data[i * 4 + 3] & 0xff);
+                  + ((data[i * 4 + 1] & 0xff) << 16)
+                  + ((data[i * 4 + 2] & 0xff) << 8)
+                  + (data[i * 4 + 3] & 0xff);
 
             iData = ((data[i * 4 + 32] & 0xff) << 24)
-                    + ((data[i * 4 + 33] & 0xff) << 16)
-                    + ((data[i * 4 + 34] & 0xff) << 8)
-                    + (data[i * 4 + 35] & 0xff);
+                  + ((data[i * 4 + 33] & 0xff) << 16)
+                  + ((data[i * 4 + 34] & 0xff) << 8)
+                  + (data[i * 4 + 35] & 0xff);
 
             if (iOp > 0) {
                 for (columns = 0; columns < widthInBytes; columns += 2) {
@@ -639,10 +614,8 @@ public class ANIMDeltaFrame
                         opCode = data[iOp];
                         if (opCode <= 0) {
                             topBound = 0;
-                        } else {
-                            if (opCode < topBound) {
-                                topBound = opCode;
-                            }
+                        } else if (opCode < topBound) {
+                            topBound = opCode;
                         }
 
                         for (; opCount > 0; opCount--) {
@@ -676,10 +649,8 @@ public class ANIMDeltaFrame
                             if (bottom > bottomBound) {
                                 bottomBound = bottom;
                             }
-                        } else {
-                            if (height - opCode > bottomBound) {
-                                bottomBound = height - opCode;
-                            }
+                        } else if (height - opCode > bottomBound) {
+                            bottomBound = height - opCode;
                         }
                     }
                 }
@@ -713,14 +684,14 @@ public class ANIMDeltaFrame
 
         for (int i = 0; i < track.getNbPlanes(); i++) {
             iOp = ((data[i * 4] & 0xff) << 24)
-                    + ((data[i * 4 + 1] & 0xff) << 16)
-                    + ((data[i * 4 + 2] & 0xff) << 8)
-                    + (data[i * 4 + 3] & 0xff);
+                  + ((data[i * 4 + 1] & 0xff) << 16)
+                  + ((data[i * 4 + 2] & 0xff) << 8)
+                  + (data[i * 4 + 3] & 0xff);
 
             iData = ((data[i * 4 + 32] & 0xff) << 24)
-                    + ((data[i * 4 + 33] & 0xff) << 16)
-                    + ((data[i * 4 + 34] & 0xff) << 8)
-                    + (data[i * 4 + 35] & 0xff);
+                  + ((data[i * 4 + 33] & 0xff) << 16)
+                  + ((data[i * 4 + 34] & 0xff) << 8)
+                  + (data[i * 4 + 35] & 0xff);
 
             if (iOp > 0) {
                 for (columns = 0; columns < widthInBytes; columns += 4) {
@@ -738,10 +709,8 @@ public class ANIMDeltaFrame
                             opCode = data[iOp];
                             if (opCode <= 0) {
                                 topBound = 0;
-                            } else {
-                                if (opCode < topBound) {
-                                    topBound = opCode;
-                                }
+                            } else if (opCode < topBound) {
+                                topBound = opCode;
                             }
 
                             for (; opCount > 0; opCount--) {
@@ -781,10 +750,8 @@ public class ANIMDeltaFrame
                                 if (bottom > bottomBound) {
                                     bottomBound = bottom;
                                 }
-                            } else {
-                                if (height - opCode > bottomBound) {
-                                    bottomBound = height - opCode;
-                                }
+                            } else if (height - opCode > bottomBound) {
+                                bottomBound = height - opCode;
                             }
                         }
                     } catch (IndexOutOfBoundsException e) {
@@ -866,11 +833,13 @@ public class ANIMDeltaFrame
                 changeType = ((data[pos++] & 0xff) << 8) | ((data[pos++]) & 0xff);
 
                 switch (changeType) {
-                    case 0: /* End of DELTA */
+                    case 0:
+                        /* End of DELTA */
 
                         break decodingLoop;
 
-                    case 1: { /* Wall */
+                    case 1: {
+                        /* Wall */
 
                         // Read wall header
                         // struct {
@@ -898,8 +867,8 @@ public class ANIMDeltaFrame
                                 for (int z = 0; z < nbPlanes; z++) {
                                     for (int y = 0; y < ySize; y++) {
                                         int dest = z * widthInBytes * ySize
-                                                + y * widthInBytes
-                                                + realOffset;
+                                              + y * widthInBytes
+                                              + realOffset;
                                         planeBytes[dest] ^= data[pos++];
                                     }
                                 }
@@ -907,8 +876,8 @@ public class ANIMDeltaFrame
                                 for (int z = 0; z < nbPlanes; z++) {
                                     for (int y = 0; y < ySize; y++) {
                                         int dest = z * widthInBytes * ySize
-                                                + y * widthInBytes
-                                                + realOffset;
+                                              + y * widthInBytes
+                                              + realOffset;
                                         planeBytes[dest] = data[pos++];
                                     }
                                 }
@@ -922,7 +891,8 @@ public class ANIMDeltaFrame
                         }
                         break;
                     }
-                    case 2: { /* Pile */
+                    case 2: {
+                        /* Pile */
 
                         // Read Pile header
                         // struct {
@@ -953,8 +923,8 @@ public class ANIMDeltaFrame
                                     for (int y = 0; y < ySize; y++) {
                                         for (int x = 0; x < xSize; x++) {
                                             int dest = z * widthInBytes * ySize
-                                                    + y * widthInBytes
-                                                    + realOffset + x;
+                                                  + y * widthInBytes
+                                                  + realOffset + x;
                                             planeBytes[dest] ^= data[pos++];
                                         }
                                     }
@@ -964,8 +934,8 @@ public class ANIMDeltaFrame
                                     for (int y = 0; y < ySize; y++) {
                                         for (int x = 0; x < xSize; x++) {
                                             int dest = z * widthInBytes * ySize
-                                                    + y * widthInBytes
-                                                    + realOffset + x;
+                                                  + y * widthInBytes
+                                                  + realOffset + x;
                                             planeBytes[dest] = data[pos++];
                                         }
                                     }
@@ -1021,9 +991,11 @@ public class ANIMDeltaFrame
      * Returns true if the frame can be decoded over both the previous frame or
      * the subsequent frame. Bidirectional frames can be used efficiently for
      * forward and backward playing a movie.
-     * <p>
+     * 
      * All key frames are bidirectional. Delta frames which use an XOR OP-mode
      * are bidirectional as well.
+     *
+     * @return TODO
      */
     @Override
     public boolean isBidirectional() {

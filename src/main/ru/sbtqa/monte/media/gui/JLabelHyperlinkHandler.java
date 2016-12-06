@@ -21,12 +21,12 @@ import javax.swing.text.html.HTML;
 /**
  * {@code JLabelHyperlinkHandler} makes HTML hyperlinks in a {@code JLabel}
  * clickable.
- * <p>
+ * 
  * You can add an action listener to this handler to perform the desired action.
  * The {@code command} contains the content of the href attribute in the hyperlink.
- * <p>
+ * 
  * Example:
- * <pre>
+ * 
  * File f=new File(System.getProperty("user.home"));
  * JLabel l=new JLabel("&lt;html&gt;Click this &lt;a href="\""+
  *                      f.toURI();+
@@ -43,7 +43,7 @@ import javax.swing.text.html.HTML;
  *              }
  *      }
  * });
- * </pre>
+ * 
  * 
  * @author Werner Randelshofer
  * @version $Id: JLabelHyperlinkHandler.java 364 2016-11-09 19:54:25Z werner $

@@ -5,18 +5,18 @@
 
 /** Defines a framework for media processing and provides default implementations. 
  * 
- * <p><b>Warning:</b> This is work in progress. The framework and the classes 
- * are subject to substantial changes between releases.</p>
+ * <b>Warning:</b> This is work in progress. The framework and the classes 
+ * are subject to substantial changes between releases.
  * 
- * <p>The framework is defined by the following interfaces and classes.</p>
- * <ul>
- * <li>{@link org.monte.media.Player}</li>
- * <li>{@link org.monte.media.Format}</li>
- * <li>{@link org.monte.media.Codec}</li>
- * <li>{@link org.monte.media.Buffer}</li>
- * <li>{@link org.monte.media.MovieWriter}</li>
- * </ul>
+ * The framework is defined by the following interfaces and classes.
  * 
- * <p>Media writers follow the following design</p>
+ * {@link org.monte.media.Player}
+ * {@link org.monte.media.Format}
+ * {@link org.monte.media.Codec}
+ * {@link org.monte.media.Buffer}
+ * {@link org.monte.media.MovieWriter}
+ * 
+ * 
+ * Media writers follow the following design
  */
 package org.monte.media;

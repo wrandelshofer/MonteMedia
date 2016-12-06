@@ -26,9 +26,10 @@ import static ru.sbtqa.monte.media.quicktime.AbstractQuickTimeStream.States.REAL
 /**
  * This is the base class for low-level QuickTime stream IO.
  *
- * <p>FIXME - Separation between AbstractQuickTimeStream and
- * QuickTimeOutputStream is not clean. Move write methods in the track classes
- * down to QuickTimeOutputStream.</p>
+ * 
+ * FIXME - Separation between AbstractQuickTimeStream and QuickTimeOutputStream
+ * is not clean. Move write methods in the track classes down to
+ * QuickTimeOutputStream.
  *
  * @author Werner Randelshofer
  * @version 1.0 2011-03-15 Created.
@@ -126,58 +127,73 @@ public class AbstractQuickTimeStream {
      */
     protected States state = REALIZED;
 
-        public void setTrackEnabled(int track, boolean newValue) {
-            tracks.get(track).setEnabled(newValue);
-        }
-        public boolean isTrackEnabled(int track) {
-           return tracks.get(track).isEnabled();
-        }
-        public void setTrackInMovie(int track, boolean newValue) {
-            tracks.get(track).setInMovie(newValue);
-        }
-        public boolean isTrackInMovie(int track) {
-           return tracks.get(track).isInMovie();
-        }
-        public void setTrackInPreview(int track, boolean newValue) {
-            tracks.get(track).setInPreview(newValue);
-        }
-        public boolean isTrackInPreview(int track) {
-           return tracks.get(track).isInPreview();
-        }
-        public void setTrackInPoster(int track, boolean newValue) {
-            tracks.get(track).setInPoster(newValue);
-        }
-        public boolean isTrackInPoster(int track) {
-           return tracks.get(track).isInPoster();
-        }
+    public void setTrackEnabled(int track, boolean newValue) {
+        tracks.get(track).setEnabled(newValue);
+    }
+
+    public boolean isTrackEnabled(int track) {
+        return tracks.get(track).isEnabled();
+    }
+
+    public void setTrackInMovie(int track, boolean newValue) {
+        tracks.get(track).setInMovie(newValue);
+    }
+
+    public boolean isTrackInMovie(int track) {
+        return tracks.get(track).isInMovie();
+    }
+
+    public void setTrackInPreview(int track, boolean newValue) {
+        tracks.get(track).setInPreview(newValue);
+    }
+
+    public boolean isTrackInPreview(int track) {
+        return tracks.get(track).isInPreview();
+    }
+
+    public void setTrackInPoster(int track, boolean newValue) {
+        tracks.get(track).setInPoster(newValue);
+    }
+
+    public boolean isTrackInPoster(int track) {
+        return tracks.get(track).isInPoster();
+    }
+
     /**
-     * Gets the position relative to the beginning of the QuickTime stream. <p>
+     * Gets the position relative to the beginning of the QuickTime stream.
+     * 
      * Usually this value is equal to the stream position of the underlying
      * ImageOutputStream, but can be larger if the underlying stream already
      * contained data.
      *
      * @return The relative stream position.
-     * @throws IOException
+     * @throws IOException TODO
      */
     protected long getRelativeStreamPosition() throws IOException {
         return out.getStreamPosition() - streamOffset;
     }
 
     /**
-     * Seeks relative to the beginning of the QuickTime stream. <p> Usually this
-     * equal to seeking in the underlying ImageOutputStream, but can be
-     * different if the underlying stream already contained data.
+     * Seeks relative to the beginning of the QuickTime stream.
+     * 
+     * Usually this equal to seeking in the underlying ImageOutputStream, but
+     * can be different if the underlying stream already contained data.
      *
+     * @param newPosition TODO
+     * @throws java.io.IOException TODO
      */
     protected void seekRelative(long newPosition) throws IOException {
         out.seek(newPosition + streamOffset);
     }
 
     protected static int typeToInt(String str) {
-        int value = ((str.charAt(0) & 0xff) << 24) |//
-                ((str.charAt(1) & 0xff) << 16) | //
-                ((str.charAt(2) & 0xff) << 8) | //
-                (str.charAt(3) & 0xff);
+        int value = ((str.charAt(0) & 0xff) << 24)
+              |//
+              ((str.charAt(1) & 0xff) << 16)
+              | //
+              ((str.charAt(2) & 0xff) << 8)
+              | //
+              (str.charAt(3) & 0xff);
         return value;
     }
 
@@ -211,6 +227,7 @@ public class AbstractQuickTimeStream {
          *
          * @param type The type of the atom. A string with a length of 4
          * characters.
+         * @param offset TODO
          */
         public Atom(String type, long offset) {
             this.type = type;
@@ -219,6 +236,8 @@ public class AbstractQuickTimeStream {
 
         /**
          * Writes the atom to the ImageOutputStream and disposes it.
+         *
+         * @throws java.io.IOException TODO
          */
         public abstract void finish() throws IOException;
 
@@ -242,6 +261,7 @@ public class AbstractQuickTimeStream {
          * ImageOutputStream.
          *
          * @param type The type of the atom.
+         * @throws java.io.IOException TODO
          */
         public CompositeAtom(String type) throws IOException {
             super(type);
@@ -259,7 +279,7 @@ public class AbstractQuickTimeStream {
          * Writes the atom and all its children to the ImageOutputStream and
          * disposes of all resources held by the atom.
          *
-         * @throws java.io.IOException
+         * @throws java.io.IOException TODO
          */
         @Override
         public void finish() throws IOException {
@@ -305,6 +325,7 @@ public class AbstractQuickTimeStream {
          * ImageOutputStream.
          *
          * @param type The type name of the atom.
+         * @throws java.io.IOException TODO
          */
         public DataAtom(String type) throws IOException {
             super(type, getRelativeStreamPosition());
@@ -322,6 +343,8 @@ public class AbstractQuickTimeStream {
         /**
          * Returns the offset of this atom to the beginning of the random access
          * file
+         *
+         * @return TODO
          */
         public long getOffset() {
             return offset;
@@ -370,6 +393,7 @@ public class AbstractQuickTimeStream {
          * ImageOutputStream.
          *
          * @param type The type of the atom.
+         * @throws java.io.IOException TODO
          */
         public WideDataAtom(String type) throws IOException {
             super(type, getRelativeStreamPosition());
@@ -393,6 +417,8 @@ public class AbstractQuickTimeStream {
         /**
          * Returns the offset of this atom to the beginning of the random access
          * file
+         *
+         * @return TODO
          */
         public long getOffset() {
             return offset;
@@ -460,9 +486,13 @@ public class AbstractQuickTimeStream {
 
         /**
          * Returns true, if the samples was added to the group. If false is
-         * returned, the sample must be added to a new group. <p> A sample can
-         * only be added to a group, if the capacity of the group is not
-         * exceeded.
+         * returned, the sample must be added to a new group.
+         * 
+         * A sample can only be added to a group, if the capacity of the group
+         * is not exceeded.
+         *
+         * @param sample TODO
+         * @return TODO
          */
         protected boolean maybeAddSample(Sample sample) {
             if (sampleCount < maxSampleCount) {
@@ -475,9 +505,13 @@ public class AbstractQuickTimeStream {
 
         /**
          * Returns true, if the chunk was added to the group. If false is
-         * returned, the chunk must be added to a new group. <p> A chunk can
-         * only be added to a group, if the capacity of the group is not
-         * exceeded.
+         * returned, the chunk must be added to a new group.
+         * 
+         * A chunk can only be added to a group, if the capacity of the group is
+         * not exceeded.
+         *
+         * @param chunk TODO
+         * @return TODO
          */
         protected boolean maybeAddChunk(Chunk chunk) {
             if (sampleCount + chunk.sampleCount <= maxSampleCount) {
@@ -515,9 +549,9 @@ public class AbstractQuickTimeStream {
         /**
          * Creates a new sample.
          *
-         * @param duration
-         * @param offset
-         * @param length
+         * @param duration TODO
+         * @param offset TODO
+         * @param length TODO
          */
         public Sample(long duration, long offset, long length) {
             this.duration = duration;
@@ -541,10 +575,14 @@ public class AbstractQuickTimeStream {
 
         /**
          * Returns true, if the sample was added to the group. If false is
-         * returned, the sample must be added to a new group. <p> A sample can
-         * only be added to a TimeToSampleGroup, if it has the same duration as
-         * previously added samples, and if the capacity of the group is not
-         * exceeded.
+         * returned, the sample must be added to a new group.
+         * 
+         * A sample can only be added to a TimeToSampleGroup, if it has the same
+         * duration as previously added samples, and if the capacity of the
+         * group is not exceeded.
+         *
+         * @param sample TODO
+         * @return TODO
          */
         @Override
         public boolean maybeAddSample(Sample sample) {
@@ -564,6 +602,8 @@ public class AbstractQuickTimeStream {
 
         /**
          * Returns the duration that all samples in this group share.
+         *
+         * @return TODO
          */
         public long getSampleDuration() {
             return firstSample.duration;
@@ -585,10 +625,14 @@ public class AbstractQuickTimeStream {
 
         /**
          * Returns true, if the sample was added to the group. If false is
-         * returned, the sample must be added to a new group. <p> A sample can
-         * only be added to a SampleSizeGroup, if it has the same size as
-         * previously added samples, and if the capacity of the group is not
-         * exceeded.
+         * returned, the sample must be added to a new group.
+         * 
+         * A sample can only be added to a SampleSizeGroup, if it has the same
+         * size as previously added samples, and if the capacity of the group is
+         * not exceeded.
+         *
+         * @param sample TODO
+         * @return TODO
          */
         @Override
         public boolean maybeAddSample(Sample sample) {
@@ -608,6 +652,8 @@ public class AbstractQuickTimeStream {
 
         /**
          * Returns the length that all samples in this group share.
+         *
+         * @return TODO
          */
         public long getSampleLength() {
             return firstSample.length;
@@ -637,7 +683,9 @@ public class AbstractQuickTimeStream {
          * Creates a new Chunk.
          *
          * @param firstSample The first sample contained in this chunk.
+         * @param lastSample TODO
          * @param sampleDescriptionId The description Id of the sample.
+         * @param sampleCount TODO
          */
         public Chunk(Sample firstSample, Sample lastSample, int sampleCount, int sampleDescriptionId) {
             super(firstSample, lastSample, sampleCount);
@@ -646,15 +694,20 @@ public class AbstractQuickTimeStream {
 
         /**
          * Returns true, if the sample was added to the chunk. If false is
-         * returned, the sample must be added to a new chunk. <p> A sample can
-         * only be added to a chunk, if it has the same sample description Id as
-         * previously added samples, if the capacity of the chunk is not
-         * exceeded and if the sample offset is adjacent to the last sample in
-         * this chunk.
+         * returned, the sample must be added to a new chunk.
+         * 
+         * A sample can only be added to a chunk, if it has the same sample
+         * description Id as previously added samples, if the capacity of the
+         * chunk is not exceeded and if the sample offset is adjacent to the
+         * last sample in this chunk.
+         *
+         * @param sample TODO
+         * @param sampleDescriptionId TODO
+         * @return TODO
          */
         public boolean maybeAddSample(Sample sample, int sampleDescriptionId) {
             if (sampleDescriptionId == this.sampleDescriptionId
-                    && lastSample.offset + lastSample.length == sample.offset) {
+                  && lastSample.offset + lastSample.length == sample.offset) {
                 return super.maybeAddSample(sample);
             }
             return false;
@@ -663,7 +716,7 @@ public class AbstractQuickTimeStream {
         @Override
         public boolean maybeAddChunk(Chunk chunk) {
             if (sampleDescriptionId == chunk.sampleDescriptionId //
-                    && lastSample.offset + lastSample.length == chunk.firstSample.offset) {
+                  && lastSample.offset + lastSample.length == chunk.firstSample.offset) {
                 return super.maybeAddChunk(chunk);
             }
             return false;
@@ -671,6 +724,8 @@ public class AbstractQuickTimeStream {
 
         /**
          * Returns the offset of the chunk in the movie file.
+         *
+         * @return TODO
          */
         public long getChunkOffset() {
             return firstSample.offset;
@@ -762,14 +817,14 @@ public class AbstractQuickTimeStream {
             0, 0, 1
         };
         protected double width, height;
-        
+
         private final static int TrackEnable = 0x1; // enabled track
         private final static int TrackInMovie = 0x2;// track in playback
         private final static int TrackInPreview = 0x4; // track in preview
         private final static int TrackInPoster = 0x8; // track in posterTrackEnable = 0x1, // enabled track
-       
+
         /**
-         * <pre>
+         * 
          * // Enumeration for track header flags
          * set {
          * TrackEnable = 0x1, // enabled track
@@ -777,39 +832,46 @@ public class AbstractQuickTimeStream {
          * TrackInPreview = 0x4, // track in preview
          * TrackInPoster = 0x8 // track in poster
          * } TrackHeaderFlags;
-         * </pre>
+         * 
          */
-        protected int headerFlags=TrackEnable|TrackInMovie|TrackInPreview|TrackInPoster;
+        protected int headerFlags = TrackEnable | TrackInMovie | TrackInPreview | TrackInPoster;
 
         public Track(MediaType mediaType) {
             this.mediaType = mediaType;
         }
 
         public void setEnabled(boolean newValue) {
-           headerFlags = (newValue) ? headerFlags | TrackEnable : headerFlags & (0xff ^ TrackEnable);
+            headerFlags = (newValue) ? headerFlags | TrackEnable : headerFlags & (0xff ^ TrackEnable);
         }
+
         public boolean isEnabled() {
-           return (headerFlags & TrackEnable) != 0;
+            return (headerFlags & TrackEnable) != 0;
         }
+
         public void setInMovie(boolean newValue) {
-           headerFlags = (newValue) ? headerFlags | TrackInMovie : headerFlags & (0xff ^ TrackInMovie);
+            headerFlags = (newValue) ? headerFlags | TrackInMovie : headerFlags & (0xff ^ TrackInMovie);
         }
+
         public boolean isInMovie() {
-           return (headerFlags & TrackInPreview) != 0;
+            return (headerFlags & TrackInPreview) != 0;
         }
+
         public void setInPreview(boolean newValue) {
-           headerFlags = (newValue) ? headerFlags | TrackInPreview : headerFlags & (0xff ^ TrackInPreview);
+            headerFlags = (newValue) ? headerFlags | TrackInPreview : headerFlags & (0xff ^ TrackInPreview);
         }
+
         public boolean isInPreview() {
-           return (headerFlags & TrackInPreview) != 0;
+            return (headerFlags & TrackInPreview) != 0;
         }
+
         public void setInPoster(boolean newValue) {
-           headerFlags = (newValue) ? headerFlags | TrackInPoster : headerFlags & (0xff ^ TrackInPoster);
+            headerFlags = (newValue) ? headerFlags | TrackInPoster : headerFlags & (0xff ^ TrackInPoster);
         }
+
         public boolean isInPoster() {
-           return (headerFlags & TrackInPoster) != 0;
+            return (headerFlags & TrackInPoster) != 0;
         }
-       
+
         public void addSample(Sample sample, int sampleDescriptionId, boolean isSyncSample) {
             mediaDuration += sample.duration;
             sampleCount++;
@@ -820,26 +882,24 @@ public class AbstractQuickTimeStream {
                 if (syncSamples != null) {
                     syncSamples.add(sampleCount);
                 }
-            } else {
-                if (syncSamples == null) {
-                    syncSamples = new ArrayList<>();
-                    for (long i = 1; i < sampleCount; i++) {
-                        syncSamples.add(i);
-                    }
+            } else if (syncSamples == null) {
+                syncSamples = new ArrayList<>();
+                for (long i = 1; i < sampleCount; i++) {
+                    syncSamples.add(i);
                 }
             }
 
             //
             if (timeToSamples.isEmpty()//
-                    || !timeToSamples.get(timeToSamples.size() - 1).maybeAddSample(sample)) {
+                  || !timeToSamples.get(timeToSamples.size() - 1).maybeAddSample(sample)) {
                 timeToSamples.add(new TimeToSampleGroup(sample));
             }
             if (sampleSizes.isEmpty()//
-                    || !sampleSizes.get(sampleSizes.size() - 1).maybeAddSample(sample)) {
+                  || !sampleSizes.get(sampleSizes.size() - 1).maybeAddSample(sample)) {
                 sampleSizes.add(new SampleSizeGroup(sample));
             }
             if (chunks.isEmpty()//
-                    || !chunks.get(chunks.size() - 1).maybeAddSample(sample, sampleDescriptionId)) {
+                  || !chunks.get(chunks.size() - 1).maybeAddSample(sample, sampleDescriptionId)) {
                 chunks.add(new Chunk(sample, sampleDescriptionId));
             }
         }
@@ -856,26 +916,24 @@ public class AbstractQuickTimeStream {
                         syncSamples.add(i);
                     }
                 }
-            } else {
-                if (syncSamples == null) {
-                    syncSamples = new ArrayList<>();
-                    for (long i = 1; i < sampleCount; i++) {
-                        syncSamples.add(i);
-                    }
+            } else if (syncSamples == null) {
+                syncSamples = new ArrayList<>();
+                for (long i = 1; i < sampleCount; i++) {
+                    syncSamples.add(i);
                 }
             }
 
             //
             if (timeToSamples.isEmpty()//
-                    || !timeToSamples.get(timeToSamples.size() - 1).maybeAddChunk(chunk)) {
+                  || !timeToSamples.get(timeToSamples.size() - 1).maybeAddChunk(chunk)) {
                 timeToSamples.add(new TimeToSampleGroup(chunk));
             }
             if (sampleSizes.isEmpty()//
-                    || !sampleSizes.get(sampleSizes.size() - 1).maybeAddChunk(chunk)) {
+                  || !sampleSizes.get(sampleSizes.size() - 1).maybeAddChunk(chunk)) {
                 sampleSizes.add(new SampleSizeGroup(chunk));
             }
             if (chunks.isEmpty()//
-                    || !chunks.get(chunks.size() - 1).maybeAddChunk(chunk)) {
+                  || !chunks.get(chunks.size() - 1).maybeAddChunk(chunk)) {
                 chunks.add(chunk);
             }
         }
@@ -892,6 +950,7 @@ public class AbstractQuickTimeStream {
          * Gets the track duration in the movie time scale.
          *
          * @param movieTimeScale The time scale of the movie.
+         * @return TODO
          */
         public long getTrackDuration(long movieTimeScale) {
             if (editList == null || editList.length == 0) {
@@ -982,7 +1041,6 @@ public class AbstractQuickTimeStream {
             // A 32-bit integer indicating the format of the stored data.
             // This depends on the media type, but is usually either the
             // compression format or the media type.
-
             d.write(new byte[6]); // sampleDescriptionTable[0].reserved
             // Six bytes that must be set to 0.
 
@@ -996,7 +1054,6 @@ public class AbstractQuickTimeStream {
             // ------------------------
             // The format of the following fields is described here:
             // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap3/chapter_4_section_2.html#//apple_ref/doc/uid/TP40000939-CH205-BBCGICBJ
-
             d.writeShort(0); // sampleDescriptionTable.videoSampleDescription.version
             // A 16-bit integer indicating the version number of the
             // compressed data. This is set to 0, unless a compressor has
@@ -1060,8 +1117,6 @@ public class AbstractQuickTimeStream {
             // for the specified depth. Depths of 16, 24, and 32 have no
             // color table.
 
-
-
             if (videoColorTable != null) {
                 writeColorTableAtom(leaf);
             }
@@ -1074,8 +1129,8 @@ public class AbstractQuickTimeStream {
          * 'ctab'. The color table atom contains a Macintosh color table data
          * structure.
          *
-         * @param stblAtom
-         * @throws IOException
+         * @param stblAtom TODO
+         * @throws IOException TODO
          */
         protected void writeColorTableAtom(CompositeAtom stblAtom) throws IOException {
             DataAtom leaf;
@@ -1246,7 +1301,6 @@ public class AbstractQuickTimeStream {
 
             // Sound Sample Description (Version 0) 20 bytes
             // ------------------------
-
             d.writeUShort(1); // version
             // A 16-bit integer that holds the sample description version (currently 0 or 1).
 
@@ -1331,9 +1385,10 @@ public class AbstractQuickTimeStream {
      * An {@code Edit} define the portions of the media that are to be used to
      * build up a track for a movie. The edits themselves are stored in an edit
      * list table, which consists of time offset and duration values for each
-     * segment. <p> In the absence of an edit list, the presentation of the
-     * track starts immediately. An empty edit is used to offset the start time
-     * of a track.
+     * segment.
+     * 
+     * In the absence of an edit list, the presentation of the track starts
+     * immediately. An empty edit is used to offset the start time of a track.
      */
     public static class Edit {
 
@@ -1382,8 +1437,10 @@ public class AbstractQuickTimeStream {
         }
 
         /**
-         * Creates an edit. <p> Use this constructor only if you want to compute
-         * the fixed point media rate by yourself.
+         * Creates an edit.
+         * 
+         * Use this constructor only if you want to compute the fixed point
+         * media rate by yourself.
          *
          * @param trackDuration Duration of this edit in the movie's time scale.
          * @param mediaTime Start time of this edit in the media's time scale.

@@ -117,7 +117,7 @@ public abstract class SEQFrame {
     /** Returns true if the frame can be decoded over both the previous frame
      * or the subsequent frame. Bidirectional frames can be used efficiently
      * for forward and backward playing a movie.
-     * <p>
+     * 
      * All key frames are bidirectional. Delta frames which use an XOR OP-mode
      * are bidirectional as well.
      */

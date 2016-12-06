@@ -30,7 +30,7 @@ public class ImageInputStreamAdapter extends InputStream {
      * <code>-1</code> is returned. This method blocks until input data
      * is available, the end of the stream is detected, or an exception
      * is thrown.
-     * <p>
+     * 
      * This method
      * simply performs <code>in.read()</code> and returns the result.
      *
@@ -49,7 +49,7 @@ public class ImageInputStreamAdapter extends InputStream {
      * into an array of bytes. If <code>len</code> is not zero, the method
      * blocks until some input is available; otherwise, no
      * bytes are read and <code>0</code> is returned.
-     * <p>
+     * 
      * This method simply performs <code>in.read(b, off, len)</code>
      * and returns the result.
      *
@@ -73,7 +73,7 @@ public class ImageInputStreamAdapter extends InputStream {
 
     /**
      * {@inheritDoc}
-     * <p>
+     * 
      * This method simply performs <code>in.skip(n)</code>.
      */
     @Override
@@ -87,7 +87,7 @@ public class ImageInputStreamAdapter extends InputStream {
      * caller of a method for this input stream. The next caller might be
      * the same thread or another thread.  A single read or skip of this
      * many bytes will not block, but may read or skip fewer bytes.
-     * <p>
+     * 
      * This method returns the result of {@link #in in}.available().
      *
      * @return     an estimate of the number of bytes that can be read (or skipped
@@ -119,11 +119,11 @@ public class ImageInputStreamAdapter extends InputStream {
      * Marks the current position in this input stream. A subsequent
      * call to the <code>reset</code> method repositions this stream at
      * the last marked position so that subsequent reads re-read the same bytes.
-     * <p>
+     * 
      * The <code>readlimit</code> argument tells this input stream to
      * allow that many bytes to be read before the mark position gets
      * invalidated.
-     * <p>
+     * 
      * This method simply performs <code>in.mark(readlimit)</code>.
      *
      * @param   readlimit   the maximum limit of bytes that can be read before
@@ -139,10 +139,10 @@ public class ImageInputStreamAdapter extends InputStream {
     /**
      * Repositions this stream to the position at the time the
      * <code>mark</code> method was last called on this input stream.
-     * <p>
+     * 
      * This method
      * simply performs <code>in.reset()</code>.
-     * <p>
+     * 
      * Stream marks are intended to be used in
      * situations where you need to read ahead a little to see what's in
      * the stream. Often this is most easily done by invoking some

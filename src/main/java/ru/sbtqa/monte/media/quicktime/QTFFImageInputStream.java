@@ -21,16 +21,19 @@ import ru.sbtqa.monte.media.io.FilterImageInputStream;
  * @version 1.0 2013-03-22 Created.
  */
 public class QTFFImageInputStream extends FilterImageInputStream {
+
     protected static final long MAC_TIMESTAMP_EPOCH = new GregorianCalendar(1904, JANUARY, 1).getTimeInMillis();
 
     public QTFFImageInputStream(ImageInputStream in) {
         super(in);
         setByteOrder(BIG_ENDIAN);
     }
-   /**
+
+    /**
      * Reads a 32-bit Mac timestamp (seconds since 1902).
+     *
      * @return date
-     * @throws java.io.IOException
+     * @throws java.io.IOException TODO
      */
     public Date readMacTimestamp() throws IOException {
         long timestamp = ((long) readInt()) & 0xffffffffL;
@@ -39,6 +42,9 @@ public class QTFFImageInputStream extends FilterImageInputStream {
 
     /**
      * Reads 32-bit fixed-point number divided as 16.16.
+     *
+     * @return TODO
+     * @throws java.io.IOException TODO
      */
     public double readFixed16D16() throws IOException {
         int wholePart = readUnsignedShort();
@@ -49,6 +55,9 @@ public class QTFFImageInputStream extends FilterImageInputStream {
 
     /**
      * Reads 32-bit fixed-point number divided as 2.30.
+     *
+     * @return TODO
+     * @throws java.io.IOException TODO
      */
     public double readFixed2D30() throws IOException {
         int fixed = readInt();
@@ -60,6 +69,9 @@ public class QTFFImageInputStream extends FilterImageInputStream {
 
     /**
      * Reads 16-bit fixed-point number divided as 8.8.
+     *
+     * @return TODO
+     * @throws java.io.IOException TODO
      */
     public double readFixed8D8() throws IOException {
         int fixed = readUnsignedShort();
@@ -72,7 +84,7 @@ public class QTFFImageInputStream extends FilterImageInputStream {
     public String readType() throws IOException {
         readFully(byteBuf, 0, 4);
         try {
-            return new String(byteBuf,0,4, "ASCII");
+            return new String(byteBuf, 0, 4, "ASCII");
         } catch (UnsupportedEncodingException ex) {
             InternalError ie = new InternalError("ASCII not supported");
             ie.initCause(ex);
@@ -89,33 +101,41 @@ public class QTFFImageInputStream extends FilterImageInputStream {
         if (size < 0) {
             return "";
         }
-        byte[] b = (size<=byteBuf.length)?byteBuf: new byte[size];
-        readFully(b,0,size);
+        byte[] b = (size <= byteBuf.length) ? byteBuf : new byte[size];
+        readFully(b, 0, size);
 
         try {
-            return new String(b,0,size, "ASCII");
+            return new String(b, 0, size, "ASCII");
         } catch (UnsupportedEncodingException ex) {
             InternalError ie = new InternalError("ASCII not supported");
             ie.initCause(ex);
             throw ie;
         }
     }
-    /** Reads a Pascal String which is padded to a fixed size. */
+
+    /**
+     * Reads a Pascal String which is padded to a fixed size.
+     *
+     * @param fixedSize TODO
+     * @return TODO
+     * @throws java.io.IOException TODO
+     */
     public String readPString(int fixedSize) throws IOException {
-        int remaining=fixedSize;
-        int size = readUnsignedByte(); remaining--;
-        if (size < 0||size>remaining) {
+        int remaining = fixedSize;
+        int size = readUnsignedByte();
+        remaining--;
+        if (size < 0 || size > remaining) {
             skipBytes(remaining);
             return "";
         }
-        byte[] b = (size<=byteBuf.length)?byteBuf: new byte[size];
-        readFully(b,0,size);
-        if (remaining-size>0) {
-            skipBytes(remaining-size);
+        byte[] b = (size <= byteBuf.length) ? byteBuf : new byte[size];
+        readFully(b, 0, size);
+        if (remaining - size > 0) {
+            skipBytes(remaining - size);
         }
 
         try {
-            return new String(b, 0,size,"ASCII");
+            return new String(b, 0, size, "ASCII");
         } catch (UnsupportedEncodingException ex) {
             InternalError ie = new InternalError("ASCII not supported");
             ie.initCause(ex);
@@ -125,16 +145,17 @@ public class QTFFImageInputStream extends FilterImageInputStream {
 
     public int readUnsignedBCD4() throws IOException {
         readFully(byteBuf, 0, 2);
-        int value=min(9,(byteBuf[0]>>>4)&0x0f)*1000//
-                +min(9,(byteBuf[1]>>>0)&0x0f)*100//
-                +min(9,(byteBuf[2]>>>0)&0x0f)*10//
-                +min(9,(byteBuf[2]>>>0)&0x0f)*1;
+        int value = min(9, (byteBuf[0] >>> 4) & 0x0f) * 1000//
+              + min(9, (byteBuf[1] >>> 0) & 0x0f) * 100//
+              + min(9, (byteBuf[2] >>> 0) & 0x0f) * 10//
+              + min(9, (byteBuf[2] >>> 0) & 0x0f) * 1;
         return value;
     }
+
     public int readUnsignedBCD2() throws IOException {
         readFully(byteBuf, 0, 1);
-        int value=min(9,(byteBuf[2]>>>0)&0x0f)*10//
-                +min(9,(byteBuf[2]>>>0)&0x0f)*1;
+        int value = min(9, (byteBuf[2] >>> 0) & 0x0f) * 10//
+              + min(9, (byteBuf[2] >>> 0) & 0x0f) * 1;
         return value;
     }
 }

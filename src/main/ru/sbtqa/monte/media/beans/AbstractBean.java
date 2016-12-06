@@ -7,7 +7,7 @@ package org.monte.media.beans;
 import java.beans.*;
 
 /**
- * Abstract class for models that have to support property change listeners.<p>
+ * Abstract class for models that have to support property change listeners.
  * Implements the methods required for adding and removing property change
  * listeners.
  *

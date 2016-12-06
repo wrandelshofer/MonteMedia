@@ -15,11 +15,11 @@ import java.io.File;
 
 /**
  * Renders the following test animation sequence:
- * <p>
+ * 
  * An all blue image. Each frame draws a new red pixel and overwrites
  * the previously drawn red pixel with white. The pixel is drawn on
  * the corners of a square.
- * <p>
+ * 
  * The animation sequence is written into a movie file.
  *
  * @author Werner Randelshofer

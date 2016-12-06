@@ -21,9 +21,9 @@ import static org.monte.media.FormatKeys.*;
 /**
  * This is the base class for low-level QuickTime stream IO.
  *
- * <p>FIXME - Separation between AbstractQuickTimeStream and
+ * FIXME - Separation between AbstractQuickTimeStream and
  * QuickTimeOutputStream is not clean. Move write methods in the track classes
- * down to QuickTimeOutputStream.</p>
+ * down to QuickTimeOutputStream.
  *
  * @author Werner Randelshofer
  * @version 1.0 2011-03-15 Created.
@@ -146,20 +146,20 @@ public class AbstractQuickTimeStream {
            return tracks.get(track).isInPoster();
         }
     /**
-     * Gets the position relative to the beginning of the QuickTime stream. <p>
+     * Gets the position relative to the beginning of the QuickTime stream. 
      * Usually this value is equal to the stream position of the underlying
      * ImageOutputStream, but can be larger if the underlying stream already
      * contained data.
      *
      * @return The relative stream position.
-     * @throws IOException
+     * @throws IOException TODO
      */
     protected long getRelativeStreamPosition() throws IOException {
         return out.getStreamPosition() - streamOffset;
     }
 
     /**
-     * Seeks relative to the beginning of the QuickTime stream. <p> Usually this
+     * Seeks relative to the beginning of the QuickTime stream.  Usually this
      * equal to seeking in the underlying ImageOutputStream, but can be
      * different if the underlying stream already contained data.
      *
@@ -254,7 +254,7 @@ public class AbstractQuickTimeStream {
          * Writes the atom and all its children to the ImageOutputStream and
          * disposes of all resources held by the atom.
          *
-         * @throws java.io.IOException
+         * @throws java.io.IOException TODO
          */
         @Override
         public void finish() throws IOException {
@@ -455,7 +455,7 @@ public class AbstractQuickTimeStream {
 
         /**
          * Returns true, if the samples was added to the group. If false is
-         * returned, the sample must be added to a new group. <p> A sample can
+         * returned, the sample must be added to a new group.  A sample can
          * only be added to a group, if the capacity of the group is not
          * exceeded.
          */
@@ -470,7 +470,7 @@ public class AbstractQuickTimeStream {
 
         /**
          * Returns true, if the chunk was added to the group. If false is
-         * returned, the chunk must be added to a new group. <p> A chunk can
+         * returned, the chunk must be added to a new group.  A chunk can
          * only be added to a group, if the capacity of the group is not
          * exceeded.
          */
@@ -510,9 +510,9 @@ public class AbstractQuickTimeStream {
         /**
          * Creates a new sample.
          *
-         * @param duration
-         * @param offset
-         * @param length
+         * @param duration TODO
+         * @param offset TODO
+         * @param length TODO
          */
         public Sample(long duration, long offset, long length) {
             this.duration = duration;
@@ -536,7 +536,7 @@ public class AbstractQuickTimeStream {
 
         /**
          * Returns true, if the sample was added to the group. If false is
-         * returned, the sample must be added to a new group. <p> A sample can
+         * returned, the sample must be added to a new group.  A sample can
          * only be added to a TimeToSampleGroup, if it has the same duration as
          * previously added samples, and if the capacity of the group is not
          * exceeded.
@@ -580,7 +580,7 @@ public class AbstractQuickTimeStream {
 
         /**
          * Returns true, if the sample was added to the group. If false is
-         * returned, the sample must be added to a new group. <p> A sample can
+         * returned, the sample must be added to a new group.  A sample can
          * only be added to a SampleSizeGroup, if it has the same size as
          * previously added samples, and if the capacity of the group is not
          * exceeded.
@@ -641,7 +641,7 @@ public class AbstractQuickTimeStream {
 
         /**
          * Returns true, if the sample was added to the chunk. If false is
-         * returned, the sample must be added to a new chunk. <p> A sample can
+         * returned, the sample must be added to a new chunk.  A sample can
          * only be added to a chunk, if it has the same sample description Id as
          * previously added samples, if the capacity of the chunk is not
          * exceeded and if the sample offset is adjacent to the last sample in
@@ -764,7 +764,7 @@ public class AbstractQuickTimeStream {
         private final static int TrackInPoster = 0x8; // track in posterTrackEnable = 0x1, // enabled track
        
         /**
-         * <pre>
+         * 
          * // Enumeration for track header flags
          * set {
          * TrackEnable = 0x1, // enabled track
@@ -772,7 +772,7 @@ public class AbstractQuickTimeStream {
          * TrackInPreview = 0x4, // track in preview
          * TrackInPoster = 0x8 // track in poster
          * } TrackHeaderFlags;
-         * </pre>
+         * 
          */
         protected int headerFlags=TrackEnable|TrackInMovie|TrackInPreview|TrackInPoster;
 
@@ -1069,8 +1069,8 @@ public class AbstractQuickTimeStream {
          * 'ctab'. The color table atom contains a Macintosh color table data
          * structure.
          *
-         * @param stblAtom
-         * @throws IOException
+         * @param stblAtom TODO
+         * @throws IOException TODO
          */
         protected void writeColorTableAtom(CompositeAtom stblAtom) throws IOException {
             DataAtom leaf;
@@ -1326,7 +1326,7 @@ public class AbstractQuickTimeStream {
      * An {@code Edit} define the portions of the media that are to be used to
      * build up a track for a movie. The edits themselves are stored in an edit
      * list table, which consists of time offset and duration values for each
-     * segment. <p> In the absence of an edit list, the presentation of the
+     * segment.  In the absence of an edit list, the presentation of the
      * track starts immediately. An empty edit is used to offset the start time
      * of a track.
      */
@@ -1377,7 +1377,7 @@ public class AbstractQuickTimeStream {
         }
 
         /**
-         * Creates an edit. <p> Use this constructor only if you want to compute
+         * Creates an edit.  Use this constructor only if you want to compute
          * the fixed point media rate by yourself.
          *
          * @param trackDuration Duration of this edit in the movie's time scale.

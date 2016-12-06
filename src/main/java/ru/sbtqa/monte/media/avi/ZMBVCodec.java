@@ -23,15 +23,14 @@ import ru.sbtqa.monte.media.Format;
 import ru.sbtqa.monte.media.FormatKeys.MediaType;
 import static ru.sbtqa.monte.media.VideoFormatKeys.*;
 
-
 /**
  * Implements the DosBox Capture Codec {@code "ZMBV"}.
- * <p>
- * This codec currently only supports decoding from the file format into
- * a {@code BufferedImage}. Encoding support may be added in the future.
- * <p>
+ * 
+ * This codec currently only supports decoding from the file format into a
+ * {@code BufferedImage}. Encoding support may be added in the future.
+ * 
  * For details seee {@link ZMBVCodecCore}.
- * </p>
+ * 
  *
  * @author Werner Randelshofer
  * @version $Id: ZMBVCodec.java 364 2016-11-09 19:54:25Z werner $
@@ -44,15 +43,16 @@ public class ZMBVCodec extends AbstractVideoCodec {
 
     public ZMBVCodec() {
         super(new Format[]{
-                    new Format(MediaTypeKey, MediaType.VIDEO, 
-                    EncodingKey, ENCODING_AVI_DOSBOX_SCREEN_CAPTURE, DataClassKey, byte[].class, FixedFrameRateKey, true), //
-                },
-                new Format[]{
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, 
-                            EncodingKey, ENCODING_BUFFERED_IMAGE, FixedFrameRateKey, true), //
-                });
+            new Format(MediaTypeKey, MediaType.VIDEO,
+            EncodingKey, ENCODING_AVI_DOSBOX_SCREEN_CAPTURE, DataClassKey, byte[].class, FixedFrameRateKey, true), //
+        },
+              new Format[]{
+                  new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
+                        EncodingKey, ENCODING_BUFFERED_IMAGE, FixedFrameRateKey, true), //
+              });
         name = "ZMBV Codec";
     }
+
     @Override
     public Format setOutputFormat(Format f) {
         super.setOutputFormat(f);
@@ -66,12 +66,12 @@ public class ZMBVCodec extends AbstractVideoCodec {
         }
         return this.outputFormat;
     }
-    
 
     @Override
     public int process(Buffer in, Buffer out) {
-        return decode(in,out);
+        return decode(in, out);
     }
+
     public int decode(Buffer in, Buffer out) {
         out.setMetaTo(in);
         if (in.isFlag(DISCARD)) {
@@ -150,8 +150,9 @@ public class ZMBVCodec extends AbstractVideoCodec {
                 throw new UnsupportedOperationException("Unsupported depth:" + depth);
         }
 
-        Object swap=oldPixels;
-        oldPixels=newPixels; newPixels=swap;
+        Object swap = oldPixels;
+        oldPixels = newPixels;
+        newPixels = swap;
         out.setFlag(KEYFRAME, isKeyframe);
 
         out.data = img;
@@ -163,7 +164,7 @@ public class ZMBVCodec extends AbstractVideoCodec {
         private ColorModel colorModel;
 
         public MyBufferedImage(ColorModel cm, WritableRaster raster, boolean isRasterPremultiplied) {
-            super(cm, raster, isRasterPremultiplied, new Hashtable<Object,Object>());
+            super(cm, raster, isRasterPremultiplied, new Hashtable<Object, Object>());
             colorModel = cm;
         }
 

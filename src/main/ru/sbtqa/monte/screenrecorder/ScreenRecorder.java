@@ -64,13 +64,13 @@ import org.monte.media.math.Rational;
 import org.monte.media.quicktime.QuickTimeWriter;
 
 /**
- * A screen recorder written in pure Java. <p> Captures the screen, the mouse
- * cursor and audio. <p> This class records mouse clicks occurring on other Java
+ * A screen recorder written in pure Java.  Captures the screen, the mouse
+ * cursor and audio.  This class records mouse clicks occurring on other Java
  * Windows running in the same JVM. Mouse clicks occurring in other JVM's and
  * other processes are not recorded. This ability is useful for performing
- * in-JVM recordings of an application that is being tested. <p> This recorder
+ * in-JVM recordings of an application that is being tested.  This recorder
  * uses four threads. Three capture threads for screen, mouse cursor and audio,
- * and one output thread for the movie writer. <p> FIXME - This class is a
+ * and one output thread for the movie writer.  FIXME - This class is a
  * horrible mess.
  *
  * @author Werner Randelshofer
@@ -417,14 +417,14 @@ public class ScreenRecorder extends AbstractStateModel {
     }
 
     /**
-     * Creates a file for recording the movie. <p> This implementation creates a
+     * Creates a file for recording the movie.  This implementation creates a
      * file in the users "Video" folder on Windows, or in the users "Movies"
-     * folders on Mac OS X. <p> You can override this method, if you would like
+     * folders on Mac OS X.  You can override this method, if you would like
      * to create a movie file at a different location.
      *
-     * @param fileFormat
+     * @param fileFormat TODO
      * @return the file
-     * @throws IOException
+     * @throws IOException TODO
      */
     protected File createMovieFile(Format fileFormat) throws IOException {
         if (!movieFolder.exists()) {
@@ -1126,14 +1126,14 @@ public class ScreenRecorder extends AbstractStateModel {
         /**
          * Calculates the root-mean-square average of continuous samples. For
          * four samples, the formula looks like this:
-         * <pre>
+         * 
          * rms = sqrt( (x0^2 + x1^2 + x2^2 + x3^2) / 4)
-         * </pre> Resources:
+         *  Resources:
          * http://www.jsresources.org/faq_audio.html#calculate_power
          *
-         * @param data
-         * @param length
-         * @param format
+         * @param data TODO
+         * @param length TODO
+         * @param format TODO
          */
         private void computeAudioLevel(byte[] data, int length, AudioFormat format) {
             audioLevelLeft = audioLevelRight = AudioSystem.NOT_SPECIFIED;
@@ -1250,7 +1250,7 @@ public class ScreenRecorder extends AbstractStateModel {
     }
 
     /**
-     * Stops the screen recorder. <p> Stopping the screen recorder may take
+     * Stops the screen recorder.  Stopping the screen recorder may take
      * several seconds, because audio capture uses a large capture buffer. Also,
      * the MovieWriter has to finish up a movie file which may take some time
      * depending on the amount of meta-data that needs to be written.
@@ -1317,7 +1317,7 @@ public class ScreenRecorder extends AbstractStateModel {
     }
 
     /**
-     * Aborts the screen recorder. <p> Aborting the screen recorder may take
+     * Aborts the screen recorder.  Aborting the screen recorder may take
      * some time, but is generally faster than stopping the recorder. All
      * recorded files are deleted.
      */
@@ -1337,13 +1337,13 @@ public class ScreenRecorder extends AbstractStateModel {
 
     /**
      * Writes a buffer into the movie. Since the file system may not be
-     * immediately available at all times, we do this asynchronously. <p> The
+     * immediately available at all times, we do this asynchronously.  The
      * buffer is copied and passed to the writer queue, which is consumed by the
-     * writer thread. See method startWriter(). <p> AVI does not support a
+     * writer thread. See method startWriter().  AVI does not support a
      * variable frame rate for the video track. Since we can not capture frames
      * at a fixed frame rate we have to resend the same captured screen multiple
-     * times to the writer. <p> This method is called asynchronously from
-     * different threads. <p> You can override this method if you wish to
+     * times to the writer.  This method is called asynchronously from
+     * different threads.  You can override this method if you wish to
      * process the media data.
      *
      *
@@ -1354,7 +1354,7 @@ public class ScreenRecorder extends AbstractStateModel {
      * null if the mouse is outside the capture area, or mouse recording has not
      * been enabled.
      *
-     * @throws IOException
+     * @throws IOException TODO
      */
     protected void write(Buffer buf) throws IOException, InterruptedException {
         MovieWriter writer = this.w;
@@ -1400,11 +1400,11 @@ public class ScreenRecorder extends AbstractStateModel {
     }
 
     /**
-     * The actual writing of the buffer happens here. <p> This method is called
+     * The actual writing of the buffer happens here.  This method is called
      * exclusively from the writer thread in startWriter().
      *
-     * @param buf
-     * @throws IOException
+     * @param buf TODO
+     * @throws IOException TODO
      */
     private void doWrite(Buffer buf) throws IOException {
         MovieWriter mw = w;

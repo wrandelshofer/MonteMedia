@@ -24,11 +24,11 @@ public class TrimTimeCodec extends AbstractCodec {
 
     public TrimTimeCodec() {
         super(new Format[]{
-                    new Format(), //
-                },
-                new Format[]{
-                    new Format(), //
-                });
+            new Format(), //
+        },
+              new Format[]{
+                  new Format(), //
+              });
         name = "Trim Time";
     }
 
@@ -73,7 +73,7 @@ public class TrimTimeCodec extends AbstractCodec {
         Rational bufEndTS = out.timeStamp.add(out.sampleDuration.multiply(out.sampleCount));
 
         if (!out.isFlag(BufferFlag.DISCARD)
-                && startTime != null) {
+              && startTime != null) {
             if (bufEndTS.compareTo(startTime) <= 0) {
                 // Buffer is fully outside time range
                 out.setFlag(BufferFlag.DISCARD);
@@ -93,7 +93,7 @@ public class TrimTimeCodec extends AbstractCodec {
             }
         }
         if (!out.isFlag(BufferFlag.DISCARD)
-                && endTime != null) {
+              && endTime != null) {
             if (bufStartTS.compareTo(endTime) >= 0) {
                 // Buffer is fully outside time range
                 out.setFlag(BufferFlag.DISCARD);

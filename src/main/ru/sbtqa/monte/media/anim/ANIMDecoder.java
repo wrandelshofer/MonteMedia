@@ -293,7 +293,7 @@ public class ANIMDecoder
     /**
      * Decodes the bitmap header (ILBM BMHD).
      *
-     * <pre>
+     * 
      * typedef UBYTE Masking; // Choice of masking technique
      *
      * #define mskNone                 0
@@ -319,7 +319,7 @@ public class ANIMDecoder
      * UBYTE       xAspect, yAspect; // pixel aspect, a ratio width : height
      * WORD        pageWidth, pageHeight; // source "page" size in pixels
      * } BitmapHeader;
-     * </pre>
+     * 
      */
     private void decodeBMHD(IFFChunk chunk, ANIMMovieTrack track)
             throws ParseException {
@@ -436,13 +436,13 @@ public class ANIMDecoder
      * The required information from the BMHD chunk and the CAMG chunk
      * must be provided by the ANIMMovieTrack.
      *
-     * <pre>
+     * 
      * typedef struct {
      * UBYTE red, green, blue; // color intesnities 0..255
      * } ColorRegister;          // size = 3 bytes
      *
      * typedef ColorRegister ColorMap[n]; // size = 3n bytes
-     * </pre>
+     * 
      */
     private ColorModel decodeCMAP(IFFChunk chunk, ANIMMovieTrack track, boolean is4BitsPerChannel)
             throws ParseException {
@@ -540,7 +540,7 @@ public class ANIMDecoder
     /**
      * Decodes the color cycling range and timing chunk (ILBM CCRT).
      *
-     * <pre>
+     * 
      * enum {
      *     dontCycle = 0, forward = 1, backwards = -1
      * } ccrtDirection;
@@ -552,7 +552,7 @@ public class ANIMDecoder
      *   ULONG  microseconds; // msecs between cycling
      *   WORD  pad;        // future exp - store 0 here
      * } ilbmColorCyclingRangeAndTimingChunk;
-     * </pre>
+     * 
      */
     protected void decodeCCRT(IFFChunk chunk, ANIMMovieTrack track)
             throws ParseException {
@@ -582,7 +582,7 @@ public class ANIMDecoder
     /**
      * Decodes the color range cycling (ILBM CRNG).
      *
-     * <pre>
+     * 
      * #define RNG_NORATE  36   // Dpaint uses this rate to mean non-active
      *  set {
      *  active = 1, reverse = 2
@@ -595,7 +595,7 @@ public class ANIMDecoder
      *  WORD set crngActive flags;     // bit0 set = active, bit 1 set = reverse
      *  UBYTE low; UBYTE high;         // lower and upper color registers selected
      *  } ilbmColorRegisterRangeChunk;
-     * </pre>
+     * 
      */
     protected void decodeCRNG(IFFChunk chunk, ANIMMovieTrack track)
             throws ParseException {
@@ -627,15 +627,15 @@ public class ANIMDecoder
 
     /**
      * Decodes the DPaint IV enhanced color cycle chunk (ILBM DRNG)
-     * <p>
+     * 
      * The RNG_ACTIVE flag is set when the range is cyclable. A range should
      * only have the RNG _ACTIVE if it:
-     * <ol>
-     * <li>contains at least one color register</li>
-     * <li>has a defined rate</li>
-     * <li>has more than one color and/or color register</li>
-     * </ol>
-     * <pre>
+     * 
+     * contains at least one color register
+     * has a defined rate
+     * has more than one color and/or color register
+     * 
+     * 
      * ILBM DRNG DPaint IV enhanced color cycle chunk
      * --------------------------------------------
      *
@@ -668,7 +668,7 @@ public class ANIMDecoder
      *     ilbmDRNGDColor[ntrue] trueColorCells;
      *     ilbmDRNGDIndex[ntregs] colorRegisterCells;
      * } ilbmDRangeChunk;
-     * </pre>
+     * 
      */
     protected void decodeDRNG(IFFChunk chunk, ANIMMovieTrack track)
             throws ParseException {
@@ -778,7 +778,7 @@ public class ANIMDecoder
     /**
      * Decodes the anim header (ILBM ANHD).
      *
-     * <pre>
+     * 
      * typedef UBYTE Operation; // Choice of compression algorithm.
      *
      * #define opDirect        0  // set directly (normal ILBM BODY)
@@ -845,7 +845,7 @@ public class ANIMDecoder
      * UBYTE        pad[16];  // This is a pad for future use for future
      * // compression modes.
      * } AnimHeader;
-     * </pre>
+     * 
      */
     private void decodeANHD(IFFChunk chunk, ANIMFrame frame)
             throws ParseException {
@@ -874,7 +874,7 @@ public class ANIMDecoder
     /**
      * Decodes the anim frame info (ILBM ANFI).
      *
-     * <pre>
+     * 
      * enum {
      * play = 0x28,
      * doNothing = 0x0
@@ -893,7 +893,7 @@ public class ANIMDecoder
      * anfiCommandInfo[4] commandInfo;
      * UBYTE[4] pad4;       // For future use
      * } animANFIChunk;
-     * </pre>
+     * 
      */
     private void decodeANFI(IFFChunk chunk, ANIMFrame frame, ANIMMovieTrack track)
             throws ParseException {
@@ -952,7 +952,7 @@ public class ANIMDecoder
     /**
      * Decodes the ANIM+SLA Sound Control collection chunk (ILBM SCTL).
      *
-     * <pre>
+     * 
      * typedef UBYTE Command; // Choice of commands
      * #define cmdPlaySound 1 // Start playing a sound
      * #define cmdStopSound 2 // Stop the sound in a given channel
@@ -973,7 +973,7 @@ public class ANIMDecoder
      * UBYTE    pad[4];       // For future use
      * } SoundControl;
      *
-     * </pre>
+     * 
      */
     private void decodeSCTL(IFFChunk chunk, ANIMFrame frame, ANIMMovieTrack track)
             throws ParseException {

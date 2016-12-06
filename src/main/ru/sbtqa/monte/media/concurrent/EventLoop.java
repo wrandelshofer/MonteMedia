@@ -9,28 +9,28 @@ import java.util.*;
  * An EventLoop can process events on a separate worker thread.
  * It consists of two parts: the event collector and the event
  * processor.
- * <p>
+ * 
  * The event collector collects all incoming events and puts them
  * into a queue.<br>
  * The event processor removes the events from the queue and 
  * processes them.
- * <p>
+ * 
  * The key feature of the EventLoop is, that clients don't have
  * to wait until an event has been processed. Clients are free
  * to proceed as soon as the collector has put the event into
  * the queue.
- * <p>
+ * 
  * <b>Usage</b>
- * <p>
+ * 
  * This is an abstract class. It does all the queue handling, but
  * does no processing. To use it, you have to create a subclass
  * which overrides the methods #collectEvent and #processEvent.
- * <p>
+ * 
  * <b>Example</b>
- * <p>
+ * 
  * An EventLoop, which outputs Strings on a background thread
  * could look like this:
- * <pre><tt>
+ * <tt>
  * public class AsyncDisplay
  * extends AbstractEventLoop {
  *     public void display(String string) {
@@ -40,13 +40,13 @@ import java.util.*;
  *          System.out.println((String) event);
  *    }
  * }
- * </tt></pre>
- * <p>
+ * </tt>
+ * 
  * To use the class proceed like this:
- * <p><pre><tt>
+ * <tt>
  * AsyncDisplay a = new AsyncDisplay();
  *  a.display("Hello World");
- * </tt></pre>
+ * </tt>
  *
  * @author Werner Randelshofer
  * @version $Id: EventLoop.java 364 2016-11-09 19:54:25Z werner $
@@ -118,7 +118,7 @@ public abstract class EventLoop<E> {
      * More formally, coalesces an event o if and only if the queue
      * contains at least one element e such that
      * <code>(o==null ? e==null : o.equals(e))</code>.
-     * <p>
+     * 
      * EventLoops do not coalesce events by default.
      *
      * @param b Specify true to turn on coalescing. 
@@ -207,7 +207,7 @@ public abstract class EventLoop<E> {
      * This method removes events from the event queue
      * and proceses them until the queue is empty or
      * until #stop is called.
-     * <p>
+     * 
      * This method must be called from the event processor
      * thread only.
      */

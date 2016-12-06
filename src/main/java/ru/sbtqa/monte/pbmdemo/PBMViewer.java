@@ -39,13 +39,15 @@ import ru.sbtqa.monte.media.pbm.PBMDecoder;
  * @version $Id: PBMViewer.java 277 2012-10-22 20:03:33Z werner $
  */
 public class PBMViewer extends javax.swing.JPanel {
+
     private final static long serialVersionUID = 1L;
 
     private class Handler implements DropTargetListener {
 
         /**
          * Called when a drag operation has encountered the
-         * <code>DropTarget</code>. <P>
+         * <code>DropTarget</code>.
+         * <P>
          *
          * @param dtde the <code>DropTargetDragEvent</code>
          */
@@ -59,8 +61,9 @@ public class PBMViewer extends javax.swing.JPanel {
         }
 
         /**
-         * The drag operation has departed the
-         * <code>DropTarget</code> without dropping. <P>
+         * The drag operation has departed the <code>DropTarget</code> without
+         * dropping.
+         * <P>
          *
          * @param dte the <code>DropTargetEvent</code>
          */
@@ -71,7 +74,8 @@ public class PBMViewer extends javax.swing.JPanel {
 
         /**
          * Called when a drag operation is ongoing on the
-         * <code>DropTarget</code>. <P>
+         * <code>DropTarget</code>.
+         * <P>
          *
          * @param dtde the <code>DropTargetDragEvent</code>
          */
@@ -90,21 +94,25 @@ public class PBMViewer extends javax.swing.JPanel {
          * the transfer of the data associated with the gesture. The
          * <code>DropTargetDropEvent</code> provides a means to obtain a
          * <code>Transferable</code> object that represents the data object(s)
-         * to be transfered.<P> From this method, the
-         * <code>DropTargetListener</code> shall accept or reject the drop via
-         * the acceptDrop(int dropAction) or rejectDrop() methods of the
-         * <code>DropTargetDropEvent</code> parameter. <P> Subsequent to
-         * acceptDrop(), but not before,
+         * to be transfered.<P>
+         * From this method, the <code>DropTargetListener</code> shall accept or
+         * reject the drop via the acceptDrop(int dropAction) or rejectDrop()
+         * methods of the <code>DropTargetDropEvent</code> parameter.
+         * <P>
+         * Subsequent to acceptDrop(), but not before,
          * <code>DropTargetDropEvent</code>'s getTransferable() method may be
          * invoked, and data transfer may be performed via the returned
-         * <code>Transferable</code>'s getTransferData() method. <P> At the
-         * completion of a drop, an implementation of this method is required to
-         * signal the success/failure of the drop by passing an appropriate
-         * <code>boolean</code> to the
+         * <code>Transferable</code>'s getTransferData() method.
+         * <P>
+         * At the completion of a drop, an implementation of this method is
+         * required to signal the success/failure of the drop by passing an
+         * appropriate <code>boolean</code> to the
          * <code>DropTargetDropEvent</code>'s dropComplete(boolean success)
-         * method. <P> Note: The actual processing of the data transfer is not
-         * required to finish before this method returns. It may be deferred
-         * until later. <P>
+         * method.
+         * <P>
+         * Note: The actual processing of the data transfer is not required to
+         * finish before this method returns. It may be deferred until later.
+         * <P>
          *
          * @param dtde the <code>DropTargetDropEvent</code>
          */
@@ -121,16 +129,16 @@ public class PBMViewer extends javax.swing.JPanel {
 
                 } catch (IOException e) {
                     JOptionPane.showConfirmDialog(
-                            PBMViewer.this,
-                            "Could not access the dropped data.",
-                            "PBMViewer: Drop Failed",
-                            JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                          PBMViewer.this,
+                          "Could not access the dropped data.",
+                          "PBMViewer: Drop Failed",
+                          JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
                 } catch (UnsupportedFlavorException e) {
                     JOptionPane.showConfirmDialog(
-                            PBMViewer.this,
-                            "Unsupported data flavor.",
-                            "PBMViewer: Drop Failed",
-                            JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                          PBMViewer.this,
+                          "Unsupported data flavor.",
+                          "PBMViewer: Drop Failed",
+                          JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
                 }
             } else {
                 event.rejectDrop();
@@ -138,7 +146,8 @@ public class PBMViewer extends javax.swing.JPanel {
         }
 
         /**
-         * Called if the user has modified the current drop gesture. <P>
+         * Called if the user has modified the current drop gesture.
+         * <P>
          *
          * @param dtde the <code>DropTargetDragEvent</code>
          */

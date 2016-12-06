@@ -22,14 +22,14 @@ import static org.monte.media.BufferFlag.*;
 /**
  * Supports writing of time-based video and audio data into a QuickTime movie
  * file (.MOV) without the need of native code.
- * <p>
+ * 
  * {@code QuickTimeWriter} works with tracks and samples. After creating a
  * {@code QuickTimeWriter} one or more video and audio tracks can be added to
  * it. Then samples can be written into the track(s). A sample is a single
  * element in a sequence of time-ordered data. For video data a sample typically
  * consists of a single video frame, for uncompressed stereo audio data a sample
  * contains one PCM impulse per channel. Samples of compressed media data may encompass larger time units.
- * <p>
+ * 
  * Tracks support edit lists. An edit list specifies when to play which portion
  * of the media data at what speed. An empty edit can be used to insert an empty
  * time span, for example to offset a track from the start of the movie. Edits
@@ -40,7 +40,7 @@ import static org.monte.media.BufferFlag.*;
  * frames, because audio data can be 'borrowed' from previous frames. An edit
  * list can be used to select the desired portion of the audio data, while the
  * track stores the media starting from the nearest sync frame.
- * <p>
+ * 
  * Samples are stored in a QuickTime file in the same sequence as they are written.
  * In order to getCodec optimal movie playback, the samples from different tracks
  * should be interleaved from time to time. An interleave should occur about twice
@@ -48,16 +48,16 @@ import static org.monte.media.BufferFlag.*;
  * least one second of sound data needs to be placed at the beginning of the
  * movie. So that the sound and video data is offset from each other in the file
  * by one second.
- * <p>
+ * 
  * For convenience, this class has built-in encoders for video frames in the following
  * formats: RAW, ANIMATION, JPEG and PNG. Media data in other formats, including all audio
  * data, must be encoded before it can be written with {@code QuickTimeWriter}.
  * Alternatively, you can plug in your own codec.
- * <p>
+ * 
  * <b>Example:</b> Writing 10 seconds of a movie with 640x480 pixel, 30 fps,
  * PNG-encoded video and 16-bit stereo, 44100 Hz, PCM-encoded audio.
- * <p>
- * <pre>
+ * 
+ * 
  * QuickTimeWriter w = new QuickTimeWriter(new File("mymovie.mov"));
  * w.addAudioTrack(new AudioFormat(AudioFormat.Encoding.PCM_SIGNED), 44100, 2, 16, 2, 44100, true)); // audio in track 0
  * w.addVideoTrack(QuickTimeWriter.VIDEO_PNG, 30, 640, 480);  // video in track 1
@@ -105,8 +105,8 @@ import static org.monte.media.BufferFlag.*;
  *      }
  * }
  * w.close();
- * </pre>
- * <p>
+ * 
+ * 
  * For information about the QuickTime file format see the
  * "QuickTime File Format Specification", Apple Inc. 2010-08-03. (qtff)
  * <a href="http://developer.apple.com/library/mac/documentation/QuickTime/QTFF/qtff.pdf/">
@@ -271,7 +271,7 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
 
     /** Adds an audio track, and configures it using an
      * {@code AudioFormat} object from the javax.sound API.
-     * <p>
+     * 
      * Use this method for writing audio data from an {@code AudioInputStream}
      * into a QuickTime Movie file.
      *
@@ -544,7 +544,7 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
 
     /**
      * Writes a sample from a byte array into a track.
-     * <p>
+     * 
      * This method encodes the sample if the format of the track does not match
      * the format of the media in this track.
      *
@@ -565,7 +565,7 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
 
     /**
      * Writes multiple already encoded samples from a byte array into a track.
-     * <p>
+     * 
      * This method does not inspect the contents of the data. The
      * contents has to match the format and dimensions of the media in this
      * track.
@@ -617,7 +617,7 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
 
     /** Returns true if the limit for media samples has been reached.
      * If this limit is reached, no more samples should be added to the movie.
-     * <p>
+     * 
      * QuickTime files can be up to 64 TB long, but there are other values that
      * may overflow before this size is reached. This method returns true
      * when the files size exceeds 2^60 or when the media sampleDuration value of a

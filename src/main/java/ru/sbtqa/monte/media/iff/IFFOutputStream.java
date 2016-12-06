@@ -13,7 +13,7 @@ import javax.imageio.stream.ImageOutputStream;
 
 /**
  * Facilitates writing of EA 85 IFF files.
- * <p>
+ * 
  * Reference:<br>
  * Commodore-Amiga, Inc. (1991) Amiga ROM Kernel Reference Manual. Devices.
  * Third Edition. Reading: Addison-Wesley.
@@ -73,24 +73,28 @@ public class IFFOutputStream extends OutputStream {
         out.write(b);
     }
 
-    /** Gets the position relative to the beginning of the IFF output stream.
-     * <p>
+    /**
+     * Gets the position relative to the beginning of the IFF output stream.
+     * 
      * Usually this value is equal to the stream position of the underlying
      * ImageOutputStream, but can be larger if the underlying stream already
      * contained data.
      *
      * @return The relative stream position.
-     * @throws IOException
+     * @throws IOException TODO
      */
     public long getStreamPosition() throws IOException {
         return out.getStreamPosition() - streamOffset;
     }
 
-    /** Seeks relative to the beginning of the IFF output stream.
-     * <p>
+    /**
+     * Seeks relative to the beginning of the IFF output stream.
+     * 
      * Usually this equal to seeking in the underlying ImageOutputStream, but
      * can be different if the underlying stream already contained data.
      *
+     * @param newPosition TODO
+     * @throws java.io.IOException TODO
      */
     public void seek(long newPosition) throws IOException {
         out.seek(newPosition + streamOffset);
@@ -114,7 +118,9 @@ public class IFFOutputStream extends OutputStream {
 
         /**
          * Creates a new Chunk at the current position of the ImageOutputStream.
-         * @param chunkType The chunkType of the chunk. A string with a length of 4 characters.
+         *
+         * @param chunkType The chunkType of the chunk. A string with a length
+         * of 4 characters.
          */
         public Chunk(String chunkType) throws IOException {
             this.chunkType = chunkType;
@@ -142,6 +148,7 @@ public class IFFOutputStream extends OutputStream {
         /**
          * Creates a new CompositeChunk at the current position of the
          * ImageOutputStream.
+         *
          * @param compositeType The type of the composite.
          * @param chunkType The type of the chunk.
          */
@@ -154,9 +161,10 @@ public class IFFOutputStream extends OutputStream {
         }
 
         /**
-         * Writes the chunk and all its children to the ImageOutputStream
-         * and disposes of all resources held by the chunk.
-         * @throws java.io.IOException
+         * Writes the chunk and all its children to the ImageOutputStream and
+         * disposes of all resources held by the chunk.
+         *
+         * @throws java.io.IOException TODO
          */
         @Override
         public void finish() throws IOException {
@@ -194,6 +202,7 @@ public class IFFOutputStream extends OutputStream {
         /**
          * Creates a new DataChunk at the current position of the
          * ImageOutputStream.
+         *
          * @param chunkType The chunkType of the chunk.
          */
         public DataChunk(String name) throws IOException {
@@ -262,7 +271,9 @@ public class IFFOutputStream extends OutputStream {
 
     /**
      * Writes an chunk type identifier (4 bytes).
+     *
      * @param s A string with a length of 4 characters.
+     * @throws java.io.IOException TODO
      */
     public void writeTYPE(String s) throws IOException {
         if (s.length() != 4) {
@@ -278,21 +289,23 @@ public class IFFOutputStream extends OutputStream {
 
     /**
      * ByteRun1 Run Encoding.
-     * <p>
-     * The run encoding scheme in byteRun1 is best described by
-     * pseudo code for the decoder Unpacker (called UnPackBits in the
-     * Macintosh toolbox):
-     * <pre>
+     * 
+     * The run encoding scheme in byteRun1 is best described by pseudo code for
+     * the decoder Unpacker (called UnPackBits in the Macintosh toolbox):
+     * 
      * UnPacker:
      *    LOOP until produced the desired number of bytes
      *       Read the next source byte into n
      *       SELECT n FROM
-     *          [ 0..127 ] => copy the next n+1 bytes literally
-     *          [-1..-127] => replicate the next byte -n+1 timees
-     *          -128       => no operation
+     *          [ 0..127 ] ={@literal >} copy the next n+1 bytes literally
+     *          [-1..-127] ={@literal >} replicate the next byte -n+1 timees
+     *          -128       ={@literal >} no operation
      *       ENDCASE
      *    ENDLOOP
-     * </pre>
+     * 
+     *
+     * @param data TODO
+     * @throws java.io.IOException TODO
      */
     public void writeByteRun1(byte[] data) throws IOException {
         writeByteRun1(data, 0, data.length);
@@ -328,7 +341,7 @@ public class IFFOutputStream extends OutputStream {
                 // If the byte repeats just twice, and we have a literal
                 // run with enough space, add it to the literal run
             } else if (repeatCount == 2
-                    && literalOffset < i && i - literalOffset < 127) {
+                  && literalOffset < i && i - literalOffset < 127) {
                 i++;
             } else {
                 // Flush the literal run, if we have one

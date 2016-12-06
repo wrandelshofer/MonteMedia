@@ -128,16 +128,16 @@ public class ILBMViewer extends javax.swing.JPanel {
 
                 } catch (IOException e) {
                     JOptionPane.showConfirmDialog(
-                            ILBMViewer.this,
-                            "Could not access the dropped data.",
-                            "ILBMViewer: Drop Failed",
-                            JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                          ILBMViewer.this,
+                          "Could not access the dropped data.",
+                          "ILBMViewer: Drop Failed",
+                          JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
                 } catch (UnsupportedFlavorException e) {
                     JOptionPane.showConfirmDialog(
-                            ILBMViewer.this,
-                            "Unsupported data flavor.",
-                            "ILBMViewer: Drop Failed",
-                            JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                          ILBMViewer.this,
+                          "Unsupported data flavor.",
+                          "ILBMViewer: Drop Failed",
+                          JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
                 }
             } else {
                 event.rejectDrop();
@@ -176,7 +176,7 @@ public class ILBMViewer extends javax.swing.JPanel {
 
     protected byte[] getData(File f) throws IOException {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream();
-                FileInputStream in = new FileInputStream(f)) {
+              FileInputStream in = new FileInputStream(f)) {
             IOStreams.copy(in, out);
             return out.toByteArray();
         }

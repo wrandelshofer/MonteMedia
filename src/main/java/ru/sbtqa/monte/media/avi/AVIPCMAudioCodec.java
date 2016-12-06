@@ -15,9 +15,9 @@ import ru.sbtqa.monte.media.audio.PCMAudioCodec;
 /**
  * {@code PCMAudioCodec} performs sign conversion, endian conversion and
  * quantization conversion of PCM audio data.
- * <p>
+ * 
  * Does not perform sampling rate conversion or channel conversion.
- * <p>
+ * 
  * FIXME Maybe create separate subclasses for AVI PCM and QuickTime PCM.
  *
  * @author Werner Randelshofer
@@ -26,41 +26,41 @@ import ru.sbtqa.monte.media.audio.PCMAudioCodec;
 public class AVIPCMAudioCodec extends PCMAudioCodec {
 
     private final static HashSet<String> supportedEncodings = new HashSet<String>(
-            Arrays.asList(new String[]{
-               ENCODING_PCM_SIGNED, 
-                ENCODING_PCM_UNSIGNED, ENCODING_AVI_PCM,}));
+          Arrays.asList(new String[]{
+        ENCODING_PCM_SIGNED,
+        ENCODING_PCM_UNSIGNED, ENCODING_AVI_PCM,}));
 
-   public AVIPCMAudioCodec() {
+    public AVIPCMAudioCodec() {
         super(new Format[]{
-                    new Format(MediaTypeKey,MediaType.AUDIO,//
-                            EncodingKey,ENCODING_PCM_SIGNED,//
-                            MimeTypeKey,MIME_JAVA,//
-                            SignedKey,true),//
-                    new Format(MediaTypeKey,MediaType.AUDIO,//
-                            EncodingKey,ENCODING_PCM_UNSIGNED,//
-                            MimeTypeKey,MIME_JAVA,//
-                            SignedKey,false),//
-                    new Format(MediaTypeKey,MediaType.AUDIO,//
-                            EncodingKey,ENCODING_AVI_PCM,//
-                            MimeTypeKey,MIME_AVI,//
-                            SignedKey,false,SampleSizeInBitsKey,8),//
-                    new Format(MediaTypeKey,MediaType.AUDIO,//
-                            EncodingKey,ENCODING_AVI_PCM,//
-                            MimeTypeKey,MIME_AVI,//
-                            ByteOrderKey,ByteOrder.LITTLE_ENDIAN,
-                            SignedKey,true,SampleSizeInBitsKey,16),//
-                    new Format(MediaTypeKey,MediaType.AUDIO,//
-                            EncodingKey,ENCODING_AVI_PCM,//
-                            MimeTypeKey,MIME_AVI,//
-                            ByteOrderKey,ByteOrder.LITTLE_ENDIAN,
-                            SignedKey,true,SampleSizeInBitsKey,24),//
-                    new Format(MediaTypeKey,MediaType.AUDIO,//
-                            EncodingKey,ENCODING_AVI_PCM,//
-                            MimeTypeKey,MIME_AVI,//
-                            ByteOrderKey,ByteOrder.LITTLE_ENDIAN,
-                            SignedKey,true,SampleSizeInBitsKey,32),//
-                });
-        name="AVI PCM Codec";
+            new Format(MediaTypeKey, MediaType.AUDIO,//
+            EncodingKey, ENCODING_PCM_SIGNED,//
+            MimeTypeKey, MIME_JAVA,//
+            SignedKey, true),//
+            new Format(MediaTypeKey, MediaType.AUDIO,//
+            EncodingKey, ENCODING_PCM_UNSIGNED,//
+            MimeTypeKey, MIME_JAVA,//
+            SignedKey, false),//
+            new Format(MediaTypeKey, MediaType.AUDIO,//
+            EncodingKey, ENCODING_AVI_PCM,//
+            MimeTypeKey, MIME_AVI,//
+            SignedKey, false, SampleSizeInBitsKey, 8),//
+            new Format(MediaTypeKey, MediaType.AUDIO,//
+            EncodingKey, ENCODING_AVI_PCM,//
+            MimeTypeKey, MIME_AVI,//
+            ByteOrderKey, ByteOrder.LITTLE_ENDIAN,
+            SignedKey, true, SampleSizeInBitsKey, 16),//
+            new Format(MediaTypeKey, MediaType.AUDIO,//
+            EncodingKey, ENCODING_AVI_PCM,//
+            MimeTypeKey, MIME_AVI,//
+            ByteOrderKey, ByteOrder.LITTLE_ENDIAN,
+            SignedKey, true, SampleSizeInBitsKey, 24),//
+            new Format(MediaTypeKey, MediaType.AUDIO,//
+            EncodingKey, ENCODING_AVI_PCM,//
+            MimeTypeKey, MIME_AVI,//
+            ByteOrderKey, ByteOrder.LITTLE_ENDIAN,
+            SignedKey, true, SampleSizeInBitsKey, 32),//
+        });
+        name = "AVI PCM Codec";
     }
 
 }

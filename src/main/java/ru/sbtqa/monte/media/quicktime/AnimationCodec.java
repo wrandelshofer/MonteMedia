@@ -28,16 +28,21 @@ import static ru.sbtqa.monte.media.VideoFormatKeys.*;
 import ru.sbtqa.monte.media.io.ByteArrayImageOutputStream;
 
 /**
- * Implements the Apple Animation codec. <p> Supports lossless delta- and
- * key-frame encoding of images onlyWith 8, 16 or 24 bits per pixel. <p> The
- * QuickTime player requires that a keyframe is written once per second. This
- * codec enforces this. <p> An encoded frame has the following format: <p>
- * <pre>
+ * Implements the Apple Animation codec.
+ * 
+ * Supports lossless delta- and key-frame encoding of images onlyWith 8, 16 or
+ * 24 bits per pixel.
+ * 
+ * The QuickTime player requires that a keyframe is written once per second.
+ * This codec enforces this.
+ * 
+ * An encoded frame has the following format:
+ * 
  * Header:
  * uint32 chunkSize
  *
- * uint16 header 0x0000 => decode entire image
- *               0x0008 => starting line and number of lines follows
+ * uint16 header 0x0000 ={@literal >} decode entire image
+ *               0x0008 ={@literal >} starting line and number of lines follows
  * if header==0x0008 {
  *   uint16 startingLine at which to begin updating frame
  *   uint16 reserved 0x0000
@@ -45,7 +50,7 @@ import ru.sbtqa.monte.media.io.ByteArrayImageOutputStream;
  *   uint16 reserved 0x0000
  * }
  * n-bytes compressed lines
- * </pre>
+ * 
  *
  * The first 4 bytes defines the chunk length. This field also carries some
  * other unknown flags, since at least one of the high bits is sometimes
@@ -58,12 +63,12 @@ import ru.sbtqa.monte.media.io.ByteArrayImageOutputStream;
  * bit 3 set (header &amp; 0x0008) indicates that information follows revealing
  * at which line the decode process is to begin:<br>
  *
- * <pre>
+ * 
  * 2 bytes    starting line at which to begin updating frame
  * 2 bytes    unknown
  * 2 bytes    the number of lines to update
  * 2 bytes    unknown
- * </pre>
+ * 
  *
  * If the header is 0x0000, then the decode begins from the first line and
  * continues through the entire height of the image.<br>
@@ -71,63 +76,65 @@ import ru.sbtqa.monte.media.io.ByteArrayImageOutputStream;
  * After the header comes the individual RLE-compressed lines. An individual
  * compressed line is comprised of a skip code, followed by a series of RLE
  * codes and pixel data:<br>
- * <pre>
+ * 
  *  1 byte     skip code
  *  1 byte     RLE code
  *  n bytes    pixel data
  *  1 byte     RLE code
  *  n bytes    pixel data
- * </pre> Each line begins onlyWith a byte that defines the number of pixels to
+ *  Each line begins onlyWith a byte that defines the number of pixels to
  * skip in a particular line in the output line before outputting new pixel
  * data. Actually, the skip count is set to one more than the number of pixels
  * to skip. For example, a skip byte of 15 means "skip 14 pixels", while a skip
  * byte of 1 means "don't skip any pixels". If the skip byte is 0, then the
  * frame decode is finished. Therefore, the maximum skip byte value of 255
- * allows for a maximum of 254 pixels to be skipped. <p> After the skip byte is
- * the first RLE code, which is a single signed byte. The RLE code can have the
- * following meanings:<br> <ul> <li>equal to 0: There is another single-byte
- * skip code in the stream. Again, the actual number of pixels to skip is 1 less
- * than the skip code. Therefore, the maximum skip byte value of 255 allows for
- * a maximum of 254 pixels to be skipped.</li>
+ * allows for a maximum of 254 pixels to be skipped.
+ * 
+ * After the skip byte is the first RLE code, which is a single signed byte. The
+ * RLE code can have the following meanings:<br>  equal to 0: There is
+ * another single-byte skip code in the stream. Again, the actual number of
+ * pixels to skip is 1 less than the skip code. Therefore, the maximum skip byte
+ * value of 255 allows for a maximum of 254 pixels to be skipped.
  *
- * <li>equal to -1: End of the RLE-compressed line</li>
+ * equal to -1: End of the RLE-compressed line
  *
- * <li>greater than 0: Run of pixel data is copied directly from the encoded
- * stream to the output frame.</li>
+ * greater than 0: Run of pixel data is copied directly from the encoded
+ * stream to the output frame.
  *
- * <li>less than -1: Repeat pixel data -(RLE code) times.</li> </ul> <p> The
- * pixel data has the following format: <ul> <li>8-bit data: Pixels are handled
- * in groups of four. Each pixel is a palette index (the palette is determined
- * by the Quicktime file transporting the data).<br> If (code &gt; 0), copy (4 *
- * code) pixels from the encoded stream to the output.<br> If (code &lt; -1),
- * extract the next 4 pixels from the encoded stream and render the entire group
- * -(code) times to the output frame. </li>
+ * less than -1: Repeat pixel data -(RLE code) times. 
+ * 
+ * The pixel data has the following format:  8-bit data: Pixels are
+ * handled in groups of four. Each pixel is a palette index (the palette is
+ * determined by the Quicktime file transporting the data).<br> If (code &gt;
+ * 0), copy (4 * code) pixels from the encoded stream to the output.<br> If
+ * (code &lt; -1), extract the next 4 pixels from the encoded stream and render
+ * the entire group -(code) times to the output frame. 
  *
- * <li>16-bit data: Each pixel is represented by a 16-bit RGB value onlyWith 5
+ * 16-bit data: Each pixel is represented by a 16-bit RGB value onlyWith 5
  * bits used for each of the red, green, and blue color components and 1 unused
  * bit to round the value tmp to 16 bits: {@code xrrrrrgg gggbbbbb}. Pixel data
  * is rendered to the output frame one pixel at a time.<br> If (code &gt; 0),
  * copy the run of (code) pixels from the encoded stream to the output.<br> If
  * (code &lt; -1), unpack the next 16-bit RGB value from the encoded stream and
- * render it to the output frame -(code) times.</li>
+ * render it to the output frame -(code) times.
  *
- * <li>24-bit data: Each pixel is represented by a 24-bit RGB value onlyWith 8
+ * 24-bit data: Each pixel is represented by a 24-bit RGB value onlyWith 8
  * bits (1 byte) used for each of the red, green, and blue color components:
  * {@code rrrrrrrr gggggggg bbbbbbbb}. Pixel data is rendered to the output
  * frame one pixel at a time.<br> If (code &gt; 0), copy the run of (code)
  * pixels from the encoded stream to the output.<br> If (code &lt; -1), unpack
  * the next 24-bit RGB value from the encoded stream and render it to the output
- * frame -(code) times.</li>
+ * frame -(code) times.
  *
- * <li>32-bit data: Each pixel is represented by a 32-bit ARGB value onlyWith 8
+ * 32-bit data: Each pixel is represented by a 32-bit ARGB value onlyWith 8
  * bits (1 byte) used for each of the alpha, red, green, and blue color
  * components: {@code aaaaaaaa rrrrrrrr gggggggg bbbbbbbb}. Pixel data is
  * rendered to the output frame one pixel at a time.<br> If (code &gt; 0), copy
  * the run of (code) pixels from the encoded stream to the output.<br> If (code
  * &lt; -1), unpack the next 32-bit ARGB value from the encoded stream and
- * render it to the output frame -(code) times.</li> </ul>
+ * render it to the output frame -(code) times. 
  *
- * References:<br/> <a
+ * References: <a
  * href="http://multimedia.cx/qtrle.txt">http://multimedia.cx/qtrle.txt</a><br>
  *
  * @author Werner Randelshofer
@@ -143,19 +150,19 @@ public class AnimationCodec extends AbstractVideoCodec {
 
     public AnimationCodec() {
         super(new Format[]{
-                    new Format(MediaTypeKey, VIDEO, MimeTypeKey, MIME_JAVA,
-                    EncodingKey, ENCODING_BUFFERED_IMAGE), //
-                },
-                new Format[]{
-                    new Format(MediaTypeKey, VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                    EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 8), //
-                    new Format(MediaTypeKey, VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                    EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 16), //
-                    new Format(MediaTypeKey, VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                    EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 24), //
-                    new Format(MediaTypeKey, VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                    EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 32), //
-                });
+            new Format(MediaTypeKey, VIDEO, MimeTypeKey, MIME_JAVA,
+            EncodingKey, ENCODING_BUFFERED_IMAGE), //
+        },
+              new Format[]{
+                  new Format(MediaTypeKey, VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                        EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 8), //
+                  new Format(MediaTypeKey, VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                        EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 16), //
+                  new Format(MediaTypeKey, VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                        EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 24), //
+                  new Format(MediaTypeKey, VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                        EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 32), //
+              });
     }
 
     @Override
@@ -168,7 +175,7 @@ public class AnimationCodec extends AbstractVideoCodec {
             //outputFormat = outputFormat.prepend(KeyFrameIntervalKey, max(1, outputFormat.get(FrameRateKey).intValue()));
 
             if (inputFormat != null) {
-                outputFormat = outputFormat.prepend(inputFormat.intersectKeys(WidthKey, HeightKey,DepthKey));
+                outputFormat = outputFormat.prepend(inputFormat.intersectKeys(WidthKey, HeightKey, DepthKey));
             }
         }
         return this.outputFormat;
@@ -210,7 +217,7 @@ public class AnimationCodec extends AbstractVideoCodec {
             scanlineStride = vf.get(WidthKey);
         }
         boolean isKeyframe = frameCounter == 0
-                || frameCounter % outputFormat.get(KeyFrameIntervalKey, outputFormat.get(FrameRateKey).intValue()) == 0;
+              || frameCounter % outputFormat.get(KeyFrameIntervalKey, outputFormat.get(FrameRateKey).intValue()) == 0;
         frameCounter++;
 
         try {
@@ -222,8 +229,9 @@ public class AnimationCodec extends AbstractVideoCodec {
                         //throw new UnsupportedOperationException("Unable to process buffer " + in);
                     }
 
-                    if (isKeyframe ||//
-                            previousPixels == null) {
+                    if (isKeyframe
+                          ||//
+                          previousPixels == null) {
 
                         encodeKey8(tmp, pixels, r.width, r.height, r.x + r.y * scanlineStride, scanlineStride);
                         out.setFlag(KEYFRAME, true);
@@ -247,7 +255,7 @@ public class AnimationCodec extends AbstractVideoCodec {
 
                     // FIXME - Support sub-images
                     if (isKeyframe//
-                            || previousPixels == null) {
+                          || previousPixels == null) {
                         encodeKey16(tmp, pixels, r.width, r.height, r.x + r.y * scanlineStride, scanlineStride);
                         out.setFlag(KEYFRAME, true);
                     } else {
@@ -280,7 +288,7 @@ public class AnimationCodec extends AbstractVideoCodec {
 
                     // FIXME - Support sub-images
                     if (isKeyframe //
-                            || previousPixels == null) {
+                          || previousPixels == null) {
                         encodeKey24(tmp, pixels, r.width, r.height, r.x + r.y * scanlineStride, scanlineStride);
                         out.setFlag(KEYFRAME, true);
                     } else {
@@ -304,7 +312,7 @@ public class AnimationCodec extends AbstractVideoCodec {
 
                     // FIXME - Support sub-images
                     if (in.isFlag(KEYFRAME) //
-                            || previousPixels == null) {
+                          || previousPixels == null) {
                         encodeKey32(tmp, pixels, r.width, r.height, r.x + r.y * scanlineStride, scanlineStride);
                         out.setFlag(KEYFRAME, true);
                     } else {
@@ -348,9 +356,10 @@ public class AnimationCodec extends AbstractVideoCodec {
      * @param offset The offset to the first pixel in the data array.
      * @param scanlineStride The number to append to offset to get to the next
      * scanline.
+     * @throws java.io.IOException TODO
      */
     public void encodeKey8(ImageOutputStream out, byte[] data, int width, int height, int offset, int scanlineStride)
-            throws IOException {
+          throws IOException {
         if (width % 4 != 0 || offset % 4 != 0 || scanlineStride % 4 != 0) {
             throw new UnsupportedOperationException("Conversion is not fully implemented yet.");
         }
@@ -374,9 +383,10 @@ public class AnimationCodec extends AbstractVideoCodec {
      * @param offset The offset to the first pixel in the data array.
      * @param scanlineStride The number to append to offset to get to the next
      * scanline.
+     * @throws java.io.IOException TODO
      */
     public void encodeDelta8(ImageOutputStream out, byte[] data, byte[] prev, int width, int height, int offset, int scanlineStride)
-            throws IOException {
+          throws IOException {
         if (width % 4 != 0 || offset % 4 != 0 || scanlineStride % 4 != 0) {
             throw new UnsupportedOperationException("Conversion is not fully implemented yet.");
         }
@@ -405,9 +415,10 @@ public class AnimationCodec extends AbstractVideoCodec {
      * @param offset The offset to the first pixel in the data array.
      * @param scanlineStride The number to append to offset to get to the next
      * scanline.
+     * @throws java.io.IOException TODO
      */
     public void encodeKey16(ImageOutputStream out, short[] data, int width, int height, int offset, int scanlineStride)
-            throws IOException {
+          throws IOException {
         out.setByteOrder(BIG_ENDIAN);
         long headerPos = out.getStreamPosition();
 
@@ -464,7 +475,6 @@ public class AnimationCodec extends AbstractVideoCodec {
             out.write(-1);// End of line OP-code
         }
 
-
         // Complete the header
         long pos = out.getStreamPosition();
         out.seek(headerPos);
@@ -483,9 +493,10 @@ public class AnimationCodec extends AbstractVideoCodec {
      * @param offset The offset to the first pixel in the data array.
      * @param scanlineStride The number to append to offset to get to the next
      * scanline.
+     * @throws java.io.IOException TODO
      */
     public void encodeDelta16(ImageOutputStream out, short[] data, short[] prev, int width, int height, int offset, int scanlineStride)
-            throws IOException {
+          throws IOException {
         out.setByteOrder(BIG_ENDIAN);
 
         // Determine whether we can skip lines at the beginning
@@ -501,7 +512,6 @@ public class AnimationCodec extends AbstractVideoCodec {
                 }
             }
         }
-
 
         if (ymin == ymax) {
             // => Frame is identical to previous one
@@ -643,9 +653,10 @@ public class AnimationCodec extends AbstractVideoCodec {
      * @param offset The offset to the first pixel in the data array.
      * @param scanlineStride The number to append to offset to get to the next
      * scanline.
+     * @throws java.io.IOException TODO
      */
     public void encodeKey24(ImageOutputStream out, int[] data, int width, int height, int offset, int scanlineStride)
-            throws IOException {
+          throws IOException {
         out.setByteOrder(BIG_ENDIAN);
         long headerPos = out.getStreamPosition();
 
@@ -702,7 +713,6 @@ public class AnimationCodec extends AbstractVideoCodec {
             out.write(-1);// End of line OP-code
         }
 
-
         // Complete the header
         long pos = out.getStreamPosition();
         out.seek(headerPos);
@@ -721,9 +731,10 @@ public class AnimationCodec extends AbstractVideoCodec {
      * @param offset The offset to the first pixel in the data array.
      * @param scanlineStride The number to append to offset to get to the next
      * scanline.
+     * @throws java.io.IOException TODO
      */
     public void encodeDelta24(ImageOutputStream out, int[] data, int[] prev, int width, int height, int offset, int scanlineStride)
-            throws IOException {
+          throws IOException {
         out.setByteOrder(BIG_ENDIAN);
 
         // Determine whether we can skip lines at the beginning
@@ -739,7 +750,6 @@ public class AnimationCodec extends AbstractVideoCodec {
                 }
             }
         }
-
 
         if (ymin == ymax) {
             // => Frame is identical to previous one
@@ -775,7 +785,6 @@ public class AnimationCodec extends AbstractVideoCodec {
             out.writeShort((ymax - ymin + 1 - offset) / scanlineStride);
             out.writeShort(0);
         }
-
 
         // Encode each scanline
         for (int y = ymin; y < ymax; y += scanlineStride) {
@@ -865,7 +874,6 @@ public class AnimationCodec extends AbstractVideoCodec {
             out.write(-1);// End of line OP-code
         }
 
-
         // Complete the header
         long pos = out.getStreamPosition();
         out.seek(headerPos);
@@ -883,9 +891,10 @@ public class AnimationCodec extends AbstractVideoCodec {
      * @param offset The offset to the first pixel in the data array.
      * @param scanlineStride The number to append to offset to get to the next
      * scanline.
+     * @throws java.io.IOException TODO
      */
     public void encodeKey32(ImageOutputStream out, int[] data, int width, int height, int offset, int scanlineStride)
-            throws IOException {
+          throws IOException {
         out.setByteOrder(BIG_ENDIAN);
         long headerPos = out.getStreamPosition();
 
@@ -942,7 +951,6 @@ public class AnimationCodec extends AbstractVideoCodec {
             out.write(-1);// End of line OP-code
         }
 
-
         // Complete the header
         long pos = out.getStreamPosition();
         out.seek(headerPos);
@@ -961,9 +969,10 @@ public class AnimationCodec extends AbstractVideoCodec {
      * @param offset The offset to the first pixel in the data array.
      * @param scanlineStride The number to append to offset to get to the next
      * scanline.
+     * @throws java.io.IOException TODO
      */
     public void encodeDelta32(ImageOutputStream out, int[] data, int[] prev, int width, int height, int offset, int scanlineStride)
-            throws IOException {
+          throws IOException {
         out.setByteOrder(BIG_ENDIAN);
 
         // Determine whether we can skip lines at the beginning
@@ -979,7 +988,6 @@ public class AnimationCodec extends AbstractVideoCodec {
                 }
             }
         }
-
 
         if (ymin == ymax) {
             // => Frame is identical to previous one
@@ -1015,7 +1023,6 @@ public class AnimationCodec extends AbstractVideoCodec {
             out.writeShort((ymax - ymin + 1 - offset) / scanlineStride);
             out.writeShort(0);
         }
-
 
         // Encode each scanline
         for (int y = ymin; y < ymax; y += scanlineStride) {
@@ -1112,7 +1119,6 @@ public class AnimationCodec extends AbstractVideoCodec {
             out.write(-1);// End of line OP-code
         }
 
-
         // Complete the header
         long pos = out.getStreamPosition();
         out.seek(headerPos);
@@ -1132,9 +1138,10 @@ public class AnimationCodec extends AbstractVideoCodec {
      * @param offset The offset to the first pixel in the data array.
      * @param scanlineStride The number to append to offset to get to the next
      * scanline.
+     * @throws java.io.IOException TODO
      */
     public void decodeDelta16(ImageInputStream in, short[] data, short[] prev, int width, int height, int offset, int scanlineStride)
-            throws IOException {
+          throws IOException {
         in.setByteOrder(BIG_ENDIAN);
 
         // Decode chunk size
@@ -1254,7 +1261,7 @@ public class AnimationCodec extends AbstractVideoCodec {
          *   uint16 reserved 0x0000
          * }
          * n-bytes compressed lines
-         * </pre>
+         * 
          *
          * The first 4 bytes defines the chunk length. This field also carries some
          * other unknown flags, since at least one of the high bits is sometimes set.<br>
@@ -1266,12 +1273,12 @@ public class AnimationCodec extends AbstractVideoCodec {
          * bit 3 set (header &amp; 0x0008) indicates that information follows revealing
          * at which line the decode process is to begin:<br>
          *
-         * <pre>
+         * 
          * 2 bytes    starting line at which to begin updating frame
          * 2 bytes    unknown
          * 2 bytes    the number of lines to update
          * 2 bytes    unknown
-         * </pre>
+         * 
          *
          * If the header is 0x0000, then the decode begins from the first line and
          * continues through the entire height of the image.<br>
@@ -1279,13 +1286,13 @@ public class AnimationCodec extends AbstractVideoCodec {
          * After the header comes the individual RLE-compressed lines. An individual
          * compressed line is comprised of a skip code, followed by a series of RLE
          * codes and pixel data:<br>
-         * <pre>
+         * 
          *  1 byte     skip code
          *  1 byte     RLE code
          *  n bytes    pixel data
          *  1 byte     RLE code
          *  n bytes    pixel data
-         * </pre>
+         * 
          * Each line begins onlyWith a byte that defines the number of pixels to skip in
          * a particular line in the output line before outputting new pixel
          * data. Actually, the skip count is set to one more than the number of

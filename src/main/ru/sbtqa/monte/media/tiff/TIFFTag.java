@@ -12,10 +12,10 @@ import org.monte.media.math.Rational;
  * associated with it, which may consist of zero or more values of a given data
  * type. The combination of a tag and a value is known as an IFD Entry or TIFF
  * Field.
- * <p>
+ * 
  * The actual tag values used in the root IFD of a standard ("baseline") tiff
  * stream are defined in the {@link BaselineTagSet} class.
- * <p>
+ * 
  *
  * @author Werner Randelshofer
  * @version 1.0 2010-07-24 Created.
@@ -51,10 +51,10 @@ public class TIFFTag {
      * case tagSet will represent the set of TIFFTags which appear in the IFD
      * pointed to. A TIFFTag represents an IFD pointer if and only if tagSet is
      * non-null or the data type TIFF_IFD_POINTER is legal.
-     * <p>
+     * 
      * If there are mnemonic names to be associated with the legal data values for the
      * tag, addValueName() should be called on the new instance for each name.
-     * <p>
+     * 
      * See the documentation for getDataTypes() for an explanation of how the set of data types is to be converted into a bit mask.
      * @param name the name of the tag; may be null.
      * @param number the number used to represent the tag.
@@ -78,10 +78,10 @@ public class TIFFTag {
      * case tagSet will represent the set of TIFFTags which appear in the IFD
      * pointed to. A TIFFTag represents an IFD pointer if and only if tagSet is
      * non-null or the data type TIFF_IFD_POINTER is legal.
-     * <p>
+     * 
      * If there are mnemonic names to be associated with the legal data values for the
      * tag, addValueName() should be called on the new instance for each name.
-     * <p>
+     * 
      * See the documentation for getDataTypes() for an explanation of how the set of data types is to be converted into a bit mask.
      * @param name the name of the tag; may be null.
      * @param number the number used to represent the tag.

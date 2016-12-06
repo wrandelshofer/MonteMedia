@@ -2,7 +2,6 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-
 package ru.sbtqa.monte.media.quicktime;
 
 import java.io.File;
@@ -17,9 +16,10 @@ import ru.sbtqa.monte.media.Multiplexer;
  * @version 1.0 2011-02-20 Created.
  */
 public class QuickTimeMultiplexer extends QuickTimeWriter implements Multiplexer {
- public QuickTimeMultiplexer(File file) throws IOException {
 
-super(file);
+    public QuickTimeMultiplexer(File file) throws IOException {
+
+        super(file);
 
     }
 
@@ -27,10 +27,10 @@ super(file);
      * Creates a new QuickTime writer.
      *
      * @param out the underlying output stream.
+     * @throws java.io.IOException TODO
      */
     public QuickTimeMultiplexer(ImageOutputStream out) throws IOException {
         super(out);
     }
-
 
 }

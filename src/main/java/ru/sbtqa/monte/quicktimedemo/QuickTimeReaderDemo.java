@@ -15,12 +15,13 @@ public class QuickTimeReaderDemo {
 
     /**
      * @param args the command line arguments
+     * @throws java.lang.Exception TODO
      */
     public static void main(String[] args) throws Exception {
-        URI uri=new File(System.getProperty("user.home"),"Movies/Untitled.mov").toURI();
-        QuickTimeDeserializer d=new QuickTimeDeserializer();
-        QuickTimeMeta m=d.read(uri);
-        
+        URI uri = new File(System.getProperty("user.home"), "Movies/Untitled.mov").toURI();
+        QuickTimeDeserializer d = new QuickTimeDeserializer();
+        QuickTimeMeta m = d.read(uri);
+
         System.out.println(m);
     }
 

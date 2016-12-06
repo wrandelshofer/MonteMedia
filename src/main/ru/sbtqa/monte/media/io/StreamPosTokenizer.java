@@ -11,7 +11,7 @@ import java.util.LinkedList;
  * This extension of <code>StreamTokenizer</code> keeps track
  * of the position of the tokens in the input stream, and it can
  * parse hexadecimal numbers and double numbers with exponents.
- * <p>
+ * 
  * The handling of numeric data is also different: a single dot
  * '.' and minus dot '-.' are not treated as numbers.
  *
@@ -81,16 +81,16 @@ public class StreamPosTokenizer
      * token, its value is the single character, converted to an integer.
      * For a quoted string token (see , its value is the quote character.
      * Otherwise, its value is one of the following:
-     * <ul>
-     * <li><code>TT_WORD</code> indicates that the token is a word.
-     * <li><code>TT_NUMBER</code> indicates that the token is a number.
-     * <li><code>TT_EOL</code> indicates that the end of line has been read.
+     * 
+     * <code>TT_WORD</code> indicates that the token is a word.
+     * <code>TT_NUMBER</code> indicates that the token is a number.
+     * <code>TT_EOL</code> indicates that the end of line has been read.
      *     The field can only have this value if the
      *     <code>eolIsSignificant</code> method has been called with the
      *     argument <code>true</code>.
-     * <li><code>TT_EOF</code> indicates that the end of the input stream
+     * <code>TT_EOF</code> indicates that the end of the input stream
      *     has been reached.
-     * </ul>
+     * 
      *
      * @see     java.io.StreamTokenizer#eolIsSignificant(boolean)
      * @see     java.io.StreamTokenizer#nextToken()
@@ -133,7 +133,7 @@ public class StreamPosTokenizer
      * string giving the characters of the word token. When the current
      * token is a quoted string token, this field contains the body of
      * the string.
-     * <p>
+     * 
      * The current token is a word when the value of the
      * <code>ttype</code> field is <code>TT_WORD</code>. The current token is
      * a quoted string token when the value of the <code>ttype</code> field is
@@ -183,7 +183,7 @@ public class StreamPosTokenizer
     /**
      * Sets the reader for the tokenizer.
      * 
-     * @param r
+     * @param r TODO
      */
     public void setReader(Reader r) {
         this.reader = r;
@@ -297,12 +297,12 @@ public class StreamPosTokenizer
     /**
      * Specifies that matching pairs of this character delimit string
      * constants in this tokenizer.
-     * <p>
+     * 
      * When the <code>nextToken</code> method encounters a string
      * constant, the <code>ttype</code> field is set to the string
      * delimiter and the <code>sval</code> field is set to the body of
      * the string.
-     * <p>
+     * 
      * If a string quote character is encountered, then a string is
      * recognized, consisting of all characters after (but not including)
      * the string quote character, up to (but not including) the next
@@ -325,12 +325,12 @@ public class StreamPosTokenizer
      * Specifies that numbers should be parsed by this tokenizer. The
      * syntax table of this tokenizer is modified so that each of the twelve
      * characters:
-     * <blockquote><pre>
+     * <blockquote>
      *      0 1 2 3 4 5 6 7 8 9 . -
-     * </pre></blockquote>
-     * <p>
+     * </blockquote>
+     * 
      * has the "numeric" attribute.
-     * <p>
+     * 
      * When the parser encounters a word token that has the format of a
      * double precision floating-point number, it treats the token as a
      * number rather than a word, by setting the the <code>ttype</code>
@@ -376,13 +376,13 @@ public class StreamPosTokenizer
      * as tokens; the <code>nextToken</code> method returns
      * <code>TT_EOL</code> and also sets the <code>ttype</code> field to
      * this value when an end of line is read.
-     * <p>
+     * 
      * A line is a sequence of characters ending with either a
      * carriage-return character (<code>'&#92;r'</code>) or a newline
      * character (<code>'&#92;n'</code>). In addition, a carriage-return
      * character followed immediately by a newline character is treated
      * as a single end-of-line token.
-     * <p>
+     * 
      * If the <code>flag</code> is false, end-of-line characters are
      * treated as white space and serve only to separate tokens.
      *
@@ -402,7 +402,7 @@ public class StreamPosTokenizer
      * If the flag argument is <code>true</code>, this stream tokenizer
      * recognizes C-style comments. All text between successive
      * occurrences of <code>/*</code> and <code>*&#47;</code> are discarded.
-     * <p>
+     * 
      * If the flag argument is <code>false</code>, then C-style comments
      * are not treated specially.
      *
@@ -419,7 +419,7 @@ public class StreamPosTokenizer
      * recognizes C++-style comments. Any occurrence of two consecutive
      * slash characters (<code>'/'</code>) is treated as the beginning of
      * a comment that extends to the end of the line.
-     * <p>
+     * 
      * If the flag argument is <code>false</code>, then C++-style
      * comments are not treated specially.
      *
@@ -437,7 +437,7 @@ public class StreamPosTokenizer
      * returned (the <code>ttype</code> field has the
      * value <code>TT_WORD</code> by the <code>nextToken</code> method
      * of this tokenizer.
-     * <p>
+     * 
      * If the flag argument is <code>false</code>, then the
      * <code>sval</code> field is not modified.
      *
@@ -475,7 +475,7 @@ public class StreamPosTokenizer
      * field. Additional information about the token may be in the
      * <code>nval</code> field or the <code>sval</code> field of this
      * tokenizer.
-     * <p>
+     * 
      * Typical clients of this
      * class first set up the syntax tables and then sit in a loop
      * calling nextToken to parse successive tokens until TT_EOF

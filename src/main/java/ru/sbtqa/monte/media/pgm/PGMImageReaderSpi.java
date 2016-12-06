@@ -13,8 +13,9 @@ import javax.imageio.stream.ImageInputStream;
 /**
  * ImageIO service provider interface for images in the Netpbm grayscale image
  * format (PGM).
- * <p>
- * See: <a href="http://netpbm.sourceforge.net/doc/pgm.html">PGM Format Specification</a>.
+ * 
+ * See: <a href="http://netpbm.sourceforge.net/doc/pgm.html">PGM Format
+ * Specification</a>.
  *
  * @author Werner Randelshofer
  * @version 1.0 2009-12-14 Created.
@@ -23,24 +24,24 @@ public class PGMImageReaderSpi extends ImageReaderSpi {
 
     public PGMImageReaderSpi() {
         super("Werner Randelshofer",//vendor name
-                "1.0",//version
-                new String[]{"PGM"},//names
-                new String[]{"pgm"},//suffixes,
-                new String[]{"image/pgm"},// MIMETypes,
-                "org.monte.media.pgm.PGMImageReader",// readerClassName,
-                new Class<?>[]{ImageInputStream.class},// inputTypes,
-                null,// writerSpiNames,
-                false,// supportsStandardStreamMetadataFormat,
-                null,// nativeStreamMetadataFormatName,
-                null,// nativeStreamMetadataFormatClassName,
-                null,// extraStreamMetadataFormatNames,
-                null,// extraStreamMetadataFormatClassNames,
-                false,// supportsStandardImageMetadataFormat,
-                null,// nativeImageMetadataFormatName,
-                null,// nativeImageMetadataFormatClassName,
-                null,// extraImageMetadataFormatNames,
-                null// extraImageMetadataFormatClassNames
-                );
+              "1.0",//version
+              new String[]{"PGM"},//names
+              new String[]{"pgm"},//suffixes,
+              new String[]{"image/pgm"},// MIMETypes,
+              "org.monte.media.pgm.PGMImageReader",// readerClassName,
+              new Class<?>[]{ImageInputStream.class},// inputTypes,
+              null,// writerSpiNames,
+              false,// supportsStandardStreamMetadataFormat,
+              null,// nativeStreamMetadataFormatName,
+              null,// nativeStreamMetadataFormatClassName,
+              null,// extraStreamMetadataFormatNames,
+              null,// extraStreamMetadataFormatClassNames,
+              false,// supportsStandardImageMetadataFormat,
+              null,// nativeImageMetadataFormatName,
+              null,// nativeImageMetadataFormatClassName,
+              null,// extraImageMetadataFormatNames,
+              null// extraImageMetadataFormatClassNames
+        );
     }
 
     @Override

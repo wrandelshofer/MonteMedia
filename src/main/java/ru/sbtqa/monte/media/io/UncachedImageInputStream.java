@@ -12,7 +12,7 @@ import static java.nio.ByteOrder.BIG_ENDIAN;
 
 /**
  * An implementation of {@code ImageInputStream} that gets its input from a
- * regular {@code InputStream}. No caching is used and thus backward seeking is 
+ * regular {@code InputStream}. No caching is used and thus backward seeking is
  * not supported.
  *
  * @author Werner Randelshofer
@@ -25,9 +25,10 @@ public class UncachedImageInputStream extends ImageInputStreamImpl2 {
     public UncachedImageInputStream(InputStream in) {
         this(in, BIG_ENDIAN);
     }
+
     public UncachedImageInputStream(InputStream in, ByteOrder bo) {
         this.in = in;
-        this.byteOrder=bo;
+        this.byteOrder = bo;
     }
 
     @Override
@@ -69,7 +70,6 @@ public class UncachedImageInputStream extends ImageInputStreamImpl2 {
             }
             streamPos += skipped;
         }
-
 
     }
 }

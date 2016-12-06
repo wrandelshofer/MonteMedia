@@ -50,14 +50,14 @@ import static java.lang.Math.*;
 
 /**
  * A spline interpolator for use in conjunction with an Animator object.
- * <p>
+ * 
  * This class interpolates fractional values using Bezier splines.  The anchor
  * points for the spline are assumed to be (0, 0) and (1, 1).  Control points
  * should all be in the range [0, 1].
- * <p>
+ * 
  * For more information on how splines are used to interpolate, refer to the
  * SMIL specification at http://w3c.org.
- * <p>
+ * 
  * <a href="http://www.w3.org/TR/smil/smil-animation.html#animationNS-InterpolationKeysplines"
  * >http://www.w3.org/TR/smil/smil-animation.html#animationNS-InterpolationKeysplines</a>
  *
@@ -73,9 +73,9 @@ public class SplineInterpolator extends AbstractSplineInterpolator {
      * Creates a new instance of SplineInterpolator with the control points
      * defined by (x1, y1) and (x2, y2).  The anchor points are implicitly
      * defined as (0, 0) and (1, 1).
-     * <p>
+     * 
      * The interpolator runs for one second.
-     * </p>
+     * 
      *
      * @param x1 The x coordinate for the first bezier control point.
      * @param y1 The y coordinate for the first bezier control point.
@@ -94,9 +94,9 @@ public class SplineInterpolator extends AbstractSplineInterpolator {
      * Creates a new instance of SplineInterpolator with the control points
      * defined by (x1, y1) and (x2, y2).  The anchor points are implicitly
      * defined as (0, 0) and (1, 1).
-     * <p>
+     * 
      * The interpolator runs for the specified time span.
-     * </p>
+     * 
      * @param x1 The x coordinate for the first bezier control point.
      * @param y1 The y coordinate for the first bezier control point.
      * @param x2 The x coordinate for the second bezier control point.
@@ -115,9 +115,9 @@ public class SplineInterpolator extends AbstractSplineInterpolator {
      * Creates a new instance of SplineInterpolator with the control points
      * defined by (x1, y1) and (x2, y2).  The anchor points are implicitly
      * defined as (0, 0) and (1, 1).
-     * <p>
+     * 
      * The interpolator runs for the specified time span.
-     * </p>
+     * 
      * @param x1 The x coordinate for the first bezier control point.
      * @param y1 The y coordinate for the first bezier control point.
      * @param x2 The x coordinate for the second bezier control point.

@@ -1,5 +1,5 @@
 /**
- * @(#)Main.java  
+ * @(#)Main.java
  * Copyright © 2013 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
@@ -29,12 +29,12 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        System.out.println("QuickTimeDemo "+Main.class.getPackage().getImplementationVersion());
+        System.out.println("QuickTimeDemo " + Main.class.getPackage().getImplementationVersion());
         System.out.println("This is a demo of the Monte Media library.");
         System.out.println("Copyright © Werner Randelshofer. All Rights Reserved.");
         System.out.println("License: Creative Commons Attribution 3.0.");
         System.out.println();
-        
+
         try {
             test(new File("quicktimedemo-jpg.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_JPEG, DepthKey, 24, QualityKey, 1f));
             test(new File("quicktimedemo-jpg-q0.5.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_JPEG, DepthKey, 24, QualityKey, 0.5f));
@@ -52,21 +52,22 @@ public class Main {
     }
 
     private static void test(File file, Format format) throws IOException {
-        testWriting(file,format);
+        testWriting(file, format);
         try {
-        testReading(file);
+            testReading(file);
         } catch (UnsupportedOperationException e) {
             e.printStackTrace();
         }
     }
+
     private static void testWriting(File file, Format format) throws IOException {
         System.out.println("Writing " + file);
 
         // Make the format more specific
         format = format.prepend(MediaTypeKey, MediaType.VIDEO, //
-                FrameRateKey, new Rational(30, 1),//
-                WidthKey, 320, //
-                HeightKey, 160);
+              FrameRateKey, new Rational(30, 1),//
+              WidthKey, 320, //
+              HeightKey, 160);
 
         // Create a buffered image for this format
         BufferedImage img = createImage(format);
@@ -86,12 +87,12 @@ public class Main {
             Random rnd = new Random(0); // use seed 0 to get reproducable output
             g.setBackground(Color.WHITE);
             g.clearRect(0, 0, img.getWidth(), img.getHeight());
-            
+
             for (int i = 0; i < 100; i++) {
                 // Create an animation frame
                 g.setColor(new Color(rnd.nextInt()));
                 g.fillOval(rnd.nextInt(img.getWidth() - 30), rnd.nextInt(img.getHeight() - 30), 30, 30);
-                
+
                 // write it to the writer
                 out.write(0, img, 1);
             }
@@ -101,7 +102,7 @@ public class Main {
             if (out != null) {
                 out.close();
             }
-            
+
             // Dispose the graphics object
             g.dispose();
         }
@@ -114,11 +115,11 @@ public class Main {
         try {
             // Create the reader
             in = new QuickTimeReader(file);
-            
+
             // Look for the first video track
             int track = 0;
             while (track < in.getTrackCount()
-                    && in.getFormat(track).get(MediaTypeKey) != MediaType.VIDEO) {
+                  && in.getFormat(track).get(MediaTypeKey) != MediaType.VIDEO) {
                 track++;
             }
 
@@ -126,9 +127,8 @@ public class Main {
             BufferedImage img = null;
             do {
                 img = in.read(track, img);
-                
+
                 //...to do: do something with the image...
-                
             } while (img != null);
 
         } finally {
@@ -139,7 +139,9 @@ public class Main {
         }
     }
 
-    /** Creates a buffered image of the specified depth with a random color palette.*/
+    /**
+     * Creates a buffered image of the specified depth with a random color palette.
+     */
     private static BufferedImage createImage(Format format) {
         int depth = format.get(DepthKey);
         int width = format.get(WidthKey);

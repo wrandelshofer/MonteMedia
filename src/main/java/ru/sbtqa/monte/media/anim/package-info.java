@@ -10,13 +10,12 @@
  */
 /**
  * Provides media handlers for the ANIM file format.
- * <p>
+ * 
  * Reference:<br>
  * Commodore-Amiga, Inc. (1991) Amiga ROM Kernel Reference Manual. Devices.
  * Third Edition. Reading: Addison-Wesley.
- * 
+ *
  * @author Werner Randelshofer
  * @version $Id: package-info.java 364 2016-11-09 19:54:25Z werner $
  */
 package ru.sbtqa.monte.media.anim;
-

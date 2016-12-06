@@ -21,23 +21,23 @@ import static org.monte.media.BufferFlag.*;
 
 /**
  * {@code RawCodec} encodes a BufferedImage as a byte[] array.
- * <p>
+ * 
  * This codec does not encode the color palette of an image. This must be done
  * separately.
- * <p>
+ * 
  * The pixels of a frame are written row by row from top to bottom and from
  * the left to the right.
- * <p>
+ * 
  * Supported input formats:
- * <ul>
+ * 
  * {@code VideoFormat} onlyWith {@code BufferedImage.class}, any width, any height,
  * depth=4.
- * </ul>
+ * 
  * Supported output formats:
- * <ul>
+ * 
  * {@code VideoFormat} onlyWith {@code byte[].class}, same width and height as input
  * format, depth=4.
- * </ul>
+ * 
  *
  * @author Werner Randelshofer
  * @version 1.0 2011-03-15 Created.

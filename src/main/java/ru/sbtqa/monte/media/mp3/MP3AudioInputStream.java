@@ -14,12 +14,12 @@ import javax.sound.sampled.AudioInputStream;
 
 /**
  * {@code AudioInputStream} adapter for {@link MP3ElementaryInputStream}.
- * <p>
+ * 
  * Unlike a regular audio input stream, an MP3 audio input stream can have a
  * variable frame size and can change its encoding method in mid-stream.
- * Therefore method getFormat can return different values for each frame,
- * and mark/reset is not supported, and method getFrameLength can not return
- * the total number of frames in the stream.
+ * Therefore method getFormat can return different values for each frame, and
+ * mark/reset is not supported, and method getFrameLength can not return the
+ * total number of frames in the stream.
  *
  * @author Werner Randelshofer
  * @version 1.0.1 2011-03-18 Method read(byte[],int,int) must not read multiple
@@ -30,21 +30,25 @@ public class MP3AudioInputStream extends AudioInputStream {
 
     private MP3ElementaryInputStream in;
 
-    /** Creates an MP3AudioInputStream and reads the stream until the first
-     * frame is reached.
+    /**
+     * Creates an MP3AudioInputStream and reads the stream until the first frame
+     * is reached.
      *
      * @param file A File.
-     * @throws IOException if the file does not contain an MP3 elementary stream.
+     * @throws IOException if the file does not contain an MP3 elementary
+     * stream.
      */
     public MP3AudioInputStream(File file) throws IOException {
         this(new BufferedInputStream(new FileInputStream(file)));
     }
 
-    /** Creates an MP3AudioInputStream and reads the stream until the first
-     * frame is reached.
+    /**
+     * Creates an MP3AudioInputStream and reads the stream until the first frame
+     * is reached.
      *
      * @param in An InputStream.
-     * @throws IOException if the stream does not contain an MP3 elementary stream.
+     * @throws IOException if the stream does not contain an MP3 elementary
+     * stream.
      */
     public MP3AudioInputStream(InputStream in) throws IOException {
         // Feed superclass with nonsense - we override all methods anyway.
@@ -60,15 +64,22 @@ public class MP3AudioInputStream extends AudioInputStream {
         return in.available();
     }
 
-    /** Returns the format of the <i>next</i> frame. Returns null if the stream
+    /**
+     * Returns the format of the <i>next</i> frame. Returns null if the stream
      * is not positioned inside a frame.
+     *
+     * @return TODO
      */
     @Override
     public AudioFormat getFormat() {
         return in.getFormat();
     }
 
-    /** Returns -1 because we don't know how many frames the stream has. */
+    /**
+     * Returns -1 because we don't know how many frames the stream has.
+     *
+     * @return TODO
+     */
     @Override
     public long getFrameLength() {
         return -1;
@@ -79,22 +90,29 @@ public class MP3AudioInputStream extends AudioInputStream {
         in.close();
     }
 
-    /** Throws an IOException, because the frame size is greater than 1. */
+    /**
+     * Throws an IOException, because the frame size is greater than 1.
+     *
+     * @return TODO
+     * @throws java.io.IOException TODO
+     */
     @Override
     public int read() throws IOException {
         throw new IOException("cannot read a single byte if frame size > 1");
     }
 
-    /** Reads some number of bytes from the audio input stream and stores them
+    /**
+     * Reads some number of bytes from the audio input stream and stores them
      * into the buffer array b. The number of bytes actually read is returned as
      * an integer. This method blocks until input data is available, the end of
-     * the stream is detected, or an exception is thrown.
-     * This method will always read an integral number of frames. If the length
-     * of the array is not an integral number of frames, a maximum of
+     * the stream is detected, or an exception is thrown. This method will
+     * always read an integral number of frames. If the length of the array is
+     * not an integral number of frames, a maximum of
      * {@code b.length - (b.length % frameSize)} bytes will be read.
      *
-     * @return Returns the total number of bytes read into the buffer, or -1 if there is
-     * no more data because the end of the stream has been reached.
+     * @return Returns the total number of bytes read into the buffer, or -1 if
+     * there is no more data because the end of the stream has been reached.
+     * @throws java.io.IOException TODO
      */
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
@@ -115,7 +133,7 @@ public class MP3AudioInputStream extends AudioInputStream {
             bytesRead += frameSize;
             off += frameSize;
             if (in.getNextFrame() == null
-                    || frameSize != in.getFrame().getFrameSize()) {
+                  || frameSize != in.getFrame().getFrameSize()) {
                 break;
             }
         }

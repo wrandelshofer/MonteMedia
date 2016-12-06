@@ -123,9 +123,9 @@ public class BinaryPanel
     /** Returns the offset in the binary data at the specified location.
      * Returns -1 if there is no binary data at the specified location.
      *
-     * @param x
-     * @param y
-     * @return
+     * @param x TODO
+     * @param y TODO
+     * @return TODO
      */
     private int getOffsetAt(int x, int y) {
         FontMetrics fm = getFontMetrics(getFont());

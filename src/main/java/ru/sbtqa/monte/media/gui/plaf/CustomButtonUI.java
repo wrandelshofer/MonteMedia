@@ -2,7 +2,6 @@
  * Copyright © 2006 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-
 package ru.sbtqa.monte.media.gui.plaf;
 
 import java.awt.*;
@@ -15,44 +14,45 @@ import static javax.swing.plaf.basic.BasicGraphicsUtils.drawString;
 import ru.sbtqa.monte.media.gui.border.BackdropBorder;
 
 /**
- * CustomButtonUI draws a BackdropBorder in the background of the button.
- * This allows for easy visual customization of buttons.
- * <p>
+ * CustomButtonUI draws a BackdropBorder in the background of the button. This
+ * allows for easy visual customization of buttons.
+ * 
  * Usage:
- * <pre>
+ * 
  * JButton b = new JButton();
  * b.setUI((ButtonUI) CustomButtonUI.createUI(b));
  * b.setBorder(new BackdropBorder(....));
- * </pre>
  * 
+ *
  * @author Werner Randelshofer
  * @version 2.0 2006-09-24 Rewritten.
  * <br>1.0 2001-10-16 Created.
  */
 public class CustomButtonUI
-        extends BasicButtonUI
-        implements PlafConstants {
+      extends BasicButtonUI
+      implements PlafConstants {
+
     private final static CustomButtonUI imageButtonUI = new CustomButtonUI();
-/*
-    private boolean defaults_initialized = false;
- */
+
     /*
+    private boolean defaults_initialized = false;
+     */
+ /*
     protected Color focusColor;
     protected Color selectColor;
     protected Color disabledTextColor;
-    */
-    
+     */
+
     // ********************************
     //          Create PLAF
     // ********************************
     public CustomButtonUI() {
     }
-    
-    
+
     public static ComponentUI createUI(JComponent c) {
         return new CustomButtonUI();
     }
-    
+
     // ********************************
     //          Install
     // ********************************
@@ -72,7 +72,7 @@ public class CustomButtonUI
             defaults_initialized = true;
         }*/
     }
-    
+
     @Override
     public void uninstallDefaults(AbstractButton b) {
         super.uninstallDefaults(b);
@@ -80,7 +80,7 @@ public class CustomButtonUI
         defaults_initialized = false;
          */
     }
-    
+
     // ********************************
     //         Create Listeners
     // ********************************
@@ -88,6 +88,7 @@ public class CustomButtonUI
     protected BasicButtonListener createButtonListener(AbstractButton b) {
         return new ImageButtonListener(b);
     }
+
     /*
     
     // ********************************
@@ -104,7 +105,7 @@ public class CustomButtonUI
     protected Color getFocusColor() {
         return focusColor;
     }*/
-    
+
     // ********************************
     //          Paint Methods
     // ********************************
@@ -115,13 +116,14 @@ public class CustomButtonUI
         ButtonModel m = ((AbstractButton) c).getModel();
         /*
         PlafUtils.paintBevel(c, g, 0, 0, c.getWidth(), c.getHeight(), true /*m.isEnabled()* /, m.isPressed() & m.isArmed(), m.isSelected());
-        */
-                Border b = c.getBorder();
+         */
+        Border b = c.getBorder();
         if (b instanceof BackdropBorder) {
             ((BackdropBorder) b).getBackgroundBorder().paintBorder(c, g, 0, 0, c.getWidth(), c.getHeight());
         }
         super.paint(g, c);
     }
+
     @Override
     protected void paintButtonPressed(Graphics g, AbstractButton b) {
         // We don't paint button pressed, because
@@ -135,73 +137,64 @@ public class CustomButtonUI
         }
          */
     }
-    
+
     @Override
     protected void paintFocus(Graphics g, AbstractButton b,
-            Rectangle viewRect, Rectangle textRect, Rectangle iconRect){
+          Rectangle viewRect, Rectangle textRect, Rectangle iconRect) {
         // We don't paint focus
         /**
-         * Rectangle focusRect = new Rectangle();
-         * String text = b.getText();
+         * Rectangle focusRect = new Rectangle(); String text = b.getText();
          * boolean isIcon = b.getIcon() != null;
          *
-         * // If there is text
-         * if ( text != null && !text.equals( "" ) ) {
-         * if ( !isIcon ) {
-         * focusRect.setBounds( textRect );
-         * }
-         * else {
-         * focusRect.setBounds( iconRect.union( textRect ) );
-         * }
-         * }
-         * // If there is an icon and no text
-         * else if ( isIcon ) {
-         * focusRect.setBounds( iconRect );
-         * }
+         * // If there is text if ( text != null && !text.equals( "" ) ) { if (
+         * !isIcon ) { focusRect.setBounds( textRect ); } else {
+         * focusRect.setBounds( iconRect.union( textRect ) ); } } // If there is
+         * an icon and no text else if ( isIcon ) { focusRect.setBounds(
+         * iconRect ); }
          *
-         * g.setColor(getFocusColor());
-         * g.drawRect((focusRect.x-1), (focusRect.y-1),
-         * focusRect.width+1, focusRect.height+1);
+         * g.setColor(getFocusColor()); g.drawRect((focusRect.x-1),
+         * (focusRect.y-1), focusRect.width+1, focusRect.height+1);
          */
     }
-    
-    
+
     @Override
     protected void paintText(Graphics g, JComponent c, Rectangle textRect, String text) {
         AbstractButton b = (AbstractButton) c;
         ButtonModel model = b.getModel();
         FontMetrics fm = g.getFontMetrics();
-        
+
         /* Draw the Text */
-        if(model.isEnabled()) {
-            /*** paint the text normally */
+        if (model.isEnabled()) {
+            /**
+             * * paint the text normally
+             */
             g.setColor(b.getForeground());
-            drawString(g,text, model.getMnemonic(),
-                    textRect.x,
-                    textRect.y + fm.getAscent());
+            drawString(g, text, model.getMnemonic(),
+                  textRect.x,
+                  textRect.y + fm.getAscent());
         } else {
-            /*** paint the text disabled ***/
-       //     g.setColor(getDisabledTextColor());
+            /**
+             * * paint the text disabled **
+             */
+            //     g.setColor(getDisabledTextColor());
             g.setColor(b.getForeground().brighter());
-            drawString(g,text,model.getMnemonic(),
-                    textRect.x, textRect.y + fm.getAscent());
-            
+            drawString(g, text, model.getMnemonic(),
+                  textRect.x, textRect.y + fm.getAscent());
+
         }
     }
-    
+
 }
 
 class ImageButtonListener extends BasicButtonListener {
-    
+
     public ImageButtonListener(AbstractButton b) {
         super(b);
     }
-    
+
     @Override
     public void focusGained(FocusEvent e) {
-        Component c = (Component)e.getSource();
+        Component c = (Component) e.getSource();
         c.repaint();
     }
 }
-
-

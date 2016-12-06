@@ -18,31 +18,35 @@ import javax.sound.sampled.AudioFormat;
 
 /**
  * Facilitates reading of an MP3 elementary stream frame by frame.
- * <p>
+ * 
  * An MP3 frame has a 32-bit header with the following contents in big endian
  * order:
- * <ul>
- * <li>bit 31-21, MP3 Sync Word, all bits must be set</li>
- * <li>bit 20-19, Version, 00=MPEG 2.5,01=reserved,10=MPEG 2, 11=MPEG 1</li>
- * <li>bit 18-17, Layer, 00=reserved, 01=layer 3, 10=layer 2, 11=layer 1</li>
- * <li>bit 16, Error protection, 0=16 bit CRC follows header, 1=Not protected</li>
- * <li>bit 15-12, Bit Rate in kbps, interpretation depends on version and layer</li>
- * <li>bit 11-10, Frequency, interpretation depends on version</li>
- * <li>bit 9, Pad Bit, 0=frame is not padded, 1=frame is padded to exactly fit the bit rate</li>
- * <li>bit 8, Private bit, only informative</li>
- * <li>bit 7-6, Channel Mode, 00=stereo, 01=joint stereo, 10=dual channel (2 mono channels), 11=single channel (mono)</li>
- * <li>bit 5-4, Mode Extension (only used with Joint Stereo), interpretation depends on version and layer</li>
- * <li>bit 3, Copyright, 0=not copyrighted, 1=copyrighted</li>
- * <li>bit 2, Original, 0=Copy of original media,1=original media</li>
- * <li>bit 1-0, Emphasis, 00=none,01=50/15ms,10=reserved,11=CCIT J.17</li>
- * </ul>
- * <p>
+ * 
+ * bit 31-21, MP3 Sync Word, all bits must be set
+ * bit 20-19, Version, 00=MPEG 2.5,01=reserved,10=MPEG 2, 11=MPEG 1
+ * bit 18-17, Layer, 00=reserved, 01=layer 3, 10=layer 2, 11=layer 1
+ * bit 16, Error protection, 0=16 bit CRC follows header, 1=Not
+ * protected
+ * bit 15-12, Bit Rate in kbps, interpretation depends on version and
+ * layer
+ * bit 11-10, Frequency, interpretation depends on version
+ * bit 9, Pad Bit, 0=frame is not padded, 1=frame is padded to exactly fit
+ * the bit rate
+ * bit 8, Private bit, only informative
+ * bit 7-6, Channel Mode, 00=stereo, 01=joint stereo, 10=dual channel (2
+ * mono channels), 11=single channel (mono)
+ * bit 5-4, Mode Extension (only used with Joint Stereo), interpretation
+ * depends on version and layer
+ * bit 3, Copyright, 0=not copyrighted, 1=copyrighted
+ * bit 2, Original, 0=Copy of original media,1=original media
+ * bit 1-0, Emphasis, 00=none,01=50/15ms,10=reserved,11=CCIT J.17
+ * 
+ * 
  * Reference:<br>
  * <a href="http://en.wikipedia.org/wiki/MP3">http://en.wikipedia.org/wiki/MP3</a><br>
  * <a href="http://www.datavoyage.com/mpgscript/mpeghdr.htm">http://www.datavoyage.com/mpgscript/mpeghdr.htm</a><br>
  * <a href="http://www.mp3-tech.org/programmer/frame_header.html">http://www.mp3-tech.org/programmer/frame_header.html</a><br>
  * <a href="http://lame.sourceforge.net/tech-FAQ.txt">http://lame.sourceforge.net/tech-FAQ.txt</a><br>
- * <a href0"http://www.altera.com/literature/dc/1.4-2005_Taiwan_2nd_SouthernTaiwanU-web.pdf">http://www.altera.com/literature/dc/1.4-2005_Taiwan_2nd_SouthernTaiwanU-web.pdf</a><br>
  *
  * @author Werner Randelshofer
  * @version 1.1 2011-01-17 Renamed getHeader() to getHeaderCode().
@@ -50,7 +54,9 @@ import javax.sound.sampled.AudioFormat;
  */
 public class MP3ElementaryInputStream extends FilterInputStream {
 
-    /** Defines the "MP3" encoding. */
+    /**
+     * Defines the "MP3" encoding.
+     */
     public final static AudioFormat.Encoding MP3 = new AudioFormat.Encoding("MP3");
     private Frame frame;
     private long pos;
@@ -91,19 +97,30 @@ public class MP3ElementaryInputStream extends FilterInputStream {
         {-1, -1, -1}, // reserved
     };
 
-    /** An elementary frame. */
+    /**
+     * An elementary frame.
+     */
     public static class Frame {
 
-        /** 32-bit header. */
+        /**
+         * 32-bit header.
+         */
         private int header;
-        /** 16-bit CRC. */
+        /**
+         * 16-bit CRC.
+         */
         private int crc;
-        /** The size of the data in the frame. */
+        /**
+         * The size of the data in the frame.
+         */
         private int bodySize;
-        /** The offset of the data in the frame. */
+        /**
+         * The offset of the data in the frame.
+         */
         private long bodyOffset;
 
-        /** Creates a new frame.
+        /**
+         * Creates a new frame.
          *
          * @param header The 32-bit Frame header
          */
@@ -111,13 +128,22 @@ public class MP3ElementaryInputStream extends FilterInputStream {
             this.header = header;
         }
 
-        /** Returns the raw 32-bit header code as it is stored in the file. */
+        /**
+         * Returns the raw 32-bit header code as it is stored in the file.
+         *
+         * @return TODO
+         */
         public int getHeaderCode() {
             return header;
 
         }
 
-        /** Returns the version number: 1=MPEG 1, 2=MPEG 2, 25=MPEG 2.5; -1=unknown. */
+        /**
+         * Returns the version number: 1=MPEG 1, 2=MPEG 2, 25=MPEG 2.5;
+         * -1=unknown.
+         *
+         * @return TODO
+         */
         public int getVersion() {
             switch (getVersionCode()) {
                 case 0:
@@ -131,14 +157,22 @@ public class MP3ElementaryInputStream extends FilterInputStream {
             }
         }
 
-        /** Returns the version code as it is stored in the
-         * header. 3=MPEG 1, 2=MPEG 2, 1=reserved, 0=MPEG 2.5. */
+        /**
+         * Returns the version code as it is stored in the header. 3=MPEG 1,
+         * 2=MPEG 2, 1=reserved, 0=MPEG 2.5.
+         *
+         * @return TODO
+         */
         public int getVersionCode() {
             return (header >>> 19) & 3;
         }
 
-        /** Returns the layer number.
-         * 1=Layer I, 2=Layer II, 3=Layer III, -1=unknown. */
+        /**
+         * Returns the layer number. 1=Layer I, 2=Layer II, 3=Layer III,
+         * -1=unknown.
+         *
+         * @return TODO
+         */
         public int getLayer() {
             switch (getLayerCode()) {
                 case 1:
@@ -152,13 +186,20 @@ public class MP3ElementaryInputStream extends FilterInputStream {
             }
         }
 
-        /** Returns the raw layer code as it is stored in the header.
-         * 3=Layer I, 2=Layer II, 1=Layer III, 0=reserved. */
+        /**
+         * Returns the raw layer code as it is stored in the header. 3=Layer I,
+         * 2=Layer II, 1=Layer III, 0=reserved.
+         *
+         * @return TODO
+         */
         public int getLayerCode() {
             return (header >>> 17) & 3;
         }
 
-        /** Returns the bitrate of the frame. Returns -1 if unknown.
+        /**
+         * Returns the bitrate of the frame. Returns -1 if unknown.
+         *
+         * @return TODO
          */
         public int getBitRate() {
             if (getVersion() < 0 || getLayer() < 0) {
@@ -169,18 +210,30 @@ public class MP3ElementaryInputStream extends FilterInputStream {
             return BIT_RATES[getBitRateCode()][v + l];
         }
 
-        /** Returns the raw bitrate code as it is stored in the header.
+        /**
+         * Returns the raw bitrate code as it is stored in the header.
+         *
+         * @return TODO
          */
         public int getBitRateCode() {
             return (header >>> 12) & 15;
         }
 
-        /** Returns true if this frame has a CRC. */
+        /**
+         * Returns true if this frame has a CRC.
+         *
+         * @return TODO
+         */
         public boolean hasCRC() {
             return ((header >>> 16) & 1) == 0;
         }
 
-        /** Returns the CRC of this frame. The value is only valid if hasCRC() returns true. */
+        /**
+         * Returns the CRC of this frame. The value is only valid if hasCRC()
+         * returns true.
+         *
+         * @return TODO
+         */
         public int getCRC() {
             return crc;
         }
@@ -189,8 +242,10 @@ public class MP3ElementaryInputStream extends FilterInputStream {
             return ((header >>> 9) & 1) == 1;
         }
 
-        /** Returns the sample rate in Hz.
-         * Returns -1 if unknown.
+        /**
+         * Returns the sample rate in Hz. Returns -1 if unknown.
+         *
+         * @return TODO
          */
         public int getSampleRate() {
             if (getVersion() < 0 || getLayer() < 0) {
@@ -200,16 +255,21 @@ public class MP3ElementaryInputStream extends FilterInputStream {
             return SAMPLE_RATES[getSampleRateCode()][v];
         }
 
-        /** Returns the raw sample rate code as it is stored in the header.
+        /**
+         * Returns the raw sample rate code as it is stored in the header.
+         *
+         * @return TODO
          */
         public int getSampleRateCode() {
             return (header >>> 10) & 3;
         }
 
-        /** Returns the number of samples in the frame.
-         * It is constant and always 384 samples for Layer I and 1152 samples
-         * for Layer II and Layer III.
+        /**
+         * Returns the number of samples in the frame. It is constant and always
+         * 384 samples for Layer I and 1152 samples for Layer II and Layer III.
          * Returns -1 if unknown.
+         *
+         * @return TODO
          */
         public int getSampleCount() {
             if (getLayer() < 0) {
@@ -218,35 +278,52 @@ public class MP3ElementaryInputStream extends FilterInputStream {
             return (getLayer() == 1 ? 192 : 576) * getChannelCount();
         }
 
-        /** Returns the number of channels.
+        /**
+         * Returns the number of channels.
+         *
          * @return 1=mono, 2=stereo, joint stereo or dual channel.
          */
         public int getChannelCount() {
             return getChannelModeCode() == 3 ? 1 : 2;
         }
 
-        /** Returns the sample size in bits. Always 16 bit per sample. */
+        /**
+         * Returns the sample size in bits. Always 16 bit per sample.
+         *
+         * @return TODO
+         */
         public int getSampleSize() {
             return 16;
         }
 
-        /** Returns the raw channel mode code as stored in the header.
+        /**
+         * Returns the raw channel mode code as stored in the header.
          *
-         * @return 0=stereo, 1=joint stereo, 2=dual channel, 3=single channel (mono).
+         * @return 0=stereo, 1=joint stereo, 2=dual channel, 3=single channel
+         * (mono).
          */
         public int getChannelModeCode() {
             return (header >>> 6) & 3;
         }
 
-        /** Returns the frame header as a byte array. */
+        /**
+         * Returns the frame header as a byte array.
+         *
+         * @return TODO
+         */
         public byte[] headerToByteArray() {
             byte[] data = new byte[hasCRC() ? 6 : 4];
             headerToByteArray(data, 0);
             return data;
         }
 
-        /** Writes the frame header into the specified byte array.
-         * Returns the number of bytes written.
+        /**
+         * Writes the frame header into the specified byte array. Returns the
+         * number of bytes written.
+         *
+         * @param data TODO
+         * @param offset TODO
+         * @return TODO
          */
         public int headerToByteArray(byte[] data, int offset) {
             if (data.length - offset < getHeaderSize()) {
@@ -263,7 +340,12 @@ public class MP3ElementaryInputStream extends FilterInputStream {
             return getHeaderSize();
         }
 
-        /** Writes the frame header into the specified output stream. */
+        /**
+         * Writes the frame header into the specified output stream.
+         *
+         * @param out TODO
+         * @throws java.io.IOException TODO
+         */
         public void writeHeader(OutputStream out) throws IOException {
             out.write((header >>> 24));
             out.write((header >>> 16));
@@ -275,58 +357,89 @@ public class MP3ElementaryInputStream extends FilterInputStream {
             }
         }
 
-        /** Returns the offset of the frame in the input stream. */
+        /**
+         * Returns the offset of the frame in the input stream.
+         *
+         * @return TODO
+         */
         public long getFrameOffset() {
             return getBodyOffset() - getHeaderSize();
         }
 
-        /** Returns the size of the frame in bytes.
-         * This size includes the header, the data and the padding.
+        /**
+         * Returns the size of the frame in bytes. This size includes the
+         * header, the data and the padding.
+         *
+         * @return TODO
          */
         public int getFrameSize() {
             return getHeaderSize() + getBodySize();
         }
 
-        /** Returns the offset of the header in the input stream. */
+        /**
+         * Returns the offset of the header in the input stream.
+         *
+         * @return TODO
+         */
         public long getHeaderOffset() {
             return getFrameOffset();
         }
 
-        /** Returns the size of the header in bytes. */
+        /**
+         * Returns the size of the header in bytes.
+         *
+         * @return TODO
+         */
         public int getHeaderSize() {
             return hasCRC() ? 6 : 4;
         }
 
-        /** Returns the offset of the side info in the input stream. */
+        /**
+         * Returns the offset of the side info in the input stream.
+         *
+         * @return TODO
+         */
         public long getSideInfoOffset() {
             return bodyOffset;
         }
 
-        /** Returns the size of the side info in bytes.
-         * It is 17 bytes long in a single channel frame and 32 bytes in dual
-         * channel or stereo channel.
+        /**
+         * Returns the size of the side info in bytes. It is 17 bytes long in a
+         * single channel frame and 32 bytes in dual channel or stereo channel.
+         *
+         * @return TODO
          */
         public int getSideInfoSize() {
             return getChannelCount() == 1 ? 17 : 32;
         }
 
-        /** Returns the offset of the frame body in the input stream. */
+        /**
+         * Returns the offset of the frame body in the input stream.
+         *
+         * @return TODO
+         */
         public long getBodyOffset() {
             return bodyOffset;
         }
 
-        /** Returns the size of the frame body in bytes.
-         * The body includes the side info, the audio data, and the padding.
+        /**
+         * Returns the size of the frame body in bytes. The body includes the
+         * side info, the audio data, and the padding.
+         *
+         * @return TODO
          */
         public int getBodySize() {
             return bodySize;
         }
 
-        /** Padding is used to fit the bit rates exactly.
-         * For an example: 128k 44.1kHz layer II uses a lot of 418 bytes and
-         * some of 417 bytes long frames to get the exact 128k bitrate. For
-         * Layer I slot is 32 bits long, for Layer II and Layer III slot is 8
-         * bits long. */
+        /**
+         * Padding is used to fit the bit rates exactly. For an example: 128k
+         * 44.1kHz layer II uses a lot of 418 bytes and some of 417 bytes long
+         * frames to get the exact 128k bitrate. For Layer I slot is 32 bits
+         * long, for Layer II and Layer III slot is 8 bits long.
+         *
+         * @return TODO
+         */
         public int getPaddingSize() {
             if (hasPadding()) {
                 return getLayer() == 1 ? 4 : 1;
@@ -347,8 +460,12 @@ public class MP3ElementaryInputStream extends FilterInputStream {
         super(new PushbackInputStream(in, 6));
     }
 
-    /** Gets the next frame from the input stream.
-     * Positions the stream in front of the frame header.
+    /**
+     * Gets the next frame from the input stream. Positions the stream in front
+     * of the frame header.
+     *
+     * @return TODO
+     * @throws java.io.IOException TODO
      */
     public Frame getNextFrame() throws IOException {
         while (frame != null && pos < frame.getBodyOffset() + frame.getBodySize()) {
@@ -422,14 +539,19 @@ public class MP3ElementaryInputStream extends FilterInputStream {
         return frame;
     }
 
-    /** Returns the current frame. */
+    /**
+     * Returns the current frame.
+     *
+     * @return TODO
+     */
     public Frame getFrame() {
         return frame;
     }
 
-    /** Gets the format of the current frame.
-     * Returns null if the input stream is not positioned on a frame, or the frame
-     * is not valid.
+    /**
+     * Gets the format of the current frame. Returns null if the input stream is
+     * not positioned on a frame, or the frame is not valid.
+     *
      * @return AudioFormat of current frame or null.
      */
     public AudioFormat getFormat() {
@@ -439,8 +561,8 @@ public class MP3ElementaryInputStream extends FilterInputStream {
             HashMap<String, Object> properties = new HashMap<String, Object>();
             properties.put("vbr", true);
             return new AudioFormat(MP3, //
-                    frame.getSampleRate(), frame.getSampleSize(), frame.getChannelCount(),//
-                    frame.getFrameSize(), frame.getFrameRate(), true, properties);
+                  frame.getSampleRate(), frame.getSampleSize(), frame.getChannelCount(),//
+                  frame.getFrameSize(), frame.getFrameRate(), true, properties);
         }
     }
 
@@ -452,8 +574,12 @@ public class MP3ElementaryInputStream extends FilterInputStream {
         return b;
     }
 
-    /** Reads a byte from the current frame (its header and its data).
-     * Returns -1 on an attempt to read past the end of the frame.
+    /**
+     * Reads a byte from the current frame (its header and its data). Returns -1
+     * on an attempt to read past the end of the frame.
+     *
+     * @return TODO
+     * @throws java.io.IOException TODO
      */
     @Override
     public int read() throws IOException {
@@ -463,9 +589,13 @@ public class MP3ElementaryInputStream extends FilterInputStream {
         return read0();
     }
 
-    /** Reads up to {@code len} bytes from the current frame (its header and its data).
-     * May read less then {@code len} bytes. Returns the actual number of bytes read.
-     * Returns -1 on an attempt to read past the end of the frame.
+    /**
+     * Reads up to {@code len} bytes from the current frame (its header and its
+     * data). May read less then {@code len} bytes. Returns the actual number of
+     * bytes read. Returns -1 on an attempt to read past the end of the frame.
+     *
+     * @return TODO
+     * @throws java.io.IOException TODO
      */
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
@@ -485,8 +615,11 @@ public class MP3ElementaryInputStream extends FilterInputStream {
     }
 
     /**
-     * Reads {@code b.length} bytes from the current frame (its header and its data).
-     * @throws {@code IOException} on an attempt to read past the end of the frame.
+     * Reads {@code b.length} bytes from the current frame (its header and its
+     * data).
+     *
+     * @param b TODO
+     * @throws java.io.IOException TODO
      */
     public final void readFully(byte b[]) throws IOException {
         readFully(b, 0, b.length);
@@ -494,7 +627,11 @@ public class MP3ElementaryInputStream extends FilterInputStream {
 
     /**
      * Reads {@code len} bytes from the current frame (its header and its data).
-     * @throws {@code IOException} on an attempt to read past the end of the frame.
+     *
+     * @param b TODO
+     * @param len TODO
+     * @param off TODO
+     * @throws java.io.IOException TODO
      */
     public final void readFully(byte b[], int off, int len) throws IOException {
         if (len < 0) {
@@ -511,9 +648,13 @@ public class MP3ElementaryInputStream extends FilterInputStream {
         }
     }
 
-    /** Skips up to {@code n} bytes from the current frame (its header and its data).
-     * Returns the actual number of bytes that have been skipped.
-     * Returns -1 on an attempt to skip past the end of the frame.
+    /**
+     * Skips up to {@code n} bytes from the current frame (its header and its
+     * data). Returns the actual number of bytes that have been skipped. Returns
+     * -1 on an attempt to skip past the end of the frame.
+     *
+     * @return TODO
+     * @throws java.io.IOException TODO
      */
     @Override
     public long skip(long n) throws IOException {
@@ -534,6 +675,7 @@ public class MP3ElementaryInputStream extends FilterInputStream {
 
     /**
      * Returns the current position in the stream.
+     *
      * @return The stream position.
      */
     public long getStreamPosition() {

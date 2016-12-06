@@ -6,14 +6,12 @@ package ru.sbtqa.monte.media.ilbm;
 
 /**
  * Implements CRNG and CCRT color cycling for an IFF ILBM image.
- * <p>
- * This class supports CRNG and CCRT color cycling as published in
- *   AMIGA ROM Kernel Reference Manual: Devices,
- *   Third Edition,
- *   Addison-Wesley, Reading
- *   ISBN 0-201-56775-X
+ * 
+ * This class supports CRNG and CCRT color cycling as published in AMIGA ROM
+ * Kernel Reference Manual: Devices, Third Edition, Addison-Wesley, Reading ISBN
+ * 0-201-56775-X
  *
- * <pre>
+ * 
  * //ILBM CRNG Color range cycling
  * //--------------------------------------------
  *
@@ -29,9 +27,9 @@ package ru.sbtqa.monte.media.ilbm;
  *  WORD set crngActive flags;     // bit0 set = active, bit 1 set = reverse
  *  UBYTE low; UBYTE high;         // lower and upper color registers selected
  *  } ilbmColorRegisterRangeChunk;
- * </pre>
+ * 
  *
- * <pre>
+ * 
  * ILBM CCRT Color cycling range and timing
  * --------------------------------------------
  * /
@@ -47,7 +45,7 @@ package ru.sbtqa.monte.media.ilbm;
  * WORD  pad;        /* future exp - store 0 here * /
  * } ilbmColorCyclingAndTimingChunk;
  *
- * </pre>
+ * 
  *
  * @author Werner Randelshofer
  * @version 1.1 2010-08-03 Added support for blended color cycles.
@@ -56,13 +54,21 @@ package ru.sbtqa.monte.media.ilbm;
  */
 public class CRNGColorCycle extends ColorCycle {
 
-    /** Lowest color register of the range. */
+    /**
+     * Lowest color register of the range.
+     */
     private int low;
-    /** Highest color register of the range. */
+    /**
+     * Highest color register of the range.
+     */
     private int high;
-    /** Whether the color cycle is reverse. */
+    /**
+     * Whether the color cycle is reverse.
+     */
     private boolean isReverse;
-    /** Whether the image is in EHB mode. */
+    /**
+     * Whether the image is in EHB mode.
+     */
     private boolean isEHB;
 
     public CRNGColorCycle(int rate, int timeScale, int low, int high, boolean isActive, boolean isReverse, boolean isEHB) {
@@ -90,43 +96,43 @@ public class CRNGColorCycle extends ColorCycle {
         if (isBlended) {
             doBlendedCycle(rgbs, time);
         } else {
-            doHardCycle(rgbs,time);
+            doHardCycle(rgbs, time);
         }
     }
 
     public void doBlendedCycle(int[] rgbs, long time) {
         if (isActive) {
             doHardCycle(rgbs, time);
-            double blendf =  Math.IEEEremainder((time * rate / timeScale / 1000f), high - low + 1);
+            double blendf = Math.IEEEremainder((time * rate / timeScale / 1000f), high - low + 1);
             blendf = blendf - Math.floor(blendf);
-            int blend =  255-(int)(blendf*255);
+            int blend = 255 - (int) (blendf * 255);
             if (isReverse) {
                 {
-                    blend=255-blend;
+                    blend = 255 - blend;
                     int tmp = rgbs[high];
                     for (int i = high; i > low; i--) {
-                        rgbs[i] = ((((rgbs[i]&0xff)*blend+(rgbs[i - 1]&0xff)*(255-blend))>>8)&0xff)
-                                |((((rgbs[i]&0xff00)*blend+(rgbs[i - 1]&0xff00)*(255-blend))>>8)&0xff00)
-                                |((((rgbs[i]&0xff0000)*blend+(rgbs[i - 1]&0xff0000)*(255-blend))>>8)&0xff0000);
+                        rgbs[i] = ((((rgbs[i] & 0xff) * blend + (rgbs[i - 1] & 0xff) * (255 - blend)) >> 8) & 0xff)
+                              | ((((rgbs[i] & 0xff00) * blend + (rgbs[i - 1] & 0xff00) * (255 - blend)) >> 8) & 0xff00)
+                              | ((((rgbs[i] & 0xff0000) * blend + (rgbs[i - 1] & 0xff0000) * (255 - blend)) >> 8) & 0xff0000);
                     }
-                    rgbs[low] =  ((((rgbs[low]&0xff)*blend+(tmp&0xff)*(255-blend))>>8)&0xff)
-                                |((((rgbs[low]&0xff00)*blend+(tmp&0xff00)*(255-blend))>>8)&0xff00)
-                                |((((rgbs[low]&0xff0000)*blend+(tmp&0xff0000)*(255-blend))>>8)&0xff0000);;
+                    rgbs[low] = ((((rgbs[low] & 0xff) * blend + (tmp & 0xff) * (255 - blend)) >> 8) & 0xff)
+                          | ((((rgbs[low] & 0xff00) * blend + (tmp & 0xff00) * (255 - blend)) >> 8) & 0xff00)
+                          | ((((rgbs[low] & 0xff0000) * blend + (tmp & 0xff0000) * (255 - blend)) >> 8) & 0xff0000);;
                 }
                 if (isEHB) {
-                // TO DO
+                    // TO DO
                 }
             } else {
                 {
                     int tmp = rgbs[high];
                     for (int i = high; i > low; i--) {
-                        rgbs[i] = ((((rgbs[i]&0xff)*blend+(rgbs[i - 1]&0xff)*(255-blend))>>8)&0xff)
-                                |((((rgbs[i]&0xff00)*blend+(rgbs[i - 1]&0xff00)*(255-blend))>>8)&0xff00)
-                                |((((rgbs[i]&0xff0000)*blend+(rgbs[i - 1]&0xff0000)*(255-blend))>>8)&0xff0000);
+                        rgbs[i] = ((((rgbs[i] & 0xff) * blend + (rgbs[i - 1] & 0xff) * (255 - blend)) >> 8) & 0xff)
+                              | ((((rgbs[i] & 0xff00) * blend + (rgbs[i - 1] & 0xff00) * (255 - blend)) >> 8) & 0xff00)
+                              | ((((rgbs[i] & 0xff0000) * blend + (rgbs[i - 1] & 0xff0000) * (255 - blend)) >> 8) & 0xff0000);
                     }
-                    rgbs[low] =  ((((rgbs[low]&0xff)*blend+(tmp&0xff)*(255-blend))>>8)&0xff)
-                                |((((rgbs[low]&0xff00)*blend+(tmp&0xff00)*(255-blend))>>8)&0xff00)
-                                |((((rgbs[low]&0xff0000)*blend+(tmp&0xff0000)*(255-blend))>>8)&0xff0000);;
+                    rgbs[low] = ((((rgbs[low] & 0xff) * blend + (tmp & 0xff) * (255 - blend)) >> 8) & 0xff)
+                          | ((((rgbs[low] & 0xff00) * blend + (tmp & 0xff00) * (255 - blend)) >> 8) & 0xff00)
+                          | ((((rgbs[low] & 0xff0000) * blend + (tmp & 0xff0000) * (255 - blend)) >> 8) & 0xff0000);;
                 }
                 if (isEHB) {
                     // TO DO

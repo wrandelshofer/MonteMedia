@@ -29,14 +29,14 @@ public class ColorAdjustCodec extends AbstractVideoCodec {
 
     public ColorAdjustCodec() {
         super(new Format[]{
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
-                    EncodingKey, ENCODING_BUFFERED_IMAGE), //
-                },
-                new Format[]{
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
-                    EncodingKey, ENCODING_BUFFERED_IMAGE), //
-                }//
-                );
+            new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
+            EncodingKey, ENCODING_BUFFERED_IMAGE), //
+        },
+              new Format[]{
+                  new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
+                        EncodingKey, ENCODING_BUFFERED_IMAGE), //
+              }//
+        );
         name = "Adjust Color";
     }
 
@@ -46,10 +46,11 @@ public class ColorAdjustCodec extends AbstractVideoCodec {
         outputFormat = fNew;
         return fNew;
     }
+
     @Override
     public Format setOutputFormat(Format f) {
         // This codec always produces the same ottput format as the input format.
-        outputFormat=inputFormat;
+        outputFormat = inputFormat;
         return outputFormat;
     }
 
@@ -71,8 +72,8 @@ public class ColorAdjustCodec extends AbstractVideoCodec {
         if (out.data instanceof BufferedImage) {
             imgOut = (BufferedImage) out.data;
             if (imgOut.getWidth() != imgIn.getWidth()//
-                    || imgOut.getHeight() != imgIn.getHeight()//
-                    || imgOut.getType()!=BufferedImage.TYPE_INT_RGB) {
+                  || imgOut.getHeight() != imgIn.getHeight()//
+                  || imgOut.getType() != BufferedImage.TYPE_INT_RGB) {
                 imgOut = null;
             }
         }
@@ -107,21 +108,21 @@ public class ColorAdjustCodec extends AbstractVideoCodec {
 
         SplineInterpolator sint;
         sint = new SplineInterpolator(0.5f - model.getShadows() * 0.5f, 0.5f,//
-                0.5f + model.getHighlights() * 0.5f, 0.5f);
+              0.5f + model.getHighlights() * 0.5f, 0.5f);
 
         BezierInterpolator hilightsAndShadows;
         if (model.getShadows() == 0 && model.getHighlights() == 0) {
             hilightsAndShadows = null;
         } else {
             hilightsAndShadows = new BezierInterpolator(new double[][]{//
-                        {0, 0},//
-                        {0.5f - model.getShadows() * 0.5f,//
-                            0.5f},//
-                        {0.5, 0.5},
-                        {0.5f + model.getHighlights() * 0.5f,//
-                            0.5f}, //
-                        {1, 1}//
-                    });
+                {0, 0},//
+                {0.5f - model.getShadows() * 0.5f,//
+                    0.5f},//
+                {0.5, 0.5},
+                {0.5f + model.getHighlights() * 0.5f,//
+                    0.5f}, //
+                {1, 1}//
+            });
         }
         float brightness = model.getBrightness();
         float exposure = 1f + model.getExposure();
@@ -154,12 +155,11 @@ public class ColorAdjustCodec extends AbstractVideoCodec {
                 rgb[0] = r * r * rmu + r * rnu;
                 rgb[2] = b * b * bmu + b * bnu;
             }
-            
+
             // From now on, we work with values in the range [0,1].
             rgb[0] *= 1f / 255f;
             rgb[1] *= 1f / 255f;
             rgb[2] *= 1f / 255f;
-
 
             if (TT) {
                 ColorModels.RGBtoYCC(rgb, ycc);
@@ -186,10 +186,9 @@ public class ColorAdjustCodec extends AbstractVideoCodec {
             }
 
             rgbOut[i] = ((int) (rgb[0] * 255) << 16)
-                    | ((int) (rgb[1] * 255) << 8)
-                    | ((int) (rgb[2] * 255) << 0);
+                  | ((int) (rgb[1] * 255) << 8)
+                  | ((int) (rgb[2] * 255) << 0);
         }
-
 
         return CODEC_OK;
     }

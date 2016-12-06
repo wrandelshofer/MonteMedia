@@ -136,10 +136,10 @@ public class BoundedRangeInputStream
      * Sets the model's minimum to <I>newMinimum</I>.   The 
      * other three properties may be changed as well, to ensure 
      * that:
-     * <pre>
+     * 
      * minimum <= value <= value+extent <= maximum
-     * </pre>
-     * <p>
+     * 
+     * 
      * Notifies any listeners if the model changes.
      *
      * @param newMinimum the model's new minimum
@@ -168,10 +168,10 @@ public class BoundedRangeInputStream
     #
      * Sets the model's maximum to <I>newMaximum</I>. The other 
      * three properties may be changed as well, to ensure that
-     * <pre>
+     * 
      * minimum <= value <= value+extent <= maximum
-     * </pre>
-     * <p>
+     * 
+     * 
      * Notifies any listeners if the model changes.
      *
      * @param newMaximum the model's new maximum
@@ -203,20 +203,20 @@ public class BoundedRangeInputStream
      *
      * Sets the model's current value to <code>newValue</code> if <code>newValue</code>
      * satisfies the model's constraints. Those constraints are:
-     * <pre>
+     * 
      * minimum <= value <= value+extent <= maximum
-     * </pre>
+     * 
      * Otherwise, if <code>newValue</code> is less than <code>minimum</code> 
      * it's set to <code>minimum</code>, if its greater than 
      * <code>maximum</code> then it's set to <code>maximum</code>, and 
      * if it's greater than <code>value+extent</code> then it's set to 
      * <code>value+extent</code>.
-     * <p>
+     * 
      * When a BoundedRange model is used with a scrollbar the value
      * specifies the origin of the scrollbar knob (aka the "thumb" or
      * "elevator").  The value usually represents the origin of the 
      * visible part of the object being scrolled.
-     * <p>
+     * 
      * Notifies any listeners if the model changes.
      *
      * @param newValue the model's new value
@@ -234,7 +234,7 @@ public class BoundedRangeInputStream
      * and will be set to false when the value has finished changing.  Normally
      * this allows a listener to only take action when the final value change in
      * committed, instead of having to do updates for all intermediate values.
-     * <p>
+     * 
      * Sliders and scrollbars use this property when a drag is underway.
      * 
      * @param b true if the upcoming changes to the value property are part of a series
@@ -274,14 +274,14 @@ public class BoundedRangeInputStream
      * Sets the model's extent.  The <I>newExtent</I> is forced to 
      * be greater than or equal to zero and less than or equal to
      * maximum - value.   
-     * <p>
+     * 
      * When a BoundedRange model is used with a scrollbar the extent
      * defines the length of the scrollbar knob (aka the "thumb" or
      * "elevator").  The extent usually represents how much of the 
      * object being scrolled is visible. When used with a slider,
      * the extent determines how much the value can "jump", for
      * example when the user presses PgUp or PgDn.
-     * <p>
+     * 
      * Notifies any listeners if the model changes.
      *
      * @param  newExtent the model's new extent

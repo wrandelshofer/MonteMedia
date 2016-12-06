@@ -116,14 +116,14 @@ public class IFFChunk {
             return new IFFChunk[0];
         }
         int i = 0;
-        for (IFFChunk chunk :collectionChunks) {
+        for (IFFChunk chunk : collectionChunks) {
             if (chunk.id == id) {
                 i++;
             }
         }
         IFFChunk[] array = new IFFChunk[i];
         i = 0;
-        for (IFFChunk chunk :collectionChunks) {
+        for (IFFChunk chunk : collectionChunks) {
             if (chunk.id == id) {
                 array[i++] = chunk;
             }
@@ -140,6 +140,8 @@ public class IFFChunk {
 
     /**
      * Sets the data. Note: The array will not be cloned.
+     *
+     * @param data TODO
      */
     public void setData(byte[] data) {
         this.data = data;
@@ -147,6 +149,8 @@ public class IFFChunk {
 
     /**
      * Gets the data. Note: The array will not be cloned.
+     *
+     * @return TODO
      */
     public byte[] getData() {
         return data;

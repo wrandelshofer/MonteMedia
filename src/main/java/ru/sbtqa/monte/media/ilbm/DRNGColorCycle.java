@@ -8,8 +8,7 @@ import java.util.Arrays;
 
 /**
  * Implements DRNG color cycling for an IFF ILBM image.
- * <p>
- * <pre>
+ * 
  * ILBM DRNG DPaint IV enhanced color cycle chunk
  * --------------------------------------------
  *
@@ -42,7 +41,7 @@ import java.util.Arrays;
  *     ilbmDRNGDColor[ntrue] trueColorCells;
  *     ilbmDRNGDIndex[ntregs] colorRegisterCells;
  * } ilbmDRangeChunk;
- * </pre>
+ * 
  *
  * @author Werner Randelshofer
  * @version 1.0.1 2010-11-08 Fixed color cycling rate.
@@ -59,8 +58,9 @@ public class DRNGColorCycle extends ColorCycle {
             this.cell = cell;
         }
 
-        /** Reads the initial value of the cell which is either taken
-         * from the rgb palette or from an rgb value stored by the cell.
+        /**
+         * Reads the initial value of the cell which is either taken from the
+         * rgb palette or from an rgb value stored by the cell.
          *
          * @param rgbs the palette.
          * @param isHalfbright whether the halfbright value shall be taken.
@@ -68,8 +68,12 @@ public class DRNGColorCycle extends ColorCycle {
          */
         public abstract void readValue(int[] rgbs, boolean isHalfbright);
 
-        /** Writes the final value of the cell into the color palette - or
-         * does nothing
+        /**
+         * Writes the final value of the cell into the color palette - or does
+         * nothing
+         *
+         * @param rgbs TODO
+         * @param isHalfbright TODO
          */
         public abstract void writeValue(int[] rgbs, boolean isHalfbright);
 
@@ -93,7 +97,9 @@ public class DRNGColorCycle extends ColorCycle {
         }
     }
 
-    /** True color cell. */
+    /**
+     * True color cell.
+     */
     public static class DColorCell extends Cell {
 
         private int rgb;
@@ -103,13 +109,18 @@ public class DRNGColorCycle extends ColorCycle {
             this.rgb = rgb;
         }
 
-        /** Sets the initial value of the cell from its rgb instance variable. */
+        /**
+         * Sets the initial value of the cell from its rgb instance variable.
+         */
         @Override
         public void readValue(int[] rgbs, boolean isHalfbright) {
             value = isHalfbright ? rgb & 0x0f0f0f : rgb;
         }
 
-        /** Does nothing.
+        /**
+         * Does nothing.
+         *
+         * @param isHalfbright TODO
          */
         @Override
         public void writeValue(int[] rgbs, boolean isHalfbright) {
@@ -117,7 +128,9 @@ public class DRNGColorCycle extends ColorCycle {
         }
     }
 
-    /** Color register cell. */
+    /**
+     * Color register cell.
+     */
     public static class DIndexCell extends Cell {
 
         private int index;
@@ -127,40 +140,55 @@ public class DRNGColorCycle extends ColorCycle {
             this.index = index;
         }
 
-        /** Sets the initial value of the cell from the rgb palette. */
+        /**
+         * Sets the initial value of the cell from the rgb palette.
+         */
         @Override
         public void readValue(int[] rgbs, boolean isHalfbright) {
             value = isHalfbright ? rgbs[index + 32] : rgbs[index];
         }
 
-        /** Writes the final value of the cell into the color palette.
+        /**
+         * Writes the final value of the cell into the color palette.
+         *
+         * @param isHalfbright TODO
          */
         @Override
         public void writeValue(int[] rgbs, boolean isHalfbright) {
             rgbs[isHalfbright ? index + 32 : index] = value;
         }
     }
-    /** Lowest color register of the range. */
+    /**
+     * Lowest color register of the range.
+     */
     private int min;
-    /** Highest color register of the range. */
+    /**
+     * Highest color register of the range.
+     */
     private int max;
-    /** Whether the image is in EHB mode. */
+    /**
+     * Whether the image is in EHB mode.
+     */
     private boolean isEHB;
-    /** List with interpolated cells. */
+    /**
+     * List with interpolated cells.
+     */
     private Cell[] ic;
-    /** Actual cells with values. */
+    /**
+     * Actual cells with values.
+     */
     private Cell[] cells;
     private boolean isReverse;
 
     /**
      *
-     * @param rate
-     * @param timeScale
-     * @param min
-     * @param max
-     * @param isActive
-     * @param isEHB
-     * @param cells 
+     * @param rate TODO
+     * @param timeScale TODO
+     * @param min TODO
+     * @param max TODO
+     * @param isActive TODO
+     * @param isEHB TODO
+     * @param cells TODO
      */
     public DRNGColorCycle(int rate, int timeScale, int min, int max, boolean isActive, boolean isEHB, Cell[] cells) {
         super(rate, timeScale, isActive);
@@ -195,15 +223,17 @@ public class DRNGColorCycle extends ColorCycle {
                 right = (right == cells.length - 1) ? 0 : right + 1;
             } else {
                 //System.out.println("  interpolating cell "+i+"("+(i+min)+")"+" with values from "+cells[left].cell+" and "+cells[right].cell);
-                int levels=cells[left].cell<cells[right].cell?cells[right].cell-cells[left].cell:max-cells[left].cell+cells[right].cell+1;
-                int blend=cells[right].cell>(i+min)?cells[right].cell-(i+min):max-(i+min)+cells[right].cell+1;
-                int lrgb=cells[left].value;
-                int rrgb=cells[right].value;
-                ic[i]=new DColorCell(i,//
-                       ( ((lrgb&0xff0000)*blend+(rrgb&0xff0000)*(levels-blend))/levels&0xff0000)|//
-                       ( ((lrgb&0xff00)*blend+(rrgb&0xff00)*(levels-blend))/levels&0xff00)|//
-                       ( ((lrgb&0xff)*blend+(rrgb&0xff)*(levels-blend))/levels)//
-                       );
+                int levels = cells[left].cell < cells[right].cell ? cells[right].cell - cells[left].cell : max - cells[left].cell + cells[right].cell + 1;
+                int blend = cells[right].cell > (i + min) ? cells[right].cell - (i + min) : max - (i + min) + cells[right].cell + 1;
+                int lrgb = cells[left].value;
+                int rrgb = cells[right].value;
+                ic[i] = new DColorCell(i,//
+                      (((lrgb & 0xff0000) * blend + (rrgb & 0xff0000) * (levels - blend)) / levels & 0xff0000)
+                      |//
+                      (((lrgb & 0xff00) * blend + (rrgb & 0xff00) * (levels - blend)) / levels & 0xff00)
+                      |//
+                      (((lrgb & 0xff) * blend + (rrgb & 0xff) * (levels - blend)) / levels)//
+                );
                 //System.out.println("  levels:"+levels+" blend:"+blend+" lrgb:"+Integer.toHexString(lrgb)+" rrgb:"+Integer.toHexString(rrgb)+" blend:"+Integer.toHexString(((DColorCell)ic[i]).rgb));
             }
         }

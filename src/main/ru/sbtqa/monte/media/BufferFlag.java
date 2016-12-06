@@ -21,10 +21,10 @@ public enum BufferFlag {
     END_OF_MEDIA,
     /** Indicates that the data in this buffer is used for initializing the
      * decoding queue.
-     * <p>
+     * 
      * This flag is used when the media time of a track is set to a non-keyframe
      * sample. Thus decoding must start at a keyframe at an earlier time.
-     * <p>
+     * 
      * Decoders should decode the buffer.
      * Encoders and Multiplexers should discard the buffer.
      */

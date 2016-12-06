@@ -17,7 +17,9 @@ import java.util.Comparator;
  */
 public abstract class AbstractSplineInterpolator extends Interpolator {
 
-    /** Note: (x0,y0) and (x1,y1) are implicitly (0, 0) and (1,1) respectively. */
+    /**
+     * Note: (x0,y0) and (x1,y1) are implicitly (0, 0) and (1,1) respectively.
+     */
     private LengthItem[] fractions;
 
     private static class LengthItem {
@@ -40,8 +42,7 @@ public abstract class AbstractSplineInterpolator extends Interpolator {
         public String toString() {
             return "LengthItem{" + "x=" + x + ", y=" + y + ", t=" + t + '}';
         }
-        
-        
+
     }
 
     private static class FractionComparator implements Comparator<LengthItem> {
@@ -58,51 +59,58 @@ public abstract class AbstractSplineInterpolator extends Interpolator {
     }
     private static FractionComparator fractionComparator = new FractionComparator();
 
- public AbstractSplineInterpolator() {
+    public AbstractSplineInterpolator() {
         this(0f, 1f);
     }
+
     /**
      * Creates a new interpolator which interpolates from 0 to 1 within the
      * specified timespan.
+     *
+     * @param timespan TODO
      */
     public AbstractSplineInterpolator(long timespan) {
         this(0f, 1f, timespan);
     }
+
     /**
      * Creates a new interpolator which interpolates into the specified
      * direction within one second.
      *
      * @param reverse Set this to true, if you want to interpolate from 1 to 0
-     * instead of from 0 to 1. 
+     * instead of from 0 to 1.
      */
     public AbstractSplineInterpolator(boolean reverse) {
         this((reverse) ? 1f : 0f, (reverse) ? 0f : 1f);
     }
+
     /**
-     * Creates a new interpolator which interpolates from the specified
-     * start value to the specified end value within one second.
+     * Creates a new interpolator which interpolates from the specified start
+     * value to the specified end value within one second.
      *
-     * @param startValue A value between 0 and 1. 
-     * @param endValue A value between 0 and 1. 
+     * @param startValue A value between 0 and 1.
+     * @param endValue A value between 0 and 1.
      */
     public AbstractSplineInterpolator(float startValue, float endValue) {
         this(startValue, endValue, 1000);
     }
+
     /**
-     * Creates a new interpolator which interpolates from the specified
-     * start value to the specified end value within the specified timespan.
+     * Creates a new interpolator which interpolates from the specified start
+     * value to the specified end value within the specified timespan.
      *
-     * @param startValue A value between 0 and 1. 
-     * @param endValue A value between 0 and 1. 
+     * @param startValue A value between 0 and 1.
+     * @param endValue A value between 0 and 1.
      * @param timespan A timespan in milliseconds.
      */
     public AbstractSplineInterpolator(float startValue, float endValue, long timespan) {
-        super(startValue,endValue,timespan);
-    }    
+        super(startValue, endValue, timespan);
+    }
 
-    /** This method must be called by the subclass in the constructor.
-     * 
-     * @param N 
+    /**
+     * This method must be called by the subclass in the constructor.
+     *
+     * @param N TODO
      */
     protected void updateFractions(int N) {
         fractions = new LengthItem[N];
@@ -114,8 +122,11 @@ public abstract class AbstractSplineInterpolator extends Interpolator {
     }
 
     /**
-     * Evaluates the spline function at time t, and clamps the result value between 0
-     * and 1.
+     * Evaluates the spline function at time t, and clamps the result value
+     * between 0 and 1.
+     *
+     * @param t TODO
+     * @return TODO
      */
     @Override
     public final float getFraction(float t) {
@@ -144,16 +155,25 @@ public abstract class AbstractSplineInterpolator extends Interpolator {
 
     /**
      * Evaluates the spline function at curve parameter time t.
+     *
+     * @param t TODO
+     * @param p TODO
+     * @return TODO
      */
     protected abstract Point2D.Float getXY(float t, Point2D.Float p);
 
     /**
      * Evaluates the spline function at curve parameter time t.
+     *
+     * @param t TODO
+     * @return TODO
      */
     protected abstract float getY(float t);
 
-    /** This method is empty. 
-     * Subclasses don't have to call super.update(fraction). */
+    /**
+     * This method is empty. Subclasses don't have to call
+     * super.update(fraction).
+     */
     @Override
     protected void update(float fraction) {
     }

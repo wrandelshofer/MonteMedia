@@ -9,13 +9,13 @@ import ru.sbtqa.monte.media.math.Rational;
 
 /**
  * Enumeration of TIFF IFD data types.
- * <p>
+ * 
  * Sources:
- * <p>
+ * 
  * TIFF TM Revision 6.0. Final — June 3, 1992.<br>
  * Adobe Systems Inc.<br>
  * <a href="http://www.exif.org/specifications.html">http://www.exif.org/specifications.html</a>
- * <p>
+ * 
  * Adobe PageMaker® 6.0 TIFF Technical Notes - September 14, 1995<br>
  * Adobe Systems Inc.<br>
  * <a href="http://www.alternatiff.com/resources/TIFFPM6.pdf">http://www.alternatiff.com/resources/TIFFPM6.pdf</a>
@@ -24,75 +24,80 @@ import ru.sbtqa.monte.media.math.Rational;
  * @author werni
  */
 public enum IFDDataType {
-    /** 8-bit byte that contains a 7-bit ASCII code; the last byte
-     * must be NUL (binary zero).
-     * Represented by a String object in Java.
+    /**
+     * 8-bit byte that contains a 7-bit ASCII code; the last byte must be NUL
+     * (binary zero). Represented by a String object in Java.
      */
-    ASCII(2,String.class),
+    ASCII(2, String.class),
     //
-    /** 8-bit unsigned integer.
-     * Represented by a Short object in Java.
+    /**
+     * 8-bit unsigned integer. Represented by a Short object in Java.
      */
-    BYTE(1,Short.class,Short.TYPE),
+    BYTE(1, Short.class, Short.TYPE),
     //
-    /** 16-bit (2-byte) unsigned integer.
-     * Represented by an Int object in Java.
+    /**
+     * 16-bit (2-byte) unsigned integer. Represented by an Int object in Java.
      */
-    SHORT(3,Integer.class,Integer.TYPE),
+    SHORT(3, Integer.class, Integer.TYPE),
     //
-    /** 32-bit (4-byte) unsigned integer.
-     * Represented by a Long object in Java.
+    /**
+     * 32-bit (4-byte) unsigned integer. Represented by a Long object in Java.
      */
-    LONG(4,Long.class,Long.TYPE),
+    LONG(4, Long.class, Long.TYPE),
     //
-    /** Two LONGs: the first represents the numerator of a fraction; the second,
-     * the denominator.
-     * Represented by a Rational object in Java.
+    /**
+     * Two LONGs: the first represents the numerator of a fraction; the second,
+     * the denominator. Represented by a Rational object in Java.
      */
-    RATIONAL(5,Rational.class),
+    RATIONAL(5, Rational.class),
     //
-    /** An 8-bit signed (twos-complement) integer.
-     * Represented by a Byte object in Java.
+    /**
+     * An 8-bit signed (twos-complement) integer. Represented by a Byte object
+     * in Java.
      */
-    SBYTE(6,Byte.class,Byte.TYPE),
+    SBYTE(6, Byte.class, Byte.TYPE),
     //
-    /** An 8-bit byte that may contain anything, depending on the definition of
-     * the field.
-     * Represented by a Byte object in Java.
+    /**
+     * An 8-bit byte that may contain anything, depending on the definition of
+     * the field. Represented by a Byte object in Java.
      */
-    UNDEFINED(7,Byte.class,Byte.TYPE),
+    UNDEFINED(7, Byte.class, Byte.TYPE),
     //
-    /**A 16-bit (2-byte) signed (twos-complement) integer.
-     * Represented by a Short object in Java.
+    /**
+     * A 16-bit (2-byte) signed (twos-complement) integer. Represented by a
+     * Short object in Java.
      */
-    SSHORT(8,Short.class,Short.TYPE),
+    SSHORT(8, Short.class, Short.TYPE),
     //
-    /**A 32-bit (4-byte) signed (twos-complement) integer.
-     * Represented by an Int object in Java.
+    /**
+     * A 32-bit (4-byte) signed (twos-complement) integer. Represented by an Int
+     * object in Java.
      */
-    SLONG(9,Integer.class,Integer.TYPE),
+    SLONG(9, Integer.class, Integer.TYPE),
     //
-    /** Two SLONG’s: the first represents the numerator of a fraction, the 
-     * second the denominator.
-     * Represented by a Rational object in Java.
+    /**
+     * Two SLONG’s: the first represents the numerator of a fraction, the second
+     * the denominator. Represented by a Rational object in Java.
      */
-    SRATIONAL(10,Rational.class),
+    SRATIONAL(10, Rational.class),
     //
-    /**Single precision (4-byte) IEEE format.
-     * Represented by a Float object in Java.
+    /**
+     * Single precision (4-byte) IEEE format. Represented by a Float object in
+     * Java.
      */
-    FLOAT(11,Float.class,Float.TYPE),
+    FLOAT(11, Float.class, Float.TYPE),
     //
-    /** Double precision (8-byte) IEEE format.
-     * Represented by a Double object in Java.
+    /**
+     * Double precision (8-byte) IEEE format. Represented by a Double object in
+     * Java.
      */
-    DOUBLE(12,Double.class,Double.TYPE),
-    /** 32-bit (4-byte) unsigned integer pointing to another IFD,
-     * as defined in TIFF Tech Note 1 in TIFF Specification Supplement 1.
-     * Represented by a Long object in Java.
+    DOUBLE(12, Double.class, Double.TYPE),
+    /**
+     * 32-bit (4-byte) unsigned integer pointing to another IFD, as defined in
+     * TIFF Tech Note 1 in TIFF Specification Supplement 1. Represented by a
+     * Long object in Java.
      */
-    IFD(13,Long.class,Long.TYPE)
-    ;
+    IFD(13, Long.class, Long.TYPE);
     //
     private final int typeNumber;
     private final Class<?>[] componentClasses;
@@ -113,13 +118,18 @@ public enum IFDDataType {
         return typeNumber;
     }
 
-    /** Gets the tag for the specified value. */
+    /**
+     * Gets the tag for the specified value.
+     *
+     * @param typeNumber TODO
+     * @return TODO
+     */
     public static IFDDataType valueOf(int typeNumber) {
         return valueToFieldType.get(typeNumber);
     }
 
     void checkType(Object data) {
-        if (data!=null) {
+        if (data != null) {
             Class<?> cc = data.getClass();
             while (cc.isArray()) {
                 cc = cc.getComponentType();
@@ -129,7 +139,7 @@ public enum IFDDataType {
                     return;
                 }
             }
-            throw new IllegalArgumentException(data+" is illegal for "+this);
+            throw new IllegalArgumentException(data + " is illegal for " + this);
         }
     }
 

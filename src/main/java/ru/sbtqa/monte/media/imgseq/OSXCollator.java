@@ -2,7 +2,6 @@
  * Copyright © 2004-2010 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-
 package ru.sbtqa.monte.media.imgseq;
 
 import java.text.*;
@@ -12,89 +11,92 @@ import static java.util.Locale.getDefault;
 /**
  * The OSXCollator strives to match the collation rules used by the Mac OS X
  * Finder and of Mac OS X file dialogs.
- * <p>
+ * 
  * If we wanted to match the OS X collation rules exactly, we would have to
- * implement the rules for all languages supported by Mac OS X and Java.
- * To reduce the amount of work needed for implementing these rules, the
+ * implement the rules for all languages supported by Mac OS X and Java. To
+ * reduce the amount of work needed for implementing these rules, the
  * OSXCollator changes the collation rules returned by
  * java.text.Collator.getInstance() to do the following:
- * <ul>
- * <li>Space characters are treated as primary collation differences</li>
- * <li>Hyphen characters are treated as primary collation differences</li>
- * <li>Sequence of digits (characters '0' through '9') is treated as a single
- * collation object. The current implementation supports sequences of up to
- * 999 characters length.</li>
- * </ul>
+ * 
+ * Space characters are treated as primary collation differences
+ * Hyphen characters are treated as primary collation differences
+ * Sequence of digits (characters '0' through '9') is treated as a single
+ * collation object. The current implementation supports sequences of up to 999
+ * characters length.
+ * 
  * If java.text.Collator.getInstance() does not return an instance of
  * java.text.RuleBasedCollator, then the returned collator is used, and only
  * sequences of digits are changed to match the collation rules of Mac OS X.
- * 
  *
- * @author  Werner Randelshofer
+ *
+ * @author Werner Randelshofer
  * @version $Id: OSXCollator.java 364 2016-11-09 19:54:25Z werner $
  */
 public class OSXCollator extends Collator {
+
     private Collator collator;
-    
-    /** Creates a new instance. */
+
+    /**
+     * Creates a new instance.
+     */
     public OSXCollator() {
         this(getDefault());
     }
-    
-    public OSXCollator(Locale locale) {
-            collator = getInstance(locale);
-            
-            if (collator instanceof RuleBasedCollator) {
-                String rules = ((RuleBasedCollator) collator).getRules();
-                
-                // If hyphen is ignored except for tertiary difference, make it
-                // a primary difference, and move in front of the first primary 
-                // difference found in the rules
-                int pos = rules.indexOf(",'-'");
-                int primaryRelationPos = rules.indexOf('<');
-                if (primaryRelationPos == rules.indexOf("'<'")) {
-                    primaryRelationPos = rules.indexOf('<', primaryRelationPos + 2);
-                }
-                if (pos != -1 && pos < primaryRelationPos) {
-                    rules = rules.substring(0, pos)
-                    + rules.substring(pos + 4, primaryRelationPos)
-                    + "<'-'"
-                    + rules.substring(primaryRelationPos);
-                }
-                
-                // If space is ignored except for secondary and tertiary 
-                // difference, make it a primary difference, and move in front 
-                // of the first primary difference found in the rules
-                pos = rules.indexOf(";' '");
-                primaryRelationPos = rules.indexOf('<');
-                if (primaryRelationPos == rules.indexOf("'<'")) {
-                    primaryRelationPos = rules.indexOf('<', primaryRelationPos + 2);
-                }
-                if (pos != -1 && pos < primaryRelationPos) {
-                    rules = rules.substring(0, pos)
-                    + rules.substring(pos + 4, primaryRelationPos)
-                    + "<' '"
-                    + rules.substring(primaryRelationPos);
-                }
 
-                try {
-                collator = new RuleBasedCollator(rules);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                    }
+    public OSXCollator(Locale locale) {
+        collator = getInstance(locale);
+
+        if (collator instanceof RuleBasedCollator) {
+            String rules = ((RuleBasedCollator) collator).getRules();
+
+            // If hyphen is ignored except for tertiary difference, make it
+            // a primary difference, and move in front of the first primary 
+            // difference found in the rules
+            int pos = rules.indexOf(",'-'");
+            int primaryRelationPos = rules.indexOf('<');
+            if (primaryRelationPos == rules.indexOf("'<'")) {
+                primaryRelationPos = rules.indexOf('<', primaryRelationPos + 2);
             }
+            if (pos != -1 && pos < primaryRelationPos) {
+                rules = rules.substring(0, pos)
+                      + rules.substring(pos + 4, primaryRelationPos)
+                      + "<'-'"
+                      + rules.substring(primaryRelationPos);
+            }
+
+            // If space is ignored except for secondary and tertiary 
+            // difference, make it a primary difference, and move in front 
+            // of the first primary difference found in the rules
+            pos = rules.indexOf(";' '");
+            primaryRelationPos = rules.indexOf('<');
+            if (primaryRelationPos == rules.indexOf("'<'")) {
+                primaryRelationPos = rules.indexOf('<', primaryRelationPos + 2);
+            }
+            if (pos != -1 && pos < primaryRelationPos) {
+                rules = rules.substring(0, pos)
+                      + rules.substring(pos + 4, primaryRelationPos)
+                      + "<' '"
+                      + rules.substring(primaryRelationPos);
+            }
+
+            try {
+                collator = new RuleBasedCollator(rules);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
     }
-    
+
     @Override
     public int compare(String source, String target) {
         return collator.compare(expandNumbers(source), expandNumbers(target));
     }
-    
+
     @Override
     public CollationKey getCollationKey(String source) {
         return collator.getCollationKey(expandNumbers(source));
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof OSXCollator) {
@@ -104,19 +106,22 @@ public class OSXCollator extends Collator {
             return false;
         }
     }
+
     @Override
     public int hashCode() {
         return collator.hashCode();
     }
-    
+
     private String expandNumbers(String s) {
-        if (s == null) return null;
+        if (s == null) {
+            return null;
+        }
 
         // FIXME - Use StringBuilder here when we abandon support for J2SE 1.4.
         StringBuffer out = new StringBuffer();
         StringBuffer digits = new StringBuffer();
-        
-        for (int i=0, n = s.length(); i < n; i++) {
+
+        for (int i = 0, n = s.length(); i < n; i++) {
             char ch = s.charAt(i);
             //if (Character.isDigit(ch)) {
             if (ch >= '0' && ch <= '9') {
@@ -154,7 +159,7 @@ public class OSXCollator extends Collator {
             }
             out.append(digits);
         }
-        
+
         return out.toString();
     }
 }

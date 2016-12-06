@@ -276,7 +276,7 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
 
     /**
      * Encodes the data provided in the buffer and then writes it into the
-     * specified track. <p> Does nothing if the discard-flag in the buffer is
+     * specified track.  Does nothing if the discard-flag in the buffer is
      * set to true.
      *
      * @param track The track number.

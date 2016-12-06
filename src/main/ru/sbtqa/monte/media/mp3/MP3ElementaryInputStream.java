@@ -18,25 +18,25 @@ import javax.sound.sampled.AudioFormat;
 
 /**
  * Facilitates reading of an MP3 elementary stream frame by frame.
- * <p>
+ * 
  * An MP3 frame has a 32-bit header with the following contents in big endian
  * order:
- * <ul>
- * <li>bit 31-21, MP3 Sync Word, all bits must be set</li>
- * <li>bit 20-19, Version, 00=MPEG 2.5,01=reserved,10=MPEG 2, 11=MPEG 1</li>
- * <li>bit 18-17, Layer, 00=reserved, 01=layer 3, 10=layer 2, 11=layer 1</li>
- * <li>bit 16, Error protection, 0=16 bit CRC follows header, 1=Not protected</li>
- * <li>bit 15-12, Bit Rate in kbps, interpretation depends on version and layer</li>
- * <li>bit 11-10, Frequency, interpretation depends on version</li>
- * <li>bit 9, Pad Bit, 0=frame is not padded, 1=frame is padded to exactly fit the bit rate</li>
- * <li>bit 8, Private bit, only informative</li>
- * <li>bit 7-6, Channel Mode, 00=stereo, 01=joint stereo, 10=dual channel (2 mono channels), 11=single channel (mono)</li>
- * <li>bit 5-4, Mode Extension (only used with Joint Stereo), interpretation depends on version and layer</li>
- * <li>bit 3, Copyright, 0=not copyrighted, 1=copyrighted</li>
- * <li>bit 2, Original, 0=Copy of original media,1=original media</li>
- * <li>bit 1-0, Emphasis, 00=none,01=50/15ms,10=reserved,11=CCIT J.17</li>
- * </ul>
- * <p>
+ * 
+ * bit 31-21, MP3 Sync Word, all bits must be set
+ * bit 20-19, Version, 00=MPEG 2.5,01=reserved,10=MPEG 2, 11=MPEG 1
+ * bit 18-17, Layer, 00=reserved, 01=layer 3, 10=layer 2, 11=layer 1
+ * bit 16, Error protection, 0=16 bit CRC follows header, 1=Not protected
+ * bit 15-12, Bit Rate in kbps, interpretation depends on version and layer
+ * bit 11-10, Frequency, interpretation depends on version
+ * bit 9, Pad Bit, 0=frame is not padded, 1=frame is padded to exactly fit the bit rate
+ * bit 8, Private bit, only informative
+ * bit 7-6, Channel Mode, 00=stereo, 01=joint stereo, 10=dual channel (2 mono channels), 11=single channel (mono)
+ * bit 5-4, Mode Extension (only used with Joint Stereo), interpretation depends on version and layer
+ * bit 3, Copyright, 0=not copyrighted, 1=copyrighted
+ * bit 2, Original, 0=Copy of original media,1=original media
+ * bit 1-0, Emphasis, 00=none,01=50/15ms,10=reserved,11=CCIT J.17
+ * 
+ * 
  * Reference:<br>
  * <a href="http://en.wikipedia.org/wiki/MP3">http://en.wikipedia.org/wiki/MP3</a><br>
  * <a href="http://www.datavoyage.com/mpgscript/mpeghdr.htm">http://www.datavoyage.com/mpgscript/mpeghdr.htm</a><br>

@@ -24,7 +24,7 @@ import org.monte.media.image.Images;
 import static org.monte.media.VideoFormatKeys.*;
 
 /**
- * Demonstrates the use of {@link MovieReader} and {@link MovieWriter}. <p> This
+ * Demonstrates the use of {@link MovieReader} and {@link MovieWriter}.  This
  * class creates a video file named montemedia-...codec....avi for each
  * installed Codec, and writes simple animation frames into the file. Then, it
  * attempts to read the frames back from the video file.

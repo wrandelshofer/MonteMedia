@@ -6,7 +6,7 @@ package org.monte.media.math;
 
 /**
  * {@code LinearEquations}.
- * <p>
+ * 
  * Reference:
  * http://en.wikipedia.org/wiki/Cramer's_rule
  * http://en.wikipedia.org/wiki/Determinant
@@ -23,16 +23,16 @@ public class LinearEquations {
     
     /** Solves a linear system for x,y with cramer's rule.
      * 
-     * <pre>
+     * 
      * a*x + b*y = e
      * c*x + d*y = f
-     * </pre>
      * 
-     * @param a
-     * @param b
-     * @param c
-     * @param d
-     * @param e
+     * 
+     * @param a TODO
+     * @param b TODO
+     * @param c TODO
+     * @param d TODO
+     * @param e TODO
      * @param f 
      */
     public static double[] solve(double a, double b, double c, double d, double e, double f) {
@@ -44,17 +44,17 @@ public class LinearEquations {
 
     /** Solves a linear system for x,y,z with cramer's rule.
      * 
-     * <pre>
+     * 
      * a*x + b*y + c*z = j
      * d*x + e*y + f*z = k
      * g*x + h*y + i*z = l
-     * </pre>
      * 
-     * @param a
-     * @param b
-     * @param c
-     * @param d
-     * @param e
+     * 
+     * @param a TODO
+     * @param b TODO
+     * @param c TODO
+     * @param d TODO
+     * @param e TODO
      * @param f 
      */
     public static double[] solve(double a, double b, double c, double d, double e, double f, double g, double h, double i, double j, double k, double l) {
@@ -66,21 +66,21 @@ public class LinearEquations {
     }
 
     /** Computes the determinant of a 2x2 matrix using Sarrus' rule.
-     * <pre>
+     * 
      * | a, b, c |     |e, f|   |d, f|   |d, e|
      * | d, e, f | = a*|h, i|-b*|g, i|+c*|g, h|=aei+bfg+cdh-ceg-bdi-afh
      * | g, h, i |
-     * </pre>
      * 
-     * @param a
-     * @param b
-     * @param c
-     * @param d
-     * @param e
-     * @param f
-     * @param g
-     * @param h
-     * @param i
+     * 
+     * @param a TODO
+     * @param b TODO
+     * @param c TODO
+     * @param d TODO
+     * @param e TODO
+     * @param f TODO
+     * @param g TODO
+     * @param h TODO
+     * @param i TODO
      * @return the determinant
      */
     public static double det(double a, double b, double c, double d, double e, double f, double g, double h, double i) {
@@ -93,15 +93,15 @@ public class LinearEquations {
     }
 
     /** Computes the determinant of a 3x3 matrix using Sarrus' rule.
-     * <pre>
+     * 
      * | a, b |
      * | c, d | = a*d - b*c
-     * </pre>
      * 
-     * @param a
-     * @param b
-     * @param c
-     * @param d
+     * 
+     * @param a TODO
+     * @param b TODO
+     * @param c TODO
+     * @param d TODO
      * @return the determinant
      */
     public static double det(double a, double b, double c, double d) {

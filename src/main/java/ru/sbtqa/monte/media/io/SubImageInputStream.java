@@ -25,9 +25,9 @@ public class SubImageInputStream extends ImageInputStreamImpl2 {
         this.offset = offset;
         this.length = length;
         if (in.length() != -1 && offset + length > in.length()) {
-            throw new IllegalArgumentException("Offset too large. offset="+offset+" length="+length+" in.length="+in.length());
+            throw new IllegalArgumentException("Offset too large. offset=" + offset + " length=" + length + " in.length=" + in.length());
         }
-       // setByteOrder(in.getByteOrder());
+        // setByteOrder(in.getByteOrder());
         in.seek(offset);
     }
 
@@ -56,7 +56,7 @@ public class SubImageInputStream extends ImageInputStreamImpl2 {
         if (av <= 0) {
             return -1;
         } else {
-            int result= in.read(b, off, (int) min(len, av));
+            int result = in.read(b, off, (int) min(len, av));
             return result;
         }
     }
@@ -82,8 +82,10 @@ public class SubImageInputStream extends ImageInputStreamImpl2 {
     }
 
     /**
-     * Default implementation returns false.  Subclasses should
-     * override this if they cache data.
+     * Default implementation returns false. Subclasses should override this if
+     * they cache data.
+     *
+     * @return TODO
      */
     @Override
     public boolean isCached() {
@@ -91,8 +93,10 @@ public class SubImageInputStream extends ImageInputStreamImpl2 {
     }
 
     /**
-     * Default implementation returns false.  Subclasses should
-     * override this if they cache data in main memory.
+     * Default implementation returns false. Subclasses should override this if
+     * they cache data in main memory.
+     *
+     * @return TODO
      */
     @Override
     public boolean isCachedMemory() {

@@ -8,23 +8,25 @@ package ru.sbtqa.monte.media.avi;
 import java.io.*;
 
 /**
- * This output stream filter supports common data types used inside
- * of an AVI RIFF Data Chunk.
+ * This output stream filter supports common data types used inside of an AVI
+ * RIFF Data Chunk.
  *
  * @author Werner Randelshofer
  * @version 1.1 2011-01-17 Adds functionality for preventing "flush" and "close"
  * of the underlying stream.
  * <br>1.0.1 2010-04-05 Removed unused constants.
- * <br>1.0  2008-08-11 Created.
+ * <br>1.0 2008-08-11 Created.
  */
 public class DataChunkOutputStream extends FilterOutputStream {
 
     /**
-     * The number of bytes written to the data output stream so far.
-     * If this counter overflows, it will be wrapped to Integer.MAX_VALUE.
+     * The number of bytes written to the data output stream so far. If this
+     * counter overflows, it will be wrapped to Integer.MAX_VALUE.
      */
     protected long written;
-    /** Whether flush and close request shall be forwarded to underlying stream.*/
+    /**
+     * Whether flush and close request shall be forwarded to underlying stream.
+     */
     private boolean forwardFlushAndClose;
 
     public DataChunkOutputStream(OutputStream out) {
@@ -38,7 +40,9 @@ public class DataChunkOutputStream extends FilterOutputStream {
 
     /**
      * Writes an chunk type identifier (4 bytes).
+     *
      * @param s A string with a length of 4 characters.
+     * @throws java.io.IOException TODO
      */
     public void writeType(String s) throws IOException {
         if (s.length() != 4) {
@@ -54,13 +58,13 @@ public class DataChunkOutputStream extends FilterOutputStream {
     }
 
     /**
-     * Writes out a <code>byte</code> to the underlying output stream as
-     * a 1-byte value. If no exception is thrown, the counter
-     * <code>written</code> is incremented by <code>1</code>.
+     * Writes out a <code>byte</code> to the underlying output stream as a
+     * 1-byte value. If no exception is thrown, the counter <code>written</code>
+     * is incremented by <code>1</code>.
      *
-     * @param      v   a <code>byte</code> value to be written.
-     * @exception  IOException  if an I/O error occurs.
-     * @see        java.io.FilterOutputStream#out
+     * @param v a <code>byte</code> value to be written.
+     * @exception IOException if an I/O error occurs.
+     * @see java.io.FilterOutputStream#out
      */
     public final void writeByte(int v) throws IOException {
         out.write(v);
@@ -68,35 +72,35 @@ public class DataChunkOutputStream extends FilterOutputStream {
     }
 
     /**
-     * Writes <code>len</code> bytes from the specified byte array
-     * starting at offset <code>off</code> to the underlying output stream.
-     * If no exception is thrown, the counter <code>written</code> is
-     * incremented by <code>len</code>.
+     * Writes <code>len</code> bytes from the specified byte array starting at
+     * offset <code>off</code> to the underlying output stream. If no exception
+     * is thrown, the counter <code>written</code> is incremented by
+     * <code>len</code>.
      *
-     * @param      b     the data.
-     * @param      off   the start offset in the data.
-     * @param      len   the number of bytes to write.
-     * @exception  IOException  if an I/O error occurs.
-     * @see        java.io.FilterOutputStream#out
+     * @param b the data.
+     * @param off the start offset in the data.
+     * @param len the number of bytes to write.
+     * @exception IOException if an I/O error occurs.
+     * @see java.io.FilterOutputStream#out
      */
     @Override
     public synchronized void write(byte b[], int off, int len)
-            throws IOException {
+          throws IOException {
         out.write(b, off, len);
         incCount(len);
     }
 
     /**
      * Writes the specified byte (the low eight bits of the argument
-     * <code>b</code>) to the underlying output stream. If no exception
-     * is thrown, the counter <code>written</code> is incremented by
+     * <code>b</code>) to the underlying output stream. If no exception is
+     * thrown, the counter <code>written</code> is incremented by
      * <code>1</code>.
-     * <p>
+     * 
      * Implements the <code>write</code> method of <code>OutputStream</code>.
      *
-     * @param      b   the <code>byte</code> to be written.
-     * @exception  IOException  if an I/O error occurs.
-     * @see        java.io.FilterOutputStream#out
+     * @param b the <code>byte</code> to be written.
+     * @exception IOException if an I/O error occurs.
+     * @see java.io.FilterOutputStream#out
      */
     @Override
     public synchronized void write(int b) throws IOException {
@@ -105,13 +109,13 @@ public class DataChunkOutputStream extends FilterOutputStream {
     }
 
     /**
-     * Writes an <code>int</code> to the underlying output stream as four
-     * bytes, high byte first. If no exception is thrown, the counter
+     * Writes an <code>int</code> to the underlying output stream as four bytes,
+     * high byte first. If no exception is thrown, the counter
      * <code>written</code> is incremented by <code>4</code>.
      *
-     * @param      v   an <code>int</code> to be written.
-     * @exception  IOException  if an I/O error occurs.
-     * @see        java.io.FilterOutputStream#out
+     * @param v an <code>int</code> to be written.
+     * @exception IOException if an I/O error occurs.
+     * @see java.io.FilterOutputStream#out
      */
     public void writeInt(int v) throws IOException {
         out.write((v >>> 0) & 0xff);
@@ -125,7 +129,7 @@ public class DataChunkOutputStream extends FilterOutputStream {
      * Writes an unsigned 32 bit integer value.
      *
      * @param v The value
-     * @throws java.io.IOException
+     * @throws java.io.IOException TODO
      */
     public void writeUInt(long v) throws IOException {
         out.write((int) ((v >>> 0) & 0xff));
@@ -139,7 +143,7 @@ public class DataChunkOutputStream extends FilterOutputStream {
      * Writes a signed 16 bit integer value.
      *
      * @param v The value
-     * @throws java.io.IOException
+     * @throws java.io.IOException TODO
      */
     public void writeShort(int v) throws IOException {
         out.write((v >>> 0) & 0xff);
@@ -151,7 +155,9 @@ public class DataChunkOutputStream extends FilterOutputStream {
      * Writes a signed 16 bit integer value.
      *
      * @param v The value
-     * @throws java.io.IOException
+     * @param off TODO
+     * @param len TODO
+     * @throws java.io.IOException TODO
      */
     public void writeShorts(short[] v, int off, int len) throws IOException {
         for (int i = off; i < off + len; i++) {
@@ -165,7 +171,9 @@ public class DataChunkOutputStream extends FilterOutputStream {
      * Writes unsigned 24 bit integer values.
      *
      * @param v The value
-     * @throws java.io.IOException
+     * @param off TODO
+     * @param len TODO
+     * @throws java.io.IOException TODO
      */
     public void writeInts24(int[] v, int off, int len) throws IOException {
         for (int i = off; i < off + len; i++) {
@@ -175,6 +183,7 @@ public class DataChunkOutputStream extends FilterOutputStream {
         }
         incCount(len * 3);
     }
+
     public void writeLong(long v) throws IOException {
         out.write((int) (v >>> 0) & 0xff);
         out.write((int) (v >>> 8) & 0xff);
@@ -194,8 +203,10 @@ public class DataChunkOutputStream extends FilterOutputStream {
     }
 
     /**
-     * Increases the written counter by the specified value
-     * until it reaches Long.MAX_VALUE.
+     * Increases the written counter by the specified value until it reaches
+     * Long.MAX_VALUE.
+     *
+     * @param value TODO
      */
     protected void incCount(int value) {
         long temp = written + value;
@@ -206,12 +217,12 @@ public class DataChunkOutputStream extends FilterOutputStream {
     }
 
     /**
-     * Returns the current value of the counter <code>written</code>,
-     * the number of bytes written to this data output stream so far.
-     * If the counter overflows, it will be wrapped to Integer.MAX_VALUE.
+     * Returns the current value of the counter <code>written</code>, the number
+     * of bytes written to this data output stream so far. If the counter
+     * overflows, it will be wrapped to Integer.MAX_VALUE.
      *
-     * @return  the value of the <code>written</code> field.
-     * @see     java.io.DataOutputStream#written
+     * @return the value of the <code>written</code> field.
+     * @see java.io.DataOutputStream#written
      */
     public final long size() {
         return written;

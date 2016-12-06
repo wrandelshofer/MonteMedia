@@ -59,13 +59,13 @@ public class AVIReader extends AVIInputStream implements MovieReader {
     }
 
     /**
-     * Reads a chunk of media data from the specified track. <p> If the track is
+     * Reads a chunk of media data from the specified track.  If the track is
      * a video track with palette change "..PC" chunks, then the body of the
      * palette change chunk can be found in the buffer.header.
      *
      * @param track The track number.
      * @param buffer The buffer for the media data.
-     * @throws IOException
+     * @throws IOException TODO
      */
     @Override
     public void read(int track, Buffer buffer) throws IOException {
@@ -182,7 +182,7 @@ public class AVIReader extends AVIInputStream implements MovieReader {
      * @param img An image that can be reused if it fits the media format of the
      * track. Pass null to create a new image on each read.
      * @return An image or null if the end of the media has been reached.
-     * @throws IOException
+     * @throws IOException TODO
      */
     public BufferedImage read(int track, BufferedImage img) throws IOException {
         Track tr = tracks.get(track);

@@ -15,7 +15,7 @@ import static org.monte.media.AudioFormatKeys.*;
 /**
  * {@code PCMAudioCodec} performs sign conversion, endian conversion and
  * quantization conversion of PCM audio data.
- * <p>
+ * 
  * Does not perform sampling rate conversion or channel conversion.
  *
  * @author Werner Randelshofer

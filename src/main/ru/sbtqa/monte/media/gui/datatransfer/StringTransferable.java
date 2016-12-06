@@ -10,17 +10,17 @@ import java.awt.datatransfer.*;
 import java.io.IOException;
 /**
  * StringTransferable.
- * <p>
+ * 
  * Note: This transferable should always be used in conjunction with 
  * PlainTextTransferable.
- * <p>
+ * 
  * Usage:
- * <pre>
+ * 
  * String text = "bla";
  * CompositeTransfer t = new CompositeTransferable();
  * t.add(new StringTransferable(text));
  * t.add(new PlainTextTransferable(text));
- * </pre>
+ * 
  *
  * @author Werner Randelshofer
  * @version 1.0 22. August 2007 Created.

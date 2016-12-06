@@ -14,6 +14,7 @@ import javax.imageio.stream.ImageInputStream;
  * @version $Id: FilterImageInputStream.java 364 2016-11-09 19:54:25Z werner $
  */
 public class FilterImageInputStream extends ImageInputStreamImpl2 {
+
     /**
      * The underlying input stream.
      */
@@ -32,7 +33,7 @@ public class FilterImageInputStream extends ImageInputStreamImpl2 {
     @Override
     public int read(byte b[], int off, int len) throws IOException {
         flushBits();
-        return in.read(b,off,len);
+        return in.read(b, off, len);
     }
 
     @Override
@@ -50,13 +51,14 @@ public class FilterImageInputStream extends ImageInputStreamImpl2 {
     @Override
     public void close() throws IOException {
         super.close();
-         in.close();
+        in.close();
     }
 
     @Override
     public long getStreamPosition() throws IOException {
         return in.getStreamPosition();
     }
+
     @Override
     public void seek(long pos) throws IOException {
         flushBits();
@@ -64,7 +66,7 @@ public class FilterImageInputStream extends ImageInputStreamImpl2 {
     }
 
     @Override
-    public long length()  {
+    public long length() {
         try {
             return in.length();
         } catch (IOException ex) {
@@ -77,7 +79,6 @@ public class FilterImageInputStream extends ImageInputStreamImpl2 {
         super.flushBefore(pos);
         in.flushBefore(pos);
     }
-
 
     @Override
     public boolean isCached() {
@@ -93,7 +94,8 @@ public class FilterImageInputStream extends ImageInputStreamImpl2 {
     public boolean isCachedFile() {
         return in.isCachedFile();
     }
+
     private void flushBits() {
-        bitOffset=0;
+        bitOffset = 0;
     }
 }

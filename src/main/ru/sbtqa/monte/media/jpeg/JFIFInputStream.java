@@ -9,28 +9,28 @@ import java.util.*;
 
 /**
  * JFIFInputStream.
- * <p>
+ * 
  * This InputStream uses two special marker values which do not exist
  * in the JFIF stream:
- * <ul>
- * <li><b>-1</b>: marks junk data at the beginning of the file.</li>
- * <li><b>0</b>: marks entropy encoded image data.</li>
- * </ul>
- * <p>
+ * 
+ * <b>-1</b>: marks junk data at the beginning of the file.
+ * <b>0</b>: marks entropy encoded image data.
+ * 
+ * 
  * The junk data at the beginning of the file can be accessed by calling the
  * read-methods immediately after opening the stream. Call nextSegment()
  * immediately after opening the stream if you are not interested into this
  * junk data.
- * <p>
+ * 
  * Junk data at the end of the file is delivered as part of the EOI_MARKER segment.
  * Finish reading after encountering the EOI_MARKER segment if you are not interested
  * in this junk data.
  *
- * <p>
+ * 
  * References:<br>
  * JPEG File Interchange Format Version 1.02<br>
  * <a href="http://www.jpeg.org/public/jfif.pdf">http://www.jpeg.org/public/jfif.pdf</a>
- * <p>
+ * 
  *   Pennebaker, W., Mitchell, J. (1993).<br>
  *   JPEG Still Image Data Compression Standard.<br>
  *   Chapmann & Hall, New York.<br>
@@ -197,7 +197,7 @@ public class JFIFInputStream extends FilterInputStream {
      *
      * @return The current segment. Returns null, if we encountered
      * the end of the stream.
-     * @throws java.io.IOException
+     * @throws java.io.IOException TODO
      */
     public Segment getSegment() throws IOException {
         return segment;
@@ -208,7 +208,7 @@ public class JFIFInputStream extends FilterInputStream {
      * 
      * @return The next segment. Returns null, if we encountered
      * the end of the stream.
-     * @throws java.io.IOException
+     * @throws java.io.IOException TODO
      */
     public Segment getNextSegment() throws IOException {
         // If we are inside of a marker segment, skip the
@@ -302,7 +302,7 @@ public class JFIFInputStream extends FilterInputStream {
      * <code>-1</code> is returned. This method blocks until input data 
      * is available, the end of the stream is detected, or an exception 
      * is thrown. 
-     * <p>
+     * 
      * This method
      * simply performs <code>in.read()</code> and returns the result.
      *
@@ -348,7 +348,7 @@ public class JFIFInputStream extends FilterInputStream {
      * Reads up to <code>len</code> b of data from this input stream 
      * into an array of b. This method blocks until some input is 
      * available. 
-     * <p>
+     * 
      * This method simply performs <code>in.read(b, off, len)</code> 
      * and returns the result.
      *
@@ -414,7 +414,7 @@ public class JFIFInputStream extends FilterInputStream {
      * reasons, end up skipping over some smaller number of b, 
      * possibly <code>0</code>. The actual number of b skipped is 
      * returned. 
-     * <p>
+     * 
      * This method
      * simply performs <code>in.skip(n)</code>.
      *
@@ -453,11 +453,11 @@ public class JFIFInputStream extends FilterInputStream {
      * Marks the current position in this input stream. A subsequent 
      * call to the <code>reset</code> method repositions this stream at 
      * the last marked position so that subsequent reads re-read the same b.
-     * <p>
+     * 
      * The <code>readlimit</code> argument tells this input stream to 
      * allow that many b to be read before the mark position gets 
      * invalidated. 
-     * <p>
+     * 
      * This method simply performs <code>in.mark(readlimit)</code>.
      *
      * @param   readlimit   the maximum limit of b that can be read before
@@ -473,10 +473,10 @@ public class JFIFInputStream extends FilterInputStream {
     /**
      * Repositions this stream to the position at the time the 
      * <code>mark</code> method was last called on this input stream. 
-     * <p>
+     * 
      * This method
      * simply performs <code>in.reset()</code>.
-     * <p>
+     * 
      * Stream marks are intended to be used in
      * situations where you need to read ahead a little to see what's in
      * the stream. Often this is most easily done by invoking some

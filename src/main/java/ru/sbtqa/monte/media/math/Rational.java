@@ -9,18 +9,15 @@ import java.math.BigInteger;
 import static ru.sbtqa.monte.media.math.IntMath.*;
 
 /**
- * Represents a Rational number {@code numerator/denominator}.  
- * <p> 
- * A number is represented by two longs: the first represents the numerator of
- * a fraction; the second, the denominator. 
- * <p> 
- * Invariants:
- * <ul>
- * <li>{@code denominator >=0}, the denominator is always a positive integer</li>
- * <li>{@code 0/1} is the unique* representation of 0.</li>
- * <li>{code 1/0},{@code -1/}0 are the unique representations of positive and
- * negative infinity.</li>
- * </ul>
+ * Represents a Rational number {@code numerator/denominator}.
+ * 
+ * A number is represented by two longs: the first represents the numerator of a
+ * fraction; the second, the denominator.
+ * 
+ * Invariants: {@code denominator >=0}, the denominator is always a positive
+ * integer {@code 0/1} is the unique* representation of 0. {code
+ * 1/0},{@code -1/}0 are the unique representations of positive and negative
+ * infinity.
  *
  * @author Werner Randelshofer
  * @version $Id: Rational.java 364 2016-11-09 19:54:25Z werner $
@@ -134,8 +131,8 @@ public class Rational extends Number implements Comparable<Rational> {
         // FIXME - handle overflow
         long s = scm(this.den, that.den);
         Rational result = new Rational(
-                this.num * (s / this.den) + that.num * (s / that.den),
-                s, reduceFraction);
+              this.num * (s / this.den) + that.num * (s / that.den),
+              s, reduceFraction);
 
         return result;
     }
@@ -144,14 +141,17 @@ public class Rational extends Number implements Comparable<Rational> {
      * Warning. Rational is supposed to be immutable. *
      *
      * private Rational addAssign(Rational that) { if (this.den == that.den) {
-     * // => same denominator: add numerators this.num += that.num; return this;
-     * }
+     * // ={@literal >} same denominator: add numerators this.num += that.num;
+     * return this; }
      *
      * // FIXME - handle overflow long s = scm(this.den, that.den); this.num =
      * this.num * (s / this.den) + that.num * (s / that.den); this.den = s;
      *
      *
      * return reduceAssign(); }
+     *
+     * @param that TODO
+     * @return TODO
      */
     public Rational subtract(Rational that) {
         return add(that.negate());
@@ -168,6 +168,9 @@ public class Rational extends Number implements Comparable<Rational> {
     /**
      * Returns the closest rational with the specified denominator which is
      * smaller or equal than this number.
+     *
+     * @param d TODO
+     * @return TODO
      */
     public Rational floor(long d) {
         if (d == den) {
@@ -187,6 +190,9 @@ public class Rational extends Number implements Comparable<Rational> {
     /**
      * Returns the closest rational with the specified denominator which is
      * greater or equal than this number.
+     *
+     * @param d TODO
+     * @return TODO
      */
     public Rational ceil(long d) {
         if (d == den) {
@@ -205,16 +211,16 @@ public class Rational extends Number implements Comparable<Rational> {
 
     public Rational multiply(Rational that) {
         if (abs(this.num) < Integer.MAX_VALUE
-                && abs(this.den) < Integer.MAX_VALUE
-                && abs(that.num) < Integer.MAX_VALUE
-                && abs(that.den) < Integer.MAX_VALUE) {
+              && abs(this.den) < Integer.MAX_VALUE
+              && abs(that.num) < Integer.MAX_VALUE
+              && abs(that.den) < Integer.MAX_VALUE) {
             return valueOf(this.num * that.num,
-                    this.den * that.den);
+                  this.den * that.den);
         } else {
             return new Rational(
-                    BigInteger.valueOf(this.num).multiply(BigInteger.valueOf(that.num)),
-                    BigInteger.valueOf(this.den).multiply(BigInteger.valueOf(that.den)),
-                    true);
+                  BigInteger.valueOf(this.num).multiply(BigInteger.valueOf(that.num)),
+                  BigInteger.valueOf(this.den).multiply(BigInteger.valueOf(that.den)),
+                  true);
         }
     }
 
@@ -223,32 +229,32 @@ public class Rational extends Number implements Comparable<Rational> {
             return ZERO;
         } else if (this.den % integer == 0) {
             return valueOf(
-                    this.num,
-                    this.den / integer);
+                  this.num,
+                  this.den / integer);
         } else if (abs(this.num) < Integer.MAX_VALUE
-                && abs(integer) < Integer.MAX_VALUE) {
+              && abs(integer) < Integer.MAX_VALUE) {
             return valueOf(
-                    this.num * integer,
-                    this.den);
+                  this.num * integer,
+                  this.den);
         } else {
             return new Rational(
-                    BigInteger.valueOf(this.num).multiply(BigInteger.valueOf(integer)),
-                    BigInteger.valueOf(this.den), true);
+                  BigInteger.valueOf(this.num).multiply(BigInteger.valueOf(integer)),
+                  BigInteger.valueOf(this.den), true);
         }
     }
 
     public Rational divide(Rational that) {
         if (abs(this.num) < Integer.MAX_VALUE
-                && abs(this.den) < Integer.MAX_VALUE
-                && abs(that.num) < Integer.MAX_VALUE
-                && abs(that.den) < Integer.MAX_VALUE) {
+              && abs(this.den) < Integer.MAX_VALUE
+              && abs(that.num) < Integer.MAX_VALUE
+              && abs(that.den) < Integer.MAX_VALUE) {
             return valueOf(this.num * that.den,
-                    this.den * that.num);
+                  this.den * that.num);
         } else {
             return valueOf(
-                    BigInteger.valueOf(this.num).multiply(BigInteger.valueOf(that.den)),
-                    BigInteger.valueOf(this.den).multiply(BigInteger.valueOf(that.num)),
-                    true);
+                  BigInteger.valueOf(this.num).multiply(BigInteger.valueOf(that.den)),
+                  BigInteger.valueOf(this.den).multiply(BigInteger.valueOf(that.num)),
+                  true);
         }
     }
 
@@ -313,7 +319,9 @@ public class Rational extends Number implements Comparable<Rational> {
     }
 
     /**
-     * return { -1, 0, +1 } if a < b, a = b, or a > b.
+     * return { -1, 0, +1 } if a {@literal <} b, a = b, or a {@literal >} b.
+     *
+     * @param that TODO
      */
     public int compareTo(Rational that) {
         // The following code avoids BigInteger allocation if the denominators 
@@ -330,9 +338,9 @@ public class Rational extends Number implements Comparable<Rational> {
 
         // Work with longs if overflow can not occur
         if (abs(this.num) < Integer.MAX_VALUE
-                && abs(this.den) < Integer.MAX_VALUE
-                && abs(that.num) < Integer.MAX_VALUE
-                && abs(that.den) < Integer.MAX_VALUE) {
+              && abs(this.den) < Integer.MAX_VALUE
+              && abs(that.num) < Integer.MAX_VALUE
+              && abs(that.den) < Integer.MAX_VALUE) {
             long lhs = this.num * that.den;
             long rhs = this.den * that.num;
             if (lhs < rhs) {
@@ -356,7 +364,7 @@ public class Rational extends Number implements Comparable<Rational> {
     @Override
     public int hashCode() {
         return (int) ((num ^ (num >>> 32))
-                ^ (den ^ (den >>> 32)));
+              ^ (den ^ (den >>> 32)));
 
     }
 
@@ -421,10 +429,12 @@ public class Rational extends Number implements Comparable<Rational> {
     }
 
     /**
-     * Iteratively computes rational from double. <p>Reference:<br> <a
+     * Iteratively computes rational from double.
+     * 
+     * Reference:<br> <a
      * href="http://www2.fz-juelich.de/video/cpp/html/exercises/exercise/Rational_cpp.html">
      * http://www2.fz-juelich.de/video/cpp/html/exercises/exercise/Rational_cpp.html</a>
-     * </p>
+     * 
      */
     private static Rational toRational(double x, double limit, int iterations) {
         double intpart = Math.floor(x);
@@ -472,10 +482,11 @@ public class Rational extends Number implements Comparable<Rational> {
     /**
      * Parses a string.
      *
-     * A rational can be represented in the following ways: <li>As a long
-     * number</li> <li>As a double number</li> <li>As an integer/integer
-     * rational number</li>
+     * A rational can be represented in the following ways: As a long number As
+     * a double number As an integer/integer rational number
      *
+     * @param str TODO
+     * @return TODO
      * @throws NumberFormatException if str can not be parsed.
      */
     public static Rational valueOf(String str) {

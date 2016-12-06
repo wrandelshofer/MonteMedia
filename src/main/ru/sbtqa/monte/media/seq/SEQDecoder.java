@@ -15,7 +15,7 @@ import javax.imageio.stream.MemoryCacheImageInputStream;
 
 /**
  * {@code SEQDecoder}.
- * <p>
+ * 
  * References:<br>
  * <a href="http://www.fileformat.info/format/atari/egff.htm">http://www.fileformat.info/format/atari/egff.htm</a><br>
  * <a href="http://www.atari-forum.com/wiki/index.php/ST_Picture_Formats">http://www.atari-forum.com/wiki/index.php/ST_Picture_Formats</a>
@@ -60,7 +60,7 @@ public class SEQDecoder {
     /**
      * Decodes the stream and produces animation frames into the specified
      * movie track.
-     * <p>
+     * 
      * This method can only be called once.
      *
      * @param track The decoded data is stored in this track.
@@ -80,7 +80,7 @@ public class SEQDecoder {
 
     /** Reads the SEQ Header. Assumes that the input stream is positioned
      * At the start of the file.
-     * <pre>
+     * 
      * // Seq Header. 128 bytes.
      * typedef struct {
      * ubyte[2] magicNumber;       // [$FEDB or $FEDC]
@@ -90,7 +90,7 @@ public class SEQDecoder {
      * ubyte[16] reserved[7];
      * ubyte[6] reserved;
      * } SeqHeader;
-     * </pre>
+     * 
      */
     private void readHeader() throws IOException {
         int magic = in.readUnsignedShort();
@@ -119,7 +119,7 @@ public class SEQDecoder {
 
     /** Reads the SEQ Offsets. Assumes that the input stream is positioned
      * at the beginning of the offsets and that the header has been read.
-     * <pre>
+     * 
      * typedef struct {
      *  ULONG offset;
      * } frofOffset;
@@ -127,7 +127,7 @@ public class SEQDecoder {
      * typedef struct {
      *  frofOffset[] frame;
      * } FrameOffsets;
-     * </pre>
+     * 
      */
     private void readOffsets() throws IOException {
         offsets = new long[nFrames];
@@ -149,7 +149,7 @@ public class SEQDecoder {
     /** Reads a video frame. Assumes that the input stream is positioned
      * at the beginning of the frame and that the header and the offsets have
      * been read.
-     * <pre>
+     * 
      *    typedef struct {
      *    ubyte[2] type;              // (ignored?)
      *    WORD enum frhdResolution resolution;        // [always 0]
@@ -166,7 +166,7 @@ public class SEQDecoder {
      *    // will be the size of the compressed data BEFORE decompression)
      *    ubyte[16] reserved[3];
      *    ubyte[12] reserved;
-     *  } FrameHeader;     * </pre>
+     *  } FrameHeader;     * 
      */
     private void readFrame(int i) throws IOException {
         // Type and Resolution

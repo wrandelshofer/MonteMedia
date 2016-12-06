@@ -2,7 +2,6 @@
  * Copyright © 2016 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-
 package ru.sbtqa.monte.media.util.stream;
 
 /**
@@ -13,5 +12,6 @@ package ru.sbtqa.monte.media.util.stream;
  */
 @FunctionalInterface
 public interface BiIntConsumer {
-void accept(int left, int right);
+
+    void accept(int left, int right);
 }

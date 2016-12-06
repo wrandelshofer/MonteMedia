@@ -91,7 +91,7 @@ public class DataChunkOutputStream extends FilterOutputStream {
      * <code>b</code>) to the underlying output stream. If no exception
      * is thrown, the counter <code>written</code> is incremented by
      * <code>1</code>.
-     * <p>
+     * 
      * Implements the <code>write</code> method of <code>OutputStream</code>.
      *
      * @param      b   the <code>byte</code> to be written.
@@ -125,7 +125,7 @@ public class DataChunkOutputStream extends FilterOutputStream {
      * Writes an unsigned 32 bit integer value.
      *
      * @param v The value
-     * @throws java.io.IOException
+     * @throws java.io.IOException TODO
      */
     public void writeUInt(long v) throws IOException {
         out.write((int) ((v >>> 0) & 0xff));
@@ -139,7 +139,7 @@ public class DataChunkOutputStream extends FilterOutputStream {
      * Writes a signed 16 bit integer value.
      *
      * @param v The value
-     * @throws java.io.IOException
+     * @throws java.io.IOException TODO
      */
     public void writeShort(int v) throws IOException {
         out.write((v >>> 0) & 0xff);
@@ -151,7 +151,7 @@ public class DataChunkOutputStream extends FilterOutputStream {
      * Writes a signed 16 bit integer value.
      *
      * @param v The value
-     * @throws java.io.IOException
+     * @throws java.io.IOException TODO
      */
     public void writeShorts(short[] v, int off, int len) throws IOException {
         for (int i = off; i < off + len; i++) {
@@ -165,7 +165,7 @@ public class DataChunkOutputStream extends FilterOutputStream {
      * Writes unsigned 24 bit integer values.
      *
      * @param v The value
-     * @throws java.io.IOException
+     * @throws java.io.IOException TODO
      */
     public void writeInts24(int[] v, int off, int len) throws IOException {
         for (int i = off; i < off + len; i++) {

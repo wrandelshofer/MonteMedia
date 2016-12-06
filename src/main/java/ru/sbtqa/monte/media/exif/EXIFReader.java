@@ -43,15 +43,20 @@ import ru.sbtqa.monte.media.tiff.TIFFTag;
 import ru.sbtqa.monte.media.tiff.TagSet;
 
 /**
- * Reads EXIF and MP meta data from a JPEG, MPO or AVI file. <p> Creates a tree
- * structure of {@code DefaultMutableTreeNode}s. Nodes with a String user object
- * describe the hierarchy of the meta data. Nodes with an MetaDataEntry as user
- * object hold the actual meta data. <p> Sources: <p> Exchangeable image file
- * format for digital still cameras: EXIF Version 2.2. (April, 2002). Standard
- * of Japan Electronics and Information Technology Industries Association. JEITA
- * CP-3451. <a
+ * Reads EXIF and MP meta data from a JPEG, MPO or AVI file.
+ * 
+ * Creates a tree structure of {@code DefaultMutableTreeNode}s. Nodes with a
+ * String user object describe the hierarchy of the meta data. Nodes with an
+ * MetaDataEntry as user object hold the actual meta data.
+ * 
+ * Sources:
+ * 
+ * Exchangeable image file format for digital still cameras: EXIF Version 2.2.
+ * (April, 2002). Standard of Japan Electronics and Information Technology
+ * Industries Association. JEITA CP-3451. <a
  * href="http://www.exif.org/Exif2-2.PDF">http://www.exif.org/Exif2-2.PDF</a>
- * <p> Multi-Picture Format (February 4, 2009). Standard of the Camera & Imaging
+ * 
+ * Multi-Picture Format (February 4, 2009). Standard of the Camera &amp; Imaging
  * Products Association. CIPA DC-007-Translation-2009. <a
  * href="http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf">
  * http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf</a>
@@ -109,6 +114,8 @@ public class EXIFReader {
     /**
      * Reads the meta data from the file or input stream that has been set on
      * the constructor.
+     *
+     * @throws java.io.IOException TODO
      */
     public void read() throws IOException {
         if (file != null) {
@@ -157,7 +164,6 @@ public class EXIFReader {
         int imageCount = 0;
         TIFFDirectory imageNode = null;
 
-
         // Collect APP2_MARKER data segments with Exif content
         Extraction:
         for (Segment seg = in.getNextSegment(); seg != null; seg = in.getNextSegment()) {
@@ -188,7 +194,7 @@ public class EXIFReader {
                      * } SOF0;
                      */
                     if (includeContainerMetadata && imageNode != null) {
-                        short samplePrecision = (short)(in.read() & 0xff);
+                        short samplePrecision = (short) (in.read() & 0xff);
                         int numberOfLines = ((in.read() & 0xff) << 8) | (in.read());
                         int samplesPerLine = ((in.read() & 0xff) << 8) | (in.read());
                         int numberOfComponents = in.read() & 0xff;
@@ -364,6 +370,9 @@ public class EXIFReader {
 
     /**
      * Reads the Exif metadata from an AVI RIFF file.
+     *
+     * @param data TODO
+     * @throws java.io.IOException TODO
      */
     public void readAVIstrdChunk(byte[] data) throws IOException {
         int track = 0; // track number
@@ -614,6 +623,8 @@ public class EXIFReader {
 
     /**
      * Gets the meta data as a Swing TreeNode structure.
+     *
+     * @return TODO
      */
     public TIFFNode getMetaDataTree() {
         return root;
@@ -622,6 +633,8 @@ public class EXIFReader {
     /**
      * Returns the number of images that are described with EXIF. Returns -1 if
      * not known.
+     *
+     * @return TODO
      */
     public int getImageCount() {
         return root == null ? -1 : root.getChildCount();
@@ -629,6 +642,10 @@ public class EXIFReader {
 
     /**
      * Returns all IFDDirectories of the specified tag set for the given image.
+     *
+     * @param image TODO
+     * @param tagSet TODO
+     * @return TODO
      */
     public ArrayList<TIFFDirectory> getDirectories(int image, TagSet tagSet) {
         ArrayList<TIFFDirectory> dirs = new ArrayList<TIFFDirectory>();
@@ -653,6 +670,10 @@ public class EXIFReader {
 
     /**
      * Returns all thumbnails.
+     *
+     * @param suppressException TODO
+     * @return TODO
+     * @throws java.io.IOException TODO
      */
     public ArrayList<BufferedImage> getThumbnails(boolean suppressException) throws IOException {
         ArrayList<BufferedImage> thumbnails = new ArrayList<BufferedImage>();
@@ -687,6 +708,8 @@ public class EXIFReader {
 
     /**
      * Returns a flat hash map of the metadata.
+     *
+     * @return TODO
      */
     public HashMap<TIFFTag, TIFFField> getMetaDataMap() {
         HashMap<TIFFTag, TIFFField> m = new HashMap<TIFFTag, TIFFField>();
@@ -703,12 +726,14 @@ public class EXIFReader {
     }
 
     /**
-     * Gets the metadata as an ImageIO structure. <p> Format description
-     * replicated from <a
+     * Gets the metadata as an ImageIO structure.
+     * 
+     * Format description replicated from <a
      * href="http://download.java.net/media/jai-imageio/javadoc/1.1/com/sun/media/imageio/plugins/tiff/package-summary.html"
      * >http://download.java.net/media/jai-imageio/javadoc/1.1/com/sun/media/imageio/plugins/tiff/package-summary.html</a>:
-     * <p> The DTD for the native image metadata format is as follows:
-     * <pre>
+     * 
+     * The DTD for the native image metadata format is as follows:
+     * 
      * The DTD for the native image metadata format is as follows:
      * &lt;!DOCTYPE "com_sun_media_imageio_plugins_tiff_image_1.0" [
      *
@@ -851,7 +876,11 @@ public class EXIFReader {
      *            &lt;!-- A list of comma-separated byte values --&gt;
      *            &lt;!-- Data type: String --&gt;
      *]&gt;
-     * </pre>
+     * 
+     *
+     * @param formatName TODO
+     * @param imageIndex TODO
+     * @return TODO
      */
     public IIOMetadataNode getIIOMetadataTree(String formatName, int imageIndex) {
         if (formatName != null && !formatName.equals("com_sun_media_imageio_plugins_tiff_image_1.0")) {

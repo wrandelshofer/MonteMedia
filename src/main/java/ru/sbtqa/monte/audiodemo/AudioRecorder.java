@@ -57,7 +57,7 @@ public class AudioRecorder implements Runnable {
     @Override
     public void run() {
         DataLine.Info lineInfo = new DataLine.Info(
-                TargetDataLine.class, new AudioFormat(44100, 16, 2, true, true));
+              TargetDataLine.class, new AudioFormat(44100, 16, 2, true, true));
 
         AVIWriter writer = null;
         TargetDataLine line = null;
@@ -72,8 +72,7 @@ public class AudioRecorder implements Runnable {
             writer.addTrack(buf.format);
             line.open();
             line.start();
-            
-            
+
             while (worker == Thread.currentThread()) {
                 buf.length = line.read((byte[]) buf.data, 0, ((byte[]) buf.data).length);
                 buf.sampleCount = buf.length / lineFormat.getFrameSize();
@@ -99,6 +98,8 @@ public class AudioRecorder implements Runnable {
 
     /**
      * @param args the command line arguments
+     * @throws java.io.IOException TODO
+     * @throws javax.sound.sampled.LineUnavailableException TODO
      */
     public static void main(String[] args) throws IOException, LineUnavailableException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd 'at' HH.mm.ss");
@@ -106,7 +107,6 @@ public class AudioRecorder implements Runnable {
         if (!file.getParentFile().isDirectory()) {
             file.getParentFile().mkdirs();
         }
-
 
         System.out.println("Press ENTER to start audio recording.");
         while (System.in.read() != '\n') ;

@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * A simple API for reading movie data (audio and video) from a file.
  * 
- * <p>
+ * 
  * FIXME - MovieReader should extend Demultiplexer
  *
  * @author Werner Randelshofer

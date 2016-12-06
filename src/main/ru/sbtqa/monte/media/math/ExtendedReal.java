@@ -12,10 +12,10 @@ package org.monte.media.math;
  * up to 1.18*10^4932.
  *
  * Bit layout
- * <pre><code>
+ * <code>
  * 79    78-64            63       62-0
  * Sign  Biased Exponent  Integer  Fraction
- * </code></pre>
+ * </code>
  *
  * For the single-real and double-real formats, only the fraction part
  * of the significand is encoded. The integer is assumed to be 1 for
@@ -29,7 +29,7 @@ package org.monte.media.math;
  * 16'383 for the extended-real format.
  *
  * NaN Encodings for ExtendedReal:
- * <pre><code>
+ * <code>
  * Class                   Sign   Biased     Significand
  *                                Exponent   Integer  Fraction
  * ------------------------------------------------------------
@@ -57,7 +57,7 @@ package org.monte.media.math;
  *          QNaN            X    11..11       1       1X..XX
  *          Real Indefinite 1    11..11       1       10..00
  *
- * </code></pre>
+ * </code>
  * (2 The fraction for SNaN encodings must be non zero.
  *
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland.

@@ -18,7 +18,7 @@ import static org.monte.media.AudioFormatKeys.*;
 
 /**
  * {@code DefaultRegistry}. 
- * <p>
+ * 
  * FIXME - The registry should be read from a file. 
  *
  * @author Werner Randelshofer

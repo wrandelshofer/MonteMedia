@@ -27,7 +27,7 @@ public class Colors {
      * This leaves 40 colours to allocate, this has been done by choosing a ramp of
      * 10 shades each for red, green, blue and grey.
      *
-     * <p>
+     * 
      * References:<br>
      * <a href="http://paulbourke.net/texture_colour/colourramp/">http://paulbourke.net/texture_colour/colourramp/</a>
      *

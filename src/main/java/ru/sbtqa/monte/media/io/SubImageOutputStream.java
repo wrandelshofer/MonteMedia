@@ -22,19 +22,21 @@ public class SubImageOutputStream extends ImageOutputStreamImpl {
     private ImageOutputStream out;
     private long offset;
     private long length;
-    
-    /** Whether flush and close request shall be forwarded to underlying stream.*/
+
+    /**
+     * Whether flush and close request shall be forwarded to underlying stream.
+     */
     private boolean forwardFlushAndClose;
 
-    public SubImageOutputStream(ImageOutputStream out, ByteOrder bo,boolean forwardFlushAndClose) throws IOException {
-        this(out, out.getStreamPosition(),bo,forwardFlushAndClose);
+    public SubImageOutputStream(ImageOutputStream out, ByteOrder bo, boolean forwardFlushAndClose) throws IOException {
+        this(out, out.getStreamPosition(), bo, forwardFlushAndClose);
     }
 
-    public SubImageOutputStream(ImageOutputStream out, long offset, ByteOrder bo,boolean forwardFlushAndClose) throws IOException {
+    public SubImageOutputStream(ImageOutputStream out, long offset, ByteOrder bo, boolean forwardFlushAndClose) throws IOException {
         this.out = out;
         this.offset = offset;
-        this.forwardFlushAndClose=forwardFlushAndClose;
-        setByteOrder(bo); 
+        this.forwardFlushAndClose = forwardFlushAndClose;
+        setByteOrder(bo);
         out.seek(offset);
     }
 
@@ -76,20 +78,20 @@ public class SubImageOutputStream extends ImageOutputStreamImpl {
     @Override
     public void seek(long pos) throws IOException {
         out.seek(pos + offset);
-        length=max(pos-offset+1,length);
+        length = max(pos - offset + 1, length);
     }
 
     @Override
     public void flush() throws IOException {
         if (forwardFlushAndClose) {
-        out.flush();
+            out.flush();
         }
     }
 
     @Override
     public void close() throws IOException {
         if (forwardFlushAndClose) {
-        super.close();
+            super.close();
         }
     }
 
@@ -99,8 +101,10 @@ public class SubImageOutputStream extends ImageOutputStreamImpl {
     }
 
     /**
-     * Default implementation returns false.  Subclasses should
-     * override this if they cache data.
+     * Default implementation returns false. Subclasses should override this if
+     * they cache data.
+     *
+     * @return TODO
      */
     @Override
     public boolean isCached() {
@@ -108,8 +112,10 @@ public class SubImageOutputStream extends ImageOutputStreamImpl {
     }
 
     /**
-     * Default implementation returns false.  Subclasses should
-     * override this if they cache data in main memory.
+     * Default implementation returns false. Subclasses should override this if
+     * they cache data in main memory.
+     *
+     * @return TODO
      */
     @Override
     public boolean isCachedMemory() {
@@ -123,25 +129,25 @@ public class SubImageOutputStream extends ImageOutputStreamImpl {
 
     @Override
     public long length() {
-            return length;
+        return length;
     }
 
     @Override
     public void write(int b) throws IOException {
         out.write(b);
-        length = max(out.getStreamPosition()-offset,length);
+        length = max(out.getStreamPosition() - offset, length);
     }
 
     @Override
     public void write(byte[] b, int off, int len) throws IOException {
-        out.write(b,off,len);
-        length = max(out.getStreamPosition()-offset,length);
+        out.write(b, off, len);
+        length = max(out.getStreamPosition() - offset, length);
     }
-    
+
     public void dispose() throws IOException {
         if (forwardFlushAndClose) {
-        checkClosed();
+            checkClosed();
         }
-        out=null;
+        out = null;
     }
 }

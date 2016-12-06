@@ -11,14 +11,14 @@ import static org.monte.media.tiff.TIFFTag.*;
 
 /**
  * Enumeration of Interoperation EXIF tags.
- * <p>
+ * 
  * Sources:
- * <p>
+ * 
  * Exchangeable image file format for digital still cameras: EXIF Version 2.2.
  * (April, 2002). Standard of Japan Electronics and Information Technology
  * Industries Association. JEITA CP-3451.
  * <a href="http://www.exif.org/Exif2-2.PDF">http://www.exif.org/Exif2-2.PDF</a>
- * <p>
+ * 
  * Multi-Picture Format
  * (February 4, 2009). Standard of the Camera & Imaging Products Association.
  * CIPA DC-007-Translation-2009.

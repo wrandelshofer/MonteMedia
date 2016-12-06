@@ -46,7 +46,7 @@ public class FileMultiplexer implements Multiplexer {
                 out.write((byte[]) buf.data, buf.offset, buf.length);
             }
         } else if (buf.data instanceof File) {
-            copy((File)buf.data, file);
+            copy((File) buf.data, file);
         } else {
             throw new IllegalArgumentException("Can't process buffer data:" + buf.data);
         }

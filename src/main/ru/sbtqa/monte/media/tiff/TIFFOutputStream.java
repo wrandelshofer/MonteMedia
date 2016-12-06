@@ -12,9 +12,9 @@ import javax.imageio.stream.ImageOutputStream;
 
 /**
  * {@code TIFFOutputStream}.
- * <p>
+ * 
  * References:
- * <p>
+ * 
  * TIFF TM Revision 6.0. Final — June 3, 1992.
  * Adobe Systems Inc.
  * http://www.exif.org/specifications.html

@@ -38,9 +38,9 @@ import static java.lang.Math.*;
 /**
  * JTimelineEditor visualizes the movie timeline, an insertion point and
  * the start and end position of a movie clip.
- * <p>
+ * 
  * The insertion point (playhead) also shows the current time of the movie.
- * <p>
+ * 
  * If a movie has n time steps, then there are n+1 insertion points.
  * 
  * @author Werner Randelshofer

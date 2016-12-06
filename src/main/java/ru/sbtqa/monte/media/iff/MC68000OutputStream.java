@@ -11,18 +11,23 @@ import java.io.*;
  *
  * @author Werner Randelshofer
  * @version 1.1 2010-12-26 Added method writeType().
- * <br>1.0.1 2008-08-03 The ByteRun1 encoder incorrectly added 1 to its
- * index when flushing the literal run.
+ * <br>1.0.1 2008-08-03 The ByteRun1 encoder incorrectly added 1 to its index
+ * when flushing the literal run.
  * <br>1.0 December 25, 2006 Created.
  */
 public class MC68000OutputStream extends FilterOutputStream {
+
     /**
-     * The number of bytes written to the data output stream so far.
-     * If this counter overflows, it will be wrapped to Integer.MAX_VALUE.
+     * The number of bytes written to the data output stream so far. If this
+     * counter overflows, it will be wrapped to Integer.MAX_VALUE.
      */
     protected long written;
 
-    /** Creates a new instance. */
+    /**
+     * Creates a new instance.
+     *
+     * @param out TODO
+     */
     public MC68000OutputStream(OutputStream out) {
         super(out);
     }
@@ -62,21 +67,23 @@ public class MC68000OutputStream extends FilterOutputStream {
 
     /**
      * ByteRun1 Run Encoding.
-     * <p>
-     * The run encoding scheme in byteRun1 is best described by
-     * pseudo code for the decoder Unpacker (called UnPackBits in the
-     * Macintosh toolbox):
-     * <pre>
+     * 
+     * The run encoding scheme in byteRun1 is best described by pseudo code for
+     * the decoder Unpacker (called UnPackBits in the Macintosh toolbox):
+     * 
      * UnPacker:
      *    LOOP until produced the desired number of bytes
      *       Read the next source byte into n
      *       SELECT n FROM
-     *          [ 0..127 ] => copy the next n+1 bytes literally
-     *          [-1..-127] => replicate the next byte -n+1 timees
-     *          -128       => no operation
+     *          [ 0..127 ] ={@literal >} copy the next n+1 bytes literally
+     *          [-1..-127] ={@literal >} replicate the next byte -n+1 timees
+     *          -128       ={@literal >} no operation
      *       ENDCASE
      *    ENDLOOP
-     * </pre>
+     * 
+     *
+     * @param data TODO
+     * @throws java.io.IOException TODO
      */
     public void writeByteRun1(byte[] data) throws IOException {
         writeByteRun1(data, 0, data.length);
@@ -112,7 +119,7 @@ public class MC68000OutputStream extends FilterOutputStream {
                 // If the byte repeats just twice, and we have a literal
                 // run with enough space, add it the literal run
             } else if (repeatCount == 2
-                    && literalOffset < i && i - literalOffset < 127) {
+                  && literalOffset < i && i - literalOffset < 127) {
                 i++;
             } else {
                 // Flush the literal run, if we have one
@@ -146,6 +153,7 @@ public class MC68000OutputStream extends FilterOutputStream {
         out.write(b);
         incCount(1);
     }
+
     @Override
     public void write(byte b[], int off, int len) throws IOException {
         out.write(b, off, len);
@@ -154,7 +162,9 @@ public class MC68000OutputStream extends FilterOutputStream {
 
     /**
      * Writes an chunk type identifier (4 bytes).
+     *
      * @param s A string with a length of 4 characters.
+     * @throws java.io.IOException TODO
      */
     public void writeType(String s) throws IOException {
         if (s.length() != 4) {
@@ -170,12 +180,12 @@ public class MC68000OutputStream extends FilterOutputStream {
     }
 
     /**
-     * Returns the current value of the counter <code>written</code>,
-     * the number of bytes written to this data output stream so far.
-     * If the counter overflows, it will be wrapped to Integer.MAX_VALUE.
+     * Returns the current value of the counter <code>written</code>, the number
+     * of bytes written to this data output stream so far. If the counter
+     * overflows, it will be wrapped to Integer.MAX_VALUE.
      *
-     * @return  the value of the <code>written</code> field.
-     * @see     java.io.DataOutputStream#written
+     * @return the value of the <code>written</code> field.
+     * @see java.io.DataOutputStream#written
      */
     public final long size() {
         return written;
@@ -187,9 +197,12 @@ public class MC68000OutputStream extends FilterOutputStream {
     public void clearCount() {
         written = 0;
     }
+
     /**
-     * Increases the written counter by the specified value
-     * until it reaches Long.MAX_VALUE.
+     * Increases the written counter by the specified value until it reaches
+     * Long.MAX_VALUE.
+     *
+     * @param value TODO
      */
     protected void incCount(int value) {
         long temp = written + value;

@@ -9,12 +9,12 @@ import ru.sbtqa.monte.media.iff.IFFParser;
 import ru.sbtqa.monte.media.image.BitmapImage;
 
 /**
- * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version  2010-06-27 Support for "vertical" compression added.
- * <br>1.0  1999-10-19
+ * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @version 2010-06-27 Support for "vertical" compression added.
+ * <br>1.0 1999-10-19
  */
 public class ANIMKeyFrame
-        extends ANIMFrame {
+      extends ANIMFrame {
 
     private int compression;
     protected final static int VDAT_ID = IFFParser.stringToID("VDAT");
@@ -27,7 +27,11 @@ public class ANIMKeyFrame
         this.data = data;
     }
 
-    /** For possible values see {@link ANIMMovieTrack}. */
+    /**
+     * For possible values see {@link ANIMMovieTrack}.
+     *
+     * @param compression TODO
+     */
     public void setCompression(int compression) {
         this.compression = compression;
     }
@@ -51,11 +55,11 @@ public class ANIMKeyFrame
 
     /**
      * ByteRun1 run decoder.
-     * <p>
+     * 
      * The run encoding scheme by <em>byteRun1</em> is best described by pseudo
-     * code for the decoder <em>Unpacker</em> (called <em>UnPackBits</em> in
-     * the Macintosh toolbox.
-     * <pre>
+     * code for the decoder <em>Unpacker</em> (called <em>UnPackBits</em> in the
+     * Macintosh toolbox.
+     * 
      * UnPacker:
      *  LOOP until produced the desired number of bytes
      *      Read the next source byte into n
@@ -65,8 +69,11 @@ public class ANIMKeyFrame
      *          -128    =&gt; no operation
      *      ENDCASE;
      *   ENDLOOP;
-     * </pre>
+     * 
      *
+     * @param in TODO
+     * @param out TODO
+     * @return TODO
      */
     public static int unpackByteRun1(byte[] in, byte[] out) {
         int iOut = 0; // output array index
@@ -82,12 +89,10 @@ public class ANIMKeyFrame
                     System.arraycopy(in, iIn, out, iOut, n);
                     iOut += n;
                     iIn += n;
-                } else {
-                    if (n != -128) {//[-1..-127] =&gt; replicate the next byte -n+1 times
-                        copyByte = in[iIn++];
-                        for (; n < 1; n++) {
-                            out[iOut++] = copyByte;
-                        }
+                } else if (n != -128) {//[-1..-127] =&gt; replicate the next byte -n+1 times
+                    copyByte = in[iIn++];
+                    for (; n < 1; n++) {
+                        out[iOut++] = copyByte;
                     }
                 }
             }
@@ -99,29 +104,28 @@ public class ANIMKeyFrame
         }
         return iOut;
     }
+
     /**
      * Vertical run decoder.
-     * <p>
+     * 
      * Each plane is stored in a separate VDAT chunk.
-     * <p>
+     * 
      * A VDAT chunk consists of an id, a length, and a body.
-     * <pre>
+     * 
      * struct {
      *    uint16 id;  // The 4 ASCII characters "VDAT"
      *    uint16 length,
      *    byte[length] body
      * }
-     * </pre>
-     * The body consists of a command list and a data list.
-     * <pre>
+     *  The body consists of a command list and a data list.
+     * 
      * struct {
      *    uint16         cnt;        // Command count + 2
      *    uint8[cnt - 2] cmd;        // The commands
      *    uint16[]       data;       // Data words
      * }
-     * </pre>
-     * Pseudo code for the unpacker:
-     * <pre>
+     *  Pseudo code for the unpacker:
+     * 
      * UnPacker:
      *  Read cnt;
      *  LOOP cnt - 2 TIMES
@@ -140,11 +144,12 @@ public class ANIMKeyFrame
      *      ENDCASE;
      *      IF end of data reached THEN EXIT END;
      *   ENDLOOP;
-     * </pre>
+     * 
      *
+     * @param in TODO
+     * @param bm TODO
      */
-    public void unpackVertical(byte[] in, BitmapImage bm)
-             {
+    public void unpackVertical(byte[] in, BitmapImage bm) {
         byte[] out = bm.getBitmap();
         int iIn = 0; // input index
         int endOfData = 0;
@@ -155,7 +160,6 @@ public class ANIMKeyFrame
         int scanlineStride = bm.getScanlineStride();
         int columnCount = (bmhdWidth / 8) * bmhdHeight;
         int columnStride = bmhdHeight * 2;
-
 
         try {
             for (int p = 0; p < bmhdNbPlanes; p++) {
@@ -177,7 +181,6 @@ public class ANIMKeyFrame
 
                 // The body consists of a command list and a data list.
                 // ----------------------------------------------------
-
                 // read the command count, compute the offset to the data list
                 int cnt = (in[iIn++] & 0xff) << 8 | (in[iIn++] & 0xff);
                 int iCmd = iIn;
@@ -233,7 +236,6 @@ public class ANIMKeyFrame
                     }
                 }
             }
-
 
         } catch (ParseException e) {
             e.printStackTrace();

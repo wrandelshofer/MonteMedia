@@ -25,7 +25,7 @@ import static java.lang.Math.*;
  * is written to it.
  * The data can be retrieved using {@code toByteArray()}, {@code toImageOutputStream()}
  * and {@code toOutputStream()}.
- * <p>
+ * 
  * Closing a {@code ByteArrayImageOutputStream} has no effect. The methods in
  * this class can be called after the stream has been closed without
  * generating an {@code IOException}.
@@ -93,7 +93,7 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
      * <code>0</code> to <code>255</code>. If no byte is available
      * because the end of the stream has been reached, the value
      * <code>-1</code> is returned.
-     * <p>
+     * 
      * This <code>read</code> method
      * cannot block.
      *
@@ -121,7 +121,7 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
      * by <code>System.arraycopy</code>. The
      * value <code>k</code> is added into <code>streamPos</code>
      * and <code>k</code> is returned.
-     * <p>
+     * 
      * This <code>read</code> method cannot block.
      *
      * @param   b     the buffer into which the data is read.
@@ -183,7 +183,7 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
     /**
      * Returns the number of remaining bytes that can be read (or skipped over)
      * from this input stream.
-     * <p>
+     * 
      * The value returned is <code>count&nbsp;- streamPos</code>,
      * which is the number of bytes remaining to be read from the input buffer.
      *
@@ -198,7 +198,7 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
      * Closing a <tt>ByteArrayInputStream</tt> has no effect. The methods in
      * this class can be called after the stream has been closed without
      * generating an <tt>IOException</tt>.
-     * <p>
+     * 
      */
     @Override
     public void close() {
@@ -281,7 +281,7 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
 
     /** Writes the contents of the byte array into the specified output
      * stream.
-     * @param out
+     * @param out TODO
      */
     public void toOutputStream(OutputStream out) throws IOException {
         out.write(buf, arrayOffset, count);
@@ -289,7 +289,7 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
 
     /** Writes the contents of the byte array into the specified image output
      * stream.
-     * @param out
+     * @param out TODO
      */
     public void toImageOutputStream(ImageOutputStream out) throws IOException {
         out.write(buf, arrayOffset, count);

@@ -35,6 +35,7 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
      * Creates a new instance.
      *
      * @param file the input file
+     * @throws java.io.IOException TODO
      */
     public QuickTimeReader(File file) throws IOException {
         super(file);
@@ -44,6 +45,7 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
      * Creates a new instance.
      *
      * @param in the input stream.
+     * @throws java.io.IOException TODO
      */
     public QuickTimeReader(ImageInputStream in) throws IOException {
         super(in);
@@ -95,7 +97,7 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
      * @param img An image that can be reused if it fits the media format of the
      * track. Pass null to create a new image on each read.
      * @return An image or null if the end of the media has been reached.
-     * @throws IOException
+     * @throws IOException TODO
      */
     public BufferedImage read(int track, BufferedImage img) throws IOException {
         ensureRealized();
@@ -151,7 +153,7 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
         ensureRealized();
         QuickTimeMeta.Track tr = meta.tracks.get(track);
         // FIXME - This method must take the edit list of the track into account
-        QuickTimeMeta.Media m=tr.mediaList.get(0);
+        QuickTimeMeta.Media m = tr.mediaList.get(0);
         Rational trackDuration = new Rational(m.mediaDuration, m.mediaTimeScale);
         return trackDuration;
     }
@@ -173,17 +175,15 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
         String enc = fmt.get(EncodingKey);
         if (codec == null) {
             throw new UnsupportedOperationException("Track " + tr + " no codec found for format " + fmt);
-        } else {
-            if (fmt.get(MediaTypeKey) == VIDEO) {
-                if (null == codec.setInputFormat(fmt)) {
-                    throw new UnsupportedOperationException("Track " + tr + " codec " + codec + " does not support input format " + fmt + ". codec=" + codec);
-                }
-                Format outFormat = fmt.prepend(MediaTypeKey, VIDEO,//
-                        MimeTypeKey, MIME_JAVA,
-                        EncodingKey, ENCODING_BUFFERED_IMAGE, DataClassKey, BufferedImage.class);
-                if (null == codec.setOutputFormat(outFormat)) {
-                    throw new UnsupportedOperationException("Track " + tr + " codec does not support output format " + outFormat + ". codec=" + codec);
-                }
+        } else if (fmt.get(MediaTypeKey) == VIDEO) {
+            if (null == codec.setInputFormat(fmt)) {
+                throw new UnsupportedOperationException("Track " + tr + " codec " + codec + " does not support input format " + fmt + ". codec=" + codec);
+            }
+            Format outFormat = fmt.prepend(MediaTypeKey, VIDEO,//
+                  MimeTypeKey, MIME_JAVA,
+                  EncodingKey, ENCODING_BUFFERED_IMAGE, DataClassKey, BufferedImage.class);
+            if (null == codec.setOutputFormat(outFormat)) {
+                throw new UnsupportedOperationException("Track " + tr + " codec does not support output format " + outFormat + ". codec=" + codec);
             }
         }
 

@@ -18,62 +18,62 @@ import static java.lang.Math.*;
 
 /**
  * {@code TechSmithCodec} (tscc) encodes a BufferedImage as a byte[] array.
- * <p>
+ * 
  * This codec does not encode the color palette of an image. This must be done
  * separately.
- * <p>
+ * 
  * Supported input formats:
- * <ul>
+ * 
  * {@code Format} with {@code BufferedImage.class}, any width, any height,
  * depth=8,16 or 24.
- * </ul>
+ * 
  * Supported output formats:
- * <ul>
+ * 
  * {@code Format} with {@code byte[].class}, same width and height as input
  * format, depth=8,16 or 24.
- * </ul>
+ * 
  * The codec supports lossless delta- and key-frame encoding of images with 8, 16 or
  * 24 bits per pixel.
- * <p>
+ * 
  * Compression of a frame is performed in two steps: In the first, step
  * a frame is compressed line by line from bottom to top. In the second step
  * the resulting data is compressed again using zlib compression.
- * <p>
+ * 
  * Apart from the second compression step and the support for 16- and 24-bit
  * data, this encoder is identical to the {@link RunLengthCodec}.
- * <p>
+ * 
  * Each line of a frame is compressed individually. A line consists of two-byte
  * op-codes optionally followed by data. The end of the line is marked with
  * the EOL op-code.
- * <p>
+ * 
  * The following op-codes are supported:
- * <ul>
- * <li>{@code 0x00 0x00}
- * <br>Marks the end of a line.</li>
+ * 
+ * {@code 0x00 0x00}
+ * <br>Marks the end of a line.
  *
- * <li>{@code  0x00 0x01}
- * <br>Marks the end of the bitmap.</li>
+ * {@code  0x00 0x01}
+ * <br>Marks the end of the bitmap.
  *
- * <li>{@code 0x00 0x02 dx dy}
+ * {@code 0x00 0x02 dx dy}
  * <br> Marks a delta (skip). {@code dx} and {@code dy}
  * indicate the horizontal and vertical offset from the current position.
- * {@code dx} and {@code dy} are unsigned 8-bit values.</li>
+ * {@code dx} and {@code dy} are unsigned 8-bit values.
  *
- * <li>{@code 0x00 n pixel{n} 0x00?}
+ * {@code 0x00 n pixel{n} 0x00?}
  * <br> Marks a literal run. {@code n}
  * gives the number of 8-, 16- or 24-bit pixels that follow.
  * {@code n} must be between 3 and 255.
  * If n is odd and 8-bit pixels are used, a pad byte with the value 0x00 must be
  * added.
- * </li>
- * <li>{@code n pixel}
+ * 
+ * {@code n pixel}
  * <br> Marks a repetition. {@code n}
  * gives the number of times the given pixel is repeated. {@code n} must be
  * between 1 and 255.
- * </li>
- * </ul>
+ * 
+ * 
  * Example:
- * <pre>
+ * 
  * Compressed data         Expanded data
  *
  * 03 04                   04 04 04
@@ -85,17 +85,17 @@ import static java.lang.Math.*;
  * 00 00                   End of line
  * 09 1E                   1E 1E 1E 1E 1E 1E 1E 1E 1E
  * 00 01                   End of RLE bitmap
- * </pre>
+ * 
  *
- * References:<br/>
+ * References:
  * <a href="http://wiki.multimedia.cx/index.php?title=TechSmith_Screen_Capture_Codec"
  * >http://wiki.multimedia.cx/index.php?title=TechSmith_Screen_Capture_Codec</a><br>
  *
- * <p><b>Palette colors</b></p>
- * <p>In an AVI file, palette changes are stored in chunks with id's with the
+ * <b>Palette colors</b>
+ * In an AVI file, palette changes are stored in chunks with id's with the
  * suffix "pc". "pc" chunks contain an AVIPALCHANGE struct as shown below.
- * </p>
- * <pre>
+ * 
+ * 
  * /* ------------------
  *  * AVI Palette Change
  *  * ------------------
@@ -152,7 +152,7 @@ import static java.lang.Math.*;
  *         // Specifies an array of PALETTEENTRY structures, of size "numEntries".
  *     PALETTEENTRY_ALLENTRIES  all[numEntries==0];
  * } AVIPALCHANGE;
- * </pre>
+ * 
  * 
  *
  * @author Werner Randelshofer
@@ -209,16 +209,16 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
      * Returns true if a key-frame was decoded.
      * 
      * 
-     * @param inDat
-     * @param off
-     * @param length
-     * @param outDat
+     * @param inDat TODO
+     * @param off TODO
+     * @param length TODO
+     * @param outDat TODO
      * @param prevDat The pixels decoded in the previous frame. Since no double
      *                buffering is used, this can be the same array than
      *                {@code outDat}.
-     * @param width
-     * @param height
-     * @param onlyDecodeIfKeyframe
+     * @param width TODO
+     * @param height TODO
+     * @param onlyDecodeIfKeyframe TODO
      * @return True if a key-frame was decoded.
      * @throws IOException 
      */
@@ -294,16 +294,16 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
      * Returns true if a key-frame was decoded.
      * 
      * 
-     * @param inDat
-     * @param off
-     * @param length
-     * @param outDat
+     * @param inDat TODO
+     * @param off TODO
+     * @param length TODO
+     * @param outDat TODO
      * @param prevDat The pixels decoded in the previous frame. Since no double
      *                buffering is used, this can be the same array than
      *                {@code outDat}.
-     * @param width
-     * @param height
-     * @param onlyDecodeIfKeyframe
+     * @param width TODO
+     * @param height TODO
+     * @param onlyDecodeIfKeyframe TODO
      * @return True if a key-frame was decoded.
      * @throws IOException 
      */
@@ -808,13 +808,13 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
     /** Encodes a delta frame which is known to have the same content than
      * the previous frame.
      * 
-     * @param out
-     * @param data
-     * @param prev
-     * @param width
-     * @param height
-     * @param offset
-     * @param scanlineStride
+     * @param out TODO
+     * @param data TODO
+     * @param prev TODO
+     * @param width TODO
+     * @param height TODO
+     * @param offset TODO
+     * @param scanlineStride TODO
      * @throws IOException 
      */
     public void encodeSameDelta8(OutputStream out, byte[] data, byte[] prev, int width, int height, int offset, int scanlineStride)
@@ -834,13 +834,13 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
     /** Encodes a delta frame which is known to have the same content than
      * the previous frame.
      * 
-     * @param out
-     * @param data
-     * @param prev
-     * @param width
-     * @param height
-     * @param offset
-     * @param scanlineStride
+     * @param out TODO
+     * @param data TODO
+     * @param prev TODO
+     * @param width TODO
+     * @param height TODO
+     * @param offset TODO
+     * @param scanlineStride TODO
      * @throws IOException 
      */
     public void encodeSameDelta24(OutputStream out, int[] data, int[] prev, int width, int height, int offset, int scanlineStride)
@@ -861,13 +861,13 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
     /** Encodes a delta frame which is known to have the same content than
      * the previous frame.
      * 
-     * @param out
-     * @param data
-     * @param prev
-     * @param width
-     * @param height
-     * @param offset
-     * @param scanlineStride
+     * @param out TODO
+     * @param data TODO
+     * @param prev TODO
+     * @param width TODO
+     * @param height TODO
+     * @param offset TODO
+     * @param scanlineStride TODO
      * @throws IOException 
      */
     public void encodeSameDelta16(OutputStream out, short[] data, short[] prev, int width, int height, int offset, int scanlineStride)

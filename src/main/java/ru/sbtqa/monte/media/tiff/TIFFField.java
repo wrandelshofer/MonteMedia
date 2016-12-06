@@ -14,10 +14,14 @@ import static ru.sbtqa.monte.media.tiff.IFDDataType.valueOf;
  */
 public class TIFFField extends TIFFNode {
 
-    /** The data of this field. */
+    /**
+     * The data of this field.
+     */
     private Object data;
-    
-    /** The type of this field, if no IFDEntry is provided.*/
+
+    /**
+     * The type of this field, if no IFDEntry is provided.
+     */
     private IFDDataType type;
 
     public TIFFField(TIFFTag tag, Object data, IFDDataType type) {
@@ -33,13 +37,16 @@ public class TIFFField extends TIFFNode {
         this.ifdEntry = entry;
         valueOf(entry.getTypeNumber()).checkType(data);
     }
-    
-    private void checkType(Object data, IFDDataType type) {
-        
-    }
-    
 
-    /** Returns a description of the field. If known. */
+    private void checkType(Object data, IFDDataType type) {
+
+    }
+
+    /**
+     * Returns a description of the field. If known.
+     *
+     * @return TODO
+     */
     public String getDescription() {
         return getTag().getDescription(getData());
     }
@@ -72,7 +79,9 @@ public class TIFFField extends TIFFNode {
 
     @Override
     public String toString() {
-        if (data==null) return super.toString();
-        return "TIFFField "+tag+"="+ data.toString();
+        if (data == null) {
+            return super.toString();
+        }
+        return "TIFFField " + tag + "=" + data.toString();
     }
 }

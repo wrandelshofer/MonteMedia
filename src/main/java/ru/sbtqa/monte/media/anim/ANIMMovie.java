@@ -11,13 +11,14 @@ import ru.sbtqa.monte.media.math.Rational;
 
 /**
  * {@code ANIMMovie}.
- * 
+ *
  * FIXME - Implement me.
  *
  * @author Werner Randelshofer
  * @version $Id$
  */
 public class ANIMMovie extends AbstractMovie {
+
     private final static long serialVersionUID = 1L;
 
     @Override

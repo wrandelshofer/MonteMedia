@@ -24,33 +24,38 @@ public class AmigaCAMGMainx {
 
         for (Map.Entry<Integer, String> e : v.entrySet()) {
             //      System.out.println("0x"+Integer.toHexString(e.getKey())+"="+e.getValue());
-            
-            String mode="";
+
+            String mode = "";
             for (Map.Entry<Integer, String> em : m.entrySet()) {
-                
-                
+
                 if (isSet(e.getKey(), em.getKey())) {
-                    if (mode.length()>0)mode+=", ";
-                    mode+=em.getValue();
+                    if (mode.length() > 0) {
+                        mode += ", ";
+                    }
+                    mode += em.getValue();
                 }
             }
-            String monitor="";
+            String monitor = "";
             for (Map.Entry<Integer, String> em : moni.entrySet()) {
                 if (isEnum(e.getKey(), 0xffff1000, em.getKey())) {
-                    monitor+=em.getValue();
+                    monitor += em.getValue();
                 }
             }
-            int p=monitor.indexOf(',');
-            String fps=monitor.substring(p);
-            
-            int descKey=e.getKey(); if (isEnum(descKey,0xffff1000,0)) {descKey|=0x00011000;}
-            System.out.println("  \"" + v.get(descKey)+fps + "\"=0x" + Integer.toHexString(e.getKey()) + ",");
+            int p = monitor.indexOf(',');
+            String fps = monitor.substring(p);
+
+            int descKey = e.getKey();
+            if (isEnum(descKey, 0xffff1000, 0)) {
+                descKey |= 0x00011000;
+            }
+            System.out.println("  \"" + v.get(descKey) + fps + "\"=0x" + Integer.toHexString(e.getKey()) + ",");
         }
     }
 
     private static boolean isSet(int flag, int mask) {
         return (flag & mask) == mask;
     }
+
     private static boolean isEnum(int flag, int mask, int value) {
         return (flag & mask) == value;
     }
@@ -66,9 +71,9 @@ public class AmigaCAMGMainx {
         m.put(0x8020, "Super");
         return m;
     }
+
     private static TreeMap<Integer, String> createMonitorMap() {
         TreeMap<Integer, String> m = new TreeMap<Integer, String>();
-
 
         m.put(0x00000000, "default, OCS, 60fps");
         m.put(0x00011000, "NTSC, 60fps");

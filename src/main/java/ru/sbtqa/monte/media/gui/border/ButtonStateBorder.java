@@ -3,7 +3,6 @@
  * Copyright © 2006-2009 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-
 package ru.sbtqa.monte.media.gui.border;
 
 import java.awt.*;
@@ -11,10 +10,11 @@ import static java.lang.Math.min;
 import static java.lang.System.arraycopy;
 import javax.swing.*;
 import javax.swing.border.*;
+
 /**
  * ButtonStateBorder.
  *
- * @author  Werner Randelshofer
+ * @author Werner Randelshofer
  * @version 1.2 2009-11-20 Added more constructors.
  * <br>1.1 2005-11-30 Method getBorderInsets() returns border insets from
  * variable borderInsets, if it is not null. This allows to defer image loading
@@ -22,12 +22,14 @@ import javax.swing.border.*;
  * <br>1.0.4 2005-10-03 Draw default state only, if button is not pressed.
  * <br>1.0.3 2005-09-30 Draw pressed state only, if button state "isPressed"
  * _and_ "isArmed" are true.
- * <br>1.0.2 2005-06-25 Return a new instance of insets in method getBorderInsets.
- * <br>1.0.1 2005-04-17 Blinking default button needs to be drawn on
- * all window types, and not just on JDialog's.
- * <br>1.0  18 March 2005  Created.
+ * <br>1.0.2 2005-06-25 Return a new instance of insets in method
+ * getBorderInsets.
+ * <br>1.0.1 2005-04-17 Blinking default button needs to be drawn on all window
+ * types, and not just on JDialog's.
+ * <br>1.0 18 March 2005 Created.
  */
 public class ButtonStateBorder implements Border {
+
     public final static int E = 0;
     public final static int EP = 1;
     public final static int ES = 2;
@@ -44,8 +46,9 @@ public class ButtonStateBorder implements Border {
      */
     private Border[] borders;
 
-    /** Holds the icon pictures in a single image. This variable is used only
-     *until we create the icons array. Then it is set to null.
+    /**
+     * Holds the icon pictures in a single image. This variable is used only
+     * until we create the icons array. Then it is set to null.
      */
     private Image tiledImage;
     /**
@@ -53,25 +56,30 @@ public class ButtonStateBorder implements Border {
      */
     private int tileCount;
     /**
-     * Whether the tiledImage needs to be tiled horizontally or vertically
-     * to get the icons out of it.
+     * Whether the tiledImage needs to be tiled horizontally or vertically to
+     * get the icons out of it.
      */
     private boolean isTiledHorizontaly;
 
     private Insets borderInsets;
-    /** Only used for tiled image. */
+    /**
+     * Only used for tiled image.
+     */
     private boolean fill;
-    /** Only used for tiled image. */
+    /**
+     * Only used for tiled image.
+     */
     private Insets imageInsets;
 
-
     /**
-     * Creates a new instance.
-     * All borders must have the same insets.
-     * If a border is null, nothing is drawn for this state.
+     * Creates a new instance. All borders must have the same insets. If a
+     * border is null, nothing is drawn for this state.
+     *
+     * @param e TODO
+     * @param es TODO
      */
     public ButtonStateBorder(Border e, Border es) {
-        borders = new Border[DEFAULT+1];
+        borders = new Border[DEFAULT + 1];
         borders[E] = e;
         borders[EP] = es;
         borders[ES] = es;
@@ -83,14 +91,25 @@ public class ButtonStateBorder implements Border {
         borders[DI] = es;
         borders[DIS] = es;
     }
+
     /**
-     * Creates a new instance.
-     * All borders must have the same insets.
-     * If a border is null, nothing is drawn for this state.
+     * Creates a new instance. All borders must have the same insets. If a
+     * border is null, nothing is drawn for this state.
+     *
+     * @param e TODO
+     * @param dis TODO
+     * @param ep TODO
+     * @param di TODO
+     * @param es TODO
+     * @param is TODO
+     * @param eps TODO
+     * @param i TODO
+     * @param d TODO
+     * @param ds TODO
      */
     public ButtonStateBorder(Border e, Border ep, Border es, Border eps,
-    Border d, Border ds, Border i, Border is, Border di, Border dis) {
-        borders = new Border[DEFAULT+1];
+          Border d, Border ds, Border i, Border is, Border di, Border dis) {
+        borders = new Border[DEFAULT + 1];
         borders[E] = e;
         borders[EP] = ep;
         borders[ES] = es;
@@ -102,21 +121,29 @@ public class ButtonStateBorder implements Border {
         borders[DI] = dis;
         borders[DIS] = dis;
     }
+
     /**
-     * Creates a new instance.
-     * All borders must have the same insets.
+     * Creates a new instance. All borders must have the same insets.
+     *
+     * @param borders TODO
      */
     public ButtonStateBorder(Border[] borders) {
-        this.borders = new Border[DEFAULT+1];
+        this.borders = new Border[DEFAULT + 1];
         arraycopy(borders, 0, this.borders, 0, min(borders.length, this.borders.length));
     }
 
     /**
-     * Creates a new instance.
-     * All borders must have the same dimensions.
+     * Creates a new instance. All borders must have the same dimensions.
+     *
+     * @param tiledImage TODO
+     * @param fill TODO
+     * @param tileCount TODO
+     * @param borderInsets TODO
+     * @param isTiledHorizontaly TODO
+     * @param imageInsets TODO
      */
     public ButtonStateBorder(Image tiledImage, int tileCount, boolean isTiledHorizontaly,
-    Insets imageInsets, Insets borderInsets, boolean fill) {
+          Insets imageInsets, Insets borderInsets, boolean fill) {
         this.tiledImage = tiledImage;
         this.tileCount = tileCount;
         this.isTiledHorizontaly = isTiledHorizontaly;
@@ -128,7 +155,6 @@ public class ButtonStateBorder implements Border {
     public void setBorder(int key, Border b) {
         borders[key] = b;
     }
-
 
     public Insets getBorderInsets(Component c) {
         if (borderInsets != null) {
@@ -165,53 +191,40 @@ public class ButtonStateBorder implements Border {
                         }
                     } else if (model.isSelected()) {
                         border = borders[ES];
+                    } else if (!model.isPressed()
+                          && borders[DEFAULT] != null
+                          && (c instanceof JButton)
+                          && ((JButton) c).isDefaultButton()) {
+                        border = borders[DEFAULT];
                     } else {
-                        if (!model.isPressed() &&
-                        borders[DEFAULT] != null &&
-                        (c instanceof JButton) &&
-                        ((JButton) c).isDefaultButton()
-                        ) {
-                            border = borders[DEFAULT];
-                        } else {
-                            border = borders[E];
-                        }
+                        border = borders[E];
                     }
-                } else {
-                    if (model.isSelected()) {
-                        border = borders[DS];
-                    } else {
-                        border = borders[D];
-                    }
-                }
-            } else {
-                if (model.isEnabled()) {
-                    if (model.isSelected()) {
-                        border = borders[IS];
-                    } else {
-                        border = borders[I];
-                    }
-                } else {
-                    if (model.isSelected()) {
-                        border = borders[DIS];
-                    } else {
-                        border = borders[DI];
-                    }
-                }
-            }
-        } else {
-            if (isActive) {
-                if (c.isEnabled()) {
-                    border = borders[E];
+                } else if (model.isSelected()) {
+                    border = borders[DS];
                 } else {
                     border = borders[D];
                 }
-            } else {
-                if (c.isEnabled()) {
-                    border = borders[I];
+            } else if (model.isEnabled()) {
+                if (model.isSelected()) {
+                    border = borders[IS];
                 } else {
-                    border = borders[DI];
+                    border = borders[I];
                 }
+            } else if (model.isSelected()) {
+                border = borders[DIS];
+            } else {
+                border = borders[DI];
             }
+        } else if (isActive) {
+            if (c.isEnabled()) {
+                border = borders[E];
+            } else {
+                border = borders[D];
+            }
+        } else if (c.isEnabled()) {
+            border = borders[I];
+        } else {
+            border = borders[DI];
         }
         return border;
     }

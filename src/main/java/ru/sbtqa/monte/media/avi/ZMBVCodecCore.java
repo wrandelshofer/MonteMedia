@@ -16,38 +16,44 @@ import ru.sbtqa.monte.media.io.UncachedImageInputStream;
 
 /**
  * Implements the DosBox Capture Codec {@code "ZMBV"}.
+ *
  * 
- * <p>This is a codec added to the DosBox project to capture screen data 
- * (like Vmware VMNC).</p>
+ * This is a codec added to the DosBox project to capture screen data (like
+ * Vmware VMNC).
+ *
  * 
- * <p>This codec employs ZLIB compression and has intraframes and delta frames.
- * Delta frames seem to have blocks either copied from the previous frame or 
+ * This codec employs ZLIB compression and has intraframes and delta frames.
+ * Delta frames seem to have blocks either copied from the previous frame or
  * XOR'ed with some block from the previous frame.
- * <p>
- * The FourCC for this codec is ZMBV which ostensibly stands for Zip Motion 
+ * 
+ * The FourCC for this codec is ZMBV which ostensibly stands for Zip Motion
  * Blocks Video. The data is most commonly stored in AVI files.
- * </p>
- * <p><b>Data Format</b></p>
- * <p>Byte 0 of a ZMBV data chunk contains the following flags:</p>
- * <pre>
+ * 
+ * 
+ * <b>Data Format</b>
+ * 
+ * Byte 0 of a ZMBV data chunk contains the following flags:
+ * 
  * bits 7-2  undefined
  * bit 1     palette change
  * bit 0     1 = intraframe, 0 = interframe
- * </pre>
  * 
- * <p>If the frame is an intra frame as indicated by bit 0 of byte 0, the next
- * 6 bytes in the data chunk are formatted as follows:</p>
- * <pre>
+ *
+ * 
+ * If the frame is an intra frame as indicated by bit 0 of byte 0, the next 6
+ * bytes in the data chunk are formatted as follows:
+ * 
  * byte 1    major version
  * byte 2    minor version
  * byte 3    compression type (0 = uncompressed, 1 = zlib-compressed)
  * byte 4    video format
  * byte 5    block width
  * byte 6    block height
- * </pre>
- * <p>Presently, the only valid major/minor version pair is 0/1. A block width or
- * height of 0 is invalid. These are the video modes presently defined:</p>
- * <pre>
+ * 
+ * 
+ * Presently, the only valid major/minor version pair is 0/1. A block width or
+ * height of 0 is invalid. These are the video modes presently defined:
+ * 
  * 0  none
  * 1  1 bit/pixel, palettized
  * 2  2 bits/pixel, palettized
@@ -57,62 +63,70 @@ import ru.sbtqa.monte.media.io.UncachedImageInputStream;
  * 6  16 bits/pixel
  * 7  24 bits/pixel
  * 8  32 bits/pixel
- * </pre>
  * 
- * <p>Presently, only modes 4 (8 bpp), 5 (15 bpp), 6 (16 bpp) and 8 (32 bpp) are
- * supported.</p>
+ *
  * 
- * <p>If the compression type is 1, the remainder of the data chunk is compressed
- * using the standard zlib package. Decompress the data before proceeding with 
- * the next step. Otherwise, proceed to the next step. Also note that you must 
- * reset zlib for intraframes.</p>
+ * Presently, only modes 4 (8 bpp), 5 (15 bpp), 6 (16 bpp) and 8 (32 bpp) are
+ * supported.
+ *
  * 
- * <p>If bit 1 of the frame header (palette change) is set then the first 768 
- * bytes of the uncompressed data represent 256 red-green-blue palette triplets.
- * Each component is one byte and ranges from 0..255.</p>
+ * If the compression type is 1, the remainder of the data chunk is compressed
+ * using the standard zlib package. Decompress the data before proceeding with
+ * the next step. Otherwise, proceed to the next step. Also note that you must
+ * reset zlib for intraframes.
+ *
  * 
- * <p>An intraframe consists of 768 bytes of palette data (for palettized modes)
- * and raw frame data.</p>
+ * If bit 1 of the frame header (palette change) is set then the first 768 bytes
+ * of the uncompressed data represent 256 red-green-blue palette triplets. Each
+ * component is one byte and ranges from 0..255.
+ *
  * 
- * </p>An interframe is comprised of up to three parts:</p>
- * <ol>
- * <li>if palette change flag was set then first 768 bytes represent XOR'ed 
- * palette difference</li>
- * <li>block info (2 bytes per block, padded to 4 bytes length)</li>
- * <li>block differences</li>
- * </ol>
- * <p>Block info is composed from a motion vector and a flag: first byte is 
- * (dx &lt;&lt; 1) | flag, second byte is (dy &lt;&lt; 1). Motion vectors can go
- * out of bounds and in that case you need to zero the out-of-bounds part. 
- * Also note that currently motion vectors are limited to a range of (-16..16).
- * Flag tells whether the codec simply copies the block from the decoded offset
- * or copies it and XOR's it with data from block differences. All XORing for
- * 15/16 bpp and 32 bpp modes is done with little-endian integers.</p>
+ * An intraframe consists of 768 bytes of palette data (for palettized modes)
+ * and raw frame data.
+ *
+ * An interframe is comprised of up to three parts:
  * 
- * <p>Interframe decoding can be done this way:</p>
- * <pre>
+ * if palette change flag was set then first 768 bytes represent XOR'ed
+ * palette difference
+ * block info (2 bytes per block, padded to 4 bytes length)
+ * block differences
+ * 
+ * 
+ * Block info is composed from a motion vector and a flag: first byte is (dx
+ * &lt;&lt; 1) | flag, second byte is (dy &lt;&lt; 1). Motion vectors can go out
+ * of bounds and in that case you need to zero the out-of-bounds part. Also note
+ * that currently motion vectors are limited to a range of (-16..16). Flag tells
+ * whether the codec simply copies the block from the decoded offset or copies
+ * it and XOR's it with data from block differences. All XORing for 15/16 bpp
+ * and 32 bpp modes is done with little-endian integers.
+ *
+ * 
+ * Interframe decoding can be done this way:
+ * 
  * for each block {
  *   a = block_info[current_block][0];
  *   b = block_info[current_block][1];
  *   dx = a &gt;&gt; 1;
  *   dy = b &gt;&gt; 1;
- *   flag = a & 1;
+ *   flag = a &amp; 1;
  *   copy block from offset (dx, dy) from previous frame.
  *   if (flag) {
  *     XOR block with data read from stream.
  *   }
  * }
- * </pre>
  * 
- * <p>References<br>
+ *
+ * 
+ * References<br>
  * <a href="http://wiki.multimedia.cx/index.php?title=ZMBV"
  * >http://wiki.multimedia.cx/index.php?title=ZMBV</a>
- * </p>
  * 
- * <p>Note: We use the JZLib library for decoding compressed input streams,
- * because the {@code javax.zip.InflaterInputStream} sometimes fails to decode
- * the data.</p>
+ *
  * 
+ * Note: We use the JZLib library for decoding compressed input streams, because
+ * the {@code javax.zip.InflaterInputStream} sometimes fails to decode the
+ * data.
+ *
  * *
  * @author Werner Randelshofer
  * @version 1.0 2011-08-29 Created.
@@ -131,13 +145,15 @@ public class ZMBVCodecCore {
     public final static int COMPRESSION_NONE = 0;
     public final static int COMPRESSION_ZLIB = 1;
     /**
-     * 
+     *
      * @param inDat Input data.
      * @param off Input data offset.
      * @param length Input data length.
-     * @param outDat Output data. 32 bits per pixel: {palette index, red, green, blue}.
+     * @param outDat Output data. 32 bits per pixel: {palette index, red, green,
+     * blue}.
      * @param prevDat Previous output data array. This is needed because the
-     * codec uses double buffering.  32 bits per pixel: {palette index, red, green, blue}.
+     * codec uses double buffering. 32 bits per pixel: {palette index, red,
+     * green, blue}.
      * @param width Image width.
      * @param height Image height.
      * @param state Codec state.
@@ -154,8 +170,18 @@ public class ZMBVCodecCore {
     private byte[] blockDataBuf;
     private byte[] blockHeaderBuf;
 
-    /** Decodes to 32-bit RGB. 
-     * Returns true if a key-frame was decoded.
+    /**
+     * Decodes to 32-bit RGB. Returns true if a key-frame was decoded.
+     *
+     * @param inDat TODO
+     * @param onlyDecodeIfKeyframe TODO
+     * @param off TODO
+     * @param height TODO
+     * @param length TODO
+     * @param width TODO
+     * @param outDat TODO
+     * @param prevDat TODO
+     * @return TODO
      */
     public boolean decode(byte[] inDat, int off, int length, int[] outDat, int[] prevDat, int width, int height, boolean onlyDecodeIfKeyframe) {
         boolean isKeyframe = false;
@@ -184,7 +210,6 @@ public class ZMBVCodecCore {
                 System.err.println("unsupported version " + majorVersion + "." + minorVersion);
                 return isKeyframe;
             }
-
 
             switch (compressionType) {
                 case COMPRESSION_ZLIB:
@@ -244,8 +269,18 @@ public class ZMBVCodecCore {
         return isKeyframe;
     }
 
-    /** Decodes to 8-bit palettised. 
-     * Returns true if a key-frame was decoded.
+    /**
+     * Decodes to 8-bit palettised. Returns true if a key-frame was decoded.
+     *
+     * @param inDat TODO
+     * @param onlyDecodeIfKeyframe TODO
+     * @param off TODO
+     * @param height TODO
+     * @param length TODO
+     * @param width TODO
+     * @param outDat TODO
+     * @param prevDat TODO
+     * @return TODO
      */
     public boolean decode(byte[] inDat, int off, int length, byte[] outDat, byte[] prevDat, int width, int height, boolean onlyDecodeIfKeyframe) {
         boolean isKeyframe = false;
@@ -274,7 +309,6 @@ public class ZMBVCodecCore {
                 System.err.println("unsupported version " + majorVersion + "." + minorVersion);
                 return isKeyframe;
             }
-
 
             switch (compressionType) {
                 case COMPRESSION_ZLIB:
@@ -334,10 +368,20 @@ public class ZMBVCodecCore {
         return isKeyframe;
     }
 
-    /** Decodes to 8-bit, 15-bit, 16-bit or 32-bit RGB depending on input data. 
-     * Returns the number of decoded bits.
-     * Returns a negative number if keyframe.
-     * Returns 0 in case of failure.
+    /**
+     * Decodes to 8-bit, 15-bit, 16-bit or 32-bit RGB depending on input data.
+     * Returns the number of decoded bits. Returns a negative number if
+     * keyframe. Returns 0 in case of failure.
+     *
+     * @param inDat TODO
+     * @param onlyDecodeIfKeyframe TODO
+     * @param off TODO
+     * @param height TODO
+     * @param length TODO
+     * @param width TODO
+     * @param outDatHolder TODO
+     * @param prevDatHolder TODO
+     * @return TODO
      */
     public int decode(byte[] inDat, int off, int length, Object[] outDatHolder, Object[] prevDatHolder, int width, int height, boolean onlyDecodeIfKeyframe) {
         boolean isKeyframe = false;
@@ -367,7 +411,6 @@ public class ZMBVCodecCore {
                 System.err.println("unsupported version " + majorVersion + "." + minorVersion);
                 return 0;
             }
-
 
             switch (compressionType) {
                 case COMPRESSION_ZLIB:
@@ -558,7 +601,6 @@ public class ZMBVCodecCore {
                                 iout++;
                             }
 
-
                         }
                     }
                 }
@@ -669,7 +711,6 @@ public class ZMBVCodecCore {
                                 iout++;
                             }
 
-
                         }
                     }
                 }
@@ -693,9 +734,9 @@ public class ZMBVCodecCore {
             for (int i = 0, n = width * height; i < n; i++) {
                 int bgr = in.readUnsignedShort();
                 outDat[i] = ((bgr & (0x1f << 5)) << 6) | ((bgr & (0x1c << 5)) << 1)//green
-                        | ((bgr & (0x1f << 10)) << 9) | ((bgr & (0x1c << 10)) << 4) // red
-                        | ((bgr & (0x1f << 0)) << 3) | ((bgr & (0x1c << 0)) >>> 2) // blue
-                        ;
+                      | ((bgr & (0x1f << 10)) << 9) | ((bgr & (0x1c << 10)) << 4) // red
+                      | ((bgr & (0x1f << 0)) << 3) | ((bgr & (0x1c << 0)) >>> 2) // blue
+                      ;
             }
 
         } else {
@@ -758,9 +799,9 @@ public class ZMBVCodecCore {
                                 int px = bx + x + dx;
                                 int bgr = ((buf[iblock++] & 0xff)) | ((buf[iblock++] & 0xff) << 8);
                                 int rgb = ((bgr & (0x1f << 5)) << 6) | ((bgr & (0x1c << 5)) << 1)//green
-                                        | ((bgr & (0x1f << 10)) << 9) | ((bgr & (0x1c << 10)) << 4) // red
-                                        | ((bgr & (0x1f << 0)) << 3) | ((bgr & (0x1c << 0)) >>> 2) // blue
-                                        ;
+                                      | ((bgr & (0x1f << 10)) << 9) | ((bgr & (0x1c << 10)) << 4) // red
+                                      | ((bgr & (0x1f << 0)) << 3) | ((bgr & (0x1c << 0)) >>> 2) // blue
+                                      ;
                                 if (0 <= py && py < height && 0 <= px && px < width) {
                                     rgb ^= prevDat[px + py * width];
                                 }
@@ -880,9 +921,9 @@ public class ZMBVCodecCore {
             for (int i = 0, n = width * height; i < n; i++) {
                 int bgr = in.readUnsignedShort();
                 outDat[i] = ((bgr & (0x3f << 5)) << 5) | ((bgr & (0x30 << 5)) >> 1)//green
-                        | ((bgr & (0x1f << 11)) << 8) | ((bgr & (0x1c << 11)) << 3) // red
-                        | ((bgr & (0x1f << 0)) << 3) | ((bgr & (0x1c << 0)) >>> 2) // blue
-                        ;
+                      | ((bgr & (0x1f << 11)) << 8) | ((bgr & (0x1c << 11)) << 3) // red
+                      | ((bgr & (0x1f << 0)) << 3) | ((bgr & (0x1c << 0)) >>> 2) // blue
+                      ;
             }
 
         } else {
@@ -938,16 +979,15 @@ public class ZMBVCodecCore {
                                 int px = bx + x + dx;
                                 int bgr = ((buf[iblock++] & 0xff)) | ((buf[iblock++] & 0xff) << 8);
                                 int rgb = ((bgr & (0x3f << 5)) << 5) | ((bgr & (0x30 << 5)) >> 1)//green
-                                        | ((bgr & (0x1f << 11)) << 8) | ((bgr & (0x1c << 11)) << 3) // red
-                                        | ((bgr & (0x1f << 0)) << 3) | ((bgr & (0x1c << 0)) >>> 2) // blue
-                                        ;
+                                      | ((bgr & (0x1f << 11)) << 8) | ((bgr & (0x1c << 11)) << 3) // red
+                                      | ((bgr & (0x1f << 0)) << 3) | ((bgr & (0x1c << 0)) >>> 2) // blue
+                                      ;
                                 if (0 <= py && py < height && 0 <= px && px < width) {
                                     rgb ^= prevDat[px + py * width];
                                 }
                                 outDat[iout] = (short) bgr;
                                 iout++;
                             }
-
 
                         }
                     }
@@ -1032,7 +1072,6 @@ public class ZMBVCodecCore {
                                 outDat[iout] = (short) bgr;
                                 iout++;
                             }
-
 
                         }
                     }
@@ -1129,7 +1168,6 @@ public class ZMBVCodecCore {
                                 outDat[iout] = rgb;
                                 iout++;
                             }
-
 
                         }
                     }

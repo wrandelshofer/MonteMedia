@@ -15,7 +15,9 @@ import static java.lang.Math.*;
  */
 public class Colors {
 
-    /** Prevent instance creation. */
+    /**
+     * Prevent instance creation.
+     */
     private Colors() {
     }
 
@@ -23,11 +25,11 @@ public class Colors {
      * The macintosh palette is arranged as follows: there are 256 colours to
      * allocate, an even distribution of colors through the color cube might be
      * desirable but 256 is not the cube of an integer. 6x6x6 is 216 and so the
-     * first 216 colors are an equal 6x6x6 sampling of the color cube.
-     * This leaves 40 colours to allocate, this has been done by choosing a ramp of
+     * first 216 colors are an equal 6x6x6 sampling of the color cube. This
+     * leaves 40 colours to allocate, this has been done by choosing a ramp of
      * 10 shades each for red, green, blue and grey.
      *
-     * <p>
+     * 
      * References:<br>
      * <a href="http://paulbourke.net/texture_colour/colourramp/">http://paulbourke.net/texture_colour/colourramp/</a>
      *
@@ -89,7 +91,6 @@ public class Colors {
         if (i%6==0) System.out.println(); else System.out.print("  ");
         System.out.print(Integer.toHexString(r[i]&0xff)+","+Integer.toHexString(g[i]&0xff)+","+Integer.toHexString(b[i]&0xff));
         }*/
-
         IndexColorModel icm = new IndexColorModel(8, 256, r, g, b);
         return icm;
     }
@@ -122,7 +123,9 @@ public class Colors {
         rgb[2] = B;
     }
 
-    /** RGB 8-bit per channel to YCC 16-bit per channel. */
+    /**
+     * RGB 8-bit per channel to YCC 16-bit per channel.
+     */
     private static void RGB8toYCC16(int[] rgb, int[] ycc) {
         int R = rgb[0];
         int G = rgb[1];
@@ -137,7 +140,9 @@ public class Colors {
         ycc[2] = Cr;
     }
 
-    /** RGB 8-bit per channel to YCC 16-bit per channel. */
+    /**
+     * RGB 8-bit per channel to YCC 16-bit per channel.
+     */
     private static void RGB8toYCC16(int rgb, int[] ycc) {
         int R = (rgb & 0xff0000) >>> 16;
         int G = (rgb & 0xff00) >>> 8;
@@ -152,7 +157,9 @@ public class Colors {
         ycc[2] = Cr;
     }
 
-    /** YCC 16-bit per channel to RGB 8-bit per channel. */
+    /**
+     * YCC 16-bit per channel to RGB 8-bit per channel.
+     */
     private static void YCC16toRGB8(int[] ycc, int[] rgb) {
         int Y = ycc[0];
         int Cb = ycc[1];
@@ -167,7 +174,8 @@ public class Colors {
         rgb[2] = B;
     }
 
-    /** YCC 8-bit per channel to RGB 8-bit per channel. 
+    /**
+     * YCC 8-bit per channel to RGB 8-bit per channel.
      */
     private static void YCC8toRGB8(int[] ycc, int[] rgb) {
         int Y = ycc[0];
@@ -186,7 +194,8 @@ public class Colors {
         rgb[2] = min(255, max(0, B));
     }
 
-    /** YCC 8-bit per channel to RGB 8-bit per channel. 
+    /**
+     * YCC 8-bit per channel to RGB 8-bit per channel.
      */
     private static void RGB8toYCC8(int[] rgb, int[] ycc) {
         int R = rgb[0];

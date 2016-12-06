@@ -12,8 +12,8 @@ import javax.swing.*;
 import javax.swing.text.*;
 
 /**
- * The FileTextFieldTransferHandler can be used to add drag and drop
- * support for JTextFields, which contain the path to a file.
+ * The FileTextFieldTransferHandler can be used to add drag and drop support for
+ * JTextFields, which contain the path to a file.
  *
  * @author Werner Randelshofer
  * @version 1.2 2010-10-03 Adds support for file filter.
@@ -21,6 +21,7 @@ import javax.swing.text.*;
  * <br>1.0 September 8, 2007 Created.
  */
 public class FileTextFieldTransferHandler extends TransferHandler {
+
     private final static long serialVersionUID = 1L;
 
     private boolean shouldRemove;
@@ -30,26 +31,33 @@ public class FileTextFieldTransferHandler extends TransferHandler {
     private int fileSelectionMode;
     private FileFilter fileFilter;
 
-    /** Creates a new instance. */
+    /**
+     * Creates a new instance.
+     */
     public FileTextFieldTransferHandler() {
         this(JFileChooser.FILES_ONLY);
     }
 
-    /** Creates a new instance.
+    /**
+     * Creates a new instance.
+     *
      * @param fileSelectionMode JFileChooser file selection mode.
      */
     public FileTextFieldTransferHandler(int fileSelectionMode) {
         this(fileSelectionMode, null);
     }
 
-    /** Creates a new instance.
+    /**
+     * Creates a new instance.
+     *
      * @param fileSelectionMode JFileChooser file selection mode.
+     * @param filter TODO
      */
     public FileTextFieldTransferHandler(int fileSelectionMode, FileFilter filter) {
         this.fileFilter = filter;
         if (fileSelectionMode != JFileChooser.FILES_AND_DIRECTORIES
-                && fileSelectionMode != JFileChooser.FILES_ONLY
-                && fileSelectionMode != JFileChooser.DIRECTORIES_ONLY) {
+              && fileSelectionMode != JFileChooser.FILES_ONLY
+              && fileSelectionMode != JFileChooser.DIRECTORIES_ONLY) {
             throw new IllegalArgumentException("illegal file selection mode:" + fileSelectionMode);
         }
         this.fileSelectionMode = fileSelectionMode;
@@ -156,7 +164,6 @@ public class FileTextFieldTransferHandler extends TransferHandler {
             t = null;
         }
 
-
         return t;
     }
 
@@ -169,7 +176,7 @@ public class FileTextFieldTransferHandler extends TransferHandler {
 
         for (DataFlavor flavor : transferFlavors) {
             if (flavor.isFlavorJavaFileListType()
-                    || flavor.isFlavorTextType()) {
+                  || flavor.isFlavorTextType()) {
                 return true;
             }
         }
@@ -178,14 +185,18 @@ public class FileTextFieldTransferHandler extends TransferHandler {
     }
 
     /**
-     * Try to find a flavor that can be used to import a Transferable.
-     * The set of usable flavors are tried in the following order:
-     * <ol>
-     *     <li>First, an attempt to find a text/plain flavor is made.
-     *     <li>Second, an attempt to find a flavor representing a String reference
-     *         in the same VM is made.
-     *     <li>Lastly, DataFlavor.stringFlavor is searched for.
-     * </ol>
+     * Try to find a flavor that can be used to import a Transferable. The set
+     * of usable flavors are tried in the following order:
+     * 
+     * First, an attempt to find a text/plain flavor is made.
+     * Second, an attempt to find a flavor representing a String reference
+     * in the same VM is made.
+     * Lastly, DataFlavor.stringFlavor is searched for.
+     * 
+     *
+     * @param flavors TODO
+     * @param c TODO
+     * @return TODO
      */
     protected DataFlavor getImportFlavor(DataFlavor[] flavors, JTextComponent c) {
         DataFlavor plainFlavor = null;
@@ -212,9 +223,15 @@ public class FileTextFieldTransferHandler extends TransferHandler {
 
     /**
      * Import the given stream data into the text component.
+     *
+     * @param in TODO
+     * @param useRead TODO
+     * @param c TODO
+     * @throws javax.swing.text.BadLocationException TODO
+     * @throws java.io.IOException TODO
      */
     protected void handleReaderImport(Reader in, JTextComponent c, boolean useRead)
-            throws BadLocationException, IOException {
+          throws BadLocationException, IOException {
         if (useRead) {
             int startPosition = c.getSelectionStart();
             int endPosition = c.getSelectionEnd();
@@ -295,24 +312,25 @@ public class FileTextFieldTransferHandler extends TransferHandler {
 
     // --- TransferHandler methods ------------------------------------
     /**
-     * This is the type of transfer actions supported by the source.  Some models are
-     * not mutable, so a transfer operation of COPY only should
-     * be advertised in that case.
+     * This is the type of transfer actions supported by the source. Some models
+     * are not mutable, so a transfer operation of COPY only should be
+     * advertised in that case.
      *
-     * @param comp  The component holding the data to be transfered.  This
-     *  argument is provided to enable sharing of TransferHandlers by
-     *  multiple components.
-     * @return  This is implemented to return NONE if the component is a JPasswordField
-     *  since exporting data via user gestures is not allowed.  If the text component is
-     *  editable, COPY_OR_MOVE is returned, otherwise just COPY is allowed.
+     * @param comp The component holding the data to be transfered. This
+     * argument is provided to enable sharing of TransferHandlers by multiple
+     * components.
+     * @return This is implemented to return NONE if the component is a
+     * JPasswordField since exporting data via user gestures is not allowed. If
+     * the text component is editable, COPY_OR_MOVE is returned, otherwise just
+     * COPY is allowed.
      */
     @Override
     public int getSourceActions(JComponent comp) {
         JTextComponent c = (JTextComponent) comp;
 
         if (c instanceof JPasswordField
-                && c.getClientProperty("JPasswordField.cutCopyAllowed")
-                != Boolean.TRUE) {
+              && c.getClientProperty("JPasswordField.cutCopyAllowed")
+              != Boolean.TRUE) {
             return NONE;
         }
 
@@ -320,12 +338,12 @@ public class FileTextFieldTransferHandler extends TransferHandler {
     }
 
     /**
-     * This method is called after data has been exported.  This method should remove
-     * the data that was transfered if the action was MOVE.
+     * This method is called after data has been exported. This method should
+     * remove the data that was transfered if the action was MOVE.
      *
      * @param comp The component that was the source of the data.
-     * @param data   The data that was transferred or possibly null
-     *               if the action is <code>NONE</code>.
+     * @param data The data that was transferred or possibly null if the action
+     * is <code>NONE</code>.
      * @param action The actual action that was performed.
      */
     @Override
@@ -358,4 +376,3 @@ public class FileTextFieldTransferHandler extends TransferHandler {
         this.fileFilter = fileFilter;
     }
 }
-

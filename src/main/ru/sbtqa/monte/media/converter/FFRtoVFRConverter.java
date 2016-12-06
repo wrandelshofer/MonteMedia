@@ -23,7 +23,7 @@ import static org.monte.media.BufferFlag.*;
 /**
  * This codec converts frames from a fixed frame rate into a variable frame rate
  * by coalescing identical frames.
- * <p>
+ * 
  * This codec can be used when the input source has a fixed frame rate and
  * the output sink supports a variable frame rate.
  *

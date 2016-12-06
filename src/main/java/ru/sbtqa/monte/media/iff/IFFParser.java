@@ -13,47 +13,58 @@ import ru.sbtqa.monte.media.ParseException;
 /**
  * Interprets IFF streams.
  *
- * <p><b>Design Pattern</b> <li>	Interpreter
+ * 
+ * <b>Design Pattern</b> Interpreter
  *
- * <p><b>Design Role</b> <li>	Interpreter
+ * 
+ * <b>Design Role</b> Interpreter
  *
- * <p><b>Responsibility</b> <li>	Hide the physical representation of an IFF
- * stream from the client. <li>	Let the client declare chunks to be visited by
- * the visitor object. <li>	Let a visitor object traverse the IFF parse tree.
+ * 
+ * <b>Responsibility</b> Hide the physical representation of an IFF stream from
+ * the client. Let the client declare chunks to be visited by the visitor
+ * object. Let a visitor object traverse the IFF parse tree.
  *
- * <p><b>Abstract</b> <p>"EA IFF 85" is the standard interchange file format on
- * Commodore Amiga Computers. An IFF File is built up of primitive data types,
- * local chunks and group chunks.
+ * 
+ * <b>Abstract</b>
+ * 
+ * "EA IFF 85" is the standard interchange file format on Commodore Amiga
+ * Computers. An IFF File is built up of primitive data types, local chunks and
+ * group chunks.
  *
- * <p>The format for primitive data types is the same as used by the Motorola
+ * 
+ * The format for primitive data types is the same as used by the Motorola
  * MC68000 processor. The high byte and high word of a number are stored first.
  * All primitives larger than one byte are aligned on even byte addresses
  * relative to the start of the file. Zeros should be stored in all the pad
  * bytes. Characters and strings are usually coded according to ISO/DIS 6429.2
  * and ANSI X3.64-1979.
  *
- * <p>Data objects are built up with information blocks (or C structs) called
- * local chunks. IFF supports the three different kinds called 'data chunk',
- * 'property chunk', 'collection chunk'. <br>Data chunks contain the essential
- * information that build up an object, say the bitmap data of a picture or the
- * text of a document. <br>Property chunks specify attributes for following data
- * chunks. A property chunk essentially says "identifier=value". When designing
- * an object, property chunks do describe context information like the size of
- * an image or the color of the text. Specifying the same property chunk more
- * then once overrides the previous setting. <br>Collection chunks describe a
- * property that can occur multiple times. All occurences of a collection chunk
- * must be collected within the scope of the current group chunk.
+ * 
+ * Data objects are built up with information blocks (or C structs) called local
+ * chunks. IFF supports the three different kinds called 'data chunk', 'property
+ * chunk', 'collection chunk'. <br>Data chunks contain the essential information
+ * that build up an object, say the bitmap data of a picture or the text of a
+ * document. <br>Property chunks specify attributes for following data chunks. A
+ * property chunk essentially says "identifier=value". When designing an object,
+ * property chunks do describe context information like the size of an image or
+ * the color of the text. Specifying the same property chunk more then once
+ * overrides the previous setting. <br>Collection chunks describe a property
+ * that can occur multiple times. All occurences of a collection chunk must be
+ * collected within the scope of the current group chunk.
  *
- * <p>Group chunks are full fledged selfcontained data objects. A FORM Group
- * stands for a single data object where as a CAT Group stands for an untyped
- * group of data objects. A LIST defines a group very much like CAT but also
- * gives a scope for shared properties (stored in PROP Groups).
+ * 
+ * Group chunks are full fledged selfcontained data objects. A FORM Group stands
+ * for a single data object where as a CAT Group stands for an untyped group of
+ * data objects. A LIST defines a group very much like CAT but also gives a
+ * scope for shared properties (stored in PROP Groups).
  *
- * <p>For more information refer to "Amiga ROM Kernel Reference Manual, Devices,
+ * 
+ * For more information refer to "Amiga ROM Kernel Reference Manual, Devices,
  * Third Edition, Addison Wesley".
  *
- * <p><b>Grammar for IFF streams</b>
- * <pre>
+ * 
+ * <b>Grammar for IFF streams</b>
+ * 
  * IFFFile     ::= 'FORM' FormGroup | 'CAT ' CatGroup | 'LIST' ListGroup
  * <br>
  * GroupChunk  ::= FormGroup | CatGroup | ListGroup | PropGroup | IFFStream
@@ -75,16 +86,19 @@ import ru.sbtqa.monte.media.ParseException;
  * ChunkID     ::= ULONG
  * pad         ::= a single byte of value 0.
  * struct      ::= any C language struct built with primitive data types.
- * </pre>
+ * 
  *
- * <p><b>Examples</b>
+ * 
+ * <b>Examples</b>
  *
- * <p><b>Traversing the raw structure of an IFF file</b> <p>To traverse the file
- * structure you must first set up an IFFVisitor object that does something
- * useful at each call to the visit method. Then create an instance of IFFParser
- * and invoke the #interpret method.
+ * 
+ * <b>Traversing the raw structure of an IFF file</b>
+ * 
+ * To traverse the file structure you must first set up an IFFVisitor object
+ * that does something useful at each call to the visit method. Then create an
+ * instance of IFFParser and invoke the #interpret method.
  *
- * <pre>
+ * 
  * class IFFRawTraversal
  * .	{
  * .	static class Visitor
@@ -107,22 +121,25 @@ import ru.sbtqa.monte.media.ParseException;
  * .		catch (AbortedException e)  { System.out.println(e); }
  * .		}
  * .	}
- * </pre>
+ * 
  *
- * <p><b>Traversing the IFF file and interpreting its content.</b> <p>Since IFF
- * files are not completely self describing (there is no information that helps
- * differentiate between data chunks, property chunks and collection chunks) a
- * reader must set up the interpreter with some contextual information before
- * starting the interpreter. <p> Once at least one chunk has been declared, the
- * interpreter will only call the visitor for occurences of the declared group
- * chunks and data chunks. The property chunks and the collection chunks can be
- * obtained from the current group chunk by calling #getProperty or
- * #getCollection. <br>Note: All information the visitor can obtain during
- * interpretation is only valid during the actual #visit... call. Dont try to
- * get information about properties or collections for chunks that the visitor
- * is not visiting right now.
+ * 
+ * <b>Traversing the IFF file and interpreting its content.</b>
+ * 
+ * Since IFF files are not completely self describing (there is no information
+ * that helps differentiate between data chunks, property chunks and collection
+ * chunks) a reader must set up the interpreter with some contextual information
+ * before starting the interpreter.
+ * 
+ * Once at least one chunk has been declared, the interpreter will only call the
+ * visitor for occurences of the declared group chunks and data chunks. The
+ * property chunks and the collection chunks can be obtained from the current
+ * group chunk by calling #getProperty or #getCollection. <br>Note: All
+ * information the visitor can obtain during interpretation is only valid during
+ * the actual #visit... call. Dont try to get information about properties or
+ * collections for chunks that the visitor is not visiting right now.
  *
- * <pre>
+ * 
  * class InterpretingAnILBMFile
  * .	{
  * .	static class Visitor
@@ -150,7 +167,7 @@ import ru.sbtqa.monte.media.ParseException;
  * .		catch (AbortedException e)  { System.out.println(e); }
  * .		}
  * .	}
- * </pre>
+ * 
  *
  * @see	IFFVisitor
  *
@@ -158,7 +175,7 @@ import ru.sbtqa.monte.media.ParseException;
  * @version $Id: IFFParser.java 364 2016-11-09 19:54:25Z werner $
  */
 public class IFFParser
-        extends Object {
+      extends Object {
 
     /**
      * ID for FORMGroupExpression.
@@ -228,30 +245,36 @@ public class IFFParser
     }
 
     /* ---- accessor methods ---- */
-    /* ---- action methods ---- */
+ /* ---- action methods ---- */
     /**
      * Interprets the IFFFileExpression located at the current position of the
      * indicated InputStream. Lets the visitor traverse the IFF parse tree
      * during interpretation.
      *
-     * <p>Pre condition <li>	Data-, property- and collection chunks must have
-     * been declared prior to this call. <li>	When the client never declared
-     * chunks, then all local chunks will be interpreted as data chunks. <li>
-     * The stream must be positioned at the beginning of the IFFFileExpression.
+     * 
+     * Pre condition Data-, property- and collection chunks must have been
+     * declared prior to this call. When the client never declared chunks, then
+     * all local chunks will be interpreted as data chunks. The stream must be
+     * positioned at the beginning of the IFFFileExpression.
      *
-     * <p>Post condition <li>	When no exception was thrown then the stream is
-     * positioned after the IFFFileExpression.
+     * 
+     * Post condition When no exception was thrown then the stream is positioned
+     * after the IFFFileExpression.
      *
-     * <p>Obligation The visitor may throw an ParseException or an
-     * AbortException during tree traversal.
+     * 
+     * Obligation The visitor may throw an ParseException or an AbortException
+     * during tree traversal.
      *
+     * @param in TODO
+     * @param v TODO
      * @exception ParseException Is thrown when an interpretation error occured.
      * The stream is positioned where the error occured.
      * @exception	AbortException Is thrown when the visitor decided to abort the
      * interpretation.
+     * @throws java.io.IOException TODO
      */
     public void parse(InputStream in, IFFVisitor v)
-            throws ParseException, AbortException, IOException {
+          throws ParseException, AbortException, IOException {
         this.in = new MC68000InputStream(new BufferedInputStream(in));
         visitor = v;
         parseFile();
@@ -260,12 +283,12 @@ public class IFFParser
     /**
      * Parses an IFF-85 file.
      *
-     * <pre>
+     * 
      * IFF = 'FORM' FormGroup | 'CAT ' CatGroup | 'LIST' ListGroup
-     * </pre>
+     * 
      */
     private void parseFile()
-            throws ParseException, AbortException, IOException {
+          throws ParseException, AbortException, IOException {
         int id = in.readLONG();
 
         switch (id) {
@@ -285,15 +308,15 @@ public class IFFParser
 
     /**
      * Parses a FORM group chunk.
-     * <pre>
+     * 
      * FormGroup = size FormType { 'FORM' FormGroup [Pad] |
      * 'CAT ' CatGroup  [Pad] |
      * 'LIST' ListGroup [Pad] |
      * ChunkID LocalChunk [Pad] }
-     * </pre>
+     * 
      */
-    private void parseFORM(HashMap<Integer,IFFChunk> props)
-            throws ParseException, AbortException, IOException {
+    private void parseFORM(HashMap<Integer, IFFChunk> props)
+          throws ParseException, AbortException, IOException {
         long size = in.readULONG();
         if (size == 0) {
             size = in.readINT64();
@@ -350,14 +373,14 @@ public class IFFParser
 
     /**
      * Parses a CAT group chunk.
-     * <pre>
+     * 
      * CatGroup = size CatType { 'FORM' FormGroup [Pad] |
      * 'CAT ' CatGroup  [Pad] |
      * 'LIST' ListGroup [Pad] }
-     * </pre>
+     * 
      */
-    private void parseCAT(HashMap<Integer,IFFChunk> props)
-            throws ParseException, AbortException, IOException {
+    private void parseCAT(HashMap<Integer, IFFChunk> props)
+          throws ParseException, AbortException, IOException {
         long size = in.readULONG();
         long scan = in.getScan();
         int type = in.readLONG();
@@ -400,15 +423,15 @@ public class IFFParser
 
     /**
      * Parses a LIST group chunk.
-     * <pre>
+     * 
      * ListGroup = size ListType { 'PROP' PropGroup [Pad] } { 'FORM' FormGroup [Pad] |
      * 'CAT ' CatGroup  [Pad] |
      * 'LIST' ListGroup [Pad] }
-     * </pre>
+     * 
      */
     @SuppressWarnings("unchecked")
-    private void parseLIST(HashMap<Integer,IFFChunk> props)
-            throws ParseException, AbortException, IOException {
+    private void parseLIST(HashMap<Integer, IFFChunk> props)
+          throws ParseException, AbortException, IOException {
         long size = in.readULONG();
         long scan = in.getScan();
         int type = in.readLONG();
@@ -424,7 +447,7 @@ public class IFFParser
             visitor.enterGroup(chunk);
         }
 
-        props = new HashMap<Integer,IFFChunk>();
+        props = new HashMap<Integer, IFFChunk>();
         long finish = scan + size;
         while (in.getScan() < finish) {
             int id = in.readLONG();
@@ -460,12 +483,12 @@ public class IFFParser
 
     /**
      * Parses a PROP group chunk.
-     * <pre>
+     * 
      * PropGroup   ::= size PropType { ChunkID PropertyChunk [pad] }
-     * </pre>
+     * 
      */
     private IFFChunk parsePROP()
-            throws ParseException, AbortException, IOException {
+          throws ParseException, AbortException, IOException {
         long size = in.readULONG();
         long scan = in.getScan();
         int type = in.readLONG();
@@ -502,13 +525,13 @@ public class IFFParser
 
     /**
      * Parses a local chunk.
-     * <pre>
+     * 
      * LocalChunk  ::= size { DataChunk | PropertyChunk | CollectionChunk }
      * DataChunk = PropertyChunk = CollectionChunk ::= { byte }*size
-     * </pre>
+     * 
      */
     private void parseLocalChunk(IFFChunk parent, int id)
-            throws ParseException, AbortException, IOException {
+          throws ParseException, AbortException, IOException {
         long size = in.readULONG();
         long scan = in.getScan();
 
@@ -541,19 +564,18 @@ public class IFFParser
                 in.skipFully(size);
             }
             parent.addCollectionChunk(chunk);
-        } else {
-            if (size > 0) {
-                in.skipFully((int) size);
-            }
+        } else if (size > 0) {
+            in.skipFully((int) size);
         }
     }
 
     /**
      * Checks whether the ID of the chunk has been declared as a data chunk.
      *
-     * <p>Pre condition <li>	Data chunks must have been declared before the
-     * interpretation has been started. <li>	This method will always return true
-     * when neither data chunks, property chunks nor collection chunks have been
+     * 
+     * Pre condition Data chunks must have been declared before the
+     * interpretation has been started. This method will always return true when
+     * neither data chunks, property chunks nor collection chunks have been
      * declared,
      *
      * @param chunk Chunk to be verified.
@@ -574,7 +596,8 @@ public class IFFParser
     /**
      * Checks wether the ID of the chunk has been declared as a group chunk.
      *
-     * <p>Pre condition <li>	Group chunks must have been declared before the
+     * 
+     * Pre condition Group chunks must have been declared before the
      * interpretation has been started. (Otherwise the response is always true).
      *
      * @param chunk Chunk to be verified.
@@ -591,10 +614,14 @@ public class IFFParser
     /**
      * Checks wether the ID of the chunk has been declared as a property chunk.
      *
-     * <p>Pre condition <li>	Property chunks must have been declared before the
-     * interpretation has been started. <li>	This method will always return
-     * false when neither data chunks, property chunks nor collection chunks
-     * have been declared,
+     * 
+     * Pre condition Property chunks must have been declared before the
+     * interpretation has been started. This method will always return false
+     * when neither data chunks, property chunks nor collection chunks have been
+     * declared,
+     *
+     * @param chunk TODO
+     * @return TODO
      */
     protected boolean isPropertyChunk(IFFChunk chunk) {
         if (propertyChunks == null) {
@@ -608,10 +635,11 @@ public class IFFParser
      * Checks wether the ID of the chunk has been declared as a collection
      * chunk.
      *
-     * <p>Pre condition <li>	Collection chunks must have been declared before
-     * the interpretation has been started. <li>	This method will always return
-     * true when neither data chunks, property chunks nor collection chunks have
-     * been declared,
+     * 
+     * Pre condition Collection chunks must have been declared before the
+     * interpretation has been started. This method will always return true when
+     * neither data chunks, property chunks nor collection chunks have been
+     * declared,
      *
      * @param chunk	Chunk to be verified.
      * @return True when the parameter is a collection chunk.
@@ -627,11 +655,13 @@ public class IFFParser
     /**
      * Declares a data chunk.
      *
-     * <p>Pre condition <li>	The chunk must not have already been declared as of
-     * a different type. <li>	Declarations may not be done during interpretation
-     * of an IFFFileExpression.
+     * 
+     * Pre condition The chunk must not have already been declared as of a
+     * different type. Declarations may not be done during interpretation of an
+     * IFFFileExpression.
      *
-     * <p>Post condition <li>	Data chunk declared
+     * 
+     * Post condition Data chunk declared
      *
      * @param	type Type of the chunk. Must be formulated as a TypeID conforming
      * to the method #isFormType.
@@ -642,7 +672,7 @@ public class IFFParser
     public void declareDataChunk(int type, int id) {
         IFFChunk chunk = new IFFChunk(type, id);
         if (dataChunks == null) {
-            dataChunks = new HashMap<IFFChunk,IFFChunk>();
+            dataChunks = new HashMap<IFFChunk, IFFChunk>();
         }
         dataChunks.put(chunk, chunk);
     }
@@ -658,11 +688,13 @@ public class IFFParser
     /**
      * Declares a FORM group chunk.
      *
-     * <p>Pre condition <li>	The chunk must not have already been declared as of
-     * a different type. <li>	Declarations may not be done during interpretation
-     * of an IFFFileExpression.
+     * 
+     * Pre condition The chunk must not have already been declared as of a
+     * different type. Declarations may not be done during interpretation of an
+     * IFFFileExpression.
      *
-     * <p>Post condition <li>	Group chunk declared
+     * 
+     * Post condition Group chunk declared
      *
      * @param	type Type of the chunk. Must be formulated as a TypeID conforming
      * to the method #isFormType.
@@ -688,11 +720,13 @@ public class IFFParser
     /**
      * Declares a property chunk.
      *
-     * <p>Pre condition <li>	The chunk must not have already been declared as of
-     * a different type. <li>	Declarations may not be done during interpretation
-     * of an IFFFileExpression.
+     * 
+     * Pre condition The chunk must not have already been declared as of a
+     * different type. Declarations may not be done during interpretation of an
+     * IFFFileExpression.
      *
-     * <p>Post condition <li>	Group chunk declared
+     * 
+     * Post condition Group chunk declared
      *
      *
      * @param	type Type of the chunk. Must be formulated as a TypeID conforming
@@ -719,11 +753,13 @@ public class IFFParser
     /**
      * Declares a collection chunk.
      *
-     * <p>Pre condition <li>	The chunk must not have already been declared as of
-     * a different type. <li>	Declarations may not be done during interpretation
-     * of an IFFFileExpression.
+     * 
+     * Pre condition The chunk must not have already been declared as of a
+     * different type. Declarations may not be done during interpretation of an
+     * IFFFileExpression.
      *
-     * <p>Post condition <li>	Group chunk declared
+     * 
+     * Post condition Group chunk declared
      *
      * @param	type Type of the chunk. Must be formulated as a TypeID conforming
      * to the method #isFormType.
@@ -746,21 +782,21 @@ public class IFFParser
      declareCollectionChunk(stringToID(type),stringToID(id));
      }
      */
-    /* ---- Class methods ---- */
+ /* ---- Class methods ---- */
     /**
      * Checks wether the argument represents a valid IFF GroupID.
      *
-     * <p>Validation <li>	Group ID must be one of FORM_ID, CAT_ID, LIST_ID or
-     * PROP_ID.
+     * 
+     * Validation Group ID must be one of FORM_ID, CAT_ID, LIST_ID or PROP_ID.
      *
      * @param	id Chunk ID to be checked.
      * @return	True when the chunk ID is a valid Group ID.
      */
     public static boolean isGroupID(int id) {
         if (id == ID_FORM
-                || id == ID_CAT
-                || id == ID_LIST
-                || id == ID_PROP) {
+              || id == ID_CAT
+              || id == ID_LIST
+              || id == ID_PROP) {
             return true;
         } else {
             return false;
@@ -770,8 +806,9 @@ public class IFFParser
     /**
      * Checks if the argument represents a valid IFF ID.
      *
-     * <p>Validation <li>	Every byte of an ID must be in the range of 0x20..0x7e
-     * <li>	The id may not have leading spaces (unless the id is a NULL_ID).
+     * 
+     * Validation Every byte of an ID must be in the range of 0x20..0x7e The id
+     * may not have leading spaces (unless the id is a NULL_ID).
      *
      * @param	id Chunk ID to be checked.
      * @return	True when the ID is a valid IFF chunk ID.
@@ -783,9 +820,9 @@ public class IFFParser
         int value4 = id & 0xff;
 
         if (value1 < 0x20 || value1 > 0x7e
-                || value2 < 0x20 || value2 > 0x7e
-                || value3 < 0x20 || value3 > 0x7e
-                || value4 < 0x20 || value4 > 0x7e) {
+              || value2 < 0x20 || value2 > 0x7e
+              || value3 < 0x20 || value3 > 0x7e
+              || value4 < 0x20 || value4 > 0x7e) {
             return false;
         }
 
@@ -799,8 +836,9 @@ public class IFFParser
     /**
      * Returns whether the argument is a valid Local Chunk ID.
      *
-     * <p>Validation <li>	Local Chunk IDs may not be a NULL_ID and may not have
-     * leading spaces. <li>	Local Chunk IDs may not collid with GroupIDs.
+     * 
+     * Validation Local Chunk IDs may not be a NULL_ID and may not have leading
+     * spaces. Local Chunk IDs may not collid with GroupIDs.
      *
      * @param id Chunk ID to be checked.
      * @return	True when the chunk ID is a Local Chunk ID.
@@ -827,9 +865,10 @@ public class IFFParser
     /**
      * Returns wether the argument is a valid FormType.
      *
-     * <p>Validation: <li>	The FORM type is a restricted ID that may not contain
-     * lower case letters or punctuation characters. <li>	FORM type may not
-     * collide with GroupID.
+     * 
+     * Validation: The FORM type is a restricted ID that may not contain lower
+     * case letters or punctuation characters. FORM type may not collide with
+     * GroupID.
      *
      * @param	id Chunk ID to be checked.
      * @return	True when the chunk ID is a Form Type.
@@ -845,9 +884,9 @@ public class IFFParser
         int value4 = id & 0xff;
 
         if (value1 < 0x30 || value1 > 0x5a || (value1 > 0x49 && value1 < 0x41)
-                || (value2 < 0x30 && value2 != 0x20) || value2 > 0x5a || (value2 > 0x49 && value2 < 0x41)
-                || (value3 < 0x30 && value3 != 0x20) || value3 > 0x5a || (value3 > 0x49 && value3 < 0x41)
-                || (value4 < 0x30 && value4 != 0x20) || value4 > 0x5a || (value4 > 0x49 && value4 < 0x41)) {
+              || (value2 < 0x30 && value2 != 0x20) || value2 > 0x5a || (value2 > 0x49 && value2 < 0x41)
+              || (value3 < 0x30 && value3 != 0x20) || value3 > 0x5a || (value3 > 0x49 && value3 < 0x41)
+              || (value4 < 0x30 && value4 != 0x20) || value4 > 0x5a || (value4 > 0x49 && value4 < 0x41)) {
             return false;
         }
 
@@ -861,7 +900,8 @@ public class IFFParser
     /**
      * Returns wether the argument is a valid Content Type ID.
      *
-     * <p>Validation <li>	The Content type is a FORM type ID or a NULL_ID
+     * 
+     * Validation The Content type is a FORM type ID or a NULL_ID
      *
      * @param	id Chunk ID to be checked.
      * @return	True when the chunk ID is a Contents Type.
@@ -901,9 +941,9 @@ public class IFFParser
         byte[] bytes = aString.getBytes();
 
         return ((int) bytes[0]) << 24
-                | ((int) bytes[1]) << 16
-                | ((int) bytes[2]) << 8
-                | ((int) bytes[3]) << 0;
+              | ((int) bytes[1]) << 16
+              | ((int) bytes[2]) << 8
+              | ((int) bytes[3]) << 0;
     }
 
     public boolean isReadData() {

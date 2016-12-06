@@ -40,25 +40,26 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
 
     public final static Format AVI = new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_AVI);
     public final static Format VIDEO_RAW = new Format(
-            MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-            EncodingKey, ENCODING_AVI_DIB, CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_RAW);
+          MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+          EncodingKey, ENCODING_AVI_DIB, CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_RAW);
     public final static Format VIDEO_JPEG = new Format(
-            MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-            EncodingKey, ENCODING_AVI_MJPG, CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_RAW);
+          MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+          EncodingKey, ENCODING_AVI_MJPG, CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_RAW);
     public final static Format VIDEO_PNG = new Format(
-            MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-            EncodingKey, ENCODING_AVI_PNG, CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_RAW);
+          MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+          EncodingKey, ENCODING_AVI_PNG, CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_RAW);
     public final static Format VIDEO_RLE = new Format(
-            MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-            EncodingKey, ENCODING_AVI_RLE8, CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_RAW);
+          MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+          EncodingKey, ENCODING_AVI_RLE8, CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_RAW);
     public final static Format VIDEO_SCREEN_CAPTURE = new Format(
-            MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-            EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_RAW);
+          MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+          EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_RAW);
 
     /**
      * Creates a new AVI writer.
      *
      * @param file the output file
+     * @throws java.io.IOException TODO
      */
     public AVIWriter(File file) throws IOException {
         super(file);
@@ -68,6 +69,7 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
      * Creates a new AVI writer.
      *
      * @param out the output stream.
+     * @throws java.io.IOException TODO
      */
     public AVIWriter(ImageOutputStream out) throws IOException {
         super(out);
@@ -85,6 +87,8 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
 
     /**
      * Returns the media duration of the track in seconds.
+     *
+     * @return TODO
      */
     @Override
     public Rational getDuration(int track) {
@@ -98,6 +102,7 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
      *
      * @param format The format of the track.
      * @return The track number.
+     * @throws java.io.IOException TODO
      */
     @Override
     public int addTrack(Format format) throws IOException {
@@ -135,9 +140,9 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
             throw new IllegalArgumentException("DepthKey missing in " + vf);
         }
         int tr = addVideoTrack(vf.get(EncodingKey),
-                vf.get(FrameRateKey).getDenominator(), vf.get(FrameRateKey).getNumerator(),
-                vf.get(WidthKey), vf.get(HeightKey), vf.get(DepthKey),
-                vf.get(FrameRateKey).floor(1).intValue());
+              vf.get(FrameRateKey).getDenominator(), vf.get(FrameRateKey).getNumerator(),
+              vf.get(WidthKey), vf.get(HeightKey), vf.get(DepthKey),
+              vf.get(FrameRateKey).floor(1).intValue());
         setCompressionQuality(tr, vf.get(QualityKey, 1.0f));
         return tr;
     }
@@ -177,14 +182,17 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
         }
 
         return addAudioTrack(waveFormatTag, //
-                timeScale, sampleRate, //
-                numberOfChannels, sampleSizeInBits, //
-                isCompressed, //
-                frameDuration, frameSize);
+              timeScale, sampleRate, //
+              numberOfChannels, sampleSizeInBits, //
+              isCompressed, //
+              frameDuration, frameSize);
     }
 
     /**
      * Returns the codec of the specified track.
+     *
+     * @param track TODO
+     * @return TODO
      */
     public Codec getCodec(int track) {
         return tracks.get(track).codec;
@@ -192,6 +200,9 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
 
     /**
      * Sets the codec for the specified track.
+     *
+     * @param track TODO
+     * @param codec TODO
      */
     public void setCodec(int track, Codec codec) {
         tracks.get(track).codec = codec;
@@ -209,10 +220,6 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
      * @param track The track index.
      * @param image The image of the video frame.
      * @param duration Duration given in media time units.
-     *
-     * @throws IndexOutofBoundsException if the track index is out of bounds.
-     * @throws if the duration is less than 1, or if the dimension of the frame
-     * does not match the dimension of the video.
      * @throws UnsupportedOperationException if the {@code MovieWriter} does not
      * have a built-in encoder for this video format.
      * @throws IOException if writing the sample data failed.
@@ -232,8 +239,8 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
         Format fmt = vt.format;
         if (fmt.get(WidthKey) != image.getWidth() || fmt.get(HeightKey) != image.getHeight()) {
             throw new IllegalArgumentException("Dimensions of image[" + vt.samples.size()
-                    + "] (width=" + image.getWidth() + ", height=" + image.getHeight()
-                    + ") differs from video format of track: " + fmt);
+                  + "] (width=" + image.getWidth() + ", height=" + image.getHeight()
+                  + ") differs from video format of track: " + fmt);
         }
 
         // Encode pixel data
@@ -277,11 +284,13 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
 
     /**
      * Encodes the data provided in the buffer and then writes it into the
-     * specified track. <p> Does nothing if the discard-flag in the buffer is
-     * set to true.
+     * specified track.
+     * 
+     * Does nothing if the discard-flag in the buffer is set to true.
      *
      * @param track The track number.
      * @param buf The buffer containing a data sample.
+     * @throws java.io.IOException TODO
      */
     @Override
     public void write(int track, Buffer buf) throws IOException {
@@ -312,7 +321,7 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
             }
             if (buf.format.matchesWithout(tr.format, FrameRateKey) && buf.data instanceof byte[]) {
                 writeSamples(track, buf.sampleCount, (byte[]) buf.data, buf.offset, buf.length,
-                        buf.isFlag(KEYFRAME) && !paletteChange);
+                      buf.isFlag(KEYFRAME) && !paletteChange);
                 return;
             }
 
@@ -337,7 +346,7 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
                 return;
             }
             writeSamples(track, outBuf.sampleCount, (byte[]) outBuf.data, outBuf.offset, outBuf.length,
-                    isKeyframe && !paletteChange);
+                  isKeyframe && !paletteChange);
         }
     }
 
@@ -484,22 +493,22 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
         if (tr.codec != null) {
             if (fmt.get(MediaTypeKey) == MediaType.VIDEO) {
                 tr.codec.setInputFormat(fmt.prepend(
-                        EncodingKey, ENCODING_BUFFERED_IMAGE,
-                        DataClassKey, BufferedImage.class));
+                      EncodingKey, ENCODING_BUFFERED_IMAGE,
+                      DataClassKey, BufferedImage.class));
                 if (null == tr.codec.setOutputFormat(
-                        fmt.prepend(FixedFrameRateKey, true,
-                                QualityKey, getCompressionQuality(track),
-                                MimeTypeKey, MIME_AVI,
-                                DataClassKey, byte[].class))) {
+                      fmt.prepend(FixedFrameRateKey, true,
+                            QualityKey, getCompressionQuality(track),
+                            MimeTypeKey, MIME_AVI,
+                            DataClassKey, byte[].class))) {
                     throw new UnsupportedOperationException("Track " + tr + " codec does not support format " + fmt + ". codec=" + tr.codec);
                 }
             } else {
                 tr.codec.setInputFormat(null);
                 if (null == tr.codec.setOutputFormat(
-                        fmt.prepend(FixedFrameRateKey, true,
-                                QualityKey, getCompressionQuality(track),
-                                MimeTypeKey, MIME_AVI,
-                                DataClassKey, byte[].class))) {
+                      fmt.prepend(FixedFrameRateKey, true,
+                            QualityKey, getCompressionQuality(track),
+                            MimeTypeKey, MIME_AVI,
+                            DataClassKey, byte[].class))) {
                     throw new UnsupportedOperationException("Track " + tr + " codec " + tr.codec + " does not support format. " + fmt);
                 }
             }

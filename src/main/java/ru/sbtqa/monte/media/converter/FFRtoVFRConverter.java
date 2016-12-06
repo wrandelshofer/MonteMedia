@@ -22,9 +22,9 @@ import ru.sbtqa.monte.media.math.Rational;
 /**
  * This codec converts frames from a fixed frame rate into a variable frame rate
  * by coalescing identical frames.
- * <p>
- * This codec can be used when the input source has a fixed frame rate and
- * the output sink supports a variable frame rate.
+ * 
+ * This codec can be used when the input source has a fixed frame rate and the
+ * output sink supports a variable frame rate.
  *
  * @author Werner Randelshofer
  * @version $Id: FFRtoVFRConverter.java 364 2016-11-09 19:54:25Z werner $
@@ -39,11 +39,11 @@ public class FFRtoVFRConverter extends AbstractVideoCodec {
 
     public FFRtoVFRConverter() {
         super(new Format[]{
-                    new Format(DataClassKey,BufferedImage.class), //
-                },
-                new Format[]{
-                    new Format(DataClassKey,BufferedImage.class,FixedFrameRateKey, false), //
-                });
+            new Format(DataClassKey, BufferedImage.class), //
+        },
+              new Format[]{
+                  new Format(DataClassKey, BufferedImage.class, FixedFrameRateKey, false), //
+              });
         name = "FFR to VFR";
     }
 
@@ -65,8 +65,8 @@ public class FFRtoVFRConverter extends AbstractVideoCodec {
 
         for (Format sf : getOutputFormats(f)) {
             if (sf.matches(f)
-                    || forceFFR.append(sf).matches(f)
-                    || forceVFR.append(sf).matches(f)) {
+                  || forceFFR.append(sf).matches(f)
+                  || forceVFR.append(sf).matches(f)) {
                 this.outputFormat = forceVFR.append(f);
                 return sf;
             }
@@ -101,7 +101,7 @@ public class FFRtoVFRConverter extends AbstractVideoCodec {
                 IndexColorModel newColorModel = new IndexColorModel(8, 256, previousColors, 0, false, -1, DataBuffer.TYPE_BYTE);
 
                 WritableRaster newRaster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE,
-                        vf.get(WidthKey), vf.get(HeightKey), 1, null);
+                      vf.get(WidthKey), vf.get(HeightKey), 1, null);
                 byte[] newPixels = ((DataBufferByte) newRaster.getDataBuffer()).getData();
                 System.arraycopy(previousPixels, 0, newPixels, 0, newPixels.length);
 
@@ -133,29 +133,26 @@ public class FFRtoVFRConverter extends AbstractVideoCodec {
             duration = in.sampleDuration;
             timeStamp = in.timeStamp;
             out.setFlag(DISCARD, true);
+        } else // => Not the first image. Convert fixed rate to variable rate if images are the same.
+        if (Arrays.equals((byte[]) previousPixels, inputPixels)
+              && Arrays.equals(previousColors, inputColors)) {
+            duration = duration.add(in.sampleDuration);
+            out.setFlag(DISCARD, true);
         } else {
-            // => Not the first image. Convert fixed rate to variable rate if images are the same.
-            if (Arrays.equals((byte[]) previousPixels, inputPixels)
-                    && Arrays.equals(previousColors, inputColors)) {
-                duration = duration.add(in.sampleDuration);
-                out.setFlag(DISCARD, true);
-            } else {
-                IndexColorModel newColorModel = new IndexColorModel(8, 256, previousColors, 0, false, -1, DataBuffer.TYPE_BYTE);
+            IndexColorModel newColorModel = new IndexColorModel(8, 256, previousColors, 0, false, -1, DataBuffer.TYPE_BYTE);
 
-                WritableRaster newRaster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE,
-                        vf.get(WidthKey), vf.get(HeightKey), 1, null);
-                byte[] newPixels = ((DataBufferByte) newRaster.getDataBuffer()).getData();
-                System.arraycopy(previousPixels, 0, newPixels, 0, newPixels.length);
+            WritableRaster newRaster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE,
+                  vf.get(WidthKey), vf.get(HeightKey), 1, null);
+            byte[] newPixels = ((DataBufferByte) newRaster.getDataBuffer()).getData();
+            System.arraycopy(previousPixels, 0, newPixels, 0, newPixels.length);
 
-                out.data = new BufferedImage(newColorModel, newRaster, false, null);
-                out.sampleDuration = duration;
-                out.timeStamp = timeStamp;
-                duration = in.sampleDuration;
-                timeStamp = in.timeStamp;
-                System.arraycopy(inputPixels, 0, previousPixels, 0, inputPixels.length);
-                System.arraycopy(inputColors, 0, previousColors, 0, inputColors.length);
-
-            }
+            out.data = new BufferedImage(newColorModel, newRaster, false, null);
+            out.sampleDuration = duration;
+            out.timeStamp = timeStamp;
+            duration = in.sampleDuration;
+            timeStamp = in.timeStamp;
+            System.arraycopy(inputPixels, 0, previousPixels, 0, inputPixels.length);
+            System.arraycopy(inputColors, 0, previousColors, 0, inputColors.length);
 
         }
         return CODEC_OK;

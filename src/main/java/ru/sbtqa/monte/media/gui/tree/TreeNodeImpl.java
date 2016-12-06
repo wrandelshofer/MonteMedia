@@ -15,14 +15,17 @@ import javax.swing.tree.TreeNode;
 import ru.sbtqa.monte.media.util.EnumerationIterator;
 
 /**
- * Extends {@code DefaultMutableTreeNode} with type safe collections. 
- * This class only allows nodes of type DefaultMutableTreeNodeEx.
- * 
+ * Extends {@code DefaultMutableTreeNode} with type safe collections. This class
+ * only allows nodes of type DefaultMutableTreeNodeEx.
+ *
  * @author Werner Randelshofer
  * @version 1.0 2013-12-02 Created.
+ * @param <T> TODO
  */
 public class TreeNodeImpl<T extends TreeNodeImpl<T>> extends DefaultMutableTreeNode {
+
     private final static long serialVersionUID = 1L;
+
     public TreeNodeImpl(Object userObject, boolean allowsChildren) {
         super(userObject, allowsChildren);
     }
@@ -44,11 +47,11 @@ public class TreeNodeImpl<T extends TreeNodeImpl<T>> extends DefaultMutableTreeN
         return new Iterable<T>() {
 
             @Override
-          @SuppressWarnings("unchecked")
+            @SuppressWarnings("unchecked")
             public Iterator<T> iterator() {
-                return new EnumerationIterator<>((Enumeration<T>)(Enumeration<?>)breadthFirstEnumeration());
+                return new EnumerationIterator<>((Enumeration<T>) (Enumeration<?>) breadthFirstEnumeration());
             }
-            
+
         };
     }
 
@@ -57,16 +60,15 @@ public class TreeNodeImpl<T extends TreeNodeImpl<T>> extends DefaultMutableTreeN
         if (children == null) {
             return EMPTY_LIST;
         } else {
-            return unmodifiableList((List<T>)(List<?>)children);
+            return unmodifiableList((List<T>) (List<?>) children);
         }
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T clone() {
-        return (T)super.clone();
+        return (T) super.clone();
     }
-
 
     public Iterable<T> depthFirstIterable() {
         return new Iterable<T>() {
@@ -74,9 +76,9 @@ public class TreeNodeImpl<T extends TreeNodeImpl<T>> extends DefaultMutableTreeN
             @Override
             @SuppressWarnings("unchecked")
             public Iterator<T> iterator() {
-                return new EnumerationIterator<>((Enumeration<T>)(Enumeration<?>)depthFirstEnumeration());
+                return new EnumerationIterator<>((Enumeration<T>) (Enumeration<?>) depthFirstEnumeration());
             }
-            
+
         };
     }
 
@@ -94,25 +96,25 @@ public class TreeNodeImpl<T extends TreeNodeImpl<T>> extends DefaultMutableTreeN
     @Override
     @SuppressWarnings("unchecked")
     public T getChildAt(int index) {
-        return (T)super.getChildAt(index);
+        return (T) super.getChildAt(index);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T getChildBefore(TreeNode aChild) {
-        return (T)super.getChildBefore(aChild);
+        return (T) super.getChildBefore(aChild);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T getFirstChild() {
-        return (T)super.getFirstChild();
+        return (T) super.getFirstChild();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T getFirstLeaf() {
-        return (T)super.getFirstLeaf();
+        return (T) super.getFirstLeaf();
     }
 
     @Override
@@ -129,54 +131,55 @@ public class TreeNodeImpl<T extends TreeNodeImpl<T>> extends DefaultMutableTreeN
     @Override
     @SuppressWarnings("unchecked")
     public T getLastLeaf() {
-        return (T)super.getLastLeaf();
+        return (T) super.getLastLeaf();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T getNextLeaf() {
-        return (T)super.getNextLeaf();
+        return (T) super.getNextLeaf();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T getNextNode() {
-        return (T)super.getNextNode();
+        return (T) super.getNextNode();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T getNextSibling() {
-        return (T)super.getNextSibling();
+        return (T) super.getNextSibling();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T getParent() {
-        return (T)super.getParent();
+        return (T) super.getParent();
     }
 
     @Override
     public TreeNode[] getPath() {
         return getPathToRootEx(this, 0);
     }
-    protected TreeNode[] getPathToRootEx(TreeNodeImpl<T> aNode, int depth) {
-	TreeNode[]              retNodes;
 
-	/* Check for null, in case someone passed in a null node, or
+    protected TreeNode[] getPathToRootEx(TreeNodeImpl<T> aNode, int depth) {
+        TreeNode[] retNodes;
+
+        /* Check for null, in case someone passed in a null node, or
 	   they passed in an element that isn't rooted at root. */
-	if(aNode == null) {
-	    if(depth == 0)
-		return null;
-	    else
-		retNodes = new TreeNode[depth];
-	}
-	else {
-	    depth++;
-	    retNodes = getPathToRootEx(aNode.getParent(), depth);
-	    retNodes[retNodes.length - depth] = aNode;
-	}
-	return retNodes;
+        if (aNode == null) {
+            if (depth == 0) {
+                return null;
+            } else {
+                retNodes = new TreeNode[depth];
+            }
+        } else {
+            depth++;
+            retNodes = getPathToRootEx(aNode.getParent(), depth);
+            retNodes[retNodes.length - depth] = aNode;
+        }
+        return retNodes;
     }
 
     @Override
@@ -188,43 +191,43 @@ public class TreeNodeImpl<T extends TreeNodeImpl<T>> extends DefaultMutableTreeN
     @Override
     @SuppressWarnings("unchecked")
     public T getPreviousNode() {
-        return (T)super.getPreviousNode();
+        return (T) super.getPreviousNode();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T getPreviousSibling() {
-        return (T)super.getPreviousSibling();
+        return (T) super.getPreviousSibling();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T getRoot() {
-        return (T)super.getRoot();
+        return (T) super.getRoot();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T getSharedAncestor(DefaultMutableTreeNode aNode) {
-        return (T)super.getSharedAncestor(aNode);
+        return (T) super.getSharedAncestor(aNode);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void insert(MutableTreeNode newChild, int childIndex) {
-        super.insert((T)newChild, childIndex);
+        super.insert((T) newChild, childIndex);
     }
 
     public Iterable<T> pathFromAncestorIterable(final TreeNode ancestor) {
-        return () -> new EnumerationIterator<>((Enumeration<T>)(Enumeration<?>)pathFromAncestorEnumeration(ancestor));
+        return () -> new EnumerationIterator<>((Enumeration<T>) (Enumeration<?>) pathFromAncestorEnumeration(ancestor));
     }
 
     public Iterable<T> postorderIterable() {
-        return () -> new EnumerationIterator<>((Enumeration<T>)(Enumeration<?>)postorderEnumeration());
+        return () -> new EnumerationIterator<>((Enumeration<T>) (Enumeration<?>) postorderEnumeration());
     }
 
     public Iterable<T> preorderIterable() {
-        return () -> new EnumerationIterator<>((Enumeration<T>)(Enumeration<?>)preorderEnumeration());
+        return () -> new EnumerationIterator<>((Enumeration<T>) (Enumeration<?>) preorderEnumeration());
     }
 
     @Override

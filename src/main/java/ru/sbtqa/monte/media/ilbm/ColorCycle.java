@@ -13,16 +13,23 @@ package ru.sbtqa.monte.media.ilbm;
  */
 public abstract class ColorCycle implements Cloneable {
 
-    /** Cycle rate. */
+    /**
+     * Cycle rate.
+     */
     protected int rate;
-    /** Time scale of the cycle rate. Dividing the rate by the time scale yields
+    /**
+     * Time scale of the cycle rate. Dividing the rate by the time scale yields
      * the rate per second.
      */
     protected int timeScale;
-    /** Whether the color cycle is active. */
+    /**
+     * Whether the color cycle is active.
+     */
     protected boolean isActive;
 
-    /** Whether colors are blended into each other when shifted. */
+    /**
+     * Whether colors are blended into each other when shifted.
+     */
     protected boolean isBlended;
 
     public ColorCycle(int rate, int timeScale, boolean isActive) {
@@ -34,6 +41,7 @@ public abstract class ColorCycle implements Cloneable {
     public boolean isActive() {
         return isActive;
     }
+
     public int getRate() {
         return rate;
     }
@@ -42,15 +50,23 @@ public abstract class ColorCycle implements Cloneable {
         return timeScale;
     }
 
-    /** Returns true if colors are blended when shifted. */
+    /**
+     * Returns true if colors are blended when shifted.
+     *
+     * @return TODO
+     */
     public boolean isBlended() {
         return isBlended;
     }
-    /** Set to true to blend colors when they are shifted. */
-    public void setBlended(boolean newValue) {
-        isBlended=newValue;
-    }
 
+    /**
+     * Set to true to blend colors when they are shifted.
+     *
+     * @param newValue TODO
+     */
+    public void setBlended(boolean newValue) {
+        isBlended = newValue;
+    }
 
     public abstract void doCycle(int[] rgbs, long time);
 

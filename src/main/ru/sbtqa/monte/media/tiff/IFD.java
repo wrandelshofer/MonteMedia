@@ -10,11 +10,11 @@ import java.util.List;
 
 /**
  * Represents a TIFF Image File Directory (IFD).
- * <p>
+ * 
  * An IFD consists of a 2-byte count of the number of directory entries
  * (i.e., the number of fields), followed by a sequence of 12-byte field entries,
  * followed by a 4-byte offset of the next IFD (or 0 if none).
- * <p>
+ * 
  * There must be at least 1 IFD in a TIFF file and each IFD must have at least
  * one entry.
  *

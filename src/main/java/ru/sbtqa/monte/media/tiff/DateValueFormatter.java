@@ -2,7 +2,6 @@
  * Copyright © 2010 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-
 package ru.sbtqa.monte.media.tiff;
 
 /**
@@ -28,6 +27,6 @@ public class DateValueFormatter implements ValueFormatter {
 
     @Override
     public String descriptionFormat(Object data) {
-       return null;
+        return null;
     }
 }

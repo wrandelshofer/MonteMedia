@@ -9,6 +9,7 @@ import static ru.sbtqa.monte.media.tiff.TIFFTag.*;
 /**
  * A class representing the set of tags found in the baseline TIFF specification
  * as well as some common additional tags.
+ *
  * @author Werner Randelshofer
  * @version 1.0.2 2011-01-28 Added some constants.
  * <br>1.0 2010-07-24 Created.
@@ -26,11 +27,13 @@ public class BaselineTagSet extends TagSet {
     public final static TIFFTag Make = new TIFFTag("Make", 0x010f, ASCII_MASK);
     public final static TIFFTag Model = new TIFFTag("Model", 0x0110, ASCII_MASK);
     public final static TIFFTag DateTime = new TIFFTag("DateTime", 0x0132, ASCII_MASK, new DateValueFormatter());
-    public final static TIFFTag BitsPerSample=new TIFFTag("BitsPerSample", 0x0102, SHORT_MASK);
-   public final static TIFFTag SamplesPerPixel= new TIFFTag("SamplesPerPixel", 0x0115, SHORT_MASK);
+    public final static TIFFTag BitsPerSample = new TIFFTag("BitsPerSample", 0x0102, SHORT_MASK);
+    public final static TIFFTag SamplesPerPixel = new TIFFTag("SamplesPerPixel", 0x0115, SHORT_MASK);
     /* Same as PrintIM */
-        public final static TIFFTag PrintImageMatching = new TIFFTag("PrintImageMatching", 0xc4a5/*=50341*/, UNDEFINED_MASK);
-    /** Synthetic tags. */
+    public final static TIFFTag PrintImageMatching = new TIFFTag("PrintImageMatching", 0xc4a5/*=50341*/, UNDEFINED_MASK);
+    /**
+     * Synthetic tags.
+     */
     public final static int TAG_JPEGThumbnailImage = -1;
     public final static TIFFTag JPEGThumbnailImage = new TIFFTag("JPEGThumbnailImage", TAG_JPEGThumbnailImage, UNDEFINED_MASK);
 
@@ -38,7 +41,11 @@ public class BaselineTagSet extends TagSet {
         super("Baseline", tags);
     }
 
-    /** Returns a shared instance of a BaselineTagSet. */
+    /**
+     * Returns a shared instance of a BaselineTagSet.
+     *
+     * @return TODO
+     */
     public static BaselineTagSet getInstance() {
         if (instance == null) {
             TIFFTag[] tags = {//
@@ -63,8 +70,7 @@ public class BaselineTagSet extends TagSet {
                 "PackBits", (0x8005) //
                 )),
                 // Rows and columns:
-                ImageWidth,ImageHeight,
-                
+                ImageWidth, ImageHeight,
                 // Physical Dimensions
                 new TIFFTag("ResolutionUnit", 0x0128, SHORT_MASK, new EnumValueFormatter( //
                 "noAbsoluteUnitOfMeasurement", 1,//
@@ -201,9 +207,8 @@ public class BaselineTagSet extends TagSet {
                 //
                 new TIFFTag("Copyright", 0x8298, ASCII_MASK),
                 // EXIF-specific IFD. See JEITA CP-3451, Page 15
-                
-                PrintImageMatching,
 
+                PrintImageMatching,
                 new TIFFTag("EXIF", TAG_EXIF, IFD_MASK | LONG_MASK), /* EXIF IFD Pointer */
                 new TIFFTag("GPS", TAG_GPS, IFD_MASK | LONG_MASK), /* GPS IFD Pointer */
                 new TIFFTag("Interoperability", TAG_Interoperability, IFD_MASK | LONG_MASK), /* Interoperability IFD Pointer */ //

@@ -22,10 +22,13 @@ import ru.sbtqa.monte.media.math.Rational;
  */
 public class AmigaVideoFormatKeys extends VideoFormatKeys {
 
-    /** The Amiga monitor id. 
+    /**
+     * The Amiga monitor id.
      */
     public final static FormatKey<Integer> MonitorIdKey = new FormatKey<Integer>("monitorId", Integer.class);
-    /** Anim Op5 . */
+    /**
+     * Anim Op5 .
+     */
     public static final String ENCODING_ANIM_OP5 = "op5";
 
     enum ColorMode {
@@ -37,15 +40,15 @@ public class AmigaVideoFormatKeys extends VideoFormatKeys {
     public static Format fromCAMG(int camg) {
         AmigaDisplayInfo i = AmigaDisplayInfo.getInfo(camg);
         return new Format(
-                MediaTypeKey, MediaType.VIDEO,
-                EncodingKey, ENCODING_BITMAP_IMAGE,
-                WidthKey, i.textOverscanWidth,
-                HeightKey, i.textOverscanHeight,
-                MonitorIdKey, camg & AmigaDisplayInfo.MONITOR_ID_MASK,
-                ColorModeKey, i.isEHB() ? ColorMode.EHB : (i.isHAM() ? ColorMode.HAM : ColorMode.NORMAL),
-                InterlaceKey, i.isInterlace(),
-                PixelAspectRatioKey, new Rational(i.resolutionX, i.resolutionY),
-                FrameRateKey, new Rational(i.fps, 1));
+              MediaTypeKey, MediaType.VIDEO,
+              EncodingKey, ENCODING_BITMAP_IMAGE,
+              WidthKey, i.textOverscanWidth,
+              HeightKey, i.textOverscanHeight,
+              MonitorIdKey, camg & AmigaDisplayInfo.MONITOR_ID_MASK,
+              ColorModeKey, i.isEHB() ? ColorMode.EHB : (i.isHAM() ? ColorMode.HAM : ColorMode.NORMAL),
+              InterlaceKey, i.isInterlace(),
+              PixelAspectRatioKey, new Rational(i.resolutionX, i.resolutionY),
+              FrameRateKey, new Rational(i.fps, 1));
 
     }
 
@@ -156,22 +159,22 @@ public class AmigaVideoFormatKeys extends VideoFormatKeys {
                 }
             }
         }
-        
-        int colorMode=0;
+
+        int colorMode = 0;
         if (fmt.containsKey(ColorModeKey)) {
             switch (fmt.get(ColorModeKey)) {
                 case EHB:
-                    colorMode=AmigaDisplayInfo.EHB_COLORMODE;
+                    colorMode = AmigaDisplayInfo.EHB_COLORMODE;
                     break;
                 case HAM:
-                    colorMode=AmigaDisplayInfo.HAM_COLORMODE;
+                    colorMode = AmigaDisplayInfo.HAM_COLORMODE;
                     break;
                 case NORMAL:
                     break;
             }
         }
-        
-        camg = monitorId|colorMode;
+
+        camg = monitorId | colorMode;
 
         return camg;
     }
@@ -241,6 +244,7 @@ public class AmigaVideoFormatKeys extends VideoFormatKeys {
             }
         }
     }
+
     private static void reduceListBoolean(boolean value, InfGetter<Boolean> g, ArrayList<AmigaDisplayInfo> infs) {
         for (Iterator<AmigaDisplayInfo> i = infs.iterator(); i.hasNext();) {
             AmigaDisplayInfo inf = i.next();

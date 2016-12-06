@@ -21,31 +21,33 @@ import ru.sbtqa.monte.media.io.ImageOutputStreamAdapter;
 
 /**
  * This class supports writing of images into an AVI 1.0 video file.
- * <p>
+ * 
  * The images are written as video frames.
- * <p>
+ * 
  * Video frames can be encoded with one of the following formats:
- * <ul>
- * <li>JPEG</li>
- * <li>PNG</li>
- * <li>RAW</li>
- * <li>RLE</li>
- * </ul>
- * All frames must have the same format.
- * When JPG is used each frame can have an individual encoding quality.
- * <p>
- * All frames in an AVI file must have the same duration. The duration can
- * be set by setting an appropriate pair of values using methods
+ * 
+ * JPEG
+ * PNG
+ * RAW
+ * RLE
+ * 
+ * All frames must have the same format. When JPG is used each frame can have an
+ * individual encoding quality.
+ * 
+ * All frames in an AVI file must have the same duration. The duration can be
+ * set by setting an appropriate pair of values using methods
  * {@link #setFrameRate} and {@link #setTimeScale}.
- * <p>
- * The length of an AVI 1.0 file is limited to 1 GB.
- * This class supports lengths of up to 4 GB, but such files may not work on
- * all players.
- * <p>
+ * 
+ * The length of an AVI 1.0 file is limited to 1 GB. This class supports lengths
+ * of up to 4 GB, but such files may not work on all players.
+ * 
  * For detailed information about the AVI RIFF file format see:<br>
- * <a href="http://msdn.microsoft.com/en-us/library/ms779636.aspx">msdn.microsoft.com AVI RIFF</a><br>
- * <a href="http://www.microsoft.com/whdc/archive/fourcc.mspx">www.microsoft.com FOURCC for Video Compression</a><br>
- * <a href="http://www.saettler.com/RIFFMCI/riffmci.html">www.saettler.com RIFF</a><br>
+ * <a href="http://msdn.microsoft.com/en-us/library/ms779636.aspx">msdn.microsoft.com
+ * AVI RIFF</a><br>
+ * <a href="http://www.microsoft.com/whdc/archive/fourcc.mspx">www.microsoft.com
+ * FOURCC for Video Compression</a><br>
+ * <a href="http://www.saettler.com/RIFFMCI/riffmci.html">www.saettler.com
+ * RIFF</a><br>
  *
  * @deprecated Use {@link AVIWriter} instead of this class.
  *
@@ -53,18 +55,18 @@ import ru.sbtqa.monte.media.io.ImageOutputStreamAdapter;
  * @version 1.6 2011-03-12 Deprecated.
  * <br>1.5.1 2011-01-17 Fixes unintended closing of output stream..
  * <br>1.5 2011-01-06 Adds support for RLE 8-bit video format.
- * <br>1.4 2011-01-04 Adds support for RAW 4-bit and 8-bit video format. Fixes offsets
- * in "idx1" chunk.
+ * <br>1.4 2011-01-04 Adds support for RAW 4-bit and 8-bit video format. Fixes
+ * offsets in "idx1" chunk.
  * <br>1.3.2 2010-12-27 File size limit is 1 GB.
  * <br>1.3.1 2010-07-19 Fixes seeking and calculation of offsets.
- * <br>1.3 2010-07-08 Adds constructor with ImageOutputStream.
- * Added method getVideoDimension().
+ * <br>1.3 2010-07-08 Adds constructor with ImageOutputStream. Added method
+ * getVideoDimension().
  * <br>1.2 2009-08-29 Adds support for RAW video format.
- * <br>1.1 2008-08-27 Fixes computation of dwMicroSecPerFrame in avih
- * chunk. Changed the API to reflect that AVI works with frame rates instead of
- * with frame durations.
- * <br>1.0.1 2008-08-13 Uses FourCC "MJPG" instead of "jpg " for JPG
- * encoded video.
+ * <br>1.1 2008-08-27 Fixes computation of dwMicroSecPerFrame in avih chunk.
+ * Changed the API to reflect that AVI works with frame rates instead of with
+ * frame durations.
+ * <br>1.0.1 2008-08-13 Uses FourCC "MJPG" instead of "jpg " for JPG encoded
+ * video.
  * <br>1.0 2008-08-11 Created.
  */
 @Deprecated
@@ -74,12 +76,15 @@ public class AVIOutputStreamOLD {
      * Underlying output stream.
      */
     private ImageOutputStream out;
-    /** The offset in the underlying ImageOutputStream.
-     * Normally this is 0 unless the underlying stream already contained data
-     * when it was passed to the constructor.
+    /**
+     * The offset in the underlying ImageOutputStream. Normally this is 0 unless
+     * the underlying stream already contained data when it was passed to the
+     * constructor.
      */
     private long streamOffset;
-    /** Previous frame for delta compression. */
+    /**
+     * Previous frame for delta compression.
+     */
     private Object previousData;
 
     /**
@@ -102,25 +107,31 @@ public class AVIOutputStreamOLD {
      */
     private Date creationTime;
     /**
-     * Width of the video frames. All frames must have the same width.
-     * The value -1 is used to mark unspecified width.
+     * Width of the video frames. All frames must have the same width. The value
+     * -1 is used to mark unspecified width.
      */
     private int imgWidth = -1;
     /**
-     * Height of the video frames. All frames must have the same height.
-     * The value -1 is used to mark unspecified height.
+     * Height of the video frames. All frames must have the same height. The
+     * value -1 is used to mark unspecified height.
      */
     private int imgHeight = -1;
-    /** Number of bits per pixel. */
+    /**
+     * Number of bits per pixel.
+     */
     private int imgDepth = 24;
-    /** Index color model for RAW_RGB4 and RAW_RGB8 formats. */
+    /**
+     * Index color model for RAW_RGB4 and RAW_RGB8 formats.
+     */
     private IndexColorModel palette;
     private IndexColorModel previousPalette;
-    /** Video encoder. */
+    /**
+     * Video encoder.
+     */
     private RunLengthCodec encoder;
     /**
      * The timeScale of the movie.
-     * <p>
+     * 
      * Used with frameRate to specify the time scale that this stream will use.
      * Dividing frameRate by timeScale gives the number of samples per second.
      * For video streams, this is the frame rate. For audio streams, this rate
@@ -130,11 +141,13 @@ public class AVIOutputStreamOLD {
     private int timeScale = 1;
     /**
      * The frameRate of the movie in timeScale units.
-     * <p>
+     * 
      * @see timeScale
      */
     private int frameRate = 30;
-    /** Interval between keyframes. */
+    /**
+     * Interval between keyframes.
+     */
     private int syncInterval = 30;
 
     /**
@@ -150,29 +163,35 @@ public class AVIOutputStreamOLD {
     private States state = States.FINISHED;
 
     /**
-     * AVI stores media data in samples.
-     * A sample is a single element in a sequence of time-ordered data.
+     * AVI stores media data in samples. A sample is a single element in a
+     * sequence of time-ordered data.
      */
     private static class Sample {
 
         String chunkType;
-        /** Offset of the sample relative to the start of the AVI file.
+        /**
+         * Offset of the sample relative to the start of the AVI file.
          */
         long offset;
-        /** Data length of the sample. */
+        /**
+         * Data length of the sample.
+         */
         long length;
         /**
          * The duration of the sample in time scale units.
          */
         int duration;
-        /** Whether the sample is a sync-sample. */
+        /**
+         * Whether the sample is a sync-sample.
+         */
         boolean isSync;
 
         /**
          * Creates a new sample.
-         * @param duration
-         * @param offset
-         * @param length
+         *
+         * @param duration TODO
+         * @param offset TODO
+         * @param length TODO
          */
         public Sample(String chunkId, int duration, long offset, long length, boolean isSync) {
             this.chunkType = chunkId;
@@ -224,7 +243,9 @@ public class AVIOutputStreamOLD {
 
         /**
          * Creates a new Chunk at the current position of the ImageOutputStream.
-         * @param chunkType The chunkType of the chunk. A string with a length of 4 characters.
+         *
+         * @param chunkType The chunkType of the chunk. A string with a length
+         * of 4 characters.
          */
         public Chunk(String chunkType) throws IOException {
             this.chunkType = chunkType;
@@ -238,6 +259,7 @@ public class AVIOutputStreamOLD {
 
         /**
          * Returns the size of the chunk including the size of the chunk header.
+         *
          * @return The size of the chunk.
          */
         public abstract long size();
@@ -258,6 +280,7 @@ public class AVIOutputStreamOLD {
         /**
          * Creates a new CompositeChunk at the current position of the
          * ImageOutputStream.
+         *
          * @param compositeType The type of the composite.
          * @param chunkType The type of the chunk.
          */
@@ -278,9 +301,10 @@ public class AVIOutputStreamOLD {
         }
 
         /**
-         * Writes the chunk and all its children to the ImageOutputStream
-         * and disposes of all resources held by the chunk.
-         * @throws java.io.IOException
+         * Writes the chunk and all its children to the ImageOutputStream and
+         * disposes of all resources held by the chunk.
+         *
+         * @throws java.io.IOException TODO
          */
         @Override
         public void finish() throws IOException {
@@ -292,7 +316,7 @@ public class AVIOutputStreamOLD {
                 long pointer = getRelativeStreamPosition();
                 seekRelative(offset);
 
-                DataChunkOutputStream headerData = new DataChunkOutputStream(new ImageOutputStreamAdapter(out),false);
+                DataChunkOutputStream headerData = new DataChunkOutputStream(new ImageOutputStreamAdapter(out), false);
                 headerData.writeType(compositeType);
                 headerData.writeUInt(size() - 8);
                 headerData.writeType(chunkType);
@@ -328,6 +352,7 @@ public class AVIOutputStreamOLD {
         /**
          * Creates a new DataChunk at the current position of the
          * ImageOutputStream.
+         *
          * @param chunkType The chunkType of the chunk.
          */
         public DataChunk(String name) throws IOException {
@@ -344,8 +369,10 @@ public class AVIOutputStreamOLD {
         }
 
         /**
-         * Returns the offset of this chunk to the beginning of the random access file
-         * @return
+         * Returns the offset of this chunk to the beginning of the random
+         * access file
+         *
+         * @return TODO
          */
         public long getOffset() {
             return offset;
@@ -355,7 +382,7 @@ public class AVIOutputStreamOLD {
         public void finish() throws IOException {
             if (!finished) {
                 long sizeBefore = size();
-System.out.println("sizeBefore:"+sizeBefore);
+                System.out.println("sizeBefore:" + sizeBefore);
                 if (size() > 0xffffffffL) {
                     throw new IOException("DataChunk \"" + chunkType + "\" is too large: " + size());
                 }
@@ -363,7 +390,7 @@ System.out.println("sizeBefore:"+sizeBefore);
                 long pointer = getRelativeStreamPosition();
                 seekRelative(offset);
 
-                DataChunkOutputStream headerData = new DataChunkOutputStream(new ImageOutputStreamAdapter(out),false);
+                DataChunkOutputStream headerData = new DataChunkOutputStream(new ImageOutputStreamAdapter(out), false);
                 headerData.writeType(chunkType);
                 headerData.writeUInt(size() - 8);
                 seekRelative(pointer);
@@ -396,12 +423,13 @@ System.out.println("sizeBefore:"+sizeBefore);
         /**
          * Creates a new DataChunk at the current position of the
          * ImageOutputStream.
+         *
          * @param chunkType The chunkType of the chunk.
          */
         public FixedSizeDataChunk(String chunkType, long fixedSize) throws IOException {
             super(chunkType);
             this.fixedSize = fixedSize;
-            data = new DataChunkOutputStream(new ImageOutputStreamAdapter(out),false);
+            data = new DataChunkOutputStream(new ImageOutputStreamAdapter(out), false);
             data.writeType(chunkType);
             data.writeUInt(fixedSize);
             data.clearCount();
@@ -427,8 +455,10 @@ System.out.println("sizeBefore:"+sizeBefore);
         }
 
         /**
-         * Returns the offset of this chunk to the beginning of the random access file
-         * @return
+         * Returns the offset of this chunk to the beginning of the random
+         * access file
+         *
+         * @return TODO
          */
         public long getOffset() {
             return offset;
@@ -457,26 +487,28 @@ System.out.println("sizeBefore:"+sizeBefore);
     }
 
     /**
-     * Creates a new AVI file with the specified video format and
-     * frame rate. The video has 24 bits per pixel.
+     * Creates a new AVI file with the specified video format and frame rate.
+     * The video has 24 bits per pixel.
      *
      * @param file the output file
      * @param format Specifies the video format.
-     * @exception IllegalArgumentException if videoFormat is null or if
-     * frame rate is <= 0
+     * @exception IllegalArgumentException if videoFormat is null or if frame
+     * rate is {@literal <}= 0
+     * @throws java.io.IOException TODO
      */
     public AVIOutputStreamOLD(File file, AVIVideoFormat format) throws IOException {
-        this(file,format,24);
+        this(file, format, 24);
     }
+
     /**
-     * Creates a new AVI file with the specified video format and
-     * frame rate.
+     * Creates a new AVI file with the specified video format and frame rate.
      *
      * @param file the output file
      * @param format Selects an encoder for the video format.
      * @param bitsPerPixel the number of bits per pixel.
-     * @exception IllegalArgumentException if videoFormat is null or if
-     * frame rate is <= 0
+     * @exception IllegalArgumentException if videoFormat is null or if frame
+     * rate is {@literal <}= 0
+     * @throws java.io.IOException TODO
      */
     public AVIOutputStreamOLD(File file, AVIVideoFormat format, int bitsPerPixel) throws IOException {
         if (format == null) {
@@ -514,7 +546,8 @@ System.out.println("sizeBefore:"+sizeBefore);
      * @param out the underlying output stream
      * @param format Selects an encoder for the video format.
      * @exception IllegalArgumentException if videoFormat is null or if
-     * framerate is <= 0
+     * framerate is {@literal <}= 0
+     * @throws java.io.IOException TODO
      */
     public AVIOutputStreamOLD(ImageOutputStream out, AVIVideoFormat format) throws IOException {
         if (format == null) {
@@ -532,10 +565,10 @@ System.out.println("sizeBefore:"+sizeBefore);
      * For video streams, this is the frame rate. For audio streams, this rate
      * corresponds to the time needed to play nBlockAlign bytes of audio, which
      * for PCM audio is the just the sample rate.
-     * <p>
+     * 
      * The default value is 1.
      *
-     * @param newValue
+     * @param newValue TODO
      */
     public void setTimeScale(int newValue) {
         if (newValue <= 0) {
@@ -555,11 +588,11 @@ System.out.println("sizeBefore:"+sizeBefore);
 
     /**
      * Sets the rate of video frames in time scale units.
-     * <p>
+     * 
      * The default value is 30. Together with the default value 1 of timeScale
      * this results in 30 frames pers second.
      *
-     * @param newValue
+     * @param newValue TODO
      */
     public void setFrameRate(int newValue) {
         if (newValue <= 0) {
@@ -580,25 +613,29 @@ System.out.println("sizeBefore:"+sizeBefore);
         return frameRate;
     }
 
-    /** Sets the global color palette. */
+    /**
+     * Sets the global color palette.
+     *
+     * @param palette TODO
+     */
     public void setPalette(IndexColorModel palette) {
         this.palette = palette;
     }
 
     /**
-     * Sets the compression quality of the video track.
-     * A value of 0 stands for "high compression is important" a value of
-     * 1 for "high image quality is important".
-     * <p>
-     * Changing this value affects frames which are subsequently written
-     * to the AVIOutputStreamOLD. Frames which have already been written
-     * are not changed.
-     * <p>
+     * Sets the compression quality of the video track. A value of 0 stands for
+     * "high compression is important" a value of 1 for "high image quality is
+     * important".
+     * 
+     * Changing this value affects frames which are subsequently written to the
+     * AVIOutputStreamOLD. Frames which have already been written are not
+     * changed.
+     * 
      * This value has only effect on videos encoded with JPG format.
-     * <p>
+     * 
      * The default value is 0.9.
      *
-     * @param newValue
+     * @param newValue TODO
      */
     public void setVideoCompressionQuality(float newValue) {
         this.quality = newValue;
@@ -615,12 +652,12 @@ System.out.println("sizeBefore:"+sizeBefore);
 
     /**
      * Sets the dimension of the video track.
-     * <p>
+     * 
      * You need to explicitly set the dimension, if you add all frames from
      * files or input streams.
-     * <p>
-     * If you add frames from buffered images, then AVIOutputStreamOLD
-     * can determine the video dimension from the image width and height.
+     * 
+     * If you add frames from buffered images, then AVIOutputStreamOLD can
+     * determine the video dimension from the image width and height.
      *
      * @param width Must be greater than 0.
      * @param height Must be greater than 0.
@@ -635,8 +672,10 @@ System.out.println("sizeBefore:"+sizeBefore);
 
     /**
      * Gets the dimension of the video track.
-     * <p>
+     * 
      * Returns null if the dimension is not known.
+     *
+     * @return TODO
      */
     public Dimension getVideoDimension() {
         if (imgWidth < 1 || imgHeight < 1) {
@@ -647,9 +686,8 @@ System.out.println("sizeBefore:"+sizeBefore);
 
     /**
      * Sets the state of the QuickTimeOutpuStream to started.
-     * <p>
-     * If the state is changed by this method, the prolog is
-     * written.
+     * 
+     * If the state is changed by this method, the prolog is written.
      */
     private void ensureStarted() throws IOException {
         if (state != States.STARTED) {
@@ -661,14 +699,14 @@ System.out.println("sizeBefore:"+sizeBefore);
 
     /**
      * Writes a frame to the video track.
-     * <p>
-     * If the dimension of the video track has not been specified yet, it
-     * is derived from the first buffered image added to the AVIOutputStreamOLD.
+     * 
+     * If the dimension of the video track has not been specified yet, it is
+     * derived from the first buffered image added to the AVIOutputStreamOLD.
      *
      * @param image The frame image.
      *
-     * @throws IllegalArgumentException if the duration is less than 1, or
-     * if the dimension of the frame does not match the dimension of the video
+     * @throws IllegalArgumentException if the duration is less than 1, or if
+     * the dimension of the frame does not match the dimension of the video
      * track.
      * @throws IOException if writing the image failed.
      */
@@ -680,14 +718,12 @@ System.out.println("sizeBefore:"+sizeBefore);
         if (imgWidth == -1) {
             imgWidth = image.getWidth();
             imgHeight = image.getHeight();
-        } else {
-            // The dimension of the image must match the dimension of the video track
-            if (imgWidth != image.getWidth() || imgHeight != image.getHeight()) {
-                throw new IllegalArgumentException("Dimensions of image[" + videoFrames.size()
-                        + "] (width=" + image.getWidth() + ", height=" + image.getHeight()
-                        + ") differs from image[0] (width="
-                        + imgWidth + ", height=" + imgHeight);
-            }
+        } else // The dimension of the image must match the dimension of the video track
+        if (imgWidth != image.getWidth() || imgHeight != image.getHeight()) {
+            throw new IllegalArgumentException("Dimensions of image[" + videoFrames.size()
+                  + "] (width=" + image.getWidth() + ", height=" + image.getHeight()
+                  + ") differs from image[0] (width="
+                  + imgWidth + ", height=" + imgHeight);
         }
 
         DataChunk videoFrameChunk;
@@ -980,14 +1016,14 @@ System.out.println("sizeBefore:"+sizeBefore);
 
     /**
      * Writes a frame from a file to the video track.
-     * <p>
-     * This method does not inspect the contents of the file.
-     * For example, Its your responsibility to only add JPG files if you have
-     * chosen the JPEG video format.
-     * <p>
-     * If you add all frames from files or from input streams, then you
-     * have to explicitly set the dimension of the video track before you
-     * call finish() or close().
+     * 
+     * This method does not inspect the contents of the file. For example, Its
+     * your responsibility to only add JPG files if you have chosen the JPEG
+     * video format.
+     * 
+     * If you add all frames from files or from input streams, then you have to
+     * explicitly set the dimension of the video track before you call finish()
+     * or close().
      *
      * @param file The file which holds the image data.
      *
@@ -1008,14 +1044,14 @@ System.out.println("sizeBefore:"+sizeBefore);
 
     /**
      * Writes a frame to the video track.
-     * <p>
-     * This method does not inspect the contents of the file.
-     * For example, its your responsibility to only add JPG files if you have
-     * chosen the JPEG video format.
-     * <p>
-     * If you add all frames from files or from input streams, then you
-     * have to explicitly set the dimension of the video track before you
-     * call finish() or close().
+     * 
+     * This method does not inspect the contents of the file. For example, its
+     * your responsibility to only add JPG files if you have chosen the JPEG
+     * video format.
+     * 
+     * If you add all frames from files or from input streams, then you have to
+     * explicitly set the dimension of the video track before you call finish()
+     * or close().
      *
      * @param in The input stream which holds the image data.
      *
@@ -1027,7 +1063,7 @@ System.out.println("sizeBefore:"+sizeBefore);
         ensureStarted();
 
         DataChunk videoFrameChunk = new DataChunk(
-                videoFormat == AVIVideoFormat.RAW ? "00db" : "00dc");
+              videoFormat == AVIVideoFormat.RAW ? "00db" : "00dc");
         moviChunk.add(videoFrameChunk);
         OutputStream mdatOut = videoFrameChunk.getOutputStream();
         long offset = getRelativeStreamPosition();
@@ -1057,11 +1093,11 @@ System.out.println("sizeBefore:"+sizeBefore);
 
     /**
      * Finishes writing the contents of the AVI output stream without closing
-     * the underlying stream. Use this method when applying multiple filters
-     * in succession to the same output stream.
+     * the underlying stream. Use this method when applying multiple filters in
+     * succession to the same output stream.
      *
-     * @exception IllegalStateException if the dimension of the video track
-     * has not been specified or determined yet.
+     * @exception IllegalStateException if the dimension of the video track has
+     * not been specified or determined yet.
      * @exception IOException if an I/O exception has occurred
      */
     public void finish() throws IOException {
@@ -1087,21 +1123,23 @@ System.out.println("sizeBefore:"+sizeBefore);
         }
     }
 
-    /** Gets the position relative to the beginning of the QuickTime stream.
-     * <p>
+    /**
+     * Gets the position relative to the beginning of the QuickTime stream.
+     * 
      * Usually this value is equal to the stream position of the underlying
      * ImageOutputStream, but can be larger if the underlying stream already
      * contained data.
      *
      * @return The relative stream position.
-     * @throws IOException
+     * @throws IOException TODO
      */
     private long getRelativeStreamPosition() throws IOException {
         return out.getStreamPosition() - streamOffset;
     }
 
-    /** Seeks relative to the beginning of the QuickTime stream.
-     * <p>
+    /**
+     * Seeks relative to the beginning of the QuickTime stream.
+     * 
      * Usually this equal to seeking in the underlying ImageOutputStream, but
      * can be different if the underlying stream already contained data.
      *
@@ -1146,7 +1184,6 @@ System.out.println("sizeBefore:"+sizeBefore);
         moviChunk = new CompositeChunk("LIST", "movi");
         aviChunk.add(moviChunk);
 
-
     }
 
     private void writeEpilog() throws IOException {
@@ -1161,7 +1198,6 @@ System.out.println("sizeBefore:"+sizeBefore);
                 bufferSize = s.length;
             }
         }
-
 
         DataChunkOutputStream d;
 
@@ -1197,7 +1233,7 @@ System.out.println("sizeBefore:"+sizeBefore);
             //  wb                  Audio data
 
             d.writeUInt((f.chunkType.endsWith("pc") ? 0x100 : 0x0)//
-                    | (f.isSync ? 0x10 : 0x0)); // dwFlags
+                  | (f.isSync ? 0x10 : 0x0)); // dwFlags
             // Specifies a bitwise combination of zero or more of the following
             // flags:
             //
@@ -1306,7 +1342,6 @@ System.out.println("sizeBefore:"+sizeBefore);
         // performance. For an interleaved file, the buffer size should be large
         // enough to read an entire record, and not just a chunk.
 
-
         d.writeUInt(imgWidth); // dwWidth
         // Specifies the width of the AVI file in pixels.
 
@@ -1399,7 +1434,6 @@ System.out.println("sizeBefore:"+sizeBefore);
         //                      palette changes. This flag warns the playback
         //                      software that it will need to animate the
         //                      palette.
-
         d.writeUShort(0); // wPriority
         // Specifies priority of a stream type. For example, in a file with
         // multiple audio streams, the one with the highest priority might be
@@ -1616,7 +1650,6 @@ System.out.println("sizeBefore:"+sizeBefore);
                 d.write(0);
             }
         }
-
 
         // -----------------
         aviChunk.finish();

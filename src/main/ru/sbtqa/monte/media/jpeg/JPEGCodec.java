@@ -21,14 +21,14 @@ import static org.monte.media.BufferFlag.*;
 
 /**
  * {@code JPEGCodec} encodes a BufferedImage as a byte[] array. 
- * <p>
+ * 
  * Supported input/output formats: 
- * <ul> 
- * <li>@code VideoFormat} with {@code BufferedImage.class}, any
- * width, any height, any depth.</li>
- * <li>{@code VideoFormat} with {@code byte[].class}, same width and height as input
- * format, depth=24.</li>
- * </ul>
+ *  
+ * @code VideoFormat} with {@code BufferedImage.class}, any
+ * width, any height, any depth.
+ * {@code VideoFormat} with {@code byte[].class}, same width and height as input
+ * format, depth=24.
+ * 
  *
  * @author Werner Randelshofer
  * @version $Id: JPEGCodec.java 364 2016-11-09 19:54:25Z werner $

@@ -25,6 +25,7 @@ public class ColorTesterMain {
 
     /**
      * @param args the command line arguments
+     * @throws java.io.IOException TODO
      */
     public static void main(String[] args) throws IOException {
         BufferedImage img1 = new BufferedImage(16, 16, BufferedImage.TYPE_BYTE_INDEXED, Colors.createMacColors());

@@ -9,13 +9,13 @@ import org.monte.media.math.Rational;
 
 /**
  * Enumeration of TIFF IFD data types.
- * <p>
+ * 
  * Sources:
- * <p>
+ * 
  * TIFF TM Revision 6.0. Final — June 3, 1992.<br>
  * Adobe Systems Inc.<br>
  * <a href="http://www.exif.org/specifications.html">http://www.exif.org/specifications.html</a>
- * <p>
+ * 
  * Adobe PageMaker® 6.0 TIFF Technical Notes - September 14, 1995<br>
  * Adobe Systems Inc.<br>
  * <a href="http://www.alternatiff.com/resources/TIFFPM6.pdf">http://www.alternatiff.com/resources/TIFFPM6.pdf</a>

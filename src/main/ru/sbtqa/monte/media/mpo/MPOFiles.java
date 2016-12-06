@@ -22,11 +22,11 @@ public class MPOFiles {
     private MPOFiles() {
     }
     /** Splits a MPO file into two JPEG files.
-     * <p>
+     * 
      * A MPO file consists of two or more concatenated JPEG files with
      * multi-picture file meta-data in APP2 segments which start with the
      * character sequence "MPF\0".
-     * <p>
+     * 
      * This method writes each JPEG file into a separate file and strips
      * the multi-picture meta-data.
      */

@@ -15,7 +15,7 @@ import org.monte.media.Registry;
 
 /**
  * Demonstrates how to concatenate multiple movie files without re-encoding the
- * media data. <p> Caveat: If an input file has multiple tracks of different
+ * media data.  Caveat: If an input file has multiple tracks of different
  * durations, then the audio/video sync of subsequent input file will drift. On
  * the upside this allows to merge a file which only contains video with a file
  * that only contains audio.
@@ -26,11 +26,11 @@ import org.monte.media.Registry;
 public class ConcatDemoMain {
 
     /**
-     * Main function. <p> Takes one output file and one or more input files as
+     * Main function.  Takes one output file and one or more input files as
      * arguments. Concatenates all input files into the output file.
-     * <pre>
+     * 
      * ConcatDemo [-o outputfile] [-i inputfile ...]
-     * </pre>
+     * 
      *
      * @param args the command line arguments
      */

@@ -233,7 +233,7 @@ public class ColorModels {
 
     /** RGB in the range [0,1] to YIQ in the range Y in [0,1],
      * I in [-0.5957,0.5957], Q in [-0.5226,0.5226].
-     * <p>
+     * 
      * http://en.wikipedia.org/wiki/YIQ
      */
     public static void RGBtoYIQ(float[] rgb, float[] yiq) {
@@ -250,7 +250,7 @@ public class ColorModels {
 
     /** YIQ in the range Y in [0,1], I in [-0.5957,0.5957], Q in [-0.5226,0.5226] 
      * to RGB in the range [0,1] 
-     * <p>
+     * 
      * http://en.wikipedia.org/wiki/YIQ
      */
     public static void YIQtoRGB(float[] yiq, float[] rgb) {

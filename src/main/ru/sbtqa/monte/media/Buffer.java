@@ -81,7 +81,7 @@ public class Buffer {
      * Note that this method creates copies of the {@code data} and 
      * {@code header}, so that these fields in that buffer can be discarded
      * without affecting the contents of this buffer.
-     * <p>
+     * 
      * FIXME - This method does not always create a copy!!
      */
     public void setDataTo(Buffer that) {

@@ -105,14 +105,14 @@ public class QuickTimeDeserializer {
      * Parses a QuickTime file. This method invokes other parse methods for
      * individual data structures in the file.
      *
-     * <pre>
+     * 
      * struct atom {
      *    uint32 size; 
      *    type   type;  // exists only if size &gt;= 8
      *    byte[size-8] body; // exists only if size &gt; 8
      *   
      * }
-     * </pre>
+     * 
      */
     protected void parseRecursively(QTFFImageInputStream in, long remainingSize, QuickTimeMeta m) throws IOException {
         while (remainingSize > 0) {
@@ -247,7 +247,7 @@ public class QuickTimeDeserializer {
 
     /**
      * The file type ("ftyp"-atom).
-     * <pre>
+     * 
      * typedef struct {
      * magic brand;
      * bcd4 versionYear;
@@ -255,7 +255,7 @@ public class QuickTimeDeserializer {
      * bcd2 versionMinor;
      * magic[] compatibleBrands;
      * } ftypAtom;
-     * </pre>
+     * 
      */
     protected void parseFileType(QTFFImageInputStream in, long remainingSize, QuickTimeMeta m) throws IOException {
         m.brand = in.readType();
@@ -271,9 +271,9 @@ public class QuickTimeDeserializer {
     }
 
     /**
-     * <p>
+     * 
      * The movie header ("mvhd"-atom).
-     * <pre>
+     * 
      * typedef struct {
      *      byte version;
      *      byte[3] flags;
@@ -301,7 +301,7 @@ public class QuickTimeDeserializer {
      *      uint currentTime;
      *      uint nextTrackId;
      * } movieHeaderAtom;
-     * </pre>
+     * 
      */
     protected void parseMovieHeader(QTFFImageInputStream in, long remainingSize, QuickTimeMeta m) throws IOException {
         int version = in.readUnsignedByte();
@@ -334,9 +334,9 @@ public class QuickTimeDeserializer {
     }
 
     /**
-     * <p>
+     * 
      * The track header ("tkhd"-atom).
-     * <pre>
+     * 
      * Enumeration for track header flags
      * set {
      *    TrackEnable = 0x1, // enabled track
@@ -371,7 +371,7 @@ public class QuickTimeDeserializer {
      *    fixed16d16 trackWidth;
      *    fixed16d16 trackHeight;
      * trackHeaderAtom;
-     * </pre>
+     * 
      */
     protected void parseTrackHeader(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Track t) throws IOException {
         int version = in.readUnsignedByte();
@@ -405,7 +405,7 @@ public class QuickTimeDeserializer {
     /**
      * The edit list ("elst"-Atom).
      *
-     * <pre>
+     * 
      * typedef struct {
      *    byte version;
      *    byte[3] flags;
@@ -418,7 +418,7 @@ public class QuickTimeDeserializer {
      *    int mediaTime;
      *    fixed16d16 mediaRate;
      * } editListTable;
-     * </pre>
+     * 
      */
     protected void parseEditList(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Track t) throws IOException {
         int version = in.readUnsignedByte();
@@ -438,7 +438,7 @@ public class QuickTimeDeserializer {
 
     /**
      * The media header (mdhd-Atom).
-     * <pre>
+     * 
      * typedef struct {
      * byte version;
      * byte[3] flags;
@@ -449,7 +449,7 @@ public class QuickTimeDeserializer {
      * short language;
      * short quality;
      * } mediaHeaderAtom;
-     * </pre>
+     * 
      */
     protected void parseMediaHeader(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
@@ -503,7 +503,7 @@ public class QuickTimeDeserializer {
 
     /**
      * Handler Reference Atom ("hdlr"-Atom).
-     * <pre>
+     * 
      * typedef struct {
      * byte version;
      * byte[3] flags;
@@ -515,7 +515,7 @@ public class QuickTimeDeserializer {
      * pstring componentName;
      * ubyte[] extraData;
      * } handlerReferenceAtom;
-     * </pre>
+     * 
      */
     protected void parseHandlerReference(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Track t, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
@@ -549,7 +549,7 @@ public class QuickTimeDeserializer {
 
     /**
      * The sound media header ("smhd"-Atom).
-     * <pre>
+     * 
      * typedef struct {
      *    ubyte version;  // A 1-byte specification of the version of this sound media information header atom.
      *    byte[3] flags; // A 3-byte space for sound media information flags. Set this field to 0.
@@ -566,7 +566,7 @@ public class QuickTimeDeserializer {
      *                    // balance to 0 corresponds to a neutral setting.
      *    short reserved; // Reserved for use by Apple. Set this field to 0.
      * } soundMediaInformationHeaderAtom;
-     * </pre>
+     * 
      */
     protected void parseSoundMediaHeader(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
@@ -577,7 +577,7 @@ public class QuickTimeDeserializer {
 
     /**
      * The video media header ("vmhd"-Atom).
-     * <pre>
+     * 
      * set {
      * videoFlagNoLeanAhead=1 // I am not shure if this is the correct value for this flag
      * } vmhdFlags;
@@ -602,7 +602,7 @@ public class QuickTimeDeserializer {
      * short enum GraphicsModes graphicsMode;
      * ushort[3] opcolor;
      * } videoMediaInformationHeaderAtom;
-     * </pre>
+     * 
      */
     protected void parseVideoMediaHeader(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
@@ -619,7 +619,7 @@ public class QuickTimeDeserializer {
 
     /**
      * The data reference ("dref"-Atom).
-     * <pre>
+     * 
      * set {
      *   dataRefSelfReference=1 // I am not shure if this is the correct value for this flag
      * } drefEntryFlags;
@@ -641,7 +641,7 @@ public class QuickTimeDeserializer {
      *  dataReferenceEntry dataReference[numberOfEntries];
      * } dataReferenceAtom;
      *
-     * </pre>
+     * 
      */
     protected void parseDataReference(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
@@ -663,7 +663,7 @@ public class QuickTimeDeserializer {
     /**
      * The sound sample description ("stsd"-Atom in a sound track).
      *
-     * <pre>
+     * 
      * enum {
      * version0 = 0, // compressionId must be 0 for version 0 sound sample description.
      * uncompressedAudio = -1,
@@ -761,7 +761,7 @@ public class QuickTimeDeserializer {
      * int numberOfEntries; // A 32-bit integer containing the number of sample descriptions that follow.
      * soundSampleDescriptionEntry sampleDescriptionTable[numberOfEntries];
      * } soundSampleDescriptionAtom;
-     * </pre>
+     * 
      */
     protected void parseSoundSampleDescription(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
@@ -823,7 +823,7 @@ public class QuickTimeDeserializer {
     /**
      * The video sample description ("stsd"-Atom in a video track).
      *
-     * <pre>
+     * 
      * typedef struct {
      *  byte version;
      *  byte[3] flags;
@@ -902,7 +902,7 @@ public class QuickTimeDeserializer {
      * int numberOfEntries; // A 32-bit integer containing the number of sample descriptions that follow.
      * soundSampleDescriptionEntry sampleDescriptionTable[numberOfEntries];
      * } soundSampleDescriptionAtom;
-     * </pre>
+     * 
      */
     protected void parseVideoSampleDescription(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
@@ -964,7 +964,7 @@ public class QuickTimeDeserializer {
      * media, providing a mapping from a time in a media to the corresponding
      * data sample.
      *
-     * <pre>
+     * 
      * typedef struct {
      *    byte version;
      *    byte[3] flags;
@@ -976,15 +976,15 @@ public class QuickTimeDeserializer {
      *    int sampleCount;
      *    int sampleDuration;
      * } timeToSampleTable;
-     * </pre>
+     * 
      *
      * Note: this method adds {@code Sample} objects to the
      * {@code Media.samples} list.
      *
-     * @param in
-     * @param remainingSize
-     * @param m
-     * @throws IOException
+     * @param in TODO
+     * @param remainingSize TODO
+     * @param m TODO
+     * @throws IOException TODO
      */
     protected void parseTimeToSample(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
@@ -1010,7 +1010,7 @@ public class QuickTimeDeserializer {
      * a media may have different sizes, and the samples within a chunk may have
      * different sizes.
      *
-     * <pre>
+     * 
      * typedef struct {
      *     byte version;
      *     byte[3] flags;
@@ -1023,12 +1023,12 @@ public class QuickTimeDeserializer {
      *     int samplesPerChunk;
      *     int sampleDescription;
      * } sampleToChunkTable;
-     * </pre>
+     * 
      *
-     * @param in
-     * @param remainingSize
-     * @param m
-     * @throws IOException
+     * @param in TODO
+     * @param remainingSize TODO
+     * @param m TODO
+     * @throws IOException TODO
      */
     protected void parseSampleToChunk(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
@@ -1052,7 +1052,7 @@ public class QuickTimeDeserializer {
      * that is, it is independent of preceding frames. Subsequent frames may
      * depend on the key frame.
      *
-     * <pre>
+     * 
      * typedef struct {
      *     byte version;
      *     byte[3] flags;
@@ -1063,12 +1063,12 @@ public class QuickTimeDeserializer {
      * typedef struct {
      *     int number;
      * } syncSampleTable;
-     * </pre>
+     * 
      *
-     * @param in
-     * @param remainingSize
-     * @param m
-     * @throws IOException
+     * @param in TODO
+     * @param remainingSize TODO
+     * @param m TODO
+     * @throws IOException TODO
      */
     protected void parseSyncSample(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
@@ -1088,7 +1088,7 @@ public class QuickTimeDeserializer {
      * The Sample Size atom ("stsz"-Atom in a media information section). Sample
      * size atoms identify the size of each sample in the media.
      *
-     * <pre>
+     * 
      * typedef struct {
      *     byte version;
      *     byte[3] flags;
@@ -1100,12 +1100,12 @@ public class QuickTimeDeserializer {
      * typedef struct {
      *    int size;
      * } sampleSizeTable;
-     * </pre>
+     * 
      *
-     * @param in
-     * @param remainingSize
-     * @param m
-     * @throws IOException
+     * @param in TODO
+     * @param remainingSize TODO
+     * @param m TODO
+     * @throws IOException TODO
      */
     protected void parseSampleSize(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();

@@ -22,23 +22,21 @@ import ru.sbtqa.monte.media.io.SeekableByteArrayOutputStream;
 
 /**
  * {@code RawCodec} encodes a BufferedImage as a byte[] array.
- * <p>
+ * 
  * This codec does not encode the color palette of an image. This must be done
  * separately.
- * <p>
- * The pixels of a frame are written row by row from top to bottom and from
- * the left to the right.
- * <p>
+ * 
+ * The pixels of a frame are written row by row from top to bottom and from the
+ * left to the right.
+ * 
  * Supported input formats:
- * <ul>
- * {@code VideoFormat} onlyWith {@code BufferedImage.class}, any width, any height,
- * depth=4.
- * </ul>
+ *  {@code VideoFormat} onlyWith {@code BufferedImage.class}, any width, any
+ * height, depth=4.
+ * 
  * Supported output formats:
- * <ul>
- * {@code VideoFormat} onlyWith {@code byte[].class}, same width and height as input
- * format, depth=4.
- * </ul>
+ *  {@code VideoFormat} onlyWith {@code byte[].class}, same width and height
+ * as input format, depth=4.
+ * 
  *
  * @author Werner Randelshofer
  * @version 1.0 2011-03-15 Created.
@@ -47,20 +45,21 @@ public class RawCodec extends AbstractVideoCodec {
 
     public RawCodec() {
         super(new Format[]{
-                    new Format(MediaTypeKey, VIDEO, MimeTypeKey, MIME_JAVA, 
-                            EncodingKey, ENCODING_BUFFERED_IMAGE), //
-                },
-                new Format[]{
-                    new Format(MediaTypeKey, VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                    EncodingKey, ENCODING_QUICKTIME_RAW, DataClassKey, byte[].class, DepthKey, 8), //
-                    new Format(MediaTypeKey, VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                    EncodingKey, ENCODING_QUICKTIME_RAW, DataClassKey, byte[].class, DepthKey, 16), //
-                    new Format(MediaTypeKey, VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                    EncodingKey, ENCODING_QUICKTIME_RAW, DataClassKey, byte[].class, DepthKey, 24), //
-                    new Format(MediaTypeKey, VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                    EncodingKey, ENCODING_QUICKTIME_RAW, DataClassKey, byte[].class, DepthKey, 32), //
-                });
+            new Format(MediaTypeKey, VIDEO, MimeTypeKey, MIME_JAVA,
+            EncodingKey, ENCODING_BUFFERED_IMAGE), //
+        },
+              new Format[]{
+                  new Format(MediaTypeKey, VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                        EncodingKey, ENCODING_QUICKTIME_RAW, DataClassKey, byte[].class, DepthKey, 8), //
+                  new Format(MediaTypeKey, VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                        EncodingKey, ENCODING_QUICKTIME_RAW, DataClassKey, byte[].class, DepthKey, 16), //
+                  new Format(MediaTypeKey, VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                        EncodingKey, ENCODING_QUICKTIME_RAW, DataClassKey, byte[].class, DepthKey, 24), //
+                  new Format(MediaTypeKey, VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                        EncodingKey, ENCODING_QUICKTIME_RAW, DataClassKey, byte[].class, DepthKey, 32), //
+              });
     }
+
     @Override
     public Format setOutputFormat(Format f) {
         super.setOutputFormat(f);
@@ -69,24 +68,26 @@ public class RawCodec extends AbstractVideoCodec {
         // Enforce these properties
         if (outputFormat != null) {
             if (inputFormat != null) {
-                outputFormat = outputFormat.prepend(inputFormat.intersectKeys(WidthKey, HeightKey,DepthKey));
+                outputFormat = outputFormat.prepend(inputFormat.intersectKeys(WidthKey, HeightKey, DepthKey));
             }
         }
         return this.outputFormat;
     }
 
-
-    /** Encodes an 8-bit key frame.
+    /**
+     * Encodes an 8-bit key frame.
      *
      * @param out The output stream.
      * @param data The image data.
      * @param width The width of the image in data elements.
      * @param height The height of the image in data elements.
      * @param offset The offset to the first pixel in the data array.
-     * @param scanlineStride The number to append to offset to get to the next scanline.
+     * @param scanlineStride The number to append to offset to get to the next
+     * scanline.
+     * @throws java.io.IOException TODO
      */
     public void writeKey8(OutputStream out, byte[] data, int width, int height, int offset, int scanlineStride)
-            throws IOException {
+          throws IOException {
 
         // Write the samples
         for (int xy = offset, ymax = offset + height * scanlineStride; xy < ymax; xy += scanlineStride) {
@@ -94,17 +95,20 @@ public class RawCodec extends AbstractVideoCodec {
         }
     }
 
-    /** Encodes a 24-bit key frame.
+    /**
+     * Encodes a 24-bit key frame.
      *
      * @param out The output stream.
      * @param data The image data.
      * @param width The width of the image in data elements.
      * @param height The height of the image in data elements.
      * @param offset The offset to the first pixel in the data array.
-     * @param scanlineStride The number to append to offset to get to the next scanline.
+     * @param scanlineStride The number to append to offset to get to the next
+     * scanline.
+     * @throws java.io.IOException TODO
      */
     public void writeKey16(OutputStream out, short[] data, int width, int height, int offset, int scanlineStride)
-            throws IOException {
+          throws IOException {
 
         // Write the samples
         byte[] bytes = new byte[width * 2]; // holds a scanline of raw image data onlyWith 3 channels of 32 bit data
@@ -118,17 +122,20 @@ public class RawCodec extends AbstractVideoCodec {
         }
     }
 
-    /** Encodes a 24-bit key frame.
+    /**
+     * Encodes a 24-bit key frame.
      *
      * @param out The output stream.
      * @param data The image data.
      * @param width The width of the image in data elements.
      * @param height The height of the image in data elements.
      * @param offset The offset to the first pixel in the data array.
-     * @param scanlineStride The number to append to offset to get to the next scanline.
+     * @param scanlineStride The number to append to offset to get to the next
+     * scanline.
+     * @throws java.io.IOException TODO
      */
     public void writeKey24(OutputStream out, int[] data, int width, int height, int offset, int scanlineStride)
-            throws IOException {
+          throws IOException {
 
         // Write the samples
         byte[] bytes = new byte[width * 3]; // holds a scanline of raw image data onlyWith 3 channels of 32 bit data
@@ -143,17 +150,20 @@ public class RawCodec extends AbstractVideoCodec {
         }
     }
 
-    /** Encodes a 24-bit key frame.
+    /**
+     * Encodes a 24-bit key frame.
      *
      * @param out The output stream.
      * @param data The image data.
      * @param width The width of the image in data elements.
      * @param height The height of the image in data elements.
      * @param offset The offset to the first pixel in the data array.
-     * @param scanlineStride The number to append to offset to get to the next scanline.
+     * @param scanlineStride The number to append to offset to get to the next
+     * scanline.
+     * @throws java.io.IOException TODO
      */
     public void writeKey32(OutputStream out, int[] data, int width, int height, int offset, int scanlineStride)
-            throws IOException {
+          throws IOException {
 
         // Write the samples
         byte[] bytes = new byte[width * 4]; // holds a scanline of raw image data onlyWith 3 channels of 32 bit data
@@ -169,13 +179,15 @@ public class RawCodec extends AbstractVideoCodec {
         }
     }
 
-    /** Encodes a 24-bit key frame.
+    /**
+     * Encodes a 24-bit key frame.
      *
      * @param out The output stream.
      * @param image The image.
+     * @throws java.io.IOException TODO
      */
     public void writeKey24(OutputStream out, BufferedImage image)
-            throws IOException {
+          throws IOException {
 
         int width = image.getWidth();
         int height = image.getHeight();

@@ -1,4 +1,4 @@
- /* @(#)ICCPackedColorModel.java
+/* @(#)ICCPackedColorModel.java
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
@@ -23,7 +23,9 @@ public class ICCPackedColorModel extends PackedColorModel {
     private final int[] maskArray;
     private final int[] maskOffsets;
 
-    /** Returns the number of bits per pixel. */
+    /**
+     * Returns the number of bits per pixel.
+     */
     private static int getBits(Raster raster) {
         int bits = 0;
         SinglePixelPackedSampleModel sm = (SinglePixelPackedSampleModel) raster.getSampleModel();
@@ -38,8 +40,8 @@ public class ICCPackedColorModel extends PackedColorModel {
     public ICCPackedColorModel(ICC_ColorSpace colorSpace, Raster raster) {
         // FIXME this super call silently only handles rasters without alpha channel!
         super(colorSpace,//
-                getBits(raster),//
-                ((SinglePixelPackedSampleModel) raster.getSampleModel()).getBitMasks(), 0, true, OPAQUE, raster.getTransferType());
+              getBits(raster),//
+              ((SinglePixelPackedSampleModel) raster.getSampleModel()).getBitMasks(), 0, true, OPAQUE, raster.getTransferType());
         this.colorSpace = colorSpace;
         this.maskArray = ((SinglePixelPackedSampleModel) raster.getSampleModel()).getBitMasks();
         this.maskOffsets = ((SinglePixelPackedSampleModel) raster.getSampleModel()).getBitOffsets();
@@ -109,26 +111,27 @@ public class ICCPackedColorModel extends PackedColorModel {
 
         return (raster.getTransferType() == transferType);
     }
+
     @Override
     final public int[] getComponents(Object pixel, int[] components,
-                                     int offset) {
-        int intpixel=0;
+          int offset) {
+        int intpixel = 0;
         switch (transferType) {
             case DataBuffer.TYPE_BYTE:
-               byte bdata[] = (byte[])pixel;
-               intpixel = bdata[0] & 0xff;
-            break;
+                byte bdata[] = (byte[]) pixel;
+                intpixel = bdata[0] & 0xff;
+                break;
             case DataBuffer.TYPE_USHORT:
-               short sdata[] = (short[])pixel;
-               intpixel = sdata[0] & 0xffff;
-            break;
+                short sdata[] = (short[]) pixel;
+                intpixel = sdata[0] & 0xffff;
+                break;
             case DataBuffer.TYPE_INT:
-               int idata[] = (int[])pixel;
-               intpixel = idata[0];
-            break;
+                int idata[] = (int[]) pixel;
+                intpixel = idata[0];
+                break;
             default:
-               throw new UnsupportedOperationException("This method has not been "+
-                   "implemented for transferType " + transferType);
+                throw new UnsupportedOperationException("This method has not been "
+                      + "implemented for transferType " + transferType);
         }
         return getComponents(intpixel, components, offset);
     }
@@ -136,16 +139,15 @@ public class ICCPackedColorModel extends PackedColorModel {
     @Override
     public int[] getComponents(int pixel, int[] components, int offset) {
         final int numComponents = getNumComponents();
-       if (components == null) {
-            components = new int[offset+numComponents];
+        if (components == null) {
+            components = new int[offset + numComponents];
         }
 
-        for (int i=0; i < numComponents; i++) {
-            components[offset+i] = (pixel & maskArray[i]) >>> maskOffsets[i];
+        for (int i = 0; i < numComponents; i++) {
+            components[offset + i] = (pixel & maskArray[i]) >>> maskOffsets[i];
         }
 
         return components;
-     }
-    
-    
+    }
+
 }

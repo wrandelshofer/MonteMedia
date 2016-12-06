@@ -13,52 +13,69 @@ import ru.sbtqa.monte.media.beans.AbstractBean;
  * @version 1.0 2012-01-18 Created.
  */
 public class DefaultColorAdjustModel
-        extends AbstractBean implements ColorAdjustModel {
+      extends AbstractBean implements ColorAdjustModel {
+
     private final static long serialVersionUID = 1L;
 
-    /** Level adjustment: white point in the range [0,1]. 
+    /**
+     * Level adjustment: white point in the range [0,1].
      */
     protected float whitePoint = 1.0f;
-    /** Level adjustment: black point in the range [0,1]. 
+    /**
+     * Level adjustment: black point in the range [0,1].
      */
     protected float blackPoint = 0.0f;
-    /** Level adjustment: mid point in the range [0,1]. 
+    /**
+     * Level adjustment: mid point in the range [0,1].
      */
     protected float midPoint = 0.5f;
-    /** Brightness adjustment in the range [-1,1].
+    /**
+     * Brightness adjustment in the range [-1,1].
      */
     protected float brightness = 0f;
-    /** Exposure adjustment in the range [-1,1].
+    /**
+     * Exposure adjustment in the range [-1,1].
      */
     protected float exposure = 0f;
-    /** Contrast adjustment in the range [-1,1].
+    /**
+     * Contrast adjustment in the range [-1,1].
      */
     protected float contrast = 0f;
-    /** Saturation adjustment in the range [0,1].
+    /**
+     * Saturation adjustment in the range [0,1].
      */
     protected float saturation = 0.5f;
-    /** Definition adjustment in the range [0,1].
+    /**
+     * Definition adjustment in the range [0,1].
      */
     protected float definition = 0f;
-    /** Higlights adjustment in the range [0,1].
+    /**
+     * Higlights adjustment in the range [0,1].
      */
     protected float highlights = 0f;
-    /** Shadows adjustment in the range [0,1].
+    /**
+     * Shadows adjustment in the range [0,1].
      */
     protected float shadows = 0f;
-    /** Sharpness adjustment in the range [0,1].
+    /**
+     * Sharpness adjustment in the range [0,1].
      */
     protected float sharpness = 0f;
-    /** De-noise adjustment in the range [0,1].
+    /**
+     * De-noise adjustment in the range [0,1].
      */
     protected float denoise = 0f;
-    /** Temperature adjustment in the range [-1,1].
+    /**
+     * Temperature adjustment in the range [-1,1].
      */
     protected float temperature = 0f;
-    /** Tint adjustment in the range [-1,1].
+    /**
+     * Tint adjustment in the range [-1,1].
      */
     protected float tint = 0f;
-    /** White balance terms {Rmu,Rnu, Bmu, Bnu}. */
+    /**
+     * White balance terms {Rmu,Rnu, Bmu, Bnu}.
+     */
     private float[] whiteBalanceQM = {0, 1, 0, 1};
     private boolean whiteBalanceTTEnabled = true;
     private boolean whiteBalanceQMEnabled = true;
@@ -309,7 +326,7 @@ public class DefaultColorAdjustModel
         whitePoint = that.getWhitePoint();
         blackPoint = that.getBlackPoint();
         midPoint = that.getMidPoint();
-        brightness=that.getBrightness();
+        brightness = that.getBrightness();
         exposure = that.getExposure();
         contrast = that.getContrast();
         saturation = that.getSaturation();
@@ -329,25 +346,25 @@ public class DefaultColorAdjustModel
     @Override
     public boolean isIdentity() {
         return whitePoint == 1//
-                && blackPoint == 0//
-                && midPoint == 0.5//
-                && brightness == 0//
-                && exposure == 0//
-                && contrast == 0//
-                && saturation == 0.5//
-                && definition == 0//
-                && highlights == 0//
-                && shadows == 0//
-                && sharpness == 0//
-                && denoise == 0//
-                && (!whiteBalanceTTEnabled
-                || temperature == 0//
-                && tint == 0)//
-                && (!whiteBalanceQMEnabled
-                || whiteBalanceQM[0] == 0//
-                && whiteBalanceQM[1] == 1//
-                && whiteBalanceQM[2] == 0//
-                && whiteBalanceQM[3] == 1)//
-                ;
+              && blackPoint == 0//
+              && midPoint == 0.5//
+              && brightness == 0//
+              && exposure == 0//
+              && contrast == 0//
+              && saturation == 0.5//
+              && definition == 0//
+              && highlights == 0//
+              && shadows == 0//
+              && sharpness == 0//
+              && denoise == 0//
+              && (!whiteBalanceTTEnabled
+              || temperature == 0//
+              && tint == 0)//
+              && (!whiteBalanceQMEnabled
+              || whiteBalanceQM[0] == 0//
+              && whiteBalanceQM[1] == 1//
+              && whiteBalanceQM[2] == 0//
+              && whiteBalanceQM[3] == 1)//
+              ;
     }
 }

@@ -22,9 +22,9 @@ import ru.sbtqa.monte.media.avi.AVIBMPDIB;
 
 /**
  * Reads an image in the Motion JPEG (MJPG) format.
- * <p>
+ * 
  * . This class can read Motion JPEG files with omitted Huffmann table.
- * <p>
+ * 
  * For more information see: Microsoft Windows Bitmap Format. Multimedia
  * Technical Note: JPEG DIB Format. (c) 1993 Microsoft Corporation. All rights
  * reserved. <a

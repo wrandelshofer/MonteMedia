@@ -26,7 +26,7 @@ import org.monte.media.math.Rational;
 
 /**
  * Demonstrates how to trim a movie file without re-encoding the entire media
- * data. <p> This demo is more complex than {@code ConcatDemoMain}, because we
+ * data.  This demo is more complex than {@code ConcatDemoMain}, because we
  * need to re-encode the first video frame, if the movie is cut at a
  * non-keyframe.
  *
@@ -36,11 +36,11 @@ import org.monte.media.math.Rational;
 public class TrimDemoMain {
 
     /**
-     * Main function. <p> Takes one output file and one or more input files as
+     * Main function.  Takes one output file and one or more input files as
      * arguments. Concatenates all input files into the output file.
-     * <pre>
+     * 
      * TrimDemo [-o outputfile] [-i inputfile ...] [-s rational] [-e rational]
-     * </pre>
+     * 
      *
      * @param args the command line arguments
      */

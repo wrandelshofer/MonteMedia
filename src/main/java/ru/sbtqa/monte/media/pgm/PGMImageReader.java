@@ -28,8 +28,9 @@ import javax.imageio.stream.ImageInputStream;
 
 /**
  * Reads an image in the Netpbm grayscale image format (PGM).
- * <p>
- * See: <a href="http://netpbm.sourceforge.net/doc/pgm.html">PGM Format Specification</a>.
+ * 
+ * See: <a href="http://netpbm.sourceforge.net/doc/pgm.html">PGM Format
+ * Specification</a>.
  *
  * @author Werner Randelshofer
  * @version 1.1 2010-06-24 Skip comments in header.
@@ -37,15 +38,25 @@ import javax.imageio.stream.ImageInputStream;
  */
 public class PGMImageReader extends ImageReader {
 
-    /** All images have the same width.*/
+    /**
+     * All images have the same width.
+     */
     private int width = -1;
-    /** All images have the same height.*/
+    /**
+     * All images have the same height.
+     */
     private int height = -1;
-    /** All images have the same depth. Must be in the range [1,65535].*/
+    /**
+     * All images have the same depth. Must be in the range [1,65535].
+     */
     private int maxGray = -1;
-    /** Number of images. */
+    /**
+     * Number of images.
+     */
     private int numImages = -1;
-    /** Start of image data. */
+    /**
+     * Start of image data.
+     */
     private long dataOffset = -1;
 
     public PGMImageReader(PGMImageReaderSpi originatingProvider) {
@@ -85,10 +96,10 @@ public class PGMImageReader extends ImageReader {
         readHeader();
         LinkedList<ImageTypeSpecifier> l = new LinkedList<ImageTypeSpecifier>();
         ComponentColorModel ccm = new ComponentColorModel(//
-                new ICC_ColorSpace(ICC_Profile.getInstance(ColorSpace.CS_GRAY)),
-                new int[]{maxGray > 255 ? 16 : 8},//
-                false, false, Transparency.OPAQUE,//
-                (maxGray > 255) ? DataBuffer.TYPE_SHORT : DataBuffer.TYPE_BYTE);
+              new ICC_ColorSpace(ICC_Profile.getInstance(ColorSpace.CS_GRAY)),
+              new int[]{maxGray > 255 ? 16 : 8},//
+              false, false, Transparency.OPAQUE,//
+              (maxGray > 255) ? DataBuffer.TYPE_SHORT : DataBuffer.TYPE_BYTE);
         l.add(new ImageTypeSpecifier(ccm, ccm.createCompatibleSampleModel(width, height)));
         return l.iterator();
     }
@@ -105,7 +116,7 @@ public class PGMImageReader extends ImageReader {
 
     @Override
     public BufferedImage read(int imageIndex, ImageReadParam param)
-            throws IOException {
+          throws IOException {
         readHeader();
 
         if (imageIndex > 0) {
@@ -116,28 +127,28 @@ public class PGMImageReader extends ImageReader {
         in.seek(dataOffset + imageIndex * width * height * (maxGray > 255 ? 2 : 1));
 
         ComponentColorModel ccm = new ComponentColorModel(//
-                new ICC_ColorSpace(ICC_Profile.getInstance(ColorSpace.CS_GRAY)),
-                new int[]{maxGray > 255 ? 16 : 8},//
-                false, false, Transparency.OPAQUE,//
-                (maxGray > 255) ? DataBuffer.TYPE_SHORT : DataBuffer.TYPE_BYTE);
+              new ICC_ColorSpace(ICC_Profile.getInstance(ColorSpace.CS_GRAY)),
+              new int[]{maxGray > 255 ? 16 : 8},//
+              false, false, Transparency.OPAQUE,//
+              (maxGray > 255) ? DataBuffer.TYPE_SHORT : DataBuffer.TYPE_BYTE);
         SampleModel sm = ccm.createCompatibleSampleModel(width, height);
 
         BufferedImage img;
         if (maxGray > 255) {
             DataBufferShort db = new DataBufferShort(width * height);
             in.readFully(db.getData(), 0, width * height);
-            img = new BufferedImage(ccm, Raster.createWritableRaster(sm, db, new Point(0, 0)), false, new Hashtable<Object,Object>());
+            img = new BufferedImage(ccm, Raster.createWritableRaster(sm, db, new Point(0, 0)), false, new Hashtable<Object, Object>());
         } else {
             DataBufferByte db = new DataBufferByte(width * height);
             in.readFully(db.getData(), 0, width * height);
-            img = new BufferedImage(ccm, Raster.createWritableRaster(sm, db, new Point(0, 0)), false, new Hashtable<Object,Object>());
+            img = new BufferedImage(ccm, Raster.createWritableRaster(sm, db, new Point(0, 0)), false, new Hashtable<Object, Object>());
         }
 
         return img;
     }
 
-    /** Reads the PGM header.
-     * Does nothing if the header has already been loaded.
+    /**
+     * Reads the PGM header. Does nothing if the header has already been loaded.
      */
     private void readHeader() throws IOException {
         if (dataOffset == -1) {

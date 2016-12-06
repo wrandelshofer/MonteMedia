@@ -30,8 +30,10 @@ import ru.sbtqa.monte.media.tiff.TIFFTag;
 
 /**
  * Reads an image in the MultiPicture Object format (MPO).
- * <p>
- * See: <a href="http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf">MPO Format Specification</a>.
+ * 
+ * See:
+ * <a href="http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf">MPO
+ * Format Specification</a>.
  *
  * @author Werner Randelshofer
  * @version 1.1 2011-02-01 Improves performance of method getImageMetadata.
@@ -40,21 +42,37 @@ import ru.sbtqa.monte.media.tiff.TIFFTag;
 public class MPOImageReader extends ImageReader {
 
     private static DirectColorModel RGB = new DirectColorModel(24, 0xff0000, 0xff00, 0xff, 0x0);
-    /** Number of images. -1 if not known. */
+    /**
+     * Number of images. -1 if not known.
+     */
     private int numImages = -1;
-    /** Image offsets. null if not known. */
+    /**
+     * Image offsets. null if not known.
+     */
     private long[] imageOffsets;
-    /** Image lengths. null if not known. */
+    /**
+     * Image lengths. null if not known.
+     */
     private long[] imageLengths;
-    /** Thumbnail offsets. null if not known. */
+    /**
+     * Thumbnail offsets. null if not known.
+     */
     private long[] thumbOffsets;
-    /** Thumbnail lengths. null if not known. */
+    /**
+     * Thumbnail lengths. null if not known.
+     */
     private long[] thumbLengths;
-    /** Width of the images. */
+    /**
+     * Width of the images.
+     */
     private int[] width = null;
-    /** Height of the images. */
+    /**
+     * Height of the images.
+     */
     private int[] height = null;
-    /** Metadata of all images. */
+    /**
+     * Metadata of all images.
+     */
     private IIOMetadata[] imageMetadata;
     private EXIFReader er;
 
@@ -99,17 +117,17 @@ public class MPOImageReader extends ImageReader {
     public IIOMetadata getImageMetadata(int imageIndex) throws IOException {
         readHeader();
         if (imageIndex < 0 || imageIndex >= imageOffsets.length) {
-            throw new IndexOutOfBoundsException("illegal imageIndex="+imageIndex);
+            throw new IndexOutOfBoundsException("illegal imageIndex=" + imageIndex);
         }
         return imageMetadata[imageIndex];
     }
 
     @Override
     public BufferedImage read(int imageIndex, ImageReadParam param)
-            throws IOException {
+          throws IOException {
         readHeader();
         if (imageIndex < 0 || imageIndex >= imageOffsets.length) {
-            throw new IndexOutOfBoundsException("illegal imageIndex="+imageIndex);
+            throw new IndexOutOfBoundsException("illegal imageIndex=" + imageIndex);
         }
         ImageInputStream in = (ImageInputStream) getInput();
         SubImageInputStream sin = new SubImageInputStream(in, imageOffsets[imageIndex], imageLengths[imageIndex]);
@@ -129,8 +147,8 @@ public class MPOImageReader extends ImageReader {
         return super.getNumThumbnails(imageIndex);
     }
 
-    /** Reads the header.
-     * Does nothing if the header has already been loaded.
+    /**
+     * Reads the header. Does nothing if the header has already been loaded.
      */
     private void readHeader() throws IOException {
         if (numImages == -1) {

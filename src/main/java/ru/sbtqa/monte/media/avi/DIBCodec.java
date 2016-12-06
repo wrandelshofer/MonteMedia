@@ -20,31 +20,27 @@ import static ru.sbtqa.monte.media.VideoFormatKeys.*;
 import ru.sbtqa.monte.media.io.SeekableByteArrayOutputStream;
 
 /**
- * {@code DIBCodec} encodes a BufferedImage as a Microsoft Device Independent 
+ * {@code DIBCodec} encodes a BufferedImage as a Microsoft Device Independent
  * Bitmap (DIB) into a byte array.
- * <p>
+ * 
  * The DIB codec only works with the AVI file format. Other file formats, such
  * as QuickTime, use a different encoding for uncompressed video.
- * <p>
- * This codec currently only supports encoding from a {@code BufferedImage} into 
+ * 
+ * This codec currently only supports encoding from a {@code BufferedImage} into
  * the file format. Decoding support may be added in the future.
- * <p>
+ * 
  * This codec does not encode the color palette of an image. This must be done
  * separately.
- * <p>
- * The pixels of a frame are written row by row from bottom to top and from
- * the left to the right. 24-bit pixels are encoded as BGR.
- * <p>
+ * 
+ * The pixels of a frame are written row by row from bottom to top and from the
+ * left to the right. 24-bit pixels are encoded as BGR.
+ * 
  * Supported input formats:
- * <ul>
- * {@code Format} with {@code BufferedImage.class}, any width, any height,
+ *  {@code Format} with {@code BufferedImage.class}, any width, any height,
  * depth=4.
- * </ul>
  * Supported output formats:
- * <ul>
- * {@code Format} with {@code byte[].class}, same width and height as input
+ *  {@code Format} with {@code byte[].class}, same width and height as input
  * format, depth=4.
- * </ul>
  *
  * @author Werner Randelshofer
  * @version $Id: DIBCodec.java 363 2016-11-09 19:32:30Z werner $
@@ -53,32 +49,33 @@ public class DIBCodec extends AbstractVideoCodec {
 
     public DIBCodec() {
         super(new Format[]{
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
-                    EncodingKey, ENCODING_BUFFERED_IMAGE, FixedFrameRateKey, true), //
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-                    EncodingKey, ENCODING_AVI_DIB, DataClassKey, byte[].class,
-                    FixedFrameRateKey, true, DepthKey, 4), //
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-                    EncodingKey, ENCODING_AVI_DIB, DataClassKey, byte[].class,
-                    FixedFrameRateKey, true, DepthKey, 8), //
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-                    EncodingKey, ENCODING_AVI_DIB, DataClassKey, byte[].class,
-                    FixedFrameRateKey, true, DepthKey, 24), //
-                },
-                new Format[]{
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
-                    EncodingKey, ENCODING_BUFFERED_IMAGE, FixedFrameRateKey, true), //
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-                    EncodingKey, ENCODING_AVI_DIB, DataClassKey, byte[].class,
-                    FixedFrameRateKey, true, DepthKey, 4), //
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-                    EncodingKey, ENCODING_AVI_DIB, DataClassKey, byte[].class,
-                    FixedFrameRateKey, true, DepthKey, 8), //
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-                    EncodingKey, ENCODING_AVI_DIB, DataClassKey, byte[].class,
-                    FixedFrameRateKey, true, DepthKey, 24), //
-                });
+            new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
+            EncodingKey, ENCODING_BUFFERED_IMAGE, FixedFrameRateKey, true), //
+            new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+            EncodingKey, ENCODING_AVI_DIB, DataClassKey, byte[].class,
+            FixedFrameRateKey, true, DepthKey, 4), //
+            new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+            EncodingKey, ENCODING_AVI_DIB, DataClassKey, byte[].class,
+            FixedFrameRateKey, true, DepthKey, 8), //
+            new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+            EncodingKey, ENCODING_AVI_DIB, DataClassKey, byte[].class,
+            FixedFrameRateKey, true, DepthKey, 24), //
+        },
+              new Format[]{
+                  new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
+                        EncodingKey, ENCODING_BUFFERED_IMAGE, FixedFrameRateKey, true), //
+                  new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+                        EncodingKey, ENCODING_AVI_DIB, DataClassKey, byte[].class,
+                        FixedFrameRateKey, true, DepthKey, 4), //
+                  new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+                        EncodingKey, ENCODING_AVI_DIB, DataClassKey, byte[].class,
+                        FixedFrameRateKey, true, DepthKey, 8), //
+                  new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+                        EncodingKey, ENCODING_AVI_DIB, DataClassKey, byte[].class,
+                        FixedFrameRateKey, true, DepthKey, 24), //
+              });
     }
+
     @Override
     public Format setOutputFormat(Format f) {
         super.setOutputFormat(f);
@@ -132,8 +129,8 @@ public class DIBCodec extends AbstractVideoCodec {
             img = (BufferedImage) out.data;
             // Fixme: Handle sub-image
             if (img.getWidth() != outputFormat.get(WidthKey)
-                    || img.getHeight() != outputFormat.get(HeightKey)
-                    || img.getType() != imgType) {
+                  || img.getHeight() != outputFormat.get(HeightKey)
+                  || img.getType() != imgType) {
                 img = null;
             }
         }
@@ -154,7 +151,6 @@ public class DIBCodec extends AbstractVideoCodec {
                 readKey24((byte[]) in.data, in.offset, in.length, img);
                 break;
         }
-
 
         return CODEC_OK;
     }
@@ -245,7 +241,7 @@ public class DIBCodec extends AbstractVideoCodec {
         Rectangle r = raster.getBounds();
         r.x -= raster.getSampleModelTranslateX();
         r.y -= raster.getSampleModelTranslateY();
-        
+
         throw new UnsupportedOperationException("readKey4 not yet implemented");
     }
 
@@ -256,16 +252,16 @@ public class DIBCodec extends AbstractVideoCodec {
         Rectangle r = raster.getBounds();
         r.x -= raster.getSampleModelTranslateX();
         r.y -= raster.getSampleModelTranslateY();
-        
-        int h=img.getHeight();
-        int w=img.getWidth();
-        int i=offset;
-        int j=r.x+r.y*scanlineStride+(h-1)*scanlineStride;
-        byte[] out=buf.getData();
-        for (int y=0;y<h;y++) {
-            System.arraycopy(in,i,out,j,w);
-            i+=w;
-            j-=scanlineStride;
+
+        int h = img.getHeight();
+        int w = img.getWidth();
+        int i = offset;
+        int j = r.x + r.y * scanlineStride + (h - 1) * scanlineStride;
+        byte[] out = buf.getData();
+        for (int y = 0; y < h; y++) {
+            System.arraycopy(in, i, out, j, w);
+            i += w;
+            j -= scanlineStride;
         }
     }
 
@@ -276,35 +272,39 @@ public class DIBCodec extends AbstractVideoCodec {
         Rectangle r = raster.getBounds();
         r.x -= raster.getSampleModelTranslateX();
         r.y -= raster.getSampleModelTranslateY();
-        
-        int h=img.getHeight();
-        int w=img.getWidth();
-        int i=offset;
-        int j=r.x+r.y*scanlineStride+(h-1)*scanlineStride;
-        int[] out=buf.getData();
-        for (int y=0;y<h;y++) {
+
+        int h = img.getHeight();
+        int w = img.getWidth();
+        int i = offset;
+        int j = r.x + r.y * scanlineStride + (h - 1) * scanlineStride;
+        int[] out = buf.getData();
+        for (int y = 0; y < h; y++) {
 //            System.arraycopy(in,i,out,j,w);
-            for (int k=0;k<w;k++) {
-                out[j+k]=0xff000000//alpha
-                        |((in[i+k*3+1]&0xff)<<0)//blue
-                        |((in[i+k*3+2]&0xff)<<8)//green
-                        |((in[i+k+3]&0xff)<<16);//red
+            for (int k = 0; k < w; k++) {
+                out[j + k] = 0xff000000//alpha
+                      | ((in[i + k * 3 + 1] & 0xff) << 0)//blue
+                      | ((in[i + k * 3 + 2] & 0xff) << 8)//green
+                      | ((in[i + k + 3] & 0xff) << 16);//red
             }
-            i+=w;
-            j-=scanlineStride;
+            i += w;
+            j -= scanlineStride;
         }
     }
 
-    /** Encodes a 4-bit key frame.
+    /**
+     * Encodes a 4-bit key frame.
      *
      * @param out The output stream.
      * @param pixels The image data.
      * @param offset The offset to the first pixel in the data array.
+     * @param height TODO
      * @param width The width of the image in data elements.
-     * @param scanlineStride The number to append to offset to get to the next scanline.
+     * @param scanlineStride The number to append to offset to get to the next
+     * scanline.
+     * @throws java.io.IOException TODO
      */
     public void writeKey4(OutputStream out, byte[] pixels, int width, int height, int offset, int scanlineStride)
-            throws IOException {
+          throws IOException {
 
         byte[] bytes = new byte[width];
         for (int y = (height - 1) * scanlineStride; y >= 0; y -= scanlineStride) { // Upside down
@@ -316,32 +316,40 @@ public class DIBCodec extends AbstractVideoCodec {
 
     }
 
-    /** Encodes an 8-bit key frame.
+    /**
+     * Encodes an 8-bit key frame.
      *
      * @param out The output stream.
      * @param pixels The image data.
      * @param offset The offset to the first pixel in the data array.
+     * @param height TODO
      * @param width The width of the image in data elements.
-     * @param scanlineStride The number to append to offset to get to the next scanline.
+     * @param scanlineStride The number to append to offset to get to the next
+     * scanline.
+     * @throws java.io.IOException TODO
      */
     public void writeKey8(OutputStream out, byte[] pixels, int width, int height, int offset, int scanlineStride)
-            throws IOException {
+          throws IOException {
 
         for (int y = (height - 1) * scanlineStride; y >= 0; y -= scanlineStride) { // Upside down
             out.write(pixels, y + offset, width);
         }
     }
 
-    /** Encodes a 24-bit key frame.
+    /**
+     * Encodes a 24-bit key frame.
      *
      * @param out The output stream.
      * @param pixels The image data.
      * @param offset The offset to the first pixel in the data array.
+     * @param height TODO
      * @param width The width of the image in data elements.
-     * @param scanlineStride The number to append to offset to get to the next scanline.
+     * @param scanlineStride The number to append to offset to get to the next
+     * scanline.
+     * @throws java.io.IOException TODO
      */
     public void writeKey24(OutputStream out, int[] pixels, int width, int height, int offset, int scanlineStride)
-            throws IOException {
+          throws IOException {
         int w3 = width * 3;
         byte[] bytes = new byte[w3]; // holds a scanline of raw image data with 3 channels of 8 bit data
         for (int xy = (height - 1) * scanlineStride + offset; xy >= offset; xy -= scanlineStride) { // Upside down

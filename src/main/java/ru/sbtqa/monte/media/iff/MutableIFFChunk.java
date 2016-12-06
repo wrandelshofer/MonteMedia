@@ -9,9 +9,9 @@ import ru.sbtqa.monte.media.gui.tree.TreeNodeImpl;
 
 /**
  * MutableIFFChunk.
- * <p>
+ * 
  * Syntax of an IFF Chunk:
- * <pre>
+ * 
  * Chunk        ::= ID #{ UBYTE* } [0]
  *
  * Property     ::= Chunk
@@ -25,28 +25,38 @@ import ru.sbtqa.monte.media.gui.tree.TreeNodeImpl;
  *
  * LIST         ::= "LIST" #{ ContentsType PROP* {FORM | LIST | CAT)* }
  * PROP         ::= "PROP" #{ FormType Property* }
- * </pre>
- * In this extended regular expression notation the token "#" represents
+ *  In this extended regular expression notation the token "#" represents
  * a count of the following braced data types. Literal items are shown in
  * "quotes", [square bracketed items] are optional, and "*" means 0 or more
- *instances. A sometimes-needed pad is shown as "[0]".
+ * instances. A sometimes-needed pad is shown as "[0]".
  *
  *
  * @author Werner Randelshofer
  * @version $Id: MutableIFFChunk.java 364 2016-11-09 19:54:25Z werner $
  */
 public class MutableIFFChunk extends TreeNodeImpl<MutableIFFChunk> {
+
     private final static long serialVersionUID = 1L;
 
-    /** ID for FORMGroupExpression. */
+    /**
+     * ID for FORMGroupExpression.
+     */
     public final static int ID_FORM = 0x464f524d;
-    /** ID for CATGroupExpression. */
+    /**
+     * ID for CATGroupExpression.
+     */
     public final static int ID_CAT = 0x43415420;
-    /** ID for CATGroupExpression. */
+    /**
+     * ID for CATGroupExpression.
+     */
     public final static int ID_LIST = 0x4c495354;
-    /** ID for PROPGroupExpression. */
+    /**
+     * ID for PROPGroupExpression.
+     */
     public final static int ID_PROP = 0x50524f50;
-    /** ID for unlabeled CATGroupExpressions. */
+    /**
+     * ID for unlabeled CATGroupExpressions.
+     */
     public final static int ID_FILLER = 0x20202020;
     /**
      * The type of an IFF Chunk.
@@ -61,29 +71,51 @@ public class MutableIFFChunk extends TreeNodeImpl<MutableIFFChunk> {
      */
     private byte[] data;
 
-    /** Creates a new instance. */
+    /**
+     * Creates a new instance.
+     */
     public MutableIFFChunk() {
     }
 
-    /** Creates a new instance. */
+    /**
+     * Creates a new instance.
+     *
+     * @param id TODO
+     * @param type TODO
+     */
     public MutableIFFChunk(int id, int type) {
         this.id = id;
         this.type = type;
     }
 
-    /** Creates a new instance. */
+    /**
+     * Creates a new instance.
+     *
+     * @param id TODO
+     * @param data TODO
+     */
     public MutableIFFChunk(int id, byte[] data) {
         this.id = id;
         this.data = data;
     }
 
-    /** Creates a new instance. */
+    /**
+     * Creates a new instance.
+     *
+     * @param id TODO
+     * @param type TODO
+     */
     public MutableIFFChunk(String id, String type) {
         this.id = stringToId(id);
         this.type = stringToId(type);
     }
 
-    /** Creates a new instance. */
+    /**
+     * Creates a new instance.
+     *
+     * @param id TODO
+     * @param data TODO
+     */
     public MutableIFFChunk(String id, byte[] data) {
         this.id = stringToId(id);
         this.data = data;
@@ -128,12 +160,13 @@ public class MutableIFFChunk extends TreeNodeImpl<MutableIFFChunk> {
             return length;
         }
     }
-/*
+
+    /*
     @SuppressWarnings("unchecked")
     public Vector<MutableIFFChunk> childChunks() {
         return (children == null) ? new Vector<MutableIFFChunk>(0) : new Vector<MutableIFFChunk>(children);
     }
-*/
+     */
     public String dump() {
         return dump(0);
 
@@ -188,8 +221,7 @@ public class MutableIFFChunk extends TreeNodeImpl<MutableIFFChunk> {
     }
 
     /**
-     * Converts the first four letters of the
-     * String into an IFF Identifier.
+     * Converts the first four letters of the String into an IFF Identifier.
      *
      * @param	aString String to be converted.
      * @return	ID representation of the String.
@@ -197,16 +229,16 @@ public class MutableIFFChunk extends TreeNodeImpl<MutableIFFChunk> {
     public static int stringToId(String aString) {
         byte[] bytes = aString.getBytes();
 
-        return ((int) bytes[0]) << 24 |
-                ((int) bytes[1]) << 16 |
-                ((int) bytes[2]) << 8 |
-                ((int) bytes[3]) << 0;
+        return ((int) bytes[0]) << 24
+              | ((int) bytes[1]) << 16
+              | ((int) bytes[2]) << 8
+              | ((int) bytes[3]) << 0;
     }
 
     public void read(File f) throws IOException {
         MC68000InputStream in = new MC68000InputStream(
-                new BufferedInputStream(
-                new FileInputStream(f)));
+              new BufferedInputStream(
+                    new FileInputStream(f)));
         try {
             read(in);
         } finally {
@@ -244,8 +276,8 @@ public class MutableIFFChunk extends TreeNodeImpl<MutableIFFChunk> {
 
     public void Write(File f) throws IOException {
         MC68000OutputStream out = new MC68000OutputStream(
-                new BufferedOutputStream(
-                new FileOutputStream(f)));
+              new BufferedOutputStream(
+                    new FileOutputStream(f)));
         try {
             write(out);
         } finally {

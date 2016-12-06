@@ -6,14 +6,14 @@ package org.monte.media.ilbm;
 
 /**
  * Implements CRNG and CCRT color cycling for an IFF ILBM image.
- * <p>
+ * 
  * This class supports CRNG and CCRT color cycling as published in
  *   AMIGA ROM Kernel Reference Manual: Devices,
  *   Third Edition,
  *   Addison-Wesley, Reading
  *   ISBN 0-201-56775-X
  *
- * <pre>
+ * 
  * //ILBM CRNG Color range cycling
  * //--------------------------------------------
  *
@@ -29,9 +29,9 @@ package org.monte.media.ilbm;
  *  WORD set crngActive flags;     // bit0 set = active, bit 1 set = reverse
  *  UBYTE low; UBYTE high;         // lower and upper color registers selected
  *  } ilbmColorRegisterRangeChunk;
- * </pre>
+ * 
  *
- * <pre>
+ * 
  * ILBM CCRT Color cycling range and timing
  * --------------------------------------------
  * /
@@ -47,7 +47,7 @@ package org.monte.media.ilbm;
  * WORD  pad;        /* future exp - store 0 here * /
  * } ilbmColorCyclingAndTimingChunk;
  *
- * </pre>
+ * 
  *
  * @author Werner Randelshofer
  * @version 1.1 2010-08-03 Added support for blended color cycles.

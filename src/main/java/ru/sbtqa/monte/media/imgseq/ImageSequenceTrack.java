@@ -2,7 +2,6 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-
 package ru.sbtqa.monte.media.imgseq;
 
 import java.io.File;
@@ -22,11 +21,10 @@ import ru.sbtqa.monte.media.math.Rational;
  */
 public class ImageSequenceTrack implements Track {
 
-
     private File[] files;
     private int position;
-    private long duration=1;
-    private long timeScale=30;
+    private long duration = 1;
+    private long timeScale = 30;
 
     public ImageSequenceTrack(File dir, FileFilter filter) throws IOException {
         files = dir.listFiles(filter);
@@ -40,16 +38,18 @@ public class ImageSequenceTrack implements Track {
     public long getFileDuration() {
         return duration;
     }
+
     public void setFileDuration(long newValue) {
-        this.duration=newValue;
+        this.duration = newValue;
     }
+
     public long getTimeScale() {
         return timeScale;
     }
-    public void setTimeScale(long newValue) {
-        this.timeScale=newValue;
-    }
 
+    public void setTimeScale(long newValue) {
+        this.timeScale = newValue;
+    }
 
     @Override
     public long getSampleCount() {
@@ -58,7 +58,7 @@ public class ImageSequenceTrack implements Track {
 
     @Override
     public void setPosition(long pos) {
-        this.position=(int)pos;
+        this.position = (int) pos;
     }
 
     @Override
@@ -68,13 +68,13 @@ public class ImageSequenceTrack implements Track {
 
     @Override
     public void read(Buffer buf) throws IOException {
-        if (position>=files.length) {
+        if (position >= files.length) {
             buf.setFlagsTo(DISCARD);
             return;
         }
         buf.clearFlags();
-        buf.data=files[position];
-        buf.sampleDuration=new Rational(duration,timeScale);
+        buf.data = files[position];
+        buf.sampleDuration = new Rational(duration, timeScale);
         position++;
     }
 }

@@ -26,14 +26,15 @@ import static ru.sbtqa.monte.media.gui.plaf.CustomButtonUI.createUI;
 import ru.sbtqa.monte.media.image.Images;
 
 /**
- * The MovieControlAqua contains an audio on/off button, a start/stop button,
- * a slider, a forward and a rewind button, and a color cycling on/off button.
+ * The MovieControlAqua contains an audio on/off button, a start/stop button, a
+ * slider, a forward and a rewind button, and a color cycling on/off button.
  *
- * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
  * @version $Id: JMovieControlAqua.java 364 2016-11-09 19:54:25Z werner $
  */
 public class JMovieControlAqua extends JComponent
-        implements MovieControl, ActionListener, ChangeListener, PropertyChangeListener {
+      implements MovieControl, ActionListener, ChangeListener, PropertyChangeListener {
+
     private final static long serialVersionUID = 1L;
 
     private Player player;
@@ -84,7 +85,6 @@ public class JMovieControlAqua extends JComponent
         //c.gridy = 0;
         gridbag.setConstraints(audioButton, c);
         add(audioButton);
-
 
         startButton = new JToggleButton();
         startButton.setToolTipText(labels.getString("play.toolTipText"));
@@ -146,22 +146,22 @@ public class JMovieControlAqua extends JComponent
         add(spacer);
 
         Border border = new BackdropBorder(
-                new ButtonStateBorder(
-                new ImageBevelBorder(
-                Images.createImage(getClass(), "images/Player.border.png"),
-                new Insets(1, 1, 1, 1), new Insets(0, 4, 1, 4)),
-                new ImageBevelBorder(
-                Images.createImage(getClass(), "images/Player.borderP.png"),
-                new Insets(1, 1, 1, 1), new Insets(0, 4, 1, 4))));
+              new ButtonStateBorder(
+                    new ImageBevelBorder(
+                          Images.createImage(getClass(), "images/Player.border.png"),
+                          new Insets(1, 1, 1, 1), new Insets(0, 4, 1, 4)),
+                    new ImageBevelBorder(
+                          Images.createImage(getClass(), "images/Player.borderP.png"),
+                          new Insets(1, 1, 1, 1), new Insets(0, 4, 1, 4))));
 
         Border westBorder = new BackdropBorder(
-                new ButtonStateBorder(
-                new ImageBevelBorder(
-                Images.createImage(getClass(), "images/Player.borderWest.png"),
-                new Insets(1, 1, 1, 0), new Insets(0, 4, 1, 4)),
-                new ImageBevelBorder(
-                Images.createImage(getClass(), "images/Player.borderWestP.png"),
-                new Insets(1, 1, 1, 0), new Insets(0, 4, 1, 4))));
+              new ButtonStateBorder(
+                    new ImageBevelBorder(
+                          Images.createImage(getClass(), "images/Player.borderWest.png"),
+                          new Insets(1, 1, 1, 0), new Insets(0, 4, 1, 4)),
+                    new ImageBevelBorder(
+                          Images.createImage(getClass(), "images/Player.borderWestP.png"),
+                          new Insets(1, 1, 1, 0), new Insets(0, 4, 1, 4))));
 
         startButton.setBorder(westBorder);
         colorCyclingButton.setBorder(westBorder);
@@ -208,7 +208,7 @@ public class JMovieControlAqua extends JComponent
         slider.setModel(boundedRangeModel);
         if (player != null) {
             if (player.getState() >= REALIZED
-                    && boundedRangeModel != null && boundedRangeModel.getMaximum() == 0) {
+                  && boundedRangeModel != null && boundedRangeModel.getMaximum() == 0) {
                 setPlayerControlsVisible(false);
             }
             slider.setProgressModel(player.getCachingModel());
@@ -317,12 +317,15 @@ public class JMovieControlAqua extends JComponent
     }
 
     /**
-     * Listener for scrolling events initiated in the
-     * forward and backward buttons.
+     * Listener for scrolling events initiated in the forward and backward
+     * buttons.
      */
     protected class ScrollHandler extends MouseAdapter implements ActionListener {
 
-        /** The scroll direction. 1 for forward scrolling, -1 for backward scrolling. */
+        /**
+         * The scroll direction. 1 for forward scrolling, -1 for backward
+         * scrolling.
+         */
         private JButton button;
 
         public ScrollHandler() {
@@ -352,4 +355,3 @@ public class JMovieControlAqua extends JComponent
         }
     }
 }
-

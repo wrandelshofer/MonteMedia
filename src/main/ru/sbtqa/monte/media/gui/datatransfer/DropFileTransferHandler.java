@@ -139,12 +139,12 @@ public class DropFileTransferHandler extends TransferHandler {
     /**
      * Try to find a flavor that can be used to import a Transferable.
      * The set of usable flavors are tried in the following order:
-     * <ol>
-     *     <li>First, an attempt to find a text/plain flavor is made.
-     *     <li>Second, an attempt to find a flavor representing a String reference
+     * 
+     *     First, an attempt to find a text/plain flavor is made.
+     *     Second, an attempt to find a flavor representing a String reference
      *         in the same VM is made.
-     *     <li>Lastly, DataFlavor.stringFlavor is searched for.
-     * </ol>
+     *     Lastly, DataFlavor.stringFlavor is searched for.
+     * 
      */
     protected DataFlavor getImportFlavor(DataFlavor[] flavors, JComponent c) {
         DataFlavor plainFlavor = null;

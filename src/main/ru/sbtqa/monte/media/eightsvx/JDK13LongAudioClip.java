@@ -99,16 +99,16 @@ public class JDK13LongAudioClip implements LoopableAudioClip, Runnable {
      * continue to the loop's end point, then loop back to the loop start point
      * <code>count</code> times, and finally continue playback to the end of
      * the clip.
-     * <p>
+     * 
      * If the current position when this method is invoked is greater than the
      * loop end point, playback simply continues to the
      * end of the clip without looping.
-     * <p>
+     * 
      * A <code>count</code> value of 0 indicates that any current looping should
      * cease and playback should continue to the end of the clip.  The behavior
      * is undefined when this method is invoked with any other value during a
      * loop operation.
-     * <p>
+     * 
      * If playback is stopped during looping, the current loop status is
      * cleared; the behavior of subsequent loop and start requests is not
      * affected by an interrupted loop operation.
@@ -174,7 +174,7 @@ public class JDK13LongAudioClip implements LoopableAudioClip, Runnable {
     /** Sets the media position in sample frames.  The position is zero-based;
      * the first frame is frame number zero.  When the clip begins playing the
      * next time, it will start by playing the frame at this position.
-     * <p>
+     * 
      * To obtain the current position in sample frames, use the
      * <code>{@link DataLine#getFramePosition getFramePosition}</code>
      * method of <code>DataLine</code>.
@@ -276,7 +276,7 @@ public class JDK13LongAudioClip implements LoopableAudioClip, Runnable {
      * to create a thread, starting the thread causes the object's
      * <code>run</code> method to be called in that separately executing
      * thread.
-     * <p>
+     * 
      * The general contract of the method <code>run</code> is that it may
      * take any action whatsoever.
      *

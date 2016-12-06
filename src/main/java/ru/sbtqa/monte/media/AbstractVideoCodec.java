@@ -31,7 +31,13 @@ public abstract class AbstractVideoCodec extends AbstractCodec {
         super(supportedInputFormats, supportedOutputFormats);
     }
 
-    /** Gets 8-bit indexed pixels from a buffer. Returns null if conversion failed. */
+    /**
+     * Gets 8-bit indexed pixels from a buffer. Returns null if conversion
+     * failed.
+     *
+     * @param buf TODO
+     * @return TODO
+     */
     protected byte[] getIndexed8(Buffer buf) {
         if (buf.data instanceof byte[]) {
             return (byte[]) buf.data;
@@ -45,7 +51,12 @@ public abstract class AbstractVideoCodec extends AbstractCodec {
         return null;
     }
 
-    /** Gets 15-bit RGB pixels from a buffer. Returns null if conversion failed. */
+    /**
+     * Gets 15-bit RGB pixels from a buffer. Returns null if conversion failed.
+     *
+     * @param buf TODO
+     * @return TODO
+     */
     protected short[] getRGB15(Buffer buf) {
         if (buf.data instanceof int[]) {
             return (short[]) buf.data;
@@ -74,7 +85,14 @@ public abstract class AbstractVideoCodec extends AbstractCodec {
         }
         return null;
     }
-    /** Gets 16-bit RGB-5-6-5 pixels from a buffer. Returns null if conversion failed. */
+
+    /**
+     * Gets 16-bit RGB-5-6-5 pixels from a buffer. Returns null if conversion
+     * failed.
+     *
+     * @param buf TODO
+     * @return TODO
+     */
     protected short[] getRGB16(Buffer buf) {
         if (buf.data instanceof int[]) {
             return (short[]) buf.data;
@@ -104,8 +122,12 @@ public abstract class AbstractVideoCodec extends AbstractCodec {
         return null;
     }
 
-
-    /** Gets 24-bit RGB pixels from a buffer. Returns null if conversion failed. */
+    /**
+     * Gets 24-bit RGB pixels from a buffer. Returns null if conversion failed.
+     *
+     * @param buf TODO
+     * @return TODO
+     */
     protected int[] getRGB24(Buffer buf) {
         if (buf.data instanceof int[]) {
             return (int[]) buf.data;
@@ -121,13 +143,18 @@ public abstract class AbstractVideoCodec extends AbstractCodec {
                 }
             }
             return image.getRGB(0, 0, //
-                    outputFormat.get(WidthKey), outputFormat.get(HeightKey), //
-                    null, 0, outputFormat.get(WidthKey));
+                  outputFormat.get(WidthKey), outputFormat.get(HeightKey), //
+                  null, 0, outputFormat.get(WidthKey));
         }
         return null;
     }
 
-    /** Gets 32-bit ARGB pixels from a buffer. Returns null if conversion failed. */
+    /**
+     * Gets 32-bit ARGB pixels from a buffer. Returns null if conversion failed.
+     *
+     * @param buf TODO
+     * @return TODO
+     */
     protected int[] getARGB32(Buffer buf) {
         if (buf.data instanceof int[]) {
             return (int[]) buf.data;
@@ -143,13 +170,18 @@ public abstract class AbstractVideoCodec extends AbstractCodec {
                 }
             }
             return image.getRGB(0, 0, //
-                    outputFormat.get(WidthKey), outputFormat.get(HeightKey), //
-                    null, 0, outputFormat.get(WidthKey));
+                  outputFormat.get(WidthKey), outputFormat.get(HeightKey), //
+                  null, 0, outputFormat.get(WidthKey));
         }
         return null;
     }
 
-    /** Gets a buffered image from a buffer. Returns null if conversion failed. */
+    /**
+     * Gets a buffered image from a buffer. Returns null if conversion failed.
+     *
+     * @param buf TODO
+     * @return TODO
+     */
     protected BufferedImage getBufferedImage(Buffer buf) {
         if (buf.data instanceof BufferedImage) {
             return (BufferedImage) buf.data;
@@ -210,7 +242,12 @@ public abstract class AbstractVideoCodec extends AbstractCodec {
         out.write(b, 0, len * 3);
     }
 
-    /** Copies a buffered image. */
+    /**
+     * Copies a buffered image.
+     *
+     * @param img TODO
+     * @return TODO
+     */
     protected static BufferedImage copyImage(BufferedImage img) {
         ColorModel cm = img.getColorModel();
         boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();

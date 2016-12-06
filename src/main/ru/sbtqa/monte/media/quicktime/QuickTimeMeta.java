@@ -156,11 +156,11 @@ public class QuickTimeMeta extends AbstractMovie {
     /**
      * The transformation matrix [a,b,u;c,d,v;x,y,w] for mapping 2d points of
      * this movie to the screen.
-     * <pre>
+     * 
      *           [a b u;
      * [x y 1] *  c d v; = [x' y' 1]
      *            x y w]
-     * </pre>
+     * 
      */
     protected double[] matrix;
     /**
@@ -398,7 +398,7 @@ public class QuickTimeMeta extends AbstractMovie {
         /**
          * Returns true, if the samples was added to the group. If false is
          * returned, the sample must be added to a new group.
-         * <p>
+         * 
          * A sample can only be added to a group, if the capacity of the group
          * is not exceeded.
          */
@@ -414,7 +414,7 @@ public class QuickTimeMeta extends AbstractMovie {
         /**
          * Returns true, if the chunk was added to the group. If false is
          * returned, the chunk must be added to a new group.
-         * <p>
+         * 
          * A chunk can only be added to a group, if the capacity of the group is
          * not exceeded.
          */
@@ -463,9 +463,9 @@ public class QuickTimeMeta extends AbstractMovie {
         /**
          * Creates a new sample.
          *
-         * @param duration
-         * @param offset
-         * @param length
+         * @param duration TODO
+         * @param offset TODO
+         * @param length TODO
          */
         public Sample(long duration, long offset, long length) {
             this.duration = duration;
@@ -494,7 +494,7 @@ public class QuickTimeMeta extends AbstractMovie {
         /**
          * Returns true, if the sample was added to the group. If false is
          * returned, the sample must be added to a new group.
-         * <p>
+         * 
          * A sample can only be added to a TimeToSampleGroup, if it has the same
          * duration as previously added samples, and if the capacity of the
          * group is not exceeded.
@@ -554,7 +554,7 @@ public class QuickTimeMeta extends AbstractMovie {
         /**
          * Returns true, if the sample was added to the group. If false is
          * returned, the sample must be added to a new group.
-         * <p>
+         * 
          * A sample can only be added to a SampleSizeGroup, if it has the same
          * size as previously added samples, and if the capacity of the group is
          * not exceeded.
@@ -616,7 +616,7 @@ public class QuickTimeMeta extends AbstractMovie {
         /**
          * Returns true, if the sample was added to the chunk. If false is
          * returned, the sample must be added to a new chunk.
-         * <p>
+         * 
          * A sample can only be added to a chunk, if it has the same sample
          * description Id as previously added samples, if the capacity of the
          * chunk is not exceeded and if the sample offset is adjacent to the
@@ -666,7 +666,7 @@ public class QuickTimeMeta extends AbstractMovie {
         private final static int TrackInPreview = 0x4; // track in preview
         private final static int TrackInPoster = 0x8; // track in posterTrackEnable = 0x1, // enabled track
         /**
-         * <pre>
+         * 
          * // Enumeration for track header flags
          * set {
          * TrackEnable = 0x1, // enabled track
@@ -674,7 +674,7 @@ public class QuickTimeMeta extends AbstractMovie {
          * TrackInPreview = 0x4, // track in preview
          * TrackInPoster = 0x8 // track in poster
          * } TrackHeaderFlags;
-         * </pre>
+         * 
          */
         protected int headerFlags = TrackEnable | TrackInMovie | TrackInPreview | TrackInPoster;
         /**
@@ -1119,7 +1119,7 @@ public class QuickTimeMeta extends AbstractMovie {
      * build up a track for a movie. The edits themselves are stored in an edit
      * list table, which consists of time offset and duration values for each
      * segment.
-     * <p>
+     * 
      * In the absence of an edit list, the presentation of the track starts
      * immediately. An empty edit is used to offset the start time of a track.
      */
@@ -1171,7 +1171,7 @@ public class QuickTimeMeta extends AbstractMovie {
 
         /**
          * Creates an edit.
-         * <p>
+         * 
          * Use this constructor only if you want to compute the fixed point
          * media rate by yourself.
          *
@@ -1215,12 +1215,12 @@ public class QuickTimeMeta extends AbstractMovie {
         protected String referenceType;
         private final static int DataRefSelfReference = 0x1; //
         /**
-         * <pre>
+         * 
          * // Enumeration for reference flags
          * set {
          * DataRefSelfReference = 0x1, // data is in same file
          * } TrackHeaderFlags;
-         * </pre>
+         * 
          */
         protected int referenceFlags = DataRefSelfReference;
         /**

@@ -6,11 +6,10 @@
  * For details see accompanying license terms.
  */
 /**
- * Provides abstractions for image sequences represented by folders 
+ * Provides abstractions for image sequences represented by folders
  * with image files.
- * 
+ *
  * @author Werner Randelshofer
  * @version $Id: package-info.java 364 2016-11-09 19:54:25Z werner $
  */
 package ru.sbtqa.monte.media.imgseq;
-

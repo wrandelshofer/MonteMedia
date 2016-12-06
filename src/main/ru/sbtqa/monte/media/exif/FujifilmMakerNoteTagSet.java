@@ -9,9 +9,9 @@ import static org.monte.media.tiff.TIFFTag.*;
 
 /**
  * Enumeration of Fujifilm MakerNote tags.
- * <p>
+ * 
  * Sources:
- * <p>
+ * 
  * <a href="http://www.exiv2.org/tags-fujifilm.html">http://www.exiv2.org/tags-fujifilm.html</a>
  * <br>
  * <a href="http://park2.wakwak.com/%7Etsuruzoh/Computer/Digicams/exif-e.html#APP4">http://park2.wakwak.com/%7Etsuruzoh/Computer/Digicams/exif-e.html#APP4</a>

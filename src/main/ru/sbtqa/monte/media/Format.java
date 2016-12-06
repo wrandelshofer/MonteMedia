@@ -141,12 +141,12 @@ public class Format {
 
     /**
      * Creates a new format which contains all properties from this format and
-     * additional properties from that format. <p> If a property is specified in
+     * additional properties from that format.  If a property is specified in
      * both formats, then the property value from this format is used. It
-     * overwrites that format. <p> If one of the format has more properties than
+     * overwrites that format.  If one of the format has more properties than
      * the other, then the new format is more specific than this format.
      *
-     * @param that
+     * @param that TODO
      * @return That format with properties overwritten by this format.
      */
     public Format append(Format that) {
@@ -161,9 +161,9 @@ public class Format {
 
     /**
      * Creates a new format which contains all properties from this format and
-     * additional properties listed. <p> If a property is specified in both
+     * additional properties listed.  If a property is specified in both
      * formats, then the property value from this format is used. It overwrites
-     * that format. <p> If one of the format has more properties than the other,
+     * that format.  If one of the format has more properties than the other,
      * then the new format is more specific than this format.
      *
      * @param p The properties must be given as key value pairs.
@@ -184,12 +184,12 @@ public class Format {
     /**
      * Creates a new format which contains all properties from the specified
      * format and additional properties from this format. 
-     * <p> If a property is specified in both formats, then the property value
+     *  If a property is specified in both formats, then the property value
      * from this format is used. It overwrites that format. 
-     * <p> If one of the format has more properties than the other, then the new
+     *  If one of the format has more properties than the other, then the new
      * format is more specific than this format.
      *
-     * @param that
+     * @param that TODO
      * @return That format with properties overwritten by this format.
      */
     public Format prepend(Format that) {
@@ -205,9 +205,9 @@ public class Format {
     /**
      * Creates a new format which contains all specified properties and 
      * additional properties from this format. 
-     * <p> If a property is specified in both formats, then the property value
+     *  If a property is specified in both formats, then the property value
      * from this format is used. It overwrites that format. 
-     * <p> If one of the format has more properties than the other, then the new
+     *  If one of the format has more properties than the other, then the new
      * format is more specific than this format.
      *
      * @param p The properties must be given as key value pairs.
@@ -230,7 +230,7 @@ public class Format {
         return new Format(m,false);
     }
     /**
-     * Creates a new format which only has the specified keys (or less). <p> If
+     * Creates a new format which only has the specified keys (or less).  If
      * the keys are reduced, then the new format is less specific than this
      * format.
      */
@@ -245,7 +245,7 @@ public class Format {
     }
 
     /**
-     * Creates a new format without the specified keys. <p> If the keys are
+     * Creates a new format without the specified keys.  If the keys are
      * reduced, then the new format is less specific than this format.
      */
     public Format removeKeys(FormatKey<?>... keys) {

@@ -13,8 +13,10 @@ import javax.imageio.stream.ImageInputStream;
 /**
  * ImageIO service provider interface for images in the MultiPicture Object
  * format (MPO).
- * <p>
- * See: <a href="http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf">MPO Format Specification</a>.
+ * 
+ * See:
+ * <a href="http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf">MPO
+ * Format Specification</a>.
  *
  * @author Werner Randelshofer
  * @version 1.0 2010-01-05 Created.
@@ -23,24 +25,24 @@ public class MPOImageReaderSpi extends ImageReaderSpi {
 
     public MPOImageReaderSpi() {
         super("Werner Randelshofer",//vendor name
-                "1.0",//version
-                new String[]{"MPO"},//names
-                new String[]{"mpo"},//suffixes,
-                new String[]{"image/mpo"},// MIMETypes,
-                "org.monte.media.mpo.MPOImageReader",// readerClassName,
-                new Class<?>[]{ImageInputStream.class},// inputTypes,
-                null,// writerSpiNames,
-                false,// supportsStandardStreamMetadataFormat,
-                null,// nativeStreamMetadataFormatName,
-                null,// nativeStreamMetadataFormatClassName,
-                null,// extraStreamMetadataFormatNames,
-                null,// extraStreamMetadataFormatClassNames,
-                false,// supportsStandardImageMetadataFormat,
-                 "com_sun_media_imageio_plugins_tiff_image_1.0",// nativeImageMetadataFormatName,
-                null,// nativeImageMetadataFormatClassName,
-                null,// extraImageMetadataFormatNames,
-                null// extraImageMetadataFormatClassNames
-                );
+              "1.0",//version
+              new String[]{"MPO"},//names
+              new String[]{"mpo"},//suffixes,
+              new String[]{"image/mpo"},// MIMETypes,
+              "org.monte.media.mpo.MPOImageReader",// readerClassName,
+              new Class<?>[]{ImageInputStream.class},// inputTypes,
+              null,// writerSpiNames,
+              false,// supportsStandardStreamMetadataFormat,
+              null,// nativeStreamMetadataFormatName,
+              null,// nativeStreamMetadataFormatClassName,
+              null,// extraStreamMetadataFormatNames,
+              null,// extraStreamMetadataFormatClassNames,
+              false,// supportsStandardImageMetadataFormat,
+              "com_sun_media_imageio_plugins_tiff_image_1.0",// nativeImageMetadataFormatName,
+              null,// nativeImageMetadataFormatClassName,
+              null,// extraImageMetadataFormatNames,
+              null// extraImageMetadataFormatClassNames
+        );
     }
 
     @Override

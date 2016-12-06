@@ -71,6 +71,7 @@ import ru.sbtqa.monte.media.math.Rational;
  * $
  */
 public class ScreenRecorderCompactMain extends javax.swing.JFrame {
+
     private final static long serialVersionUID = 1L;
 
     private void setSelectedIndex(ButtonGroup group, int index) {
@@ -110,7 +111,6 @@ public class ScreenRecorderCompactMain extends javax.swing.JFrame {
         Preferences prefs = Preferences.userNodeForPackage(ScreenRecorderCompactMain.class);
 
         audioSource = prefs.getInt("ScreenRecording.audioSource", 0);
-
 
         Vector<AudioSourceItem> items = getAudioSources();
         audioSource = max(0, min(items.size() - 1, audioSource));
@@ -267,16 +267,17 @@ public class ScreenRecorderCompactMain extends javax.swing.JFrame {
      */
     public ScreenRecorderCompactMain() {
         setContentPane(new JPanel() {
-    private final static long serialVersionUID = 1L;
+            private final static long serialVersionUID = 1L;
+
             @Override
             public void paintComponent(Graphics gr) {
                 Graphics2D g = (Graphics2D) gr;
                 g.setPaint(new LinearGradientPaint(0, 0, 0, getHeight(),
-                        new float[]{0, 0.499f, 0.5f, 1.0f},
-                        new Color[]{new Color(0x404040),
-                            new Color(0x2f2f2f),
-                            new Color(0x1e1e1e),
-                            new Color(0x151515)}));
+                      new float[]{0, 0.499f, 0.5f, 1.0f},
+                      new Color[]{new Color(0x404040),
+                          new Color(0x2f2f2f),
+                          new Color(0x1e1e1e),
+                          new Color(0x151515)}));
                 g.fillRect(0, 0, getWidth(), getHeight());
             }
         });
@@ -322,7 +323,6 @@ public class ScreenRecorderCompactMain extends javax.swing.JFrame {
         optionsButton.setMargin(new Insets(0, 0, 0, 0));
         optionsButton.setBorder(new EmptyBorder(2, 2, 2, 2));
 
-
         infoLabelText = infoLabel.getText();
         updateInfoLabel();
         /*
@@ -355,7 +355,6 @@ public class ScreenRecorderCompactMain extends javax.swing.JFrame {
             }
         }));
 
-
         depth = min(max(0, prefs.getInt("ScreenRecording.colorDepth", 3)), colorGroup.getButtonCount() - 1);
         setSelectedIndex(colorGroup, depth);
         format = min(max(0, prefs.getInt("ScreenRecording.format", 1)), formatGroup.getButtonCount() - 1);
@@ -368,7 +367,6 @@ public class ScreenRecorderCompactMain extends javax.swing.JFrame {
         fps = min(max(0, prefs.getInt("ScreenRecording.fps", 1)), fpsGroup.getButtonCount() - 1);
         setSelectedIndex(fpsGroup, fps);
 
-
         audioRate = min(max(0, prefs.getInt("ScreenRecording.audioRate", 1)), audioRateGroup.getButtonCount() - 1);
         setSelectedIndex(audioRateGroup, audioRate);
 
@@ -376,10 +374,10 @@ public class ScreenRecorderCompactMain extends javax.swing.JFrame {
         setSelectedIndex(channelsGroup, channels);
 
         Dimension customDim = new Dimension(prefs.getInt("ScreenRecording.customAreaWidth", 1024),
-                prefs.getInt("ScreenRecording.customAreaHeight", 768));
+              prefs.getInt("ScreenRecording.customAreaHeight", 768));
         Point customLoc = new Point(
-                prefs.getInt("ScreenRecording.customAreaX", 100),
-                prefs.getInt("ScreenRecording.customAreaY", 100));
+              prefs.getInt("ScreenRecording.customAreaX", 100),
+              prefs.getInt("ScreenRecording.customAreaY", 100));
 
         customAreaRect = new Rectangle(customLoc.x, customLoc.y, customDim.width, customDim.height);
         area = min(max(0, prefs.getInt("ScreenRecording.area", 0)), areaGroup.getButtonCount() - 1);
@@ -780,35 +778,34 @@ public class ScreenRecorderCompactMain extends javax.swing.JFrame {
                     break;
             }
 
-
             screenRecorder = new ScreenRecorder(cfg, areaRect,
-                    // the file format:
-                    new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, mimeType),
-                    //
-                    // the output format for screen capture:
-                    new Format(MediaTypeKey, MediaType.VIDEO, EncodingKey, videoFormatName,
-                    CompressorNameKey, compressorName,
-                    WidthKey, outputDimension.width,
-                    HeightKey, outputDimension.height,
-                    DepthKey, bitDepth, FrameRateKey, Rational.valueOf(screenRate),
-                    QualityKey, quality,
-                    KeyFrameIntervalKey, (screenRate * 60) // one keyframe per minute is enough
-                    ),
-                    //
-                    // the output format for mouse capture:
-                    crsr == null ? null : new Format(MediaTypeKey, MediaType.VIDEO, EncodingKey, crsr,
-                    FrameRateKey, Rational.valueOf(mouseRate)),
-                    //
-                    // the output format for audio capture:
-                    !asi.isEnabled ? null : new Format(MediaTypeKey, MediaType.AUDIO,
-                    //EncodingKey, audioFormatName,
-                    SampleRateKey, Rational.valueOf(audioRate),
-                    SampleSizeInBitsKey, audioBitsPerSample,
-                    ChannelsKey, audioChannels),
-                    //
-                    // the storage location of the movie
-                    movieFolder);
-                    screenRecorder.setAudioMixer(asi.mixerInfo == null ? null : AudioSystem.getMixer(asi.mixerInfo));
+                  // the file format:
+                  new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, mimeType),
+                  //
+                  // the output format for screen capture:
+                  new Format(MediaTypeKey, MediaType.VIDEO, EncodingKey, videoFormatName,
+                        CompressorNameKey, compressorName,
+                        WidthKey, outputDimension.width,
+                        HeightKey, outputDimension.height,
+                        DepthKey, bitDepth, FrameRateKey, Rational.valueOf(screenRate),
+                        QualityKey, quality,
+                        KeyFrameIntervalKey, (screenRate * 60) // one keyframe per minute is enough
+                  ),
+                  //
+                  // the output format for mouse capture:
+                  crsr == null ? null : new Format(MediaTypeKey, MediaType.VIDEO, EncodingKey, crsr,
+                              FrameRateKey, Rational.valueOf(mouseRate)),
+                  //
+                  // the output format for audio capture:
+                  !asi.isEnabled ? null : new Format(MediaTypeKey, MediaType.AUDIO,
+                              //EncodingKey, audioFormatName,
+                              SampleRateKey, Rational.valueOf(audioRate),
+                              SampleSizeInBitsKey, audioBitsPerSample,
+                              ChannelsKey, audioChannels),
+                  //
+                  // the storage location of the movie
+                  movieFolder);
+            screenRecorder.setAudioMixer(asi.mixerInfo == null ? null : AudioSystem.getMixer(asi.mixerInfo));
 
             if (timer == null) {
                 timer = new Timer(500, new ActionListener() {
@@ -890,8 +887,8 @@ public class ScreenRecorderCompactMain extends javax.swing.JFrame {
             timeLabel.setText("Failed");
             setExtendedState(Frame.NORMAL);
             JOptionPane.showMessageDialog(ScreenRecorderCompactMain.this,
-                    "<html><b>Sorry. Screen Recording failed.</b><br>"+msg.getMessage().replace("\n","<br>"),
-                    "Screen Recorder", JOptionPane.ERROR_MESSAGE);
+                  "<html><b>Sorry. Screen Recording failed.</b><br>" + msg.getMessage().replace("\n", "<br>"),
+                  "Screen Recorder", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -947,8 +944,8 @@ public class ScreenRecorderCompactMain extends javax.swing.JFrame {
                         t.printStackTrace();
                         setExtendedState(Frame.NORMAL);
                         JOptionPane.showMessageDialog(ScreenRecorderCompactMain.this,
-                                "<html><b>Sorry. Screen Recording failed.</b><br>" + t.getMessage(),
-                                "Screen Recorder", JOptionPane.ERROR_MESSAGE);
+                              "<html><b>Sorry. Screen Recording failed.</b><br>" + t.getMessage(),
+                              "Screen Recorder", JOptionPane.ERROR_MESSAGE);
                         stop();
                     }
                 }
@@ -964,13 +961,13 @@ public class ScreenRecorderCompactMain extends javax.swing.JFrame {
         l.add(new AudioSourceItem("Default Input", null, true));
         Mixer.Info[] mixers = AudioSystem.getMixerInfo();
         DataLine.Info lineInfo = new DataLine.Info(
-                TargetDataLine.class,
-                new javax.sound.sampled.AudioFormat(
-                44100.0f,
-                16,
-                2,
-                true,
-                true));
+              TargetDataLine.class,
+              new javax.sound.sampled.AudioFormat(
+                    44100.0f,
+                    16,
+                    2,
+                    true,
+                    true));
 
         for (Mixer.Info info : mixers) {
             Mixer mixer = AudioSystem.getMixer(info);

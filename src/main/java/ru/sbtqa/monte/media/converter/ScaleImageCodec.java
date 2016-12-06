@@ -25,14 +25,14 @@ public class ScaleImageCodec extends AbstractVideoCodec {
 
     public ScaleImageCodec() {
         super(new Format[]{
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
-                    EncodingKey, ENCODING_BUFFERED_IMAGE), //
-                },
-                new Format[]{
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
-                    EncodingKey, ENCODING_BUFFERED_IMAGE), //
-                }//
-                );
+            new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
+            EncodingKey, ENCODING_BUFFERED_IMAGE), //
+        },
+              new Format[]{
+                  new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
+                        EncodingKey, ENCODING_BUFFERED_IMAGE), //
+              }//
+        );
         name = "Scale Image";
     }
 
@@ -63,8 +63,8 @@ public class ScaleImageCodec extends AbstractVideoCodec {
         if (out.data instanceof BufferedImage) {
             imgOut = (BufferedImage) out.data;
             if (imgOut.getWidth() != outputFormat.get(WidthKey)
-                    || imgOut.getHeight() != outputFormat.get(HeightKey)//
-                    || imgOut.getType() != imgIn.getType()) {
+                  || imgOut.getHeight() != outputFormat.get(HeightKey)//
+                  || imgOut.getType() != imgIn.getType()) {
                 imgOut = null;
             }
         }

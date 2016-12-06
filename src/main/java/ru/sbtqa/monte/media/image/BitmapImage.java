@@ -20,72 +20,55 @@ import static ru.sbtqa.monte.media.ilbm.HAMColorModel.HAM8;
 /**
  * A BitmapImage is comprised of a ColorModel and an accessible byte array of
  * image data.
- * <p>
- * The image data is expressed in several layers of rectangular regions
- * called bit-planes. To determine the bits that form a single pixel one
- * must combine all data-bits at the same x,y position in each bit-plane.
- * This is known as a "planar" storage layout as it was used on Commodore
- * Amiga Computers.
- * <p>
+ *
+ * The image data is expressed in several layers of rectangular regions called
+ * bit-planes. To determine the bits that form a single pixel one must combine
+ * all data-bits at the same x,y position in each bit-plane. This is known as a
+ * "planar" storage layout as it was used on Commodore Amiga Computers.
+ *
  * The bit-planes can be stored contiguously or can be interleaved at each
  * scanline of the image.
- * <p>
- * <p>
- * Fig 1. A sample image:
- * <p><pre>
- * .+++..@...@.+..###...+++.     This sample uses 4 colors:
- * +...+.@@.@@.+.#.....+...+     . = color 0 (all bits clear)
- * +++++:@.@.@.+.#..##.+++++     + = color 1 (bit 0 set, bit 1 clear)
- * +...+.@...@.+.#...#.+...+     @ = color 2 (bit 0 clear, bit 1 set)
- * +...+.@...@.+..####.+...+     # = color 3 (all bits set)
- * </pre><p>
- * Fig 2. Contiguous bit-plane storage layout.
- * <p><pre>
- * 01110000 00001001 11000111 0.......     This is the first bit-plane.
- * 10001000 00001010 00001000 1.......     Each number represents a bit
- * 11111000 00001010 01101111 1.......     in the storage layout. Eight
- * 10001000 00001010 00101000 1.......     bits are grouped into one byte.
- * 10001000 00001001 11101000 1.......     Dots indicate unused bits.
- * <p>
- * 00000010 00100001 11000000 0.......     This is the second bit-plane.
- * 00000011 01100010 00000000 0.......
- * 00000010 10100010 01100000 0.......
- * 00000010 00100010 00100000 0.......
- * 00000010 00100001 11100000 0.......
- * <p></pre>
- * Fig 3. Interleaved bit-plane storage layout.
- * <p><pre>
- * 01110000 00001001 11000111 0.......     This is the first bit-plane.
- * 00000010 00100001 11000000 0.......     This is the second bit-plane.
- * <p>
- * 10001000 00001010 00001000 1.......     The bit-planes are interleaved
- * 00000011 01100010 00000000 0.......     at every scanline of the image.
- * <p>
- * 11111000 00001010 01101111 1.......
- * 00000010 10100010 01100000 0.......
- * <p>
- * 10001000 00001010 00101000 1.......
- * 00000010 00100010 00100000 0.......
- * <p>
- * 10001000 00001001 11101000 1.......
- * 00000010 00100001 11100000 0.......
- * <p></pre>
- * For more details refer to "Amiga ROM Kernel Reference Manual: Libraries,
- * Addison Wesley"
- * <p>
- * <b>Responsibility</b>
- * <p>
- * Gives clients direct access to the image data of the bitmap.
- * Knows how to convert the bitmap into chunky image data according
- * to the current color model.
- * Supports indexed color model, direct color model, 6 and 8 bit HAM color model.
  *
- * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ *
+ * Fig 1. A sample image:
+ *
+ * .+++..@...@.+..###...+++. This sample uses 4 colors:
+ * +...+.@@.@@.+.#.....+...+ . = color 0 (all bits clear)
+ * +++++:@.@.@.+.#..##.+++++ + = color 1 (bit 0 set, bit 1 clear)
+ * +...+.@...@.+.#...#.+...+ @ = color 2 (bit 0 clear, bit 1 set)
+ * +...+.@...@.+..####.+...+ # = color 3 (all bits set)
+ * 
+ * Fig 2. Contiguous bit-plane storage layout.
+ *
+ * 01110000 00001001 11000111 0....... This is the first bit-plane. 10001000
+ * 00001010 00001000 1....... Each number represents a bit 11111000 00001010
+ * 01101111 1....... in the storage layout. Eight 10001000 00001010 00101000
+ * 1....... bits are grouped into one byte. 10001000 00001001 11101000 1.......
+ * Dots indicate unused bits. 00000010 00100001 11000000 0....... This is the
+ * second bit-plane. 00000011 01100010 00000000 0....... 00000010 10100010
+ * 01100000 0....... 00000010 00100010 00100000 0....... 00000010 00100001
+ * 11100000 0....... Fig 3. Interleaved bit-plane storage layout. 01110000
+ * 00001001 11000111 0....... This is the first bit-plane. 00000010 00100001
+ * 11000000 0....... This is the second bit-plane. 10001000 00001010 00001000
+ * 1....... The bit-planes are interleaved 00000011 01100010 00000000 0.......
+ * at every scanline of the image. 11111000 00001010 01101111 1....... 00000010
+ * 10100010 01100000 0....... 10001000 00001010 00101000 1....... 00000010
+ * 00100010 00100000 0....... 10001000 00001001 11101000 1....... 00000010
+ * 00100001 11100000 0....... For more details refer to "Amiga ROM Kernel
+ * Reference Manual: Libraries, Addison Wesley"
+ *
+ * <b>Responsibility</b>
+ *
+ * Gives clients direct access to the image data of the bitmap. Knows how to
+ * convert the bitmap into chunky image data according to the current color
+ * model. Supports indexed color model, direct color model, 6 and 8 bit HAM
+ * color model.
+ *
+ * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
  * @version 1.5 2011-01-05 Adds support for RGB555.
  * <br>1.4 2011-01-03 Adds method setIntPixels().
  * <br>1.3 2010-10-25 Removed suffixes in instance variable names.
- * <br>1.2.1 2005-07-16 Setting a preferredColorModel is now better
- * honoured.
+ * <br>1.2.1 2005-07-16 Setting a preferredColorModel is now better honoured.
  * <br>1.2 2004-05-26 Improved performance of planar to chunky conversion
  * routines.
  * <br>1.1.1 2004-05-18 Fixed a bug, which caused an image to be all
@@ -93,56 +76,87 @@ import static ru.sbtqa.monte.media.ilbm.HAMColorModel.HAM8;
  * bitmap type was true color, and the bitmap had a transparent color.
  * <br>1.1 2003-04-01 BitmapImage can now convert bitmaps with IndexColorModel's
  * into chunky pixels with DirectColorModel.
- * <br>1.0  1999-10-19
+ * <br>1.0 1999-10-19
  */
 public class BitmapImage
-        implements Cloneable {
+      implements Cloneable {
 
-    /**  The bitmap data array. */
+    /**
+     * The bitmap data array.
+     */
     private byte[] bitmap;
-    /** The width of the image. */
+    /**
+     * The width of the image.
+     */
     private int width;
-    /** The height of the image. */
+    /**
+     * The height of the image.
+     */
     private int height;
-    /** The number of bits that form a single pixel. */
+    /**
+     * The number of bits that form a single pixel.
+     */
     private int depth;
-    /** BitmapStride is the number of data array elements
-     * between two bits of the same image pixel. */
+    /**
+     * BitmapStride is the number of data array elements between two bits of the
+     * same image pixel.
+     */
     private int bitplaneStride;
-    /** ScanlineStride is the number of data array elements
-     * between a given  pixel and the pixel in the same column of
-     * the next scanline. */
+    /**
+     * ScanlineStride is the number of data array elements between a given pixel
+     * and the pixel in the same column of the next scanline.
+     */
     private int scanlineStride;
-    /** This ColorModel is used for the next conversion from planar
-     * bitmap data into chunky pixel data.
+    /**
+     * This ColorModel is used for the next conversion from planar bitmap data
+     * into chunky pixel data.
      */
     private ColorModel planarColorModel;
-    /** This ColorModel represents the preferred color model for chunky pixel.
-     * If this value is null, then convertToChunky uses the planarColorModel_.
+    /**
+     * This ColorModel represents the preferred color model for chunky pixel. If
+     * this value is null, then convertToChunky uses the planarColorModel_.
      */
     private ColorModel preferredChunkyColorModel_;
-    /** This ColorModel represents the current color model for chunky pixel.
+    /**
+     * This ColorModel represents the current color model for chunky pixel.
      */
     private ColorModel currentChunkyColorModel_;
-    /** This ColorModel was used at the previous conversion from
-     * planar bitmap into chunky pixel data.
+    /**
+     * This ColorModel was used at the previous conversion from planar bitmap
+     * into chunky pixel data.
      */
     private ColorModel lastPixelColorModel_;
-    /** Indicates availability of chunky pixel data. */
+    /**
+     * Indicates availability of chunky pixel data.
+     */
     private int pixelType;
-    /** Tag for byte pixel data. */
+    /**
+     * Tag for byte pixel data.
+     */
     public final static int BYTE_PIXEL = 1;
-    /** Tag for integer pixel data. */
+    /**
+     * Tag for integer pixel data.
+     */
     public final static int INT_PIXEL = 2;
-    /** Tag for short pixel data. */
+    /**
+     * Tag for short pixel data.
+     */
     public final static int SHORT_PIXEL = 2;
-    /** Tag indicating that no pixel data is available. */
+    /**
+     * Tag indicating that no pixel data is available.
+     */
     public final static int NO_PIXEL = 0;
-    /** Output array for byte pixel data. */
+    /**
+     * Output array for byte pixel data.
+     */
     private byte[] bytePixels;
-    /** Output array for integer pixel data. */
+    /**
+     * Output array for integer pixel data.
+     */
     private int[] intPixels;
-    /** Output array for short pixel data. */
+    /**
+     * Output array for short pixel data.
+     */
     private short[] shortPixels;
     /**
      * If this boolean is set to true, then convertToChunky always generates
@@ -151,65 +165,63 @@ public class BitmapImage
     private boolean enforceDirectColors_ = false;
 
     /**
-     * If you set this to true, then convertToChunky always generates
-     * chunky pixels using a DirectColorModel.
+     * If you set this to true, then convertToChunky always generates chunky
+     * pixels using a DirectColorModel.
+     *
+     * @param b TODO
      */
     public void setEnforceDirectColors(boolean b) {
         enforceDirectColors_ = b;
     }
 
     /**
-     * If this returns true, then convertToChunky always generates
-     * chunky pixels using a DirectColorModel.
+     * If this returns true, then convertToChunky always generates chunky pixels
+     * using a DirectColorModel.
+     *
+     * @return TODO
      */
     public boolean isEnforceDirectColors() {
         return enforceDirectColors_;
     }
 
     /**
-     * Construct an interleaved bitmap with the specified size,
-     * depth and color model.
-     * BitplaneStride and ScanlineStride are rounded up to the next
-     * even number of bytes.
-     * <p>
-     * Pre condition:
-     *   -
-     * <p>
-     * Post condition:
-     *   Interleaved bitmap constructed.
-     * <p>
-     * Obligation:
-     *   -
+     * Construct an interleaved bitmap with the specified size, depth and color
+     * model. BitplaneStride and ScanlineStride are rounded up to the next even
+     * number of bytes.
      *
-     * @param  width  Width in pixels.
-     * @param  height  Height in pixels.
-     * @param  depth  Number of bits per pixel.
-     * @param  colorModel  Color model to be used for conversions from/to chunky pixels.
+     * Pre condition: -
+     *
+     * Post condition: Interleaved bitmap constructed.
+     *
+     * Obligation: -
+     *
+     * @param width Width in pixels.
+     * @param height Height in pixels.
+     * @param depth Number of bits per pixel.
+     * @param colorModel Color model to be used for conversions from/to chunky
+     * pixels.
      */
     public BitmapImage(int width, int height, int depth, ColorModel colorModel) {
         this(width, height, depth, colorModel, true);
     }
 
     /**
-     * Construct a bitmap with the specified size, depth and color model
-     * and with optional interleave.
-     * BitplaneStride and ScanlineStride are rounded up to the next
-     * even number of bytes.
-     * <p>
-     * Pre condition:
-     *   -
-     * <p>
-     * Post condition:
-     *   BitmapImage constructed.
-     * <p>
-     * Obligation:
-     *   -
+     * Construct a bitmap with the specified size, depth and color model and
+     * with optional interleave. BitplaneStride and ScanlineStride are rounded
+     * up to the next even number of bytes.
      *
-     * @param  width  Width in pixels.
-     * @param  height  Height in pixels.
-     * @param  depth  Number of bits per pixel.
-     * @param  colorModel  Color model to be used for conversions from/to chunky pixels.
-     * @param  isInterleaved  Indicator for contiguous or interleaved bit-planes.
+     * Pre condition: -
+     *
+     * Post condition: BitmapImage constructed.
+     *
+     * Obligation: -
+     *
+     * @param width Width in pixels.
+     * @param height Height in pixels.
+     * @param depth Number of bits per pixel.
+     * @param colorModel Color model to be used for conversions from/to chunky
+     * pixels.
+     * @param isInterleaved Indicator for contiguous or interleaved bit-planes.
      */
     public BitmapImage(int width, int height, int depth, ColorModel colorModel, boolean isInterleaved) {
         this.width = width;
@@ -231,23 +243,23 @@ public class BitmapImage
     /**
      * Construct a bitmap with the specified size, depth, color model and
      * interleave.
-     * <p>
-     * Pre condition:
-     * ScanlineStride must be a multiple of BitplaneStride or vice versa.
-     * <p>
-     * Post condition:
-     * BitmapImage constructed.
-     * <p>
-     * Obligation:
-     *   -
      *
-     * @param  width  Width in pixels.
-     * @param  height  Height in pixels.
-     * @param  depth  Number of bits per pixel.
-     * @param  colorModel  Color model to be used for conversions from/to chunky pixels.
-     * @param  bitStride  Number of data array elements between two bits of the same image pixel.
-     * @param  scanlineStride  Number of data array elements between a given pixel and the pixel in the same column of
-     * the next scanline.
+     * Pre condition: ScanlineStride must be a multiple of BitplaneStride or
+     * vice versa.
+     *
+     * Post condition: BitmapImage constructed.
+     *
+     * Obligation: -
+     *
+     * @param width Width in pixels.
+     * @param height Height in pixels.
+     * @param depth Number of bits per pixel.
+     * @param colorModel Color model to be used for conversions from/to chunky
+     * pixels.
+     * @param bitStride Number of data array elements between two bits of the
+     * same image pixel.
+     * @param scanlineStride Number of data array elements between a given pixel
+     * and the pixel in the same column of the next scanline.
      */
     public BitmapImage(int width, int height, int depth, ColorModel colorModel, int bitStride, int scanlineStride) {
         this.width = width;
@@ -266,14 +278,14 @@ public class BitmapImage
 
     /**
      * Returns the width of the image.
-     * <p>
+     *
      * Pre condition: -
-     * <p>
+     *
      * Post condition: -
-     * <p>
+     *
      * Obligation: -
      *
-     * @return  The width in pixels.
+     * @return The width in pixels.
      */
     public int getWidth() {
         return width;
@@ -281,14 +293,14 @@ public class BitmapImage
 
     /**
      * Returns the height of the image.
-     * <p>
+     *
      * Pre condition: -
-     * <p>
+     *
      * Post condition: -
-     * <p>
+     *
      * Obligation: -
      *
-     * @return  The height in pixels.
+     * @return The height in pixels.
      */
     public int getHeight() {
         return height;
@@ -296,48 +308,48 @@ public class BitmapImage
 
     /**
      * Returns the depth of the image.
-     * <p>
+     *
      * The depth indicates how many bits are used to form a single pixel.
-     * <p>
+     *
      * Pre condition: -
-     * <p>
+     *
      * Post condition: -
-     * <p>
+     *
      * Obligation: -
      *
-     * @return  The number of bitplanes used to form a single pixel.
+     * @return The number of bitplanes used to form a single pixel.
      */
     public int getDepth() {
         return depth;
     }
 
     /**
-     * Returns the numer of bytes you must add to a given address
-     * in the bitmap to advance to the next scanline of the image.
-     * <p>
+     * Returns the numer of bytes you must add to a given address in the bitmap
+     * to advance to the next scanline of the image.
+     *
      * Pre condition: -
-     * <p>
+     *
      * Post condition: -
-     * <p>
+     *
      * Obligation: -
      *
-     * @return  The scansize.
+     * @return The scansize.
      */
     public int getScanlineStride() {
         return scanlineStride;
     }
 
     /**
-     * Returns the number of bytes that you must add to a bitmap address
-     * to advance to the next bit of a scanline.
-     * <p>
+     * Returns the number of bytes that you must add to a bitmap address to
+     * advance to the next bit of a scanline.
+     *
      * Pre condition: -
-     * <p>
+     *
      * Post condition: -
-     * <p>
+     *
      * Obligation: -
      *
-     * @return  The interleave of the bitmap.
+     * @return The interleave of the bitmap.
      */
     public int getBitplaneStride() {
         return bitplaneStride;
@@ -345,11 +357,12 @@ public class BitmapImage
 
     /**
      * Replaces the color model used for conversions from/to chunky pixels.
-     * <p>
-     * Pre condition: The new color model must correspond with the depth of the bitmap.
-     * <p>
+     *
+     * Pre condition: The new color model must correspond with the depth of the
+     * bitmap.
+     *
      * Post condition: Color model changed.
-     * <p>
+     *
      * Obligation: -
      *
      * @param colorModel The new color model.
@@ -360,14 +373,14 @@ public class BitmapImage
 
     /**
      * Returns the current color model of the planar image in this bitmap.
-     * <p>
+     *
      * Pre condition: -
-     * <p>
+     *
      * Post condition: -
-     * <p>
+     *
      * Obligation: -
      *
-     * @return  The color model.
+     * @return The color model.
      */
     public ColorModel getPlanarColorModel() {
         return planarColorModel;
@@ -375,14 +388,14 @@ public class BitmapImage
 
     /**
      * Sets the preferred color model used for to chunky pixels.
-     * <p>
+     *
      * Pre condition: -
-     * <p>
+     *
      * Post condition: Color model changed.
-     * <p>
+     *
      * Obligation: -
      *
-     * @param  colorModel The new color model.
+     * @param colorModel The new color model.
      */
     public void setPreferredChunkyColorModel(ColorModel colorModel) {
         preferredChunkyColorModel_ = colorModel;
@@ -390,14 +403,14 @@ public class BitmapImage
 
     /**
      * Returns the current color model of the chunky image in this bitmap.
-     * <p>
+     *
      * Pre condition: -
-     * <p>
+     *
      * Post condition: -
-     * <p>
+     *
      * Obligation: -
      *
-     * @return  The color model.
+     * @return The color model.
      */
     public ColorModel getChunkyColorModel() {
         if (currentChunkyColorModel_ == null) {
@@ -408,40 +421,37 @@ public class BitmapImage
 
     /**
      * Gives you direct access to the bitmap data array.
-     * <p>
-     * Pre condition: -.
-     * <p>
-     * Post condition: -
-     * <p>
-     * Obligation: The bitmap data array remains property
-     * of the BitmapImage and will be used at the next
-     * conversion to chunky. You can access it as you
-     * like (even during conversion) since this class
-     * does never change the contents of the bitmap.
      *
-     * @return  A reference to the bitmap data.
+     * Pre condition: -.
+     *
+     * Post condition: -
+     *
+     * Obligation: The bitmap data array remains property of the BitmapImage and
+     * will be used at the next conversion to chunky. You can access it as you
+     * like (even during conversion) since this class does never change the
+     * contents of the bitmap.
+     *
+     * @return A reference to the bitmap data.
      */
     public byte[] getBitmap() {
         return bitmap;
     }
 
     /**
-     * Returns a reference to the byte pixel data that has been
-     * generated by a previous call to #converToChunky.
-     * <p>
-     * Pre condition: -
-     * <p>
-     * Post condition: -
-     * <p>
-     * Obligation: You may modify the contents of the array
-     * as you like to get some nice effects for the
-     * next call to #convertToChunky. Note whovewer that
-     * #convertToChunky will not reuse this array when
-     * the colorModel has been changed to a color format
-     * that requires pixels in integer format.
+     * Returns a reference to the byte pixel data that has been generated by a
+     * previous call to #converToChunky.
      *
-     * @return  byte array or NULL when no byte pixels have been
-     * generated by #convertToChunky.
+     * Pre condition: -
+     *
+     * Post condition: -
+     *
+     * Obligation: You may modify the contents of the array as you like to get
+     * some nice effects for the next call to #convertToChunky. Note whovewer
+     * that #convertToChunky will not reuse this array when the colorModel has
+     * been changed to a color format that requires pixels in integer format.
+     *
+     * @return byte array or NULL when no byte pixels have been generated by
+     * #convertToChunky.
      */
     public byte[] getBytePixels() {
         if (pixelType == BYTE_PIXEL) {
@@ -452,22 +462,20 @@ public class BitmapImage
     }
 
     /**
-     * Returns a reference to the byte pixel data that has been
-     * generated by a previous call to #converToChunky.
-     * <p>
-     * Pre condition: -
-     * <p>
-     * Post condition: -
-     * <p>
-     * Obligation: You may modify the contents of the array
-     * as you like to get some nice effects for the
-     * next call to #convertToChunky. Note whovewer that
-     * #convertToChunky will not reuse this array when
-     * the colorModel has been changed to a color format
-     * that requires pixels in integer format.
+     * Returns a reference to the byte pixel data that has been generated by a
+     * previous call to #converToChunky.
      *
-     * @return  byte array or NULL when no byte pixels have been
-     * generated by #convertToChunky.
+     * Pre condition: -
+     *
+     * Post condition: -
+     *
+     * Obligation: You may modify the contents of the array as you like to get
+     * some nice effects for the next call to #convertToChunky. Note whovewer
+     * that #convertToChunky will not reuse this array when the colorModel has
+     * been changed to a color format that requires pixels in integer format.
+     *
+     * @return byte array or NULL when no byte pixels have been generated by
+     * #convertToChunky.
      */
     public short[] getShortPixels() {
         if (pixelType == BYTE_PIXEL) {
@@ -478,22 +486,20 @@ public class BitmapImage
     }
 
     /**
-     * Returns a reference to the integer pixel data that has been
-     * generated by a previous call to #converToChunky.
-     * <p>
-     * Pre condition: -
-     * <p>
-     * Post condition: -
-     * <p>
-     * Obligation: You may modify the contents of the array
-     * as you like to get some nice effects for the
-     * next call to #convertToChunky. Note however that
-     * #convertToChunky will not reuse this array when
-     * the colorModel has been changed to a color format
-     * that requires pixels in byte format.
+     * Returns a reference to the integer pixel data that has been generated by
+     * a previous call to #converToChunky.
      *
-     * @return  byte array or NULL when no int pixels have been
-     * generated by #convertToChunky.
+     * Pre condition: -
+     *
+     * Post condition: -
+     *
+     * Obligation: You may modify the contents of the array as you like to get
+     * some nice effects for the next call to #convertToChunky. Note however
+     * that #convertToChunky will not reuse this array when the colorModel has
+     * been changed to a color format that requires pixels in byte format.
+     *
+     * @return byte array or NULL when no int pixels have been generated by
+     * #convertToChunky.
      */
     public int[] getIntPixels() {
         if (pixelType == INT_PIXEL) {
@@ -505,14 +511,14 @@ public class BitmapImage
 
     /**
      * Returns the available type of pixel data.
-     * <p>
+     *
      * Pre condition: -
-     * <p>
+     *
      * Post condition: -
-     * <p>
+     *
      * Obligation: -
      *
-     * @return  A constant that specifies the current type of pixel data.
+     * @return A constant that specifies the current type of pixel data.
      */
     public int getPixelType() {
         return pixelType;
@@ -520,12 +526,12 @@ public class BitmapImage
 
     /**
      * Creates a clone.
-     * <p>
+     *
      * Pre condition: -
-     * <p>
+     *
      * Post condition: Clone created.
      *
-     * @return  A clone.
+     * @return A clone.
      */
     @Override
     public BitmapImage clone() {
@@ -546,18 +552,17 @@ public class BitmapImage
 
     /**
      * Converts the planar image data into chunky pixel data.
-     * <p>
-     * This method will either generate byte pixel data or integer
-     * pixel data (depending on the color model).
-     * <p>
-     * The pixel array that resulted to a prior call to this
-     * method will be reused when the image dimension and the color
-     * model allows for it.
-     * <p>
+     *
+     * This method will either generate byte pixel data or integer pixel data
+     * (depending on the color model).
+     *
+     * The pixel array that resulted to a prior call to this method will be
+     * reused when the image dimension and the color model allows for it.
+     *
      * Pre condition: -
-     * <p>
+     *
      * Post condition: Chunky pixels generated.
-     * <p>
+     *
      * Obligation: -
      *
      * @return The type of generated pixel data.
@@ -567,25 +572,28 @@ public class BitmapImage
     }
 
     /**
-     * Converts the indicated area of the bitmap data into  pixel data.
-     * <p>
-     * This method will either generate byte pixel data or integer
-     * pixel data (depending on the color model).
-     * <p>
-     * Note that the size of the generated pixel data always corresponds
-     * to the size of the complete image. You do only specify a subset
-     * of the image to be <i>converted</i> not a subset to be extracted.
-     * Note also that the pixel data that resulted from prior calls to
-     * this method will be reused when the generated pixel array was
-     * of the same size and type.
-     * <p>
+     * Converts the indicated area of the bitmap data into pixel data.
+     *
+     * This method will either generate byte pixel data or integer pixel data
+     * (depending on the color model).
+     *
+     * Note that the size of the generated pixel data always corresponds to the
+     * size of the complete image. You do only specify a subset of the image to
+     * be <i>converted</i> not a subset to be extracted. Note also that the
+     * pixel data that resulted from prior calls to this method will be reused
+     * when the generated pixel array was of the same size and type.
+     *
      * Pre condition: -
-     * <p>
-     * Post condition: The indicated part of the bitmap has been
-     *   converted into chunky pixels.
-     * <p>
+     *
+     * Post condition: The indicated part of the bitmap has been converted into
+     * chunky pixels.
+     *
      * Obligation: -
      *
+     * @param top TODO
+     * @param right TODO
+     * @param left TODO
+     * @param bottom TODO
      * @return The type of generated pixel data.
      */
     public int convertToChunky(int top, int left, int bottom, int right) {
@@ -622,151 +630,147 @@ public class BitmapImage
             }
             pixelType = INT_PIXEL;
 
-        } else {
-            if (planarColorModel instanceof IndexColorModel) {
-                if (enforceDirectColors_ || preferredChunkyColorModel_ instanceof DirectColorModel) {
-                    if (preferredChunkyColorModel_ != null && ((DirectColorModel) preferredChunkyColorModel_).getPixelSize() == 16) {
-                        if (shortPixels == null || shortPixels.length != getWidth() * getHeight()) {
-                            bytePixels = null;
-                            intPixels = null;
-                            shortPixels = null;
-                            shortPixels = new short[getWidth() * getHeight()];
-                        }
-                        currentChunkyColorModel_ =
-                                (preferredChunkyColorModel_ != null && (preferredChunkyColorModel_ instanceof DirectColorModel))
-                                ? preferredChunkyColorModel_
-                                : new DirectColorModel(16, 0x7c00, 0x3e0, 0x1f);
-
-                        indexPlanesTo555(top, left, bottom, right);
-                        pixelType = SHORT_PIXEL;
-                    } else {
-                        if (intPixels == null || intPixels.length != getWidth() * getHeight()) {
-                            bytePixels = null;
-                            shortPixels = null;
-                            intPixels = new int[getWidth() * getHeight()];
-                        }
-
-                        currentChunkyColorModel_ =
-                                (preferredChunkyColorModel_ != null && (preferredChunkyColorModel_ instanceof DirectColorModel))
-                                ? preferredChunkyColorModel_
-                                : getRGBdefault();
-
-                        currentChunkyColorModel_ = new DirectColorModel(24, 0xff0000, 0xff00, 0xff);
-                        indexPlanesToDirectPixels(top, left, bottom, right);
-                        pixelType = INT_PIXEL;
-                    }
-                } else {
-                    if (bytePixels == null || bytePixels.length != getWidth() * getHeight()) {
-                        intPixels = null;
-                        shortPixels = null;
-                        bytePixels = new byte[getWidth() * getHeight()];
-                    }
-                    currentChunkyColorModel_ = planarColorModel;
-                    indexPlanesToIndexPixels(top, left, bottom, right);
-                    pixelType = BYTE_PIXEL;
-                }
-            } else if (planarColorModel instanceof DirectColorModel) {
-                if (((DirectColorModel) planarColorModel).getPixelSize() == 16) {
+        } else if (planarColorModel instanceof IndexColorModel) {
+            if (enforceDirectColors_ || preferredChunkyColorModel_ instanceof DirectColorModel) {
+                if (preferredChunkyColorModel_ != null && ((DirectColorModel) preferredChunkyColorModel_).getPixelSize() == 16) {
                     if (shortPixels == null || shortPixels.length != getWidth() * getHeight()) {
                         bytePixels = null;
                         intPixels = null;
                         shortPixels = null;
                         shortPixels = new short[getWidth() * getHeight()];
                     }
-                    currentChunkyColorModel_ = planarColorModel;
-                    directPlanesTo555(top, left, bottom, right);
+                    currentChunkyColorModel_
+                          = (preferredChunkyColorModel_ != null && (preferredChunkyColorModel_ instanceof DirectColorModel))
+                                ? preferredChunkyColorModel_
+                                : new DirectColorModel(16, 0x7c00, 0x3e0, 0x1f);
+
+                    indexPlanesTo555(top, left, bottom, right);
                     pixelType = SHORT_PIXEL;
                 } else {
                     if (intPixels == null || intPixels.length != getWidth() * getHeight()) {
                         bytePixels = null;
                         shortPixels = null;
-                        shortPixels = null;
                         intPixels = new int[getWidth() * getHeight()];
                     }
-                    currentChunkyColorModel_ = planarColorModel;
-                    directPlanesToDirectPixels(top, left, bottom, right);
+
+                    currentChunkyColorModel_
+                          = (preferredChunkyColorModel_ != null && (preferredChunkyColorModel_ instanceof DirectColorModel))
+                                ? preferredChunkyColorModel_
+                                : getRGBdefault();
+
+                    currentChunkyColorModel_ = new DirectColorModel(24, 0xff0000, 0xff00, 0xff);
+                    indexPlanesToDirectPixels(top, left, bottom, right);
                     pixelType = INT_PIXEL;
                 }
             } else {
-                throw new InternalError("unsupported color model:" + planarColorModel);
+                if (bytePixels == null || bytePixels.length != getWidth() * getHeight()) {
+                    intPixels = null;
+                    shortPixels = null;
+                    bytePixels = new byte[getWidth() * getHeight()];
+                }
+                currentChunkyColorModel_ = planarColorModel;
+                indexPlanesToIndexPixels(top, left, bottom, right);
+                pixelType = BYTE_PIXEL;
             }
+        } else if (planarColorModel instanceof DirectColorModel) {
+            if (((DirectColorModel) planarColorModel).getPixelSize() == 16) {
+                if (shortPixels == null || shortPixels.length != getWidth() * getHeight()) {
+                    bytePixels = null;
+                    intPixels = null;
+                    shortPixels = null;
+                    shortPixels = new short[getWidth() * getHeight()];
+                }
+                currentChunkyColorModel_ = planarColorModel;
+                directPlanesTo555(top, left, bottom, right);
+                pixelType = SHORT_PIXEL;
+            } else {
+                if (intPixels == null || intPixels.length != getWidth() * getHeight()) {
+                    bytePixels = null;
+                    shortPixels = null;
+                    shortPixels = null;
+                    intPixels = new int[getWidth() * getHeight()];
+                }
+                currentChunkyColorModel_ = planarColorModel;
+                directPlanesToDirectPixels(top, left, bottom, right);
+                pixelType = INT_PIXEL;
+            }
+        } else {
+            throw new InternalError("unsupported color model:" + planarColorModel);
         }
         return pixelType;
     }
 
     /**
-     * Converts the indicated area of the bitmap data into  pixel data.
-     * <p>
-     * This method will either generate byte pixel data or integer
-     * pixel data (depending on the color model).
-     * <p>
-     * Note that the size of the generated pixel data always corresponds
-     * to the size of the complete image. You do only specify a subset
-     * of the image to be <i>converted</i> not a subset to be extracted.
-     * Note also that the pixel data that resulted from prior calls to
-     * this method will be reused when the generated pixel array was
-     * of the same size and type.
-     * <p>
+     * Converts the indicated area of the bitmap data into pixel data.
+     *
+     * This method will either generate byte pixel data or integer pixel data
+     * (depending on the color model).
+     *
+     * Note that the size of the generated pixel data always corresponds to the
+     * size of the complete image. You do only specify a subset of the image to
+     * be <i>converted</i> not a subset to be extracted. Note also that the
+     * pixel data that resulted from prior calls to this method will be reused
+     * when the generated pixel array was of the same size and type.
+     *
      * Pre condition: -
-     * <p>
-     * Post condition: The indicated part of the bitmap has been
-     *   converted into chunky pixels.
-     * <p>
+     *
+     * Post condition: The indicated part of the bitmap has been converted into
+     * chunky pixels.
+     *
      * Obligation: -
+     *
+     * @param image TODO
      */
     public void convertFromChunky(BufferedImage image) {
         /* */
         if (planarColorModel instanceof HAMColorModel) {
 
-            throw new UnsupportedOperationException("HAM mode not implemented:"+ planarColorModel);
+            throw new UnsupportedOperationException("HAM mode not implemented:" + planarColorModel);
 
-
-        } else {
-            if (planarColorModel instanceof IndexColorModel) {
-                if (image.getType() == TYPE_BYTE_INDEXED) {
-                    planarColorModel=image.getColorModel();
-                    Raster raster=image.getRaster();
-                    int dx=0,dy=0;
-                    while (raster.getParent()!=null) {
-                        dx+=raster.getMinX();
-                        dy+=raster.getMinY();
-                        raster=raster.getParent();
-                    }
-                   DataBufferByte dbuf= ((DataBufferByte)image.getRaster().getDataBuffer());
-                  int inScanlineStride=raster.getWidth();
-                    byte[] inb=dbuf.getData();
-                    
-                    if (bytePixels==null||bytePixels.length!=width*height) {
-                        bytePixels=new byte[width*height];
-                    }
-                    
-                    for (int y=0;y<height;y++) {
-                        arraycopy(inb,dx+(y+dy)*inScanlineStride,bytePixels,y*width,width);
-                    }
-                    indexPixelsToIndexPlanes(0, 0, getHeight() - 1, getWidth() - 1);
-                } else {
-                
-                throw new UnsupportedOperationException("index color model not implemented:" + planarColorModel);
+        } else if (planarColorModel instanceof IndexColorModel) {
+            if (image.getType() == TYPE_BYTE_INDEXED) {
+                planarColorModel = image.getColorModel();
+                Raster raster = image.getRaster();
+                int dx = 0, dy = 0;
+                while (raster.getParent() != null) {
+                    dx += raster.getMinX();
+                    dy += raster.getMinY();
+                    raster = raster.getParent();
                 }
-            } else if (planarColorModel instanceof DirectColorModel) {
-                throw new UnsupportedOperationException("index color model not implemented:" + planarColorModel);
+                DataBufferByte dbuf = ((DataBufferByte) image.getRaster().getDataBuffer());
+                int inScanlineStride = raster.getWidth();
+                byte[] inb = dbuf.getData();
+
+                if (bytePixels == null || bytePixels.length != width * height) {
+                    bytePixels = new byte[width * height];
+                }
+
+                for (int y = 0; y < height; y++) {
+                    arraycopy(inb, dx + (y + dy) * inScanlineStride, bytePixels, y * width, width);
+                }
+                indexPixelsToIndexPlanes(0, 0, getHeight() - 1, getWidth() - 1);
             } else {
-                throw new UnsupportedOperationException("unsupported color model:" + planarColorModel);
+
+                throw new UnsupportedOperationException("index color model not implemented:" + planarColorModel);
             }
+        } else if (planarColorModel instanceof DirectColorModel) {
+            throw new UnsupportedOperationException("index color model not implemented:" + planarColorModel);
+        } else {
+            throw new UnsupportedOperationException("unsupported color model:" + planarColorModel);
         }
     }
 
     /**
      * Frees the memory allocated for the pixel data.
      *
-     * <p>
+     *
      * Pre condition: -
-     * <p>
-     * Post condition: The bitmap has given up all its
-     * references to the pixel data.
-     * <p>
-     * Obligation: The pixel data will not be reused at the
-     * next call to #convertToChunky.
+     *
+     * Post condition: The bitmap has given up all its references to the pixel
+     * data.
+     *
+     * Obligation: The pixel data will not be reused at the next call to
+     * #convertToChunky.
      */
     public void flushPixels() {
         pixelType = NO_PIXEL;
@@ -778,21 +782,15 @@ public class BitmapImage
     /**
      * Converts the planar image data into chunky pixels.
      *
-     * After successful completion the chunky pixels can by used
-     * in conjunction with the IndexColorModel associated to
-     * this instance.
+     * After successful completion the chunky pixels can by used in conjunction
+     * with the IndexColorModel associated to this instance.
      *
-     * Pre condition
-     *   The color model must be an instance of java.awt.IndexColorModel.
-     *   0 <= topBound <= bottomBound <= height.
-     *   0 <= leftBound <= rightBound <= width.
-     * Post condition
-     *   -
-     * Obligation
-     *   -
+     * Pre condition The color model must be an instance of
+     * java.awt.IndexColorModel. 0 <= topBound <= bottomBound <= height. 0 <=
+     * leftBound <= rightBound <= width. Post condition - Obligation -
      *
-     * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
-     * @version  1997-10-16  Created.
+     * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+     * @version 1997-10-16 Created.
      */
     private void indexPlanesToIndexPixels(int top, int left, int bottom, int right) {
 
@@ -868,7 +866,7 @@ public class BitmapImage
                         iBitmap = iScanline + (x >>> 3);
 
                         bytePixels[iPixel++] = (byte) (((bitmap[iBitmap] & bitMask)
-                                | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1) >>> (7 - iBit));
+                              | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1) >>> (7 - iBit));
                     }
                     iPixel += pixelLineStride;
                 }
@@ -895,8 +893,8 @@ public class BitmapImage
                         iBitmap = iScanline + (x >>> 3);
 
                         bytePixels[iPixel++] = (byte) (((bitmap[iBitmap] & bitMask)
-                                | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1
-                                | (bitmap[iBitmap + bitplaneStride2] & bitMask) << 2) >>> (7 - iBit));
+                              | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1
+                              | (bitmap[iBitmap + bitplaneStride2] & bitMask) << 2) >>> (7 - iBit));
                     }
                     iPixel += pixelLineStride;
                 }
@@ -925,9 +923,9 @@ public class BitmapImage
                         iBitmap = iScanline + (x >>> 3);
 
                         bytePixels[iPixel++] = (byte) (((bitmap[iBitmap] & bitMask)
-                                | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1
-                                | (bitmap[iBitmap + bitplaneStride2] & bitMask) << 2
-                                | (bitmap[iBitmap + bitplaneStride3] & bitMask) << 3) >>> (7 - iBit));
+                              | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1
+                              | (bitmap[iBitmap + bitplaneStride2] & bitMask) << 2
+                              | (bitmap[iBitmap + bitplaneStride3] & bitMask) << 3) >>> (7 - iBit));
                     }
                     iPixel += pixelLineStride;
                 }
@@ -949,7 +947,7 @@ public class BitmapImage
                 }
                 iPixel += pixelLineStride;
                 }*/
-                /*
+ /*
                 for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
                 for (x = left; x < right; x++) {
                 iBit = x & 7;
@@ -981,10 +979,10 @@ public class BitmapImage
                             b4 = bitmap[iBitmap + bitplaneStride4];
                         }
                         bytePixels[iPixel++] = (byte) (((b0 & bitMask)
-                                | (b1 & bitMask) << 1
-                                | (b2 & bitMask) << 2
-                                | (b3 & bitMask) << 3
-                                | (b4 & bitMask) << 4) >>> (7 - iBit));
+                              | (b1 & bitMask) << 1
+                              | (b2 & bitMask) << 2
+                              | (b3 & bitMask) << 3
+                              | (b4 & bitMask) << 4) >>> (7 - iBit));
                     }
                     iPixel += pixelLineStride;
                 }
@@ -1007,7 +1005,7 @@ public class BitmapImage
                 }
                 iPixel += pixelLineStride;
                 }*/
-                /*
+ /*
                 for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
                 for (x = left; x < right; x++) {
                 iBit = x & 7;
@@ -1040,11 +1038,11 @@ public class BitmapImage
                             b5 = bitmap[iBitmap + bitplaneStride5];
                         }
                         bytePixels[iPixel++] = (byte) (((b0 & bitMask)
-                                | (b1 & bitMask) << 1
-                                | (b2 & bitMask) << 2
-                                | (b3 & bitMask) << 3
-                                | (b4 & bitMask) << 4
-                                | (b5 & bitMask) << 5) >>> (7 - iBit));
+                              | (b1 & bitMask) << 1
+                              | (b2 & bitMask) << 2
+                              | (b3 & bitMask) << 3
+                              | (b4 & bitMask) << 4
+                              | (b5 & bitMask) << 5) >>> (7 - iBit));
                     }
                     iPixel += pixelLineStride;
                 }
@@ -1068,7 +1066,7 @@ public class BitmapImage
                 }
                 iPixel += pixelLineStride;
                 }*/
-                /*
+ /*
                 for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
                 for (x = left; x < right; x++) {
                 iBit = x & 7;
@@ -1103,12 +1101,12 @@ public class BitmapImage
                             b6 = bitmap[iBitmap + bitplaneStride6];
                         }
                         bytePixels[iPixel++] = (byte) (((b0 & bitMask)
-                                | (b1 & bitMask) << 1
-                                | (b2 & bitMask) << 2
-                                | (b3 & bitMask) << 3
-                                | (b4 & bitMask) << 4
-                                | (b5 & bitMask) << 5
-                                | (b6 & bitMask) << 6) >>> (7 - iBit));
+                              | (b1 & bitMask) << 1
+                              | (b2 & bitMask) << 2
+                              | (b3 & bitMask) << 3
+                              | (b4 & bitMask) << 4
+                              | (b5 & bitMask) << 5
+                              | (b6 & bitMask) << 6) >>> (7 - iBit));
                     }
                     iPixel += pixelLineStride;
                 }
@@ -1133,7 +1131,7 @@ public class BitmapImage
                 }
                 iPixel += pixelLineStride;
                 }*/
-                /*
+ /*
                 for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
                 for (x = left; x < right; x++) {
                 iBit = x & 7;
@@ -1170,13 +1168,13 @@ public class BitmapImage
                             b7 = bitmap[iBitmap + bitplaneStride7];
                         }
                         bytePixels[iPixel++] = (byte) (((b0 & bitMask)
-                                | (b1 & bitMask) << 1
-                                | (b2 & bitMask) << 2
-                                | (b3 & bitMask) << 3
-                                | (b4 & bitMask) << 4
-                                | (b5 & bitMask) << 5
-                                | (b6 & bitMask) << 6
-                                | (b7 & bitMask) << 7) >>> (7 - iBit));
+                              | (b1 & bitMask) << 1
+                              | (b2 & bitMask) << 2
+                              | (b3 & bitMask) << 3
+                              | (b4 & bitMask) << 4
+                              | (b5 & bitMask) << 5
+                              | (b6 & bitMask) << 6
+                              | (b7 & bitMask) << 7) >>> (7 - iBit));
                     }
                     iPixel += pixelLineStride;
                 }
@@ -1213,6 +1211,7 @@ public class BitmapImage
                 }
         }
     }
+
     private void indexPixelsToIndexPlanes(int top, int left, int bottom, int right) {
 
         /* Add one to bottom and right to facilitate computations. */
@@ -1249,7 +1248,9 @@ public class BitmapImage
 
         switch (depth) {
             case 1:
-                if (true) throw new UnsupportedOperationException(depth +" not yet implemented");
+                if (true) {
+                    throw new UnsupportedOperationException(depth + " not yet implemented");
+                }
                 for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
                     for (x = left; x < right; x++) {
                         bytePixels[iPixel++] = (byte) (((bitmap[iScanline + (x >>> 3)] << (x & 7)) & 128) >>> 7);
@@ -1259,7 +1260,9 @@ public class BitmapImage
                 break;
 
             case 2:
-                if (true) throw new UnsupportedOperationException(depth +" not yet implemented");
+                if (true) {
+                    throw new UnsupportedOperationException(depth + " not yet implemented");
+                }
                 for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
                     for (x = left; x < right; x++) {
                         iBit = x & 7;
@@ -1267,14 +1270,16 @@ public class BitmapImage
                         iBitmap = iScanline + (x >>> 3);
 
                         bytePixels[iPixel++] = (byte) (((bitmap[iBitmap] & bitMask)
-                                | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1) >>> (7 - iBit));
+                              | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1) >>> (7 - iBit));
                     }
                     iPixel += pixelLineStride;
                 }
                 break;
 
             case 3:
-                if (true) throw new UnsupportedOperationException(depth +" not yet implemented");
+                if (true) {
+                    throw new UnsupportedOperationException(depth + " not yet implemented");
+                }
                 for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
                     for (x = left; x < right; x++) {
                         iBit = x & 7;
@@ -1282,15 +1287,17 @@ public class BitmapImage
                         iBitmap = iScanline + (x >>> 3);
 
                         bytePixels[iPixel++] = (byte) (((bitmap[iBitmap] & bitMask)
-                                | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1
-                                | (bitmap[iBitmap + bitplaneStride2] & bitMask) << 2) >>> (7 - iBit));
+                              | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1
+                              | (bitmap[iBitmap + bitplaneStride2] & bitMask) << 2) >>> (7 - iBit));
                     }
                     iPixel += pixelLineStride;
                 }
                 break;
 
             case 4:
-                if (true) throw new UnsupportedOperationException(depth +" not yet implemented");
+                if (true) {
+                    throw new UnsupportedOperationException(depth + " not yet implemented");
+                }
                 for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
                     for (x = left; x < right; x++) {
                         iBit = x & 7;
@@ -1298,16 +1305,18 @@ public class BitmapImage
                         iBitmap = iScanline + (x >>> 3);
 
                         bytePixels[iPixel++] = (byte) (((bitmap[iBitmap] & bitMask)
-                                | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1
-                                | (bitmap[iBitmap + bitplaneStride2] & bitMask) << 2
-                                | (bitmap[iBitmap + bitplaneStride3] & bitMask) << 3) >>> (7 - iBit));
+                              | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1
+                              | (bitmap[iBitmap + bitplaneStride2] & bitMask) << 2
+                              | (bitmap[iBitmap + bitplaneStride3] & bitMask) << 3) >>> (7 - iBit));
                     }
                     iPixel += pixelLineStride;
                 }
                 break;
 
             case 5:
-                if (true) throw new UnsupportedOperationException(depth +" not yet implemented");
+                if (true) {
+                    throw new UnsupportedOperationException(depth + " not yet implemented");
+                }
                 for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
                     for (x = left; x < right; x++) {
                         iBit = x & 7;
@@ -1321,17 +1330,19 @@ public class BitmapImage
                             b4 = bitmap[iBitmap + bitplaneStride4];
                         }
                         bytePixels[iPixel++] = (byte) (((b0 & bitMask)
-                                | (b1 & bitMask) << 1
-                                | (b2 & bitMask) << 2
-                                | (b3 & bitMask) << 3
-                                | (b4 & bitMask) << 4) >>> (7 - iBit));
+                              | (b1 & bitMask) << 1
+                              | (b2 & bitMask) << 2
+                              | (b3 & bitMask) << 3
+                              | (b4 & bitMask) << 4) >>> (7 - iBit));
                     }
                     iPixel += pixelLineStride;
                 }
                 break;
 
             case 6:
-                if (true) throw new UnsupportedOperationException(depth +" not yet implemented");
+                if (true) {
+                    throw new UnsupportedOperationException(depth + " not yet implemented");
+                }
                 for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
                     for (x = left; x < right; x++) {
                         iBit = x & 7;
@@ -1347,18 +1358,20 @@ public class BitmapImage
                             b5 = bitmap[iBitmap + bitplaneStride5];
                         }
                         bytePixels[iPixel++] = (byte) (((b0 & bitMask)
-                                | (b1 & bitMask) << 1
-                                | (b2 & bitMask) << 2
-                                | (b3 & bitMask) << 3
-                                | (b4 & bitMask) << 4
-                                | (b5 & bitMask) << 5) >>> (7 - iBit));
+                              | (b1 & bitMask) << 1
+                              | (b2 & bitMask) << 2
+                              | (b3 & bitMask) << 3
+                              | (b4 & bitMask) << 4
+                              | (b5 & bitMask) << 5) >>> (7 - iBit));
                     }
                     iPixel += pixelLineStride;
                 }
                 break;
 
             case 7:
-                if (true) throw new UnsupportedOperationException(depth +" not yet implemented");
+                if (true) {
+                    throw new UnsupportedOperationException(depth + " not yet implemented");
+                }
                 for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
                     for (x = left; x < right; x++) {
                         iBit = x & 7;
@@ -1375,12 +1388,12 @@ public class BitmapImage
                             b6 = bitmap[iBitmap + bitplaneStride6];
                         }
                         bytePixels[iPixel++] = (byte) (((b0 & bitMask)
-                                | (b1 & bitMask) << 1
-                                | (b2 & bitMask) << 2
-                                | (b3 & bitMask) << 3
-                                | (b4 & bitMask) << 4
-                                | (b5 & bitMask) << 5
-                                | (b6 & bitMask) << 6) >>> (7 - iBit));
+                              | (b1 & bitMask) << 1
+                              | (b2 & bitMask) << 2
+                              | (b3 & bitMask) << 3
+                              | (b4 & bitMask) << 4
+                              | (b5 & bitMask) << 5
+                              | (b6 & bitMask) << 6) >>> (7 - iBit));
                     }
                     iPixel += pixelLineStride;
                 }
@@ -1393,35 +1406,37 @@ public class BitmapImage
                         bitMask = 128 >>> (iBit);
                         iBitmap = iScanline + (x >>> 3);
 
-                        int px=bytePixels[iPixel++];
-                        b7=(b7<<1)|((px>>>7)&1);
-                        b6=(b6<<1)|((px>>>6)&1);
-                        b5=(b5<<1)|((px>>>5)&1);
-                        b4=(b4<<1)|((px>>>4)&1);
-                        b3=(b3<<1)|((px>>>3)&1);
-                        b2=(b2<<1)|((px>>>2)&1);
-                        b1=(b1<<1)|((px>>>1)&1);
-                        b0=(b0<<1)|((px>>>0)&1);
-                        
+                        int px = bytePixels[iPixel++];
+                        b7 = (b7 << 1) | ((px >>> 7) & 1);
+                        b6 = (b6 << 1) | ((px >>> 6) & 1);
+                        b5 = (b5 << 1) | ((px >>> 5) & 1);
+                        b4 = (b4 << 1) | ((px >>> 4) & 1);
+                        b3 = (b3 << 1) | ((px >>> 3) & 1);
+                        b2 = (b2 << 1) | ((px >>> 2) & 1);
+                        b1 = (b1 << 1) | ((px >>> 1) & 1);
+                        b0 = (b0 << 1) | ((px >>> 0) & 1);
+
                         if (iBit == 7) {
-                             bitmap[iBitmap]=(byte)b0;
-                             bitmap[iBitmap + bitplaneStride]=(byte)b1;
-                             bitmap[iBitmap + bitplaneStride2]=(byte)b2;
-                             bitmap[iBitmap + bitplaneStride3]=(byte)b3;
-                             bitmap[iBitmap + bitplaneStride4]=(byte)b4;
-                             bitmap[iBitmap + bitplaneStride5]=(byte)b5;
-                             bitmap[iBitmap + bitplaneStride6]=(byte)b6;
-                             bitmap[iBitmap + bitplaneStride7]=(byte)b7;
+                            bitmap[iBitmap] = (byte) b0;
+                            bitmap[iBitmap + bitplaneStride] = (byte) b1;
+                            bitmap[iBitmap + bitplaneStride2] = (byte) b2;
+                            bitmap[iBitmap + bitplaneStride3] = (byte) b3;
+                            bitmap[iBitmap + bitplaneStride4] = (byte) b4;
+                            bitmap[iBitmap + bitplaneStride5] = (byte) b5;
+                            bitmap[iBitmap + bitplaneStride6] = (byte) b6;
+                            bitmap[iBitmap + bitplaneStride7] = (byte) b7;
                         }
                     }
                     // FIXME - Add special treatment here when width is not a multiple of 8
-                    
-                    iPixel += pixelLineStride; 
+
+                    iPixel += pixelLineStride;
                 }
                 break;
 
             default:
-                if (true) throw new UnsupportedOperationException(depth +" not yet implemented");
+                if (true) {
+                    throw new UnsupportedOperationException(depth + " not yet implemented");
+                }
                 for (iScanline = top * scanlineStride + scanlineStride; iScanline <= bottomScanline; iScanline += scanlineStride) {
                     for (x = left; x < right; x++) {
                         iBit = x & 7;
@@ -1438,21 +1453,16 @@ public class BitmapImage
                 }
         }
     }
+
     /**
      * Converts the planar image data into chunky pixels.
      *
-     * After successful completion the chunky pixels can by used
-     * in conjunction with the DirectColorModel associated to
-     * this instance.
+     * After successful completion the chunky pixels can by used in conjunction
+     * with the DirectColorModel associated to this instance.
      *
-     * Pre condition
-     *   The color model must be an instance of java.awt.IndexColorModel.
-     *   0 <= topBound <= bottomBound <= height.
-     *   0 <= leftBound <= rightBound <= width.
-     * Post condition
-     *   -
-     * Obligation
-     *   -
+     * Pre condition The color model must be an instance of
+     * java.awt.IndexColorModel. 0 <= topBound <= bottomBound <= height. 0 <=
+     * leftBound <= rightBound <= width. Post condition - Obligation -
      */
     private void indexPlanesToDirectPixels(int top, int left, int bottom, int right) {
         IndexColorModel colorModel = (IndexColorModel) planarColorModel;
@@ -1480,7 +1490,7 @@ public class BitmapImage
         }
         }*/
 
-        /* Add one to bottom and right to facilitate computations. */
+ /* Add one to bottom and right to facilitate computations. */
         bottom++;
         right++;
 
@@ -1498,7 +1508,6 @@ public class BitmapImage
         //int iBitmap;
         int iScanline;
         int iDepth;
-
 
         int iBit; // the index of the bit inside the byte at the current x-position
         int bitMask; // the mask for the bit inside the byte at the current x-position
@@ -1554,7 +1563,7 @@ public class BitmapImage
                         iBitmap = iScanline + (x >>> 3);
 
                         intPixels[iPixel++] = clut[((bitmap[iBitmap] & bitMask)
-                                | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1) >>> (7 - iBit)];
+                              | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1) >>> (7 - iBit)];
                     }
                     iPixel += pixelLineStride;
                 }
@@ -1581,8 +1590,8 @@ public class BitmapImage
                         iBitmap = iScanline + (x >>> 3);
 
                         intPixels[iPixel++] = clut[((bitmap[iBitmap] & bitMask)
-                                | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1
-                                | (bitmap[iBitmap + bitplaneStride2] & bitMask) << 2) >>> (7 - iBit)];
+                              | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1
+                              | (bitmap[iBitmap + bitplaneStride2] & bitMask) << 2) >>> (7 - iBit)];
                     }
                     iPixel += pixelLineStride;
                 }
@@ -1610,9 +1619,9 @@ public class BitmapImage
                         iBitmap = iScanline + (x >>> 3);
 
                         intPixels[iPixel++] = clut[((bitmap[iBitmap] & bitMask)
-                                | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1
-                                | (bitmap[iBitmap + bitplaneStride2] & bitMask) << 2
-                                | (bitmap[iBitmap + bitplaneStride3] & bitMask) << 3) >>> (7 - iBit)];
+                              | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1
+                              | (bitmap[iBitmap + bitplaneStride2] & bitMask) << 2
+                              | (bitmap[iBitmap + bitplaneStride3] & bitMask) << 3) >>> (7 - iBit)];
                     }
                     iPixel += pixelLineStride;
                 }
@@ -1634,7 +1643,7 @@ public class BitmapImage
                 }
                 iPixel += pixelLineStride;
                 }*/
-                /*
+ /*
                 for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
                 for (x = left; x < right; x++) {
                 iBit = x & 7;
@@ -1665,10 +1674,10 @@ public class BitmapImage
                             b4 = bitmap[iBitmap + bitplaneStride4];
                         }
                         intPixels[iPixel++] = clut[((b0 & bitMask)
-                                | (b1 & bitMask) << 1
-                                | (b2 & bitMask) << 2
-                                | (b3 & bitMask) << 3
-                                | (b4 & bitMask) << 4) >>> (7 - iBit)];
+                              | (b1 & bitMask) << 1
+                              | (b2 & bitMask) << 2
+                              | (b3 & bitMask) << 3
+                              | (b4 & bitMask) << 4) >>> (7 - iBit)];
                     }
                     iPixel += pixelLineStride;
                 }
@@ -1707,11 +1716,11 @@ public class BitmapImage
                             b5 = bitmap[iBitmap + bitplaneStride5];
                         }
                         intPixels[iPixel++] = clut[((b0 & bitMask)
-                                | (b1 & bitMask) << 1
-                                | (b2 & bitMask) << 2
-                                | (b3 & bitMask) << 3
-                                | (b4 & bitMask) << 4
-                                | (b5 & bitMask) << 5) >>> (7 - iBit)];
+                              | (b1 & bitMask) << 1
+                              | (b2 & bitMask) << 2
+                              | (b3 & bitMask) << 3
+                              | (b4 & bitMask) << 4
+                              | (b5 & bitMask) << 5) >>> (7 - iBit)];
                     }
                     iPixel += pixelLineStride;
                 }
@@ -1751,12 +1760,12 @@ public class BitmapImage
                             b6 = bitmap[iBitmap + bitplaneStride6];
                         }
                         intPixels[iPixel++] = clut[((b0 & bitMask)
-                                | (b1 & bitMask) << 1
-                                | (b2 & bitMask) << 2
-                                | (b3 & bitMask) << 3
-                                | (b4 & bitMask) << 4
-                                | (b5 & bitMask) << 5
-                                | (b6 & bitMask) << 6) >>> (7 - iBit)];
+                              | (b1 & bitMask) << 1
+                              | (b2 & bitMask) << 2
+                              | (b3 & bitMask) << 3
+                              | (b4 & bitMask) << 4
+                              | (b5 & bitMask) << 5
+                              | (b6 & bitMask) << 6) >>> (7 - iBit)];
                     }
                     iPixel += pixelLineStride;
                 }
@@ -1798,13 +1807,13 @@ public class BitmapImage
                             b7 = bitmap[iBitmap + bitplaneStride7];
                         }
                         intPixels[iPixel++] = clut[((b0 & bitMask)
-                                | (b1 & bitMask) << 1
-                                | (b2 & bitMask) << 2
-                                | (b3 & bitMask) << 3
-                                | (b4 & bitMask) << 4
-                                | (b5 & bitMask) << 5
-                                | (b6 & bitMask) << 6
-                                | (b7 & bitMask) << 7) >>> (7 - iBit)];
+                              | (b1 & bitMask) << 1
+                              | (b2 & bitMask) << 2
+                              | (b3 & bitMask) << 3
+                              | (b4 & bitMask) << 4
+                              | (b5 & bitMask) << 5
+                              | (b6 & bitMask) << 6
+                              | (b7 & bitMask) << 7) >>> (7 - iBit)];
                     }
                     iPixel += pixelLineStride;
                 }
@@ -1835,8 +1844,8 @@ public class BitmapImage
                             iBitmap -= bitplaneStride;
                             pixel = (pixel << 1) | bitmap[iBitmap] & bitMask;
                         }
-                        intPixels[iPixel++] =
-                                clut[pixel >>> (7 - iBit)];
+                        intPixels[iPixel++]
+                              = clut[pixel >>> (7 - iBit)];
                     }
                     iPixel += pixelLineStride;
                 }
@@ -1846,18 +1855,12 @@ public class BitmapImage
     /**
      * Converts the planar image data into chunky pixels.
      *
-     * After successful completion the chunky pixels can by used
-     * in conjunction with the DirectColorModel associated to
-     * this instance.
+     * After successful completion the chunky pixels can by used in conjunction
+     * with the DirectColorModel associated to this instance.
      *
-     * Pre condition
-     *   The color model must be an instance of java.awt.IndexColorModel.
-     *   0 <= topBound <= bottomBound <= height.
-     *   0 <= leftBound <= rightBound <= width.
-     * Post condition
-     *   -
-     * Obligation
-     *   -
+     * Pre condition The color model must be an instance of
+     * java.awt.IndexColorModel. 0 <= topBound <= bottomBound <= height. 0 <=
+     * leftBound <= rightBound <= width. Post condition - Obligation -
      */
     private void indexPlanesTo555(int top, int left, int bottom, int right) {
         IndexColorModel colorModel = (IndexColorModel) planarColorModel;
@@ -1885,7 +1888,7 @@ public class BitmapImage
         }
         }*/
 
-        /* Add one to bottom and right to facilitate computations. */
+ /* Add one to bottom and right to facilitate computations. */
         bottom++;
         right++;
 
@@ -1903,7 +1906,6 @@ public class BitmapImage
         //int iBitmap;
         int iScanline;
         int iDepth;
-
 
         int iBit; // the index of the bit inside the byte at the current x-position
         int bitMask; // the mask for the bit inside the byte at the current x-position
@@ -1959,7 +1961,7 @@ public class BitmapImage
                         iBitmap = iScanline + (x >>> 3);
 
                         shortPixels[iPixel++] = clut[((bitmap[iBitmap] & bitMask)
-                                | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1) >>> (7 - iBit)];
+                              | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1) >>> (7 - iBit)];
                     }
                     iPixel += pixelLineStride;
                 }
@@ -1986,8 +1988,8 @@ public class BitmapImage
                         iBitmap = iScanline + (x >>> 3);
 
                         shortPixels[iPixel++] = clut[((bitmap[iBitmap] & bitMask)
-                                | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1
-                                | (bitmap[iBitmap + bitplaneStride2] & bitMask) << 2) >>> (7 - iBit)];
+                              | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1
+                              | (bitmap[iBitmap + bitplaneStride2] & bitMask) << 2) >>> (7 - iBit)];
                     }
                     iPixel += pixelLineStride;
                 }
@@ -2015,9 +2017,9 @@ public class BitmapImage
                         iBitmap = iScanline + (x >>> 3);
 
                         shortPixels[iPixel++] = clut[((bitmap[iBitmap] & bitMask)
-                                | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1
-                                | (bitmap[iBitmap + bitplaneStride2] & bitMask) << 2
-                                | (bitmap[iBitmap + bitplaneStride3] & bitMask) << 3) >>> (7 - iBit)];
+                              | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1
+                              | (bitmap[iBitmap + bitplaneStride2] & bitMask) << 2
+                              | (bitmap[iBitmap + bitplaneStride3] & bitMask) << 3) >>> (7 - iBit)];
                     }
                     iPixel += pixelLineStride;
                 }
@@ -2039,7 +2041,7 @@ public class BitmapImage
                 }
                 iPixel += pixelLineStride;
                 }*/
-                /*
+ /*
                 for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
                 for (x = left; x < right; x++) {
                 iBit = x & 7;
@@ -2070,10 +2072,10 @@ public class BitmapImage
                             b4 = bitmap[iBitmap + bitplaneStride4];
                         }
                         shortPixels[iPixel++] = clut[((b0 & bitMask)
-                                | (b1 & bitMask) << 1
-                                | (b2 & bitMask) << 2
-                                | (b3 & bitMask) << 3
-                                | (b4 & bitMask) << 4) >>> (7 - iBit)];
+                              | (b1 & bitMask) << 1
+                              | (b2 & bitMask) << 2
+                              | (b3 & bitMask) << 3
+                              | (b4 & bitMask) << 4) >>> (7 - iBit)];
                     }
                     iPixel += pixelLineStride;
                 }
@@ -2112,11 +2114,11 @@ public class BitmapImage
                             b5 = bitmap[iBitmap + bitplaneStride5];
                         }
                         shortPixels[iPixel++] = clut[((b0 & bitMask)
-                                | (b1 & bitMask) << 1
-                                | (b2 & bitMask) << 2
-                                | (b3 & bitMask) << 3
-                                | (b4 & bitMask) << 4
-                                | (b5 & bitMask) << 5) >>> (7 - iBit)];
+                              | (b1 & bitMask) << 1
+                              | (b2 & bitMask) << 2
+                              | (b3 & bitMask) << 3
+                              | (b4 & bitMask) << 4
+                              | (b5 & bitMask) << 5) >>> (7 - iBit)];
                     }
                     iPixel += pixelLineStride;
                 }
@@ -2156,12 +2158,12 @@ public class BitmapImage
                             b6 = bitmap[iBitmap + bitplaneStride6];
                         }
                         shortPixels[iPixel++] = clut[((b0 & bitMask)
-                                | (b1 & bitMask) << 1
-                                | (b2 & bitMask) << 2
-                                | (b3 & bitMask) << 3
-                                | (b4 & bitMask) << 4
-                                | (b5 & bitMask) << 5
-                                | (b6 & bitMask) << 6) >>> (7 - iBit)];
+                              | (b1 & bitMask) << 1
+                              | (b2 & bitMask) << 2
+                              | (b3 & bitMask) << 3
+                              | (b4 & bitMask) << 4
+                              | (b5 & bitMask) << 5
+                              | (b6 & bitMask) << 6) >>> (7 - iBit)];
                     }
                     iPixel += pixelLineStride;
                 }
@@ -2203,13 +2205,13 @@ public class BitmapImage
                             b7 = bitmap[iBitmap + bitplaneStride7];
                         }
                         shortPixels[iPixel++] = clut[((b0 & bitMask)
-                                | (b1 & bitMask) << 1
-                                | (b2 & bitMask) << 2
-                                | (b3 & bitMask) << 3
-                                | (b4 & bitMask) << 4
-                                | (b5 & bitMask) << 5
-                                | (b6 & bitMask) << 6
-                                | (b7 & bitMask) << 7) >>> (7 - iBit)];
+                              | (b1 & bitMask) << 1
+                              | (b2 & bitMask) << 2
+                              | (b3 & bitMask) << 3
+                              | (b4 & bitMask) << 4
+                              | (b5 & bitMask) << 5
+                              | (b6 & bitMask) << 6
+                              | (b7 & bitMask) << 7) >>> (7 - iBit)];
                     }
                     iPixel += pixelLineStride;
                 }
@@ -2240,8 +2242,8 @@ public class BitmapImage
                             iBitmap -= bitplaneStride;
                             pixel = (pixel << 1) | bitmap[iBitmap] & bitMask;
                         }
-                        shortPixels[iPixel++] =
-                                clut[pixel >>> (7 - iBit)];
+                        shortPixels[iPixel++]
+                              = clut[pixel >>> (7 - iBit)];
                     }
                     iPixel += pixelLineStride;
                 }
@@ -2251,18 +2253,12 @@ public class BitmapImage
     /**
      * Converts the planar image data into chunky pixels.
      *
-     * After successful completion the chunky pixels can by used
-     * in conjunction with the DirectColorModel associated to
-     * this instance.
+     * After successful completion the chunky pixels can by used in conjunction
+     * with the DirectColorModel associated to this instance.
      *
-     * Pre condition
-     *   The color model must be an instance of java.awt.DirectColorModel.
-     *   0 <= topBound <= bottomBound <= height.
-     *   0 <= leftBound <= rightBound <= width.
-     * Post condition
-     *   -
-     * Obligation
-     *   -
+     * Pre condition The color model must be an instance of
+     * java.awt.DirectColorModel. 0 <= topBound <= bottomBound <= height. 0 <=
+     * leftBound <= rightBound <= width. Post condition - Obligation -
      */
     private void directPlanesToDirectPixels(int top, int left, int bottom, int right) {
         /*
@@ -2294,7 +2290,7 @@ public class BitmapImage
         iPixel += pixelLineStride;
         }
          */
-        /*
+ /*
         // Eliminating the innermost loop increases the performance
         // by 37 percent.
         
@@ -2537,29 +2533,29 @@ public class BitmapImage
                 }
 
                 intPixels[iPixel++] = ((b0 & bitMask) << 16
-                        | (b1 & bitMask) << 17
-                        | (b2 & bitMask) << 18
-                        | (b3 & bitMask) << 19
-                        | (b4 & bitMask) << 20
-                        | (b5 & bitMask) << 21
-                        | (b6 & bitMask) << 22
-                        | (b7 & bitMask) << 23
-                        | (b8 & bitMask) << 8
-                        | (b9 & bitMask) << 9
-                        | (b10 & bitMask) << 10
-                        | (b11 & bitMask) << 11
-                        | (b12 & bitMask) << 12
-                        | (b13 & bitMask) << 13
-                        | (b14 & bitMask) << 14
-                        | (b15 & bitMask) << 15
-                        | (b16 & bitMask)
-                        | (b17 & bitMask) << 1
-                        | (b18 & bitMask) << 2
-                        | (b19 & bitMask) << 3
-                        | (b20 & bitMask) << 4
-                        | (b21 & bitMask) << 5
-                        | (b22 & bitMask) << 6
-                        | (b23 & bitMask) << 7) >>> (7 - iBit);
+                      | (b1 & bitMask) << 17
+                      | (b2 & bitMask) << 18
+                      | (b3 & bitMask) << 19
+                      | (b4 & bitMask) << 20
+                      | (b5 & bitMask) << 21
+                      | (b6 & bitMask) << 22
+                      | (b7 & bitMask) << 23
+                      | (b8 & bitMask) << 8
+                      | (b9 & bitMask) << 9
+                      | (b10 & bitMask) << 10
+                      | (b11 & bitMask) << 11
+                      | (b12 & bitMask) << 12
+                      | (b13 & bitMask) << 13
+                      | (b14 & bitMask) << 14
+                      | (b15 & bitMask) << 15
+                      | (b16 & bitMask)
+                      | (b17 & bitMask) << 1
+                      | (b18 & bitMask) << 2
+                      | (b19 & bitMask) << 3
+                      | (b20 & bitMask) << 4
+                      | (b21 & bitMask) << 5
+                      | (b22 & bitMask) << 6
+                      | (b23 & bitMask) << 7) >>> (7 - iBit);
 
             }
             iPixel += pixelLineStride;
@@ -2569,21 +2565,15 @@ public class BitmapImage
     /**
      * Converts the planar image data into chunky pixels.
      *
-     * After successful completion the chunky pixels can by used
-     * in conjunction with the HAMColorModel associated to
-     * this instance.
+     * After successful completion the chunky pixels can by used in conjunction
+     * with the HAMColorModel associated to this instance.
      *
-     * Pre condition
-     *   The color model must be an instance of HAMColorModel.
-     *   0 <= topBound <= bottomBound <= height.
-     *   0 <= leftBound <= rightBound <= width.
-     * Post condition
-     *   -
-     * Obligation
-     *   -
+     * Pre condition The color model must be an instance of HAMColorModel. 0 <=
+     * topBound <= bottomBound <= height. 0 <= leftBound <= rightBound <= width.
+     * Post condition - Obligation -
      *
-     * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
-     * @version  1997-10-16  Created.
+     * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+     * @version 1997-10-16 Created.
      */
     private void ham6PlanesToDirectPixels(int top, int left, int bottom, int right) {
         /* Add one to bottom and right to facilitate computations. */
@@ -2681,12 +2671,12 @@ public class BitmapImage
                     b5 = bitmap[iBitmap + bitplaneStride5];
                 }
                 pixel = ((b0 & bitMask)
-                        | (b1 & bitMask) << 1
-                        | (b2 & bitMask) << 2
-                        | (b3 & bitMask) << 3) >>> (7 - iBit);
+                      | (b1 & bitMask) << 1
+                      | (b2 & bitMask) << 2
+                      | (b3 & bitMask) << 3) >>> (7 - iBit);
 
                 switch (((b4 & bitMask)
-                        | (b5 & bitMask) << 1) >>> (7 - iBit)) {
+                      | (b5 & bitMask) << 1) >>> (7 - iBit)) {
 
                     case 0: // use indexed color
                         intPixels[iPixel++] = lastPixel = HAMColors[pixel];
@@ -2712,18 +2702,12 @@ public class BitmapImage
     /**
      * Converts the planar image data into chunky pixels.
      *
-     * After successful completion the chunky pixels can by used
-     * in conjunction with the HAMColorModel associated to
-     * this instance.
+     * After successful completion the chunky pixels can by used in conjunction
+     * with the HAMColorModel associated to this instance.
      *
-     * Pre condition
-     *   The color model must be an instance of HAMColorModel.
-     *   0 <= topBound <= bottomBound <= height.
-     *   0 <= leftBound <= rightBound <= width.
-     * Post condition
-     *   -
-     * Obligation
-     *   -
+     * Pre condition The color model must be an instance of HAMColorModel. 0 <=
+     * topBound <= bottomBound <= height. 0 <= leftBound <= rightBound <= width.
+     * Post condition - Obligation -
      */
     private void ham8PlanesToDirectPixels(int top, int left, int bottom, int right) {
         /* Add one to bottom and right to facilitate computations. */
@@ -2830,14 +2814,14 @@ public class BitmapImage
                     b7 = bitmap[iBitmap + bitplaneStride7];
                 }
                 pixel = ((b0 & bitMask)
-                        | (b1 & bitMask) << 1
-                        | (b2 & bitMask) << 2
-                        | (b3 & bitMask) << 3
-                        | (b4 & bitMask) << 4
-                        | (b5 & bitMask) << 5) >>> (7 - iBit);
+                      | (b1 & bitMask) << 1
+                      | (b2 & bitMask) << 2
+                      | (b3 & bitMask) << 3
+                      | (b4 & bitMask) << 4
+                      | (b5 & bitMask) << 5) >>> (7 - iBit);
 
                 switch (((b6 & bitMask)
-                        | (b7 & bitMask) << 1) >>> (7 - iBit)) {
+                      | (b7 & bitMask) << 1) >>> (7 - iBit)) {
 
                     case 0: // use indexed color
                         intPixels[iPixel++] = lastPixel = HAMColors[pixel];

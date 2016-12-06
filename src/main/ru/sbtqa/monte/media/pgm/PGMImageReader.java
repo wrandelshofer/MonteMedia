@@ -28,7 +28,7 @@ import javax.imageio.stream.ImageInputStream;
 
 /**
  * Reads an image in the Netpbm grayscale image format (PGM).
- * <p>
+ * 
  * See: <a href="http://netpbm.sourceforge.net/doc/pgm.html">PGM Format Specification</a>.
  *
  * @author Werner Randelshofer

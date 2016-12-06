@@ -10,17 +10,17 @@ import static org.monte.media.math.IntMath.*;
 
 /**
  * Represents a Rational number {@code numerator/denominator}.  
- * <p> 
+ *  
  * A number is represented by two longs: the first represents the numerator of
  * a fraction; the second, the denominator. 
- * <p> 
+ *  
  * Invariants:
- * <ul>
- * <li>{@code denominator >=0}, the denominator is always a positive integer</li>
- * <li>{@code 0/1} is the unique* representation of 0.</li>
- * <li>{code 1/0},{@code -1/}0 are the unique representations of positive and
- * negative infinity.</li>
- * </ul>
+ * 
+ * {@code denominator >=0}, the denominator is always a positive integer
+ * {@code 0/1} is the unique* representation of 0.
+ * {code 1/0},{@code -1/}0 are the unique representations of positive and
+ * negative infinity.
+ * 
  *
  * @author Werner Randelshofer
  * @version $Id: Rational.java 364 2016-11-09 19:54:25Z werner $
@@ -421,10 +421,10 @@ public class Rational extends Number implements Comparable<Rational> {
     }
 
     /**
-     * Iteratively computes rational from double. <p>Reference:<br> <a
+     * Iteratively computes rational from double. Reference:<br> <a
      * href="http://www2.fz-juelich.de/video/cpp/html/exercises/exercise/Rational_cpp.html">
      * http://www2.fz-juelich.de/video/cpp/html/exercises/exercise/Rational_cpp.html</a>
-     * </p>
+     * 
      */
     private static Rational toRational(double x, double limit, int iterations) {
         double intpart = Math.floor(x);
@@ -472,9 +472,9 @@ public class Rational extends Number implements Comparable<Rational> {
     /**
      * Parses a string.
      *
-     * A rational can be represented in the following ways: <li>As a long
-     * number</li> <li>As a double number</li> <li>As an integer/integer
-     * rational number</li>
+     * A rational can be represented in the following ways: As a long
+     * number As a double number As an integer/integer
+     * rational number
      *
      * @throws NumberFormatException if str can not be parsed.
      */

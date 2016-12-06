@@ -7,7 +7,7 @@
  */
 /**
  * Provides media handlers for the PGM file format.
- * <p>
+ * 
  * Netpbm grayscale image format.
  * 
  * @author Werner Randelshofer

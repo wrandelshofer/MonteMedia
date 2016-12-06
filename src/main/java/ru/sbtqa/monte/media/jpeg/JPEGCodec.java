@@ -21,51 +21,51 @@ import ru.sbtqa.monte.media.io.ByteArrayImageInputStream;
 import ru.sbtqa.monte.media.io.ByteArrayImageOutputStream;
 
 /**
- * {@code JPEGCodec} encodes a BufferedImage as a byte[] array. 
- * <p>
- * Supported input/output formats: 
- * <ul> 
- * <li>@code VideoFormat} with {@code BufferedImage.class}, any
- * width, any height, any depth.</li>
- * <li>{@code VideoFormat} with {@code byte[].class}, same width and height as input
- * format, depth=24.</li>
- * </ul>
+ * {@code JPEGCodec} encodes a BufferedImage as a byte[] array.
+ * 
+ * Supported input/output formats:
+ * 
+ * {@code VideoFormat} with {@code BufferedImage.class}, any width, any
+ * height, any depth.
+ * {@code VideoFormat} with {@code byte[].class}, same width and height as
+ * input format, depth=24.
+ * 
  *
  * @author Werner Randelshofer
  * @version $Id: JPEGCodec.java 364 2016-11-09 19:54:25Z werner $
  */
 public class JPEGCodec extends AbstractVideoCodec {
-    
+
     public JPEGCodec() {
         super(new Format[]{
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
-                    EncodingKey, ENCODING_BUFFERED_IMAGE), //
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                    EncodingKey, ENCODING_QUICKTIME_JPEG,//
-                    CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_JPEG, //
-                    DataClassKey, byte[].class, DepthKey, 24), //
-                    //
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-                    EncodingKey, ENCODING_AVI_MJPG, DataClassKey, byte[].class, DepthKey, 24), //
-                    //
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                    EncodingKey, ENCODING_QUICKTIME_JPEG, DataClassKey, byte[].class, DepthKey, 24), //
-                },
-                new Format[]{
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
-                    EncodingKey, ENCODING_BUFFERED_IMAGE), //
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,//
-                    EncodingKey, ENCODING_QUICKTIME_JPEG,//
-                    CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_JPEG, //
-                    DataClassKey, byte[].class, DepthKey, 24), //
-                    //
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-                    EncodingKey, ENCODING_AVI_MJPG, DataClassKey, byte[].class, DepthKey, 24), //
-                }//
-                );
+            new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
+            EncodingKey, ENCODING_BUFFERED_IMAGE), //
+            new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
+            EncodingKey, ENCODING_QUICKTIME_JPEG,//
+            CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_JPEG, //
+            DataClassKey, byte[].class, DepthKey, 24), //
+            //
+            new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+            EncodingKey, ENCODING_AVI_MJPG, DataClassKey, byte[].class, DepthKey, 24), //
+            //
+            new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
+            EncodingKey, ENCODING_QUICKTIME_JPEG, DataClassKey, byte[].class, DepthKey, 24), //
+        },
+              new Format[]{
+                  new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
+                        EncodingKey, ENCODING_BUFFERED_IMAGE), //
+                  new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,//
+                        EncodingKey, ENCODING_QUICKTIME_JPEG,//
+                        CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_JPEG, //
+                        DataClassKey, byte[].class, DepthKey, 24), //
+                  //
+                  new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+                        EncodingKey, ENCODING_AVI_MJPG, DataClassKey, byte[].class, DepthKey, 24), //
+              }//
+        );
         name = "JPEG Codec";
     }
-    
+
     @Override
     public int process(Buffer in, Buffer out) {
         if (ENCODING_BUFFERED_IMAGE.equals(outputFormat.get(EncodingKey))) {
@@ -90,7 +90,7 @@ public class JPEGCodec extends AbstractVideoCodec {
         }
         return this.outputFormat;
     }
-    
+
     public int encode(Buffer in, Buffer out) {
         out.setMetaTo(in);
         out.format = outputFormat;
@@ -108,7 +108,7 @@ public class JPEGCodec extends AbstractVideoCodec {
         } else {
             tmp = new ByteArrayImageOutputStream();
         }
-        
+
         try {
             ImageWriter iw = ImageIO.getImageWritersByMIMEType("image/jpeg").next();
             ImageWriteParam iwParam = iw.getDefaultWriteParam();
@@ -119,7 +119,7 @@ public class JPEGCodec extends AbstractVideoCodec {
             IIOImage img = new IIOImage(image, null, null);
             iw.write(null, img, iwParam);
             iw.dispose();
-            
+
             out.sampleCount = 1;
             out.setFlag(KEYFRAME);
             out.data = tmp.getBuffer();
@@ -132,7 +132,7 @@ public class JPEGCodec extends AbstractVideoCodec {
             return CODEC_FAILED;
         }
     }
-    
+
     public int decode(Buffer in, Buffer out) {
         out.setMetaTo(in);
         out.format = outputFormat;
@@ -145,14 +145,14 @@ public class JPEGCodec extends AbstractVideoCodec {
             return CODEC_FAILED;
         }
         ByteArrayImageInputStream tmp = new ByteArrayImageInputStream(data);
-        
+
         try {
             // ImageReader ir = (ImageReader) ImageIO.getImageReadersByMIMEType("image/jpeg").next();
             ImageReader ir = new MJPGImageReader(new MJPGImageReaderSpi());
             ir.setInput(tmp);
             out.data = ir.read(0);
             ir.dispose();
-            
+
             out.sampleCount = 1;
             out.offset = 0;
             out.length = (int) tmp.getStreamPosition();

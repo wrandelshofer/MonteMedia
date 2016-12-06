@@ -13,7 +13,7 @@ import java.nio.ByteOrder;
  * may be read from the stream. An internal
  * counter keeps track of the next byte to
  * be supplied by the {@code read} method.
- * <p>
+ * 
  * Closing a {@code ByteArrayImageInputStream} has no effect. The methods in
  * this class can be called after the stream has been closed without
  * generating an {@code IOException}.
@@ -68,7 +68,7 @@ public class ByteArrayImageInputStream extends ImageInputStreamImpl2 {
      * <code>0</code> to <code>255</code>. If no byte is available
      * because the end of the stream has been reached, the value
      * <code>-1</code> is returned.
-     * <p>
+     * 
      * This <code>read</code> method
      * cannot block.
      *
@@ -96,7 +96,7 @@ public class ByteArrayImageInputStream extends ImageInputStreamImpl2 {
      * by <code>System.arraycopy</code>. The
      * value <code>k</code> is added into <code>streamPos</code>
      * and <code>k</code> is returned.
-     * <p>
+     * 
      * This <code>read</code> method cannot block.
      *
      * @param   b     the buffer into which the data is read.
@@ -158,7 +158,7 @@ public class ByteArrayImageInputStream extends ImageInputStreamImpl2 {
     /**
      * Returns the number of remaining bytes that can be read (or skipped over)
      * from this input stream.
-     * <p>
+     * 
      * The value returned is <code>count&nbsp;- streamPos</code>,
      * which is the number of bytes remaining to be read from the input buffer.
      *
@@ -175,7 +175,7 @@ public class ByteArrayImageInputStream extends ImageInputStreamImpl2 {
      * Closing a <tt>ByteArrayInputStream</tt> has no effect. The methods in
      * this class can be called after the stream has been closed without
      * generating an <tt>IOException</tt>.
-     * <p>
+     * 
      */
     @Override
     public void close() {

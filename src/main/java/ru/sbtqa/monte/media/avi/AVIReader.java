@@ -16,7 +16,6 @@ import ru.sbtqa.monte.media.BufferFlag;
 import static ru.sbtqa.monte.media.BufferFlag.*;
 import ru.sbtqa.monte.media.Codec;
 import ru.sbtqa.monte.media.Format;
-import static ru.sbtqa.monte.media.FormatKeys.*;
 import ru.sbtqa.monte.media.FormatKeys.MediaType;
 import ru.sbtqa.monte.media.MovieReader;
 import ru.sbtqa.monte.media.Registry;
@@ -55,13 +54,14 @@ public class AVIReader extends AVIInputStream implements MovieReader {
     }
 
     /**
-     * Reads a chunk of media data from the specified track. <p> If the track is
-     * a video track with palette change "..PC" chunks, then the body of the
-     * palette change chunk can be found in the buffer.header.
+     * Reads a chunk of media data from the specified track.
+     * 
+     * If the track is a video track with palette change "..PC" chunks, then the
+     * body of the palette change chunk can be found in the buffer.header.
      *
      * @param track The track number.
      * @param buffer The buffer for the media data.
-     * @throws IOException
+     * @throws IOException TODO
      */
     @Override
     public void read(int track, Buffer buffer) throws IOException {
@@ -75,8 +75,8 @@ public class AVIReader extends AVIInputStream implements MovieReader {
 
         buffer.sequenceNumber = tr.readIndex;
         Sample s = tr.samples.get((int) tr.readIndex);
-        
-            // FIXME - This should be done using AVIInputStream.readPalette()
+
+        // FIXME - This should be done using AVIInputStream.readPalette()
         if (s.header != null) {
             byte[] b;
             if (buffer.data instanceof byte[]) {
@@ -90,9 +90,9 @@ public class AVIReader extends AVIInputStream implements MovieReader {
             in.seek(s.header.offset);
             in.readFully(b, 0, (int) s.header.length);
         } else {
-                buffer.header = null;
+            buffer.header = null;
         }
-        
+
         // FIXME - This should be done using AVIInputStream.readSample()
         in.seek(s.offset);
         {
@@ -109,8 +109,6 @@ public class AVIReader extends AVIInputStream implements MovieReader {
         }
         buffer.offset = 0;
         buffer.length = (int) s.length;
-       
-        
 
         switch (tr.mediaType) {
             case AUDIO: {
@@ -133,8 +131,6 @@ public class AVIReader extends AVIInputStream implements MovieReader {
         buffer.timeStamp = new Rational((s.timeStamp + tr.startTime) * tr.scale, tr.rate);
         buffer.flags = s.isKeyframe ? EnumSet.of(KEYFRAME) : EnumSet.noneOf(BufferFlag.class);
 
-
-
         tr.readIndex++;
 
     }
@@ -143,7 +139,7 @@ public class AVIReader extends AVIInputStream implements MovieReader {
      * Decodes the PC palette change chunk.
      */
     private void readPalette(byte[] pc, int offset, int length, byte[] r, byte[] g, byte[] b) throws IOException {
-                    /*
+        /*
                      * typedef struct {
                      BYTE         bFirstEntry;
                      BYTE         bNumEntries;
@@ -157,18 +153,18 @@ public class AVIReader extends AVIInputStream implements MovieReader {
                      BYTE peBlue;
                      BYTE peFlags;
                      } PALETTEENTRY;
-                     */
-        int read=offset;
-        int firstEntry=(int) pc[read++]; //bFirstEntry
-        int numEntries=(int) pc[read++];//bNumEntries
-        int flags=( pc[read++]&0xff) | (( pc[read++]&0xff)<<8); //wFlags
-        for (int i=0;i<numEntries;i++) {
-            r[firstEntry+1]=pc[read++];//peRed
-            g[firstEntry+1]=pc[read++];//peGreen
-            b[firstEntry+1]=pc[read++];//peBlue
+         */
+        int read = offset;
+        int firstEntry = (int) pc[read++]; //bFirstEntry
+        int numEntries = (int) pc[read++];//bNumEntries
+        int flags = (pc[read++] & 0xff) | ((pc[read++] & 0xff) << 8); //wFlags
+        for (int i = 0; i < numEntries; i++) {
+            r[firstEntry + 1] = pc[read++];//peRed
+            g[firstEntry + 1] = pc[read++];//peGreen
+            b[firstEntry + 1] = pc[read++];//peBlue
             read++; //peFlags
         }
-        
+
     }
 
     /**
@@ -178,7 +174,7 @@ public class AVIReader extends AVIInputStream implements MovieReader {
      * @param img An image that can be reused if it fits the media format of the
      * track. Pass null to create a new image on each read.
      * @return An image or null if the end of the media has been reached.
-     * @throws IOException
+     * @throws IOException TODO
      */
     public BufferedImage read(int track, BufferedImage img) throws IOException {
         Track tr = tracks.get(track);
@@ -209,17 +205,15 @@ public class AVIReader extends AVIInputStream implements MovieReader {
         String enc = fmt.get(EncodingKey);
         if (codec == null) {
             throw new UnsupportedOperationException("Track " + tr + " no codec found for format " + fmt);
-        } else {
-            if (fmt.get(MediaTypeKey) == MediaType.VIDEO) {
-                if (null == codec.setInputFormat(fmt)) {
-                    throw new UnsupportedOperationException("Track " + tr + " codec "+codec+" does not support input format " + fmt + ". codec=" + codec);
-                }
-                Format outFormat = fmt.prepend(MediaTypeKey, MediaType.VIDEO,//
-                        MimeTypeKey, MIME_JAVA,
-                        EncodingKey, ENCODING_BUFFERED_IMAGE, DataClassKey, BufferedImage.class);
-                if (null == codec.setOutputFormat(outFormat)) {
-                    throw new UnsupportedOperationException("Track " + tr + " codec "+codec+" does not support output format " + outFormat + ". codec=" + codec);
-                }
+        } else if (fmt.get(MediaTypeKey) == MediaType.VIDEO) {
+            if (null == codec.setInputFormat(fmt)) {
+                throw new UnsupportedOperationException("Track " + tr + " codec " + codec + " does not support input format " + fmt + ". codec=" + codec);
+            }
+            Format outFormat = fmt.prepend(MediaTypeKey, MediaType.VIDEO,//
+                  MimeTypeKey, MIME_JAVA,
+                  EncodingKey, ENCODING_BUFFERED_IMAGE, DataClassKey, BufferedImage.class);
+            if (null == codec.setOutputFormat(outFormat)) {
+                throw new UnsupportedOperationException("Track " + tr + " codec " + codec + " does not support output format " + outFormat + ". codec=" + codec);
             }
         }
 

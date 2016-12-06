@@ -161,7 +161,7 @@ public class QuickTimeInputStream {
     }
 
     /**
-     * Returns the time scale of the movie. <p> The movie time scale is used for
+     * Returns the time scale of the movie.  The movie time scale is used for
      * editing tracks. Such as for specifying the start time of a track.
      *
      * @return time scale
@@ -172,7 +172,7 @@ public class QuickTimeInputStream {
     }
 
     /**
-     * Returns the time scale of the media in a track. <p> The media time scale
+     * Returns the time scale of the media in a track.  The media time scale
      * is used for specifying the duration of samples in a track.
      *
      * @param track Track index.

@@ -166,7 +166,7 @@ public class ANIMDeltaFrame
      *
      *    The best way to show the use of this format is in a sample playback
      *    routine.
-     * <pre>
+     * 
      *           SetDLTAshort(bm,deltaword)
      *           struct BitMap *bm;
      *           WORD *deltaword;
@@ -204,7 +204,7 @@ public class ANIMDeltaFrame
      *              }
      *              return(0);
      *           }
-     *</pre>
+     *
      *    The above routine is for short word vertical compression with
      *    run length compression.  The most efficient way to support 
      *    the various options is to replicate this routine and make 
@@ -1021,7 +1021,7 @@ public class ANIMDeltaFrame
      * Returns true if the frame can be decoded over both the previous frame or
      * the subsequent frame. Bidirectional frames can be used efficiently for
      * forward and backward playing a movie.
-     * <p>
+     * 
      * All key frames are bidirectional. Delta frames which use an XOR OP-mode
      * are bidirectional as well.
      */

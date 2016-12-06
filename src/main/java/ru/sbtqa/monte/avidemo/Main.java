@@ -1,5 +1,5 @@
 /**
- * @(#)Main.java  
+ * @(#)Main.java
  * Copyright © 2011-2012 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
@@ -70,9 +70,9 @@ public class Main {
 
         // Make the format more specific
         format = format.prepend(MediaTypeKey, MediaType.VIDEO, //
-                FrameRateKey, new Rational(30, 1),//
-                WidthKey, 400, //
-                HeightKey, 400);
+              FrameRateKey, new Rational(30, 1),//
+              WidthKey, 400, //
+              HeightKey, 400);
 
         // Create a buffered image for this format
         BufferedImage img = createImage(format);
@@ -100,18 +100,18 @@ public class Main {
             Stroke sminute = new BasicStroke(5.0f);
 
             for (int i = 0, n = 200; i < n; i++) {
-                double tminute = (double) i / (n-1);
-                double thour = tminute/60.0;
+                double tminute = (double) i / (n - 1);
+                double thour = tminute / 60.0;
 
                 // Create an animation frame
                 g.clearRect(0, 0, img.getWidth(), img.getHeight());
-                Line2D.Double lhour = new Line2D.Double(cx,cy,cx+Math.sin(thour * Math.PI * 2) * rhour,cy-Math.cos(thour * Math.PI * 2) * rhour);
+                Line2D.Double lhour = new Line2D.Double(cx, cy, cx + Math.sin(thour * Math.PI * 2) * rhour, cy - Math.cos(thour * Math.PI * 2) * rhour);
                 g.setColor(Color.BLACK);
-            g.setStroke(shour);
-            g.draw(lhour);
-                Line2D.Double lminute = new Line2D.Double(cx,cy,cx+Math.sin(tminute * Math.PI * 2) * rminute,cy-Math.cos(tminute * Math.PI * 2) * rminute);
-            g.setStroke(sminute);
-            g.draw(lminute);
+                g.setStroke(shour);
+                g.draw(lhour);
+                Line2D.Double lminute = new Line2D.Double(cx, cy, cx + Math.sin(tminute * Math.PI * 2) * rminute, cy - Math.cos(tminute * Math.PI * 2) * rminute);
+                g.setStroke(sminute);
+                g.draw(lminute);
 
                 // write it to the writer
                 out.write(0, img, 1);
@@ -139,7 +139,7 @@ public class Main {
             // Look for the first video track
             int track = 0;
             while (track < in.getTrackCount()
-                    && in.getFormat(track).get(MediaTypeKey) != MediaType.VIDEO) {
+                  && in.getFormat(track).get(MediaTypeKey) != MediaType.VIDEO) {
                 track++;
             }
 
@@ -164,7 +164,9 @@ public class Main {
         }
     }
 
-    /** Creates a buffered image of the specified depth with a random color palette.*/
+    /**
+     * Creates a buffered image of the specified depth with a random color palette.
+     */
     private static BufferedImage createImage(Format format) {
         int depth = format.get(DepthKey);
         int width = format.get(WidthKey);

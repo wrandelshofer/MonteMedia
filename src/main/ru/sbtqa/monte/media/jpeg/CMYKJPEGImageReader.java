@@ -34,12 +34,12 @@ import org.monte.media.io.ImageInputStreamAdapter;
 
 /**
  * Reads a JPEG image with colors in the CMYK color space.
- * <p>
+ * 
  * For optimal performance with CMYK images, please run the JVM with the following
  * VM option:
- * <pre>
+ * 
  * -Dsun.java2d.cmm=sun.java2d.cmm.kcms.KcmsServiceProvider
- * </pre>
+ * 
  *
  * @author Werner Randelshofer
  * @version $Id: CMYKJPEGImageReader.java 364 2016-11-09 19:54:25Z werner $
@@ -306,7 +306,7 @@ public class CMYKJPEGImageReader extends ImageReader {
    * Reads a CMYK JPEG image from the provided InputStream, converting the
    * colors to RGB using the provided CMYK ICC_Profile. The image data must be
    * in the CMYK color space.
-   * <p>
+   * 
    * Use this method, if you have already determined that the input stream
    * contains a CMYK JPEG image.
    *
@@ -317,7 +317,7 @@ public class CMYKJPEGImageReader extends ImageReader {
    * used.
    * @return a BufferedImage containing the decoded image converted into the RGB
    * color space.
-   * @throws java.io.IOException
+   * @throws java.io.IOException TODO
    */
   public static BufferedImage readImageFromCMYK(InputStream in, ICC_Profile cmykProfile) throws IOException {
     ImageInputStream inputStream = null;
@@ -337,7 +337,7 @@ public class CMYKJPEGImageReader extends ImageReader {
    * Reads a RGBA JPEG image from the provided InputStream, converting the
    * colors to RGBA using the provided RGBA ICC_Profile. The image data must be
    * in the RGBA color space.
-   * <p>
+   * 
    * Use this method, if you have already determined that the input stream
    * contains a RGBA JPEG image.
    *
@@ -348,7 +348,7 @@ public class CMYKJPEGImageReader extends ImageReader {
    * used.
    * @return a BufferedImage containing the decoded image converted into the RGB
    * color space.
-   * @throws java.io.IOException
+   * @throws java.io.IOException TODO
    */
   public static BufferedImage readImageFromInvertedCMYK(InputStream in, ICC_Profile rgbaProfile) throws IOException {
     ImageInputStream inputStream = null;
@@ -396,7 +396,7 @@ public class CMYKJPEGImageReader extends ImageReader {
    * Reads a YCCK JPEG image from the provided InputStream, converting the
    * colors to RGB using the provided CMYK ICC_Profile. The image data must be
    * in the YCCK color space.
-   * <p>
+   * 
    * Use this method, if you have already determined that the input stream
    * contains a YCCK JPEG image.
    *
@@ -407,7 +407,7 @@ public class CMYKJPEGImageReader extends ImageReader {
    * used.
    * @return a BufferedImage containing the decoded image converted into the RGB
    * color space.
-   * @throws java.io.IOException
+   * @throws java.io.IOException TODO
    */
   public static BufferedImage readImageFromYCCK(InputStream in, ICC_Profile cmykProfile) throws IOException {
     ImageInputStream inputStream = null;
@@ -427,7 +427,7 @@ public class CMYKJPEGImageReader extends ImageReader {
    * Reads an inverted-YCCK JPEG image from the provided InputStream, converting
    * the colors to RGB using the provided CMYK ICC_Profile. The image data must
    * be in the inverted-YCCK color space.
-   * <p>
+   * 
    * Use this method, if you have already determined that the input stream
    * contains an inverted-YCCK JPEG image.
    *
@@ -438,7 +438,7 @@ public class CMYKJPEGImageReader extends ImageReader {
    * used.
    * @return a BufferedImage containing the decoded image converted into the RGB
    * color space.
-   * @throws java.io.IOException
+   * @throws java.io.IOException TODO
    */
   public static BufferedImage readImageFromInvertedYCCK(InputStream in, ICC_Profile cmykProfile) throws IOException {
     ImageInputStream inputStream = null;

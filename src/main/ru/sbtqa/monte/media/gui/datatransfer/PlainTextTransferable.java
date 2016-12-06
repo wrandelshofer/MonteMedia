@@ -9,7 +9,7 @@ import java.awt.datatransfer.*;
 import java.io.*;
 /**
  * PlainTextTransferable.
- * <p>
+ * 
  * Note: This transferable should (almost) always be used in conjunction with
  * PlainTextTransferable.
  *

@@ -10,7 +10,7 @@ import javax.imageio.stream.ImageInputStreamImpl;
 
 /**
  * {@code ImageInputStreamImpl2} fixes bugs in ImageInputStreamImpl.
- * <p>
+ * 
  * ImageInputStreamImpl uses read(byte[]) instead of readFully(byte[]) inside of
  * readShort. This results in corrupt data input if the underlying stream can
  * not fulfill the read operation in a single step.

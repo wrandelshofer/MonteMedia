@@ -13,13 +13,13 @@ import java.awt.image.*;
 /**
  * Draws a filled bevel border using an image and insets.
  * The image must consist of a bevel and a fill area.
- * <p>
+ * 
  * The insets and the size of the image are
  * used do determine which parts of the image shall be
  * used to draw the corners and edges of the bevel as
  * well the fill area.
  *
- * <p>For example, if you provide an image of size 10,10
+ * For example, if you provide an image of size 10,10
  * and a insets of size 2, 2, 4, 4, then the corners of
  * the border are made up of top left: 2,2, top right: 2,4,
  * bottom left: 2,4, bottom right: 4,4 rectangle of the image.

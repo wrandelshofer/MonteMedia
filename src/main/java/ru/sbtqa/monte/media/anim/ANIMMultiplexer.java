@@ -39,18 +39,17 @@ public class ANIMMultiplexer extends ANIMOutputStream implements Multiplexer {
             if (inputTime == null) {
                 inputTime = new Rational(0, 1);
             }
-            inputTime=inputTime.add(buf.sampleDuration.multiply(buf.sampleCount));
-            
+            inputTime = inputTime.add(buf.sampleDuration.multiply(buf.sampleCount));
+
             Rational outputTime = new Rational(getMovieTime(), jiffies);
             Rational outputDuration = inputTime.subtract(outputTime);
 
-
             outputDuration = outputDuration.round(jiffies);
-            int outputMediaDuration =max(1,(int)( outputDuration.getNumerator() *jiffies/outputDuration.getDenominator()));
+            int outputMediaDuration = max(1, (int) (outputDuration.getNumerator() * jiffies / outputDuration.getDenominator()));
 
-            outputTime=
-            outputTime.add(new Rational(outputMediaDuration,jiffies));
-           // System.out.println("ANIMMultiplexer #" + frameCount + " jiffies:"+jiffies+" movieT:" + outputTime + " inputT:" + inputTime+" diff:"+(outputTime.subtract(inputTime))+ " sampleDuration:" + outputMediaDuration + " == " + outputDuration+" ~= "+buf.sampleDuration);
+            outputTime
+                  = outputTime.add(new Rational(outputMediaDuration, jiffies));
+            // System.out.println("ANIMMultiplexer #" + frameCount + " jiffies:"+jiffies+" movieT:" + outputTime + " inputT:" + inputTime+" diff:"+(outputTime.subtract(inputTime))+ " sampleDuration:" + outputMediaDuration + " == " + outputDuration+" ~= "+buf.sampleDuration);
 
             writeFrame((BitmapImage) buf.data, outputMediaDuration);
         }

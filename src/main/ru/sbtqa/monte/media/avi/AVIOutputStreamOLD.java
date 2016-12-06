@@ -21,27 +21,27 @@ import org.monte.media.io.IOStreams;
 
 /**
  * This class supports writing of images into an AVI 1.0 video file.
- * <p>
+ * 
  * The images are written as video frames.
- * <p>
+ * 
  * Video frames can be encoded with one of the following formats:
- * <ul>
- * <li>JPEG</li>
- * <li>PNG</li>
- * <li>RAW</li>
- * <li>RLE</li>
- * </ul>
+ * 
+ * JPEG
+ * PNG
+ * RAW
+ * RLE
+ * 
  * All frames must have the same format.
  * When JPG is used each frame can have an individual encoding quality.
- * <p>
+ * 
  * All frames in an AVI file must have the same duration. The duration can
  * be set by setting an appropriate pair of values using methods
  * {@link #setFrameRate} and {@link #setTimeScale}.
- * <p>
+ * 
  * The length of an AVI 1.0 file is limited to 1 GB.
  * This class supports lengths of up to 4 GB, but such files may not work on
  * all players.
- * <p>
+ * 
  * For detailed information about the AVI RIFF file format see:<br>
  * <a href="http://msdn.microsoft.com/en-us/library/ms779636.aspx">msdn.microsoft.com AVI RIFF</a><br>
  * <a href="http://www.microsoft.com/whdc/archive/fourcc.mspx">www.microsoft.com FOURCC for Video Compression</a><br>
@@ -120,7 +120,7 @@ public class AVIOutputStreamOLD {
     private RunLengthCodec encoder;
     /**
      * The timeScale of the movie.
-     * <p>
+     * 
      * Used with frameRate to specify the time scale that this stream will use.
      * Dividing frameRate by timeScale gives the number of samples per second.
      * For video streams, this is the frame rate. For audio streams, this rate
@@ -130,7 +130,7 @@ public class AVIOutputStreamOLD {
     private int timeScale = 1;
     /**
      * The frameRate of the movie in timeScale units.
-     * <p>
+     * 
      * @see timeScale
      */
     private int frameRate = 30;
@@ -170,9 +170,9 @@ public class AVIOutputStreamOLD {
 
         /**
          * Creates a new sample.
-         * @param duration
-         * @param offset
-         * @param length
+         * @param duration TODO
+         * @param offset TODO
+         * @param length TODO
          */
         public Sample(String chunkId, int duration, long offset, long length, boolean isSync) {
             this.chunkType = chunkId;
@@ -280,7 +280,7 @@ public class AVIOutputStreamOLD {
         /**
          * Writes the chunk and all its children to the ImageOutputStream
          * and disposes of all resources held by the chunk.
-         * @throws java.io.IOException
+         * @throws java.io.IOException TODO
          */
         @Override
         public void finish() throws IOException {
@@ -345,7 +345,7 @@ public class AVIOutputStreamOLD {
 
         /**
          * Returns the offset of this chunk to the beginning of the random access file
-         * @return
+         * @return TODO
          */
         public long getOffset() {
             return offset;
@@ -428,7 +428,7 @@ System.out.println("sizeBefore:"+sizeBefore);
 
         /**
          * Returns the offset of this chunk to the beginning of the random access file
-         * @return
+         * @return TODO
          */
         public long getOffset() {
             return offset;
@@ -532,10 +532,10 @@ System.out.println("sizeBefore:"+sizeBefore);
      * For video streams, this is the frame rate. For audio streams, this rate
      * corresponds to the time needed to play nBlockAlign bytes of audio, which
      * for PCM audio is the just the sample rate.
-     * <p>
+     * 
      * The default value is 1.
      *
-     * @param newValue
+     * @param newValue TODO
      */
     public void setTimeScale(int newValue) {
         if (newValue <= 0) {
@@ -555,11 +555,11 @@ System.out.println("sizeBefore:"+sizeBefore);
 
     /**
      * Sets the rate of video frames in time scale units.
-     * <p>
+     * 
      * The default value is 30. Together with the default value 1 of timeScale
      * this results in 30 frames pers second.
      *
-     * @param newValue
+     * @param newValue TODO
      */
     public void setFrameRate(int newValue) {
         if (newValue <= 0) {
@@ -589,16 +589,16 @@ System.out.println("sizeBefore:"+sizeBefore);
      * Sets the compression quality of the video track.
      * A value of 0 stands for "high compression is important" a value of
      * 1 for "high image quality is important".
-     * <p>
+     * 
      * Changing this value affects frames which are subsequently written
      * to the AVIOutputStreamOLD. Frames which have already been written
      * are not changed.
-     * <p>
+     * 
      * This value has only effect on videos encoded with JPG format.
-     * <p>
+     * 
      * The default value is 0.9.
      *
-     * @param newValue
+     * @param newValue TODO
      */
     public void setVideoCompressionQuality(float newValue) {
         this.quality = newValue;
@@ -615,10 +615,10 @@ System.out.println("sizeBefore:"+sizeBefore);
 
     /**
      * Sets the dimension of the video track.
-     * <p>
+     * 
      * You need to explicitly set the dimension, if you add all frames from
      * files or input streams.
-     * <p>
+     * 
      * If you add frames from buffered images, then AVIOutputStreamOLD
      * can determine the video dimension from the image width and height.
      *
@@ -635,7 +635,7 @@ System.out.println("sizeBefore:"+sizeBefore);
 
     /**
      * Gets the dimension of the video track.
-     * <p>
+     * 
      * Returns null if the dimension is not known.
      */
     public Dimension getVideoDimension() {
@@ -647,7 +647,7 @@ System.out.println("sizeBefore:"+sizeBefore);
 
     /**
      * Sets the state of the QuickTimeOutpuStream to started.
-     * <p>
+     * 
      * If the state is changed by this method, the prolog is
      * written.
      */
@@ -661,7 +661,7 @@ System.out.println("sizeBefore:"+sizeBefore);
 
     /**
      * Writes a frame to the video track.
-     * <p>
+     * 
      * If the dimension of the video track has not been specified yet, it
      * is derived from the first buffered image added to the AVIOutputStreamOLD.
      *
@@ -980,11 +980,11 @@ System.out.println("sizeBefore:"+sizeBefore);
 
     /**
      * Writes a frame from a file to the video track.
-     * <p>
+     * 
      * This method does not inspect the contents of the file.
      * For example, Its your responsibility to only add JPG files if you have
      * chosen the JPEG video format.
-     * <p>
+     * 
      * If you add all frames from files or from input streams, then you
      * have to explicitly set the dimension of the video track before you
      * call finish() or close().
@@ -1008,11 +1008,11 @@ System.out.println("sizeBefore:"+sizeBefore);
 
     /**
      * Writes a frame to the video track.
-     * <p>
+     * 
      * This method does not inspect the contents of the file.
      * For example, its your responsibility to only add JPG files if you have
      * chosen the JPEG video format.
-     * <p>
+     * 
      * If you add all frames from files or from input streams, then you
      * have to explicitly set the dimension of the video track before you
      * call finish() or close().
@@ -1088,20 +1088,20 @@ System.out.println("sizeBefore:"+sizeBefore);
     }
 
     /** Gets the position relative to the beginning of the QuickTime stream.
-     * <p>
+     * 
      * Usually this value is equal to the stream position of the underlying
      * ImageOutputStream, but can be larger if the underlying stream already
      * contained data.
      *
      * @return The relative stream position.
-     * @throws IOException
+     * @throws IOException TODO
      */
     private long getRelativeStreamPosition() throws IOException {
         return out.getStreamPosition() - streamOffset;
     }
 
     /** Seeks relative to the beginning of the QuickTime stream.
-     * <p>
+     * 
      * Usually this equal to seeking in the underlying ImageOutputStream, but
      * can be different if the underlying stream already contained data.
      *

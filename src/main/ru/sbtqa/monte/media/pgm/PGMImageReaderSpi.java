@@ -13,7 +13,7 @@ import javax.imageio.stream.ImageInputStream;
 /**
  * ImageIO service provider interface for images in the Netpbm grayscale image
  * format (PGM).
- * <p>
+ * 
  * See: <a href="http://netpbm.sourceforge.net/doc/pgm.html">PGM Format Specification</a>.
  *
  * @author Werner Randelshofer

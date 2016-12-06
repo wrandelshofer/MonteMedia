@@ -25,8 +25,9 @@ import ru.sbtqa.monte.media.image.Images;
 import ru.sbtqa.monte.media.math.Rational;
 
 /**
- * Demonstrates the use of {@link MovieReader} and {@link MovieWriter}. <p> This
- * class creates a video file named montemedia-...codec....avi for each
+ * Demonstrates the use of {@link MovieReader} and {@link MovieWriter}.
+ * 
+ * This class creates a video file named montemedia-...codec....avi for each
  * installed Codec, and writes simple animation frames into the file. Then, it
  * attempts to read the frames back from the video file.
  *
@@ -78,9 +79,9 @@ public class ReadWriteDemoMain {
 
         // Make the format more specific
         format = format.prepend(MediaTypeKey, MediaType.VIDEO, //
-                FrameRateKey, new Rational(30, 1),//
-                WidthKey, 320, //
-                HeightKey, 160);
+              FrameRateKey, new Rational(30, 1),//
+              WidthKey, 320, //
+              HeightKey, 160);
 
         // Create a buffered image for this format
         BufferedImage img = createImage(format);
@@ -128,11 +129,11 @@ public class ReadWriteDemoMain {
         MovieWriter out = Registry.getInstance().getWriter(file);
 
         Format format = new Format(MediaTypeKey, MediaType.VIDEO, //
-                EncodingKey, ENCODING_AVI_MJPG,
-                FrameRateKey, new Rational(30, 1),//
-                WidthKey, frames[0].getWidth(), //
-                HeightKey, frames[0].getHeight(),//
-                DepthKey, 24);
+              EncodingKey, ENCODING_AVI_MJPG,
+              FrameRateKey, new Rational(30, 1),//
+              WidthKey, frames[0].getWidth(), //
+              HeightKey, frames[0].getHeight(),//
+              DepthKey, 24);
 
         int track = out.addTrack(format);
 
@@ -194,7 +195,7 @@ public class ReadWriteDemoMain {
             // Look for the first video track
             int track = 0;
             while (track < in.getTrackCount()
-                    && in.getFormat(track).get(MediaTypeKey) != MediaType.VIDEO) {
+                  && in.getFormat(track).get(MediaTypeKey) != MediaType.VIDEO) {
                 track++;
             }
 
@@ -221,7 +222,6 @@ public class ReadWriteDemoMain {
                 }
 
                 //...to do: do something with the image...
-
             } while (img != null);
 
         } finally {
@@ -233,7 +233,8 @@ public class ReadWriteDemoMain {
     }
 
     /**
-     * Creates a buffered image of the specified depth with a random color palette.
+     * Creates a buffered image of the specified depth with a random color
+     * palette.
      */
     private static BufferedImage createImage(Format format) {
         int depth = format.get(DepthKey);

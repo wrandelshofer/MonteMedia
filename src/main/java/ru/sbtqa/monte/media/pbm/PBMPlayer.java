@@ -30,18 +30,17 @@ import ru.sbtqa.monte.media.io.BoundedRangeInputStream;
 public class PBMPlayer extends AbstractPlayer implements ColorCyclePlayer {
 
     /**
-     * The memory image source handles the image
-     * producer/consumer protocol.
+     * The memory image source handles the image producer/consumer protocol.
      */
     private ColorCyclingMemoryImageSource memoryImage;
     /**
-     * Bounded range indicates the number of frames and the
-     * index of the current frame.
+     * Bounded range indicates the number of frames and the index of the current
+     * frame.
      */
     private BoundedRangeModel timeModel;
     /**
-     * Bounded range indicates the amount of data being
-     * fetched from the data source.
+     * Bounded range indicates the amount of data being fetched from the data
+     * source.
      */
     private BoundedRangeInputStream cachingControlModel;
     /**
@@ -49,24 +48,22 @@ public class PBMPlayer extends AbstractPlayer implements ColorCyclePlayer {
      */
     private InputStream in;
     /**
-     * The size of the input file. If the size is not known then
-     * this attribute is set to -1.
+     * The size of the input file. If the size is not known then this attribute
+     * is set to -1.
      */
     private int inputFileSize = -1;
     /**
-     * The visual component contains the display area
-     * for movie images.
+     * The visual component contains the display area for movie images.
      */
     private ImagePanel visualComponent;
     /**
-     * The visual component contains control elements
-     * for starting and stopping the movie.
+     * The visual component contains control elements for starting and stopping
+     * the movie.
      */
     private MovieControl controlComponent;
     /**
-     * Indicates wether all data has been cached.
-     * Acts like a latch: Once set to true never changes
-     * its value anymore.
+     * Indicates wether all data has been cached. Acts like a latch: Once set to
+     * true never changes its value anymore.
      */
     private volatile boolean isCached = false;
 
@@ -76,9 +73,10 @@ public class PBMPlayer extends AbstractPlayer implements ColorCyclePlayer {
 
     /**
      * Creates a new instance.
+     *
      * @param in InputStream containing an IFF ANIM file.
-     * @param inputFileSize The size of the input file. Provide the value -1
-     * if this is not known.
+     * @param inputFileSize The size of the input file. Provide the value -1 if
+     * this is not known.
      */
     public PBMPlayer(InputStream in, int inputFileSize) {
         this.in = in;
@@ -119,7 +117,6 @@ public class PBMPlayer extends AbstractPlayer implements ColorCyclePlayer {
                 }
             }
             timeModel.setRangeProperties(0, 1, 0, 1, false);
-
 
         } catch (Throwable e) {
             if (visualComponent != null) {
@@ -210,8 +207,9 @@ public class PBMPlayer extends AbstractPlayer implements ColorCyclePlayer {
     }
 
     /**
-     * Returns the image producer that produces
-     * the animation frames.
+     * Returns the image producer that produces the animation frames.
+     *
+     * @return TODO
      */
     protected ImageProducer getImageProducer() {
         return memoryImage;
@@ -237,16 +235,22 @@ public class PBMPlayer extends AbstractPlayer implements ColorCyclePlayer {
     }
 
     /**
-     * Returns true when the player has completely cached all movie data.
-     * This player informs all property change listeners, when the value of this
+     * Returns true when the player has completely cached all movie data. This
+     * player informs all property change listeners, when the value of this
      * property changes. The name of the property is 'cached'.
+     *
+     * @return TODO
      */
     @Override
     public boolean isCached() {
         return isCached;
     }
 
-    /** Sets whether colors are blended during color cycling. */
+    /**
+     * Sets whether colors are blended during color cycling.
+     *
+     * @param newValue TODO
+     */
     public void setBlendedColorCycling(boolean newValue) {
         if (memoryImage != null) {
             boolean oldValue = memoryImage.isBlendedColorCycling();
@@ -255,7 +259,11 @@ public class PBMPlayer extends AbstractPlayer implements ColorCyclePlayer {
         }
     }
 
-    /** Returns true if colors are blended during color cycling. */
+    /**
+     * Returns true if colors are blended during color cycling.
+     *
+     * @return TODO
+     */
     public boolean isBlendedColorCycling() {
         return memoryImage == null ? false : memoryImage.isBlendedColorCycling();
     }

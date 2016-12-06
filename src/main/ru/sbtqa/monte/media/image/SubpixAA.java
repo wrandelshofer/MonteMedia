@@ -201,7 +201,7 @@ public class SubpixAA {
     }
 
     /** Scales down an image using the specified antialiasing method.
-     * <p>
+     * 
      * For methods {@code HBGR} and {@code HRGB}, the image width is scaled down
      * by factor 3.
      * For methods {@code VBGR} and {@code VRGB}, the image height is scaled down
@@ -245,16 +245,16 @@ public class SubpixAA {
     }
 
     /** Scales down an image using HRGB antia-aliasing.
-     * <p>
+     * 
      * Source and destination image must be of type BufferedImage.TYPE_RGB
      * and have a data buffer of type DataBufferInt.
-     * <p>
+     * 
      * The height of source and destination image must be the same.
      * The width of the source image must be 3 times the width of the
      * destination image.
-     * <p>
+     * 
      * Intensity weights:
-     * <pre>
+     * 
      *
      *            1
      *            |
@@ -265,7 +265,7 @@ public class SubpixAA {
      *  +----+----+----+----+
      *  |    |    |    |    |
      * 1/9  2/9  3/9  2/9  1/9
-     * </pre>
+     * 
      *
      * @param src The source image.
      * @param dst The destination image.
@@ -382,16 +382,16 @@ public class SubpixAA {
     }
 
     /** Scales down an image using HBGR antia-aliasing.
-     * <p>
+     * 
      * Source and destination image must be of type BufferedImage.TYPE_RGB
      * and have a data buffer of type DataBufferInt.
-     * <p>
+     * 
      * The height of source and destination image must be the same.
      * The width of the source image must be 3 times the width of the
      * destination image.
-     * <p>
+     * 
      * Intensity weights:
-     * <pre>
+     * 
      *
      *            1
      *            |
@@ -402,7 +402,7 @@ public class SubpixAA {
      *  +----+----+----+----+
      *  |    |    |    |    |
      * 1/9  2/9  3/9  2/9  1/9
-     * </pre>
+     * 
      *
      * @param src The source image.
      * @param dst The destination image.
@@ -518,16 +518,16 @@ public class SubpixAA {
     }
 
     /** Scales down an image using VRGB antia-aliasing.
-     * <p>
+     * 
      * Source and destination image must be of type BufferedImage.TYPE_RGB
      * and have a data buffer of type DataBufferInt.
-     * <p>
+     * 
      * The width of source and destination image must be the same.
      * The height of the source image must be 3 times the height of the
      * destination image.
-     * <p>
+     * 
      * Intensity weights:
-     * <pre>
+     * 
      *
      *            1
      *            |
@@ -538,7 +538,7 @@ public class SubpixAA {
      *  +----+----+----+----+
      *  |    |    |    |    |
      * 1/9  2/9  3/9  2/9  1/9
-     * </pre>
+     * 
      *
      * @param src The source image.
      * @param dst The destination image.
@@ -655,16 +655,16 @@ public class SubpixAA {
     }
 
     /** Scales down an image using VBGR antia-aliasing.
-     * <p>
+     * 
      * Source and destination image must be of type BufferedImage.TYPE_RGB
      * and have a data buffer of type DataBufferInt.
-     * <p>
+     * 
      * The width of source and destination image must be the same.
      * The height of the source image must be 3 times the height of the
      * destination image.
-     * <p>
+     * 
      * Intensity weights:
-     * <pre>
+     * 
      *
      *            1
      *            |
@@ -675,7 +675,7 @@ public class SubpixAA {
      *  +----+----+----+----+
      *  |    |    |    |    |
      * 1/9  2/9  3/9  2/9  1/9
-     * </pre>
+     * 
      *
      * @param src The source image.
      * @param dst The destination image.

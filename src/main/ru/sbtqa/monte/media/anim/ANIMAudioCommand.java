@@ -12,12 +12,12 @@ import org.monte.media.eightsvx.*;
  * An ANIMAudioCommand handles an audio command that is associated to
  * a single ANIMFrame of a ANIMMovieTrack. An ANIMFrame may be associated
  * to multiple ANIMAudioCommands.
- * <p>
+ * 
  * This version of ANIMAudioCommand is designed to handle audio commands
  * as specified by the ANIM+SLA Sound Control collection chunk (ILBM SCTL).
- * <p>
+ * 
  * Here's the specification of the SCTL collection chunk:
- * <pre>
+ * 
  * typedef UBYTE Command; // Choice of commands
  * #define cmdPlaySound 1 // Start playing a sound
  * #define cmdStopSound 2 // Stop the sound in a given channelMask

@@ -2,7 +2,6 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-
 package ru.sbtqa.monte.media.anim;
 
 import ru.sbtqa.monte.media.Buffer;
@@ -18,21 +17,22 @@ import ru.sbtqa.monte.media.math.Rational;
  * @version 1.0 2011-02-20 Created.
  */
 public class ANIMTrack implements Track {
+
     private ANIMDemultiplexer demux;
     private long position;
 
     public ANIMTrack(ANIMDemultiplexer demux) {
-        this.demux=demux;
+        this.demux = demux;
     }
 
     @Override
     public long getSampleCount() {
-       return demux.getFrameCount();
+        return demux.getFrameCount();
     }
 
     @Override
     public void setPosition(long pos) {
-       this.position=pos;
+        this.position = pos;
     }
 
     @Override
@@ -47,8 +47,8 @@ public class ANIMTrack implements Track {
             if (!(buf.data instanceof BitmapImage)) {
                 buf.data = demux.createCompatibleBitmap();
             }
-            demux.readFrame((int)position,(BitmapImage) buf.data);
-            buf.sampleDuration = new Rational(demux.getDuration((int)position),demux.getJiffies());
+            demux.readFrame((int) position, (BitmapImage) buf.data);
+            buf.sampleDuration = new Rational(demux.getDuration((int) position), demux.getJiffies());
             position++;
         } else {
             buf.setFlagsTo(DISCARD);

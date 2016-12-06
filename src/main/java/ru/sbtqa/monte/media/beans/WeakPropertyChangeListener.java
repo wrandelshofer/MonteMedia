@@ -39,21 +39,21 @@ import java.beans.*;
 import java.lang.ref.*;
 
 /**
- *  Property change listener that holds weak reference to a
- *  target property change listener.  If the weak reference
- *  becomes null (meaning the delegate has been GC'ed) then this
- *  listener will remove itself from any beans that it receives
- *  events from.  It isn't perfect, but it's a lot better than
- *  nothing... and presumably beans that no longer send out events
- *  probably don't care if their listeners weren't properly cleaned
- *  up.
+ * Property change listener that holds weak reference to a target property
+ * change listener. If the weak reference becomes null (meaning the delegate has
+ * been GC'ed) then this listener will remove itself from any beans that it
+ * receives events from. It isn't perfect, but it's a lot better than nothing...
+ * and presumably beans that no longer send out events probably don't care if
+ * their listeners weren't properly cleaned up.
  *
- *  Design pattern: Proxy.
+ * Design pattern: Proxy.
  *
- *  @author Paul Speed
- *  @version $Id: WeakPropertyChangeListener.java 364 2016-11-09 19:54:25Z werner $
+ * @author Paul Speed
+ * @version $Id: WeakPropertyChangeListener.java 364 2016-11-09 19:54:25Z werner
+ * $
  */
 public class WeakPropertyChangeListener implements PropertyChangeListener {
+
     private WeakReference<PropertyChangeListener> weakRef;
 
     public WeakPropertyChangeListener(PropertyChangeListener target) {
@@ -61,16 +61,18 @@ public class WeakPropertyChangeListener implements PropertyChangeListener {
     }
 
     /**
-     *  Method that can be subclassed to provide additional remove
-     *  support.  Default implementation only supports StandardBeans.
+     * Method that can be subclassed to provide additional remove support.
+     * Default implementation only supports StandardBeans.
+     *
+     * @param event TODO
      */
     protected void removeFromSource(PropertyChangeEvent event) {
         // Remove ourselves from the source
         Object src = event.getSource();
         try {
-            src.getClass().getMethod("removePropertyChangeListener", new Class<?>[] {PropertyChangeListener.class}).invoke(src, this);
+            src.getClass().getMethod("removePropertyChangeListener", new Class<?>[]{PropertyChangeListener.class}).invoke(src, this);
         } catch (Exception ex) {
-            InternalError ie = new InternalError("Could not remove WeakPropertyChangeListener from "+src+".");
+            InternalError ie = new InternalError("Could not remove WeakPropertyChangeListener from " + src + ".");
             ie.initCause(ex);
             throw ie;
         }
@@ -98,6 +100,6 @@ public class WeakPropertyChangeListener implements PropertyChangeListener {
 
     @Override
     public String toString() {
-        return super.toString()+"["+weakRef.get()+"]";
+        return super.toString() + "[" + weakRef.get() + "]";
     }
 }

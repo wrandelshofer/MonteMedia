@@ -29,6 +29,7 @@ public class DataAtomInputStream extends FilterInputStream {
     public DataAtomInputStream(InputStream in) {
         super(in);
     }
+
     public DataAtomInputStream(ImageInputStream in) {
         super(new ImageInputStreamAdapter(in));
     }
@@ -54,18 +55,19 @@ public class DataAtomInputStream extends FilterInputStream {
     public final long readLong() throws IOException {
         readFully(readBuffer, 0, 8);
         return (((long) readBuffer[0] << 56)
-                + ((long) (readBuffer[1] & 255) << 48)
-                + ((long) (readBuffer[2] & 255) << 40)
-                + ((long) (readBuffer[3] & 255) << 32)
-                + ((long) (readBuffer[4] & 255) << 24)
-                + ((readBuffer[5] & 255) << 16)
-                + ((readBuffer[6] & 255) << 8)
-                + ((readBuffer[7] & 255) << 0));
+              + ((long) (readBuffer[1] & 255) << 48)
+              + ((long) (readBuffer[2] & 255) << 40)
+              + ((long) (readBuffer[3] & 255) << 32)
+              + ((long) (readBuffer[4] & 255) << 24)
+              + ((readBuffer[5] & 255) << 16)
+              + ((readBuffer[6] & 255) << 8)
+              + ((readBuffer[7] & 255) << 0));
     }
 
     public final int readUByte() throws IOException {
         return readByte() & 0xFF;
     }
+
     public final int readUShort() throws IOException {
         return readShort() & 0xFFFF;
     }
@@ -105,8 +107,9 @@ public class DataAtomInputStream extends FilterInputStream {
 
     /**
      * Reads a 32-bit Mac timestamp (seconds since 1902).
+     *
      * @return date
-     * @throws java.io.IOException
+     * @throws java.io.IOException TODO
      */
     public Date readMacTimestamp() throws IOException {
         long timestamp = ((long) readInt()) & 0xffffffffL;
@@ -115,6 +118,9 @@ public class DataAtomInputStream extends FilterInputStream {
 
     /**
      * Reads 32-bit fixed-point number divided as 16.16.
+     *
+     * @return TODO
+     * @throws java.io.IOException TODO
      */
     public double readFixed16D16() throws IOException {
         int wholePart = readUShort();
@@ -125,6 +131,9 @@ public class DataAtomInputStream extends FilterInputStream {
 
     /**
      * Reads 32-bit fixed-point number divided as 2.30.
+     *
+     * @return TODO
+     * @throws java.io.IOException TODO
      */
     public double readFixed2D30() throws IOException {
         int fixed = readInt();
@@ -136,6 +145,9 @@ public class DataAtomInputStream extends FilterInputStream {
 
     /**
      * Reads 16-bit fixed-point number divided as 8.8.
+     *
+     * @return TODO
+     * @throws java.io.IOException TODO
      */
     public double readFixed8D8() throws IOException {
         int fixed = readUShort();
@@ -181,13 +193,21 @@ public class DataAtomInputStream extends FilterInputStream {
             throw ie;
         }
     }
-    /** Reads a Pascal String which is padded to a fixed size. */
+
+    /**
+     * Reads a Pascal String which is padded to a fixed size.
+     *
+     * @param fixedSize TODO
+     * @return TODO
+     * @throws java.io.IOException TODO
+     */
     public String readPString(int fixedSize) throws IOException {
-        int size = read(); fixedSize--;
+        int size = read();
+        fixedSize--;
         if (size == 0) {
             size = read();
             skipBytes(2); // why do we skip two bytes here?
-            fixedSize-=3;
+            fixedSize -= 3;
         }
         if (size < 0) {
             skipBytes(fixedSize);
@@ -197,7 +217,7 @@ public class DataAtomInputStream extends FilterInputStream {
         readFully(b);
 
         try {
-            return new String(b, 0,size,"ASCII");
+            return new String(b, 0, size, "ASCII");
         } catch (UnsupportedEncodingException ex) {
             InternalError ie = new InternalError("ASCII not supported");
             ie.initCause(ex);

@@ -2,7 +2,6 @@
  * Copyright © 2002-2012 Werner Randelshofer, Switzerland.
  * You may only use this file in compliance with the accompanying license terms. 
  */
-
 package ru.sbtqa.monte.media.math;
 
 import static java.lang.Math.abs;
@@ -14,23 +13,25 @@ import static java.math.BigInteger.valueOf;
 
 /**
  * Utility class for integer arithmetic.
- * 
+ *
  * @author Werner Randelshofer
  * @version $Id: IntMath.java 364 2016-11-09 19:54:25Z werner $
  */
 public class IntMath {
-    
-    /** Creates a new instance of IntMath */
+
+    /**
+     * Creates a new instance of IntMath
+     */
     public IntMath() {
     }
 
     /**
      * Returns an int whose value is the greatest common divisor of
-     * <tt>abs(a)</tt> and <tt>abs(b)</tt>.  Returns 0 if
+     * <tt>abs(a)</tt> and <tt>abs(b)</tt>. Returns 0 if
      * <tt>a==0 &amp;&amp; b==0</tt>.
      *
-     * @param  a value with with the GCD is to be computed.
-     * @param  b value with with the GCD is to be computed.
+     * @param a value with with the GCD is to be computed.
+     * @param b value with with the GCD is to be computed.
      * @return <tt>GCD(a, b)</tt>
      */
     public static int gcd(int a, int b) {
@@ -38,23 +39,26 @@ public class IntMath {
         //   Herrmann, D. (1992). Algorithmen Arbeitsbuch. 
         //   Bonn, München Paris: Addison Wesley.
         //   ggt6, Seite 63
-        
+
         a = abs(a);
         b = abs(b);
-        
+
         while (a > 0 && b > 0) {
             a = a % b;
-            if (a > 0) b = b % a;
+            if (a > 0) {
+                b = b % a;
+            }
         }
         return a + b;
     }
+
     /**
      * Returns a long whose value is the greatest common divisor of
-     * <tt>abs(a)</tt> and <tt>abs(b)</tt>.  Returns 0 if
+     * <tt>abs(a)</tt> and <tt>abs(b)</tt>. Returns 0 if
      * <tt>a==0 &amp;&amp; b==0</tt>.
      *
-     * @param  a value with with the GCD is to be computed.
-     * @param  b value with with the GCD is to be computed.
+     * @param a value with with the GCD is to be computed.
+     * @param b value with with the GCD is to be computed.
      * @return <tt>GCD(a, b)</tt>
      */
     public static long gcd(long a, long b) {
@@ -68,17 +72,20 @@ public class IntMath {
 
         while (a > 0 && b > 0) {
             a = a % b;
-            if (a > 0) b = b % a;
+            if (a > 0) {
+                b = b % a;
+            }
         }
         return a + b;
     }
+
     /**
      * Returns a long whose value is the greatest common divisor of
-     * <tt>abs(a)</tt> and <tt>abs(b)</tt>.  Returns 0 if
+     * <tt>abs(a)</tt> and <tt>abs(b)</tt>. Returns 0 if
      * <tt>a==0 &amp;&amp; b==0</tt>.
      *
-     * @param  a value with with the GCD is to be computed.
-     * @param  b value with with the GCD is to be computed.
+     * @param a value with with the GCD is to be computed.
+     * @param b value with with the GCD is to be computed.
      * @return <tt>GCD(a, b)</tt>
      */
     public static BigInteger gcd(BigInteger a, BigInteger b) {
@@ -92,18 +99,20 @@ public class IntMath {
 
         while (a.compareTo(ZERO) > 0 && b.compareTo(ZERO) > 0) {
             a = a.mod(b);
-            if (a.compareTo(ZERO) > 0) b = b.mod(a);
+            if (a.compareTo(ZERO) > 0) {
+                b = b.mod(a);
+            }
         }
         return a.add(b);
     }
-    
+
     /**
      * Returns an int whose value is the smallest common multiple of
-     * <tt>abs(a)</tt> and <tt>abs(b)</tt>.  Returns 0 if
+     * <tt>abs(a)</tt> and <tt>abs(b)</tt>. Returns 0 if
      * <tt>a==0 || b==0</tt>.
      *
-     * @param  a value with with the SCM is to be computed.
-     * @param  b value with with the SCM is to be computed.
+     * @param a value with with the SCM is to be computed.
+     * @param b value with with the SCM is to be computed.
      * @return <tt>SCM(a, b)</tt>
      */
     public static int scm(int a, int b) {
@@ -112,14 +121,16 @@ public class IntMath {
         //   Bonn, München Paris: Addison Wesley.
         //   gill, Seite 141
 
-        if (a == 0 || b == 0) return 0;
-                
+        if (a == 0 || b == 0) {
+            return 0;
+        }
+
         a = abs(a);
         b = abs(b);
 
         int u = a;
         int v = b;
-        
+
         while (a != b) {
             if (a < b) {
                 b -= a;
@@ -129,18 +140,18 @@ public class IntMath {
                 u += v;
             }
         }
-        
-        
+
         //return a; // gcd
         return (u + v) / 2; // scm
     }
+
     /**
      * Returns an int whose value is the smallest common multiple of
-     * <tt>abs(a)</tt> and <tt>abs(b)</tt>.  Returns 0 if
+     * <tt>abs(a)</tt> and <tt>abs(b)</tt>. Returns 0 if
      * <tt>a==0 || b==0</tt>.
      *
-     * @param  a value with with the SCM is to be computed.
-     * @param  b value with with the SCM is to be computed.
+     * @param a value with with the SCM is to be computed.
+     * @param b value with with the SCM is to be computed.
      * @return <tt>SCM(a, b)</tt>
      */
     public static long scm(long a, long b) {
@@ -149,16 +160,22 @@ public class IntMath {
         //   Bonn, München Paris: Addison Wesley.
         //   gill, Seite 141
 
-        if (a == 0 || b == 0) return 0;
-                
+        if (a == 0 || b == 0) {
+            return 0;
+        }
+
         a = abs(a);
         b = abs(b);
-        if (b==1)return a;
-        if (a==1)return b;
+        if (b == 1) {
+            return a;
+        }
+        if (a == 1) {
+            return b;
+        }
 
         long u = a;
         long v = b;
-        
+
         // FIXME - Handle overflow
         while (a != b) {
             if (a < b) {
@@ -169,18 +186,18 @@ public class IntMath {
                 u += v;
             }
         }
-        
-        
+
         //return a; // gcd
         return (u + v) / 2; // scm
     }
+
     /**
      * Returns an int whose value is the smallest common multiple of
-     * <tt>abs(a)</tt> and <tt>abs(b)</tt>.  Returns 0 if
+     * <tt>abs(a)</tt> and <tt>abs(b)</tt>. Returns 0 if
      * <tt>a==0 || b==0</tt>.
      *
-     * @param  a value with with the SCM is to be computed.
-     * @param  b value with with the SCM is to be computed.
+     * @param a value with with the SCM is to be computed.
+     * @param b value with with the SCM is to be computed.
      * @return <tt>SCM(a, b)</tt>
      */
     public static BigInteger scm(BigInteger a, BigInteger b) {
@@ -192,18 +209,22 @@ public class IntMath {
         if (a.compareTo(ZERO) == 0 || b.compareTo(ZERO) == 0) {
             return ZERO;
         }
-                
+
         a = a.abs();
         b = b.abs();
-        if (b.compareTo(ONE)==0)return a;
-        if (a.compareTo(ONE)==0)return b;
+        if (b.compareTo(ONE) == 0) {
+            return a;
+        }
+        if (a.compareTo(ONE) == 0) {
+            return b;
+        }
 
         BigInteger u = a;
         BigInteger v = b;
-        
+
         // FIXME - Handle overflow
         while (a.compareTo(b) != 0) {
-            if (a .compareTo( b)<0) {
+            if (a.compareTo(b) < 0) {
                 b = b.subtract(a);
                 v = v.add(u);
             } else {
@@ -211,39 +232,44 @@ public class IntMath {
                 u = u.add(v);
             }
         }
-        
-        
+
         //return a; // gcd
         return (u.add(v)).divide(valueOf(2)); // scm
     }
-    
+
     /**
      * Reverses all 32 bits of the provided integer value.
+     *
+     * @param a TODO
+     * @return TODO
      */
     public static int reverseBits(int a) {
         return reverseBits(a, 32);
     }
+
     /**
      * Reverses specified number of bits of the provided integer value.
+     *
      * @param a The number.
      * @param numBits The number of bits (must be between 1 and 32).
+     * @return TODO
      */
     public static int reverseBits(int a, int numBits) {
         int b = 0;
-        for (int i=0; i < numBits; i++) {
+        for (int i = 0; i < numBits; i++) {
             b <<= 1;
             b |= (a & 1);
             a >>>= 1;
         }
         return b;
-        
+
     }
-    
+
     public static void main(String[] args) {
-        for (int i=0; i < 8; i++) {
-            int a = 1<<i;
+        for (int i = 0; i < 8; i++) {
+            int a = 1 << i;
             int b = reverseBits(a, 3);
-            out.println(a+" - "+b);
+            out.println(a + " - " + b);
         }
     }
 }

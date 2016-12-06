@@ -17,61 +17,61 @@ import javax.swing.JFrame;
 /**
  * A BitmapImage is comprised of a ColorModel and an accessible byte array of
  * image data.
- * <p>
+ * 
  * The image data is expressed in several layers of rectangular regions
  * called bit-planes. To determine the bits that form a single pixel one
  * must combine all data-bits at the same x,y position in each bit-plane.
  * This is known as a "planar" storage layout as it was used on Commodore
  * Amiga Computers.
- * <p>
+ * 
  * The bit-planes can be stored contiguously or can be interleaved at each
  * scanline of the image.
- * <p>
- * <p>
+ * 
+ * 
  * Fig 1. A sample image:
- * <p><pre>
+ * 
  * .+++..@...@.+..###...+++.     This sample uses 4 colors:
  * +...+.@@.@@.+.#.....+...+     . = color 0 (all bits clear)
  * +++++:@.@.@.+.#..##.+++++     + = color 1 (bit 0 set, bit 1 clear)
  * +...+.@...@.+.#...#.+...+     @ = color 2 (bit 0 clear, bit 1 set)
  * +...+.@...@.+..####.+...+     # = color 3 (all bits set)
- * </pre><p>
+ * 
  * Fig 2. Contiguous bit-plane storage layout.
- * <p><pre>
+ * 
  * 01110000 00001001 11000111 0.......     This is the first bit-plane.
  * 10001000 00001010 00001000 1.......     Each number represents a bit
  * 11111000 00001010 01101111 1.......     in the storage layout. Eight
  * 10001000 00001010 00101000 1.......     bits are grouped into one byte.
  * 10001000 00001001 11101000 1.......     Dots indicate unused bits.
- * <p>
+ * 
  * 00000010 00100001 11000000 0.......     This is the second bit-plane.
  * 00000011 01100010 00000000 0.......
  * 00000010 10100010 01100000 0.......
  * 00000010 00100010 00100000 0.......
  * 00000010 00100001 11100000 0.......
- * <p></pre>
+ * 
  * Fig 3. Interleaved bit-plane storage layout.
- * <p><pre>
+ * 
  * 01110000 00001001 11000111 0.......     This is the first bit-plane.
  * 00000010 00100001 11000000 0.......     This is the second bit-plane.
- * <p>
+ * 
  * 10001000 00001010 00001000 1.......     The bit-planes are interleaved
  * 00000011 01100010 00000000 0.......     at every scanline of the image.
- * <p>
+ * 
  * 11111000 00001010 01101111 1.......
  * 00000010 10100010 01100000 0.......
- * <p>
+ * 
  * 10001000 00001010 00101000 1.......
  * 00000010 00100010 00100000 0.......
- * <p>
+ * 
  * 10001000 00001001 11101000 1.......
  * 00000010 00100001 11100000 0.......
- * <p></pre>
+ * 
  * For more details refer to "Amiga ROM Kernel Reference Manual: Libraries,
  * Addison Wesley"
- * <p>
+ * 
  * <b>Responsibility</b>
- * <p>
+ * 
  * Gives clients direct access to the image data of the bitmap.
  * Knows how to convert the bitmap into chunky image data according
  * to the current color model.
@@ -168,13 +168,13 @@ public class BitmapImage
      * depth and color model.
      * BitplaneStride and ScanlineStride are rounded up to the next
      * even number of bytes.
-     * <p>
+     * 
      * Pre condition:
      *   -
-     * <p>
+     * 
      * Post condition:
      *   Interleaved bitmap constructed.
-     * <p>
+     * 
      * Obligation:
      *   -
      *
@@ -192,13 +192,13 @@ public class BitmapImage
      * and with optional interleave.
      * BitplaneStride and ScanlineStride are rounded up to the next
      * even number of bytes.
-     * <p>
+     * 
      * Pre condition:
      *   -
-     * <p>
+     * 
      * Post condition:
      *   BitmapImage constructed.
-     * <p>
+     * 
      * Obligation:
      *   -
      *
@@ -228,13 +228,13 @@ public class BitmapImage
     /**
      * Construct a bitmap with the specified size, depth, color model and
      * interleave.
-     * <p>
+     * 
      * Pre condition:
      * ScanlineStride must be a multiple of BitplaneStride or vice versa.
-     * <p>
+     * 
      * Post condition:
      * BitmapImage constructed.
-     * <p>
+     * 
      * Obligation:
      *   -
      *
@@ -263,11 +263,11 @@ public class BitmapImage
 
     /**
      * Returns the width of the image.
-     * <p>
+     * 
      * Pre condition: -
-     * <p>
+     * 
      * Post condition: -
-     * <p>
+     * 
      * Obligation: -
      *
      * @return  The width in pixels.
@@ -278,11 +278,11 @@ public class BitmapImage
 
     /**
      * Returns the height of the image.
-     * <p>
+     * 
      * Pre condition: -
-     * <p>
+     * 
      * Post condition: -
-     * <p>
+     * 
      * Obligation: -
      *
      * @return  The height in pixels.
@@ -293,13 +293,13 @@ public class BitmapImage
 
     /**
      * Returns the depth of the image.
-     * <p>
+     * 
      * The depth indicates how many bits are used to form a single pixel.
-     * <p>
+     * 
      * Pre condition: -
-     * <p>
+     * 
      * Post condition: -
-     * <p>
+     * 
      * Obligation: -
      *
      * @return  The number of bitplanes used to form a single pixel.
@@ -311,11 +311,11 @@ public class BitmapImage
     /**
      * Returns the numer of bytes you must add to a given address
      * in the bitmap to advance to the next scanline of the image.
-     * <p>
+     * 
      * Pre condition: -
-     * <p>
+     * 
      * Post condition: -
-     * <p>
+     * 
      * Obligation: -
      *
      * @return  The scansize.
@@ -327,11 +327,11 @@ public class BitmapImage
     /**
      * Returns the number of bytes that you must add to a bitmap address
      * to advance to the next bit of a scanline.
-     * <p>
+     * 
      * Pre condition: -
-     * <p>
+     * 
      * Post condition: -
-     * <p>
+     * 
      * Obligation: -
      *
      * @return  The interleave of the bitmap.
@@ -342,11 +342,11 @@ public class BitmapImage
 
     /**
      * Replaces the color model used for conversions from/to chunky pixels.
-     * <p>
+     * 
      * Pre condition: The new color model must correspond with the depth of the bitmap.
-     * <p>
+     * 
      * Post condition: Color model changed.
-     * <p>
+     * 
      * Obligation: -
      *
      * @param colorModel The new color model.
@@ -357,11 +357,11 @@ public class BitmapImage
 
     /**
      * Returns the current color model of the planar image in this bitmap.
-     * <p>
+     * 
      * Pre condition: -
-     * <p>
+     * 
      * Post condition: -
-     * <p>
+     * 
      * Obligation: -
      *
      * @return  The color model.
@@ -372,11 +372,11 @@ public class BitmapImage
 
     /**
      * Sets the preferred color model used for to chunky pixels.
-     * <p>
+     * 
      * Pre condition: -
-     * <p>
+     * 
      * Post condition: Color model changed.
-     * <p>
+     * 
      * Obligation: -
      *
      * @param  colorModel The new color model.
@@ -387,11 +387,11 @@ public class BitmapImage
 
     /**
      * Returns the current color model of the chunky image in this bitmap.
-     * <p>
+     * 
      * Pre condition: -
-     * <p>
+     * 
      * Post condition: -
-     * <p>
+     * 
      * Obligation: -
      *
      * @return  The color model.
@@ -405,11 +405,11 @@ public class BitmapImage
 
     /**
      * Gives you direct access to the bitmap data array.
-     * <p>
+     * 
      * Pre condition: -.
-     * <p>
+     * 
      * Post condition: -
-     * <p>
+     * 
      * Obligation: The bitmap data array remains property
      * of the BitmapImage and will be used at the next
      * conversion to chunky. You can access it as you
@@ -425,11 +425,11 @@ public class BitmapImage
     /**
      * Returns a reference to the byte pixel data that has been
      * generated by a previous call to #converToChunky.
-     * <p>
+     * 
      * Pre condition: -
-     * <p>
+     * 
      * Post condition: -
-     * <p>
+     * 
      * Obligation: You may modify the contents of the array
      * as you like to get some nice effects for the
      * next call to #convertToChunky. Note whovewer that
@@ -451,11 +451,11 @@ public class BitmapImage
     /**
      * Returns a reference to the byte pixel data that has been
      * generated by a previous call to #converToChunky.
-     * <p>
+     * 
      * Pre condition: -
-     * <p>
+     * 
      * Post condition: -
-     * <p>
+     * 
      * Obligation: You may modify the contents of the array
      * as you like to get some nice effects for the
      * next call to #convertToChunky. Note whovewer that
@@ -477,11 +477,11 @@ public class BitmapImage
     /**
      * Returns a reference to the integer pixel data that has been
      * generated by a previous call to #converToChunky.
-     * <p>
+     * 
      * Pre condition: -
-     * <p>
+     * 
      * Post condition: -
-     * <p>
+     * 
      * Obligation: You may modify the contents of the array
      * as you like to get some nice effects for the
      * next call to #convertToChunky. Note however that
@@ -502,11 +502,11 @@ public class BitmapImage
 
     /**
      * Returns the available type of pixel data.
-     * <p>
+     * 
      * Pre condition: -
-     * <p>
+     * 
      * Post condition: -
-     * <p>
+     * 
      * Obligation: -
      *
      * @return  A constant that specifies the current type of pixel data.
@@ -517,9 +517,9 @@ public class BitmapImage
 
     /**
      * Creates a clone.
-     * <p>
+     * 
      * Pre condition: -
-     * <p>
+     * 
      * Post condition: Clone created.
      *
      * @return  A clone.
@@ -543,18 +543,18 @@ public class BitmapImage
 
     /**
      * Converts the planar image data into chunky pixel data.
-     * <p>
+     * 
      * This method will either generate byte pixel data or integer
      * pixel data (depending on the color model).
-     * <p>
+     * 
      * The pixel array that resulted to a prior call to this
      * method will be reused when the image dimension and the color
      * model allows for it.
-     * <p>
+     * 
      * Pre condition: -
-     * <p>
+     * 
      * Post condition: Chunky pixels generated.
-     * <p>
+     * 
      * Obligation: -
      *
      * @return The type of generated pixel data.
@@ -565,22 +565,22 @@ public class BitmapImage
 
     /**
      * Converts the indicated area of the bitmap data into  pixel data.
-     * <p>
+     * 
      * This method will either generate byte pixel data or integer
      * pixel data (depending on the color model).
-     * <p>
+     * 
      * Note that the size of the generated pixel data always corresponds
      * to the size of the complete image. You do only specify a subset
      * of the image to be <i>converted</i> not a subset to be extracted.
      * Note also that the pixel data that resulted from prior calls to
      * this method will be reused when the generated pixel array was
      * of the same size and type.
-     * <p>
+     * 
      * Pre condition: -
-     * <p>
+     * 
      * Post condition: The indicated part of the bitmap has been
      *   converted into chunky pixels.
-     * <p>
+     * 
      * Obligation: -
      *
      * @return The type of generated pixel data.
@@ -693,22 +693,22 @@ public class BitmapImage
 
     /**
      * Converts the indicated area of the bitmap data into  pixel data.
-     * <p>
+     * 
      * This method will either generate byte pixel data or integer
      * pixel data (depending on the color model).
-     * <p>
+     * 
      * Note that the size of the generated pixel data always corresponds
      * to the size of the complete image. You do only specify a subset
      * of the image to be <i>converted</i> not a subset to be extracted.
      * Note also that the pixel data that resulted from prior calls to
      * this method will be reused when the generated pixel array was
      * of the same size and type.
-     * <p>
+     * 
      * Pre condition: -
-     * <p>
+     * 
      * Post condition: The indicated part of the bitmap has been
      *   converted into chunky pixels.
-     * <p>
+     * 
      * Obligation: -
      */
     public void convertFromChunky(BufferedImage image) {
@@ -756,12 +756,12 @@ public class BitmapImage
     /**
      * Frees the memory allocated for the pixel data.
      *
-     * <p>
+     * 
      * Pre condition: -
-     * <p>
+     * 
      * Post condition: The bitmap has given up all its
      * references to the pixel data.
-     * <p>
+     * 
      * Obligation: The pixel data will not be reused at the
      * next call to #convertToChunky.
      */

@@ -14,37 +14,54 @@ import java.util.*;
 import ru.sbtqa.monte.media.ilbm.ColorCycle;
 
 /**
- * A movie track gives access to the static resources of
- * a movie (image and audio data, global informations).
+ * A movie track gives access to the static resources of a movie (image and
+ * audio data, global informations).
  *
- * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
  * @version $Id: SEQMovieTrack.java 364 2016-11-09 19:54:25Z werner $
  */
 public class SEQMovieTrack {
 
-    /** Raster width and heigth in pixels. */
+    /**
+     * Raster width and heigth in pixels.
+     */
     private int width, height;
-    /** Pixel position for this image. */
+    /**
+     * Pixel position for this image.
+     */
     private int xPosition, yPosition;
-    /** Number of source bitplanes. */
+    /**
+     * Number of source bitplanes.
+     */
     private int nbPlanes;
-    /** Number of palettes (cmap chunks).
-     * The value -1 is used to invalidate this variable.
+    /**
+     * Number of palettes (cmap chunks). The value -1 is used to invalidate this
+     * variable.
      */
     private int nbPalettes_ = -1;
-    /** Masking. */
+    /**
+     * Masking.
+     */
     private int masking;
     public final static int MSK_NONE = 0,
-            MSK_HAS_MASK = 1,
-            MSK_HAS_TRANSPARENT_COLOR = 2,
-            MSK_LASSO = 3;
-    /** Index of transparent color. */
+          MSK_HAS_MASK = 1,
+          MSK_HAS_TRANSPARENT_COLOR = 2,
+          MSK_LASSO = 3;
+    /**
+     * Index of transparent color.
+     */
     private int transparentColor;
-    /** Pixel aspect ratio. */
+    /**
+     * Pixel aspect ratio.
+     */
     private int xAspect, yAspect;
-    /** Page size in pixels. */
+    /**
+     * Page size in pixels.
+     */
     private int pageWidth, pageHeight;
-    /** Screenmode. */
+    /**
+     * Screenmode.
+     */
     private int screenMode;
     /**
      * Jiffies is the number of frames or fields per second.
@@ -55,35 +72,45 @@ public class SEQMovieTrack {
      * animation like regular frames.
      */
     private final boolean isPlayWrapupFrames = true;
-    /** Indicates wether left and right speakers are swapped. */
-    private boolean isSwapSpeakers = false;
-    /** Screenmodes. */
-    public final static int MODE_INDEXED_COLORS = 0,
-            MODE_DIRECT_COLORS = 1,
-            MODE_EHB = 2,
-            MODE_HAM6 = 3,
-            MODE_HAM8 = 4;
     /**
-     * Compression method of key frame.
-     * XXX Should not be stored here since it is
-     *     only needed during the decoding of the
-     *     ANIM file.
+     * Indicates wether left and right speakers are swapped.
+     */
+    private boolean isSwapSpeakers = false;
+    /**
+     * Screenmodes.
+     */
+    public final static int MODE_INDEXED_COLORS = 0,
+          MODE_DIRECT_COLORS = 1,
+          MODE_EHB = 2,
+          MODE_HAM6 = 3,
+          MODE_HAM8 = 4;
+    /**
+     * Compression method of key frame. XXX Should not be stored here since it
+     * is only needed during the decoding of the ANIM file.
      */
     private int compression_;
     public final static int CMP_NONE = 0,
-            CMP_BYTE_RUN_1 = 1,
-            CMP_VERTICAL = 2;
+          CMP_BYTE_RUN_1 = 1,
+          CMP_VERTICAL = 2;
     /**
      * Total playback time of the movie in Jiffies (1/60 second).
      */
     private long totalDuration;
-    /** User defined properties. */
-    private HashMap<String,Object> properties = new HashMap<String,Object>();
-    /** Anim frames. */
+    /**
+     * User defined properties.
+     */
+    private HashMap<String, Object> properties = new HashMap<String, Object>();
+    /**
+     * Anim frames.
+     */
     private ArrayList<SEQFrame> frames = new ArrayList<SEQFrame>();
-    /** Sound clips. */
+    /**
+     * Sound clips.
+     */
     private ArrayList<AudioClip> audioClips = new ArrayList<AudioClip>();
-    /** Property Change support. */
+    /**
+     * Property Change support.
+     */
     private PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 
     private ArrayList<ColorCycle> colorCycles = new ArrayList<ColorCycle>();
@@ -99,8 +126,8 @@ public class SEQMovieTrack {
     /**
      * Sets a property.
      *
-     * @param  name    The name of the property.
-     * @param  newValue  The value of the property.
+     * @param name The name of the property.
+     * @param newValue The value of the property.
      */
     public void setProperty(String name, Object newValue) {
         Object oldValue = properties.get(name);
@@ -113,42 +140,45 @@ public class SEQMovieTrack {
     }
 
     /**
-     * Set this to true to treat the two wrapup frames at the end of the
-     * movie track like regular frames.
-     * /
-    public void setPlayWrapupFrames(boolean b) {
-        isPlayWrapupFrames = b;
-
-        // Invalidate number of palettes
-        nbPalettes_ = -1;
-    }*/
-
+     * Set this to true to treat the two wrapup frames at the end of the movie
+     * track like regular frames. / public void setPlayWrapupFrames(boolean b) {
+     * isPlayWrapupFrames = b;
+     *
+     * // Invalidate number of palettes nbPalettes_ = -1;
+    }
+     */
     /**
      * Always returns true.
+     *
+     * @return TODO
      */
     public boolean isPlayWrapupFrames() {
         return true;
         //return isPlayWrapupFrames;
     }
 
-    /** Returns the interleave of frames in this movie track.
-     * This is 2 for double buffered animations, and 1 one for animations without
-     * double buffering.
+    /**
+     * Returns the interleave of frames in this movie track. This is 2 for
+     * double buffered animations, and 1 one for animations without double
+     * buffering.
+     *
+     * @return TODO
      */
     public int getInterleave() {
-        return frames.size() > 0 && frames.get(frames.size()-1).getInterleave() == 1 ? 1 : 2;
+        return frames.size() > 0 && frames.get(frames.size() - 1).getInterleave() == 1 ? 1 : 2;
     }
-
 
     /**
      * Swaps left and right speakers if set to true.
+     *
+     * @param newValue TODO
      */
     public void setSwapSpeakers(boolean newValue) {
         boolean oldValue = isSwapSpeakers;
         isSwapSpeakers = newValue;
 
         if (newValue != oldValue) {
-            for (SEQFrame f:frames) {
+            for (SEQFrame f : frames) {
                 SEQAudioCommand[] aac = f.getAudioCommands();
                 if (aac != null) {
                     for (int j = 0; j < aac.length; j++) {
@@ -166,6 +196,8 @@ public class SEQMovieTrack {
 
     /**
      * Returns true if left and right speakers are swapped.
+     *
+     * @return TODO
      */
     public boolean isSwapSpeakers() {
         return isSwapSpeakers;
@@ -174,9 +206,8 @@ public class SEQMovieTrack {
     /**
      * Gets a property.
      *
-     * @param  name    The name of the property.
-     * @return  The value of the property or null if the property
-     *      is not defined.
+     * @param name The name of the property.
+     * @return The value of the property or null if the property is not defined.
      */
     public Object getProperty(String name) {
         return properties.get(name);
@@ -377,8 +408,10 @@ public class SEQMovieTrack {
     }
 
     /**
-     * The return value of this method is only reliable when all frames of
-     * the movie have been loaded.
+     * The return value of this method is only reliable when all frames of the
+     * movie have been loaded.
+     *
+     * @return TODO
      */
     public int getDeltaOperation() {
         int lastFrame = frames.size() - 1;
@@ -422,7 +455,7 @@ public class SEQMovieTrack {
             return size;
         } else {
             int interleave = getInterleave();
-            return (size > 1+interleave) ? size - interleave : size;
+            return (size > 1 + interleave) ? size - interleave : size;
         }
     }
 
@@ -432,6 +465,9 @@ public class SEQMovieTrack {
 
     /**
      * Timing for frame relative to previous frame.
+     *
+     * @param index TODO
+     * @return TODO
      */
     public long getFrameDuration(int index) {
         return frames.get(index).getRelTime();
@@ -439,11 +475,12 @@ public class SEQMovieTrack {
 
     /**
      * Total playback time of the movie in Jiffies (1/60 second).
-
-    int getColorCyclingCount() {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-   */
+     *
+     * int getColorCyclingCount() { throw new UnsupportedOperationException("Not
+     * yet implemented"); }
+     *
+     * @return TODO
+     */
     public synchronized long getTotalDuration() {
         if (totalDuration == -1) {
             totalDuration = 0;
@@ -459,15 +496,17 @@ public class SEQMovieTrack {
         colorCycles.add(cc);
         firePropertyChange("colorCyclesCount", oldCount, colorCycles.size());
     }
+
     public List<ColorCycle> getColorCycles() {
         return colorCycles;
     }
+
     public int getColorCyclesCount() {
         return colorCycles.size();
     }
 
     public void removeFrame(int i) {
         frames.remove(i);
-        totalDuration=-1;
+        totalDuration = -1;
     }
 }

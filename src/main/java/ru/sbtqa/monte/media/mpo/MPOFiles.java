@@ -2,7 +2,6 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-
 package ru.sbtqa.monte.media.mpo;
 
 import java.io.File;
@@ -21,18 +20,24 @@ public class MPOFiles {
 
     private MPOFiles() {
     }
-    /** Splits a MPO file into two JPEG files.
-     * <p>
+
+    /**
+     * Splits a MPO file into two JPEG files.
+     * 
      * A MPO file consists of two or more concatenated JPEG files with
      * multi-picture file meta-data in APP2 segments which start with the
      * character sequence "MPF\0".
-     * <p>
-     * This method writes each JPEG file into a separate file and strips
-     * the multi-picture meta-data.
+     * 
+     * This method writes each JPEG file into a separate file and strips the
+     * multi-picture meta-data.
+     *
+     * @param f TODO
+     * @return TODO
+     * @throws java.io.IOException TODO
      */
     public static ArrayList<File> splitMPOFile(File f) throws IOException {
         int imgCount = 0;
-        ArrayList<File> splittedFiles=new ArrayList<File>();
+        ArrayList<File> splittedFiles = new ArrayList<File>();
         JFIFOutputStream out = null;
         byte[] buf = new byte[2048];
         JFIFInputStream in = new JFIFInputStream(f);
@@ -91,6 +96,5 @@ public class MPOFiles {
         }
         return splittedFiles;
     }
-
 
 }

@@ -16,14 +16,14 @@ import static org.monte.media.BufferFlag.*;
 
 /**
  * This codec converts frames from one frame rate into another.
- * <p>
+ * 
  * Makes frames longer if the output time is behind the input time.
  * Drops frames if the output time runs away from the input time.
- * <p>
+ * 
  * The output of the converter has a variable frame rate but it may still
  * contain identical frames.
  * Thus an additional conversion step with {@link FFRtoVFRConverter} is needed.
- * <p>
+ * 
  * This codec is needed when the input source has a different frame rate than
  * the output sink.
  * 

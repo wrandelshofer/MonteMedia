@@ -11,11 +11,11 @@ import static org.monte.media.tiff.TIFFTag.*;
 
 /**
  * Enumeration of Sony MakerNote tags.
- * <p>
+ * 
  * Sources:
- * <p>
+ * 
  * http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/Sony.html
- * <p>
+ * 
  * Exiv2 Image metadata library and tools.
  * Copyright © 2004 - 2014 Andreas Huggel
  * <a href="http://www.exiv2.org/tags-sony.html">http://www.exiv2.org/tags-sony.html</a>

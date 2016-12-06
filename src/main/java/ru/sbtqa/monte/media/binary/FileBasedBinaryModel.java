@@ -12,7 +12,7 @@ import java.util.WeakHashMap;
 
 /**
  * FileBasedBinaryModel.
- * <p>
+ * 
  * FIXME - The file based binary model may grow infinitely large.
  *
  * @author Werner Randelshofer

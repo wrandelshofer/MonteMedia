@@ -2,7 +2,7 @@
  * Copyright © 1999 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-/*
+ /*
  * Source taken from
  * http://blog.monstuff.com/archives/000022.html
  */
@@ -28,7 +28,7 @@ public class ClearType {
         invokeLater(() -> {
             JFrame f = new JFrame();
             f.setDefaultCloseOperation(EXIT_ON_CLOSE);
-            f.setSize(430,180);
+            f.setSize(430, 180);
             f.setTitle("ClearType");
             JPanel p = new JPanel() {
                 private final static long serialVersionUID = 1L;
@@ -39,7 +39,7 @@ public class ClearType {
 
                 public void paint(Graphics g) {
                     Font f = new Font("Times New Roman", PLAIN, 18);
-                    Graphics2D grph =(Graphics2D) g;
+                    Graphics2D grph = (Graphics2D) g;
                     grph.setRenderingHint(KEY_TEXT_ANTIALIASING, VALUE_TEXT_ANTIALIAS_OFF);
                     g.setFont(f);
                     g.setColor(white);
@@ -90,7 +90,7 @@ public class ClearType {
                     }
                     grph.dispose();
                     g.drawImage(imageFromPixels(newpixels, width / 3, height), x, y - height, width / 3, height, this);
-                    g.drawImage(img, x,y,width,height,this);
+                    g.drawImage(img, x, y, width, height, this);
                 }
             };
             f.setContentPane(p);
@@ -98,7 +98,9 @@ public class ClearType {
         });
     }
 
-    /** Adds one third of b to a */
+    /**
+     * Adds one third of b to a
+     */
     private static int fuzz(int a, int b) {
         int red = ((b >> 16) & 0xff) / 3 + ((a >> 16) & 0xff);
         int green = ((b >> 8) & 0xff) / 3 + ((a >> 8) & 0xff);
@@ -118,7 +120,17 @@ public class ClearType {
         return pixels;
     }
 
-    /** Renders an image with clear type. Note the width of the image must be divideable by 3. */
+    /**
+     * Renders an image with clear type. Note the width of the image must be
+     * divideable by 3.
+     *
+     * @param g TODO
+     * @param observer TODO
+     * @param img TODO
+     * @param superY TODO
+     * @param x TODO
+     * @param y TODO
+     */
     public static void drawClearType(Graphics g, Image img, int x, int y, int superY, ImageObserver observer) {
         int width = img.getWidth(null);
         int height = img.getHeight(null);
@@ -155,4 +167,3 @@ public class ClearType {
         return getDefaultToolkit().createImage(new MemoryImageSource(width, height, pixels, 0, width));
     }
 }
-

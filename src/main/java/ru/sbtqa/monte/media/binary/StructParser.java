@@ -18,7 +18,7 @@ import ru.sbtqa.monte.media.math.ExtendedReal;
  * Parses structured binary data using C-like data declarations.
  *
  * Syntax:
- * <pre><code>
+ * <code>
  * Declarations ::= { MagicDeclaration | DescriptionDeclaration | EnumDeclaration | SetDeclaration | TypedefDeclaration } EOF
  * MagicDeclaration ::= "magic" identifier ("ushort" hexLiteral[".." hexLiteral] | stringLiteral) ";"
  * DescriptionDeclaration ::= "description" identifier stringLiteral "," stringLiteral ";"
@@ -30,7 +30,7 @@ import ru.sbtqa.monte.media.math.ExtendedReal;
  * TypeSpecifier ::= ( StructSpecifier | (PrimitiveSpecifier [EnumSpecifier | SetSpecifier]) ) [ArrayList]
  * StructSpecifier ::= "struct (identifier | "{" MemberDeclaration {"," MemberDeclaration } "}" )
  * MemberDeclaration ::= TypeSpecifier identifier [ArrayList] ";"
- * PrimitiveSpecifier ::= "uint1" | "uint2" | "uint4" | "uint5" | "uint8" 
+ * PrimitiveSpecifier ::= "uint1" | "uint2" | "uint4" | "uint5" | "uint8"
  *                         | "uint12" | "uint16" | "uint31LE" | "uint32"
  *                         | "int9" | "int16" | "int32"
  *                         | "ubyte" | "byte" | "short"
@@ -44,7 +44,8 @@ import ru.sbtqa.monte.media.math.ExtendedReal;
  *                         | "ataricolor"
  * ArrayList ::= "[" [ArraySize] "]" {"," identifier "[" [ArraySize] "]" }
  * ArraySize ::= () | intLiteral | identifier [("-"|"+"|"=="|"!=") intLiteral]
- * </code></pre>
+ * </code>
+ *
  * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Swityerland
  *
  * @version $Id: StructParser.java 364 2016-11-09 19:54:25Z werner $
@@ -113,17 +114,17 @@ public class StructParser extends Object {
     }
 
     public StructTableModel readStruct(String magic, byte[] data)
-            throws IOException {
+          throws IOException {
         return declarations.readStruct(magic, new ByteArrayImageInputStream(data));
     }
 
     public StructTableModel readStruct(int magic, byte[] data)
-            throws IOException {
+          throws IOException {
         return declarations.readStruct(magic, new ByteArrayImageInputStream(data));
     }
 
     public StructTableModel readStruct(String magic, InputStream data)
-            throws IOException {
+          throws IOException {
         if (data instanceof ImageInputStream) {
             return declarations.readStruct(magic, (ImageInputStream) data);
         } else {
@@ -132,7 +133,7 @@ public class StructParser extends Object {
     }
 
     public StructTableModel readStruct(int magic, InputStream data)
-            throws IOException {
+          throws IOException {
         if (data instanceof ImageInputStream) {
             return declarations.readStruct(magic, (ImageInputStream) data);
         } else {
@@ -188,7 +189,7 @@ public class StructParser extends Object {
     }
 
     protected void parse(Reader r)
-            throws IOException, ParseException {
+          throws IOException, ParseException {
         StreamPosTokenizer scanner = new StreamPosTokenizer(r);
         scanner.resetSyntax();
         scanner.wordChars('a', 'z');
@@ -217,21 +218,23 @@ public class StructParser extends Object {
     /**
      * Declarations expression.
      *
-     * <pre><code>
+     * <code>
      * Declarations ::= { MagicDeclaration | DescriptionDeclaration | EnumDeclaration | SetDeclaration | TypedefDeclaration }
-     * </code></pre>
+     * </code>
      */
     protected static class Declarations {
 
-        /** Magic key can be either a String or an Integer. */
-        public HashMap<Object,MagicDeclaration> magics = new HashMap<Object,MagicDeclaration>();
-        public HashMap<String,DescriptionDeclaration> descriptions = new HashMap<String,DescriptionDeclaration>();
-        public HashMap<String,EnumDeclaration> enums = new HashMap<String,EnumDeclaration>();
-        public HashMap<String,SetDeclaration> sets = new HashMap<String,SetDeclaration>();
-        public HashMap<String,TypedefDeclaration> typedefs = new HashMap<String,TypedefDeclaration>();
+        /**
+         * Magic key can be either a String or an Integer.
+         */
+        public HashMap<Object, MagicDeclaration> magics = new HashMap<Object, MagicDeclaration>();
+        public HashMap<String, DescriptionDeclaration> descriptions = new HashMap<String, DescriptionDeclaration>();
+        public HashMap<String, EnumDeclaration> enums = new HashMap<String, EnumDeclaration>();
+        public HashMap<String, SetDeclaration> sets = new HashMap<String, SetDeclaration>();
+        public HashMap<String, TypedefDeclaration> typedefs = new HashMap<String, TypedefDeclaration>();
 
         public Declarations(StreamPosTokenizer scanner)
-                throws IOException, ParseException {
+              throws IOException, ParseException {
             while (scanner.nextToken() != StreamPosTokenizer.TT_EOF) {
                 if (scanner.ttype == StreamPosTokenizer.TT_WORD) {
                     if (scanner.sval.equals("magic")) {
@@ -268,7 +271,7 @@ public class StructParser extends Object {
         }
 
         private StructTableModel readStruct(Object magic, ImageInputStream in)
-                throws IOException {
+              throws IOException {
             ArrayList<StructTableModel.Value> result = new ArrayList<StructTableModel.Value>();
             TypedefDeclaration typedef = null;
 
@@ -305,20 +308,22 @@ public class StructParser extends Object {
     /**
      * MagicDeclaration expression.
      *
-     * <pre><code>
+     * <code>
      * MagicDeclaration ::= "magic" identifier ("ushort" hexLiteral[".." hexLiteral] | stringLiteral) ";"
-     * </code></pre>
+     * </code>
      */
     protected static class MagicDeclaration {
 
         public String identifier;
-        /** If magic is null, then ushortMagicFrom/ushortMagicTo is used. */
+        /**
+         * If magic is null, then ushortMagicFrom/ushortMagicTo is used.
+         */
         public String magic;
         public int ushortMagicFrom;
         public int ushortMagicTo;
 
         public MagicDeclaration(StreamPosTokenizer scanner)
-                throws IOException, ParseException {
+              throws IOException, ParseException {
             if (scanner.nextToken() != StreamPosTokenizer.TT_WORD || !scanner.sval.equals("magic")) {
                 throw new ParseException(errorMsg("MagicDeclaration: 'magic' expected", scanner));
             }
@@ -328,7 +333,7 @@ public class StructParser extends Object {
             identifier = scanner.sval;
 
             if (scanner.nextToken() == StreamPosTokenizer.TT_WORD
-                    && scanner.sval.equals("ushort")) {
+                  && scanner.sval.equals("ushort")) {
                 if (scanner.nextToken() != StreamPosTokenizer.TT_NUMBER) {
                     throw new ParseException(errorMsg("MagicDeclaration: ushort literal expected", scanner));
                 }
@@ -356,6 +361,7 @@ public class StructParser extends Object {
             }
         }
     }
+
     /*
     private static int parseHexLiteral(StreamPosTokenizer scanner)
     throws IOException, ParseException {
@@ -371,9 +377,9 @@ public class StructParser extends Object {
     /**
      * DescriptionDeclaration expression.
      *
-     * <pre><code>
+     * <code>
      * DescriptionDeclaration ::= "description" identifier stringLiteral "," stringLiteral ";"
-     * </code></pre>
+     * </code>
      */
     protected static class DescriptionDeclaration {
 
@@ -382,7 +388,7 @@ public class StructParser extends Object {
         public String description;
 
         public DescriptionDeclaration(StreamPosTokenizer scanner)
-                throws IOException, ParseException {
+              throws IOException, ParseException {
             if (scanner.nextToken() != StreamPosTokenizer.TT_WORD || !scanner.sval.equals("description")) {
                 throw new ParseException(errorMsg("DescriptionDeclaration: 'magic' expected", scanner));
             }
@@ -417,9 +423,9 @@ public class StructParser extends Object {
     /**
      * EnumDeclaration expression.
      *
-     * <pre><code>
+     * <code>
      * EnumDeclaration ::= EnumSpecifier identifier ";"
-     * </code></pre>
+     * </code>
      */
     protected static class EnumDeclaration {
 
@@ -427,7 +433,7 @@ public class StructParser extends Object {
         public String identifier;
 
         public EnumDeclaration(StreamPosTokenizer scanner)
-                throws IOException, ParseException {
+              throws IOException, ParseException {
             enumSpecifier = new EnumSpecifier(scanner);
 
             if (scanner.nextToken() != StreamPosTokenizer.TT_WORD) {
@@ -444,9 +450,9 @@ public class StructParser extends Object {
     /**
      * SetDeclaration expression.
      *
-     * <pre><code>
+     * <code>
      * SetDeclaration ::= SetSpecifier identifier ";"
-     * </code></pre>
+     * </code>
      */
     protected static class SetDeclaration {
 
@@ -454,7 +460,7 @@ public class StructParser extends Object {
         public String identifier;
 
         public SetDeclaration(StreamPosTokenizer scanner)
-                throws IOException, ParseException {
+              throws IOException, ParseException {
             setSpecifier = new SetSpecifier(scanner);
 
             if (scanner.nextToken() != StreamPosTokenizer.TT_WORD) {
@@ -471,9 +477,9 @@ public class StructParser extends Object {
     /**
      * TypedefDeclaration expression.
      *
-     * <pre><code>
+     * <code>
      * TypedefDeclaration ::= "typedef" TypeSpecifier identifier ";"
-     * </code></pre>
+     * </code>
      */
     protected static class TypedefDeclaration {
 
@@ -481,7 +487,7 @@ public class StructParser extends Object {
         public String identifier;
 
         public TypedefDeclaration(StreamPosTokenizer scanner)
-                throws IOException, ParseException {
+              throws IOException, ParseException {
             if (scanner.nextToken() != StreamPosTokenizer.TT_WORD || !scanner.sval.equals("typedef")) {
                 throw new ParseException(errorMsg("TypedefDeclaration: 'typedef' expected", scanner));
             }
@@ -504,7 +510,7 @@ public class StructParser extends Object {
         }
 
         private Object read(ImageInputStream in, String parentIdentifier, Declarations declarations, ArrayList<StructTableModel.Value> result)
-                throws IOException {
+              throws IOException {
             return typeSpecifier.read(in, parentIdentifier, declarations, identifier, result);
         }
     }
@@ -512,18 +518,18 @@ public class StructParser extends Object {
     /**
      * EnumSpecifier expression.
      *
-     * <pre><code>
+     * <code>
      * EnumSpecifier ::= "enum" ( identifier | "{" identifier ["=" intLiteral] {"," identifier ["=" intLiteral]} "}" )
-     * </code></pre>
+     * </code>
      */
     protected static class EnumSpecifier {
 
-        public HashMap<Integer,String> members;
+        public HashMap<Integer, String> members;
         public String identifier;
         public boolean isMagicEnum;
 
         public EnumSpecifier(StreamPosTokenizer scanner)
-                throws IOException, ParseException {
+              throws IOException, ParseException {
             if (scanner.nextToken() != StreamPosTokenizer.TT_WORD || !scanner.sval.equals("enum")) {
                 throw new ParseException(errorMsg("EnumSpecifier: 'enum' expected", scanner));
             }
@@ -533,13 +539,13 @@ public class StructParser extends Object {
             } else if (scanner.ttype == '{') {
                 String name;
                 int value = -1;
-                members = new HashMap<Integer,String>();
+                members = new HashMap<Integer, String>();
                 do {
                     if (scanner.nextToken() == '}') {
                         break;
                     }
                     if (scanner.ttype != StreamPosTokenizer.TT_WORD
-                            && scanner.ttype != '"') {
+                          && scanner.ttype != '"') {
                         throw new ParseException(errorMsg("EnumSpecifier: enumeration name expected", scanner));
                     }
                     name = scanner.sval;
@@ -600,12 +606,10 @@ public class StructParser extends Object {
                     throw new InternalError("Enum Declaration missing for " + identifier);
                 }
                 return enumDecl.enumSpecifier.toEnumString(value, declarations);
+            } else if (value == null || value.length() != 4 || !isMagicEnum) {
+                return value;
             } else {
-                if (value == null || value.length() != 4 || !isMagicEnum) {
-                    return value;
-                } else {
-                    return toEnumString(MagicOrIntLiteral.toInt(value), declarations);
-                }
+                return toEnumString(MagicOrIntLiteral.toInt(value), declarations);
             }
         }
     }
@@ -613,17 +617,17 @@ public class StructParser extends Object {
     /**
      * SetSpecifier expression.
      *
-     * <pre><code>
+     * <code>
      * SetSpecifier ::= "set" ( identifier | "{" identifier "=" intLiteral {"," identifier "=" intLiteral} "}" )
-     * </code></pre>
+     * </code>
      */
     protected static class SetSpecifier {
 
-        public HashMap<Integer,String> members;
+        public HashMap<Integer, String> members;
         public String identifier;
 
         public SetSpecifier(StreamPosTokenizer scanner)
-                throws IOException, ParseException {
+              throws IOException, ParseException {
             if (scanner.nextToken() != StreamPosTokenizer.TT_WORD || !scanner.sval.equals("set")) {
                 throw new ParseException(errorMsg("SetSpecifier: 'set' expected", scanner));
             }
@@ -633,10 +637,10 @@ public class StructParser extends Object {
             } else if (scanner.ttype == '{') {
                 String name;
                 int value = 0;
-                members = new HashMap<Integer,String>();
+                members = new HashMap<Integer, String>();
                 do {
 
-                    if (scanner.nextToken() != StreamPosTokenizer.TT_WORD && scanner.ttype!='"') {
+                    if (scanner.nextToken() != StreamPosTokenizer.TT_WORD && scanner.ttype != '"') {
                         throw new ParseException(errorMsg("SetSpecifier: set name expected", scanner));
                     }
                     name = scanner.sval;
@@ -671,7 +675,7 @@ public class StructParser extends Object {
                 buf.append(Integer.toHexString(value));
                 buf.append(" {");
                 boolean isFirst = true;
-                for (Map.Entry<Integer,String> entry:members.entrySet()) {
+                for (Map.Entry<Integer, String> entry : members.entrySet()) {
                     int intKey = entry.getKey();
                     if ((intKey == 0 && value == 0) || ((intKey & value) == intKey)) {
                         if (isFirst) {
@@ -691,10 +695,10 @@ public class StructParser extends Object {
     /**
      * TypeSpecifier expression.
      *
-     * <pre><code>
+     * <code>
      * TypeSpecifier ::= ( StructSpecifier | (PrimitiveSpecifier [EnumSpecifier | SetSpecifier]) ) [ArrayList]
      * ArrayList ::= "[" [ArraySize] "]" {"," identifier "[" [ArraySize] "]" }
-     * </code></pre>
+     * </code>
      */
     protected static class TypeSpecifier {
 
@@ -705,7 +709,7 @@ public class StructParser extends Object {
         public ArrayList<ArraySize> arrayList;
 
         public TypeSpecifier(StreamPosTokenizer scanner)
-                throws IOException, ParseException {
+              throws IOException, ParseException {
             if (scanner.nextToken() == StreamPosTokenizer.TT_WORD && scanner.sval.equals("struct")) {
                 scanner.pushBack();
                 structSpecifier = new StructSpecifier(scanner);
@@ -752,11 +756,11 @@ public class StructParser extends Object {
         }
 
         private Object read(ImageInputStream in, String parentIdentifier, Declarations declarations, String identifier, ArrayList<StructTableModel.Value> result)
-                throws IOException {
+              throws IOException {
             if (structSpecifier != null) {
                 if (arrayList != null) {
                     // ArrayList Begin
-                    for (ArraySize arraySize:arrayList) {
+                    for (ArraySize arraySize : arrayList) {
                         int size = arraySize.getArraySize(declarations, result);
                         if (size == ArraySize.REMAINDER) {
                             try {
@@ -795,7 +799,7 @@ public class StructParser extends Object {
                     boolean hasValue = false;
 
                     // ArrayList Begin
-                    for (ArraySize arraySize:arrayList) {
+                    for (ArraySize arraySize : arrayList) {
                         int size = arraySize.getArraySize(declarations, result);
                         if (size == ArraySize.REMAINDER) {
                             try {
@@ -850,7 +854,7 @@ public class StructParser extends Object {
                     boolean hasValue = false;
 
                     // ArrayList Begin
-                    for (ArraySize arraySize:arrayList) {
+                    for (ArraySize arraySize : arrayList) {
                         int size = arraySize.getArraySize(declarations, result);
                         if (size == ArraySize.REMAINDER) {
                             try {
@@ -902,62 +906,60 @@ public class StructParser extends Object {
                 } else {
                     return readValue(in, parentIdentifier, declarations, result);
                 }
-            } else {
-                if (arrayList != null) {
-                    StringBuilder buf = new StringBuilder();
-                    buf.append('{');
-                    boolean hasValue = false;
+            } else if (arrayList != null) {
+                StringBuilder buf = new StringBuilder();
+                buf.append('{');
+                boolean hasValue = false;
 
-                    // ArrayList Begin
-                    for (ArraySize arraySize:arrayList) {
-                        int size = arraySize.getArraySize(declarations, result);
-                        if (size == ArraySize.REMAINDER) {
-                            try {
-                                for (int i = 0;; i++) {
-                                    if (i > 0) {
-                                        buf.append(", ");
-                                    }
-                                    Object value = readValue(in, parentIdentifier + "[" + i + "]", declarations, result);
-                                    if (value != null) {
-                                        hasValue = true;
-                                        buf.append(value.toString());
-                                    }
-                                }
-                            } catch (EOFException e) {
-                            }
-                        } else {
-                            for (int i = 0; i < size; i++) {
+                // ArrayList Begin
+                for (ArraySize arraySize : arrayList) {
+                    int size = arraySize.getArraySize(declarations, result);
+                    if (size == ArraySize.REMAINDER) {
+                        try {
+                            for (int i = 0;; i++) {
                                 if (i > 0) {
                                     buf.append(", ");
                                 }
-                                Object value;
-                                if (arraySize.type == ArraySize.EQUAL || arraySize.type == ArraySize.NOT_EQUAL) {
-                                    value = readValue(in, parentIdentifier, declarations, result);
-                                } else {
-                                    value = readValue(in, parentIdentifier + "[" + i + "]", declarations, result);
-                                }
+                                Object value = readValue(in, parentIdentifier + "[" + i + "]", declarations, result);
                                 if (value != null) {
                                     hasValue = true;
                                     buf.append(value.toString());
                                 }
                             }
+                        } catch (EOFException e) {
+                        }
+                    } else {
+                        for (int i = 0; i < size; i++) {
+                            if (i > 0) {
+                                buf.append(", ");
+                            }
+                            Object value;
+                            if (arraySize.type == ArraySize.EQUAL || arraySize.type == ArraySize.NOT_EQUAL) {
+                                value = readValue(in, parentIdentifier, declarations, result);
+                            } else {
+                                value = readValue(in, parentIdentifier + "[" + i + "]", declarations, result);
+                            }
+                            if (value != null) {
+                                hasValue = true;
+                                buf.append(value.toString());
+                            }
                         }
                     }
-                    // ArrayList End
-                    if (hasValue) {
-                        buf.append('}');
-                        return buf.toString();
-                    } else {
-                        return null;
-                    }
-                } else {
-                    return readValue(in, parentIdentifier, declarations, result);
                 }
+                // ArrayList End
+                if (hasValue) {
+                    buf.append('}');
+                    return buf.toString();
+                } else {
+                    return null;
+                }
+            } else {
+                return readValue(in, parentIdentifier, declarations, result);
             }
         }
 
         private Object readValue(ImageInputStream in, String parentIdentifier, Declarations declarations, ArrayList<StructTableModel.Value> result)
-                throws IOException {
+              throws IOException {
             Object value = primitiveSpecifier.read(in, parentIdentifier, declarations, result);
             if (value != null) {
                 if (value instanceof Number) {
@@ -992,9 +994,9 @@ public class StructParser extends Object {
     /**
      * StructSpecifier expression.
      *
-     * <pre><code>
+     * <code>
      * StructSpecifier ::= "struct (identifier | "{" MemberDeclaration { MemberDeclaration } "}" )
-     * </code></pre>
+     * </code>
      */
     protected static class StructSpecifier {
 
@@ -1002,7 +1004,7 @@ public class StructParser extends Object {
         public ArrayList<MemberDeclaration> members;
 
         public StructSpecifier(StreamPosTokenizer scanner)
-                throws IOException, ParseException {
+              throws IOException, ParseException {
             if (scanner.nextToken() != StreamPosTokenizer.TT_WORD || !scanner.sval.equals("struct")) {
                 throw new ParseException(errorMsg("StructSpecifier: 'struct' expected", scanner));
             }
@@ -1023,10 +1025,10 @@ public class StructParser extends Object {
         }
 
         private void read(ImageInputStream in, String parentIdentifier, Declarations declarations, ArrayList<StructTableModel.Value> result)
-                throws IOException {
+              throws IOException {
             //try {
-            for (MemberDeclaration aMember:members) {
-               aMember.read(in, parentIdentifier, declarations, result);
+            for (MemberDeclaration aMember : members) {
+                aMember.read(in, parentIdentifier, declarations, result);
             }
             /*
             } catch (IOException e) {
@@ -1040,10 +1042,10 @@ public class StructParser extends Object {
     /**
      * MemberDeclaration expression.
      *
-     * <pre><code>
+     * <code>
      * MemberDeclaration ::= TypeSpecifier identifier [ArrayList] ";"
      * ArrayList ::= "[" [ArraySize] "]" {"," identifier "[" [ArraySize] "]" }
-     * </code></pre>
+     * </code>
      */
     protected static class MemberDeclaration {
 
@@ -1052,7 +1054,7 @@ public class StructParser extends Object {
         public ArrayList<ArraySize> arrayList;
 
         public MemberDeclaration(StreamPosTokenizer scanner)
-                throws IOException, ParseException {
+              throws IOException, ParseException {
             typeSpecifier = new TypeSpecifier(scanner);
 
             if (scanner.nextToken() != StreamPosTokenizer.TT_WORD) {
@@ -1084,10 +1086,10 @@ public class StructParser extends Object {
         }
 
         private void read(ImageInputStream in, String parentIdentifier, Declarations declarations, ArrayList<StructTableModel.Value> result)
-                throws IOException {
+              throws IOException {
             if (arrayList != null) {
                 // ArrayList Begin
-                for (ArraySize arraySize :arrayList) {
+                for (ArraySize arraySize : arrayList) {
                     int size = arraySize.getArraySize(declarations, result);
                     if (size == ArraySize.REMAINDER) {
                         try {
@@ -1110,7 +1112,7 @@ public class StructParser extends Object {
                             Object obj = typeSpecifier.read(in, parentIdentifier + "." + identifier + "[" + i + "]", declarations, identifier, result);
                             if (obj != null) {
                                 StructTableModel.Value value = new StructTableModel.Value();
-                                value.qualifiedIdentifier = parentIdentifier + "." + identifier+ "[" + i + "]";
+                                value.qualifiedIdentifier = parentIdentifier + "." + identifier + "[" + i + "]";
                                 value.declaration = identifier;
                                 value.value = obj;
                                 result.add(value);
@@ -1136,14 +1138,14 @@ public class StructParser extends Object {
     /**
      * PrimitiveSpecifier expression.
      *
-     * <pre><code>
+     * <code>
      * PrimitiveSpecifier ::= "uint" n | "ubyte" | "byte" | "short" | "ushort" |
      *                         | "int" | "long" | "float" | "double" | "extended"
      *                         | "char" | "charbyte" | "cstring" | "utf8" | "pstring"
      *                         | "pstring32"
      *                         | "utf16le" |"magic" | "mactimestamp"
      *                         | "bcd2" | "bcd4"
-     * </code></pre>
+     * </code>
      */
     protected static class PrimitiveSpecifier {
 
@@ -1240,7 +1242,7 @@ public class StructParser extends Object {
         public String typedef;
 
         public PrimitiveSpecifier(StreamPosTokenizer scanner)
-                throws IOException, ParseException {
+              throws IOException, ParseException {
 
             if (scanner.nextToken() != StreamPosTokenizer.TT_WORD) {
                 throw new ParseException(errorMsg("PrimitiveSpecifier: primitive type name expected", scanner));
@@ -1352,7 +1354,7 @@ public class StructParser extends Object {
         }
 
         private Object read(ImageInputStream in, String parentIdentifier, Declarations declarations, ArrayList<StructTableModel.Value> result)
-                throws IOException {
+              throws IOException {
             switch (type) {
                 case BYTE:
                     return new Byte(in.readByte());
@@ -1538,24 +1540,24 @@ public class StructParser extends Object {
                         throw new EOFException();
                     }
                     return new Long(
-                            (long) b0 & 0xff | ((long) (b1 & 0xff) << 8) | ((long) (b2 & 0xff) << 16) | ((long) (b3 & 0xff) << 24) | ((long) (b4 & 0xff) << 32) | ((long) (b5 & 0xff) << 40) | ((long) (b6 & 0xff) << 48) | ((long) (b7 & 0xff) << 56));
+                          (long) b0 & 0xff | ((long) (b1 & 0xff) << 8) | ((long) (b2 & 0xff) << 16) | ((long) (b3 & 0xff) << 24) | ((long) (b4 & 0xff) << 32) | ((long) (b5 & 0xff) << 40) | ((long) (b6 & 0xff) << 48) | ((long) (b7 & 0xff) << 56));
                 }
                 case BCD2: {
                     int b0 = in.read();
 
                     return new Integer(
-                            ((b0 & 0xf0) >> 4) * 10
-                            + (b0 & 0x0f));
+                          ((b0 & 0xf0) >> 4) * 10
+                          + (b0 & 0x0f));
                 }
                 case BCD4: {
                     int b0 = in.read();
                     int b1 = in.read();
 
                     return new Integer(
-                            ((b0 & 0xf0) >> 4) * 1000
-                            + (b0 & 0x0f) * 100
-                            + ((b1 & 0xf0) >> 4) * 10
-                            + (b1 & 0x0f));
+                          ((b0 & 0xf0) >> 4) * 1000
+                          + (b0 & 0x0f) * 100
+                          + ((b1 & 0xf0) >> 4) * 10
+                          + (b1 & 0x0f));
                 }
                 case FIXED_16D16: {
                     int wholePart = in.readUnsignedShort();
@@ -1605,8 +1607,8 @@ public class StructParser extends Object {
                     return (int) in.readBits(16);
                 }
                 case UINT31LE: {
-                    int value= (int)in.readBits(31);
-                    return ((value&0xff)<<24)|((value&0xff00)<<8)|((value&0xff0000)>>>8)|((value&0xff000000)>>>24);
+                    int value = (int) in.readBits(31);
+                    return ((value & 0xff) << 24) | ((value & 0xff00) << 8) | ((value & 0xff0000) >>> 8) | ((value & 0xff000000) >>> 24);
                 }
                 case INT9: {
                     int value = (int) in.readBits(9);
@@ -1629,8 +1631,8 @@ public class StructParser extends Object {
                     buf.append(hex);
                     buf.append(" {rgb:0x");
                     int rgb = ((red << 5) | (red << 2) | (red >>> 1)) << 16//
-                            | ((green << 5) | (green << 2) | (green >>> 1)) << 8
-                            | ((blue << 5) | (blue << 2) | (blue >>> 1));
+                          | ((green << 5) | (green << 2) | (green >>> 1)) << 8
+                          | ((blue << 5) | (blue << 2) | (blue >>> 1));
                     hex = Integer.toHexString(rgb);
                     for (int i = 0; i < 6 - hex.length(); i++) {
                         buf.append('0');
@@ -1654,9 +1656,9 @@ public class StructParser extends Object {
     /**
      * ArraySize expression.
      *
-     * <pre><code>
+     * <code>
      * ArraySize ::= () | intLiteral | identifier [("-"|"+"|"=="|"!=") intLiteral]
-     * </code></pre>
+     * </code>
      */
     protected static class ArraySize {
 
@@ -1673,7 +1675,7 @@ public class StructParser extends Object {
         public Object equal;
 
         public ArraySize(StreamPosTokenizer scanner)
-                throws IOException, ParseException {
+              throws IOException, ParseException {
             if (scanner.nextToken() == ']') {
                 scanner.pushBack();
                 type = REMAINDER;
@@ -1704,13 +1706,13 @@ public class StructParser extends Object {
                         equal = scanner.sval;
                     } else {
                         int sign;
-                        if (scanner.ttype=='-') {
-                            sign=-1;
-                        }else {
-                            sign=1;
-                        scanner.pushBack();
+                        if (scanner.ttype == '-') {
+                            sign = -1;
+                        } else {
+                            sign = 1;
+                            scanner.pushBack();
                         }
-                        equal = new IntLiteral(scanner).intValue()*sign;
+                        equal = new IntLiteral(scanner).intValue() * sign;
                     }
                     type = NOT_EQUAL;
                 } else {
@@ -1807,21 +1809,21 @@ public class StructParser extends Object {
                     for (int i = result.size() - 1; i > -1; i--) {
                         StructTableModel.Value value = result.get(i);
                         if (value.declaration.equals(variable)) {
-                            return ((Number)equal).intValue()==((Number)value.value).intValue()? trueValue : falseValue;
+                            return ((Number) equal).intValue() == ((Number) value.value).intValue() ? trueValue : falseValue;
                         }
                     }
                     // Search for fully qualified variable with the same name
                     for (int i = result.size() - 1; i > -1; i--) {
                         StructTableModel.Value value = result.get(i);
                         if (value.qualifiedIdentifier.equals(variable)) {
-                            return ((Number)equal).intValue()==((Number)value.value).intValue() ? trueValue : falseValue;
+                            return ((Number) equal).intValue() == ((Number) value.value).intValue() ? trueValue : falseValue;
                         }
                     }
                     // Search for fully qualified variable with the same name ending
                     for (int i = result.size() - 1; i > -1; i--) {
                         StructTableModel.Value value = result.get(i);
                         if (value.qualifiedIdentifier.endsWith(variable)) {
-                            return ((Number)equal).intValue()==((Number)value.value).intValue() ? trueValue : falseValue;
+                            return ((Number) equal).intValue() == ((Number) value.value).intValue() ? trueValue : falseValue;
                         }
                     }
                     throw new InternalError("Invalid ArraySize variable:" + variable);
@@ -1836,20 +1838,20 @@ public class StructParser extends Object {
     /**
      * IntLiteral expression.
      *
-     * <pre><code>
+     * <code>
      * IntLiteral ::= intLiteral | hexLiteral
-     * </code></pre>
+     * </code>
      */
     protected static class IntLiteral {
 
         public int value;
 
         public IntLiteral(StreamPosTokenizer scanner)
-                throws IOException, ParseException {
+              throws IOException, ParseException {
             if (scanner.nextToken() != StreamPosTokenizer.TT_NUMBER) {
                 throw new ParseException(errorMsg("IntLiteral: numeric value expected", scanner));
             }
-            value = (int)((long) scanner.nval);// Must cast like this to get proper signs
+            value = (int) ((long) scanner.nval);// Must cast like this to get proper signs
             if (scanner.nval == 0.0) {
                 if (scanner.nextToken() == StreamPosTokenizer.TT_WORD && scanner.sval.startsWith("x")) {
                     value = Integer.valueOf(scanner.sval.substring(1), 16).intValue();
@@ -1867,9 +1869,9 @@ public class StructParser extends Object {
     /**
      * MagicOrIntLiteral expression.
      *
-     * <pre><code>
+     * <code>
      * MagicOrIntLiteral ::= magicLiteral | intLiteral | hexLiteral
-     * </code></pre>
+     * </code>
      */
     protected static class MagicOrIntLiteral {
 
@@ -1877,7 +1879,7 @@ public class StructParser extends Object {
         public String magicValue;
 
         public MagicOrIntLiteral(StreamPosTokenizer scanner)
-                throws IOException, ParseException {
+              throws IOException, ParseException {
             switch (scanner.nextToken()) {
                 case StreamPosTokenizer.TT_NUMBER:
                     intValue = (int) scanner.nval;

@@ -28,7 +28,9 @@ public class CodecChain implements Codec {
     private long secondElapsed;
 
     public CodecChain(Codec first, Codec second) {
-        if (first==null||second==null)throw new IllegalArgumentException("first and second must not be null");
+        if (first == null || second == null) {
+            throw new IllegalArgumentException("first and second must not be null");
+        }
         this.first = first;
         this.second = second;
     }
@@ -100,7 +102,6 @@ public class CodecChain implements Codec {
             tmpBuf = new Buffer();
         }
 
-
         if (CODEC_INPUT_NOT_CONSUMED == (secondState & CODEC_INPUT_NOT_CONSUMED)) {
             // => second codec needs to process tmpBuffer again
             long start = System.currentTimeMillis();
@@ -108,7 +109,6 @@ public class CodecChain implements Codec {
             secondElapsed += System.currentTimeMillis() - start;
             return secondState;
         }
-
 
         long start = System.currentTimeMillis();
         firstState = first.process(in, tmpBuf);
@@ -147,23 +147,24 @@ public class CodecChain implements Codec {
     public String toString() {
         return "CodecChain{" + first + "," + second + "}";
     }
-    
+
     public long getElapsedTime() {
-        return firstElapsed+secondElapsed;
+        return firstElapsed + secondElapsed;
     }
-    
+
     public String reportElapsedTime() {
         if (second instanceof CodecChain) {
-        return "{" + first.getName() +" "+firstElapsed+ ((CodecChain)second).reportElapsedTime0() + "}";
+            return "{" + first.getName() + " " + firstElapsed + ((CodecChain) second).reportElapsedTime0() + "}";
         } else {
-        return "{" + first.getName() +" "+firstElapsed+ ", " + second.getName() +" "+secondElapsed+ "}";
+            return "{" + first.getName() + " " + firstElapsed + ", " + second.getName() + " " + secondElapsed + "}";
         }
     }
+
     private String reportElapsedTime0() {
         if (second instanceof CodecChain) {
-        return ", " + first.getName() +" "+firstElapsed+ ((CodecChain)second).reportElapsedTime0() ;
+            return ", " + first.getName() + " " + firstElapsed + ((CodecChain) second).reportElapsedTime0();
         } else {
-        return ", " + first.getName() +" "+firstElapsed+ ", " + second.getName() +" "+secondElapsed;
+            return ", " + first.getName() + " " + firstElapsed + ", " + second.getName() + " " + secondElapsed;
         }
     }
 }

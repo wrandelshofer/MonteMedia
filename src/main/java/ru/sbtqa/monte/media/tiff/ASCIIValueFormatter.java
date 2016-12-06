@@ -12,10 +12,11 @@ import java.io.UnsupportedEncodingException;
  * @author Werner Randelshofer
  * @version 1.0 2010-03-22 Created.
  */
-public class ASCIIValueFormatter implements ValueFormatter  {
+public class ASCIIValueFormatter implements ValueFormatter {
 
-    /** Creates a new enumeration.
-     * The enumeration consists of a list of String=Integer pairs.
+    /**
+     * Creates a new enumeration. The enumeration consists of a list of
+     * String=Integer pairs.
      */
     public ASCIIValueFormatter() {
     }
@@ -28,9 +29,10 @@ public class ASCIIValueFormatter implements ValueFormatter  {
             } catch (UnsupportedEncodingException ex) {
                 throw new InternalError("ASCII not supported");
             }
-            }
+        }
         return value;
     }
+
     @Override
     public Object prettyFormat(Object value) {
         return format(value);
@@ -38,6 +40,6 @@ public class ASCIIValueFormatter implements ValueFormatter  {
 
     @Override
     public String descriptionFormat(Object data) {
-       return null;
+        return null;
     }
 }

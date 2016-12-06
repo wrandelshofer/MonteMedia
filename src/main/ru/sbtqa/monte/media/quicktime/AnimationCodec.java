@@ -24,11 +24,11 @@ import static org.monte.media.VideoFormatKeys.*;
 import static org.monte.media.BufferFlag.*;
 
 /**
- * Implements the Apple Animation codec. <p> Supports lossless delta- and
- * key-frame encoding of images onlyWith 8, 16 or 24 bits per pixel. <p> The
+ * Implements the Apple Animation codec.  Supports lossless delta- and
+ * key-frame encoding of images onlyWith 8, 16 or 24 bits per pixel.  The
  * QuickTime player requires that a keyframe is written once per second. This
- * codec enforces this. <p> An encoded frame has the following format: <p>
- * <pre>
+ * codec enforces this.  An encoded frame has the following format: 
+ * 
  * Header:
  * uint32 chunkSize
  *
@@ -41,7 +41,7 @@ import static org.monte.media.BufferFlag.*;
  *   uint16 reserved 0x0000
  * }
  * n-bytes compressed lines
- * </pre>
+ * 
  *
  * The first 4 bytes defines the chunk length. This field also carries some
  * other unknown flags, since at least one of the high bits is sometimes
@@ -54,12 +54,12 @@ import static org.monte.media.BufferFlag.*;
  * bit 3 set (header &amp; 0x0008) indicates that information follows revealing
  * at which line the decode process is to begin:<br>
  *
- * <pre>
+ * 
  * 2 bytes    starting line at which to begin updating frame
  * 2 bytes    unknown
  * 2 bytes    the number of lines to update
  * 2 bytes    unknown
- * </pre>
+ * 
  *
  * If the header is 0x0000, then the decode begins from the first line and
  * continues through the entire height of the image.<br>
@@ -67,63 +67,63 @@ import static org.monte.media.BufferFlag.*;
  * After the header comes the individual RLE-compressed lines. An individual
  * compressed line is comprised of a skip code, followed by a series of RLE
  * codes and pixel data:<br>
- * <pre>
+ * 
  *  1 byte     skip code
  *  1 byte     RLE code
  *  n bytes    pixel data
  *  1 byte     RLE code
  *  n bytes    pixel data
- * </pre> Each line begins onlyWith a byte that defines the number of pixels to
+ *  Each line begins onlyWith a byte that defines the number of pixels to
  * skip in a particular line in the output line before outputting new pixel
  * data. Actually, the skip count is set to one more than the number of pixels
  * to skip. For example, a skip byte of 15 means "skip 14 pixels", while a skip
  * byte of 1 means "don't skip any pixels". If the skip byte is 0, then the
  * frame decode is finished. Therefore, the maximum skip byte value of 255
- * allows for a maximum of 254 pixels to be skipped. <p> After the skip byte is
+ * allows for a maximum of 254 pixels to be skipped.  After the skip byte is
  * the first RLE code, which is a single signed byte. The RLE code can have the
- * following meanings:<br> <ul> <li>equal to 0: There is another single-byte
+ * following meanings:<br>  equal to 0: There is another single-byte
  * skip code in the stream. Again, the actual number of pixels to skip is 1 less
  * than the skip code. Therefore, the maximum skip byte value of 255 allows for
- * a maximum of 254 pixels to be skipped.</li>
+ * a maximum of 254 pixels to be skipped.
  *
- * <li>equal to -1: End of the RLE-compressed line</li>
+ * equal to -1: End of the RLE-compressed line
  *
- * <li>greater than 0: Run of pixel data is copied directly from the encoded
- * stream to the output frame.</li>
+ * greater than 0: Run of pixel data is copied directly from the encoded
+ * stream to the output frame.
  *
- * <li>less than -1: Repeat pixel data -(RLE code) times.</li> </ul> <p> The
- * pixel data has the following format: <ul> <li>8-bit data: Pixels are handled
+ * less than -1: Repeat pixel data -(RLE code) times.   The
+ * pixel data has the following format:  8-bit data: Pixels are handled
  * in groups of four. Each pixel is a palette index (the palette is determined
  * by the Quicktime file transporting the data).<br> If (code &gt; 0), copy (4 *
  * code) pixels from the encoded stream to the output.<br> If (code &lt; -1),
  * extract the next 4 pixels from the encoded stream and render the entire group
- * -(code) times to the output frame. </li>
+ * -(code) times to the output frame. 
  *
- * <li>16-bit data: Each pixel is represented by a 16-bit RGB value onlyWith 5
+ * 16-bit data: Each pixel is represented by a 16-bit RGB value onlyWith 5
  * bits used for each of the red, green, and blue color components and 1 unused
  * bit to round the value tmp to 16 bits: {@code xrrrrrgg gggbbbbb}. Pixel data
  * is rendered to the output frame one pixel at a time.<br> If (code &gt; 0),
  * copy the run of (code) pixels from the encoded stream to the output.<br> If
  * (code &lt; -1), unpack the next 16-bit RGB value from the encoded stream and
- * render it to the output frame -(code) times.</li>
+ * render it to the output frame -(code) times.
  *
- * <li>24-bit data: Each pixel is represented by a 24-bit RGB value onlyWith 8
+ * 24-bit data: Each pixel is represented by a 24-bit RGB value onlyWith 8
  * bits (1 byte) used for each of the red, green, and blue color components:
  * {@code rrrrrrrr gggggggg bbbbbbbb}. Pixel data is rendered to the output
  * frame one pixel at a time.<br> If (code &gt; 0), copy the run of (code)
  * pixels from the encoded stream to the output.<br> If (code &lt; -1), unpack
  * the next 24-bit RGB value from the encoded stream and render it to the output
- * frame -(code) times.</li>
+ * frame -(code) times.
  *
- * <li>32-bit data: Each pixel is represented by a 32-bit ARGB value onlyWith 8
+ * 32-bit data: Each pixel is represented by a 32-bit ARGB value onlyWith 8
  * bits (1 byte) used for each of the alpha, red, green, and blue color
  * components: {@code aaaaaaaa rrrrrrrr gggggggg bbbbbbbb}. Pixel data is
  * rendered to the output frame one pixel at a time.<br> If (code &gt; 0), copy
  * the run of (code) pixels from the encoded stream to the output.<br> If (code
  * &lt; -1), unpack the next 32-bit ARGB value from the encoded stream and
- * render it to the output frame -(code) times.</li> </ul>
+ * render it to the output frame -(code) times. 
  *
- * References:<br/> <a
+ * References: <a
  * href="http://multimedia.cx/qtrle.txt">http://multimedia.cx/qtrle.txt</a><br>
  *
  * @author Werner Randelshofer
@@ -1250,7 +1250,7 @@ public class AnimationCodec extends AbstractVideoCodec {
          *   uint16 reserved 0x0000
          * }
          * n-bytes compressed lines
-         * </pre>
+         * 
          *
          * The first 4 bytes defines the chunk length. This field also carries some
          * other unknown flags, since at least one of the high bits is sometimes set.<br>
@@ -1262,12 +1262,12 @@ public class AnimationCodec extends AbstractVideoCodec {
          * bit 3 set (header &amp; 0x0008) indicates that information follows revealing
          * at which line the decode process is to begin:<br>
          *
-         * <pre>
+         * 
          * 2 bytes    starting line at which to begin updating frame
          * 2 bytes    unknown
          * 2 bytes    the number of lines to update
          * 2 bytes    unknown
-         * </pre>
+         * 
          *
          * If the header is 0x0000, then the decode begins from the first line and
          * continues through the entire height of the image.<br>
@@ -1275,13 +1275,13 @@ public class AnimationCodec extends AbstractVideoCodec {
          * After the header comes the individual RLE-compressed lines. An individual
          * compressed line is comprised of a skip code, followed by a series of RLE
          * codes and pixel data:<br>
-         * <pre>
+         * 
          *  1 byte     skip code
          *  1 byte     RLE code
          *  n bytes    pixel data
          *  1 byte     RLE code
          *  n bytes    pixel data
-         * </pre>
+         * 
          * Each line begins onlyWith a byte that defines the number of pixels to skip in
          * a particular line in the output line before outputting new pixel
          * data. Actually, the skip count is set to one more than the number of

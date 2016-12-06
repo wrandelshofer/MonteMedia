@@ -17,15 +17,15 @@ import ru.sbtqa.monte.media.math.Rational;
  */
 public class AdjustTimeCodec extends AbstractCodec {
 
-    private Rational mediaTime=new Rational(0);
+    private Rational mediaTime = new Rational(0);
 
     public AdjustTimeCodec() {
         super(new Format[]{
-                    new Format(), //
-                },
-                new Format[]{
-                    new Format(), //
-                });
+            new Format(), //
+        },
+              new Format[]{
+                  new Format(), //
+              });
         name = "Adjust Time";
     }
 
@@ -49,10 +49,10 @@ public class AdjustTimeCodec extends AbstractCodec {
         out.setMetaTo(in);
         out.setDataTo(in);
 
-            if (mediaTime != null) {
-                out.timeStamp = mediaTime;
-                mediaTime = mediaTime.add(out.sampleDuration.multiply(out.sampleCount));
-            }
+        if (mediaTime != null) {
+            out.timeStamp = mediaTime;
+            mediaTime = mediaTime.add(out.sampleDuration.multiply(out.sampleCount));
+        }
 
         return CODEC_OK;
     }

@@ -16,7 +16,7 @@ import java.util.Hashtable;
 
 /**
  * Creates a BufferedImage from a BitmapImage.
- * <p>
+ * 
  * We put these factory methods into this class instead of into class BitmapImage,
  * because we don't want to put this additional code into Java applets that
  * don't need this functionality.

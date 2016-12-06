@@ -12,11 +12,10 @@ import javax.imageio.stream.ImageOutputStream;
 
 /**
  * {@code TIFFOutputStream}.
- * <p>
+ * 
  * References:
- * <p>
- * TIFF TM Revision 6.0. Final — June 3, 1992.
- * Adobe Systems Inc.
+ * 
+ * TIFF TM Revision 6.0. Final — June 3, 1992. Adobe Systems Inc.
  * http://www.exif.org/specifications.html
  *
  * @author Werner Randelshofer
@@ -26,7 +25,7 @@ public class TIFFOutputStream extends OutputStream {
 
     private ImageOutputStream out;
     private long offset;
-    private Stack<IFD> ifdStack=new Stack<IFD>();
+    private Stack<IFD> ifdStack = new Stack<IFD>();
 
     private enum State {
 
@@ -74,25 +73,25 @@ public class TIFFOutputStream extends OutputStream {
     public void writeIFD(IFD ifd, long nextIFD) throws IOException {
         ensureStarted();
         writeSHORT(ifd.getCount());
-        long ifdOffset=getStreamPosition();
-        long valueOffset=getStreamPosition()+12*ifd.getCount()+4;
-        for (int i=0,n=ifd.getCount();i<n;i++) {
-            IFDEntry entry=ifd.get(i);
+        long ifdOffset = getStreamPosition();
+        long valueOffset = getStreamPosition() + 12 * ifd.getCount() + 4;
+        for (int i = 0, n = ifd.getCount(); i < n; i++) {
+            IFDEntry entry = ifd.get(i);
             writeSHORT(entry.getTagNumber());
             writeSHORT(entry.getTypeNumber());
             if (entry.isDataInValueOffset()) {
                 writeLONG(entry.getValueOffset());
             } else {
                 writeLONG(valueOffset);
-                valueOffset+=entry.getLength();
+                valueOffset += entry.getLength();
             }
         }
         writeLONG(nextIFD);
 
-        for (int i=0,n=ifd.getCount();i<n;i++) {
-            IFDEntry entry=ifd.get(i);
+        for (int i = 0, n = ifd.getCount(); i < n; i++) {
+            IFDEntry entry = ifd.get(i);
             if (!entry.isDataInValueOffset()) {
-                write((byte[])entry.getData());
+                write((byte[]) entry.getData());
             }
         }
     }
@@ -130,11 +129,22 @@ public class TIFFOutputStream extends OutputStream {
         }
     }
 
-    /** Writes a 32-bit unsigned integer. */
+    /**
+     * Writes a 32-bit unsigned integer.
+     *
+     * @param v TODO
+     * @throws java.io.IOException TODO
+     */
     public void writeLONG(long v) throws IOException {
         out.writeInt((int) v);
     }
-    /** Writes a 12-bit unsigned integer. */
+
+    /**
+     * Writes a 12-bit unsigned integer.
+     *
+     * @param v TODO
+     * @throws java.io.IOException TODO
+     */
     public void writeSHORT(int v) throws IOException {
         out.writeShort((short) v);
     }

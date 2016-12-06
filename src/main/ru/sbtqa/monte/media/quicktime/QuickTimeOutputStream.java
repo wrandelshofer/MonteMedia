@@ -60,10 +60,10 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * Sets the time scale for this movie, that is, the number of time units
-     * that pass per second in its time coordinate system. <p> The default value
+     * that pass per second in its time coordinate system.  The default value
      * is 600.
      *
-     * @param timeScale
+     * @param timeScale TODO
      */
     public void setMovieTimeScale(long timeScale) {
         if (timeScale < 1 || timeScale > (2L << 32)) {
@@ -105,7 +105,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * Returns the track duration in the movie's time scale without taking the
-     * edit list into account. <p> The returned value is the media duration of
+     * edit list into account.  The returned value is the media duration of
      * the track in the movies's time scale.
      *
      * @param track Track index.
@@ -117,9 +117,9 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     }
 
     /**
-     * Returns the track duration in the movie's time scale. <p> If the track
+     * Returns the track duration in the movie's time scale.  If the track
      * has an edit-list, the track duration is the sum of all edit durations.
-     * <p> If the track does not have an edit-list, then this method returns the
+     *  If the track does not have an edit-list, then this method returns the
      * media duration of the track in the movie's time scale.
      *
      * @param track Track index.
@@ -170,9 +170,9 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     }
 
     /**
-     * Sets the edit list for the specified track. <p> In the absence of an edit
+     * Sets the edit list for the specified track.  In the absence of an edit
      * list, the presentation of the track starts immediately. An empty edit is
-     * used to offset the start time of a track. <p>
+     * used to offset the start time of a track. 
      *
      * @throws IllegalArgumentException If the edit list ends with an empty
      * edit.
@@ -322,15 +322,15 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     }
 
     /**
-     * Sets the compression quality of a track. <p> A value of 0 stands for
+     * Sets the compression quality of a track.  A value of 0 stands for
      * "high compression is important" a value of 1 for "high image quality is
-     * important". <p> Changing this value affects the encoding of video frames
+     * important".  Changing this value affects the encoding of video frames
      * which are subsequently written into the track. Frames which have already
-     * been written are not changed. <p> This value has no effect on videos
-     * encoded with lossless encoders such as the PNG format. <p> The default
+     * been written are not changed.  This value has no effect on videos
+     * encoded with lossless encoders such as the PNG format.  The default
      * value is 0.97.
      *
-     * @param newValue
+     * @param newValue TODO
      */
     public void setCompressionQuality(int track, float newValue) {
         VideoTrack vt = (VideoTrack) tracks.get(track);
@@ -510,14 +510,14 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * Sets the transformation matrix of the entire movie.
-     * <pre>
+     * 
      * {a, b, u,
      *  c, d, v,
      *  tx,ty,w} // X- and Y-Translation
      *
      *           [ a  b  u
      * [x y 1] *   c  d  v   = [x' y' 1]
-     * </pre> tx ty w ]
+     *  tx ty w ]
      *
      *
      * @param matrix The transformation matrix.
@@ -541,14 +541,14 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * Sets the transformation matrix of the specified track.
-     * <pre>
+     * 
      * {a, b, u,
      *  c, d, v,
      *  tx,ty,w} // X- and Y-Translation
      *
      *           [ a  b  u
      * [x y 1] *   c  d  v   = [x' y' 1]
-     * </pre> tx ty w ]
+     *  tx ty w ]
      *
      *
      * @param track The track number.
@@ -573,7 +573,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     }
 
     /**
-     * Sets the state of the QuickTimeWriter to started. <p> If the state is
+     * Sets the state of the QuickTimeWriter to started.  If the state is
      * changed by this method, the prolog is written.
      */
     protected void ensureStarted() throws IOException {
@@ -589,7 +589,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     }
 
     /**
-     * Writes an already encoded sample from a file into a track. <p> This
+     * Writes an already encoded sample from a file into a track.  This
      * method does not inspect the contents of the samples. The contents has to
      * match the format and dimensions of the media in this track.
      *
@@ -618,7 +618,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     }
 
     /**
-     * Writes an already encoded sample from an input stream into a track. <p>
+     * Writes an already encoded sample from an input stream into a track. 
      * This method does not inspect the contents of the samples. The contents
      * has to match the format and dimensions of the media in this track.
      *
@@ -647,7 +647,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     }
 
     /**
-     * Writes an already encoded sample from a byte array into a track. <p> This
+     * Writes an already encoded sample from a byte array into a track.  This
      * method does not inspect the contents of the samples. The contents has to
      * match the format and dimensions of the media in this track.
      *
@@ -664,7 +664,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     }
 
     /**
-     * Writes an already encoded sample from a byte array into a track. <p> This
+     * Writes an already encoded sample from a byte array into a track.  This
      * method does not inspect the contents of the samples. The contents has to
      * match the format and dimensions of the media in this track.
      *
@@ -693,7 +693,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     }
 
     /**
-     * Writes multiple sync samples from a byte array into a track. <p> This
+     * Writes multiple sync samples from a byte array into a track.  This
      * method does not inspect the contents of the samples. The contents has to
      * match the format and dimensions of the media in this track.
      *
@@ -713,7 +713,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     }
 
     /**
-     * Writes multiple sync samples from a byte array into a track. <p> This
+     * Writes multiple sync samples from a byte array into a track.  This
      * method does not inspect the contents of the samples. The contents has to
      * match the format and dimensions of the media in this track.
      *
@@ -734,7 +734,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     }
 
     /**
-     * Writes multiple samples from a byte array into a track. <p> This method
+     * Writes multiple samples from a byte array into a track.  This method
      * does not inspect the contents of the data. The contents has to match the
      * format and dimensions of the media in this track.
      *
@@ -779,7 +779,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * Returns true if the limit for media samples has been reached. If this
-     * limit is reached, no more samples should be added to the movie. <p>
+     * limit is reached, no more samples should be added to the movie. 
      * QuickTime files can be up to 64 TB long, but there are other values that
      * may overflow before this size is reached. This method returns true when
      * the files size exceeds 2^60 or when the media duration value of a track
@@ -1853,7 +1853,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * Writes a version of the movie which is optimized for the web into the
-     * specified output file. <p> This method finishes the movie and then copies
+     * specified output file.  This method finishes the movie and then copies
      * its content into the specified file. The web-optimized file starts with
      * the movie header.
      *

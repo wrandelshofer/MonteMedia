@@ -18,9 +18,9 @@ import ru.sbtqa.monte.media.FormatKeys.MediaType;
 import static ru.sbtqa.monte.media.VideoFormatKeys.*;
 
 /**
- * {@code DefaultRegistry}. 
- * <p>
- * FIXME - The registry should be read from a file. 
+ * {@code DefaultRegistry}.
+ * 
+ * FIXME - The registry should be read from a file.
  *
  * @author Werner Randelshofer
  * @version $Id: DefaultRegistry.java 364 2016-11-09 19:54:25Z werner $
@@ -73,133 +73,131 @@ public class DefaultRegistry extends Registry {
         // IFF ANIM
         // --------
         putCodec(
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_ANIM, EncodingKey, ENCODING_BITMAP_IMAGE),
-                "org.monte.media.anim.BitmapCodec");
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_ANIM, EncodingKey, ENCODING_BITMAP_IMAGE),
+              "org.monte.media.anim.BitmapCodec");
 
         // AVI
         // --------
         putBidiCodec(
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_DIB),
-                "org.monte.media.avi.DIBCodec");
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_DIB),
+              "org.monte.media.avi.DIBCodec");
 
         putBidiCodec(
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_MJPG),
-                "org.monte.media.jpeg.JPEGCodec");
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_MJPG),
+              "org.monte.media.jpeg.JPEGCodec");
 
         putBidiCodec(
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_PNG),
-                "org.monte.media.png.PNGCodec");
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_PNG),
+              "org.monte.media.png.PNGCodec");
 
         putBidiCodec(
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_RLE8),
-                "org.monte.media.avi.RunLengthCodec");
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_RLE8),
+              "org.monte.media.avi.RunLengthCodec");
         putBidiCodec(
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_RLE4),
-                "org.monte.media.avi.RunLengthCodec");
-
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_RLE4),
+              "org.monte.media.avi.RunLengthCodec");
 
         putBidiCodec(
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE),
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
-                "org.monte.media.avi.TechSmithCodec");
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE),
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
+              "org.monte.media.avi.TechSmithCodec");
 
         putCodec(
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_DOSBOX_SCREEN_CAPTURE),
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
-                "org.monte.media.avi.ZMBVCodec");
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_DOSBOX_SCREEN_CAPTURE),
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
+              "org.monte.media.avi.ZMBVCodec");
 
         putBidiCodec(
-                new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_SIGNED),
-                new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_PCM),
-                "org.monte.media.avi.AVIPCMAudioCodec");
+              new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_SIGNED),
+              new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_PCM),
+              "org.monte.media.avi.AVIPCMAudioCodec");
         putBidiCodec(
-                new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_UNSIGNED),
-                new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_PCM),
-                "org.monte.media.avi.AVIPCMAudioCodec");
+              new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_UNSIGNED),
+              new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_PCM),
+              "org.monte.media.avi.AVIPCMAudioCodec");
 
         // QuickTime
         // --------
         putCodec(
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_RAW),
-                "org.monte.media.quicktime.RawCodec");
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_RAW),
+              "org.monte.media.quicktime.RawCodec");
 
         putCodec(
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_ANIMATION),
-                "org.monte.media.quicktime.AnimationCodec");
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_ANIMATION),
+              "org.monte.media.quicktime.AnimationCodec");
 
         putBidiCodec(
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_JPEG),
-                "org.monte.media.jpeg.JPEGCodec");
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_JPEG),
+              "org.monte.media.jpeg.JPEGCodec");
         putBidiCodec(
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_MJPG),
-                "org.monte.media.jpeg.JPEGCodec");
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_MJPG),
+              "org.monte.media.jpeg.JPEGCodec");
 
         putBidiCodec(
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_PNG),
-                "org.monte.media.png.PNGCodec");
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_PNG),
+              "org.monte.media.png.PNGCodec");
 
         putBidiCodec(
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME, 
-                EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE),
-                new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
-                "org.monte.media.avi.TechSmithCodec");
-
-        putCodec(
-                new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_SIGNED),
-                new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_TWOS_PCM),
-                "org.monte.media.quicktime.QuickTimePCMAudioCodec");
-        putCodec(
-                new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_UNSIGNED),
-                new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_TWOS_PCM),
-                "org.monte.media.quicktime.QuickTimePCMAudioCodec");
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                    EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE),
+              new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
+              "org.monte.media.avi.TechSmithCodec");
 
         putCodec(
-                new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_SIGNED),
-                new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_SOWT_PCM),
-                "org.monte.media.quicktime.QuickTimePCMAudioCodec");
+              new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_SIGNED),
+              new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_TWOS_PCM),
+              "org.monte.media.quicktime.QuickTimePCMAudioCodec");
         putCodec(
-                new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_UNSIGNED),
-                new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_SOWT_PCM),
-                "org.monte.media.quicktime.QuickTimePCMAudioCodec");
+              new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_UNSIGNED),
+              new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_TWOS_PCM),
+              "org.monte.media.quicktime.QuickTimePCMAudioCodec");
+
+        putCodec(
+              new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_SIGNED),
+              new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_SOWT_PCM),
+              "org.monte.media.quicktime.QuickTimePCMAudioCodec");
+        putCodec(
+              new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_UNSIGNED),
+              new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_SOWT_PCM),
+              "org.monte.media.quicktime.QuickTimePCMAudioCodec");
 
         putBidiCodec(
-                new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_SIGNED),
-                new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_IN24_PCM),
-                "org.monte.media.quicktime.QuickTimePCMAudioCodec");
+              new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_SIGNED),
+              new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_IN24_PCM),
+              "org.monte.media.quicktime.QuickTimePCMAudioCodec");
         putBidiCodec(
-                new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_UNSIGNED),
-                new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_IN24_PCM),
-                "org.monte.media.quicktime.QuickTimePCMAudioCodec");
+              new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_UNSIGNED),
+              new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_IN24_PCM),
+              "org.monte.media.quicktime.QuickTimePCMAudioCodec");
 
         putBidiCodec(
-                new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_SIGNED),
-                new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_IN32_PCM),
-                "org.monte.media.quicktime.QuickTimePCMAudioCodec");
+              new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_SIGNED),
+              new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_IN32_PCM),
+              "org.monte.media.quicktime.QuickTimePCMAudioCodec");
         putBidiCodec(
-                new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_UNSIGNED),
-                new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_IN32_PCM),
-                "org.monte.media.quicktime.QuickTimePCMAudioCodec");
+              new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_UNSIGNED),
+              new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_IN32_PCM),
+              "org.monte.media.quicktime.QuickTimePCMAudioCodec");
 
         putBidiCodec(
-                new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_SIGNED),
-                new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_RAW_PCM),
-                "org.monte.media.quicktime.QuickTimePCMAudioCodec");
+              new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_SIGNED),
+              new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_RAW_PCM),
+              "org.monte.media.quicktime.QuickTimePCMAudioCodec");
         putBidiCodec(
-                new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_UNSIGNED),
-                new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_RAW_PCM),
-                "org.monte.media.quicktime.QuickTimePCMAudioCodec");
-
+              new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_UNSIGNED),
+              new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_RAW_PCM),
+              "org.monte.media.quicktime.QuickTimePCMAudioCodec");
 
         putReader(new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_AVI), "org.monte.media.avi.AVIReader");
         putReader(new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_QUICKTIME), "org.monte.media.quicktime.QuickTimeReader");
@@ -214,10 +212,12 @@ public class DefaultRegistry extends Registry {
     }
 
     /**
-     * 
-     * @param inputFormat Must have {@code MediaTypeKey}, {@code EncodingKey}, {@code MimeTypeKey}.
-     * @param outputFormat Must have {@code MediaTypeKey}, {@code EncodingKey}, {@code MimeTypeKey}.
-     * @param codecClass 
+     *
+     * @param inputFormat Must have {@code MediaTypeKey}, {@code EncodingKey},
+     * {@code MimeTypeKey}.
+     * @param outputFormat Must have {@code MediaTypeKey}, {@code EncodingKey},
+     * {@code MimeTypeKey}.
+     * @param codecClass TODO
      */
     public void putBidiCodec(Format inputFormat, Format outputFormat, String codecClass) {
         putCodec(inputFormat, outputFormat, codecClass);
@@ -225,10 +225,12 @@ public class DefaultRegistry extends Registry {
     }
 
     /**
-     * 
-     * @param inputFormat Must have {@code MediaTypeKey}, {@code EncodingKey}, {@code MimeTypeKey}.
-     * @param outputFormat  Must have {@code MediaTypeKey}, {@code EncodingKey}, {@code MimeTypeKey}.
-     * @param codecClass 
+     *
+     * @param inputFormat Must have {@code MediaTypeKey}, {@code EncodingKey},
+     * {@code MimeTypeKey}.
+     * @param outputFormat Must have {@code MediaTypeKey}, {@code EncodingKey},
+     * {@code MimeTypeKey}.
+     * @param codecClass TODO
      */
     @Override
     public void putCodec(Format inputFormat, Format outputFormat, String codecClass) {
@@ -247,9 +249,9 @@ public class DefaultRegistry extends Registry {
     }
 
     /**
-     * 
+     *
      * @param fileFormat Must have {@code MediaTypeKey}, {@code MimeTypeKey}.
-     * @param readerClass 
+     * @param readerClass TODO
      */
     @Override
     public void putReader(Format fileFormat, String readerClass) {
@@ -264,9 +266,9 @@ public class DefaultRegistry extends Registry {
     }
 
     /**
-     * 
+     *
      * @param fileFormat Must have {@code MediaTypeKey}, {@code MimeTypeKey}.
-     * @param writerClass 
+     * @param writerClass TODO
      */
     @Override
     public void putWriter(Format fileFormat, String writerClass) {
@@ -322,7 +324,7 @@ public class DefaultRegistry extends Registry {
         }
         for (RegistryEntry e : entries) {
             if ((inputFormat == null || e.inputFormat == null || inputFormat.matches(e.inputFormat))
-                    && (outputFormat == null || e.outputFormat == null || outputFormat.matches(e.outputFormat))) {
+                  && (outputFormat == null || e.outputFormat == null || outputFormat.matches(e.outputFormat))) {
                 classNames.add(e.className);
             }
         }
@@ -383,16 +385,15 @@ public class DefaultRegistry extends Registry {
 
     @Override
     public void unregisterCodec(String codecClass) {
-        for (Map.Entry<String, LinkedList<RegistryEntry>> i:codecMap.entrySet()) {
-            LinkedList<RegistryEntry> ll=i.getValue();
-            for (Iterator<RegistryEntry> j=ll.iterator();j.hasNext();) {
-                RegistryEntry e=j.next();
+        for (Map.Entry<String, LinkedList<RegistryEntry>> i : codecMap.entrySet()) {
+            LinkedList<RegistryEntry> ll = i.getValue();
+            for (Iterator<RegistryEntry> j = ll.iterator(); j.hasNext();) {
+                RegistryEntry e = j.next();
                 if (e.className.equals(codecClass)) {
                     j.remove();
                 }
             }
         }
     }
-    
-    
+
 }

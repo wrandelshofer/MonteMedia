@@ -7,13 +7,14 @@ package ru.sbtqa.monte.media.gui;
 import javax.swing.SwingUtilities;
 
 /**
- * This is an abstract class that you can subclass to
- * perform GUI-related work in a dedicated event dispatcher.
- * <p>
+ * This is an abstract class that you can subclass to perform GUI-related work
+ * in a dedicated event dispatcher.
+ * 
  * This class is similar to SwingWorker but less complex.
  *
  * @author Werner Randelshofer
  * @version $Id: Worker.java 364 2016-11-09 19:54:25Z werner $
+ * @param <T> TODO
  */
 public abstract class Worker<T> implements Runnable {
 
@@ -21,8 +22,8 @@ public abstract class Worker<T> implements Runnable {
     private Throwable error;  // see getError(), setError()
 
     /**
-     * Calls #construct on the current thread and invokes
-     * #done on the AWT event dispatcher thread.
+     * Calls #construct on the current thread and invokes #done on the AWT event
+     * dispatcher thread.
      */
     @Override
     public final void run() {
@@ -52,14 +53,16 @@ public abstract class Worker<T> implements Runnable {
 
     /**
      * Compute the value to be returned by the <code>get</code> method.
+     *
+     * @return TODO
+     * @throws java.lang.Exception TODO
      */
     protected abstract T construct() throws Exception;
 
     /**
-     * Called on the event dispatching thread (not on the worker thread)
-     * after the <code>construct</code> method has returned without throwing
-     * an error.
-     * <p>
+     * Called on the event dispatching thread (not on the worker thread) after
+     * the <code>construct</code> method has returned without throwing an error.
+     * 
      * The default implementation does nothing. Subclasses may override this
      * method to perform done actions on the Event Dispatch Thread.
      *
@@ -69,9 +72,9 @@ public abstract class Worker<T> implements Runnable {
     }
 
     /**
-     * Called on the event dispatching thread (not on the worker thread)
-     * after the <code>construct</code> method has thrown an error.
-     * <p>
+     * Called on the event dispatching thread (not on the worker thread) after
+     * the <code>construct</code> method has thrown an error.
+     * 
      * The default implementation prints a stack trace. Subclasses may override
      * this method to perform failure actions on the Event Dispatch Thread.
      *
@@ -82,10 +85,10 @@ public abstract class Worker<T> implements Runnable {
     }
 
     /**
-     * Called on the event dispatching thread (not on the worker thread)
-     * after the <code>construct</code> method has finished and after
-     * done() or failed() has been invoked.
-     * <p>
+     * Called on the event dispatching thread (not on the worker thread) after
+     * the <code>construct</code> method has finished and after done() or
+     * failed() has been invoked.
+     * 
      * The default implementation does nothing. Subclasses may override this
      * method to perform completion actions on the Event Dispatch Thread.
      */
@@ -93,8 +96,10 @@ public abstract class Worker<T> implements Runnable {
     }
 
     /**
-     * Get the value produced by the worker thread, or null if it
-     * hasn't been constructed yet.
+     * Get the value produced by the worker thread, or null if it hasn't been
+     * constructed yet.
+     *
+     * @return TODO
      */
     public synchronized T getValue() {
         return value;
@@ -108,8 +113,10 @@ public abstract class Worker<T> implements Runnable {
     }
 
     /**
-     * Get the error produced by the worker thread, or null if it
-     * hasn't thrown one.
+     * Get the error produced by the worker thread, or null if it hasn't thrown
+     * one.
+     *
+     * @return TODO
      */
     protected synchronized Throwable getError() {
         return error;

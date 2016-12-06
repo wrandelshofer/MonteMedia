@@ -20,17 +20,18 @@ import javax.swing.UIManager;
 /**
  * Panel for untyped binary data.
  *
- * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
  * @version 1.2 2010-09-07 Adds tool tip support.
  * <br>1.1 2010-01-06 Adds method addHighlight().
  * <br>1.0.3 2009-12-29 Shifts layout one character to the left
  * <br>1.0.2.1 2001-06-16 Upgrade to JKD 1.3 is in progress...
- * <br> 1.0.2   2000-10-08 Set small font when Platinum LAF is active.
- * <br> 1.0.1  2000-06-12
+ * <br> 1.0.2 2000-10-08 Set small font when Platinum LAF is active.
+ * <br> 1.0.1 2000-06-12
  * <br>1.0 1999-10-19
  */
 public class BinaryPanel
-        extends JComponent {
+      extends JComponent {
+
     private final static long serialVersionUID = 1L;
 
     public final static Color[] HIGHLIGHT_COLORS = new Color[]{
@@ -76,8 +77,8 @@ public class BinaryPanel
     public Dimension getPreferredSize() {
         FontMetrics fm = getFontMetrics(getFont());
         Dimension d = new Dimension(
-                fm.charWidth('0') * 68,
-                (int) (fm.getHeight() * (model_.getLength() + 15) / 16));
+              fm.charWidth('0') * 68,
+              (int) (fm.getHeight() * (model_.getLength() + 15) / 16));
         return d;
     }
 
@@ -118,12 +119,13 @@ public class BinaryPanel
         addHighlights(h);
     }
 
-    /** Returns the offset in the binary data at the specified location.
-     * Returns -1 if there is no binary data at the specified location.
+    /**
+     * Returns the offset in the binary data at the specified location. Returns
+     * -1 if there is no binary data at the specified location.
      *
-     * @param x
-     * @param y
-     * @return
+     * @param x TODO
+     * @param y TODO
+     * @return TODO
      */
     private int getOffsetAt(int x, int y) {
         FontMetrics fm = getFontMetrics(getFont());
@@ -132,36 +134,36 @@ public class BinaryPanel
         int offset;
         if (column < 10) {//00000000> (address)
             offset = -1;
-        } else if (column < 10+8) {
+        } else if (column < 10 + 8) {
             offset = row * 16 + (column - 10) / 2;
-        } else if (column < 10+8+1) {
+        } else if (column < 10 + 8 + 1) {
             offset = -1;
-        } else if (column < 10+8+1+8) {
-            offset = row * 16 + (column - (10+1)) / 2;
-        } else if (column < 10+8+1+8+1) {
+        } else if (column < 10 + 8 + 1 + 8) {
+            offset = row * 16 + (column - (10 + 1)) / 2;
+        } else if (column < 10 + 8 + 1 + 8 + 1) {
             offset = -1;
-        } else if (column < 10+8+1+8+1+8) {
-            offset = row * 16 + (column - (10+2)) / 2;
-        } else if (column < 10+8+1+8+1+8+1) {
+        } else if (column < 10 + 8 + 1 + 8 + 1 + 8) {
+            offset = row * 16 + (column - (10 + 2)) / 2;
+        } else if (column < 10 + 8 + 1 + 8 + 1 + 8 + 1) {
             offset = -1;
-        } else if (column < 10+8+1+8+1+8+1+8) {
-            offset = row * 16 + (column - (10+3)) / 2;
+        } else if (column < 10 + 8 + 1 + 8 + 1 + 8 + 1 + 8) {
+            offset = row * 16 + (column - (10 + 3)) / 2;
         } else if (column < 48) {
             offset = -1;
-        } else if (column < 48+4) {
+        } else if (column < 48 + 4) {
             offset = row * 16 + (column - 48);
-        } else if (column < 48+4+1) {
+        } else if (column < 48 + 4 + 1) {
             offset = -1;
-        } else if (column < 48+4+1+4) {
-            offset = row * 16 + (column - (48+1));
-        } else if (column < 48+4+1+4+1) {
+        } else if (column < 48 + 4 + 1 + 4) {
+            offset = row * 16 + (column - (48 + 1));
+        } else if (column < 48 + 4 + 1 + 4 + 1) {
             offset = -1;
-        } else if (column < 48+4+1+4+1+4) {
-            offset = row * 16 + (column - (48+2));
-        } else if (column < 48+4+1+4+1+4+1) {
+        } else if (column < 48 + 4 + 1 + 4 + 1 + 4) {
+            offset = row * 16 + (column - (48 + 2));
+        } else if (column < 48 + 4 + 1 + 4 + 1 + 4 + 1) {
             offset = -1;
-        } else if (column < 48+4+1+4+1+4+1+4) {
-            offset = row * 16 + (column - (48+3));
+        } else if (column < 48 + 4 + 1 + 4 + 1 + 4 + 1 + 4) {
+            offset = row * 16 + (column - (48 + 3));
         } else {
             offset = -1;
         }
@@ -194,8 +196,8 @@ public class BinaryPanel
 
         int startLine = clipRect.y / fm.getHeight();
         int endLine = Math.min(
-                (clipRect.y + clipRect.height) / fm.getHeight() + 1,
-                (int) ((model_.getLength() + 15) / 16));
+              (clipRect.y + clipRect.height) / fm.getHeight() + 1,
+              (int) ((model_.getLength() + 15) / 16));
         byte[] bytes = new byte[16];
         char[] chars = new char[69];
 
@@ -251,9 +253,9 @@ public class BinaryPanel
             }
             g.setColor(getForeground());
             g.drawString(
-                    str,
-                    0,
-                    startLine * fm.getHeight() + fm.getAscent());
+                  str,
+                  0,
+                  startLine * fm.getHeight() + fm.getAscent());
         }
     }
 
@@ -262,13 +264,13 @@ public class BinaryPanel
         super.updateUI();
         setBackground(UIManager.getColor("TextArea.background"));
         setForeground(UIManager.getColor("TextArea.foreground"));
-        if ("MacOS".equals(UIManager.getLookAndFeel().getID())||
-               "Aqua".equals(UIManager.getLookAndFeel().getID())) {
+        if ("MacOS".equals(UIManager.getLookAndFeel().getID())
+              || "Aqua".equals(UIManager.getLookAndFeel().getID())) {
             setFont(
-                    new Font("Courier", Font.PLAIN, 12));
+                  new Font("Courier", Font.PLAIN, 12));
         } else {
             setFont(
-                    new Font("Monospaced", Font.PLAIN, 12));
+                  new Font("Monospaced", Font.PLAIN, 12));
         }
     }
 

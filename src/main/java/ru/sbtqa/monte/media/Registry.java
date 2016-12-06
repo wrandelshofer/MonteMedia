@@ -72,8 +72,8 @@ public abstract class Registry {
      * array is returned.
      */
     public abstract String[] getCodecClasses(//
-            Format inputFormat,
-            Format outputFormat);
+          Format inputFormat,
+          Format outputFormat);
 
     /**
      * Gets all codecs which can decode the specified format.
@@ -256,15 +256,15 @@ public abstract class Registry {
      * Suggests output formats for the given input media format and specified
      * file format.
      *
-     * @param inputMediaFormat
-     * @param outputFileFormat
+     * @param inputMediaFormat TODO
+     * @param outputFileFormat TODO
      * @return List of output media formats.
      */
     public ArrayList<Format> suggestOutputFormats(Format inputMediaFormat, Format outputFileFormat) {
         ArrayList<Format> formats = new ArrayList<Format>();
         Format matchFormat = new Format(//
-                MimeTypeKey, outputFileFormat.get(MimeTypeKey),//
-                MediaTypeKey, inputMediaFormat.get(MediaTypeKey));
+              MimeTypeKey, outputFileFormat.get(MimeTypeKey),//
+              MediaTypeKey, inputMediaFormat.get(MediaTypeKey));
         Codec[] codecs = getEncoders(matchFormat);
         int matchingCount = 0;
         for (Codec c : codecs) {

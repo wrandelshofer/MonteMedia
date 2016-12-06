@@ -14,6 +14,7 @@ import ru.sbtqa.monte.media.math.Rational;
  * @version 1.0 2011-09-01 Created.
  */
 public class DefaultMovie extends AbstractMovie {
+
     private final static long serialVersionUID = 1L;
 
     private MovieReader reader;

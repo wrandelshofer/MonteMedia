@@ -45,6 +45,7 @@ import ru.sbtqa.monte.media.quicktime.QuickTimeWriter;
  * @version $Id: MovieMakerMain.java 364 2016-11-09 19:54:25Z werner $
  */
 public class MovieMakerMain extends javax.swing.JFrame {
+
     private final static long serialVersionUID = 1L;
 
     private JFileChooser imageFolderChooser;
@@ -443,12 +444,10 @@ public class MovieMakerMain extends javax.swing.JFrame {
             movieFileChooser = new JFileChooser();
             if (prefs.get("movie.outputFile", null) != null) {
                 movieFileChooser.setSelectedFile(new File(prefs.get("movie.outputFile", null)));
-            } else {
-                if (imageFolderField.getText().length() > 0) {
-                    movieFileChooser.setCurrentDirectory(new File(imageFolderField.getText()).getParentFile());
-                } else if (soundFileField.getText().length() > 0) {
-                    movieFileChooser.setCurrentDirectory(new File(soundFileField.getText()).getParentFile());
-                }
+            } else if (imageFolderField.getText().length() > 0) {
+                movieFileChooser.setCurrentDirectory(new File(imageFolderField.getText()).getParentFile());
+            } else if (soundFileField.getText().length() > 0) {
+                movieFileChooser.setCurrentDirectory(new File(soundFileField.getText()).getParentFile());
             }
         }
         if (JFileChooser.APPROVE_OPTION != movieFileChooser.showSaveDialog(this)) {
@@ -456,8 +455,8 @@ public class MovieMakerMain extends javax.swing.JFrame {
         }
 
         final File movieFile = movieFileChooser.getSelectedFile().getPath().toLowerCase().endsWith(".mov")//
-                ? movieFileChooser.getSelectedFile()
-                : new File(movieFileChooser.getSelectedFile().getPath() + ".mov");
+              ? movieFileChooser.getSelectedFile()
+              : new File(movieFileChooser.getSelectedFile().getPath() + ".mov");
         prefs.put("movie.outputFile", movieFile.getPath());
         createMovieButton.setEnabled(false);
 
@@ -519,7 +518,6 @@ public class MovieMakerMain extends javax.swing.JFrame {
             }
         };
         w.start();
-
 
     }//GEN-LAST:event_createMovie
 
@@ -665,6 +663,7 @@ public class MovieMakerMain extends javax.swing.JFrame {
             }
         }
     }
+
     private void writeAudioOnly(File movieFile, File audioFile, String streaming) throws IOException {
         File tmpFile = streaming.equals("none") ? movieFile : new File(movieFile.getPath() + ".tmp");
 
@@ -691,7 +690,7 @@ public class MovieMakerMain extends javax.swing.JFrame {
             long count = 0;
             byte[] audioBuffer = new byte[asSize * nbOfFramesInBuffer];
             for (int bytesRead = audioIn.read(audioBuffer); bytesRead
-                    != -1; bytesRead = audioIn.read(audioBuffer)) {
+                  != -1; bytesRead = audioIn.read(audioBuffer)) {
                 if (bytesRead != 0) {
                     int framesRead = bytesRead / asSize;
                     qtOut.writeSamples(at, framesRead, audioBuffer, 0, bytesRead, asDuration);

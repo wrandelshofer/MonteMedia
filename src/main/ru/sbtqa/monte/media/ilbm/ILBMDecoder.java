@@ -18,8 +18,8 @@ import java.net.URL;
 /**
  * Creates Image objects by reading an IFF ILBM stream.
  *
- * <p><b>ILBM regular expression</b>
- * <pre>
+ * <b>ILBM regular expression</b>
+ * 
  * ILBM ::= "FORM" #{ "ILBM" BMHD [CMAP] [GRAB] [DEST] [SPRT] [CAMG] CRNG* CCRT* DRNG* [BODY] }
  *
  * BMHD ::= "BMHD" #{ BitMapHeader }
@@ -33,7 +33,7 @@ import java.net.URL;
  * DRNG ::= "DRNG" #{ DRange }
  * CCRT ::= "CCRT" #{ CycleInfo }
  * BODY ::= "BODY" #{ UBYTE* } [0]
- * </pre>
+ * 
  * The token "#" represents a <code>ckSize</code> LONG count of the following
  * braced data bytes. E.g., a BMHD's "#" should equal <code>sizeof(BitMapHeader)</code>.
  * Literal strings are shown in "quotes", [square bracket items] are optional, and
@@ -385,7 +385,7 @@ public class ILBMDecoder
 //    /**
 //     * Decodes the bitmap header (ILBM BMHD).
 //     *
-//     * <pre>
+//     * 
 //     * typedef UBYTE Masking; // Choice of masking technique
 //     *
 //     * #define mskNone                 0
@@ -411,7 +411,7 @@ public class ILBMDecoder
 //     *   UBYTE       xAspect, yAspect; // pixel aspect, a ratio width : height
 //     *   WORD        pageWidth, pageHeight; // source "page" size in pixels
 //     *   } BitmapHeader;
-//     * </pre>
+//     * 
 //     */
     protected void decodeBMHD(IFFChunk chunk)
             throws ParseException {
@@ -616,7 +616,7 @@ public class ILBMDecoder
     /**
      * Decodes the color cycling range and timing chunk (ILBM CCRT).
      *
-     * <pre>
+     * 
      * enum {
      *     dontCycle = 0, forward = 1, backwards = -1
      * } ccrtDirection;
@@ -628,7 +628,7 @@ public class ILBMDecoder
      *   ULONG  microseconds; // msecs between cycling
      *   WORD  pad;        // future exp - store 0 here
      * } ilbmColorCyclingRangeAndTimingChunk;
-     * </pre>
+     * 
      */
     protected ColorCycle decodeCCRT(IFFChunk chunk)
             throws ParseException {
@@ -656,7 +656,7 @@ public class ILBMDecoder
     /**
      * Decodes the color range cycling (ILBM CRNG).
      *
-     * <pre>
+     * 
      * #define RNG_NORATE  36   // Dpaint uses this rate to mean non-active
      *  set {
      *  active = 1, reverse = 2
@@ -669,7 +669,7 @@ public class ILBMDecoder
      *  WORD set crngActive flags;     // bit0 set = active, bit 1 set = reverse
      *  UBYTE low; UBYTE high;         // lower and upper color registers selected
      *  } ilbmColorRegisterRangeChunk;
-     * </pre>
+     * 
      */
     protected ColorCycle decodeCRNG(IFFChunk chunk)
             throws ParseException {
@@ -696,15 +696,15 @@ public class ILBMDecoder
 
     /**
      * Decodes the DPaint IV enhanced color cycle chunk (ILBM DRNG)
-     * <p>
+     * 
      * The RNG_ACTIVE flag is set when the range is cyclable. A range should
      * only have the RNG _ACTIVE if it:
-     * <ol>
-     * <li>contains at least one color register</li>
-     * <li>has a defined rate</li>
-     * <li>has more than one color and/or color register</li>
-     * </ol>
-     * <pre>
+     * 
+     * contains at least one color register
+     * has a defined rate
+     * has more than one color and/or color register
+     * 
+     * 
      * ILBM DRNG DPaint IV enhanced color cycle chunk
      * --------------------------------------------
      *
@@ -737,7 +737,7 @@ public class ILBMDecoder
      *     ilbmDRNGDColor[ntrue] trueColorCells;
      *     ilbmDRNGDIndex[ntregs] colorRegisterCells;
      * } ilbmDRangeChunk;
-     * </pre>
+     * 
      */
     protected ColorCycle decodeDRNG(IFFChunk chunk)
             throws ParseException {
@@ -803,11 +803,11 @@ public class ILBMDecoder
 
     /**
      * ByteRun1 run decoder.
-     * <p>
+     * 
      * The run encoding scheme by <em>byteRun1</em> is best described by pseudo
      * code for the decoder <em>Unpacker</em> (called <em>UnPackBits</em> in
      * the Macintosh toolbox.
-     * <pre>
+     * 
      * UnPacker:
      *  LOOP until produced the desired number of bytes
      *      Read the next source byte into n
@@ -817,11 +817,11 @@ public class ILBMDecoder
      *          -128    =&gt; no operation
      *      ENDCASE;
      *   ENDLOOP;
-     * </pre>
+     * 
      *
-     * @param in
-     * @param out
-     * @throws ParseException
+     * @param in TODO
+     * @param out TODO
+     * @throws ParseException TODO
      */
     public static int unpackByteRun1(byte[] in, byte[] out)
             throws ParseException {
@@ -836,27 +836,27 @@ public class ILBMDecoder
 
     /**
      * Vertical run decoder.
-     * <p>
+     * 
      * Each plane is stored in a separate VDAT chunk.
-     * <p>
+     * 
      * A VDAT chunk consists of an id, a length, and a body.
-     * <pre>
+     * 
      * struct {
      *    uint16 id;  // The 4 ASCII characters "VDAT"
      *    uint16 length,
      *    byte[length] body
      * }
-     * </pre>
+     * 
      * The body consists of a command list and a data list.
-     * <pre>
+     * 
      * struct {
      *    uint16         cnt;        // Command count + 2
      *    uint8[cnt - 2] cmd;        // The commands
      *    uint16[]       data;       // Data words
      * }
-     * </pre>
+     * 
      * Pseudo code for the unpacker:
-     * <pre>
+     * 
      * UnPacker:
      *  Read cnt;
      *  LOOP cnt - 2 TIMES
@@ -875,7 +875,7 @@ public class ILBMDecoder
      *      ENDCASE;
      *      IF end of data reached THEN EXIT END;
      *   ENDLOOP;
-     * </pre>
+     * 
      *
      */
     public void unpackVertical(byte[] in, BitmapImage bm)

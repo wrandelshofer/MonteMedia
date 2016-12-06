@@ -113,7 +113,7 @@ public class TIFFDirectory extends TIFFNode {
 
     /** Returns a TIFFField with the specified tag. If a child node with
      * this tag exists.
-     * @param tag
+     * @param tag TODO
      */
     public TIFFField getField(TIFFTag tag) {
         for (TIFFNode node:getChildren()) {
@@ -127,7 +127,7 @@ public class TIFFDirectory extends TIFFNode {
     }
     /** Returns the value of the TIFFField with the specified tag. If a child node with
      * this tag exists.
-     * @param tag
+     * @param tag TODO
      */
     public Object getData(TIFFTag tag) {
         TIFFField field=getField(tag);

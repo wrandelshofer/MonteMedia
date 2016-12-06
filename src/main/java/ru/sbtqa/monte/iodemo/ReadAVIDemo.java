@@ -36,6 +36,7 @@ public class ReadAVIDemo {
 
     /**
      * @param args the command line arguments
+     * @throws java.io.IOException TODO
      */
     public static void main(String[] args) throws IOException {
         final ArrayList<BufferedImage> frames = new ArrayList<BufferedImage>();
@@ -55,8 +56,8 @@ public class ReadAVIDemo {
             Buffer codecBuf = new Buffer();
             do {
                 in.read(track, inBuf);
-                if (codec.process(inBuf, codecBuf)==Codec.CODEC_FAILED) {
-                    System.out.println("Can not decode buffer "+inBuf);
+                if (codec.process(inBuf, codecBuf) == Codec.CODEC_FAILED) {
+                    System.out.println("Can not decode buffer " + inBuf);
                 }
                 if (!codecBuf.isFlag(BufferFlag.DISCARD)) {
                     frames.add(Images.cloneImage((BufferedImage) codecBuf.data));
@@ -71,9 +72,9 @@ public class ReadAVIDemo {
             public void run() {
                 JFrame fr = new JFrame(f.getName());
                 fr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                final JLabel label= new JLabel(new ImageIcon(frames.get(0)));
-                final JSlider slider=new JSlider(JSlider.HORIZONTAL,0,frames.size()-1,0);
-                
+                final JLabel label = new JLabel(new ImageIcon(frames.get(0)));
+                final JSlider slider = new JSlider(JSlider.HORIZONTAL, 0, frames.size() - 1, 0);
+
                 slider.addChangeListener(new ChangeListener() {
 
                     @Override
@@ -81,7 +82,7 @@ public class ReadAVIDemo {
                         label.setIcon(new ImageIcon(frames.get(slider.getValue())));
                     }
                 });
-                
+
                 fr.add(BorderLayout.CENTER, label);
                 fr.add(BorderLayout.SOUTH, slider);
                 fr.pack();

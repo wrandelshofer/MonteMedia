@@ -63,16 +63,16 @@ public interface ColorAdjustModel {
     /** A 4-vector with the parameters for quadratic white balance adjustment.
      * The vector contains the values {Rmu, Rnu, Bmu, Bnu}.
      * 
-     * <pre>
+     * 
      *                                     [ R
      *                                       G
      *                                       B
      * [R'    [ Rnu  0   0  Rmu  0   0       R^2
      *  G'  =    0   1   0   0   0   0    *  G^2
      *  B']      0   0  Bnu  0   0  Bmu ]    B^2 ]
-     * </pre>
      * 
-     * <p>
+     * 
+     * 
      * Reference:<br>
      * Edmund Lam, Combining gray world and retinex theory for automatic 
      * white balance in	digital photography, Consumer Electronics, 2005. 

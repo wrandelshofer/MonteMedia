@@ -21,61 +21,61 @@ import static org.monte.media.BufferFlag.*;
 
 /**
  * {@code RunLengthCodec} encodes a BufferedImage as a byte[] array.
- * <p>
+ * 
  * This codec only works with the AVI file format. Other formats, such as
  * QuickTime, use a different encoding for run-length compressed video.
- * <p>
+ * 
  * This codec currently only supports encoding from a {@code BufferedImage} into 
  * the file format. Decoding support may be added in the future.
- * <p>
+ * 
  * Supported input formats:
- * <ul>
+ * 
  * {@code Format} with {@code BufferedImage.class}, any width, any height,
  * depth=8.
- * </ul>
+ * 
  * Supported output formats:
- * <ul>
+ * 
  * {@code Format} with {@code byte[].class}, same width and height as input
  * format, depth=8.
- * </ul>
+ * 
  * The codec supports lossless delta- and key-frame encoding of images with 8
  * bits per pixel.
- * <p>
+ * 
  * The codec does not encode the color palette of an image. This must be done
  * separately.
- * <p>
+ * 
  * A frame is compressed line by line from bottom to top.
- * <p>
+ * 
  * Each line of a frame is compressed individually. A line consists of two-byte
  * op-codes optionally followed by data. The end of the line is marked with
  * the EOL op-code.
- * <p>
+ * 
  * The following op-codes are supported:
- * <ul>
- * <li>{@code 0x00 0x00}
- * <br>Marks the end of a line.</li>
+ * 
+ * {@code 0x00 0x00}
+ * <br>Marks the end of a line.
  *
- * <li>{@code  0x00 0x01}
- * <br>Marks the end of the bitmap.</li>
+ * {@code  0x00 0x01}
+ * <br>Marks the end of the bitmap.
  *
- * <li>{@code 0x00 0x02 x y}
+ * {@code 0x00 0x02 x y}
  * <br> Marks a delta (skip). {@code x} and {@code y}
  * indicate the horizontal and vertical offset from the current position.
- * {@code x} and {@code y} are unsigned 8-bit values.</li>
+ * {@code x} and {@code y} are unsigned 8-bit values.
  *
- * <li>{@code 0x00 n data{n} 0x00?}
+ * {@code 0x00 n data{n} 0x00?}
  * <br> Marks a literal run. {@code n}
  * gives the number of data bytes that follow. {@code n} must be between 3 and
  * 255. If n is odd, a pad byte with the value 0x00 must be added.
- * </li>
- * <li>{@code n data}
+ * 
+ * {@code n data}
  * <br> Marks a repetition. {@code n}
  * gives the number of times the data byte is repeated. {@code n} must be
  * between 1 and 255.
- * </li>
- * </ul>
+ * 
+ * 
  * Example:
- * <pre>
+ * 
  * Compressed data         Expanded data
  *
  * 03 04                   04 04 04
@@ -87,9 +87,9 @@ import static org.monte.media.BufferFlag.*;
  * 00 00                   End of line
  * 09 1E                   1E 1E 1E 1E 1E 1E 1E 1E 1E
  * 00 01                   End of RLE bitmap
- * </pre>
+ * 
  *
- * References:<br/>
+ * References:
  * <a href="http://wiki.multimedia.cx/index.php?title=Microsoft_RLE">http://wiki.multimedia.cx/index.php?title=Microsoft_RLE</a><br>
  *
  *

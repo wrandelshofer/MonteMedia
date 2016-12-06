@@ -18,13 +18,18 @@ import java.util.Stack;
  */
 public abstract class TIFFNode {
 
-    /** The tag which identifies this node.*/
+    /**
+     * The tag which identifies this node.
+     */
     protected TIFFTag tag;
-    /** The children. */
+    /**
+     * The children.
+     */
     private ArrayList<TIFFNode> children = new ArrayList<>();
     private TIFFNode parent;
-    /** The IFDEntry from which this node was read.
-     * IFDEntry is null, if this node has not been read from a TIFF file.
+    /**
+     * The IFDEntry from which this node was read. IFDEntry is null, if this
+     * node has not been read from a TIFF file.
      */
     protected IFDEntry ifdEntry;
 
@@ -40,7 +45,11 @@ public abstract class TIFFNode {
         return tag;
     }
 
-    /** Returns the tag number or -1 if not known. */
+    /**
+     * Returns the tag number or -1 if not known.
+     *
+     * @return TODO
+     */
     public int getTagNumber() {
         return tag != null ? tag.getNumber() : -1;
     }
@@ -99,7 +108,7 @@ public abstract class TIFFNode {
         @Override
         public boolean hasNext() {
             return (!stack.empty()
-                    && stack.peek().hasNext());
+                  && stack.peek().hasNext());
         }
 
         @Override
@@ -110,7 +119,7 @@ public abstract class TIFFNode {
             if (!enumer.hasNext()) {
                 stack.pop();
             }
-            ArrayList<TIFFNode> children=current.getChildren();
+            ArrayList<TIFFNode> children = current.getChildren();
             if (!children.isEmpty()) {
                 stack.push(children.iterator());
             }

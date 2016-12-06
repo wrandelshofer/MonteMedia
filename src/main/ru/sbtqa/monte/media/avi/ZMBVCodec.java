@@ -25,12 +25,12 @@ import static org.monte.media.BufferFlag.*;
 
 /**
  * Implements the DosBox Capture Codec {@code "ZMBV"}.
- * <p>
+ * 
  * This codec currently only supports decoding from the file format into
  * a {@code BufferedImage}. Encoding support may be added in the future.
- * <p>
+ * 
  * For details seee {@link ZMBVCodecCore}.
- * </p>
+ * 
  *
  * @author Werner Randelshofer
  * @version $Id: ZMBVCodec.java 364 2016-11-09 19:54:25Z werner $

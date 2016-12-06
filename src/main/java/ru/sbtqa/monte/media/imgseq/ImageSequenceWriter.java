@@ -76,10 +76,12 @@ public class ImageSequenceWriter implements MovieWriter {
     }
     private ArrayList<VideoTrack> tracks = new ArrayList<>();
 
-    /** Adds a video track.
+    /**
+     * Adds a video track.
+     *
      * @param dir The output directory.
      * @param filenameFormatter a format string for a filename with a number,
-     *                   for example "frame_%d0000$.png";
+     * for example "frame_%d0000$.png";
      *
      * @param width the image width
      * @param height the image height
@@ -92,12 +94,12 @@ public class ImageSequenceWriter implements MovieWriter {
     public int addVideoTrack(File dir, String filenameFormatter, int width, int height) {
         VideoTrack t;
         Format fmt = filenameFormatter.toLowerCase().endsWith(".png")//
-                ? new Format(MediaTypeKey, VIDEO,EncodingKey,ENCODING_QUICKTIME_PNG, WidthKey, width, HeightKey, height, DepthKey, 24) //
-                : new Format(MediaTypeKey, VIDEO,EncodingKey,ENCODING_QUICKTIME_JPEG, WidthKey, width, HeightKey, height, DepthKey, 24) // //
-;
+              ? new Format(MediaTypeKey, VIDEO, EncodingKey, ENCODING_QUICKTIME_PNG, WidthKey, width, HeightKey, height, DepthKey, 24) //
+              : new Format(MediaTypeKey, VIDEO, EncodingKey, ENCODING_QUICKTIME_JPEG, WidthKey, width, HeightKey, height, DepthKey, 24) // //
+              ;
         tracks.add(t = new VideoTrack(dir, filenameFormatter,
-                fmt,
-                null, width, height));
+              fmt,
+              null, width, height));
         createCodec(t);
         return tracks.size() - 1;
     }
@@ -106,17 +108,17 @@ public class ImageSequenceWriter implements MovieWriter {
         Format fmt = vt.videoFormat;
         String enc = fmt.get(EncodingKey);
         if (enc.equals(ENCODING_AVI_MJPG)//
-                || enc.equals(ENCODING_QUICKTIME_JPEG)//
-                ) {
+              || enc.equals(ENCODING_QUICKTIME_JPEG)//
+              ) {
             vt.codec = new JPEGCodec();
         } else if (enc.equals(ENCODING_AVI_PNG)//
-                || enc.equals(ENCODING_QUICKTIME_PNG)//
-                ) {
+              || enc.equals(ENCODING_QUICKTIME_PNG)//
+              ) {
             vt.codec = new PNGCodec();
         }
 
-        vt.codec.setInputFormat(fmt.prepend(MediaTypeKey, VIDEO,MimeTypeKey,MIME_JAVA,EncodingKey,ENCODING_BUFFERED_IMAGE,DataClassKey, BufferedImage.class));
-        vt.codec.setOutputFormat(fmt.prepend(MediaTypeKey, VIDEO,EncodingKey,enc, DataClassKey ,byte[].class));
+        vt.codec.setInputFormat(fmt.prepend(MediaTypeKey, VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE, DataClassKey, BufferedImage.class));
+        vt.codec.setOutputFormat(fmt.prepend(MediaTypeKey, VIDEO, EncodingKey, enc, DataClassKey, byte[].class));
 //    vt.codec.setQuality(vt.videoQuality);
     }
 
@@ -148,7 +150,7 @@ public class ImageSequenceWriter implements MovieWriter {
                 return;
             }
             t.codec.process(buf, t.outputBuffer);
-            buf=t.outputBuffer;
+            buf = t.outputBuffer;
         }
 
         File file = new File(t.dir, format(t.nameFormat, t.count + 1));
@@ -158,7 +160,7 @@ public class ImageSequenceWriter implements MovieWriter {
                 out.write((byte[]) buf.data, buf.offset, buf.length);
             }
         } else if (buf.data instanceof File) {
-            copy((File)buf.data,file);
+            copy((File) buf.data, file);
         } else {
             throw new IllegalArgumentException("Can't process buffer data:" + buf.data);
         }
@@ -169,13 +171,11 @@ public class ImageSequenceWriter implements MovieWriter {
     public void writeSample(int track, byte[] data, int off, int len, long duration, boolean isSync) throws IOException {
         VideoTrack t = tracks.get(track);
 
-
         File file = new File(t.dir, format(t.nameFormat, t.count + 1));
 
         try (FileOutputStream out = new FileOutputStream(file)) {
             out.write(data, off, len);
         }
-
 
         t.count++;
     }
@@ -201,16 +201,21 @@ public class ImageSequenceWriter implements MovieWriter {
     public boolean isDataLimitReached() {
         return false;
     }
-    /** Returns the sampleDuration of the track in seconds. */
+
+    /**
+     * Returns the sampleDuration of the track in seconds.
+     *
+     * @return TODO
+     */
     @Override
     public Rational getDuration(int track) {
-        VideoTrack tr=tracks.get(track);
-        return new Rational(tr.count,30);
+        VideoTrack tr = tracks.get(track);
+        return new Rational(tr.count, 30);
     }
-    
-        @Override
+
+    @Override
     public boolean isEmpty(int track) {
-       return tracks.get(track).count==0;
+        return tracks.get(track).count == 0;
     }
 
 }

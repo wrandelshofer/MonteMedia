@@ -11,15 +11,15 @@ import ru.sbtqa.monte.media.tiff.TagSet;
 
 /**
  * Enumeration of Sony MakerNote tags.
- * <p>
- * Sources:
- * <p>
- * http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/Sony.html
- * <p>
- * Exiv2 Image metadata library and tools.
- * Copyright © 2004 - 2014 Andreas Huggel
- * <a href="http://www.exiv2.org/tags-sony.html">http://www.exiv2.org/tags-sony.html</a>
  * 
+ * Sources:
+ * 
+ * http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/Sony.html
+ * 
+ * Exiv2 Image metadata library and tools. Copyright © 2004 - 2014 Andreas
+ * Huggel
+ * <a href="http://www.exiv2.org/tags-sony.html">http://www.exiv2.org/tags-sony.html</a>
+ *
  * @author Werner Randelshofer
  * @version 1.0 2010-07-24 Created.
  */
@@ -31,7 +31,11 @@ public class SonyMakerNoteTagSet extends TagSet {
         super("SonyMakerNote", tags);
     }
 
-    /** Returns a shared instance of a BaselineTIFFTagSet. */
+    /**
+     * Returns a shared instance of a BaselineTIFFTagSet.
+     *
+     * @return TODO
+     */
     public static SonyMakerNoteTagSet getInstance() {
         if (instance == null) {
             TIFFTag[] tags = {//
@@ -68,7 +72,7 @@ public class SonyMakerNoteTagSet extends TagSet {
                 "Custom", 0x70//
                 )),
                 new TIFFTag("PrintIM", 0x0e00, SHORT_MASK),
-                new TIFFTag("Panorama", 0x1003,LONG_MASK),
+                new TIFFTag("Panorama", 0x1003, LONG_MASK),
                 new TIFFTag("PreviewImage", 0x2001, UNDEFINED_MASK),
                 new TIFFTag("AutoHDR", 0x200a, SHORT_MASK, new EnumValueFormatter(//
                 "Off ", 0x0,//

@@ -18,7 +18,7 @@ import javax.imageio.stream.MemoryCacheImageInputStream;
  * Parses structured binary data using C-like data declarations.
  *
  * Syntax:
- * <pre><code>
+ * <code>
  * Declarations ::= { MagicDeclaration | DescriptionDeclaration | EnumDeclaration | SetDeclaration | TypedefDeclaration } EOF
  * MagicDeclaration ::= "magic" identifier ("ushort" hexLiteral[".." hexLiteral] | stringLiteral) ";"
  * DescriptionDeclaration ::= "description" identifier stringLiteral "," stringLiteral ";"
@@ -44,7 +44,7 @@ import javax.imageio.stream.MemoryCacheImageInputStream;
  *                         | "ataricolor"
  * ArrayList ::= "[" [ArraySize] "]" {"," identifier "[" [ArraySize] "]" }
  * ArraySize ::= () | intLiteral | identifier [("-"|"+"|"=="|"!=") intLiteral]
- * </code></pre>
+ * </code>
  * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Swityerland
  *
  * @version $Id: StructParser.java 364 2016-11-09 19:54:25Z werner $
@@ -217,9 +217,9 @@ public class StructParser extends Object {
     /**
      * Declarations expression.
      *
-     * <pre><code>
+     * <code>
      * Declarations ::= { MagicDeclaration | DescriptionDeclaration | EnumDeclaration | SetDeclaration | TypedefDeclaration }
-     * </code></pre>
+     * </code>
      */
     protected static class Declarations {
 
@@ -305,9 +305,9 @@ public class StructParser extends Object {
     /**
      * MagicDeclaration expression.
      *
-     * <pre><code>
+     * <code>
      * MagicDeclaration ::= "magic" identifier ("ushort" hexLiteral[".." hexLiteral] | stringLiteral) ";"
-     * </code></pre>
+     * </code>
      */
     protected static class MagicDeclaration {
 
@@ -371,9 +371,9 @@ public class StructParser extends Object {
     /**
      * DescriptionDeclaration expression.
      *
-     * <pre><code>
+     * <code>
      * DescriptionDeclaration ::= "description" identifier stringLiteral "," stringLiteral ";"
-     * </code></pre>
+     * </code>
      */
     protected static class DescriptionDeclaration {
 
@@ -417,9 +417,9 @@ public class StructParser extends Object {
     /**
      * EnumDeclaration expression.
      *
-     * <pre><code>
+     * <code>
      * EnumDeclaration ::= EnumSpecifier identifier ";"
-     * </code></pre>
+     * </code>
      */
     protected static class EnumDeclaration {
 
@@ -444,9 +444,9 @@ public class StructParser extends Object {
     /**
      * SetDeclaration expression.
      *
-     * <pre><code>
+     * <code>
      * SetDeclaration ::= SetSpecifier identifier ";"
-     * </code></pre>
+     * </code>
      */
     protected static class SetDeclaration {
 
@@ -471,9 +471,9 @@ public class StructParser extends Object {
     /**
      * TypedefDeclaration expression.
      *
-     * <pre><code>
+     * <code>
      * TypedefDeclaration ::= "typedef" TypeSpecifier identifier ";"
-     * </code></pre>
+     * </code>
      */
     protected static class TypedefDeclaration {
 
@@ -512,9 +512,9 @@ public class StructParser extends Object {
     /**
      * EnumSpecifier expression.
      *
-     * <pre><code>
+     * <code>
      * EnumSpecifier ::= "enum" ( identifier | "{" identifier ["=" intLiteral] {"," identifier ["=" intLiteral]} "}" )
-     * </code></pre>
+     * </code>
      */
     protected static class EnumSpecifier {
 
@@ -613,9 +613,9 @@ public class StructParser extends Object {
     /**
      * SetSpecifier expression.
      *
-     * <pre><code>
+     * <code>
      * SetSpecifier ::= "set" ( identifier | "{" identifier "=" intLiteral {"," identifier "=" intLiteral} "}" )
-     * </code></pre>
+     * </code>
      */
     protected static class SetSpecifier {
 
@@ -691,10 +691,10 @@ public class StructParser extends Object {
     /**
      * TypeSpecifier expression.
      *
-     * <pre><code>
+     * <code>
      * TypeSpecifier ::= ( StructSpecifier | (PrimitiveSpecifier [EnumSpecifier | SetSpecifier]) ) [ArrayList]
      * ArrayList ::= "[" [ArraySize] "]" {"," identifier "[" [ArraySize] "]" }
-     * </code></pre>
+     * </code>
      */
     protected static class TypeSpecifier {
 
@@ -992,9 +992,9 @@ public class StructParser extends Object {
     /**
      * StructSpecifier expression.
      *
-     * <pre><code>
+     * <code>
      * StructSpecifier ::= "struct (identifier | "{" MemberDeclaration { MemberDeclaration } "}" )
-     * </code></pre>
+     * </code>
      */
     protected static class StructSpecifier {
 
@@ -1040,10 +1040,10 @@ public class StructParser extends Object {
     /**
      * MemberDeclaration expression.
      *
-     * <pre><code>
+     * <code>
      * MemberDeclaration ::= TypeSpecifier identifier [ArrayList] ";"
      * ArrayList ::= "[" [ArraySize] "]" {"," identifier "[" [ArraySize] "]" }
-     * </code></pre>
+     * </code>
      */
     protected static class MemberDeclaration {
 
@@ -1136,14 +1136,14 @@ public class StructParser extends Object {
     /**
      * PrimitiveSpecifier expression.
      *
-     * <pre><code>
+     * <code>
      * PrimitiveSpecifier ::= "uint" n | "ubyte" | "byte" | "short" | "ushort" |
      *                         | "int" | "long" | "float" | "double" | "extended"
      *                         | "char" | "charbyte" | "cstring" | "utf8" | "pstring"
      *                         | "pstring32"
      *                         | "utf16le" |"magic" | "mactimestamp"
      *                         | "bcd2" | "bcd4"
-     * </code></pre>
+     * </code>
      */
     protected static class PrimitiveSpecifier {
 
@@ -1654,9 +1654,9 @@ public class StructParser extends Object {
     /**
      * ArraySize expression.
      *
-     * <pre><code>
+     * <code>
      * ArraySize ::= () | intLiteral | identifier [("-"|"+"|"=="|"!=") intLiteral]
-     * </code></pre>
+     * </code>
      */
     protected static class ArraySize {
 
@@ -1836,9 +1836,9 @@ public class StructParser extends Object {
     /**
      * IntLiteral expression.
      *
-     * <pre><code>
+     * <code>
      * IntLiteral ::= intLiteral | hexLiteral
-     * </code></pre>
+     * </code>
      */
     protected static class IntLiteral {
 
@@ -1867,9 +1867,9 @@ public class StructParser extends Object {
     /**
      * MagicOrIntLiteral expression.
      *
-     * <pre><code>
+     * <code>
      * MagicOrIntLiteral ::= magicLiteral | intLiteral | hexLiteral
-     * </code></pre>
+     * </code>
      */
     protected static class MagicOrIntLiteral {
 

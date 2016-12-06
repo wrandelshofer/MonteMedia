@@ -25,16 +25,17 @@ import static javax.swing.text.html.HTML.Tag.A;
 /**
  * {@code JLabelHyperlinkHandler} makes HTML hyperlinks in a {@code JLabel}
  * clickable.
- * <p>
+ * 
  * You can add an action listener to this handler to perform the desired action.
- * The {@code command} contains the content of the href attribute in the hyperlink.
- * <p>
+ * The {@code command} contains the content of the href attribute in the
+ * hyperlink.
+ * 
  * Example:
- * <pre>
+ * 
  * File f=new File(System.getProperty("user.home"));
  * JLabel l=new JLabel("&lt;html&gt;Click this &lt;a href="\""+
  *                      f.toURI();+
- *                      "\""&gt;link&lt;/a> to open your home folder.");
+ *                      "\""&gt;link&lt;/a{@literal >} to open your home folder.");
  * new JLabelHyperlinkHandler(l, new ActionListener() {
  *      public void ActionPerformed(ActionEvent evt) {
  *              try {
@@ -47,8 +48,8 @@ import static javax.swing.text.html.HTML.Tag.A;
  *              }
  *      }
  * });
- * </pre>
  * 
+ *
  * @author Werner Randelshofer
  * @version $Id: JLabelHyperlinkHandler.java 364 2016-11-09 19:54:25Z werner $
  */
@@ -64,9 +65,9 @@ public class JLabelHyperlinkHandler {
             AttributeSet as = at.getCharacterAttribute(pos);
             if (label.isEnabled() && as.getAttribute(A) != null) {
                 label.setCursor(getPredefinedCursor(HAND_CURSOR));
-                SimpleAttributeSet attr=(SimpleAttributeSet)as.getAttribute(A);
-                String href=(String)attr.getAttribute(HREF);
-                fireActionPerformed(new ActionEvent(label, ACTION_PERFORMED,href));
+                SimpleAttributeSet attr = (SimpleAttributeSet) as.getAttribute(A);
+                String href = (String) attr.getAttribute(HREF);
+                fireActionPerformed(new ActionEvent(label, ACTION_PERFORMED, href));
             } else {
                 label.setCursor(getDefaultCursor());
             }
@@ -148,9 +149,9 @@ public class JLabelHyperlinkHandler {
             actionListeners.remove(l);
         }
     }
-    
+
     private void fireActionPerformed(ActionEvent evt) {
-        for (ActionListener l:actionListeners) {
+        for (ActionListener l : actionListeners) {
             l.actionPerformed(evt);
         }
     }

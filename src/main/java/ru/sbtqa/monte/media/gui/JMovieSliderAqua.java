@@ -19,7 +19,7 @@ import ru.sbtqa.monte.media.image.Images;
 /**
  * MovieSliderAqua.
  *
- * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
  * @version 3.0.1 2010-11-06 Removes synchronization of method setModel.
  * <br>3.0 2009-07-25 Added images for disabled state.
  * <br>2.0 2007-11-15 Upgraded to Java 1.4.
@@ -27,7 +27,8 @@ import ru.sbtqa.monte.media.image.Images;
  * <br>1.0 April 22, 2003 Created.
  */
 public class JMovieSliderAqua extends JComponent
-        implements ChangeListener, MouseListener, MouseMotionListener {
+      implements ChangeListener, MouseListener, MouseMotionListener {
+
     private final static long serialVersionUID = 1L;
 
     private final static int THUMB_WIDTH = 15, THUMB_HEIGHT = 16;
@@ -110,6 +111,7 @@ public class JMovieSliderAqua extends JComponent
     public Dimension getMinimumSize() {
         return new Dimension(16, 16);
     }
+
     /*
     public boolean mouseDown(Event e, int x, int y) {
     isPressed = true;
@@ -198,22 +200,22 @@ public class JMovieSliderAqua extends JComponent
         // Draw center
         int trackWidth = width - trackEastImage.getWidth(this) - trackWestImage.getWidth(this);
         int imageWidth = min(
-                trackWidth,
-                progressPos - trackWestImage.getWidth(this));
+              trackWidth,
+              progressPos - trackWestImage.getWidth(this));
         if (imageWidth > 0) {
             image = (enabled) ? trackCenterImage : trackCenterDisabledImage;
             g.drawImage(image, trackWestImage.getWidth(this), 0,
-                    imageWidth,
-                    image.getHeight(this),
-                    this);
+                  imageWidth,
+                  image.getHeight(this),
+                  this);
         }
         imageWidth = trackWidth - imageWidth;
         if (imageWidth > 0) {
             image = (enabled) ? trackCenterUnloadedDisabledImage : trackCenterUnloadedDisabledImage;
             g.drawImage(image, width - trackEastImage.getWidth(this) - imageWidth, 0,
-                    imageWidth,
-                    image.getHeight(this),
-                    this);
+                  imageWidth,
+                  image.getHeight(this),
+                  this);
         }
 
         // Draw east
@@ -261,11 +263,9 @@ public class JMovieSliderAqua extends JComponent
             if (computeProgressPos() != progressPos_) {
                 repaint();
             }
-        } else {
-            //System.out.println("MovieSliderAqua time:"+model_.getValue());
-            if (computeThumbPos() != thumbPos_) {
-                repaint();
-            }
+        } else //System.out.println("MovieSliderAqua time:"+model_.getValue());
+        if (computeThumbPos() != thumbPos_) {
+            repaint();
         }
     }
 

@@ -45,7 +45,7 @@ public class ILBMEncoder {
     /**
      * Writes the bitmap header (ILBM BMHD).
      *
-     * <pre>
+     * 
      * typedef UBYTE Masking; // Choice of masking technique
      *
      * #define mskNone                 0
@@ -71,7 +71,7 @@ public class ILBMEncoder {
      *   UBYTE       xAspect, yAspect; // pixel aspect, a ratio width : height
      *   UWORD       pageWidth, pageHeight; // source "page" size in pixels
      *   } BitmapHeader;
-     * </pre>
+     * 
      */
     private void writeBMHD(IFFOutputStream out, BitmapImage img) throws IOException {
         out.pushDataChunk("BMHD");

@@ -13,7 +13,7 @@ import javax.imageio.stream.ImageOutputStream;
 
 /**
  * Facilitates writing of EA 85 IFF files.
- * <p>
+ * 
  * Reference:<br>
  * Commodore-Amiga, Inc. (1991) Amiga ROM Kernel Reference Manual. Devices.
  * Third Edition. Reading: Addison-Wesley.
@@ -74,20 +74,20 @@ public class IFFOutputStream extends OutputStream {
     }
 
     /** Gets the position relative to the beginning of the IFF output stream.
-     * <p>
+     * 
      * Usually this value is equal to the stream position of the underlying
      * ImageOutputStream, but can be larger if the underlying stream already
      * contained data.
      *
      * @return The relative stream position.
-     * @throws IOException
+     * @throws IOException TODO
      */
     public long getStreamPosition() throws IOException {
         return out.getStreamPosition() - streamOffset;
     }
 
     /** Seeks relative to the beginning of the IFF output stream.
-     * <p>
+     * 
      * Usually this equal to seeking in the underlying ImageOutputStream, but
      * can be different if the underlying stream already contained data.
      *
@@ -156,7 +156,7 @@ public class IFFOutputStream extends OutputStream {
         /**
          * Writes the chunk and all its children to the ImageOutputStream
          * and disposes of all resources held by the chunk.
-         * @throws java.io.IOException
+         * @throws java.io.IOException TODO
          */
         @Override
         public void finish() throws IOException {
@@ -278,11 +278,11 @@ public class IFFOutputStream extends OutputStream {
 
     /**
      * ByteRun1 Run Encoding.
-     * <p>
+     * 
      * The run encoding scheme in byteRun1 is best described by
      * pseudo code for the decoder Unpacker (called UnPackBits in the
      * Macintosh toolbox):
-     * <pre>
+     * 
      * UnPacker:
      *    LOOP until produced the desired number of bytes
      *       Read the next source byte into n
@@ -292,7 +292,7 @@ public class IFFOutputStream extends OutputStream {
      *          -128       => no operation
      *       ENDCASE
      *    ENDLOOP
-     * </pre>
+     * 
      */
     public void writeByteRun1(byte[] data) throws IOException {
         writeByteRun1(data, 0, data.length);

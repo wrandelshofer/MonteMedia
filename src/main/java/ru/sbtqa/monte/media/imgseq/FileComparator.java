@@ -2,7 +2,6 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-
 package ru.sbtqa.monte.media.imgseq;
 
 import java.io.File;
@@ -15,7 +14,8 @@ import java.util.Comparator;
  * @version 1.0 2011-02-20 Created.
  */
 public class FileComparator implements Comparator<File> {
-private OSXCollator collator=new OSXCollator();
+
+    private OSXCollator collator = new OSXCollator();
 
     @Override
     public int compare(File o1, File o2) {

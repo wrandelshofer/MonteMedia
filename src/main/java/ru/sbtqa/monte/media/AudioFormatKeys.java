@@ -96,28 +96,28 @@ public class AudioFormatKeys extends FormatKeys {
 
     public static Format fromAudioFormat(javax.sound.sampled.AudioFormat fmt) {
         return new Format(
-                MediaTypeKey, MediaType.AUDIO,
-                EncodingKey, fmt.getEncoding().toString(),
-                SampleRateKey, Rational.valueOf(fmt.getSampleRate()),
-                SampleSizeInBitsKey, fmt.getSampleSizeInBits(),
-                ChannelsKey, fmt.getChannels(),
-                FrameSizeKey, fmt.getFrameSize(),
-                FrameRateKey, Rational.valueOf(fmt.getFrameRate()),
-                ByteOrderKey, fmt.isBigEndian() ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN,
-                SignedKey, AudioFormat.Encoding.PCM_SIGNED.equals(fmt.getEncoding())//,
-                //
-                );
+              MediaTypeKey, MediaType.AUDIO,
+              EncodingKey, fmt.getEncoding().toString(),
+              SampleRateKey, Rational.valueOf(fmt.getSampleRate()),
+              SampleSizeInBitsKey, fmt.getSampleSizeInBits(),
+              ChannelsKey, fmt.getChannels(),
+              FrameSizeKey, fmt.getFrameSize(),
+              FrameRateKey, Rational.valueOf(fmt.getFrameRate()),
+              ByteOrderKey, fmt.isBigEndian() ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN,
+              SignedKey, AudioFormat.Encoding.PCM_SIGNED.equals(fmt.getEncoding())//,
+        //
+        );
     }
 
     public static javax.sound.sampled.AudioFormat toAudioFormat(Format fmt) {
         // We always use PCM_SIGNED or PCM_UNSIGNED
         return new javax.sound.sampled.AudioFormat(
-                !fmt.containsKey(SignedKey) || fmt.get(SignedKey) ? Encoding.PCM_SIGNED : Encoding.PCM_UNSIGNED,
-                fmt.get(SampleRateKey).floatValue(),
-                fmt.get(SampleSizeInBitsKey, 16),
-                fmt.get(ChannelsKey, 1),
-                fmt.containsKey(FrameSizeKey) ? fmt.get(FrameSizeKey) : (fmt.get(SampleSizeInBitsKey, 16) + 7) / 8 * fmt.get(ChannelsKey, 1),
-                fmt.containsKey(FrameRateKey) ? fmt.get(FrameRateKey).floatValue() : fmt.get(SampleRateKey).floatValue(),
-                fmt.containsKey(ByteOrderKey) ? fmt.get(ByteOrderKey) == ByteOrder.BIG_ENDIAN : true);
+              !fmt.containsKey(SignedKey) || fmt.get(SignedKey) ? Encoding.PCM_SIGNED : Encoding.PCM_UNSIGNED,
+              fmt.get(SampleRateKey).floatValue(),
+              fmt.get(SampleSizeInBitsKey, 16),
+              fmt.get(ChannelsKey, 1),
+              fmt.containsKey(FrameSizeKey) ? fmt.get(FrameSizeKey) : (fmt.get(SampleSizeInBitsKey, 16) + 7) / 8 * fmt.get(ChannelsKey, 1),
+              fmt.containsKey(FrameRateKey) ? fmt.get(FrameRateKey).floatValue() : fmt.get(SampleRateKey).floatValue(),
+              fmt.containsKey(ByteOrderKey) ? fmt.get(ByteOrderKey) == ByteOrder.BIG_ENDIAN : true);
     }
 }

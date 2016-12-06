@@ -89,14 +89,14 @@ public class Images {
   /**
    * Converts the image into a buffered image with an RGB color model. This
    * method returns the same image, if no conversion is needed.
-   * <p>
+   * 
    * This method should be run with "KCMS" (Kodak Color Management System). The "Little CMS" which
    * is the default in JVMs is 4 times slower.
-   * <p>
+   * 
    * Start the VM with the following options:
-   * <pre>
+   * 
    * -Dsun.java2d.cmm=sun.java2d.cmm.kcms.KcmsServiceProvider
-   * </pre>
+   * 
    *
    * @param img an image
    * @param cm the destination color model
@@ -287,7 +287,7 @@ public class Images {
 
   /**
    * Converts an AWT image to Java FX.
-   * <p>
+   * 
    * This method performs better than SwingFXUtils on Java SE 8 if the
    * underlying Raster has a DataBufferInt.
    *

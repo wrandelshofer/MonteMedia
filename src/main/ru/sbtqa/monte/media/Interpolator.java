@@ -105,11 +105,11 @@ public abstract class Interpolator {
     }
     /**
      * Initializes the interpolation.
-     * <p>
+     * 
      * Once this method has been called, method #finish must be called
      * before the interpolator can be destroyed.
      * 
-     * @param currentTimeMillis
+     * @param currentTimeMillis TODO
      */
     public void initialize(long currentTimeMillis) {
         startTime = currentTimeMillis;
@@ -131,7 +131,7 @@ public abstract class Interpolator {
     /**
      * Interpolates with the current time millis.
      * 
-     * @param currentTimeMillis
+     * @param currentTimeMillis TODO
      */
     public void interpolate(long currentTimeMillis) {
         long elapsed = Math.min(timespan, currentTimeMillis - startTime);
@@ -143,7 +143,7 @@ public abstract class Interpolator {
      * Finishes the interpolation and calls this.notifyAll() allowing other
      * threads to synchronize on isFinished() of the interpolator.
      * 
-     * @param currentTimeMillis
+     * @param currentTimeMillis TODO
      */
     public void finish(long currentTimeMillis) {
         if (! isFinished) {

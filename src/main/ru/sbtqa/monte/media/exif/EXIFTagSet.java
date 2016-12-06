@@ -16,22 +16,22 @@ import static org.monte.media.tiff.TIFFTag.*;
 
 /**
  * Enumeration of standard EXIF tags.
- * <p>
+ * 
  * Sources:
- * <p>
+ * 
  * Exchangeable image file format for digital still cameras: Exif Version 2.2.
  * (April, 2002). Standard of Japan Electronics and Information Technology
  * Industries Association. JEITA CP-3451.
  * <a href="http://www.exif.org/Exif2-2.PDF">http://www.exif.org/Exif2-2.PDF</a>
- * <p>
+ * 
  * Exiv2 Image metadata library and tools.
  * Copyright © 2004 - 2014 Andreas Huggel
  * <a href="http://www.exiv2.org/tags.html">http://www.exiv2.org/tags.html</a>
- * <p>
+ * 
  * EXIF Tags
  * <a href="http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/EXIF.html"
  * >http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/EXIF.html</a>
- * <p>
+ * 
  * 
  * @author Werner Randelshofer
  * @version 1.0 2010-07-24 Created.
@@ -99,7 +99,7 @@ public class EXIFTagSet extends TagSet {
      * should be recorded when a PhotographicSensitivity tag is recorded.
      * Value = 4, 5, 6, or 7 may be used in case that the values of plural 
      * parameters are the same.
-     * <p>
+     * 
      * Description taken from www.exiv2.org. Copyright (c) Andreas Huggel.
      */
     public final static TIFFTag SensitivityType = new TIFFTag("SensitivityType", 0x8830/*=34864*/, SHORT_MASK, new EnumValueFormatter(
@@ -243,7 +243,7 @@ public class EXIFTagSet extends TagSet {
      * minimum F number in the minimum focal length, and minimum F number in the maximum focal length, 
      * which are specification information for the lens that was used in photography.
      * When the minimum F number is unknown, the notation is 0/0
-     * <p>
+     * 
      * Description taken from www.exiv2.org. Copyright (c) Andreas Huggel.
      */
     public final static TIFFTag LensSpecification = new TIFFTag("LensSpecification", 0xa432/*42034*/, RATIONAL_MASK);

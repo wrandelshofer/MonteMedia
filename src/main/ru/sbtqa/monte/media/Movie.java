@@ -11,43 +11,43 @@ import java.net.URI;
 /**
  * A {@code movie} provides an editable container for media samples in a
  * time and tracks coordinate system.
- * <p>
+ * 
  * <b>Note this interface is work in progress. It is not part of the API yet.</b>
- * <p>
+ * 
  * A movie has a time dimension and a track dimension. The time dimension is
  * the duration of the movie. The track dimension is a list of tracks.
  * A track has a duration and a time offset.
- * <p>
- * <pre>
+ * 
+ * 
  * Movie duration: |------------------------------------------------|
  * Track 0:         LOREMIPSUM
  * Track 1:         ..............THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG
  * Track 2:         .....FARFARAWAYBEHINDTHEMOUNTAINS
  * Track 3:         .......................THENIGHTWASHOTANDWET
  *    ... 
- * <pre>
- * <p>
+ * 
+ * 
  * A track provides random access to decoded samples, either by index or
  * by a time offset.
- * <p>
+ * 
  * Internally, a track consists of a media and a sequence of clips. 
  * The duration of a track is the sum of the duration of its clips.
- * <p>
+ * 
  * A clips selects a contiguous sequence of samples from a media. It specifies a 
  * playback rate, and filters which are applied to the samples before
  * they are presented. The playback rate can be negative. 
  * The duration of a clip is the duration of the samples multiplied by its 
  * absolute playback rate.
- * <p>
+ * 
  * A media is made up of a sequence of samples. It provides random access to
  * samples, either by index or by a time offset. Media provides decoding
  * information about the samples. Including a decoding sequence for predicted
  * samples. 
- * <p>
+ * 
  * A sample provides encoded data for a specified duration. A sample is a
  * sequence of bytes located in a file at a specific offset and length.
- * <p>
- * <pre>
+ * 
+ * 
  * Track 1:         THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG
  * Edits:           (0)( 1 )(  2   )(   3   )(4)(  5  )
  * 
@@ -59,7 +59,7 @@ import java.net.URI;
  * File B:          BLA..J.UM.PS.OV.
  * File C:          ...ER.BLA.LA.ZYD...DOG
  * File D:          BR..OWNF..OXB..LAT..HEB..LAB.LA..
- ** <pre>
+ ** 
  *
  * @author Werner Randelshofer
  * @version $Id: Movie.java 364 2016-11-09 19:54:25Z werner $

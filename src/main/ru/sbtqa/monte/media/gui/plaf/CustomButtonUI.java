@@ -16,13 +16,13 @@ import javax.swing.plaf.*;
 /**
  * CustomButtonUI draws a BackdropBorder in the background of the button.
  * This allows for easy visual customization of buttons.
- * <p>
+ * 
  * Usage:
- * <pre>
+ * 
  * JButton b = new JButton();
  * b.setUI((ButtonUI) CustomButtonUI.createUI(b));
  * b.setBorder(new BackdropBorder(....));
- * </pre>
+ * 
  * 
  * @author Werner Randelshofer
  * @version 2.0 2006-09-24 Rewritten.

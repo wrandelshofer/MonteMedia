@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 /**
  * Represents a delta frame in a movie track.
- * <p>
+ * 
  * References:<br>
  * <a href="http://www.fileformat.info/format/atari/egff.htm">http://www.fileformat.info/format/atari/egff.htm</a><br>
  * <a href="http://www.atari-forum.com/wiki/index.php/ST_Picture_Formats">http://www.atari-forum.com/wiki/index.php/ST_Picture_Formats</a>
@@ -373,7 +373,7 @@ public class SEQDeltaFrame
     /** Returns true if the frame can be decoded over both the previous frame
      * or the subsequent frame. Bidirectional frames can be used efficiently
      * for forward and backward playing a movie.
-     * <p>
+     * 
      * All key frames are bidirectional. Delta frames which use an XOR OP-mode
      * are bidirectional as well.
      */

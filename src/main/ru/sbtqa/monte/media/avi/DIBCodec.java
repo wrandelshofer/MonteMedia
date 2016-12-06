@@ -21,29 +21,29 @@ import static org.monte.media.BufferFlag.*;
 /**
  * {@code DIBCodec} encodes a BufferedImage as a Microsoft Device Independent 
  * Bitmap (DIB) into a byte array.
- * <p>
+ * 
  * The DIB codec only works with the AVI file format. Other file formats, such
  * as QuickTime, use a different encoding for uncompressed video.
- * <p>
+ * 
  * This codec currently only supports encoding from a {@code BufferedImage} into 
  * the file format. Decoding support may be added in the future.
- * <p>
+ * 
  * This codec does not encode the color palette of an image. This must be done
  * separately.
- * <p>
+ * 
  * The pixels of a frame are written row by row from bottom to top and from
  * the left to the right. 24-bit pixels are encoded as BGR.
- * <p>
+ * 
  * Supported input formats:
- * <ul>
+ * 
  * {@code Format} with {@code BufferedImage.class}, any width, any height,
  * depth=4.
- * </ul>
+ * 
  * Supported output formats:
- * <ul>
+ * 
  * {@code Format} with {@code byte[].class}, same width and height as input
  * format, depth=4.
- * </ul>
+ * 
  *
  * @author Werner Randelshofer
  * @version $Id: DIBCodec.java 363 2016-11-09 19:32:30Z werner $

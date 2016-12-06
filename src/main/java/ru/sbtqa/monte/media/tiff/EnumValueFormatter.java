@@ -13,12 +13,15 @@ import java.util.HashMap;
  * @author Werner Randelshofer
  * @version 1.0 2010-03-22 Created.
  */
-public class EnumValueFormatter implements ValueFormatter  {
+public class EnumValueFormatter implements ValueFormatter {
 
     private HashMap<Integer, String> enumMap;
 
-    /** Creates a new enumeration.
-     * The enumeration consists of a list of String=Integer pairs.
+    /**
+     * Creates a new enumeration. The enumeration consists of a list of
+     * String=Integer pairs.
+     *
+     * @param enumeration TODO
      */
     public EnumValueFormatter(Object... enumeration) {
         enumMap = new HashMap<>();
@@ -26,9 +29,9 @@ public class EnumValueFormatter implements ValueFormatter  {
             String value = (String) enumeration[i];
             Integer key = (Integer) enumeration[i + 1];
             if (enumMap.containsKey(key)) {
-            enumMap.put(key, enumMap.get(key)+", "+value);
+                enumMap.put(key, enumMap.get(key) + ", " + value);
             } else {
-            enumMap.put(key, value);
+                enumMap.put(key, value);
             }
         }
     }
@@ -36,13 +39,14 @@ public class EnumValueFormatter implements ValueFormatter  {
     @Override
     public Object format(Object value) {
         if (value instanceof Number) {
-            int intValue = ((Number)value).intValue();
-        if (enumMap.containsKey(intValue))  {
-            return enumMap.get(intValue);
-        }
+            int intValue = ((Number) value).intValue();
+            if (enumMap.containsKey(intValue)) {
+                return enumMap.get(intValue);
             }
+        }
         return value;
     }
+
     @Override
     public Object prettyFormat(Object value) {
         if (value instanceof Number) {
@@ -53,6 +57,7 @@ public class EnumValueFormatter implements ValueFormatter  {
         }
         return value;
     }
+
     @Override
     public String descriptionFormat(Object value) {
         if (value instanceof Number) {

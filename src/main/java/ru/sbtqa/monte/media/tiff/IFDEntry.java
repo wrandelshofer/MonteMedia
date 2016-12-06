@@ -12,17 +12,18 @@ import static ru.sbtqa.monte.media.tiff.IFDDataType.valueOf;
 
 /**
  * Represents a directory entry in a TIFF Image File Directory (IFD).
- * <p>
+ * 
  * Each 12-byte IFD entry has the following format:
- * <ul>
- * <li>Bytes 0-1 The Tag that identifies the field.</li>
- * <li>Bytes 2-3 The field Type.</li>
- * <li>Bytes 4-7 The number of values, Count of the indicated Type.</li>
- * <li>Bytes 8-11 The Value Offset, the file offset (in bytes) of the Value for the
- * field. The Value is expected to begin on a word boundary; the corresponding
- * Value Offset will thus be an even number. This file offset may point anywhere
- * in the file, even after the image data.</li>
- * </ul>
+ * 
+ * Bytes 0-1 The Tag that identifies the field.
+ * Bytes 2-3 The field Type.
+ * Bytes 4-7 The number of values, Count of the indicated Type.
+ * Bytes 8-11 The Value Offset, the file offset (in bytes) of the Value for
+ * the field. The Value is expected to begin on a word boundary; the
+ * corresponding Value Offset will thus be an even number. This file offset may
+ * point anywhere in the file, even after the image data.
+ * 
+ *
  * @author Werner Randelshofer
  * @version 2.1 2010-09-07 Stores ifdOffset.
  * <br>2.0 2010-07-24 Reworked.
@@ -30,18 +31,30 @@ import static ru.sbtqa.monte.media.tiff.IFDDataType.valueOf;
  */
 public class IFDEntry {
 
-    /** The Tag number that identifies the field. */
+    /**
+     * The Tag number that identifies the field.
+     */
     private int tagNumber;
-    /** The field Type. */
+    /**
+     * The field Type.
+     */
     private int typeNumber;
-    /** The number of values, Count of the indicated Type. */
+    /**
+     * The number of values, Count of the indicated Type.
+     */
     private long count;
-    /** The Value Offset stores the value or the offset of the value depending
-     * on typeNumber and on count. */
+    /**
+     * The Value Offset stores the value or the offset of the value depending on
+     * typeNumber and on count.
+     */
     private long valueOffset;
-    /** The Entry Offset stores the location of the entry in the file. */
+    /**
+     * The Entry Offset stores the location of the entry in the file.
+     */
     private long entryOffset;
-    /** The IFD Offset stores the location of the IFD in the file. */
+    /**
+     * The IFD Offset stores the location of the IFD in the file.
+     */
     private long ifdOffset;
     /* The entry data. */
     private Object data;
@@ -66,7 +79,8 @@ public class IFDEntry {
         return typeNumber;
     }
 
-    /** The value offset may either contain the data or point to the data
+    /**
+     * The value offset may either contain the data or point to the data
      * depending on the type and the count.
      *
      * @return The value offset.
@@ -75,9 +89,13 @@ public class IFDEntry {
         return valueOffset;
     }
 
-    /** The offset to the data. */
+    /**
+     * The offset to the data.
+     *
+     * @return TODO
+     */
     public long getDataOffset() {
-        return isDataInValueOffset() ? entryOffset + 8 : valueOffset+ifdOffset;
+        return isDataInValueOffset() ? entryOffset + 8 : valueOffset + ifdOffset;
     }
 
     public void setIFDOffset(long newValue) {
@@ -87,6 +105,7 @@ public class IFDEntry {
     public long getEntryOffset() {
         return entryOffset;
     }
+
     public long getIFDOffset() {
         return ifdOffset;
     }
@@ -154,12 +173,25 @@ public class IFDEntry {
         }
     }
 
-    /** Reads value data with ifdDataOffset=0*/
+    /**
+     * Reads value data with ifdDataOffset=
+     *
+     * @param in TODO
+     * @return 0
+     * @throws java.io.IOException TODO
+     */
     public Object readData(TIFFInputStream in) throws IOException {
         return readData(in, ifdOffset);
     }
 
-    /** Reads value data with the specified ifdDataOffset.*/
+    /**
+     * Reads value data with the specified ifdDataOffset
+     *
+     * @param in TODO
+     * @param ifdDataOffset TODO
+     * @return .
+     * @throws java.io.IOException TODO
+     */
     public Object readData(TIFFInputStream in, long ifdDataOffset) throws IOException {
         Object d = null;
         IFDDataType tt = valueOf(typeNumber);
@@ -262,11 +294,11 @@ public class IFDEntry {
                     break;
                 case SLONG://A 32-bit (4-byte) signed (twos-complement) integer.
                     if (count == 1) {
-                        d = (int)valueOffset;
+                        d = (int) valueOffset;
                     } else {
                         d = in.readSLONG(valueOffset + ifdDataOffset, count);
                     }
-                break;
+                    break;
                 case SRATIONAL://Two SLONG’s: the first represents the numerator of a fraction, the second the denominator.
                     if (count == 1) {
                         d = in.readSRATIONAL(valueOffset + ifdDataOffset);
@@ -291,7 +323,11 @@ public class IFDEntry {
         return data;
     }
 
-    /** FIXME Output is used by EXIFView */
+    /**
+     * FIXME Output is used by EXIFView
+     *
+     * @return TODO
+     */
     @Override
     public String toString() {
         return "IFD Entry: tag:0x" + toHexString(tagNumber) + " type:0x" + toHexString(typeNumber) + " count:0x" + toHexString(count) + " valueOffset:0x" + toHexString(valueOffset);

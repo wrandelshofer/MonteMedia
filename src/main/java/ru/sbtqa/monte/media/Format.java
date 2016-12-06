@@ -27,6 +27,8 @@ public class Format {
 
     /**
      * Creates a new format onlyWith the specified properties.
+     *
+     * @param properties TODO
      */
     public Format(Map<FormatKey<?>, Object> properties) {
         this(properties, true);
@@ -36,7 +38,7 @@ public class Format {
      * Creates a new format onlyWith the specified properties.
      */
     private Format(Map<FormatKey<?>, Object> properties, boolean copy) {
-        if (copy || ! (properties instanceof HashMap)) {
+        if (copy || !(properties instanceof HashMap)) {
             for (Map.Entry<FormatKey<?>, Object> e : properties.entrySet()) {
                 if (!e.getKey().isAssignable(e.getValue())) {
                     throw new ClassCastException(e.getValue() + " must be of type " + e.getKey().getValueClass());
@@ -51,6 +53,8 @@ public class Format {
     /**
      * Creates a new format onlyWith the specified properties. The properties
      * must be given as key value pairs.
+     *
+     * @param p TODO
      */
     public Format(Object... p) {
         this.properties = new HashMap< FormatKey<?>, Object>();
@@ -79,6 +83,8 @@ public class Format {
 
     /**
      * Gets the properties of the format as an unmodifiable map.
+     *
+     * @return TODO
      */
     public Map<FormatKey<?>, Object> getProperties() {
         return Collections.unmodifiableMap(properties);
@@ -86,6 +92,8 @@ public class Format {
 
     /**
      * Gets the keys of the format as an unmodifiable set.
+     *
+     * @return TODO
      */
     public Set<FormatKey<?>> getKeys() {
         return Collections.unmodifiableSet(properties.keySet());
@@ -140,12 +148,15 @@ public class Format {
 
     /**
      * Creates a new format which contains all properties from this format and
-     * additional properties from that format. <p> If a property is specified in
-     * both formats, then the property value from this format is used. It
-     * overwrites that format. <p> If one of the format has more properties than
-     * the other, then the new format is more specific than this format.
+     * additional properties from that format.
+     * 
+     * If a property is specified in both formats, then the property value from
+     * this format is used. It overwrites that format.
+     * 
+     * If one of the format has more properties than the other, then the new
+     * format is more specific than this format.
      *
-     * @param that
+     * @param that TODO
      * @return That format with properties overwritten by this format.
      */
     public Format append(Format that) {
@@ -155,15 +166,18 @@ public class Format {
                 m.put(e.getKey(), e.getValue());
             }
         }
-        return new Format(m,false);
+        return new Format(m, false);
     }
 
     /**
      * Creates a new format which contains all properties from this format and
-     * additional properties listed. <p> If a property is specified in both
-     * formats, then the property value from this format is used. It overwrites
-     * that format. <p> If one of the format has more properties than the other,
-     * then the new format is more specific than this format.
+     * additional properties listed.
+     * 
+     * If a property is specified in both formats, then the property value from
+     * this format is used. It overwrites that format.
+     * 
+     * If one of the format has more properties than the other, then the new
+     * format is more specific than this format.
      *
      * @param p The properties must be given as key value pairs.
      * @return That format with properties overwritten by this format.
@@ -177,18 +191,20 @@ public class Format {
             }
             m.put(key, p[i + 1]);
         }
-        return new Format(m,false);
+        return new Format(m, false);
     }
 
     /**
      * Creates a new format which contains all properties from the specified
-     * format and additional properties from this format. 
-     * <p> If a property is specified in both formats, then the property value
-     * from this format is used. It overwrites that format. 
-     * <p> If one of the format has more properties than the other, then the new
+     * format and additional properties from this format.
+     * 
+     * If a property is specified in both formats, then the property value from
+     * this format is used. It overwrites that format.
+     * 
+     * If one of the format has more properties than the other, then the new
      * format is more specific than this format.
      *
-     * @param that
+     * @param that TODO
      * @return That format with properties overwritten by this format.
      */
     public Format prepend(Format that) {
@@ -198,15 +214,17 @@ public class Format {
                 m.put(e.getKey(), e.getValue());
             }
         }
-        return new Format(m,false);
+        return new Format(m, false);
     }
 
     /**
-     * Creates a new format which contains all specified properties and 
-     * additional properties from this format. 
-     * <p> If a property is specified in both formats, then the property value
-     * from this format is used. It overwrites that format. 
-     * <p> If one of the format has more properties than the other, then the new
+     * Creates a new format which contains all specified properties and
+     * additional properties from this format.
+     * 
+     * If a property is specified in both formats, then the property value from
+     * this format is used. It overwrites that format.
+     * 
+     * If one of the format has more properties than the other, then the new
      * format is more specific than this format.
      *
      * @param p The properties must be given as key value pairs.
@@ -226,12 +244,17 @@ public class Format {
                 m.put(e.getKey(), e.getValue());
             }
         }
-        return new Format(m,false);
+        return new Format(m, false);
     }
+
     /**
-     * Creates a new format which only has the specified keys (or less). <p> If
-     * the keys are reduced, then the new format is less specific than this
+     * Creates a new format which only has the specified keys (or less).
+     * 
+     * If the keys are reduced, then the new format is less specific than this
      * format.
+     *
+     * @param keys TODO
+     * @return TODO
      */
     public Format intersectKeys(FormatKey<?>... keys) {
         HashMap<FormatKey<?>, Object> m = new HashMap<FormatKey<?>, Object>();
@@ -240,12 +263,17 @@ public class Format {
                 m.put(k, properties.get(k));
             }
         }
-        return new Format(m,false);
+        return new Format(m, false);
     }
 
     /**
-     * Creates a new format without the specified keys. <p> If the keys are
-     * reduced, then the new format is less specific than this format.
+     * Creates a new format without the specified keys.
+     * 
+     * If the keys are reduced, then the new format is less specific than this
+     * format.
+     *
+     * @param keys TODO
+     * @return TODO
      */
     public Format removeKeys(FormatKey<?>... keys) {
         boolean needsRemoval = false;
@@ -263,18 +291,21 @@ public class Format {
         for (FormatKey<?> k : keys) {
             m.remove(k);
         }
-        return new Format(m,false);
+        return new Format(m, false);
     }
 
     /**
      * Returns true if the format has the specified keys.
+     *
+     * @param keys TODO
+     * @return TODO
      */
     public Format containsKeys(FormatKey<?>... keys) {
         HashMap<FormatKey<?>, Object> m = new HashMap<FormatKey<?>, Object>(properties);
         for (FormatKey<?> k : keys) {
             m.remove(k);
         }
-        return new Format(m,false);
+        return new Format(m, false);
     }
 
     @Override

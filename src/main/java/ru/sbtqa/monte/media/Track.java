@@ -2,7 +2,6 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-
 package ru.sbtqa.monte.media;
 
 import java.io.IOException;
@@ -15,19 +14,31 @@ import java.io.IOException;
  * @version 1.0 2011-02-20 Created.
  */
 public interface Track {
-    /** Returns the numbers of samples in this track.
-     * @return sample count */
+
+    /**
+     * Returns the numbers of samples in this track.
+     *
+     * @return sample count
+     */
     public long getSampleCount();
-/** Sets the read position.
-     * @param pos desired position */
+
+    /**
+     * Sets the read position.
+     *
+     * @param pos desired position
+     */
     public void setPosition(long pos);
-    /** Gets the read position.
-     * @return the current position */
+
+    /**
+     * Gets the read position.
+     *
+     * @return the current position
+     */
     public long getPosition();
 
-    /** Reads a sample from the input stream.
-     * If the end of the track is reached, the discard-flag in the buffer is set
-     * to true.
+    /**
+     * Reads a sample from the input stream. If the end of the track is reached,
+     * the discard-flag in the buffer is set to true.
      *
      * @param buf The buffer for the sample.
      * @throws java.io.IOException if an error occurs

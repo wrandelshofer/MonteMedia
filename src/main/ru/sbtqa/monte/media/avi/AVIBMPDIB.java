@@ -16,7 +16,7 @@ import javax.imageio.stream.MemoryCacheImageInputStream;
 /**
  * This class defines the JPEG Huffman table, which is omitted in AVI MJPEG
  * files.
- * <p>
+ * 
  * Source:
  * Microsoft Windows Bitmap Format.
  * Multimedia Technical Note: JPEG DIB Format.

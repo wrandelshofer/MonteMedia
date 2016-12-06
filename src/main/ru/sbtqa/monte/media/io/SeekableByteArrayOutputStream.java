@@ -112,11 +112,11 @@ public class SeekableByteArrayOutputStream extends ByteArrayOutputStream {
      * next read will occur at this location.  The bit offset is set
      * to 0.
      *
-     * <p> An <code>IndexOutOfBoundsException</code> will be thrown if
+     *  An <code>IndexOutOfBoundsException</code> will be thrown if
      * <code>pos</code> is smaller than the flushed position (as
      * returned by <code>getflushedPosition</code>).
      *
-     * <p> It is legal to seek past the end of the file; an
+     *  It is legal to seek past the end of the file; an
      * <code>EOFException</code> will be thrown only if a read is
      * performed.
      *
@@ -145,7 +145,7 @@ public class SeekableByteArrayOutputStream extends ByteArrayOutputStream {
 
     /** Writes the contents of the byte array into the specified output
      * stream.
-     * @param out
+     * @param out TODO
      */
     public void toOutputStream(OutputStream out) throws IOException {
         out.write(buf, 0, count);

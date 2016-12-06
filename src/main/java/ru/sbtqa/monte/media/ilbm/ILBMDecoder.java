@@ -19,8 +19,9 @@ import ru.sbtqa.monte.media.image.BitmapImage;
 /**
  * Creates Image objects by reading an IFF ILBM stream.
  *
- * <p><b>ILBM regular expression</b>
- * <pre>
+ * 
+ * <b>ILBM regular expression</b>
+ * 
  * ILBM ::= "FORM" #{ "ILBM" BMHD [CMAP] [GRAB] [DEST] [SPRT] [CAMG] CRNG* CCRT* DRNG* [BODY] }
  *
  * BMHD ::= "BMHD" #{ BitMapHeader }
@@ -34,13 +35,13 @@ import ru.sbtqa.monte.media.image.BitmapImage;
  * DRNG ::= "DRNG" #{ DRange }
  * CCRT ::= "CCRT" #{ CycleInfo }
  * BODY ::= "BODY" #{ UBYTE* } [0]
- * </pre>
- * The token "#" represents a <code>ckSize</code> LONG count of the following
- * braced data bytes. E.g., a BMHD's "#" should equal <code>sizeof(BitMapHeader)</code>.
- * Literal strings are shown in "quotes", [square bracket items] are optional, and
- * "*" means 0 or more repetitions. A sometimes-needed pad byte is shown as "[0]".
+ *  The token "#" represents a <code>ckSize</code> LONG count of the
+ * following braced data bytes. E.g., a BMHD's "#" should equal
+ * <code>sizeof(BitMapHeader)</code>. Literal strings are shown in "quotes",
+ * [square bracket items] are optional, and "*" means 0 or more repetitions. A
+ * sometimes-needed pad byte is shown as "[0]".
  *
- * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
  * @version 1.8 2011-07-21 Treats CMAP specially if OCS chip set is detected.
  * <br>1.7 2011-04-10 Generates gray-scale color table if no CMAP is provided.
  * Adds support for CCRT color cycling.
@@ -48,19 +49,22 @@ import ru.sbtqa.monte.media.image.BitmapImage;
  * <br>1.5.1 2010-07-03 Improved performance of byterun1 decoder.
  * <br>1.4 2010-01-22 Added support for DRNG color cycling.
  * <br>1.3 2009-12-24 Added support for CRNG color cycling.
- * <br>1.2 2004-05-20 Support for masking bitplane added. Removed enforcing
- * of true colors (Apple fixed bugs in its Java VM).
- * <br>1.1 2003-08-15 Enforcing True color for images. Due to bug in Java 1.3.1, 1.4.1
- * on Mac OS X 10.0 through 10.2.
+ * <br>1.2 2004-05-20 Support for masking bitplane added. Removed enforcing of
+ * true colors (Apple fixed bugs in its Java VM).
+ * <br>1.1 2003-08-15 Enforcing True color for images. Due to bug in Java 1.3.1,
+ * 1.4.1 on Mac OS X 10.0 through 10.2.
  * <br>1.0.2 2003-01-19 Conversion to JDK 1.3 continued.
- * <br>1.0.1   2001-06-17 Conversion to JDK 1.3 in progress.
- * <br> 1.0  1999-10-19
+ * <br>1.0.1 2001-06-17 Conversion to JDK 1.3 in progress.
+ * <br> 1.0 1999-10-19
  */
 public class ILBMDecoder
-        implements IFFVisitor {
+      implements IFFVisitor {
+
     /* ---- constants ---- */
 
-    /** Chunk ID's. */
+    /**
+     * Chunk ID's.
+     */
     protected final static int ILBM_ID = IFFParser.stringToID("ILBM");
     protected final static int BMHD_ID = IFFParser.stringToID("BMHD");
     protected final static int CMAP_ID = IFFParser.stringToID("CMAP");
@@ -73,8 +77,12 @@ public class ILBMDecoder
     private final static int AUTH_ID = IFFParser.stringToID("AUTH");
     private final static int ANNO_ID = IFFParser.stringToID("ANNO");
     private final static int COPYRIGHT_ID = IFFParser.stringToID("(c) ");
-    /** ILBM CAMG chunk: Commodore Amiga Video display modes. */
-    /** ILBM CAMG chunk: Mask and ID bits for CAMG ModeID. */
+    /**
+     * ILBM CAMG chunk: Commodore Amiga Video display modes.
+     */
+    /**
+     * ILBM CAMG chunk: Mask and ID bits for CAMG ModeID.
+     */
     protected final static int MONITOR_ID_MASK = 0xffff1000;
     protected final static int DEFAULT_MONITOR_ID = 0x00000000;
     protected final static int NTSC_MONITOR_ID = 0x00011000;
@@ -88,58 +96,92 @@ public class ILBMDecoder
     protected final static int DBLNTSC_MONITOR_ID = 0x00091000;
     protected final static int DBLPAL_MONITOR_ID = 0x00001000;
     protected final static int MODE_INDEXED_COLORS = 0,
-            MODE_DIRECT_COLORS = 1,
-            MODE_EHB = 2,
-            MODE_HAM6 = 3,
-            MODE_HAM8 = 4;
+          MODE_DIRECT_COLORS = 1,
+          MODE_EHB = 2,
+          MODE_HAM6 = 3,
+          MODE_HAM8 = 4;
     protected final static int HAM_MASK = 0x00000800;
     protected final static int EHB_MASK = 0x00000080;
     protected final static int HAM_KEY = 0x00000800;
     protected final static int EXTRAHALFBRITE_KEY = 0x00000080;
-    /** ILBM BMHD chunk: masking technique. */
+    /**
+     * ILBM BMHD chunk: masking technique.
+     */
     protected final static int MSK_NONE = 0,
-            MSK_HAS_MASK = 1,
-            MSK_HAS_TRANSPARENT_COLOR = 2,
-            MSK_LASSO = 3;
-    /** ILBM BMHD chunk: compression algorithm. */
+          MSK_HAS_MASK = 1,
+          MSK_HAS_TRANSPARENT_COLOR = 2,
+          MSK_LASSO = 3;
+    /**
+     * ILBM BMHD chunk: compression algorithm.
+     */
     protected final static int CMP_NONE = 0,
-            CMP_BYTE_RUN_1 = 1, CMP_VERTICAL = 2;
+          CMP_BYTE_RUN_1 = 1, CMP_VERTICAL = 2;
     /* ---- instance variables ---- */
-    /** Input stream to decode from. */
+    /**
+     * Input stream to decode from.
+     */
     protected InputStream inputStream;
-    /** URL to get the input stream from. */
+    /**
+     * URL to get the input stream from.
+     */
     protected URL location;
-    /** Stores all the ILBM pictures found during decoding
-     * as an instance of ColorCyclingMemoryImageSource. */
+    /**
+     * Stores all the ILBM pictures found during decoding as an instance of
+     * ColorCyclingMemoryImageSource.
+     */
     protected ArrayList<ColorCyclingMemoryImageSource> sources;
     protected ArrayList<BitmapImage> bitmapSources;
-    /** BMHD data. */
-    /** Raster width and height in pixels */
+    /**
+     * BMHD data.
+     */
+    /**
+     * Raster width and height in pixels
+     */
     protected int bmhdWidth, bmhdHeight;
-    /** pixel position for this image */
+    /**
+     * pixel position for this image
+     */
     protected int bmhdXPosition, bmhdYPosition;
-    /** Number of source bitplanes. */
+    /**
+     * Number of source bitplanes.
+     */
     protected int bmhdNbPlanes;
     protected int bmhdMasking;
     protected int bmhdCompression;
-    /** Transparent "color number" (sort of). */
+    /**
+     * Transparent "color number" (sort of).
+     */
     protected int bmhdTransparentColor;
-    /** Pixel aspect, a ratio width : height */
+    /**
+     * Pixel aspect, a ratio width : height
+     */
     protected int bmhdXAspect, bmhdYAspect;
-    /** Source "page" size in pixels. */
+    /**
+     * Source "page" size in pixels.
+     */
     protected int bmhdPageWidth, bmhdPageHeight;
     /**
      * Commodore Amiga Graphics Mode.
      */
-    protected int camg=NTSC_MONITOR_ID;
-    /** CAMG Video display mode. */
+    protected int camg = NTSC_MONITOR_ID;
+    /**
+     * CAMG Video display mode.
+     */
     protected int camgMode;
-    /** CMAP data. */
+    /**
+     * CMAP data.
+     */
     protected ColorModel cmapColorModel;
-    /** BODY data */
+    /**
+     * BODY data
+     */
     protected BitmapImage bodyBitmap;
 
-    /** Constructors */
+    /**
+     * Constructors
+     *
+     * @param in TODO
+     */
     public ILBMDecoder(InputStream in) {
         inputStream = in;
     }
@@ -152,10 +194,11 @@ public class ILBMDecoder
      * Processes the input stream and creates a vector of
      * ColorCyclingMemoryImageSource instances.
      *
-     * @return  A vector of java.awt.img.ColorCyclingMemoryImageSource.
+     * @return A vector of java.awt.img.ColorCyclingMemoryImageSource.
+     * @throws java.io.IOException TODO
      */
     public ArrayList<ColorCyclingMemoryImageSource> produce()
-            throws IOException {
+          throws IOException {
         InputStream in = null;
         sources = new ArrayList<ColorCyclingMemoryImageSource>();
         bitmapSources = null;
@@ -185,13 +228,14 @@ public class ILBMDecoder
     }
 
     /**
-     * Processes the input stream and creates a vector of
-     * BitmapImages instances.
+     * Processes the input stream and creates a vector of BitmapImages
+     * instances.
      *
-     * @return  A vector of java.awt.img.ColorCyclingMemoryImageSource.
+     * @return A vector of java.awt.img.ColorCyclingMemoryImageSource.
+     * @throws java.io.IOException TODO
      */
     public ArrayList<BitmapImage> produceBitmaps()
-            throws IOException {
+          throws IOException {
         InputStream in = null;
         sources = null;
         bitmapSources = new ArrayList<BitmapImage>();
@@ -244,14 +288,14 @@ public class ILBMDecoder
 
     @Override
     public void visitChunk(IFFChunk group, IFFChunk chunk)
-            throws ParseException, AbortException {
+          throws ParseException, AbortException {
         decodeBMHD(group.getPropertyChunk(BMHD_ID));
         decodeCAMG(group.getPropertyChunk(CAMG_ID));
         boolean is4BitsPerChannel = (camg & MONITOR_ID_MASK) == DEFAULT_MONITOR_ID;
         decodeCMAP(group.getPropertyChunk(CMAP_ID), is4BitsPerChannel);
         decodeBODY(chunk);
 
-        Hashtable<String,Object> props = new Hashtable<String,Object>();
+        Hashtable<String, Object> props = new Hashtable<String, Object>();
         double aspect = (double) bmhdXAspect / (double) bmhdYAspect;
         if (bmhdXAspect == 0 || bmhdYAspect == 0) {
             aspect = 1d;
@@ -316,16 +360,16 @@ public class ILBMDecoder
             ColorCyclingMemoryImageSource mis;
             if (bodyBitmap.convertToChunky() == BitmapImage.BYTE_PIXEL) {
                 mis = new ColorCyclingMemoryImageSource(
-                        bmhdWidth, bmhdHeight,
-                        cmapColorModel,
-                        bodyBitmap.getBytePixels(), 0, bmhdWidth,
-                        props);
+                      bmhdWidth, bmhdHeight,
+                      cmapColorModel,
+                      bodyBitmap.getBytePixels(), 0, bmhdWidth,
+                      props);
             } else {
                 mis = new ColorCyclingMemoryImageSource(
-                        bmhdWidth, bmhdHeight,
-                        bodyBitmap.getChunkyColorModel(),
-                        bodyBitmap.getIntPixels(), 0, bmhdWidth,
-                        props);
+                      bmhdWidth, bmhdHeight,
+                      bodyBitmap.getChunkyColorModel(),
+                      bodyBitmap.getIntPixels(), 0, bmhdWidth,
+                      props);
             }
 
             // Process CCRT, CRNG and DRNG chunks in the sequence of their
@@ -337,8 +381,8 @@ public class ILBMDecoder
             int j = 0, k = 0, l = 0;
             for (int i = 0, n = ccrtChunks.length + crngChunks.length + drngChunks.length; i < n; i++) {
                 if (j < crngChunks.length //
-                        && (k >= drngChunks.length || crngChunks[j].getScan() < drngChunks[k].getScan()) //
-                        && (l >= ccrtChunks.length || crngChunks[j].getScan() < ccrtChunks[l].getScan())) {
+                      && (k >= drngChunks.length || crngChunks[j].getScan() < drngChunks[k].getScan()) //
+                      && (l >= ccrtChunks.length || crngChunks[j].getScan() < ccrtChunks[l].getScan())) {
 //                System.out.println("ILBMDecoder decoding CRNG@"+crngChunks[j].getScan());
                     ColorCycle cc = decodeCRNG(crngChunks[j]);
                     if (cc != null) {
@@ -349,7 +393,7 @@ public class ILBMDecoder
                     }
                     j++;
                 } else if (k < drngChunks.length //
-                        && (l >= ccrtChunks.length || drngChunks[k].getScan() < ccrtChunks[l].getScan())) {
+                      && (l >= ccrtChunks.length || drngChunks[k].getScan() < ccrtChunks[l].getScan())) {
 //                System.out.println("ILBMDecoder decoding DRNG@"+drngChunks[k].getScan());
                     ColorCycle cc = decodeDRNG(drngChunks[k]);
                     if (cc != null) {
@@ -386,7 +430,7 @@ public class ILBMDecoder
 //    /**
 //     * Decodes the bitmap header (ILBM BMHD).
 //     *
-//     * <pre>
+//     * 
 //     * typedef UBYTE Masking; // Choice of masking technique
 //     *
 //     * #define mskNone                 0
@@ -412,10 +456,10 @@ public class ILBMDecoder
 //     *   UBYTE       xAspect, yAspect; // pixel aspect, a ratio width : height
 //     *   WORD        pageWidth, pageHeight; // source "page" size in pixels
 //     *   } BitmapHeader;
-//     * </pre>
+//     * 
 //     */
     protected void decodeBMHD(IFFChunk chunk)
-            throws ParseException {
+          throws ParseException {
         if (chunk == null) {
             throw new ParseException("no BMHD -> no Picture");
         }
@@ -441,11 +485,13 @@ public class ILBMDecoder
     }
 
     /**
-     * Decodes the CAMG Chunk.
-     * Requires data from BMHD Chunk.
+     * Decodes the CAMG Chunk. Requires data from BMHD Chunk.
+     *
+     * @param chunk TODO
+     * @throws ru.sbtqa.monte.media.ParseException TODO
      */
     protected void decodeCAMG(IFFChunk chunk)
-            throws ParseException {
+          throws ParseException {
         camg = 0;
 
         if (chunk != null) {
@@ -468,12 +514,10 @@ public class ILBMDecoder
             case HAM_KEY:
                 if (bmhdNbPlanes == 6) {
                     camgMode = MODE_HAM6;
+                } else if (bmhdNbPlanes == 8) {
+                    camgMode = MODE_HAM8;
                 } else {
-                    if (bmhdNbPlanes == 8) {
-                        camgMode = MODE_HAM8;
-                    } else {
-                        throw new ParseException("unsupported Ham Mode with " + bmhdNbPlanes + " bitplanes");
-                    }
+                    throw new ParseException("unsupported Ham Mode with " + bmhdNbPlanes + " bitplanes");
                 }
                 break;
             default:
@@ -486,7 +530,7 @@ public class ILBMDecoder
     }
 
     protected void decodeCMAP(IFFChunk chunk, boolean is4BitsPerChannel)
-            throws ParseException {
+          throws ParseException {
         byte[] red;
         byte[] green;
         byte[] blue;
@@ -505,10 +549,8 @@ public class ILBMDecoder
                 }
                 cmapColorModel = new IndexColorModel(8, size, red, green, blue);
                 return;
-            } else {
-                if (size == 0) {
-                    throw new ParseException("No CMAP, not supported for this CAMG mode.");
-                }
+            } else if (size == 0) {
+                throw new ParseException("No CMAP, not supported for this CAMG mode.");
             }
         }
 
@@ -545,14 +587,13 @@ public class ILBMDecoder
                 throw new ParseException("Unsupported CAMG mode :" + camgMode);
         }
 
-
         red = new byte[size];
         green = new byte[size];
         blue = new byte[size];
 
         byte[] data = chunk.getData();
         int j = 0;
-       if (is4BitsPerChannel) {
+        if (is4BitsPerChannel) {
             for (int i = 0; i < colorsToRead; i++) {
                 red[i] = (byte) (data[j] & 0xf0 | ((data[j] & 0xf0) >>> 4));
                 green[i] = (byte) (data[j + 1] & 0xf0 | ((data[j + 1] & 0xf0) >>> 4));
@@ -617,7 +658,7 @@ public class ILBMDecoder
     /**
      * Decodes the color cycling range and timing chunk (ILBM CCRT).
      *
-     * <pre>
+     * 
      * enum {
      *     dontCycle = 0, forward = 1, backwards = -1
      * } ccrtDirection;
@@ -629,10 +670,14 @@ public class ILBMDecoder
      *   ULONG  microseconds; // msecs between cycling
      *   WORD  pad;        // future exp - store 0 here
      * } ilbmColorCyclingRangeAndTimingChunk;
-     * </pre>
+     * 
+     *
+     * @param chunk TODO
+     * @return TODO
+     * @throws ru.sbtqa.monte.media.ParseException TODO
      */
     protected ColorCycle decodeCCRT(IFFChunk chunk)
-            throws ParseException {
+          throws ParseException {
         ColorCycle cc;
         try {
             MC68000InputStream in = new MC68000InputStream(new ByteArrayInputStream(chunk.getData()));
@@ -643,9 +688,9 @@ public class ILBMDecoder
             long seconds = in.readULONG();
             long microseconds = in.readULONG();
             int pad = in.readWORD();
-            cc = new CRNGColorCycle(1000000/(int)(seconds*1000+microseconds/1000), 1000, start, end,//
-                    direction==1||direction==-1, //
-                    direction==1, camgMode == MODE_EHB);
+            cc = new CRNGColorCycle(1000000 / (int) (seconds * 1000 + microseconds / 1000), 1000, start, end,//
+                  direction == 1 || direction == -1, //
+                  direction == 1, camgMode == MODE_EHB);
 
             in.close();
         } catch (IOException e) {
@@ -657,7 +702,7 @@ public class ILBMDecoder
     /**
      * Decodes the color range cycling (ILBM CRNG).
      *
-     * <pre>
+     * 
      * #define RNG_NORATE  36   // Dpaint uses this rate to mean non-active
      *  set {
      *  active = 1, reverse = 2
@@ -670,10 +715,14 @@ public class ILBMDecoder
      *  WORD set crngActive flags;     // bit0 set = active, bit 1 set = reverse
      *  UBYTE low; UBYTE high;         // lower and upper color registers selected
      *  } ilbmColorRegisterRangeChunk;
-     * </pre>
+     * 
+     *
+     * @param chunk TODO
+     * @return TODO
+     * @throws ru.sbtqa.monte.media.ParseException TODO
      */
     protected ColorCycle decodeCRNG(IFFChunk chunk)
-            throws ParseException {
+          throws ParseException {
         ColorCycle cc;
         try {
             MC68000InputStream in = new MC68000InputStream(new ByteArrayInputStream(chunk.getData()));
@@ -685,8 +734,8 @@ public class ILBMDecoder
             int high = in.readUBYTE();
 //System.out.println("CRNG pad1:"+pad1+" rate:"+rate+" flags:"+flags+" low:"+low+" high:"+high);
             cc = new CRNGColorCycle(rate, 273, low, high,//
-                    (flags & 1) != 0 && rate > 36 && high > low, //
-                    (flags & 2) != 0, camgMode == MODE_EHB);
+                  (flags & 1) != 0 && rate > 36 && high > low, //
+                  (flags & 2) != 0, camgMode == MODE_EHB);
 
             in.close();
         } catch (IOException e) {
@@ -697,15 +746,15 @@ public class ILBMDecoder
 
     /**
      * Decodes the DPaint IV enhanced color cycle chunk (ILBM DRNG)
-     * <p>
+     * 
      * The RNG_ACTIVE flag is set when the range is cyclable. A range should
      * only have the RNG _ACTIVE if it:
-     * <ol>
-     * <li>contains at least one color register</li>
-     * <li>has a defined rate</li>
-     * <li>has more than one color and/or color register</li>
-     * </ol>
-     * <pre>
+     * 
+     * contains at least one color register
+     * has a defined rate
+     * has more than one color and/or color register
+     * 
+     * 
      * ILBM DRNG DPaint IV enhanced color cycle chunk
      * --------------------------------------------
      *
@@ -738,10 +787,14 @@ public class ILBMDecoder
      *     ilbmDRNGDColor[ntrue] trueColorCells;
      *     ilbmDRNGDIndex[ntregs] colorRegisterCells;
      * } ilbmDRangeChunk;
-     * </pre>
+     * 
+     *
+     * @param chunk TODO
+     * @return TODO
+     * @throws ru.sbtqa.monte.media.ParseException TODO
      */
     protected ColorCycle decodeDRNG(IFFChunk chunk)
-            throws ParseException {
+          throws ParseException {
         ColorCycle cc;
         try {
             MC68000InputStream in = new MC68000InputStream(new ByteArrayInputStream(chunk.getData()));
@@ -767,8 +820,8 @@ public class ILBMDecoder
 
 //System.out.println("DRNG min:"+min+" max:"+max+" rate:"+rate+" flags:"+flags+" ntrue:"+ntrue+" nregs:"+nregs);
             cc = new DRNGColorCycle(rate, 273, min, max, //
-                    (flags & 1) != 0 && rate > 36 && min <= max && ntrue + nregs > 1,//
-                    camgMode == MODE_EHB, cells);
+                  (flags & 1) != 0 && rate > 36 && min <= max && ntrue + nregs > 1,//
+                  camgMode == MODE_EHB, cells);
 
             in.close();
         } catch (IOException e) {
@@ -778,7 +831,7 @@ public class ILBMDecoder
     }
 
     protected void decodeBODY(IFFChunk chunk)
-            throws ParseException {
+          throws ParseException {
         if ((bmhdMasking & MSK_HAS_MASK) != 0) {
             bodyBitmap = new BitmapImage(bmhdWidth, bmhdHeight, bmhdNbPlanes + 1, cmapColorModel);
         } else {
@@ -804,11 +857,11 @@ public class ILBMDecoder
 
     /**
      * ByteRun1 run decoder.
-     * <p>
+     * 
      * The run encoding scheme by <em>byteRun1</em> is best described by pseudo
-     * code for the decoder <em>Unpacker</em> (called <em>UnPackBits</em> in
-     * the Macintosh toolbox.
-     * <pre>
+     * code for the decoder <em>Unpacker</em> (called <em>UnPackBits</em> in the
+     * Macintosh toolbox.
+     * 
      * UnPacker:
      *  LOOP until produced the desired number of bytes
      *      Read the next source byte into n
@@ -818,14 +871,15 @@ public class ILBMDecoder
      *          -128    =&gt; no operation
      *      ENDCASE;
      *   ENDLOOP;
-     * </pre>
+     * 
      *
-     * @param in
-     * @param out
-     * @throws ParseException
+     * @param in TODO
+     * @param out TODO
+     * @return TODO
+     * @throws ParseException TODO
      */
     public static int unpackByteRun1(byte[] in, byte[] out)
-            throws ParseException {
+          throws ParseException {
         try {
             return MC68000InputStream.unpackByteRun1(in, out);
         } catch (IOException ex) {
@@ -837,27 +891,25 @@ public class ILBMDecoder
 
     /**
      * Vertical run decoder.
-     * <p>
+     * 
      * Each plane is stored in a separate VDAT chunk.
-     * <p>
+     * 
      * A VDAT chunk consists of an id, a length, and a body.
-     * <pre>
+     * 
      * struct {
      *    uint16 id;  // The 4 ASCII characters "VDAT"
      *    uint16 length,
      *    byte[length] body
      * }
-     * </pre>
-     * The body consists of a command list and a data list.
-     * <pre>
+     *  The body consists of a command list and a data list.
+     * 
      * struct {
      *    uint16         cnt;        // Command count + 2
      *    uint8[cnt - 2] cmd;        // The commands
      *    uint16[]       data;       // Data words
      * }
-     * </pre>
-     * Pseudo code for the unpacker:
-     * <pre>
+     *  Pseudo code for the unpacker:
+     * 
      * UnPacker:
      *  Read cnt;
      *  LOOP cnt - 2 TIMES
@@ -876,11 +928,14 @@ public class ILBMDecoder
      *      ENDCASE;
      *      IF end of data reached THEN EXIT END;
      *   ENDLOOP;
-     * </pre>
+     * 
      *
+     * @param in TODO
+     * @param bm TODO
+     * @throws ru.sbtqa.monte.media.ParseException TODO
      */
     public void unpackVertical(byte[] in, BitmapImage bm)
-            throws ParseException {
+          throws ParseException {
         byte[] out = bm.getBitmap();
         int iIn = 0; // input index
         int endOfData = 0;
@@ -888,7 +943,6 @@ public class ILBMDecoder
         int scanlineStride = bm.getScanlineStride();
         int columnCount = (bmhdWidth / 8) * bmhdHeight;
         int columnStride = bmhdHeight * 2;
-
 
         try {
             for (int p = 0; p < bmhdNbPlanes; p++) {
@@ -910,7 +964,6 @@ public class ILBMDecoder
 
                 // The body consists of a command list and a data list.
                 // ----------------------------------------------------
-
                 // read the command count, compute the offset to the data list
                 int cnt = (in[iIn++] & 0xff) << 8 | (in[iIn++] & 0xff);
                 int iCmd = iIn;
@@ -966,7 +1019,6 @@ public class ILBMDecoder
                     }
                 }
             }
-
 
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();

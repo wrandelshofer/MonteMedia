@@ -15,7 +15,7 @@ public interface PlafConstants {
      * Client property to specify bevel in ImageButtonUI,
      * ImageToggleButtonUI and ImageSliderUI.
      *
-     * <p>Possible values for this property are:
+     * Possible values for this property are:
      * EAST, WEST, NONE, ALL.
      */
     public final static String PROP_BEVEL = "org.monte.gui.plaf.Bevel";

@@ -11,7 +11,6 @@ import javax.imageio.ImageReader;
 import javax.imageio.spi.ImageReaderSpi;
 import javax.imageio.stream.ImageInputStream;
 
-
 /**
  * A reader for JPEG images in the CMYK color space.
  *
@@ -23,24 +22,24 @@ public class CMYKJPEGImageReaderSpi extends ImageReaderSpi {
 
     public CMYKJPEGImageReaderSpi() {
         super("Werner Randelshofer",//vendor name
-                "1.0",//version
-                new String[]{"JPEG","JPG"},//names
-                new String[]{"jpg"},//suffixes,
-                new String[]{"image/jpg"},// MIMETypes,
-                "org.monte.media.jpeg.CMYKJPEGImageReader",// readerClassName,
-                new Class<?>[]{ImageInputStream.class,InputStream.class,byte[].class},// inputTypes,
-                null,// writerSpiNames,
-                false,// supportsStandardStreamMetadataFormat,
-                null,// nativeStreamMetadataFormatName,
-                null,// nativeStreamMetadataFormatClassName,
-                null,// extraStreamMetadataFormatNames,
-                null,// extraStreamMetadataFormatClassNames,
-                false,// supportsStandardImageMetadataFormat,
-                null,// nativeImageMetadataFormatName,
-                null,// nativeImageMetadataFormatClassName,
-                null,// extraImageMetadataFormatNames,
-                null// extraImageMetadataFormatClassNames
-                );
+              "1.0",//version
+              new String[]{"JPEG", "JPG"},//names
+              new String[]{"jpg"},//suffixes,
+              new String[]{"image/jpg"},// MIMETypes,
+              "org.monte.media.jpeg.CMYKJPEGImageReader",// readerClassName,
+              new Class<?>[]{ImageInputStream.class, InputStream.class, byte[].class},// inputTypes,
+              null,// writerSpiNames,
+              false,// supportsStandardStreamMetadataFormat,
+              null,// nativeStreamMetadataFormatName,
+              null,// nativeStreamMetadataFormatClassName,
+              null,// extraStreamMetadataFormatNames,
+              null,// extraStreamMetadataFormatClassNames,
+              false,// supportsStandardImageMetadataFormat,
+              null,// nativeImageMetadataFormatName,
+              null,// nativeImageMetadataFormatClassName,
+              null,// extraImageMetadataFormatNames,
+              null// extraImageMetadataFormatClassNames
+        );
     }
 
     @Override

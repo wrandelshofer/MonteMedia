@@ -2,7 +2,6 @@
  * Copyright © 2010 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-
 package ru.sbtqa.monte.media.tiff;
 
 /**
@@ -12,14 +11,30 @@ package ru.sbtqa.monte.media.tiff;
  * @version 1.0 2010-03-22 Created.
  */
 public interface ValueFormatter {
-    /** Formats the specified value.
-     * If the value is of the desired type, it is replaced by an object
-     * which can be handled easier. For example, an integer value by a descriptive
-     * String.
+
+    /**
+     * Formats the specified value. If the value is of the desired type, it is
+     * replaced by an object which can be handled easier. For example, an
+     * integer value by a descriptive String.
+     *
+     * @param value TODO
+     * @return TODO
      */
     public Object format(Object value);
-    /** Formats the specified value in a human readable format. */
+
+    /**
+     * Formats the specified value in a human readable format.
+     *
+     * @param value TODO
+     * @return TODO
+     */
     public Object prettyFormat(Object value);
-    /** Describes the data. Returns null if no description is available. */
+
+    /**
+     * Describes the data. Returns null if no description is available.
+     *
+     * @param data TODO
+     * @return TODO
+     */
     public String descriptionFormat(Object data);
 }

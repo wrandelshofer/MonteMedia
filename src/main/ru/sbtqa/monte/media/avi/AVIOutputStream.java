@@ -26,9 +26,9 @@ import org.monte.media.io.IOStreams;
 
 /**
  * Provides low-level support for writing already encoded audio and video
- * samples into an AVI 1.0 file. <p> The length of an AVI 1.0 file is limited to
+ * samples into an AVI 1.0 file.  The length of an AVI 1.0 file is limited to
  * 1 GB. This class supports lengths of up to 4 GB, but such files may not work
- * on all players. <p> For detailed information about the AVI 1.0 file format
+ * on all players.  For detailed information about the AVI 1.0 file format
  * see:<br> <a
  * href="http://msdn.microsoft.com/en-us/library/ms779636.aspx">msdn.microsoft.com
  * AVI RIFF</a><br> <a
@@ -243,13 +243,13 @@ public class AVIOutputStream extends AbstractAVIStream {
 
     /**
      * Returns the contents of the extra track header. Returns null if the
-     * header is not present. <p> Note: this method can only be performed before
+     * header is not present.  Note: this method can only be performed before
      * media data has been written into the tracks.
      *
-     * @param track
-     * @param fourcc
+     * @param track TODO
+     * @param fourcc TODO
      * @param data the extra header as a byte array
-     * @throws IOException
+     * @throws IOException TODO
      */
     public void putExtraHeader(int track, String fourcc, byte[] data) throws IOException {
         if (state == States.STARTED) {
@@ -273,9 +273,9 @@ public class AVIOutputStream extends AbstractAVIStream {
     /**
      * Returns the fourcc's of all extra stream headers.
      *
-     * @param track
+     * @param track TODO
      * @return An array of fourcc's of all extra stream headers.
-     * @throws IOException
+     * @throws IOException TODO
      */
     public String[] getExtraHeaderFourCCs(int track) throws IOException {
         Track tr = tracks.get(track);
@@ -291,15 +291,15 @@ public class AVIOutputStream extends AbstractAVIStream {
     }
 
     /**
-     * Sets the compression quality of a track. <p> A value of 0 stands for
+     * Sets the compression quality of a track.  A value of 0 stands for
      * "high compression is important" a value of 1 for "high image quality is
-     * important". <p> Changing this value affects the encoding of video frames
+     * important".  Changing this value affects the encoding of video frames
      * which are subsequently written into the track. Frames which have already
-     * been written are not changed. <p> This value has no effect on videos
-     * encoded with lossless encoders such as the PNG format. <p> The default
+     * been written are not changed.  This value has no effect on videos
+     * encoded with lossless encoders such as the PNG format.  The default
      * value is 0.97.
      *
-     * @param newValue
+     * @param newValue TODO
      */
     public void setCompressionQuality(int track, float newValue) {
         Track t = tracks.get(track);
@@ -315,7 +315,7 @@ public class AVIOutputStream extends AbstractAVIStream {
         Track t = tracks.get(track);
         return (max(min(t.quality==-1?9700:t.quality,0),10000)/10000f);
     }    /**
-     * Sets the state of the QuickTimeOutpuStream to started. <p> If the state
+     * Sets the state of the QuickTimeOutpuStream to started.  If the state
      * is changed by this method, the prolog is written.
      */
     protected void ensureStarted() throws IOException {
@@ -326,7 +326,7 @@ public class AVIOutputStream extends AbstractAVIStream {
     }
 
     /**
-     * Sets the state of the QuickTimeOutpuStream to finished. <p> If the state
+     * Sets the state of the QuickTimeOutpuStream to finished.  If the state
      * is changed by this method, the prolog is written.
      */
     protected void ensureFinished() throws IOException {
@@ -336,7 +336,7 @@ public class AVIOutputStream extends AbstractAVIStream {
     }
 
     /**
-     * Writes an already encoded palette change into the specified track. <p> If
+     * Writes an already encoded palette change into the specified track.  If
      * a track contains palette changes, then all key frames must be immediately
      * preceeded by a palette change chunk which also is a key frame. If a key
      * frame is not preceeded by a key frame palette change chunk, it will be
@@ -371,10 +371,10 @@ public class AVIOutputStream extends AbstractAVIStream {
     }
 
     /**
-     * Writes an already encoded sample from a file to the specified track. <p>
+     * Writes an already encoded sample from a file to the specified track. 
      * This method does not inspect the contents of the file. For example, Its
      * your responsibility to only append JPG files if you have chosen the JPEG
-     * video format. <p> If you append all frames from files or from input
+     * video format.  If you append all frames from files or from input
      * streams, then you have to explicitly set the dimension of the video track
      * before you call finish() or close().
      *
@@ -397,9 +397,9 @@ public class AVIOutputStream extends AbstractAVIStream {
 
     /**
      * Writes an already encoded sample from an input stream to the specified
-     * track. <p> This method does not inspect the contents of the file. For
+     * track.  This method does not inspect the contents of the file. For
      * example, its your responsibility to only append JPG files if you have
-     * chosen the JPEG video format. <p> If you append all frames from files or
+     * chosen the JPEG video format.  If you append all frames from files or
      * from input streams, then you have to explicitly set the dimension of the
      * video track before you call finish() or close().
      *
@@ -451,9 +451,9 @@ public class AVIOutputStream extends AbstractAVIStream {
     }
 
     /**
-     * Writes an already encoded sample from a byte array into a track. <p> This
+     * Writes an already encoded sample from a byte array into a track.  This
      * method does not inspect the contents of the samples. The contents has to
-     * match the format and dimensions of the media in this track. <p> If a
+     * match the format and dimensions of the media in this track.  If a
      * track contains palette changes, then all key frames must be immediately
      * preceeded by a palette change chunk. If a key frame is not preceeded by a
      * palette change chunk, it will be downgraded to a delta frame.
@@ -499,7 +499,7 @@ public class AVIOutputStream extends AbstractAVIStream {
 
     /**
      * Writes multiple already encoded samples from a byte array into a track.
-     * <p> This method does not inspect the contents of the data. The contents
+     *  This method does not inspect the contents of the data. The contents
      * has to match the format and dimensions of the media in this track.
      *
      * @param track The track index.
@@ -600,7 +600,7 @@ public class AVIOutputStream extends AbstractAVIStream {
 
     /**
      * Returns true if the limit for media samples has been reached. If this
-     * limit is reached, no more samples should be added to the movie. <p> AVI
+     * limit is reached, no more samples should be added to the movie.  AVI
      * 1.0 files have a file size limit of 2 GB. This method returns true if a
      * file size of 1.8 GB has been reached.
      */

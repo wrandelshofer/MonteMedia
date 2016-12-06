@@ -3,7 +3,6 @@
  * Copyright © 2010-2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-
 package ru.sbtqa.monte.media.io;
 
 import java.io.ByteArrayOutputStream;
@@ -12,11 +11,13 @@ import java.io.OutputStream;
 import static java.lang.Math.*;
 import static java.lang.System.arraycopy;
 import static java.util.Arrays.copyOf;
+
 /**
  * {@code SeekableByteArrayOutputStream}.
  *
  * @author Werner Randelshofer
- * @version $Id: SeekableByteArrayOutputStream.java 363 2016-11-09 19:32:30Z werner $
+ * @version $Id: SeekableByteArrayOutputStream.java 363 2016-11-09 19:32:30Z
+ * werner $
  */
 public class SeekableByteArrayOutputStream extends ByteArrayOutputStream {
 
@@ -26,115 +27,118 @@ public class SeekableByteArrayOutputStream extends ByteArrayOutputStream {
     private int pos;
 
     /**
-     * Creates a new byte array output stream. The buffer capacity is
-     * initially 32 bytes, though its size increases if necessary.
+     * Creates a new byte array output stream. The buffer capacity is initially
+     * 32 bytes, though its size increases if necessary.
      */
     public SeekableByteArrayOutputStream() {
-	this(32);
+        this(32);
     }
 
     /**
-     * Creates a new byte array output stream, with a buffer capacity of
-     * the specified size, in bytes.
+     * Creates a new byte array output stream, with a buffer capacity of the
+     * specified size, in bytes.
      *
-     * @param   size   the initial size.
-     * @exception  IllegalArgumentException if size is negative.
+     * @param size the initial size.
+     * @exception IllegalArgumentException if size is negative.
      */
     public SeekableByteArrayOutputStream(int size) {
         if (size < 0) {
             throw new IllegalArgumentException("Negative initial size: "
-                                               + size);
+                  + size);
         }
-	buf = new byte[size];
+        buf = new byte[size];
     }
+
     /**
      * Creates a new byte array output stream, which reuses the supplied buffer.
+     *
+     * @param buf TODO
      */
     public SeekableByteArrayOutputStream(byte[] buf) {
-	this.buf = buf;
+        this.buf = buf;
     }
 
     /**
      * Writes the specified byte to this byte array output stream.
      *
-     * @param   b   the byte to be written.
+     * @param b the byte to be written.
      */
     @Override
     public synchronized void write(int b) {
-	int newcount = max(pos + 1, count);
-	if (newcount > buf.length) {
-            buf = copyOf(buf, max(buf.length << 1, newcount));
-	}
-	buf[pos++] = (byte)b;
-	count = newcount;
-    }
-
-    /**
-     * Writes <code>len</code> bytes from the specified byte array
-     * starting at offset <code>off</code> to this byte array output stream.
-     *
-     * @param   b     the data.
-     * @param   off   the start offset in the data.
-     * @param   len   the number of bytes to write.
-     */
-    @Override
-    public synchronized void write(byte b[], int off, int len) {
-	if ((off < 0) || (off > b.length) || (len < 0) ||
-            ((off + len) > b.length) || ((off + len) < 0)) {
-	    throw new IndexOutOfBoundsException();
-	} else if (len == 0) {
-	    return;
-	}
-        int newcount = max(pos+len,count);
+        int newcount = max(pos + 1, count);
         if (newcount > buf.length) {
             buf = copyOf(buf, max(buf.length << 1, newcount));
         }
-        arraycopy(b, off, buf, pos, len);
-        pos+=len;
+        buf[pos++] = (byte) b;
         count = newcount;
     }
 
     /**
-     * Resets the <code>count</code> field of this byte array output
-     * stream to zero, so that all currently accumulated output in the
-     * output stream is discarded. The output stream can be used again,
-     * reusing the already allocated buffer space.
+     * Writes <code>len</code> bytes from the specified byte array starting at
+     * offset <code>off</code> to this byte array output stream.
      *
-     * @see     java.io.ByteArrayInputStream#count
+     * @param b the data.
+     * @param off the start offset in the data.
+     * @param len the number of bytes to write.
      */
     @Override
-    public synchronized void reset() {
-	count = 0;
-        pos=0;
+    public synchronized void write(byte b[], int off, int len) {
+        if ((off < 0) || (off > b.length) || (len < 0)
+              || ((off + len) > b.length) || ((off + len) < 0)) {
+            throw new IndexOutOfBoundsException();
+        } else if (len == 0) {
+            return;
+        }
+        int newcount = max(pos + len, count);
+        if (newcount > buf.length) {
+            buf = copyOf(buf, max(buf.length << 1, newcount));
+        }
+        arraycopy(b, off, buf, pos, len);
+        pos += len;
+        count = newcount;
     }
 
     /**
-     * Sets the current stream position to the desired location.  The
-     * next read will occur at this location.  The bit offset is set
-     * to 0.
+     * Resets the <code>count</code> field of this byte array output stream to
+     * zero, so that all currently accumulated output in the output stream is
+     * discarded. The output stream can be used again, reusing the already
+     * allocated buffer space.
      *
-     * <p> An <code>IndexOutOfBoundsException</code> will be thrown if
-     * <code>pos</code> is smaller than the flushed position (as
-     * returned by <code>getflushedPosition</code>).
+     * @see java.io.ByteArrayInputStream#count
+     */
+    @Override
+    public synchronized void reset() {
+        count = 0;
+        pos = 0;
+    }
+
+    /**
+     * Sets the current stream position to the desired location. The next read
+     * will occur at this location. The bit offset is set to 0.
      *
-     * <p> It is legal to seek past the end of the file; an
-     * <code>EOFException</code> will be thrown only if a read is
-     * performed.
+     * 
+     * An <code>IndexOutOfBoundsException</code> will be thrown if
+     * <code>pos</code> is smaller than the flushed position (as returned by
+     * <code>getflushedPosition</code>).
      *
-     * @param pos a <code>long</code> containing the desired file
-     * pointer position.
+     * 
+     * It is legal to seek past the end of the file; an
+     * <code>EOFException</code> will be thrown only if a read is performed.
      *
-     * @exception IndexOutOfBoundsException if <code>pos</code> is smaller
-     * than the flushed position.
+     * @param pos a <code>long</code> containing the desired file pointer
+     * position.
+     *
+     * @exception IndexOutOfBoundsException if <code>pos</code> is smaller than
+     * the flushed position.
      * @exception IOException if any other I/O error occurs.
      */
     public void seek(long pos) throws IOException {
-        this.pos = (int)pos;
+        this.pos = (int) pos;
     }
 
-        /**
-     * Returns the current byte position of the stream.  The next write
-     * will take place starting at this offset.
+    /**
+     * Returns the current byte position of the stream. The next write will take
+     * place starting at this offset.
      *
      * @return a long containing the position of the stream.
      *
@@ -144,15 +148,21 @@ public class SeekableByteArrayOutputStream extends ByteArrayOutputStream {
         return pos;
     }
 
-    /** Writes the contents of the byte array into the specified output
-     * stream.
-     * @param out
+    /**
+     * Writes the contents of the byte array into the specified output stream.
+     *
+     * @param out TODO
+     * @throws java.io.IOException TODO
      */
     public void toOutputStream(OutputStream out) throws IOException {
         out.write(buf, 0, count);
     }
 
-    /** Returns the underlying byte buffer. */
+    /**
+     * Returns the underlying byte buffer.
+     *
+     * @return TODO
+     */
     public byte[] getBuffer() {
         return buf;
     }

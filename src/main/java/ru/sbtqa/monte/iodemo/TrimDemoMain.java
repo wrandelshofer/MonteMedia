@@ -25,9 +25,10 @@ import ru.sbtqa.monte.media.math.Rational;
 
 /**
  * Demonstrates how to trim a movie file without re-encoding the entire media
- * data. <p> This demo is more complex than {@code ConcatDemoMain}, because we
- * need to re-encode the first video frame, if the movie is cut at a
- * non-keyframe.
+ * data.
+ * 
+ * This demo is more complex than {@code ConcatDemoMain}, because we need to
+ * re-encode the first video frame, if the movie is cut at a non-keyframe.
  *
  * @author Werner Randelshofer
  * @version $Id: TrimDemoMain.java 364 2016-11-09 19:54:25Z werner $
@@ -35,11 +36,13 @@ import ru.sbtqa.monte.media.math.Rational;
 public class TrimDemoMain {
 
     /**
-     * Main function. <p> Takes one output file and one or more input files as
-     * arguments. Concatenates all input files into the output file.
-     * <pre>
+     * Main function.
+     * 
+     * Takes one output file and one or more input files as arguments.
+     * Concatenates all input files into the output file.
+     * 
      * TrimDemo [-o outputfile] [-i inputfile ...] [-s rational] [-e rational]
-     * </pre>
+     * 
      *
      * @param args the command line arguments
      */
@@ -54,8 +57,8 @@ public class TrimDemoMain {
             "-ss", "00:00:01",//
         "-t", "00:05:00",//
         };
-        */
-        
+         */
+
         // Parse arguments
         File outfile = null;
         ArrayList<File> infiles = new ArrayList<File>();
@@ -265,8 +268,6 @@ public class TrimDemoMain {
             // -----------------
             int trackCount = out.getTrackCount();
 
-
-
             Codec[] ensureFirstFrameIsKeyframe = new Codec[trackCount];
             Codec[] passThrough = new Codec[trackCount];
             AdjustTimeCodec[] adjustTime = new AdjustTimeCodec[trackCount];
@@ -287,10 +288,8 @@ public class TrimDemoMain {
             Buffer inBuf = new Buffer();
             Buffer outBuf = new Buffer();
 
-
             int tracksNeeded = (1 << trackCount) - 1;
             int tracksDone = 0;
-
 
             // -----------------------
             // Process the input files
@@ -323,7 +322,6 @@ public class TrimDemoMain {
                         } else {
                             state = passThrough[outTrack].process(inBuf, outBuf);
                         }
-
 
                         // Speed up 2: Stop if all tracks are done
                         if (endTime != null && outBuf.timeStamp.compareTo(endTime) > 0) {

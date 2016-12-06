@@ -30,16 +30,18 @@ import ru.sbtqa.monte.media.pbm.PBMDecoder;
  * @version 1.0 2011-02-20 Created.
  */
 public class BitmapCodec extends AbstractVideoCodec {
-  public BitmapCodec() {
+
+    public BitmapCodec() {
         super(new Format[]{
-                    new Format(MediaTypeKey, VIDEO, MimeTypeKey, MIME_JAVA,
-                    EncodingKey, ENCODING_BUFFERED_IMAGE), //
-                },
-                new Format[]{
-                    new Format(MediaTypeKey, VIDEO, MimeTypeKey, MIME_JAVA,
-                    EncodingKey, ENCODING_BITMAP_IMAGE, DataClassKey, BitmapImage.class), //
-                });
+            new Format(MediaTypeKey, VIDEO, MimeTypeKey, MIME_JAVA,
+            EncodingKey, ENCODING_BUFFERED_IMAGE), //
+        },
+              new Format[]{
+                  new Format(MediaTypeKey, VIDEO, MimeTypeKey, MIME_JAVA,
+                        EncodingKey, ENCODING_BITMAP_IMAGE, DataClassKey, BitmapImage.class), //
+              });
     }
+
     @Override
     public Format setOutputFormat(Format f) {
         super.setOutputFormat(f);
@@ -48,7 +50,7 @@ public class BitmapCodec extends AbstractVideoCodec {
         // Enforce these properties
         if (outputFormat != null) {
             if (inputFormat != null) {
-                outputFormat = outputFormat.prepend(inputFormat.intersectKeys(WidthKey, HeightKey,DepthKey));
+                outputFormat = outputFormat.prepend(inputFormat.intersectKeys(WidthKey, HeightKey, DepthKey));
             }
         }
         return this.outputFormat;

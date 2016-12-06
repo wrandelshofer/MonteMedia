@@ -51,9 +51,13 @@ public class SubpixAA {
         VBGR = vrgb;
         VRGB = vbgr;
     }
-    /** Source image buffer. */
+    /**
+     * Source image buffer.
+     */
     private BufferedImage sBuf;
-    /** Destination image buffer. */
+    /**
+     * Destination image buffer.
+     */
     private BufferedImage dBuf;
 
     /*
@@ -138,22 +142,41 @@ public class SubpixAA {
 
 
     }*/
-    /** Renders an image with subpixel antialiasing.
+    /**
+     * Renders an image with subpixel antialiasing.
      *
      * This method uses caching to improve the performance of subsequent calls.
      *
      * The image must be larger than the destination width and height.
+     *
+     * @param gr TODO
+     * @param observer TODO
+     * @param img TODO
+     * @param height TODO
+     * @param x TODO
+     * @param width TODO
+     * @param y TODO
      */
     public void drawAA(Graphics gr, BufferedImage img, int x, int y, int width, int height, ImageObserver observer) {
         Graphics2D g = (Graphics2D) gr;
         drawAA(gr, img, x, y, width, height, g.getRenderingHint(KEY_TEXT_ANTIALIASING), observer);
     }
 
-    /** Renders an image with subpixel antialiasing.
+    /**
+     * Renders an image with subpixel antialiasing.
      *
      * This method uses caching to improve the performance of subsequent calls.
      *
      * The image must be larger than the destination width and height.
+     *
+     * @param gr TODO
+     * @param observer TODO
+     * @param img TODO
+     * @param method TODO
+     * @param x TODO
+     * @param height TODO
+     * @param y TODO
+     * @param width TODO
      */
     public void drawAA(Graphics gr, BufferedImage img, int x, int y, int width, int height, Object method, ImageObserver observer) {
         // If the image dimension matches width and height, draw it as is.
@@ -186,21 +209,25 @@ public class SubpixAA {
         g.drawImage(dBuf, x, y, observer);
     }
 
-    /** Returns the dimensions needed of the source image for the desired
+    /**
+     * Returns the dimensions needed of the source image for the desired
      * destination image size.
      *
      * @param width The desired width of the destination image.
      * @param height The desired height of the destination image.
      * @param method The Antialiasing method to be used must be one of
      * {@code RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB}, {@code ..._HBGR},
+     * @return TODO
      */
     public static Dimension getSourceDimension(int width, int height, Object method) {
         Dimension dim;
-        if (method == HRGB ||//
-                method == HBGR) {
+        if (method == HRGB
+              ||//
+              method == HBGR) {
             dim = new Dimension(width * 3, height);
-        } else if (method == VRGB ||//
-                method == VBGR) {
+        } else if (method == VRGB
+              ||//
+              method == VBGR) {
             dim = new Dimension(width, height * 3);
         } else {
             dim = new Dimension(width, height);
@@ -208,12 +235,12 @@ public class SubpixAA {
         return dim;
     }
 
-    /** Scales down an image using the specified antialiasing method.
-     * <p>
+    /**
+     * Scales down an image using the specified antialiasing method.
+     * 
      * For methods {@code HBGR} and {@code HRGB}, the image width is scaled down
-     * by factor 3.
-     * For methods {@code VBGR} and {@code VRGB}, the image height is scaled down
-     * by factor 3.
+     * by factor 3. For methods {@code VBGR} and {@code VRGB}, the image height
+     * is scaled down by factor 3.
      *
      * @param src The source image.
      * @param dst The destination image.
@@ -237,8 +264,7 @@ public class SubpixAA {
     }
 
     /**
-     * Set up the graphics transform to match the clip region
-     * to the image size.
+     * Set up the graphics transform to match the clip region to the image size.
      */
     private static void setupRendering(Graphics2D g) {
         g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
@@ -248,17 +274,17 @@ public class SubpixAA {
         //getToolkit().
     }
 
-    /** Scales down an image using HRGB antia-aliasing.
-     * <p>
-     * Source and destination image must be of type BufferedImage.TYPE_RGB
-     * and have a data buffer of type DataBufferInt.
-     * <p>
-     * The height of source and destination image must be the same.
-     * The width of the source image must be 3 times the width of the
-     * destination image.
-     * <p>
+    /**
+     * Scales down an image using HRGB antia-aliasing.
+     * 
+     * Source and destination image must be of type BufferedImage.TYPE_RGB and
+     * have a data buffer of type DataBufferInt.
+     * 
+     * The height of source and destination image must be the same. The width of
+     * the source image must be 3 times the width of the destination image.
+     * 
      * Intensity weights:
-     * <pre>
+     * 
      *
      *            1
      *            |
@@ -269,7 +295,7 @@ public class SubpixAA {
      *  +----+----+----+----+
      *  |    |    |    |    |
      * 1/9  2/9  3/9  2/9  1/9
-     * </pre>
+     * 
      *
      * @param src The source image.
      * @param dst The destination image.
@@ -294,108 +320,140 @@ public class SubpixAA {
             int dxy = y * dw;
             int dxyeol = dxy + dw - 1;
 
-
             // Process the first pixel of the line.
-            d[dxy] =//
-                    // Red component:
-                    ((//
-                    (s[sxy + 0] & 0xff0000) * (wll + wl + wc) +//
-                    (s[sxy + 1] & 0xff0000) * wr +//
-                    (s[sxy + 2] & 0xff0000) * wrr//
-                    ) / tw & 0xff0000) |
-                    //
-                    // Green component:
-                    ((//
-                    (s[sxy + 0] & 0x00ff00) * (wll + wl) + //
-                    (s[sxy + 1] & 0x00ff00) * wc + //
-                    (s[sxy + 2] & 0x00ff00) * wr + //
-                    (s[sxy + 3] & 0x00ff00) * wrr//
-                    ) / tw & 0x00ff00) |
-                    //
-                    // Blue component:
-                    ((//
-                    (s[sxy + 0] & 0x0000ff) * wll + //
-                    (s[sxy + 1] & 0x0000ff) * wl + //
-                    (s[sxy + 2] & 0x0000ff) * wc + //
-                    (s[sxy + 3] & 0x0000ff) * wr +//
-                    (s[sxy + 4] & 0x0000ff) * wrr//
-                    ) / tw);
+            d[dxy]
+                  =//
+                  // Red component:
+                  ((//
+                  (s[sxy + 0] & 0xff0000) * (wll + wl + wc)
+                  +//
+                  (s[sxy + 1] & 0xff0000) * wr
+                  +//
+                  (s[sxy + 2] & 0xff0000) * wrr//
+                  ) / tw & 0xff0000)
+                  | //
+                  // Green component:
+                  ((//
+                  (s[sxy + 0] & 0x00ff00) * (wll + wl)
+                  + //
+                  (s[sxy + 1] & 0x00ff00) * wc
+                  + //
+                  (s[sxy + 2] & 0x00ff00) * wr
+                  + //
+                  (s[sxy + 3] & 0x00ff00) * wrr//
+                  ) / tw & 0x00ff00)
+                  | //
+                  // Blue component:
+                  ((//
+                  (s[sxy + 0] & 0x0000ff) * wll
+                  + //
+                  (s[sxy + 1] & 0x0000ff) * wl
+                  + //
+                  (s[sxy + 2] & 0x0000ff) * wc
+                  + //
+                  (s[sxy + 3] & 0x0000ff) * wr
+                  +//
+                  (s[sxy + 4] & 0x0000ff) * wrr//
+                  ) / tw);
             sxy += 3;
             dxy++;
 
             // Process the pixels in the middle of the line.
             for (; dxy < dxyeol; sxy += 3, dxy++) {
-                d[dxy] =//
-                        // Red component:
-                        ((//
-                        (s[sxy - 2] & 0xff0000) * wll + //
-                        (s[sxy - 1] & 0xff0000) * wl + //
-                        (s[sxy + 0] & 0xff0000) * wc + //
-                        (s[sxy + 1] & 0xff0000) * wr +//
-                        (s[sxy + 2] & 0xff0000) * wrr//
-                        ) / tw & 0xff0000) |
-                        //
-                        // Green component:
-                        ((//
-                        (s[sxy - 1] & 0x00ff00) * wll +//
-                        (s[sxy - 0] & 0x00ff00) * wl + //
-                        (s[sxy + 1] & 0x00ff00) * wc + //
-                        (s[sxy + 2] & 0x00ff00) * wr + //
-                        (s[sxy + 3] & 0x00ff00) * wrr//
-                        ) / tw & 0x00ff00) |
-                        //
-                        // Blue component:
-                        ((//
-                        (s[sxy + 0] & 0x0000ff) * wll + //
-                        (s[sxy + 1] & 0x0000ff) * wl + //
-                        (s[sxy + 2] & 0x0000ff) * wc + //
-                        (s[sxy + 3] & 0x0000ff) * wr +//
-                        (s[sxy + 4] & 0x0000ff) * wrr//
-                        ) / tw);
+                d[dxy]
+                      =//
+                      // Red component:
+                      ((//
+                      (s[sxy - 2] & 0xff0000) * wll
+                      + //
+                      (s[sxy - 1] & 0xff0000) * wl
+                      + //
+                      (s[sxy + 0] & 0xff0000) * wc
+                      + //
+                      (s[sxy + 1] & 0xff0000) * wr
+                      +//
+                      (s[sxy + 2] & 0xff0000) * wrr//
+                      ) / tw & 0xff0000)
+                      | //
+                      // Green component:
+                      ((//
+                      (s[sxy - 1] & 0x00ff00) * wll
+                      +//
+                      (s[sxy - 0] & 0x00ff00) * wl
+                      + //
+                      (s[sxy + 1] & 0x00ff00) * wc
+                      + //
+                      (s[sxy + 2] & 0x00ff00) * wr
+                      + //
+                      (s[sxy + 3] & 0x00ff00) * wrr//
+                      ) / tw & 0x00ff00)
+                      | //
+                      // Blue component:
+                      ((//
+                      (s[sxy + 0] & 0x0000ff) * wll
+                      + //
+                      (s[sxy + 1] & 0x0000ff) * wl
+                      + //
+                      (s[sxy + 2] & 0x0000ff) * wc
+                      + //
+                      (s[sxy + 3] & 0x0000ff) * wr
+                      +//
+                      (s[sxy + 4] & 0x0000ff) * wrr//
+                      ) / tw);
                 /*
                 if (x == 2) {
                 System.out.println("y:" + y + " sxy:" + sxy + " :" + Integer.toHexString(s[sxy]).substring(2) + " " + Integer.toHexString(s[sxy + 1]).substring(2) + " " + Integer.toHexString(s[sxy + 2]).substring(2) + ":" + Integer.toHexString(0xff00000 | d[dxy]).substring(2));
                 }*/
             }
             // Process the last pixel on the line
-            d[dxy] =//
-                    // Red component:
-                    ((//
-                    (s[sxy - 2] & 0xff0000) * wll + //
-                    (s[sxy - 1] & 0xff0000) * wl + //
-                    (s[sxy + 0] & 0xff0000) * wc + //
-                    (s[sxy + 1] & 0xff0000) * wr +//
-                    (s[sxy + 2] & 0xff0000) * wrr//
-                    ) / tw & 0xff0000) |
-                    //
-                    // Green component:
-                    ((//
-                    (s[sxy - 1] & 0x00ff00) * wll +//
-                    (s[sxy + 0] & 0x00ff00) * wl + //
-                    (s[sxy + 1] & 0x00ff00) * wc + //
-                    (s[sxy + 2] & 0x00ff00) * (wr + wrr) //
-                    ) / tw & 0x00ff00) |
-                    //
-                    // Blue component:
-                    ((//
-                    (s[sxy + 0] & 0x0000ff) * wll + //
-                    (s[sxy + 1] & 0x0000ff) * wl + //
-                    (s[sxy + 2] & 0x0000ff) * (wc + wr + wrr) //
-                    ) / tw);
+            d[dxy]
+                  =//
+                  // Red component:
+                  ((//
+                  (s[sxy - 2] & 0xff0000) * wll
+                  + //
+                  (s[sxy - 1] & 0xff0000) * wl
+                  + //
+                  (s[sxy + 0] & 0xff0000) * wc
+                  + //
+                  (s[sxy + 1] & 0xff0000) * wr
+                  +//
+                  (s[sxy + 2] & 0xff0000) * wrr//
+                  ) / tw & 0xff0000)
+                  | //
+                  // Green component:
+                  ((//
+                  (s[sxy - 1] & 0x00ff00) * wll
+                  +//
+                  (s[sxy + 0] & 0x00ff00) * wl
+                  + //
+                  (s[sxy + 1] & 0x00ff00) * wc
+                  + //
+                  (s[sxy + 2] & 0x00ff00) * (wr + wrr) //
+                  ) / tw & 0x00ff00)
+                  | //
+                  // Blue component:
+                  ((//
+                  (s[sxy + 0] & 0x0000ff) * wll
+                  + //
+                  (s[sxy + 1] & 0x0000ff) * wl
+                  + //
+                  (s[sxy + 2] & 0x0000ff) * (wc + wr + wrr) //
+                  ) / tw);
         }
     }
 
-    /** Scales down an image using HBGR antia-aliasing.
-     * <p>
-     * Source and destination image must be of type BufferedImage.TYPE_RGB
-     * and have a data buffer of type DataBufferInt.
-     * <p>
-     * The height of source and destination image must be the same.
-     * The width of the source image must be 3 times the width of the
-     * destination image.
-     * <p>
+    /**
+     * Scales down an image using HBGR antia-aliasing.
+     * 
+     * Source and destination image must be of type BufferedImage.TYPE_RGB and
+     * have a data buffer of type DataBufferInt.
+     * 
+     * The height of source and destination image must be the same. The width of
+     * the source image must be 3 times the width of the destination image.
+     * 
      * Intensity weights:
-     * <pre>
+     * 
      *
      *            1
      *            |
@@ -406,7 +464,7 @@ public class SubpixAA {
      *  +----+----+----+----+
      *  |    |    |    |    |
      * 1/9  2/9  3/9  2/9  1/9
-     * </pre>
+     * 
      *
      * @param src The source image.
      * @param dst The destination image.
@@ -430,108 +488,140 @@ public class SubpixAA {
             int dxy = y * dw;
             int dxyeol = dxy + dw - 1;
 
-
             // Process the first pixel of the line.
-            d[dxy] =//
-                    // Blue component:
-                    ((//
-                    (s[sxy + 0] & 0x0000ff) * (wll + wl + wc) +//
-                    (s[sxy + 1] & 0x0000ff) * wr +//
-                    (s[sxy + 2] & 0x0000ff) * wrr//
-                    ) / tw) |
-                    //
-                    // Green component:
-                    ((//
-                    (s[sxy + 0] & 0x00ff00) * (wll + wl) + //
-                    (s[sxy + 1] & 0x00ff00) * wc + //
-                    (s[sxy + 2] & 0x00ff00) * wr + //
-                    (s[sxy + 3] & 0x00ff00) * wrr//
-                    ) / tw & 0x00ff00) |
-                    //
-                    // Red component:
-                    ((//
-                    (s[sxy + 0] & 0xff0000) * wll + //
-                    (s[sxy + 1] & 0xff0000) * wl + //
-                    (s[sxy + 2] & 0xff0000) * wc + //
-                    (s[sxy + 3] & 0xff0000) * wr +//
-                    (s[sxy + 4] & 0xff0000) * wrr//
-                    ) / tw & 0xff0000);
+            d[dxy]
+                  =//
+                  // Blue component:
+                  ((//
+                  (s[sxy + 0] & 0x0000ff) * (wll + wl + wc)
+                  +//
+                  (s[sxy + 1] & 0x0000ff) * wr
+                  +//
+                  (s[sxy + 2] & 0x0000ff) * wrr//
+                  ) / tw)
+                  | //
+                  // Green component:
+                  ((//
+                  (s[sxy + 0] & 0x00ff00) * (wll + wl)
+                  + //
+                  (s[sxy + 1] & 0x00ff00) * wc
+                  + //
+                  (s[sxy + 2] & 0x00ff00) * wr
+                  + //
+                  (s[sxy + 3] & 0x00ff00) * wrr//
+                  ) / tw & 0x00ff00)
+                  | //
+                  // Red component:
+                  ((//
+                  (s[sxy + 0] & 0xff0000) * wll
+                  + //
+                  (s[sxy + 1] & 0xff0000) * wl
+                  + //
+                  (s[sxy + 2] & 0xff0000) * wc
+                  + //
+                  (s[sxy + 3] & 0xff0000) * wr
+                  +//
+                  (s[sxy + 4] & 0xff0000) * wrr//
+                  ) / tw & 0xff0000);
             sxy += 3;
             dxy++;
 
             // Process the pixels in the middle of the line.
             for (; dxy < dxyeol; sxy += 3, dxy++) {
-                d[dxy] =//
-                        // Blue component:
-                        ((//
-                        (s[sxy - 2] & 0x0000ff) * wll + //
-                        (s[sxy - 1] & 0x0000ff) * wl + //
-                        (s[sxy + 0] & 0x0000ff) * wc + //
-                        (s[sxy + 1] & 0x0000ff) * wr +//
-                        (s[sxy + 2] & 0x0000ff) * wrr//
-                        ) / tw) |
-                        //
-                        // Green component:
-                        ((//
-                        (s[sxy - 1] & 0x00ff00) * wll +//
-                        (s[sxy + 0] & 0x00ff00) * wl + //
-                        (s[sxy + 1] & 0x00ff00) * wc + //
-                        (s[sxy + 2] & 0x00ff00) * wr + //
-                        (s[sxy + 3] & 0x00ff00) * wrr//
-                        ) / tw & 0x00ff00) |
-                        //
-                        // Red component:
-                        ((//
-                        (s[sxy + 0] & 0xff0000) * wll + //
-                        (s[sxy + 1] & 0xff0000) * wl + //
-                        (s[sxy + 2] & 0xff0000) * wc + //
-                        (s[sxy + 3] & 0xff0000) * wr +//
-                        (s[sxy + 4] & 0xff0000) * wrr//
-                        ) / tw & 0xff0000);
+                d[dxy]
+                      =//
+                      // Blue component:
+                      ((//
+                      (s[sxy - 2] & 0x0000ff) * wll
+                      + //
+                      (s[sxy - 1] & 0x0000ff) * wl
+                      + //
+                      (s[sxy + 0] & 0x0000ff) * wc
+                      + //
+                      (s[sxy + 1] & 0x0000ff) * wr
+                      +//
+                      (s[sxy + 2] & 0x0000ff) * wrr//
+                      ) / tw)
+                      | //
+                      // Green component:
+                      ((//
+                      (s[sxy - 1] & 0x00ff00) * wll
+                      +//
+                      (s[sxy + 0] & 0x00ff00) * wl
+                      + //
+                      (s[sxy + 1] & 0x00ff00) * wc
+                      + //
+                      (s[sxy + 2] & 0x00ff00) * wr
+                      + //
+                      (s[sxy + 3] & 0x00ff00) * wrr//
+                      ) / tw & 0x00ff00)
+                      | //
+                      // Red component:
+                      ((//
+                      (s[sxy + 0] & 0xff0000) * wll
+                      + //
+                      (s[sxy + 1] & 0xff0000) * wl
+                      + //
+                      (s[sxy + 2] & 0xff0000) * wc
+                      + //
+                      (s[sxy + 3] & 0xff0000) * wr
+                      +//
+                      (s[sxy + 4] & 0xff0000) * wrr//
+                      ) / tw & 0xff0000);
                 /*
                 if (x == 2) {
                 System.out.println("y:" + y + " sxy:" + sxy + " :" + Integer.toHexString(s[sxy]).substring(2) + " " + Integer.toHexString(s[sxy + 1]).substring(2) + " " + Integer.toHexString(s[sxy + 2]).substring(2) + ":" + Integer.toHexString(0xff00000 | d[dxy]).substring(2));
                 }*/
             }
             // Process the last pixel on the line
-            d[dxy] =//
-                    // Blue component:
-                    ((//
-                    (s[sxy - 2] & 0x0000ff) * wll + //
-                    (s[sxy - 1] & 0x0000ff) * wl + //
-                    (s[sxy + 0] & 0x0000ff) * wc + //
-                    (s[sxy + 1] & 0x0000ff) * wr +//
-                    (s[sxy + 2] & 0x0000ff) * wrr//
-                    ) / tw) |
-                    //
-                    // Green component:
-                    ((//
-                    (s[sxy - 1] & 0x00ff00) * wll +//
-                    (s[sxy + 0] & 0x00ff00) * wl + //
-                    (s[sxy + 1] & 0x00ff00) * wc + //
-                    (s[sxy + 2] & 0x00ff00) * (wr + wrr) //
-                    ) / tw & 0x00ff00) |
-                    //
-                    // Red component:
-                    ((//
-                    (s[sxy + 0] & 0xff0000) * wll + //
-                    (s[sxy + 1] & 0xff0000) * wl + //
-                    (s[sxy + 2] & 0xff0000) * (wc + wr + wrr) //
-                    ) / tw & 0xff0000);
+            d[dxy]
+                  =//
+                  // Blue component:
+                  ((//
+                  (s[sxy - 2] & 0x0000ff) * wll
+                  + //
+                  (s[sxy - 1] & 0x0000ff) * wl
+                  + //
+                  (s[sxy + 0] & 0x0000ff) * wc
+                  + //
+                  (s[sxy + 1] & 0x0000ff) * wr
+                  +//
+                  (s[sxy + 2] & 0x0000ff) * wrr//
+                  ) / tw)
+                  | //
+                  // Green component:
+                  ((//
+                  (s[sxy - 1] & 0x00ff00) * wll
+                  +//
+                  (s[sxy + 0] & 0x00ff00) * wl
+                  + //
+                  (s[sxy + 1] & 0x00ff00) * wc
+                  + //
+                  (s[sxy + 2] & 0x00ff00) * (wr + wrr) //
+                  ) / tw & 0x00ff00)
+                  | //
+                  // Red component:
+                  ((//
+                  (s[sxy + 0] & 0xff0000) * wll
+                  + //
+                  (s[sxy + 1] & 0xff0000) * wl
+                  + //
+                  (s[sxy + 2] & 0xff0000) * (wc + wr + wrr) //
+                  ) / tw & 0xff0000);
         }
     }
 
-    /** Scales down an image using VRGB antia-aliasing.
-     * <p>
-     * Source and destination image must be of type BufferedImage.TYPE_RGB
-     * and have a data buffer of type DataBufferInt.
-     * <p>
-     * The width of source and destination image must be the same.
-     * The height of the source image must be 3 times the height of the
-     * destination image.
-     * <p>
+    /**
+     * Scales down an image using VRGB antia-aliasing.
+     * 
+     * Source and destination image must be of type BufferedImage.TYPE_RGB and
+     * have a data buffer of type DataBufferInt.
+     * 
+     * The width of source and destination image must be the same. The height of
+     * the source image must be 3 times the height of the destination image.
+     * 
      * Intensity weights:
-     * <pre>
+     * 
      *
      *            1
      *            |
@@ -542,7 +632,7 @@ public class SubpixAA {
      *  +----+----+----+----+
      *  |    |    |    |    |
      * 1/9  2/9  3/9  2/9  1/9
-     * </pre>
+     * 
      *
      * @param src The source image.
      * @param dst The destination image.
@@ -567,108 +657,140 @@ public class SubpixAA {
             int dxy = x;
             int dxyeol = dxy + dw * (dh - 1);
 
-
             // Process the first pixel of the line.
-            d[dxy] =//
-                    // Red component:
-                    ((//
-                    (s[sxy + 0] & 0xff0000) * (wll + wl + wc) +//
-                    (s[sxy + sw] & 0xff0000) * wr +//
-                    (s[sxy + sw * 2] & 0xff0000) * wrr//
-                    ) / tw & 0xff0000) |
-                    //
-                    // Green component:
-                    ((//
-                    (s[sxy + 0] & 0x00ff00) * (wll + wl) + //
-                    (s[sxy + sw] & 0x00ff00) * wc + //
-                    (s[sxy + sw * 2] & 0x00ff00) * wr + //
-                    (s[sxy + sw * 3] & 0x00ff00) * wrr//
-                    ) / tw & 0x00ff00) |
-                    //
-                    // Blue component:
-                    ((//
-                    (s[sxy + 0] & 0x0000ff) * wll + //
-                    (s[sxy + sw] & 0x0000ff) * wl + //
-                    (s[sxy + sw * 2] & 0x0000ff) * wc + //
-                    (s[sxy + sw * 3] & 0x0000ff) * wr +//
-                    (s[sxy + sw * 4] & 0x0000ff) * wrr//
-                    ) / tw);
+            d[dxy]
+                  =//
+                  // Red component:
+                  ((//
+                  (s[sxy + 0] & 0xff0000) * (wll + wl + wc)
+                  +//
+                  (s[sxy + sw] & 0xff0000) * wr
+                  +//
+                  (s[sxy + sw * 2] & 0xff0000) * wrr//
+                  ) / tw & 0xff0000)
+                  | //
+                  // Green component:
+                  ((//
+                  (s[sxy + 0] & 0x00ff00) * (wll + wl)
+                  + //
+                  (s[sxy + sw] & 0x00ff00) * wc
+                  + //
+                  (s[sxy + sw * 2] & 0x00ff00) * wr
+                  + //
+                  (s[sxy + sw * 3] & 0x00ff00) * wrr//
+                  ) / tw & 0x00ff00)
+                  | //
+                  // Blue component:
+                  ((//
+                  (s[sxy + 0] & 0x0000ff) * wll
+                  + //
+                  (s[sxy + sw] & 0x0000ff) * wl
+                  + //
+                  (s[sxy + sw * 2] & 0x0000ff) * wc
+                  + //
+                  (s[sxy + sw * 3] & 0x0000ff) * wr
+                  +//
+                  (s[sxy + sw * 4] & 0x0000ff) * wrr//
+                  ) / tw);
             sxy += 3 * sw;
             dxy += dw;
 
             // Process the pixels in the middle of the line.
             for (; dxy < dxyeol; sxy += 3 * sw, dxy += dw) {
-                d[dxy] =//
-                        // Red component:
-                        ((//
-                        (s[sxy - sw * 2] & 0xff0000) * wll + //
-                        (s[sxy - sw] & 0xff0000) * wl + //
-                        (s[sxy + 0] & 0xff0000) * wc + //
-                        (s[sxy + sw] & 0xff0000) * wr +//
-                        (s[sxy + sw * 2] & 0xff0000) * wrr//
-                        ) / tw & 0xff0000) |
-                        //
-                        // Green component:
-                        ((//
-                        (s[sxy - sw] & 0x00ff00) * wll +//
-                        (s[sxy - 0] & 0x00ff00) * wl + //
-                        (s[sxy + sw] & 0x00ff00) * wc + //
-                        (s[sxy + sw * 2] & 0x00ff00) * wr + //
-                        (s[sxy + sw * 3] & 0x00ff00) * wrr//
-                        ) / tw & 0x00ff00) |
-                        //
-                        // Blue component:
-                        ((//
-                        (s[sxy + 0] & 0x0000ff) * wll + //
-                        (s[sxy + sw] & 0x0000ff) * wl + //
-                        (s[sxy + sw * 2] & 0x0000ff) * wc + //
-                        (s[sxy + sw * 3] & 0x0000ff) * wr +//
-                        (s[sxy + sw * 4] & 0x0000ff) * wrr//
-                        ) / tw);
+                d[dxy]
+                      =//
+                      // Red component:
+                      ((//
+                      (s[sxy - sw * 2] & 0xff0000) * wll
+                      + //
+                      (s[sxy - sw] & 0xff0000) * wl
+                      + //
+                      (s[sxy + 0] & 0xff0000) * wc
+                      + //
+                      (s[sxy + sw] & 0xff0000) * wr
+                      +//
+                      (s[sxy + sw * 2] & 0xff0000) * wrr//
+                      ) / tw & 0xff0000)
+                      | //
+                      // Green component:
+                      ((//
+                      (s[sxy - sw] & 0x00ff00) * wll
+                      +//
+                      (s[sxy - 0] & 0x00ff00) * wl
+                      + //
+                      (s[sxy + sw] & 0x00ff00) * wc
+                      + //
+                      (s[sxy + sw * 2] & 0x00ff00) * wr
+                      + //
+                      (s[sxy + sw * 3] & 0x00ff00) * wrr//
+                      ) / tw & 0x00ff00)
+                      | //
+                      // Blue component:
+                      ((//
+                      (s[sxy + 0] & 0x0000ff) * wll
+                      + //
+                      (s[sxy + sw] & 0x0000ff) * wl
+                      + //
+                      (s[sxy + sw * 2] & 0x0000ff) * wc
+                      + //
+                      (s[sxy + sw * 3] & 0x0000ff) * wr
+                      +//
+                      (s[sxy + sw * 4] & 0x0000ff) * wrr//
+                      ) / tw);
                 /*
                 if (dxy <= dw*2) {
                 System.out.println("x:" + x + " sxy:" + sxy + " :" + Integer.toHexString(s[sxy]).substring(2) + " " + Integer.toHexString(s[sxy + 1]).substring(2) + " " + Integer.toHexString(s[sxy + 2]).substring(2) + ":" + Integer.toHexString(0xff00000 | d[dxy]).substring(2));
                 }*/
             }
             // Process the last pixel on the line
-            d[dxy] =//
-                    // Red component:
-                    ((//
-                    (s[sxy - sw * 2] & 0xff0000) * wll + //
-                    (s[sxy - sw] & 0xff0000) * wl + //
-                    (s[sxy + 0] & 0xff0000) * wc + //
-                    (s[sxy + sw] & 0xff0000) * wr +//
-                    (s[sxy + sw * 2] & 0xff0000) * wrr//
-                    ) / tw & 0xff0000) |
-                    //
-                    // Green component:
-                    ((//
-                    (s[sxy - sw] & 0x00ff00) * wll +//
-                    (s[sxy + 0] & 0x00ff00) * wl + //
-                    (s[sxy + sw] & 0x00ff00) * wc + //
-                    (s[sxy + sw * 2] & 0x00ff00) * (wr + wrr) //
-                    ) / tw & 0x00ff00) |
-                    //
-                    // Blue component:
-                    ((//
-                    (s[sxy + 0] & 0x0000ff) * wll + //
-                    (s[sxy + sw] & 0x0000ff) * wl + //
-                    (s[sxy + sw * 2] & 0x0000ff) * (wc + wr + wrr) //
-                    ) / tw);
+            d[dxy]
+                  =//
+                  // Red component:
+                  ((//
+                  (s[sxy - sw * 2] & 0xff0000) * wll
+                  + //
+                  (s[sxy - sw] & 0xff0000) * wl
+                  + //
+                  (s[sxy + 0] & 0xff0000) * wc
+                  + //
+                  (s[sxy + sw] & 0xff0000) * wr
+                  +//
+                  (s[sxy + sw * 2] & 0xff0000) * wrr//
+                  ) / tw & 0xff0000)
+                  | //
+                  // Green component:
+                  ((//
+                  (s[sxy - sw] & 0x00ff00) * wll
+                  +//
+                  (s[sxy + 0] & 0x00ff00) * wl
+                  + //
+                  (s[sxy + sw] & 0x00ff00) * wc
+                  + //
+                  (s[sxy + sw * 2] & 0x00ff00) * (wr + wrr) //
+                  ) / tw & 0x00ff00)
+                  | //
+                  // Blue component:
+                  ((//
+                  (s[sxy + 0] & 0x0000ff) * wll
+                  + //
+                  (s[sxy + sw] & 0x0000ff) * wl
+                  + //
+                  (s[sxy + sw * 2] & 0x0000ff) * (wc + wr + wrr) //
+                  ) / tw);
         }
     }
 
-    /** Scales down an image using VBGR antia-aliasing.
-     * <p>
-     * Source and destination image must be of type BufferedImage.TYPE_RGB
-     * and have a data buffer of type DataBufferInt.
-     * <p>
-     * The width of source and destination image must be the same.
-     * The height of the source image must be 3 times the height of the
-     * destination image.
-     * <p>
+    /**
+     * Scales down an image using VBGR antia-aliasing.
+     * 
+     * Source and destination image must be of type BufferedImage.TYPE_RGB and
+     * have a data buffer of type DataBufferInt.
+     * 
+     * The width of source and destination image must be the same. The height of
+     * the source image must be 3 times the height of the destination image.
+     * 
      * Intensity weights:
-     * <pre>
+     * 
      *
      *            1
      *            |
@@ -679,7 +801,7 @@ public class SubpixAA {
      *  +----+----+----+----+
      *  |    |    |    |    |
      * 1/9  2/9  3/9  2/9  1/9
-     * </pre>
+     * 
      *
      * @param src The source image.
      * @param dst The destination image.
@@ -704,94 +826,126 @@ public class SubpixAA {
             int dxy = x;
             int dxyeol = dxy + dw * (dh - 1);
 
-
             // Process the first pixel of the line.
-            d[dxy] =//
-                    // Blue component:
-                    ((//
-                    (s[sxy + 0] & 0x0000ff) * (wll + wl + wc) +//
-                    (s[sxy + sw] & 0x0000ff) * wr +//
-                    (s[sxy + sw * 2] & 0x0000ff) * wrr//
-                    ) / tw) |
-                    //
-                    // Green component:
-                    ((//
-                    (s[sxy + 0] & 0x00ff00) * (wll + wl) + //
-                    (s[sxy + sw] & 0x00ff00) * wc + //
-                    (s[sxy + sw * 2] & 0x00ff00) * wr + //
-                    (s[sxy + sw * 3] & 0x00ff00) * wrr//
-                    ) / tw & 0x00ff00) |
-                    //
-                    // Red component:
-                    ((//
-                    (s[sxy + 0] & 0xff0000) * wll + //
-                    (s[sxy + sw] & 0xff0000) * wl + //
-                    (s[sxy + sw * 2] & 0xff0000) * wc + //
-                    (s[sxy + sw * 3] & 0xff0000) * wr +//
-                    (s[sxy + sw * 4] & 0xff0000) * wrr//
-                    ) / tw & 0xff0000);
+            d[dxy]
+                  =//
+                  // Blue component:
+                  ((//
+                  (s[sxy + 0] & 0x0000ff) * (wll + wl + wc)
+                  +//
+                  (s[sxy + sw] & 0x0000ff) * wr
+                  +//
+                  (s[sxy + sw * 2] & 0x0000ff) * wrr//
+                  ) / tw)
+                  | //
+                  // Green component:
+                  ((//
+                  (s[sxy + 0] & 0x00ff00) * (wll + wl)
+                  + //
+                  (s[sxy + sw] & 0x00ff00) * wc
+                  + //
+                  (s[sxy + sw * 2] & 0x00ff00) * wr
+                  + //
+                  (s[sxy + sw * 3] & 0x00ff00) * wrr//
+                  ) / tw & 0x00ff00)
+                  | //
+                  // Red component:
+                  ((//
+                  (s[sxy + 0] & 0xff0000) * wll
+                  + //
+                  (s[sxy + sw] & 0xff0000) * wl
+                  + //
+                  (s[sxy + sw * 2] & 0xff0000) * wc
+                  + //
+                  (s[sxy + sw * 3] & 0xff0000) * wr
+                  +//
+                  (s[sxy + sw * 4] & 0xff0000) * wrr//
+                  ) / tw & 0xff0000);
             sxy += 3 * sw;
             dxy += dw;
 
             // Process the pixels in the middle of the line.
             for (; dxy < dxyeol; sxy += 3 * sw, dxy += dw) {
-                d[dxy] =//
-                        // Blue component:
-                        ((//
-                        (s[sxy - sw * 2] & 0x0000ff) * wll + //
-                        (s[sxy - sw] & 0x0000ff) * wl + //
-                        (s[sxy + 0] & 0x0000ff) * wc + //
-                        (s[sxy + sw] & 0x0000ff) * wr +//
-                        (s[sxy + sw * 2] & 0x0000ff) * wrr//
-                        ) / tw) |
-                        //
-                        // Green component:
-                        ((//
-                        (s[sxy - sw] & 0x00ff00) * wll +//
-                        (s[sxy - 0] & 0x00ff00) * wl + //
-                        (s[sxy + sw] & 0x00ff00) * wc + //
-                        (s[sxy + sw * 2] & 0x00ff00) * wr + //
-                        (s[sxy + sw * 3] & 0x00ff00) * wrr//
-                        ) / tw & 0x00ff00) |
-                        //
-                        // Red component:
-                        ((//
-                        (s[sxy + 0] & 0xff0000) * wll + //
-                        (s[sxy + sw] & 0xff0000) * wl + //
-                        (s[sxy + sw * 2] & 0xff0000) * wc + //
-                        (s[sxy + sw * 3] & 0xff0000) * wr +//
-                        (s[sxy + sw * 4] & 0xff0000) * wrr//
-                        ) / tw & 0xff0000);
+                d[dxy]
+                      =//
+                      // Blue component:
+                      ((//
+                      (s[sxy - sw * 2] & 0x0000ff) * wll
+                      + //
+                      (s[sxy - sw] & 0x0000ff) * wl
+                      + //
+                      (s[sxy + 0] & 0x0000ff) * wc
+                      + //
+                      (s[sxy + sw] & 0x0000ff) * wr
+                      +//
+                      (s[sxy + sw * 2] & 0x0000ff) * wrr//
+                      ) / tw)
+                      | //
+                      // Green component:
+                      ((//
+                      (s[sxy - sw] & 0x00ff00) * wll
+                      +//
+                      (s[sxy - 0] & 0x00ff00) * wl
+                      + //
+                      (s[sxy + sw] & 0x00ff00) * wc
+                      + //
+                      (s[sxy + sw * 2] & 0x00ff00) * wr
+                      + //
+                      (s[sxy + sw * 3] & 0x00ff00) * wrr//
+                      ) / tw & 0x00ff00)
+                      | //
+                      // Red component:
+                      ((//
+                      (s[sxy + 0] & 0xff0000) * wll
+                      + //
+                      (s[sxy + sw] & 0xff0000) * wl
+                      + //
+                      (s[sxy + sw * 2] & 0xff0000) * wc
+                      + //
+                      (s[sxy + sw * 3] & 0xff0000) * wr
+                      +//
+                      (s[sxy + sw * 4] & 0xff0000) * wrr//
+                      ) / tw & 0xff0000);
                 /*
                 if (dxy <= dw*2) {
                 System.out.println("x:" + x + " sxy:" + sxy + " :" + Integer.toHexString(s[sxy]).substring(2) + " " + Integer.toHexString(s[sxy + 1]).substring(2) + " " + Integer.toHexString(s[sxy + 2]).substring(2) + ":" + Integer.toHexString(0xff00000 | d[dxy]).substring(2));
                 }*/
             }
             // Process the last pixel on the line
-            d[dxy] =//
-                    // Blue component:
-                    ((//
-                    (s[sxy - sw * 2] & 0x0000ff) * wll + //
-                    (s[sxy - sw] & 0x0000ff) * wl + //
-                    (s[sxy + 0] & 0x0000ff) * wc + //
-                    (s[sxy + sw] & 0x0000ff) * wr +//
-                    (s[sxy + sw * 2] & 0x0000ff) * wrr//
-                    ) / tw) |
-                    //
-                    // Green component:
-                    ((//
-                    (s[sxy - sw] & 0x00ff00) * wll +//
-                    (s[sxy + 0] & 0x00ff00) * wl + //
-                    (s[sxy + sw] & 0x00ff00) * wc + //
-                    (s[sxy + sw * 2] & 0x00ff00) * (wr + wrr) //
-                    ) / tw & 0x00ff00) |
-                    //
-                    // Red component:
-                    ((//
-                    (s[sxy + 0] & 0xff0000) * wll + //
-                    (s[sxy + sw] & 0xff0000) * wl + //
-                    (s[sxy + sw * 2] & 0xff0000) * (wc + wr + wrr) //
-                    ) / tw & 0xff0000);
+            d[dxy]
+                  =//
+                  // Blue component:
+                  ((//
+                  (s[sxy - sw * 2] & 0x0000ff) * wll
+                  + //
+                  (s[sxy - sw] & 0x0000ff) * wl
+                  + //
+                  (s[sxy + 0] & 0x0000ff) * wc
+                  + //
+                  (s[sxy + sw] & 0x0000ff) * wr
+                  +//
+                  (s[sxy + sw * 2] & 0x0000ff) * wrr//
+                  ) / tw)
+                  | //
+                  // Green component:
+                  ((//
+                  (s[sxy - sw] & 0x00ff00) * wll
+                  +//
+                  (s[sxy + 0] & 0x00ff00) * wl
+                  + //
+                  (s[sxy + sw] & 0x00ff00) * wc
+                  + //
+                  (s[sxy + sw * 2] & 0x00ff00) * (wr + wrr) //
+                  ) / tw & 0x00ff00)
+                  | //
+                  // Red component:
+                  ((//
+                  (s[sxy + 0] & 0xff0000) * wll
+                  + //
+                  (s[sxy + sw] & 0xff0000) * wl
+                  + //
+                  (s[sxy + sw * 2] & 0xff0000) * (wc + wr + wrr) //
+                  ) / tw & 0xff0000);
         }
     }
 }

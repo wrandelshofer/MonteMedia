@@ -148,20 +148,20 @@ public abstract class AbstractAVIStream {
     protected ArrayList<Track> tracks = new ArrayList<Track>();
 
     /**
-     * Gets the position relative to the beginning of the QuickTime stream. <p>
+     * Gets the position relative to the beginning of the QuickTime stream. 
      * Usually this value is equal to the stream position of the underlying
      * ImageOutputStream, but can be larger if the underlying stream already
      * contained data.
      *
      * @return The relative stream position.
-     * @throws IOException
+     * @throws IOException TODO
      */
     protected long getRelativeStreamPosition() throws IOException {
         return out.getStreamPosition() - streamOffset;
     }
 
     /**
-     * Seeks relative to the beginning of the AVI stream. <p> Usually this equal
+     * Seeks relative to the beginning of the AVI stream.  Usually this equal
      * to seeking in the underlying ImageOutputStream, but can be different if
      * the underlying stream already contained data.
      *
@@ -219,13 +219,13 @@ public abstract class AbstractAVIStream {
     }
 
     /**
-     * Represents a track (or "stream") in an AVI file. <p> A track is defined
+     * Represents a track (or "stream") in an AVI file.  A track is defined
      * by an "strh" chunk, which contains an {@code AVISTREAMHEADER} struct.
      * Additional chunks can be provided depending on the media type of the
-     * track. <p> See <a
+     * track.  See <a
      * href="http://msdn.microsoft.com/en-us/library/ms779638(VS.85).aspx">
-     * http://msdn.microsoft.com/en-us/library/ms779638(VS.85).aspx</a> </p>
-     * <pre>
+     * http://msdn.microsoft.com/en-us/library/ms779638(VS.85).aspx</a> 
+     * 
      * -----------------
      * AVI Stream Header
      * -----------------
@@ -323,7 +323,7 @@ public abstract class AbstractAVIStream {
      *        // update the whole movie rectangle. Units for this member are pixels.
      *        // The upper-left corner of the destination rectangle is relative to the
      *        // upper-left corner of the movie rectangle.
-     * } AVISTREAMHEADER; * </pre>
+     * } AVISTREAMHEADER; * 
      */
     protected abstract class Track {
 
@@ -335,7 +335,7 @@ public abstract class AbstractAVIStream {
         protected Format format;
         // Common metadata
         /**
-         * The scale of the media in the track. <p> Used with rate to specify
+         * The scale of the media in the track.  Used with rate to specify
          * the time scale that this stream will use. Dividing rate by scale
          * gives the number of samples per second. For video streams, this is
          * the frame rate. For audio streams, this rate corresponds to the time
@@ -343,7 +343,7 @@ public abstract class AbstractAVIStream {
          * the sample rate.
          */
         /**
-         * The rate of the media in scale units. <p>
+         * The rate of the media in scale units. 
          *
          * @see scale
          */
@@ -540,11 +540,11 @@ public abstract class AbstractAVIStream {
     }
 
     /**
-     * Represents a video track in an AVI file. <p> The format of a video track
+     * Represents a video track in an AVI file.  The format of a video track
      * is defined in a "strf" chunk, which contains a {@code BITMAPINFOHEADER}
      * struct.
      *
-     * </pre> //---------------------- // AVI Bitmap Info Header //
+     *  //---------------------- // AVI Bitmap Info Header //
      * ---------------------- typedef struct { BYTE blue; BYTE green; BYTE red;
      * BYTE reserved; } RGBQUAD;
      *
@@ -614,7 +614,7 @@ public abstract class AbstractAVIStream {
      * "clrUsed" member. If "clrUsed" is zero, the array contains the // maximum
      * number of colors for the given bitdepth; that is, // 2^"bitCount" colors.
      * } BITMAPINFOHEADER;
-     * </pre>
+     * 
      */
     protected class VideoTrack extends Track {
         // Video metadata
@@ -737,9 +737,9 @@ public abstract class AbstractAVIStream {
     }
 
     /**
-     * <p> The format of a video track is defined in a "strf" chunk, which
+     *  The format of a video track is defined in a "strf" chunk, which
      * contains a {@code WAVEFORMATEX} struct.
-     * <pre>
+     * 
      * ----------------------
      * AVI Wave Format Header
      * ----------------------
@@ -933,7 +933,7 @@ public abstract class AbstractAVIStream {
      *     // is ignored.
      *   byte[cbSize] extra;
      * } WAVEFORMATEX;
-     * </pre>
+     * 
      */
     protected class AudioTrack extends Track {
 
@@ -1372,7 +1372,7 @@ public abstract class AbstractAVIStream {
          * Writes the chunk and all its children to the ImageOutputStream and
          * disposes of all resources held by the chunk.
          *
-         * @throws java.io.IOException
+         * @throws java.io.IOException TODO
          */
         @Override
         public void finish() throws IOException {
@@ -1629,9 +1629,9 @@ public abstract class AbstractAVIStream {
     }
 
     /**
-     * <p>Holds information about the entire movie. </p>
+     * Holds information about the entire movie. 
      *
-     * <pre>
+     * 
      * ---------------
      * AVI Main Header
      * ---------------
@@ -1680,7 +1680,7 @@ public abstract class AbstractAVIStream {
      *     DWORD[]  reserved;
      *             // Reserved. Set this array to zero.
      * } AVIMAINHEADER;
-     * </pre>
+     * 
      */
     protected static class MainHeader {
 

@@ -9,7 +9,8 @@ import static java.lang.System.arraycopy;
 import static java.lang.System.out;
 
 /**
- * A {@code ByteArrayInputStream} which allows to replace the byte buffer underneath.
+ * A {@code ByteArrayInputStream} which allows to replace the byte buffer
+ * underneath.
  *
  * @author Werner Randelshofer
  * @version 1.0 2011-08-28 Created.
@@ -53,8 +54,9 @@ public class AppendableByteArrayInputStream extends ByteArrayInputStream {
         return count;
     }
 
-    /** Appends new data to the buffer. 
-     * 
+    /**
+     * Appends new data to the buffer.
+     *
      * @param buf Data.
      * @param offset Offset in the data.
      * @param length Length of the data.
@@ -79,28 +81,27 @@ public class AppendableByteArrayInputStream extends ByteArrayInputStream {
                 this.pos = 0;
                 this.mark = 0;
             }
+        } else if (this.buf.length >= count + length) {
+            // => the buffer has enough space for the existing data and the new data
+            arraycopy(buf, offset, this.buf, count, length);
+            this.count = count + length;
         } else {
-            if (this.buf.length >= count + length) {
-                // => the buffer has enough space for the existing data and the new data
-                arraycopy(buf, offset, this.buf, count, length);
-                this.count = count + length;
-            } else {
-                // => the buffer does not have enough space for the new data
-                byte[] newBuf = new byte[(this.buf.length + length + 31) / 32 * 32];
-                arraycopy(this.buf, 0, newBuf, 0, count);
-                arraycopy(buf, offset, newBuf, count, length);
-                this.buf = newBuf;
-                this.count = count + length;
-            }
+            // => the buffer does not have enough space for the new data
+            byte[] newBuf = new byte[(this.buf.length + length + 31) / 32 * 32];
+            arraycopy(this.buf, 0, newBuf, 0, count);
+            arraycopy(buf, offset, newBuf, count, length);
+            this.buf = newBuf;
+            this.count = count + length;
         }
 
         //System.out.println("AppendableByteArrayInputStream.appendBuffer   pos="+pos+" count="+count);
     }
 
-    /** Sets the buffer and resets the stream. 
-     * This will overwrite the data array in the buffer, if it is large enough.
-     * Otherwise it will create a new data array and copy the data into it.
-     * 
+    /**
+     * Sets the buffer and resets the stream. This will overwrite the data array
+     * in the buffer, if it is large enough. Otherwise it will create a new data
+     * array and copy the data into it.
+     *
      * @param buf Data.
      * @param offset Offset in the data.
      * @param length Length of the data.

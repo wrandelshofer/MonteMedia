@@ -18,11 +18,11 @@ import javax.imageio.stream.ImageOutputStream;
  *
  * This OutputStream supports writing of a JFIF stream.
  *
- * <p>
+ * 
  * References:<br>
  * JPEG File Interchange Format Version 1.02<br>
  * <a href="http://www.jpeg.org/public/jfif.pdf">http://www.jpeg.org/public/jfif.pdf</a>
- * <p>
+ * 
  *   Pennebaker, W., Mitchell, J. (1993).<br>
  *   JPEG Still Image Data Compression Standard.<br>
  *   Chapmann & Hall, New York.<br>
@@ -139,20 +139,20 @@ public class JFIFOutputStream extends OutputStream {
     }
 
     /** Gets the position relative to the beginning of the IFF output stream.
-     * <p>
+     * 
      * Usually this value is equal to the stream position of the underlying
      * ImageOutputStream, but can be larger if the underlying stream already
      * contained data.
      *
      * @return The relative stream position.
-     * @throws IOException
+     * @throws IOException TODO
      */
     public long getStreamPosition() throws IOException {
         return out.getStreamPosition() - streamOffset;
     }
 
     /** Seeks relative to the beginning of the IFF output stream.
-     * <p>
+     * 
      * Usually this equal to seeking in the underlying ImageOutputStream, but
      * can be different if the underlying stream already contained data.
      *

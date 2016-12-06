@@ -4,7 +4,7 @@
  */
 /**
  * Provides media handlers for the SEQ file format.
- * <p>
+ * 
  * Atari "Cyber Paint Sequence" animations (SEQ).
  * 
  *

@@ -2,7 +2,6 @@
  * Copyright © 2006 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-
 package ru.sbtqa.monte.media.image;
 
 import java.awt.*;
@@ -23,97 +22,103 @@ import static ru.sbtqa.monte.media.image.BitmapImage.INT_PIXEL;
 
 /**
  * Creates a BufferedImage from a BitmapImage.
- * <p>
- * We put these factory methods into this class instead of into class BitmapImage,
- * because we don't want to put this additional code into Java applets that
- * don't need this functionality.
+ * 
+ * We put these factory methods into this class instead of into class
+ * BitmapImage, because we don't want to put this additional code into Java
+ * applets that don't need this functionality.
  *
  * @author Werner Randelshofer
  * @version 1.0 December 25, 2006 Created.
  */
 public class BitmapImageFactory {
-    
-    /** Prevent instance creation. */
+
+    /**
+     * Prevent instance creation.
+     */
     private BitmapImageFactory() {
     }
-    
+
     /**
      * Creates a BufferedImage using the provided BitmapImage.
      *
      * @param bm The BitmapImage holding the image data.
+     * @return TODO
      */
     public static BufferedImage toBufferedImage(BitmapImage bm) {
         BufferedImage image = null;
-        Hashtable<?,?> properties = new Hashtable<>() ;
+        Hashtable<?, ?> properties = new Hashtable<>();
         //properties.put("comment","BitmapImage");
-        
+
         bm.convertToChunky();
         switch (bm.getPixelType()) {
-            case BYTE_PIXEL : {
-                
+            case BYTE_PIXEL: {
+
                 image = new BufferedImage(bm.getWidth(), bm.getHeight(), TYPE_BYTE_INDEXED, (IndexColorModel) bm.getChunkyColorModel());
                 WritableRaster ras = image.getRaster();
                 byte[] pixels = ((DataBufferByte) ras.getDataBuffer()).getData();
                 arraycopy(bm.getBytePixels(), 0, pixels, 0, bm.getBytePixels().length);
                 break;
             }
-            case INT_PIXEL : {
+            case INT_PIXEL: {
                 WritableRaster ras = createPackedRaster(TYPE_INT, bm.getWidth(), bm.getHeight(),
-                        3, 8, new Point());
+                      3, 8, new Point());
                 image = new BufferedImage(bm.getChunkyColorModel(), ras, false,
-                        properties);
+                      properties);
                 int[] pixels = ((DataBufferInt) ras.getDataBuffer()).getData();
                 arraycopy(bm.getIntPixels(), 0, pixels, 0, bm.getIntPixels().length);
                 break;
             }
         }
-        
+
         return image;
     }
+
     public static Image toMemoryImage(BitmapImage bm) {
         bm.convertToChunky();
         switch (bm.getPixelType()) {
-            case BYTE_PIXEL : {
-                
+            case BYTE_PIXEL: {
+
                 MemoryImageSource mis = new MemoryImageSource(
-                        bm.getWidth(), bm.getHeight(), bm.getChunkyColorModel(),
-                        bm.getBytePixels().clone(), 0, bm.getWidth());
+                      bm.getWidth(), bm.getHeight(), bm.getChunkyColorModel(),
+                      bm.getBytePixels().clone(), 0, bm.getWidth());
                 return getDefaultToolkit().createImage(mis);
             }
-            case INT_PIXEL : {
+            case INT_PIXEL: {
                 MemoryImageSource mis = new MemoryImageSource(
-                        bm.getWidth(), bm.getHeight(), bm.getChunkyColorModel(),
-                        bm.getIntPixels().clone(), 0, bm.getWidth());
+                      bm.getWidth(), bm.getHeight(), bm.getChunkyColorModel(),
+                      bm.getIntPixels().clone(), 0, bm.getWidth());
                 return getDefaultToolkit().createImage(mis);
             }
         }
-        
+
         return null;
     }
 
     public static BitmapImage toBitmapImage(MemoryImageSource mis) {
         return null;
     }
+
     public static BitmapImage toBitmapImage(ColorCyclingMemoryImageSource mis) {
         return null;
     }
+
     public static BitmapImage toBitmapImage(BufferedImage mis) {
         return null;
     }
-    
+
     public static void write(BitmapImage bm, File f) throws IOException {
         try (OutputStream out = new BufferedOutputStream(new FileOutputStream(f))) {
             write(bm, out);
         }
     }
+
     public static void write(BitmapImage bm, OutputStream out) throws IOException {
         MutableIFFChunk form = new MutableIFFChunk("FORM", "ILBM");
-        
+
         ByteArrayOutputStream buf;
         MC68000OutputStream struct;
-        
+
         // Write BMHD Chunk
-        
         /*  Masking techniques  * /
         enum {
             none=0, hasMask=1, hasTransparentColor=2, lasso=3
@@ -152,8 +157,7 @@ public class BitmapImageFactory {
         struct.writeWORD(bm.getHeight()); // pageHeight
         struct.close();
         form.add(new MutableIFFChunk("BMHD", buf.toByteArray()));
-        
-        
+
         ColorModel cm = bm.getPlanarColorModel();
         /*
          * ILBM CAMG Amiga Viewport Mode Display ID
@@ -192,7 +196,7 @@ public class BitmapImageFactory {
         struct.writeULONG(viewMode);
         struct.close();
         form.add(new MutableIFFChunk("CAMG", buf.toByteArray()));
-        
+
         /*
          * ILBM CMAP Color map
          * --------------------------------------------
@@ -215,7 +219,7 @@ public class BitmapImageFactory {
             hcm.getReds(r);
             hcm.getGreens(g);
             hcm.getBlues(b);
-            for (int i=0; i <r.length; i++) {
+            for (int i = 0; i < r.length; i++) {
                 struct.writeUBYTE(r[i]);
                 struct.writeUBYTE(g[i]);
                 struct.writeUBYTE(b[i]);
@@ -224,17 +228,17 @@ public class BitmapImageFactory {
             form.add(new MutableIFFChunk("CMAP", buf.toByteArray()));
         }
         // XXX - Add support for index color model
-        
+
         /* Write BODY Chunk */
         struct = new MC68000OutputStream(buf = new ByteArrayOutputStream());
-        for (int y=0, height=bm.getHeight(); y < height; y++) {
-            for (int d=0, depth=bm.getDepth(); d < depth; d++) {
+        for (int y = 0, height = bm.getHeight(); y < height; y++) {
+            for (int d = 0, depth = bm.getDepth(); d < depth; d++) {
                 struct.writeByteRun1(bm.getBitmap(), y * bm.getScanlineStride() + d * bm.getBitplaneStride(), bm.getWidth() / 8);
             }
         }
-   
+
         form.add(new MutableIFFChunk("BODY", buf.toByteArray()));
-        
+
         MC68000OutputStream mout = new MC68000OutputStream(out);
         form.write(mout);
         mout.flush();

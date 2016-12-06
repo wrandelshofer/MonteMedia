@@ -8,7 +8,7 @@ package org.monte.media.concurrent;
  * Processes Runnable objects sequentially on a processor thread.
  * The order in which the runnable objects are processed is 
  * the same in which they were added to the dispatcher.
- * <p>
+ * 
  * Design pattern used: Acceptor
  * Role in design pattern: EventCollector and EventProcessor
  *

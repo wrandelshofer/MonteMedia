@@ -44,7 +44,7 @@ public class ILBMEncoder {
     /**
      * Writes the bitmap header (ILBM BMHD).
      *
-     * <pre>
+     * 
      * typedef UBYTE Masking; // Choice of masking technique
      *
      * #define mskNone                 0
@@ -70,7 +70,7 @@ public class ILBMEncoder {
      *   UBYTE       xAspect, yAspect; // pixel aspect, a ratio width : height
      *   UWORD       pageWidth, pageHeight; // source "page" size in pixels
      *   } BitmapHeader;
-     * </pre>
+     * 
      */
     private void writeBMHD(IFFOutputStream out, BitmapImage img) throws IOException {
         out.pushDataChunk("BMHD");
@@ -123,19 +123,19 @@ public class ILBMEncoder {
     private void writeBODY(IFFOutputStream out, BitmapImage img) throws IOException {
         out.pushDataChunk("BODY");
 
-        int w = img.getWidth()/8;
-        int ss=img.getScanlineStride();
-        int bs=img.getBitplaneStride();
+        int w = img.getWidth() / 8;
+        int ss = img.getScanlineStride();
+        int bs = img.getBitplaneStride();
 
-        int offset=0;
+        int offset = 0;
 
-       byte[] data = img.getBitmap();
+        byte[] data = img.getBitmap();
 
         for (int y = 0, h = img.getHeight(); y < h; y++) {
             for (int p = 0, d = img.getDepth(); p < d; p++) {
-                out.writeByteRun1(data, offset+bs*p, w);
+                out.writeByteRun1(data, offset + bs * p, w);
             }
-            offset+=ss;
+            offset += ss;
         }
 
         out.popChunk();

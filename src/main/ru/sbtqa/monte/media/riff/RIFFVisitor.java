@@ -17,7 +17,7 @@ public interface RIFFVisitor {
     /** This method is invoked when the parser attempts to enter a group.
      * The visitor can return false, if the parse shall skip the group contents.
      * 
-     * @param group
+     * @param group TODO
      * @return True to enter the group, false to skip over the group.
      */
     public boolean enteringGroup(RIFFChunk group);

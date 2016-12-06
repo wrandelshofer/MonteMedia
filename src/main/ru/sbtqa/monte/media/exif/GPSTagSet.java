@@ -11,14 +11,14 @@ import static org.monte.media.tiff.TIFFTag.*;
 
 /**
  * Enumeration of GPS EXIF tags.
- * <p>
+ * 
  * Sources:
- * <p>
+ * 
  * Exchangeable image file format for digital still cameras: EXIF Version 2.2.
  * (April, 2002). Standard of Japan Electronics and Information Technology
  * Industries Association. JEITA CP-3451.
  * <a href="http://www.exif.org/Exif2-2.PDF">http://www.exif.org/Exif2-2.PDF</a>
- * <p>
+ * 
  * Exiv2 Image metadata library and tools.
  * Copyright © 2004 - 2014 Andreas Huggel
  * <a href="http://www.exiv2.org/tags.html">http://www.exiv2.org/tags.html</a>

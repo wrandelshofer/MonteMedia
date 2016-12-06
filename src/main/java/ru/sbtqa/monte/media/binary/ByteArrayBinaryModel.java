@@ -11,18 +11,24 @@ import java.util.ArrayList;
 /**
  * Model for untyped binary data.
  *
- * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version  $Id: ByteArrayBinaryModel.java 364 2016-11-09 19:54:25Z werner $
+ * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @version $Id: ByteArrayBinaryModel.java 364 2016-11-09 19:54:25Z werner $
  */
 public class ByteArrayBinaryModel implements BinaryModel {
     // The data is stored in runs of 256 bytes. So we do not
     // need a contiguous area of memory.
 
-    /** Table of elements. */
+    /**
+     * Table of elements.
+     */
     private ArrayList<byte[]> elemTable;
-    /** Number of bytes in the model. */
+    /**
+     * Number of bytes in the model.
+     */
     private long length;
-    /** Size of an element. */
+    /**
+     * Size of an element.
+     */
     private int elemSize = 1024;
 
     public ByteArrayBinaryModel() {
@@ -41,11 +47,10 @@ public class ByteArrayBinaryModel implements BinaryModel {
     }
 
     public ByteArrayBinaryModel(InputStream in)
-            throws IOException {
+          throws IOException {
         this();
 
         //in = new BufferedInputStream(in);
-
         byte[] elem = new byte[elemSize];
         int elemLen = 0;
         while (true) {
@@ -70,13 +75,15 @@ public class ByteArrayBinaryModel implements BinaryModel {
     }
 
     /**
-    Gets a sequence of bytes and copies them into the supplied byte array.
-
-    @param offset the starting offset >= 0
-    @param len the number of bytes >= 0 && <= size - offset
-    @param target the target array to copy into
-    @exception ArrayIndexOutOfBoundsException  Thrown if the area covered by
-    the arguments is not contained in the model.
+     * Gets a sequence of bytes and copies them into the supplied byte array.
+     *
+     * @param offset the starting offset {@literal >}= 0
+     * @param len the number of bytes {@literal >}= 0 &amp;&amp; {@literal <}=
+     * size - offset
+     * @param target the target array to copy into
+     * @return TODO
+     * @exception ArrayIndexOutOfBoundsException Thrown if the area covered by
+     * the arguments is not contained in the model.
      */
     @Override
     public int getBytes(long offset, int len, byte[] target) {
@@ -110,7 +117,7 @@ public class ByteArrayBinaryModel implements BinaryModel {
 
     @Override
     public void close() {
-        elemTable=null;
-        length=0;
+        elemTable = null;
+        length = 0;
     }
 }

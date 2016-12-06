@@ -9,30 +9,32 @@ import ru.sbtqa.monte.media.image.BitmapImage;
 
 /**
  * Represents a delta frame in a movie track.
- * <p>
+ * 
  * References:<br>
  * <a href="http://www.fileformat.info/format/atari/egff.htm">http://www.fileformat.info/format/atari/egff.htm</a><br>
  * <a href="http://www.atari-forum.com/wiki/index.php/ST_Picture_Formats">http://www.atari-forum.com/wiki/index.php/ST_Picture_Formats</a>
  *
- * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version 1.0  2010-12-25 Created.
+ * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @version 1.0 2010-12-25 Created.
  */
 public class SEQDeltaFrame
-        extends SEQFrame {
+      extends SEQFrame {
 
     private int leftBound, topBound, rightBound, bottomBound;
     public final static int //
-            OP_Copy = 0,
-            OP_XOR = 1;
+          OP_Copy = 0,
+          OP_XOR = 1;
     public final static int //
-            SM_UNCOMPRESSED = 0,
-            SM_COMPRESSED = 1;
+          SM_UNCOMPRESSED = 0,
+          SM_COMPRESSED = 1;
     private final static int //
-            ENCODING_COPY_UNCOMPRESSED = (OP_Copy << 1) | SM_UNCOMPRESSED,
-            ENCODING_COPY_COMPRESSED = (OP_Copy << 1) | SM_COMPRESSED,
-            ENCODING_XOR_UNCOMPRESSED = (OP_XOR << 1) | SM_UNCOMPRESSED,
-            ENCODING_XOR_COMPRESSED = (OP_XOR << 1) | SM_COMPRESSED;
-    /** Wether we already printed a warning about a broken encoding. */
+          ENCODING_COPY_UNCOMPRESSED = (OP_Copy << 1) | SM_UNCOMPRESSED,
+          ENCODING_COPY_COMPRESSED = (OP_Copy << 1) | SM_COMPRESSED,
+          ENCODING_XOR_UNCOMPRESSED = (OP_XOR << 1) | SM_UNCOMPRESSED,
+          ENCODING_XOR_COMPRESSED = (OP_XOR << 1) | SM_COMPRESSED;
+    /**
+     * Wether we already printed a warning about a broken encoding.
+     */
     private boolean isWarningPrinted = false;
 
     public SEQDeltaFrame() {
@@ -66,12 +68,12 @@ public class SEQDeltaFrame
     }
 
     /**
-     * Compressed data contains a sequence of control WORDs (16-bit signed WORDs)
-     * and data. A control WORD with a value between 1 and 32,767 indicates that
-     * the next WORD is to be repeated a number of times equal to the control
-     * WORD value. A control WORD with a negative value indicates that a run
-     * of bytes equal to the absolute value of the control WORD value is to be
-     * read from the compressed data.
+     * Compressed data contains a sequence of control WORDs (16-bit signed
+     * WORDs) and data. A control WORD with a value between 1 and 32,767
+     * indicates that the next WORD is to be repeated a number of times equal to
+     * the control WORD value. A control WORD with a negative value indicates
+     * that a run of bytes equal to the absolute value of the control WORD value
+     * is to be read from the compressed data.
      */
     private void decodeCopyCompressed(BitmapImage bitmap, SEQMovieTrack track) {
         int di = 0; // data index
@@ -370,12 +372,15 @@ public class SEQDeltaFrame
         return rightBound;
     }
 
-    /** Returns true if the frame can be decoded over both the previous frame
-     * or the subsequent frame. Bidirectional frames can be used efficiently
-     * for forward and backward playing a movie.
-     * <p>
+    /**
+     * Returns true if the frame can be decoded over both the previous frame or
+     * the subsequent frame. Bidirectional frames can be used efficiently for
+     * forward and backward playing a movie.
+     * 
      * All key frames are bidirectional. Delta frames which use an XOR OP-mode
      * are bidirectional as well.
+     *
+     * @return TODO
      */
     @Override
     public boolean isBidirectional() {

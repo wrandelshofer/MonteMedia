@@ -20,8 +20,8 @@ public class RationalDemo {
     }
 
     public static void arithmetics() {
-        Rational[] as = {new Rational(2,5),new Rational(2,5),new Rational(861198430599L, 1437500000L), new Rational(978969156151L, 1437500000L), new Rational(MAX_VALUE,1)};
-        Rational[] bs = {new Rational(5,1),new Rational(3,7),new Rational(7360670347L, 2500000), new Rational(7360670347L, 2500000), new Rational(MAX_VALUE,1)};
+        Rational[] as = {new Rational(2, 5), new Rational(2, 5), new Rational(861198430599L, 1437500000L), new Rational(978969156151L, 1437500000L), new Rational(MAX_VALUE, 1)};
+        Rational[] bs = {new Rational(5, 1), new Rational(3, 7), new Rational(7360670347L, 2500000), new Rational(7360670347L, 2500000), new Rational(MAX_VALUE, 1)};
 
         Rational a, b;
         out.println("Divisions");

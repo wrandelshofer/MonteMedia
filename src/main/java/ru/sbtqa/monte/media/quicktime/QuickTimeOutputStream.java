@@ -40,6 +40,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
      * Creates a new instance.
      *
      * @param file the output file
+     * @throws java.io.IOException TODO
      */
     public QuickTimeOutputStream(File file) throws IOException {
         if (file.exists()) {
@@ -54,6 +55,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
      * Creates a new instance.
      *
      * @param out the output stream.
+     * @throws java.io.IOException TODO
      */
     public QuickTimeOutputStream(ImageOutputStream out) throws IOException {
         this.out = out;
@@ -68,10 +70,11 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * Sets the time scale for this movie, that is, the number of time units
-     * that pass per second in its time coordinate system. <p> The default value
-     * is 600.
+     * that pass per second in its time coordinate system.
+     * 
+     * The default value is 600.
      *
-     * @param timeScale
+     * @param timeScale TODO
      */
     public void setMovieTimeScale(long timeScale) {
         if (timeScale < 1 || timeScale > (2L << 32)) {
@@ -113,8 +116,10 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * Returns the track duration in the movie's time scale without taking the
-     * edit list into account. <p> The returned value is the media duration of
-     * the track in the movies's time scale.
+     * edit list into account.
+     * 
+     * The returned value is the media duration of the track in the movies's
+     * time scale.
      *
      * @param track Track index.
      * @return unedited track duration
@@ -125,9 +130,12 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     }
 
     /**
-     * Returns the track duration in the movie's time scale. <p> If the track
-     * has an edit-list, the track duration is the sum of all edit durations.
-     * <p> If the track does not have an edit-list, then this method returns the
+     * Returns the track duration in the movie's time scale.
+     * 
+     * If the track has an edit-list, the track duration is the sum of all edit
+     * durations.
+     * 
+     * If the track does not have an edit-list, then this method returns the
      * media duration of the track in the movie's time scale.
      *
      * @param track Track index.
@@ -178,10 +186,14 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     }
 
     /**
-     * Sets the edit list for the specified track. <p> In the absence of an edit
-     * list, the presentation of the track starts immediately. An empty edit is
-     * used to offset the start time of a track. <p>
+     * Sets the edit list for the specified track.
+     * 
+     * In the absence of an edit list, the presentation of the track starts
+     * immediately. An empty edit is used to offset the start time of a track.
+     * 
      *
+     * @param track TODO
+     * @param editList TODO
      * @throws IllegalArgumentException If the edit list ends with an empty
      * edit.
      */
@@ -210,6 +222,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
      * least one keyframe every second.
      *
      * @return Returns the track index.
+     * @throws java.io.IOException TODO
      *
      * @throws IllegalArgumentException if {@code width} or {@code height} is
      * smaller than 1, if the length of {@code compressionType} is not equal to
@@ -240,13 +253,13 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         t.videoDepth = depth;
         t.syncInterval = syncInterval;
         t.format = new Format(
-                MediaTypeKey, VIDEO,
-                MimeTypeKey, MIME_QUICKTIME,
-                EncodingKey, compressionType,
-                CompressorNameKey, compressorName,
-                DataClassKey, byte[].class,
-                WidthKey, width, HeightKey, height, DepthKey, depth,
-                FrameRateKey, new Rational(timeScale, 1));
+              MediaTypeKey, VIDEO,
+              MimeTypeKey, MIME_QUICKTIME,
+              EncodingKey, compressionType,
+              CompressorNameKey, compressorName,
+              DataClassKey, byte[].class,
+              WidthKey, width, HeightKey, height, DepthKey, depth,
+              FrameRateKey, new Rational(timeScale, 1));
         tracks.add(t);
         return tracks.size() - 1;
     }
@@ -268,6 +281,9 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
      * @param frameSize For uncompressed audio, the number of bytes in a sample
      * for a single channel (sampleSize divided by 8). For compressed audio, the
      * number of bytes in a frame.
+     * @param signed TODO
+     * @param byteOrder TODO
+     * @throws java.io.IOException TODO
      *
      * @throws IllegalArgumentException if the audioFormat is not 4 characters
      * long, if the time scale is not between 1 and 2^32, if the integer portion
@@ -276,10 +292,10 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
      * @return Returns the track index.
      */
     public int addAudioTrack(String compressionType, //
-            long timeScale, double sampleRate, //
-            int numberOfChannels, int sampleSizeInBits, //
-            boolean isCompressed, //
-            int frameDuration, int frameSize, boolean signed, ByteOrder byteOrder) throws IOException {
+          long timeScale, double sampleRate, //
+          int numberOfChannels, int sampleSizeInBits, //
+          boolean isCompressed, //
+          int frameDuration, int frameSize, boolean signed, ByteOrder byteOrder) throws IOException {
         ensureStarted();
         if (compressionType == null || compressionType.length() != 4) {
             throw new IllegalArgumentException("audioFormat must be 4 characters long:" + compressionType);
@@ -315,30 +331,37 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         t.soundBytesPerSample = sampleSizeInBits / 8;
 
         t.format = new Format(
-                MediaTypeKey, AUDIO,
-                MimeTypeKey, MIME_QUICKTIME,
-                EncodingKey, compressionType,
-                SampleRateKey, valueOf(sampleRate),
-                SampleSizeInBitsKey, sampleSizeInBits,
-                ChannelsKey, numberOfChannels,
-                FrameSizeKey, frameSize,
-                SampleRateKey, valueOf(sampleRate),
-                SignedKey, signed,
-                ByteOrderKey, byteOrder);
+              MediaTypeKey, AUDIO,
+              MimeTypeKey, MIME_QUICKTIME,
+              EncodingKey, compressionType,
+              SampleRateKey, valueOf(sampleRate),
+              SampleSizeInBitsKey, sampleSizeInBits,
+              ChannelsKey, numberOfChannels,
+              FrameSizeKey, frameSize,
+              SampleRateKey, valueOf(sampleRate),
+              SignedKey, signed,
+              ByteOrderKey, byteOrder);
         tracks.add(t);
         return tracks.size() - 1;
     }
 
     /**
-     * Sets the compression quality of a track. <p> A value of 0 stands for
-     * "high compression is important" a value of 1 for "high image quality is
-     * important". <p> Changing this value affects the encoding of video frames
-     * which are subsequently written into the track. Frames which have already
-     * been written are not changed. <p> This value has no effect on videos
-     * encoded with lossless encoders such as the PNG format. <p> The default
-     * value is 0.97.
+     * Sets the compression quality of a track.
+     * 
+     * A value of 0 stands for "high compression is important" a value of 1 for
+     * "high image quality is important".
+     * 
+     * Changing this value affects the encoding of video frames which are
+     * subsequently written into the track. Frames which have already been
+     * written are not changed.
+     * 
+     * This value has no effect on videos encoded with lossless encoders such as
+     * the PNG format.
+     * 
+     * The default value is 0.97.
      *
-     * @param newValue
+     * @param track TODO
+     * @param newValue TODO
      */
     public void setCompressionQuality(int track, float newValue) {
         VideoTrack vt = (VideoTrack) tracks.get(track);
@@ -348,6 +371,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     /**
      * Returns the compression quality of a track.
      *
+     * @param track TODO
      * @return compression quality
      */
     public float getCompressionQuality(int track) {
@@ -367,6 +391,9 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * Gets the sync interval from the specified video track.
+     *
+     * @param track TODO
+     * @return TODO
      */
     public int getSyncInterval(int track) {
         return ((VideoTrack) tracks.get(track)).syncInterval;
@@ -374,6 +401,8 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * Sets the creation time of the movie.
+     *
+     * @param creationTime TODO
      */
     public void setCreationTime(Date creationTime) {
         this.creationTime = creationTime;
@@ -381,6 +410,8 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * Gets the creation time of the movie.
+     *
+     * @return TODO
      */
     public Date getCreationTime() {
         return creationTime;
@@ -388,6 +419,8 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * Sets the modification time of the movie.
+     *
+     * @param modificationTime TODO
      */
     public void setModificationTime(Date modificationTime) {
         this.modificationTime = modificationTime;
@@ -395,6 +428,8 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * Gets the modification time of the movie.
+     *
+     * @return TODO
      */
     public Date getModificationTime() {
         return modificationTime;
@@ -403,6 +438,8 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     /**
      * Gets the preferred rate at which to play this movie. A value of 1.0
      * indicates normal rate.
+     *
+     * @return TODO
      */
     public double getPreferredRate() {
         return preferredRate;
@@ -411,6 +448,8 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     /**
      * Sets the preferred rate at which to play this movie. A value of 1.0
      * indicates normal rate.
+     *
+     * @param preferredRate TODO
      */
     public void setPreferredRate(double preferredRate) {
         this.preferredRate = preferredRate;
@@ -419,6 +458,8 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     /**
      * Gets the preferred volume of this movie’s sound. A value of 1.0 indicates
      * full volume.
+     *
+     * @return TODO
      */
     public double getPreferredVolume() {
         return preferredVolume;
@@ -427,6 +468,8 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     /**
      * Sets the preferred volume of this movie’s sound. A value of 1.0 indicates
      * full volume.
+     *
+     * @param preferredVolume TODO
      */
     public void setPreferredVolume(double preferredVolume) {
         this.preferredVolume = preferredVolume;
@@ -434,6 +477,8 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * Gets the time value for current time position within the movie.
+     *
+     * @return TODO
      */
     public long getCurrentTime() {
         return currentTime;
@@ -441,6 +486,8 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * Sets the time value for current time position within the movie.
+     *
+     * @param currentTime TODO
      */
     public void setCurrentTime(long currentTime) {
         this.currentTime = currentTime;
@@ -448,6 +495,8 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * Gets the time value of the time of the movie poster.
+     *
+     * @return TODO
      */
     public long getPosterTime() {
         return posterTime;
@@ -455,6 +504,8 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * Sets the time value of the time of the movie poster.
+     *
+     * @param posterTime TODO
      */
     public void setPosterTime(long posterTime) {
         this.posterTime = posterTime;
@@ -462,6 +513,8 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * Gets the duration of the movie preview in movie time scale units.
+     *
+     * @return TODO
      */
     public long getPreviewDuration() {
         return previewDuration;
@@ -469,6 +522,8 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * Gets the duration of the movie preview in movie time scale units.
+     *
+     * @param previewDuration TODO
      */
     public void setPreviewDuration(long previewDuration) {
         this.previewDuration = previewDuration;
@@ -476,6 +531,8 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * Gets the time value in the movie at which the preview begins.
+     *
+     * @return TODO
      */
     public long getPreviewTime() {
         return previewTime;
@@ -483,6 +540,8 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * The time value in the movie at which the preview begins.
+     *
+     * @param previewTime TODO
      */
     public void setPreviewTime(long previewTime) {
         this.previewTime = previewTime;
@@ -490,6 +549,8 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * The duration of the current selection in movie time scale units.
+     *
+     * @return TODO
      */
     public long getSelectionDuration() {
         return selectionDuration;
@@ -497,6 +558,8 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * The duration of the current selection in movie time scale units.
+     *
+     * @param selectionDuration TODO
      */
     public void setSelectionDuration(long selectionDuration) {
         this.selectionDuration = selectionDuration;
@@ -504,6 +567,8 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * The time value for the start time of the current selection.
+     *
+     * @return TODO
      */
     public long getSelectionTime() {
         return selectionTime;
@@ -511,6 +576,8 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * The time value for the start time of the current selection.
+     *
+     * @param selectionTime TODO
      */
     public void setSelectionTime(long selectionTime) {
         this.selectionTime = selectionTime;
@@ -518,14 +585,14 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * Sets the transformation matrix of the entire movie.
-     * <pre>
+     * 
      * {a, b, u,
      *  c, d, v,
      *  tx,ty,w} // X- and Y-Translation
      *
      *           [ a  b  u
      * [x y 1] *   c  d  v   = [x' y' 1]
-     * </pre> tx ty w ]
+     *  tx ty w ]
      *
      *
      * @param matrix The transformation matrix.
@@ -549,14 +616,14 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * Sets the transformation matrix of the specified track.
-     * <pre>
+     * 
      * {a, b, u,
      *  c, d, v,
      *  tx,ty,w} // X- and Y-Translation
      *
      *           [ a  b  u
      * [x y 1] *   c  d  v   = [x' y' 1]
-     * </pre> tx ty w ]
+     *  tx ty w ]
      *
      *
      * @param track The track number.
@@ -581,8 +648,11 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     }
 
     /**
-     * Sets the state of the QuickTimeWriter to started. <p> If the state is
-     * changed by this method, the prolog is written.
+     * Sets the state of the QuickTimeWriter to started.
+     * 
+     * If the state is changed by this method, the prolog is written.
+     *
+     * @throws java.io.IOException TODO
      */
     protected void ensureStarted() throws IOException {
         ensureOpen();
@@ -597,16 +667,15 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     }
 
     /**
-     * Writes an already encoded sample from a file into a track. <p> This
-     * method does not inspect the contents of the samples. The contents has to
-     * match the format and dimensions of the media in this track.
+     * Writes an already encoded sample from a file into a track.
+     * 
+     * This method does not inspect the contents of the samples. The contents
+     * has to match the format and dimensions of the media in this track.
      *
      * @param track The track index.
      * @param file The file which holds the encoded data sample.
      * @param duration The duration of the sample in media time scale units.
      * @param isSync whether the sample is a sync sample (key frame).
-     *
-     * @throws IndexOutofBoundsException if the track index is out of bounds.
      * @throws IllegalArgumentException if the track does not support video, if
      * the duration is less than 1, or if the dimension of the frame does not
      * match the dimension of the video.
@@ -620,7 +689,8 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     }
 
     /**
-     * Writes an already encoded sample from an input stream into a track. <p>
+     * Writes an already encoded sample from an input stream into a track.
+     * 
      * This method does not inspect the contents of the samples. The contents
      * has to match the format and dimensions of the media in this track.
      *
@@ -649,9 +719,10 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     }
 
     /**
-     * Writes an already encoded sample from a byte array into a track. <p> This
-     * method does not inspect the contents of the samples. The contents has to
-     * match the format and dimensions of the media in this track.
+     * Writes an already encoded sample from a byte array into a track.
+     * 
+     * This method does not inspect the contents of the samples. The contents
+     * has to match the format and dimensions of the media in this track.
      *
      * @param track The track index.
      * @param data The encoded sample data.
@@ -666,9 +737,10 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     }
 
     /**
-     * Writes an already encoded sample from a byte array into a track. <p> This
-     * method does not inspect the contents of the samples. The contents has to
-     * match the format and dimensions of the media in this track.
+     * Writes an already encoded sample from a byte array into a track.
+     * 
+     * This method does not inspect the contents of the samples. The contents
+     * has to match the format and dimensions of the media in this track.
      *
      * @param track The track index.
      * @param data The encoded sample data.
@@ -695,9 +767,10 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     }
 
     /**
-     * Writes multiple sync samples from a byte array into a track. <p> This
-     * method does not inspect the contents of the samples. The contents has to
-     * match the format and dimensions of the media in this track.
+     * Writes multiple sync samples from a byte array into a track.
+     * 
+     * This method does not inspect the contents of the samples. The contents
+     * has to match the format and dimensions of the media in this track.
      *
      * @param track The track index.
      * @param sampleCount The number of samples.
@@ -705,6 +778,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
      * by sampleCount.
      * @param sampleDuration The duration of a sample. All samples must have the
      * same duration.
+     * @param isSync TODO
      *
      * @throws IllegalArgumentException if {@code sampleDuration} is less than 1
      * or if the length of {@code data} is not dividable by {@code sampleCount}.
@@ -715,9 +789,10 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     }
 
     /**
-     * Writes multiple sync samples from a byte array into a track. <p> This
-     * method does not inspect the contents of the samples. The contents has to
-     * match the format and dimensions of the media in this track.
+     * Writes multiple sync samples from a byte array into a track.
+     * 
+     * This method does not inspect the contents of the samples. The contents
+     * has to match the format and dimensions of the media in this track.
      *
      * @param track The track index.
      * @param sampleCount The number of samples.
@@ -736,9 +811,10 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     }
 
     /**
-     * Writes multiple samples from a byte array into a track. <p> This method
-     * does not inspect the contents of the data. The contents has to match the
-     * format and dimensions of the media in this track.
+     * Writes multiple samples from a byte array into a track.
+     * 
+     * This method does not inspect the contents of the data. The contents has
+     * to match the format and dimensions of the media in this track.
      *
      * @param track The track index.
      * @param sampleCount The number of samples.
@@ -772,7 +848,6 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         OutputStream mdatOut = mdatAtom.getOutputStream();
         mdatOut.write(data, off, len);
 
-
         int sampleLength = len / sampleCount;
         Sample first = new Sample(sampleDuration, offset, sampleLength);
         Sample last = new Sample(sampleDuration, offset + sampleLength * (sampleCount - 1), sampleLength);
@@ -781,11 +856,14 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * Returns true if the limit for media samples has been reached. If this
-     * limit is reached, no more samples should be added to the movie. <p>
+     * limit is reached, no more samples should be added to the movie.
+     * 
      * QuickTime files can be up to 64 TB long, but there are other values that
      * may overflow before this size is reached. This method returns true when
      * the files size exceeds 2^60 or when the media duration value of a track
      * exceeds 2^61.
+     *
+     * @return TODO
      */
     public boolean isDataLimitReached() {
         try {
@@ -795,7 +873,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
             }
 
             return getRelativeStreamPosition() > (1L << 61) //
-                    || maxMediaDuration > 1L << 61;
+                  || maxMediaDuration > 1L << 61;
         } catch (IOException ex) {
             return true;
         }
@@ -848,6 +926,8 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * Check to make sure that this stream has not been closed
+     *
+     * @throws java.io.IOException TODO
      */
     protected void ensureOpen() throws IOException {
         if (state == CLOSED) {
@@ -983,7 +1063,6 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         // to map points from one coordinate space into another. See “Matrices”
         // for a discussion of how display matrices are used in QuickTime:
         // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap4/chapter_5_section_4.html#//apple_ref/doc/uid/TP40000939-CH206-18737
-
         d.writeUInt(previewTime); // previewTime
         // The time value in the movie at which the preview begins.
 
@@ -1150,7 +1229,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         trakAtom.add(edtsAtom);
 
         /* Edit List atom ------- */
-        /*
+ /*
          typedef struct {
          byte version;
          byte[3] flags;
@@ -1318,13 +1397,13 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         /* Video or Audio media information atom -------- */
         switch (t.mediaType) {
             case VIDEO:
-        writeVideoMediaInformationHeaderAtom(trackIndex,minfAtom);
+                writeVideoMediaInformationHeaderAtom(trackIndex, minfAtom);
                 break;
             case AUDIO:
-        writeSoundMediaInformationHeaderAtom(trackIndex,minfAtom);
+                writeSoundMediaInformationHeaderAtom(trackIndex, minfAtom);
                 break;
             default:
-                throw new UnsupportedOperationException("Media type "+t.mediaType+" not supported yet.");
+                throw new UnsupportedOperationException("Media type " + t.mediaType + " not supported yet.");
         }
 
 
@@ -1456,14 +1535,15 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         /* Sample Table atom ========= */
         writeSampleTableAtoms(trackIndex, minfAtom);
     }
-        protected void writeVideoMediaInformationHeaderAtom(int trackIndex, CompositeAtom minfAtom) throws IOException {
-            DataAtom leaf;
-            DataAtomOutputStream d;
 
-            /* Video media information atom -------- */
-            leaf = new DataAtom("vmhd");
-            minfAtom.add(leaf);
-            /*typedef struct {
+    protected void writeVideoMediaInformationHeaderAtom(int trackIndex, CompositeAtom minfAtom) throws IOException {
+        DataAtom leaf;
+        DataAtomOutputStream d;
+
+        /* Video media information atom -------- */
+        leaf = new DataAtom("vmhd");
+        minfAtom.add(leaf);
+        /*typedef struct {
              byte version;
              byte flag1;
              byte flag2;
@@ -1471,73 +1551,74 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
              short graphicsMode;
              ushort[3] opcolor;
              } videoMediaInformationHeaderAtom;*/
-            d = leaf.getOutputStream();
-            d.write(0); // version
-            // One byte that specifies the version of this header atom.
+        d = leaf.getOutputStream();
+        d.write(0); // version
+        // One byte that specifies the version of this header atom.
 
-            d.write(0); // flag[0]
-            d.write(0); // flag[1]
-            d.write(0x1); // flag[2]
-            // Three bytes of space for media header flags.
-            // This is a compatibility flag that allows QuickTime to distinguish
-            // between movies created with QuickTime 1.0 and newer movies. You
-            // should always set this flag to 1, unless you are creating a movie
-            // intended for playback using version 1.0 of QuickTime. This flag’s
-            // value is 0x0001.
+        d.write(0); // flag[0]
+        d.write(0); // flag[1]
+        d.write(0x1); // flag[2]
+        // Three bytes of space for media header flags.
+        // This is a compatibility flag that allows QuickTime to distinguish
+        // between movies created with QuickTime 1.0 and newer movies. You
+        // should always set this flag to 1, unless you are creating a movie
+        // intended for playback using version 1.0 of QuickTime. This flag’s
+        // value is 0x0001.
 
-            d.writeShort(0x40); // graphicsMode (0x40 = DitherCopy)
-            // A 16-bit integer that specifies the transfer mode. The transfer mode
-            // specifies which Boolean operation QuickDraw should perform when
-            // drawing or transferring an image from one location to another.
-            // See “Graphics Modes” for a list of graphics modes supported by
-            // QuickTime:
-            // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap4/chapter_5_section_5.html#//apple_ref/doc/uid/TP40000939-CH206-18741
+        d.writeShort(0x40); // graphicsMode (0x40 = DitherCopy)
+        // A 16-bit integer that specifies the transfer mode. The transfer mode
+        // specifies which Boolean operation QuickDraw should perform when
+        // drawing or transferring an image from one location to another.
+        // See “Graphics Modes” for a list of graphics modes supported by
+        // QuickTime:
+        // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap4/chapter_5_section_5.html#//apple_ref/doc/uid/TP40000939-CH206-18741
 
-            d.writeUShort(0); // opcolor[0]
-            d.writeUShort(0); // opcolor[1]
-            d.writeUShort(0); // opcolor[2]
-            // Three 16-bit values that specify the red, green, and blue colors for
-            // the transfer mode operation indicated in the graphics mode field.
-        }
-        protected void writeSoundMediaInformationHeaderAtom(int trackIndex,CompositeAtom minfAtom) throws IOException {
-            DataAtom leaf;
-            DataAtomOutputStream d;
+        d.writeUShort(0); // opcolor[0]
+        d.writeUShort(0); // opcolor[1]
+        d.writeUShort(0); // opcolor[2]
+        // Three 16-bit values that specify the red, green, and blue colors for
+        // the transfer mode operation indicated in the graphics mode field.
+    }
 
-            /* Sound media information header atom -------- */
-            leaf = new DataAtom("smhd");
-            minfAtom.add(leaf);
-            /*typedef struct {
+    protected void writeSoundMediaInformationHeaderAtom(int trackIndex, CompositeAtom minfAtom) throws IOException {
+        DataAtom leaf;
+        DataAtomOutputStream d;
+
+        /* Sound media information header atom -------- */
+        leaf = new DataAtom("smhd");
+        minfAtom.add(leaf);
+        /*typedef struct {
              ubyte version;
              ubyte[3] flags;
              short balance;
              short reserved;
              } soundMediaInformationHeaderAtom;*/
-            d = leaf.getOutputStream();
-            d.write(0); // version
-            // A 1-byte specification of the version of this sound media information header atom.
+        d = leaf.getOutputStream();
+        d.write(0); // version
+        // A 1-byte specification of the version of this sound media information header atom.
 
-            d.write(0); // flag[0]
-            d.write(0); // flag[1]
-            d.write(0); // flag[2]
-            // A 3-byte space for sound media information flags. Set this field to 0.
+        d.write(0); // flag[0]
+        d.write(0); // flag[1]
+        d.write(0); // flag[2]
+        // A 3-byte space for sound media information flags. Set this field to 0.
 
-            d.writeFixed8D8(0); // balance
-            // A 16-bit integer that specifies the sound balance of this
-            // sound media. Sound balance is the setting that controls
-            // the mix of sound between the two speakers of a computer.
-            // This field is normally set to 0.
-            // Balance values are represented as 16-bit, fixed-point
-            // numbers that range from -1.0 to +1.0. The high-order 8
-            // bits contain the integer portion of the value; the
-            // low-order 8 bits contain the fractional part. Negative
-            // values weight the balance toward the left speaker;
-            // positive values emphasize the right channel. Setting the
-            // balance to 0 corresponds to a neutral setting.
+        d.writeFixed8D8(0); // balance
+        // A 16-bit integer that specifies the sound balance of this
+        // sound media. Sound balance is the setting that controls
+        // the mix of sound between the two speakers of a computer.
+        // This field is normally set to 0.
+        // Balance values are represented as 16-bit, fixed-point
+        // numbers that range from -1.0 to +1.0. The high-order 8
+        // bits contain the integer portion of the value; the
+        // low-order 8 bits contain the fractional part. Negative
+        // values weight the balance toward the left speaker;
+        // positive values emphasize the right channel. Setting the
+        // balance to 0 corresponds to a neutral setting.
 
-            d.writeUShort(0); // reserved
-            // Reserved for use by Apple. Set this field to 0.
+        d.writeUShort(0); // reserved
+        // Reserved for use by Apple. Set this field to 0.
 
-        }
+    }
 
     protected void writeSampleTableAtoms(int trackIndex, CompositeAtom minfAtom) throws IOException {
         Track t = tracks.get(trackIndex);
@@ -1628,7 +1709,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         long previousSampleDescriptionId = -1;
         for (Chunk c : t.chunks) {
             if (c.sampleCount != previousSampleCount//
-                    || c.sampleDescriptionId != previousSampleDescriptionId) {
+                  || c.sampleDescriptionId != previousSampleDescriptionId) {
                 previousSampleCount = c.sampleCount;
                 previousSampleDescriptionId = c.sampleDescriptionId;
                 entryCount++;
@@ -1643,7 +1724,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         previousSampleDescriptionId = -1;
         for (Chunk c : t.chunks) {
             if (c.sampleCount != previousSampleCount//
-                    || c.sampleDescriptionId != previousSampleDescriptionId) {
+                  || c.sampleDescriptionId != previousSampleDescriptionId) {
                 previousSampleCount = c.sampleCount;
                 previousSampleDescriptionId = c.sampleDescriptionId;
 
@@ -1731,10 +1812,10 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         // A 3-byte space for time-to-sample flags. Set this field to 0.
 
         int sampleUnit = t.mediaType == AUDIO //
-        
-                && ((AudioTrack) t).soundCompressionId != -2 //
-                ? ((AudioTrack) t).soundSampleSize / 8 * ((AudioTrack) t).soundNumberOfChannels//
-                : 1;
+
+              && ((AudioTrack) t).soundCompressionId != -2 //
+                    ? ((AudioTrack) t).soundSampleSize / 8 * ((AudioTrack) t).soundNumberOfChannels//
+                    : 1;
         if (t.sampleSizes.size() == 1) {
             d.writeUInt(t.sampleSizes.get(0).getSampleLength() / sampleUnit); // sample size
             // A 32-bit integer specifying the sample size. If all the samples are
@@ -1752,7 +1833,6 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
             // the same size, this field contains that size value. If this field is
             // set to 0, then the samples have different sizes, and those sizes are
             // stored in the sample size table.
-
 
             long count = 0;
             for (SampleSizeGroup s : t.sampleSizes) {
@@ -1856,12 +1936,14 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     /**
      * Writes a version of the movie which is optimized for the web into the
-     * specified output file. <p> This method finishes the movie and then copies
-     * its content into the specified file. The web-optimized file starts with
-     * the movie header.
+     * specified output file.
+     * 
+     * This method finishes the movie and then copies its content into the
+     * specified file. The web-optimized file starts with the movie header.
      *
      * @param outputFile The output file
      * @param compressHeader Whether the movie header shall be compressed.
+     * @throws java.io.IOException TODO
      */
     public void toWebOptimizedMovie(File outputFile, boolean compressHeader) throws IOException {
         finish();
@@ -1940,7 +2022,6 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
                 writeProlog();
                 writeEpilog();
             }
-
 
             byte[] buf = new byte[4096];
             originalOut.seek((originalMdatOffset));

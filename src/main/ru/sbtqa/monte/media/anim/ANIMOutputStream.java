@@ -19,7 +19,7 @@ import javax.imageio.stream.FileImageOutputStream;
 import static java.lang.Math.*;
 /**
  * {@code ANIMOutputStream}.
- * <p>
+ * 
  * Reference:<br>
  * Commodore-Amiga, Inc. (1991) Amiga ROM Kernel Reference Manual. Devices.
  * Third Edition. Reading: Addison-Wesley.
@@ -116,13 +116,13 @@ public class ANIMOutputStream {
     }
 
     /** Sets the Commodore Amiga Graphics Mode. The default value is 0.
-     * <p>
+     * 
      * The graphics mode is an or-combination of the monitor ID and the mode ID.
-     * <p>
+     * 
      * Example:
-     * <pre>
+     * 
      * setCAMG(PAL_MONITOR_ID|HAM_MODE);
-     * </pre>
+     * 
      * 
      * Also sets the Jiffies for the Graphics Mode.
      */
@@ -148,7 +148,7 @@ public class ANIMOutputStream {
 
     /**
      * Sets the state of the QuickTimeWriter to started.
-     * <p>
+     * 
      * If the state is changed by this method, the prolog is
      * written.
      */
@@ -276,7 +276,7 @@ public class ANIMOutputStream {
     /**
      * Writes the bitmap header (ILBM BMHD).
      *
-     * <pre>
+     * 
      * typedef UBYTE Masking; // Choice of masking technique
      *
      * #define mskNone                 0
@@ -302,7 +302,7 @@ public class ANIMOutputStream {
      *   UBYTE       xAspect, yAspect; // pixel aspect, a ratio width : height
      *   UWORD       pageWidth, pageHeight; // source "page" size in pixels
      *   } BitmapHeader;
-     * </pre>
+     * 
      */
     private void writeBMHD(IFFOutputStream out, BitmapImage img) throws IOException {
         AmigaDisplayInfo info=AmigaDisplayInfo.getInfo(camg);
@@ -414,11 +414,11 @@ public class ANIMOutputStream {
     /**
      * Writes a delta frame (ILBM DLTA) with "byte vertical" (method 5).
      *
-     * <p>
+     * 
      * The DLTA chunk for method 5 has 16 long pointers at the start.
      * The first 8 are pointers to the start of the data for each of the
      * bitplanes (up to a max of 8 planes). The second set of 8 are not used.
-     * <p>
+     * 
      * Compression/decompression is performed on a plane-by-plane basis.
      * Each column is compressed separately. A 320x200 bitplane would have 40
      * columns of 200 bytes each. Each column starts with an op-count followed
@@ -429,23 +429,23 @@ public class ANIMOutputStream {
      * aware of it.In fact, one could get fancy and have some bitplanes share
      * lists while others have different lists, or no lists (the problem in
      * these schemes lie in the generation, not in the playback).
-     * <p>
+     * 
      * The ops are of three classes, and followed by a varying amount of data
      * depending on which class:
-     * <ol>
-     * <li>Skip ops - this is a byte whith the hi bit clear that says how
-     * many rows to move the "dest" pointer forward, ie to skip. It is non-zero.</li>
-     * <li>Uniq ops - this is a byte with the hi bit set. The hi bit is masked
+     * 
+     * Skip ops - this is a byte whith the hi bit clear that says how
+     * many rows to move the "dest" pointer forward, ie to skip. It is non-zero.
+     * Uniq ops - this is a byte with the hi bit set. The hi bit is masked
      * down and the remainder is a count of the number of bytes of data to copy
-     * literally. It's followed by the data to copy.</li>
-     * <li>Same ops - this is a 0 byte followed by a count byte, followed by a
-     * byte value to repeat count times.</li>
-     * </ol>
-     * <p>
+     * literally. It's followed by the data to copy.
+     * Same ops - this is a 0 byte followed by a count byte, followed by a
+     * byte value to repeat count times.
+     * 
+     * 
      * Do bear in mind that the data is compressed vertically rather than
      * horizontally, so to get to the next byte in the destination we add the
      * number of bytes per row instead of one.
-     * <p>
+     * 
      * Reference:<br>
      * Commodore-Amiga, Inc. (1991) Amiga ROM Kernel Reference Manual. Devices.
      * Third Edition. Reading: Addison-Wesley.
@@ -524,13 +524,13 @@ public class ANIMOutputStream {
     /**
      * Encodes a column of an image with the "byte vertical" method (method 5).
      *
-     * @param out
-     * @param data
-     * @param prev
-     * @param offset
-     * @param length
-     * @param step
-     * @throws IOException
+     * @param out TODO
+     * @param data TODO
+     * @param prev TODO
+     * @param offset TODO
+     * @param length TODO
+     * @param step TODO
+     * @throws IOException TODO
      */
     private void writeByteVertical(SeekableByteArrayOutputStream out, byte[] data, byte[] prev, int offset, int length, int step) throws IOException {
         int opCount = 0;
@@ -654,7 +654,7 @@ public class ANIMOutputStream {
     /**
      * Writes the anim header (ILBM ANHD).
      *
-     * <pre>
+     * 
      * typedef UBYTE Operation; // Choice of compression algorithm.
      *
      * #define opDirect        0  // set directly (normal ILBM BODY)
@@ -721,7 +721,7 @@ public class ANIMOutputStream {
      * UBYTE        pad[16];  // This is a pad for future use for future
      *                        // compression modes.
      * } AnimHeader;
-     * </pre>
+     * 
      */
     private void writeANHD(IFFOutputStream out, int width, int height, int compressionMode, int absTime, int relTime) throws IOException {
         out.pushDataChunk("ANHD");

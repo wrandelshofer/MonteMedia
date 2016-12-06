@@ -86,7 +86,7 @@ public class DataAtomOutputStream extends FilterOutputStream {
      * <code>b</code>) to the underlying output stream. If no exception 
      * is thrown, the counter <code>written</code> is incremented by 
      * <code>1</code>.
-     * <p>
+     * 
      * Implements the <code>write</code> method of <code>OutputStream</code>.
      *
      * @param      b   the <code>byte</code> to be written.
@@ -120,7 +120,7 @@ public class DataAtomOutputStream extends FilterOutputStream {
      * Writes an unsigned 32 bit integer value.
      * 
      * @param v The value
-     * @throws java.io.IOException
+     * @throws java.io.IOException TODO
      */
     public void writeUInt(long v) throws IOException {
         out.write((int) ((v >>> 24) & 0xff));
@@ -134,7 +134,7 @@ public class DataAtomOutputStream extends FilterOutputStream {
      * Writes a signed 16 bit integer value.
      * 
      * @param v The value
-     * @throws java.io.IOException
+     * @throws java.io.IOException TODO
      */
     public void writeShort(int v) throws IOException {
         out.write( (v >> 8) & 0xff);
@@ -169,8 +169,8 @@ public class DataAtomOutputStream extends FilterOutputStream {
 
     /**
      * Writes a 32-bit Mac timestamp (seconds since 1902).
-     * @param date
-     * @throws java.io.IOException
+     * @param date TODO
+     * @throws java.io.IOException TODO
      */
     public void writeMacTimestamp(Date date) throws IOException {
         long millis = date.getTime();
@@ -242,8 +242,8 @@ public class DataAtomOutputStream extends FilterOutputStream {
     /**
      * Writes a Pascal String.
      * 
-     * @param s
-     * @throws java.io.IOException
+     * @param s TODO
+     * @throws java.io.IOException TODO
      */
     public void writePString(String s) throws IOException {
         if (s.length() > 0xffff) {
@@ -264,9 +264,9 @@ public class DataAtomOutputStream extends FilterOutputStream {
     /**
      * Writes a Pascal String padded to the specified fixed size in bytes
      *
-     * @param s
+     * @param s TODO
      * @param length the fixed size in bytes
-     * @throws java.io.IOException
+     * @throws java.io.IOException TODO
      */
     public void writePString(String s, int length) throws IOException {
         if (s.length() > length) {

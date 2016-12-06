@@ -13,11 +13,12 @@ import ru.sbtqa.monte.media.math.Rational;
  * {@code AVIMovie}.
  *
  * FIXME - Implement me.
- * 
+ *
  * @author Werner Randelshofer
  * @version $Id$
  */
 public class AVIMovie extends AbstractMovie {
+
     private final static long serialVersionUID = 1L;
 
     @Override

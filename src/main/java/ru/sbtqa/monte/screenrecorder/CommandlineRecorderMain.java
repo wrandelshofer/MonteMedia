@@ -17,17 +17,18 @@ public class CommandlineRecorderMain {
 
     /**
      * FIXME - Add commandline arguments for recording time.
-     * 
+     *
      * @param args the command line arguments
+     * @throws java.lang.Exception TODO
      */
     public static void main(String[] args) throws Exception {
         GraphicsConfiguration gc = GraphicsEnvironment//
-                .getLocalGraphicsEnvironment()//
-                .getDefaultScreenDevice()//
-                .getDefaultConfiguration();
+              .getLocalGraphicsEnvironment()//
+              .getDefaultScreenDevice()//
+              .getDefaultConfiguration();
         // FIXME - Implement me
         ScreenRecorder sr = new ScreenRecorder(
-                gc/*,
+              gc/*,
                 "QuickTime", 24,
                 ScreenRecorder.CursorEnum.BLACK,
                 30, 15,

@@ -22,11 +22,13 @@ public class SEQReader {
     private SEQMovieTrack track;
     // ---- BEGIN Decoder variables ----
     /**
-     * Index of the frame which has been delta
-     * decoded in its even or odd bitmap buffer.
+     * Index of the frame which has been delta decoded in its even or odd bitmap
+     * buffer.
      */
     private int fetchedEven = -1, fetchedOdd = -1;
-    /** Two bitmaps are needed for double buffering. */
+    /**
+     * Two bitmaps are needed for double buffering.
+     */
     private BitmapImage bitmapEven, bitmapOdd;
     // ---- END Decoder variables ----
 
@@ -66,13 +68,18 @@ public class SEQReader {
 
     public BitmapImage createCompatibleBitmap() {
         return new BitmapImage(
-                track.getWidth(),
-                track.getHeight(),
-                track.getNbPlanes() + (track.getMasking() == SEQMovieTrack.MSK_HAS_MASK ? 1 : 0),
-                track.getFrame(0).getColorModel());
+              track.getWidth(),
+              track.getHeight(),
+              track.getNbPlanes() + (track.getMasking() == SEQMovieTrack.MSK_HAS_MASK ? 1 : 0),
+              track.getFrame(0).getColorModel());
     }
 
-    /** Reads a frame into the supplied image. */
+    /**
+     * Reads a frame into the supplied image.
+     *
+     * @param index TODO
+     * @param image TODO
+     */
     public void readFrame(int index, BitmapImage image) {
         BitmapImage fetched = fetchFrame(index);
 
@@ -85,7 +92,12 @@ public class SEQReader {
         return track.getJiffies();
     }
 
-    /** Reads the duration of the specified frame. */
+    /**
+     * Reads the duration of the specified frame.
+     *
+     * @param index TODO
+     * @return TODO
+     */
     public int getDuration(int index) {
         return (int) track.getFrame(index).getRelTime();
     }
@@ -112,12 +124,10 @@ public class SEQReader {
                 frame = track.getFrame(fetched);
                 frame.decode(bitmap, track);
                 return bitmap;
-            } else {
-                if (fetched > index) {
-                    frame = track.getFrame(0);
-                    frame.decode(bitmap, track);
-                    fetched = 0;
-                }
+            } else if (fetched > index) {
+                frame = track.getFrame(0);
+                frame.decode(bitmap, track);
+                fetched = 0;
             }
         } else {
             // odd?
@@ -131,14 +141,12 @@ public class SEQReader {
                 frame = track.getFrame(fetched);
                 frame.decode(bitmap, track);
                 return bitmap;
-            } else {
-                if (fetched > index) {
-                    frame = track.getFrame(0);
-                    frame.decode(bitmap, track);
-                    frame = track.getFrame(1);
-                    frame.decode(bitmap, track);
-                    fetched = 1;
-                }
+            } else if (fetched > index) {
+                frame = track.getFrame(0);
+                frame.decode(bitmap, track);
+                frame = track.getFrame(1);
+                frame.decode(bitmap, track);
+                fetched = 1;
             }
         }
         for (int i = fetched + interleave; i <= index; i += interleave) {
@@ -167,7 +175,7 @@ public class SEQReader {
 
             ((IndexColorModel) f.getColorModel()).getRGBs(colors);
             if (Arrays.equals(bmp.getBitmap(), previousBmp)
-                    && Arrays.equals(colors, previousColors)) {
+                  && Arrays.equals(colors, previousColors)) {
                 previousF.setRelTime(previousF.getRelTime() + f.getRelTime());
                 track.removeFrame(i);
                 --n;

@@ -21,9 +21,11 @@ import ru.sbtqa.monte.media.io.ByteArrayImageOutputStream;
 
 /**
  * {@code PCMAudioCodec} performs sign conversion, endian conversion and
- * quantization conversion of PCM audio data. <p> Does not perform sampling rate
- * conversion or channel conversion. <p> FIXME Maybe create separate subclasses
- * for AVI PCM and QuickTime PCM.
+ * quantization conversion of PCM audio data.
+ * 
+ * Does not perform sampling rate conversion or channel conversion.
+ * 
+ * FIXME Maybe create separate subclasses for AVI PCM and QuickTime PCM.
  *
  * @author Werner Randelshofer
  * @version $Id: PCMAudioCodec.java 364 2016-11-09 19:54:25Z werner $
@@ -34,15 +36,15 @@ public class PCMAudioCodec extends AbstractAudioCodec {
 
     public PCMAudioCodec() {
         super(new Format[]{
-                    new Format(MediaTypeKey, AUDIO,//
-                    EncodingKey, ENCODING_PCM_SIGNED,//
-                    MimeTypeKey, MIME_JAVA,//
-                    SignedKey, true),
-                    new Format(MediaTypeKey, AUDIO,//
-                    EncodingKey, ENCODING_PCM_UNSIGNED,//
-                    MimeTypeKey, MIME_JAVA,//
-                    SignedKey, false),//
-                });
+            new Format(MediaTypeKey, AUDIO,//
+            EncodingKey, ENCODING_PCM_SIGNED,//
+            MimeTypeKey, MIME_JAVA,//
+            SignedKey, true),
+            new Format(MediaTypeKey, AUDIO,//
+            EncodingKey, ENCODING_PCM_UNSIGNED,//
+            MimeTypeKey, MIME_JAVA,//
+            SignedKey, false),//
+        });
         name = "PCM Codec";
     }
 
@@ -75,16 +77,14 @@ public class PCMAudioCodec extends AbstractAudioCodec {
         }
         String inEnc = inFormat.get(EncodingKey);
         String outEnc = outFormat.get(EncodingKey);
-        
-        boolean fixSilenceBug=inFormat.get(SilenceBugKey,false);
-        
+
+        boolean fixSilenceBug = inFormat.get(SilenceBugKey, false);
+
         /*
          if (!supportedEncodings.contains(inEnc)
          || !supportedEncodings.contains(outEnc)) {
          throw new UnsupportedOperationException("Unsupported encoding. in:" + inFormat + ", out:" + outFormat);
          }*/
-
-
         byte[] inData = (byte[]) in.data;
         byte[] outData = (out.data instanceof byte[]) ? (byte[]) out.data : new byte[inData.length];
         if (outData.length < inData.length * outFormat.get(FrameSizeKey) / inFormat.get(FrameSizeKey)) {
@@ -166,6 +166,10 @@ public class PCMAudioCodec extends AbstractAudioCodec {
     /**
      * 16-bit audio data in and out. No sign conversion. Endian conversion is
      * performed by the stream objects.
+     *
+     * @param in TODO
+     * @param out TODO
+     * @throws java.io.IOException TODO
      */
     protected void write16To16(ImageInputStream in, ImageOutputStream out) throws IOException {
         try {
@@ -180,6 +184,10 @@ public class PCMAudioCodec extends AbstractAudioCodec {
     /**
      * 16-bit audio data unsigned in and signed out. Endian conversion is
      * performed by the stream objects.
+     *
+     * @param in TODO
+     * @param out TODO
+     * @throws java.io.IOException TODO
      */
     protected void write16UTo16S(ImageInputStream in, ImageOutputStream out) throws IOException {
         try {
@@ -194,6 +202,10 @@ public class PCMAudioCodec extends AbstractAudioCodec {
     /**
      * 16-bit audio data signed in and unsigned out. Endian conversion is
      * performed by the stream objects.
+     *
+     * @param in TODO
+     * @param out TODO
+     * @throws java.io.IOException TODO
      */
     protected void write16STo16U(ImageInputStream in, ImageOutputStream out) throws IOException {
         try {
@@ -208,6 +220,10 @@ public class PCMAudioCodec extends AbstractAudioCodec {
     /**
      * Signed 16-bit audio data in, unsigned 8-bit out. Endian conversion is
      * performed by the stream objects.
+     *
+     * @param in TODO
+     * @param out TODO
+     * @throws java.io.IOException TODO
      */
     protected void write16STo8U(ImageInputStream in, ImageOutputStream out) throws IOException {
         try {
@@ -221,6 +237,10 @@ public class PCMAudioCodec extends AbstractAudioCodec {
 
     /**
      * 8-bit audio data in and out. No sign conversion.
+     *
+     * @param in TODO
+     * @param out TODO
+     * @throws java.io.IOException TODO
      */
     protected void write8To8(ImageInputStream in, ImageOutputStream out) throws IOException {
         try {
@@ -239,6 +259,11 @@ public class PCMAudioCodec extends AbstractAudioCodec {
 
     /**
      * Unsigned 8-bit audio data in, signed out.
+     *
+     * @param in TODO
+     * @param fixSilenceBug TODO
+     * @param out TODO
+     * @throws java.io.IOException TODO
      */
     protected void write8UTo8S(ImageInputStream in, ImageOutputStream out, boolean fixSilenceBug) throws IOException {
         try {
@@ -269,6 +294,11 @@ public class PCMAudioCodec extends AbstractAudioCodec {
 
     /**
      * Signed 8-bit audio data in, unsigned out.
+     *
+     * @param in TODO
+     * @param fixSilenceBug TODO
+     * @param out TODO
+     * @throws java.io.IOException TODO
      */
     protected void write8STo8U(ImageInputStream in, ImageOutputStream out, boolean fixSilenceBug) throws IOException {
         try {
@@ -282,7 +312,7 @@ public class PCMAudioCodec extends AbstractAudioCodec {
                     for (int i = 0; i < count; i++) {
                         // FIXME - For some reason, the Java sound system records
                         //         silence as -128 instead of 0.
-                        buf[i] = (byte) (buf[i] == -128 ? -UNSIGNED_BASE :buf[i] + UNSIGNED_BASE);
+                        buf[i] = (byte) (buf[i] == -128 ? -UNSIGNED_BASE : buf[i] + UNSIGNED_BASE);
                     }
                 } else {
                     for (int i = 0; i < count; i++) {
@@ -299,6 +329,11 @@ public class PCMAudioCodec extends AbstractAudioCodec {
 
     /**
      * Signed 8-bit audio data in, signed out.
+     *
+     * @param in TODO
+     * @param fixSilenceBug TODO
+     * @param out TODO
+     * @throws java.io.IOException TODO
      */
     protected void write8STo8S(ImageInputStream in, ImageOutputStream out, boolean fixSilenceBug) throws IOException {
         try {

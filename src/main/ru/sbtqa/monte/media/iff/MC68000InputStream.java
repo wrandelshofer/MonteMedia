@@ -10,7 +10,7 @@ import java.io.*;
  * A MC 68000 input stream lets an application read primitive data
  * types in the MC 68000 CPU format from an underlying input stream.
  *
- * <p>This stream filter is suitable for IFF-EA85 files.
+ * This stream filter is suitable for IFF-EA85 files.
  *
  * @author	Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
  * @version 1.3 2010-08-03 Moved unpackByteRun1 method into this class.
@@ -229,11 +229,11 @@ extends FilterInputStream {
 
     /**
      * ByteRun1 run decoder.
-     * <p>
+     * 
      * The run encoding scheme by <em>byteRun1</em> is best described by pseudo
      * code for the decoder <em>Unpacker</em> (called <em>UnPackBits</em> in
      * the Macintosh toolbox.
-     * <pre>
+     * 
      * UnPacker:
      *  LOOP until produced the desired number of bytes
      *      Read the next source byte into n
@@ -243,11 +243,11 @@ extends FilterInputStream {
      *          -128    =&gt; no operation
      *      ENDCASE;
      *   ENDLOOP;
-     * </pre>
+     * 
      *
-     * @param in
-     * @param out
-     * @throws ParseException
+     * @param in TODO
+     * @param out TODO
+     * @throws ParseException TODO
      */
     public static int unpackByteRun1(byte[] in, byte[] out)
             throws IOException {

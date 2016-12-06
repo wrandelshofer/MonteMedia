@@ -15,9 +15,9 @@ import javax.imageio.stream.ImageInputStream;
 
 /**
  * Reads a TIFF file.
- * <p>
+ * 
  * References:
- * <p>
+ * 
  * TIFF TM Revision 6.0. Final — June 3, 1992.
  * Adobe Systems Inc.
  * http://www.exif.org/specifications.html
@@ -59,11 +59,11 @@ public class TIFFInputStream extends InputStream {
     }
 
     /** Reads the IFD at the specified offset.
-     * <p>
+     * 
      * An IFD consists of a 2-byte count of the number of directory entries
      * (i.e., the number of fields), followed by a sequence of 12-byte field entries,
      * followed by a 4-byte offset of the next IFD (or 0 if none).
-     * <p>
+     * 
      * Each 12-byte IFD entry has the following format:
      * Bytes 0-1 The Tag that identifies the field.
      * Bytes 2-3 The field Type.
@@ -72,7 +72,7 @@ public class TIFFInputStream extends InputStream {
      * field. The Value is expected to begin on a word boundary; the corresponding
      * Value Offset will thus be an even number. This file offset may point anywhere
      * in the file, even after the image data.
-     * <p>
+     * 
      * There must be at least 1 IFD in a TIFF file and each IFD must have at least
      * one entry.
      */
@@ -81,11 +81,11 @@ public class TIFFInputStream extends InputStream {
     }
 
     /** Reads the IFD at the specified offset.
-     * <p>
+     * 
      * An IFD consists of a 2-byte count of the number of directory entries
      * (i.e., the number of fields), followed by a sequence of 12-byte field entries,
      * followed by a 4-byte offset of the next IFD (or 0 if none).
-     * <p>
+     * 
      * Each 12-byte IFD entry has the following format:
      * Bytes 0-1 The Tag that identifies the field.
      * Bytes 2-3 The field Type.
@@ -94,7 +94,7 @@ public class TIFFInputStream extends InputStream {
      * field. The Value is expected to begin on a word boundary; the corresponding
      * Value Offset will thus be an even number. This file offset may point anywhere
      * in the file, even after the image data.
-     * <p>
+     * 
      * There must be at least 1 IFD in a TIFF file and each IFD must have at least
      * one entry.
      */

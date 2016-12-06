@@ -9,17 +9,17 @@ import java.nio.ByteOrder;
 
 /**
  * Represents a directory entry in a TIFF Image File Directory (IFD).
- * <p>
+ * 
  * Each 12-byte IFD entry has the following format:
- * <ul>
- * <li>Bytes 0-1 The Tag that identifies the field.</li>
- * <li>Bytes 2-3 The field Type.</li>
- * <li>Bytes 4-7 The number of values, Count of the indicated Type.</li>
- * <li>Bytes 8-11 The Value Offset, the file offset (in bytes) of the Value for the
+ * 
+ * Bytes 0-1 The Tag that identifies the field.
+ * Bytes 2-3 The field Type.
+ * Bytes 4-7 The number of values, Count of the indicated Type.
+ * Bytes 8-11 The Value Offset, the file offset (in bytes) of the Value for the
  * field. The Value is expected to begin on a word boundary; the corresponding
  * Value Offset will thus be an even number. This file offset may point anywhere
- * in the file, even after the image data.</li>
- * </ul>
+ * in the file, even after the image data.
+ * 
  * @author Werner Randelshofer
  * @version 2.1 2010-09-07 Stores ifdOffset.
  * <br>2.0 2010-07-24 Reworked.

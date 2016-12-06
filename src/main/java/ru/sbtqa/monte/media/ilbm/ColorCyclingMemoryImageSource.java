@@ -73,7 +73,7 @@ public class ColorCyclingMemoryImageSource extends MemoryImageSource {
      * @see java.awt.Component#createImage
      */
     public ColorCyclingMemoryImageSource(int w, int h, ColorModel cm,
-            byte[] pix, int off, int scan) {
+          byte[] pix, int off, int scan) {
         super(w, h, cm, pix, off, scan);
         initialize(w, h, cm, (Object) pix, off, scan, new Hashtable<Object, Object>());
     }
@@ -93,8 +93,8 @@ public class ColorCyclingMemoryImageSource extends MemoryImageSource {
      * @see java.awt.Component#createImage
      */
     public ColorCyclingMemoryImageSource(int w, int h, ColorModel cm,
-            byte[] pix, int off, int scan,
-            Hashtable<?, ?> props) {
+          byte[] pix, int off, int scan,
+          Hashtable<?, ?> props) {
         super(w, h, cm, pix, off, scan, props);
         initialize(w, h, cm, (Object) pix, off, scan, props);
     }
@@ -112,7 +112,7 @@ public class ColorCyclingMemoryImageSource extends MemoryImageSource {
      * @see java.awt.Component#createImage
      */
     public ColorCyclingMemoryImageSource(int w, int h, ColorModel cm,
-            int[] pix, int off, int scan) {
+          int[] pix, int off, int scan) {
         super(w, h, cm, pix, off, scan);
         initialize(w, h, cm, (Object) pix, off, scan, null);
     }
@@ -132,14 +132,14 @@ public class ColorCyclingMemoryImageSource extends MemoryImageSource {
      * @see java.awt.Component#createImage
      */
     public ColorCyclingMemoryImageSource(int w, int h, ColorModel cm,
-            int[] pix, int off, int scan,
-            Hashtable<?, ?> props) {
+          int[] pix, int off, int scan,
+          Hashtable<?, ?> props) {
         super(w, h, cm, pix, off, scan, props);
         initialize(w, h, cm, (Object) pix, off, scan, props);
     }
 
     private void initialize(int w, int h, ColorModel cm,
-            Object pix, int off, int scan, Hashtable<?, ?> props) {
+          Object pix, int off, int scan, Hashtable<?, ?> props) {
         width = w;
         height = h;
         model = cm;
@@ -167,7 +167,7 @@ public class ColorCyclingMemoryImageSource extends MemoryImageSource {
 
     @Override
     public synchronized void newPixels(byte[] newpix, ColorModel newmodel,
-            int offset, int scansize) {
+          int offset, int scansize) {
         this.pixels = newpix;
         this.model = newmodel;
         this.pixeloffset = offset;
@@ -191,7 +191,7 @@ public class ColorCyclingMemoryImageSource extends MemoryImageSource {
      */
     @Override
     public synchronized void newPixels(int[] newpix, ColorModel newmodel,
-            int offset, int scansize) {
+          int offset, int scansize) {
         this.pixels = newpix;
         this.model = newmodel;
         this.pixeloffset = offset;
@@ -235,6 +235,8 @@ public class ColorCyclingMemoryImageSource extends MemoryImageSource {
 
     /**
      * Starts or stops color cycling.
+     *
+     * @param b TODO
      */
     public void setColorCyclingStarted(boolean b) {
         isStarted = b;
@@ -247,6 +249,8 @@ public class ColorCyclingMemoryImageSource extends MemoryImageSource {
 
     /**
      * Returns true if color cycling is on.
+     *
+     * @return TODO
      */
     public boolean isColorCyclingStarted() {
         return isStarted;
@@ -324,9 +328,9 @@ public class ColorCyclingMemoryImageSource extends MemoryImageSource {
                     // We only fire new pixels, if the cycles have changed
                     if (!Arrays.equals(previousCycled, cycled)) {
                         ColorCyclingMemoryImageSource.super.newPixels((byte[]) pixels, //
-                                cycledModel = new IndexColorModel(8, cycled.length, cycled, 0, false, -1, DataBuffer.TYPE_BYTE),
-                                pixeloffset,
-                                pixelscan);
+                              cycledModel = new IndexColorModel(8, cycled.length, cycled, 0, false, -1, DataBuffer.TYPE_BYTE),
+                              pixeloffset,
+                              pixelscan);
                     }
                     // swap cycled colors
                     int[] tmp = previousCycled;
@@ -346,9 +350,9 @@ public class ColorCyclingMemoryImageSource extends MemoryImageSource {
             cycledModel = null;
             // Reset colors to their initial state
             ColorCyclingMemoryImageSource.super.newPixels((byte[]) pixels, //
-                    model,
-                    pixeloffset,
-                    pixelscan);
+                  model,
+                  pixeloffset,
+                  pixelscan);
         }
 
     }
@@ -356,11 +360,15 @@ public class ColorCyclingMemoryImageSource extends MemoryImageSource {
     /**
      * Creates a BufferedImage which shares its pixel data with this memory
      * image source.
+     *
+     * @return TODO
      */
     public BufferedImage toBufferedImage() {
-        DataBuffer buf = (pixels instanceof byte[]) ?//
-                new DataBufferByte((byte[]) pixels, pixelscan * height, pixeloffset) ://
-                new DataBufferInt((int[]) pixels, pixelscan * height, pixeloffset);
+        DataBuffer buf = (pixels instanceof byte[])
+              ?//
+              new DataBufferByte((byte[]) pixels, pixelscan * height, pixeloffset)
+              ://
+              new DataBufferInt((int[]) pixels, pixelscan * height, pixeloffset);
         SampleModel sm = model.createCompatibleSampleModel(width, height);
         WritableRaster raster = Raster.createWritableRaster(sm, buf, new Point());
         return new BufferedImage(model, raster, false, properties);
@@ -372,7 +380,7 @@ public class ColorCyclingMemoryImageSource extends MemoryImageSource {
 
     @SuppressWarnings("unchecked")
     public void putProperties(Map<?, ?> props) {
-        properties.putAll((Map)props);
+        properties.putAll((Map) props);
     }
 
     public void setBlendedColorCycling(boolean newValue) {

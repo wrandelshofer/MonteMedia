@@ -18,12 +18,12 @@ public interface MovieWriter extends Multiplexer {
     public Format getFileFormat() throws IOException;
 
     /** Adds a track to the writer for a suggested input format.
-     * <p>
+     * 
      * The format should at least specify the desired {@link FormatKeys.MediaType}.
      * The actual input format is a refined version of the suggested format. For
      * example, if a MovieWriter only supports fixed frame rate video, then the
      * MovieWriter will extend the format with that information.
-     * <p>
+     * 
      * If the suggested input format is not compatible, then an IOException is
      * thrown. For example, if a MovieWriter only supports fixed frame rate video,
      * but a format with variable frame rate was requested.
@@ -61,10 +61,10 @@ public interface MovieWriter extends Multiplexer {
 
     /** Returns true if the limit for media data has been reached.
      * If this limit is reached, no more samples should be added to the movie.
-     * <p>
+     * 
      * This limit is imposed by data structures of the movie file
      * which will overflow if more samples are added to the movie.
-     * <p>
+     * 
      * FIXME - Maybe replace by getCapacity():long. 
      */
     public boolean isDataLimitReached();

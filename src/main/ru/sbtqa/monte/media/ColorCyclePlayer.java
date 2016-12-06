@@ -7,10 +7,10 @@ package org.monte.media;
 /**
  * A {@link Player} which supports a second layer of animation by cycling colors
  * in the color palette of the current image in the video track.
- * <p>
+ * 
  * Color cycling is provided in a separate layer on top of the video track.
  * It can be performed independently of video playback.
- * </p>
+ * 
  *
  * @author Werner Randelshofer
  * @version 1.0 2010-08-04 Created.

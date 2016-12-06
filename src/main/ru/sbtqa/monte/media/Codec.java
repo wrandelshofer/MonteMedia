@@ -58,7 +58,7 @@ public interface Codec {
     public Format getOutputFormat();
 
     /** Performs the media processing defined by this codec. 
-     * <p>
+     * 
      * Copies the data from the input buffer into the output buffer.
      * 
      * @return A combination of processing flags.

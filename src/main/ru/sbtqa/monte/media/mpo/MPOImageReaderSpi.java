@@ -13,7 +13,7 @@ import javax.imageio.stream.ImageInputStream;
 /**
  * ImageIO service provider interface for images in the MultiPicture Object
  * format (MPO).
- * <p>
+ * 
  * See: <a href="http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf">MPO Format Specification</a>.
  *
  * @author Werner Randelshofer

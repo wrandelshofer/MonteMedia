@@ -30,7 +30,7 @@ import javax.swing.event.*;
 
 /**
  * Player for Cyberpaint Sequence animations (*.SEQ).
- * <p>
+ * 
  * Reference:<br>
  * <a href="http://www.atari-forum.com/wiki/index.php/ST_Picture_Formats"
  * >http://www.atari-forum.com/wiki/index.php/ST_Picture_Formats</a>

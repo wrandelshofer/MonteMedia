@@ -24,35 +24,33 @@ import ru.sbtqa.monte.media.ilbm.ColorCyclingMemoryImageSource;
 import ru.sbtqa.monte.media.image.BitmapImage;
 import ru.sbtqa.monte.media.io.BoundedRangeInputStream;
 
-
 /**
  * Player for Cyberpaint Sequence animations (*.SEQ).
- * <p>
+ * 
  * Reference:<br>
  * <a href="http://www.atari-forum.com/wiki/index.php/ST_Picture_Formats"
  * >http://www.atari-forum.com/wiki/index.php/ST_Picture_Formats</a>
  *
- * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
  * @version 3.0.2 2011-08-23 Frame duration was too long by one jiffie.
  * <br>1.0 2010-12-25 Created.
  */
 public class SEQPlayer
-        extends AbstractPlayer
-        implements ColorCyclePlayer {
+      extends AbstractPlayer
+      implements ColorCyclePlayer {
 
     /**
-     * The memory image source handles the image
-     * producer/consumer protocol.
+     * The memory image source handles the image producer/consumer protocol.
      */
     private ColorCyclingMemoryImageSource memoryImage;
     /**
-     * Bounded range indicates the number of frames and the
-     * index of the current frame.
+     * Bounded range indicates the number of frames and the index of the current
+     * frame.
      */
     private BoundedRangeModel timeModel;
     /**
-     * Bounded range indicates the amount of data being
-     * fetched from the data source.
+     * Bounded range indicates the amount of data being fetched from the data
+     * source.
      */
     private BoundedRangeInputStream cachingControlModel;
     /**
@@ -60,64 +58,69 @@ public class SEQPlayer
      */
     private InputStream in;
     /**
-     * The size of the input file. If the size is not known then
-     * this attribute is set to -1.
+     * The size of the input file. If the size is not known then this attribute
+     * is set to -1.
      */
     private int inputFileSize = -1;
     /**
      * The movie track built from the movie data.
      */
     private SEQMovieTrack track;
-    /** Two bitmaps are needed for double buffering. */
+    /**
+     * Two bitmaps are needed for double buffering.
+     */
     private BitmapImage bitmapEven, bitmapOdd;
     /**
-     * Index of the frame, that has been prepared
-     * in its even or odd bitmap buffer for display.
+     * Index of the frame, that has been prepared in its even or odd bitmap
+     * buffer for display.
      */
     private int preparedEven, preparedOdd;
     /**
-     * Index of the frame which has been delta
-     * decoded in its even or odd bitmap buffer.
+     * Index of the frame which has been delta decoded in its even or odd bitmap
+     * buffer.
      */
     private int fetchedEven, fetchedOdd;
     /**
      * Index of the frame currently being displayed.
      */
     private int displayFrame = -1;
-    /** Indicates wether frames may be skipped or not. */
+    /**
+     * Indicates wether frames may be skipped or not.
+     */
     private boolean isPlayEveryFrame = false;
-    /** Indicates wether playback shall loop or not. */
+    /**
+     * Indicates wether playback shall loop or not.
+     */
     private volatile boolean isLoop = true;
-    /** Indicates wether the player is in pause mode. */
+    /**
+     * Indicates wether the player is in pause mode.
+     */
     //private volatile boolean isPaused = true;
     /**
-     * Jiffies are used be IFF ANIM's for timing.
-     * Jiffies is the number of frames or fields per second.
-     * The variable jiffieMillis is a conversion of Jiffies into milliseconds.
+     * Jiffies are used be IFF ANIM's for timing. Jiffies is the number of
+     * frames or fields per second. The variable jiffieMillis is a conversion of
+     * Jiffies into milliseconds.
      */
     private float jiffieMillis = 1000f / 60f;
     /**
-     * Setting the global frame duration overrides all
-     * frame duration settings in the frames of the the movie track.
+     * Setting the global frame duration overrides all frame duration settings
+     * in the frames of the the movie track.
      *
-     * Frame Duration in Jiffies. Set this to
-     * -1 if you do not want to override the frame durations in
-     * the frames of the movie track.
+     * Frame Duration in Jiffies. Set this to -1 if you do not want to override
+     * the frame durations in the frames of the movie track.
      */
     private int globalFrameDuration = -1;
     /**
-     * The visual component contains the display area
-     * for movie images.
+     * The visual component contains the display area for movie images.
      */
     private ImagePanel /*ImagePanelAWT*/ visualComponent;
     /**
-     * The visual component contains control elements
-     * for starting and stopping the movie.
+     * The visual component contains control elements for starting and stopping
+     * the movie.
      */
     private MovieControl controlComponent;
     /**
-     * This lock is being used to coordinate the
-     * decoder with the player.
+     * This lock is being used to coordinate the decoder with the player.
      */
     private Object decoderLock = new Object();
     /**
@@ -125,14 +128,13 @@ public class SEQPlayer
      */
     private ColorModel preferredColorModel = null;
     /**
-     * Indicates wether all data has been cached.
-     * Acts like a latch: Once set to true never changes
-     * its value anymore.
+     * Indicates wether all data has been cached. Acts like a latch: Once set to
+     * true never changes its value anymore.
      */
     private volatile boolean isCached = false;
     /**
-     * The amiga has four audio channels.
-     * There can be only four active audio commands at all times.
+     * The amiga has four audio channels. There can be only four active audio
+     * commands at all times.
      */
     private SEQAudioCommand[] audioChannels = new SEQAudioCommand[4];
     /**
@@ -143,21 +145,25 @@ public class SEQPlayer
      * Determines whether audio is being loaded or not.
      */
     private boolean isLoadAudio;
-    /** */
-    private boolean debug = false;
-    /** */
-    private Hashtable<String,Object> properties;
     /**
-     * This variable is set to true when during decoding of the
-     * input stream at least one audio clip is detected.
+     *      */
+    private boolean debug = false;
+    /**
+     *      */
+    private Hashtable<String, Object> properties;
+    /**
+     * This variable is set to true when during decoding of the input stream at
+     * least one audio clip is detected.
      */
     private boolean isAudioAvailable;
     /**
-     * This variable is set to true when during decoding of the
-     * input stream at least one color cycle is detected.
+     * This variable is set to true when during decoding of the input stream at
+     * least one color cycle is detected.
      */
     private boolean isColorCyclingAvailable;
-    /** Whether color cycling is started. */
+    /**
+     * Whether color cycling is started.
+     */
     private boolean isColorCyclingStarted;
     /**
      * Set this to true, if the delta frames of the animation can be decoded
@@ -165,7 +171,8 @@ public class SEQPlayer
      */
     private boolean isPingPong = true;
     /**
-     * Direction of the play head: +1 for forward playing, -1 for backward playing.
+     * Direction of the play head: +1 for forward playing, -1 for backward
+     * playing.
      */
     private int playDirection = 1;
 
@@ -235,13 +242,13 @@ public class SEQPlayer
                 } else {
                     // Render the video on the worker thread.
                     dispatcher.dispatch(
-                            new Runnable() {
+                          new Runnable() {
 
-                                @Override
-                                public void run() {
-                                    renderVideo(getTimeModel().getValue());
-                                }
-                            });
+                        @Override
+                        public void run() {
+                            renderVideo(getTimeModel().getValue());
+                        }
+                    });
                 }
             }
         }
@@ -254,9 +261,10 @@ public class SEQPlayer
 
     /**
      * Creates a new instance.
+     *
      * @param in InputStream containing an IFF ANIM file.
-     * @param inputFileSize The size of the input file. Provide the value -1
-     * if this is not known.
+     * @param inputFileSize The size of the input file. Provide the value -1 if
+     * this is not known.
      * @param loadAudio Provide value false if this player should not load audio
      * data.
      */
@@ -267,13 +275,14 @@ public class SEQPlayer
     }
 
     /**
-     * Sets the preferred color model.
-     * If this color model is the same as the one used by the
-     * screen device showing the animation, then this may considerably
-     * improve the performance of the player.
-     * Setting this to null will let the player choose a color model
-     * that best suits the media being played.
-     * Calling this method has no effect, if the player is already realized.
+     * Sets the preferred color model. If this color model is the same as the
+     * one used by the screen device showing the animation, then this may
+     * considerably improve the performance of the player. Setting this to null
+     * will let the player choose a color model that best suits the media being
+     * played. Calling this method has no effect, if the player is already
+     * realized.
+     *
+     * @param cm TODO
      */
     public void setPreferredColorModel(ColorModel cm) {
         if (bitmapEven == null) {
@@ -282,8 +291,10 @@ public class SEQPlayer
     }
 
     /**
-     * Returns the bounded range model that represents
-     * the time line of the player.
+     * Returns the bounded range model that represents the time line of the
+     * player.
+     *
+     * @return TODO
      */
     @Override
     public BoundedRangeModel getTimeModel() {
@@ -292,18 +303,22 @@ public class SEQPlayer
 
     /**
      * Enables or disables audio playback.
+     *
+     * @param newValue TODO
      */
     @Override
     public void setAudioEnabled(boolean newValue) {
         boolean oldValue = isAudioEnabled;
         isAudioEnabled = newValue;
         propertyChangeSupport.firePropertyChange("audioEnabled",
-                (oldValue) ? Boolean.TRUE : Boolean.FALSE,
-                (newValue) ? Boolean.TRUE : Boolean.FALSE);
+              (oldValue) ? Boolean.TRUE : Boolean.FALSE,
+              (newValue) ? Boolean.TRUE : Boolean.FALSE);
     }
 
     /**
      * Returns true if audio playback is enabled.
+     *
+     * @return TODO
      */
     @Override
     public boolean isAudioEnabled() {
@@ -312,26 +327,31 @@ public class SEQPlayer
 
     /**
      * Swaps left and right speakers if set to true.
+     *
+     * @param newValue TODO
      */
     public void setSwapSpeakers(boolean newValue) {
         boolean oldValue = track.isSwapSpeakers();
         track.setSwapSpeakers(newValue);
         propertyChangeSupport.firePropertyChange("swapSpeakers",
-                (oldValue) ? Boolean.TRUE : Boolean.FALSE,
-                (newValue) ? Boolean.TRUE : Boolean.FALSE);
+              (oldValue) ? Boolean.TRUE : Boolean.FALSE,
+              (newValue) ? Boolean.TRUE : Boolean.FALSE);
     }
 
     /**
      * Returns true if left and right speakers are swapped.
+     *
+     * @return TODO
      */
     public boolean isSwapSpeakers() {
         return track.isSwapSpeakers();
     }
 
     /**
-     * Returns the bounded range model that represents
-     * the amount of data being fetched from the file
-     * the movie is stored in.
+     * Returns the bounded range model that represents the amount of data being
+     * fetched from the file the movie is stored in.
+     *
+     * @return TODO
      */
     @Override
     public BoundedRangeModel getCachingModel() {
@@ -339,8 +359,9 @@ public class SEQPlayer
     }
 
     /**
-     * Returns the image producer that produces
-     * the animation frames.
+     * Returns the image producer that produces the animation frames.
+     *
+     * @return TODO
      */
     protected ImageProducer getImageProducer() {
         return memoryImage;
@@ -348,17 +369,20 @@ public class SEQPlayer
 
     /**
      * Returns the movie track.
+     *
+     * @return TODO
      */
     public SEQMovieTrack getMovieTrack() {
         return track;
     }
 
     /**
-     * Obtain the display Component for this Player.
-     * The display Component is where visual media is rendered.
-     * If this Player has no visual component, getVisualComponent
-     * returns null. For example, getVisualComponent might return
-     * null if the Player only plays audio.
+     * Obtain the display Component for this Player. The display Component is
+     * where visual media is rendered. If this Player has no visual component,
+     * getVisualComponent returns null. For example, getVisualComponent might
+     * return null if the Player only plays audio.
+     *
+     * @return TODO
      */
     @Override
     public synchronized Component getVisualComponent() {
@@ -373,10 +397,11 @@ public class SEQPlayer
     }
 
     /**
-     * Obtain the Component that provides the default user
-     * interface for controlling this Player. If this Player
-     * has no default control panel, getControlPanelComponent
-     * returns null.
+     * Obtain the Component that provides the default user interface for
+     * controlling this Player. If this Player has no default control panel,
+     * getControlPanelComponent returns null.
+     *
+     * @return TODO
      */
     @Override
     public synchronized Component getControlPanelComponent() {
@@ -485,15 +510,15 @@ public class SEQPlayer
             cm = new DirectColorModel(24, 0xff0000, 0xff00, 0xff);
         }
         bitmapEven = new BitmapImage(
-                width,
-                height,
-                nbPlanes + (masking == SEQMovieTrack.MSK_HAS_MASK ? 1 : 0),
-                cm);
+              width,
+              height,
+              nbPlanes + (masking == SEQMovieTrack.MSK_HAS_MASK ? 1 : 0),
+              cm);
         bitmapOdd = new BitmapImage(
-                width,
-                height,
-                nbPlanes + (masking == SEQMovieTrack.MSK_HAS_MASK ? 1 : 0),
-                cm);
+              width,
+              height,
+              nbPlanes + (masking == SEQMovieTrack.MSK_HAS_MASK ? 1 : 0),
+              cm);
 //bitmapOdd=bitmapEven;
         jiffieMillis = 1000f / (float) track.getJiffies();
 
@@ -502,10 +527,10 @@ public class SEQPlayer
             bitmapOdd.setPreferredChunkyColorModel(preferredColorModel);
         }
 
-        /*Hashtable*/ properties = new Hashtable<String,Object>();
+        /*Hashtable*/ properties = new Hashtable<String, Object>();
         properties.put(
-                "aspect",
-                new Double((double) track.getXAspect() / (double) track.getYAspect()));
+              "aspect",
+              new Double((double) track.getXAspect() / (double) track.getYAspect()));
         Object comment = track.getProperty("comment");
         if (comment != null) {
             properties.put("comment", comment);
@@ -600,19 +625,19 @@ public class SEQPlayer
 
     /**
      * Set this to true to treat the two wrapup frames at the end of the
-     * animation like regular frames.
-     * /
-    public void setPlayWrapupFrames(boolean newValue) {
-        track.setPlayWrapupFrames(newValue);
-
-        int count = track.getFrameCount();
-        System.out.println("SEQPLayer.setPlayWrapupFrames count="+count);
-        timeModel.setMaximum(count > 0 ? count - 1 : 0);
-    }*/
-
+     * animation like regular frames. / public void setPlayWrapupFrames(boolean
+     * newValue) { track.setPlayWrapupFrames(newValue);
+     *
+     * int count = track.getFrameCount();
+     * System.out.println("SEQPLayer.setPlayWrapupFrames count="+count);
+     * timeModel.setMaximum(count > 0 ? count - 1 : 0);
+    }
+     */
     /**
      * Set this to true to treat the two wrapup frames at the end of the
      * animation like regular frames.
+     *
+     * @param newValue TODO
      */
     public void setDebug(boolean newValue) {
         this.debug = newValue;
@@ -623,6 +648,8 @@ public class SEQPlayer
 
     /**
      * Always returns true.
+     *
+     * @return TODO
      */
     public boolean isPlayWrapupFrames() {
         return true;
@@ -630,12 +657,11 @@ public class SEQPlayer
     }
 
     /**
-     * Setting frames per second overrides all
-     * frame duration settings in the frames of the the movie track.
+     * Setting frames per second overrides all frame duration settings in the
+     * frames of the the movie track.
      *
-     * @param framesPerSecond Frames per section. Set this to
-     * 0f if you do not want to override the frame durations in
-     * the frames of the movie track.
+     * @param framesPerSecond Frames per section. Set this to 0f if you do not
+     * want to override the frame durations in the frames of the movie track.
      */
     public void setFramesPerSecond(float framesPerSecond) {
         if (framesPerSecond <= 0f) {
@@ -646,12 +672,12 @@ public class SEQPlayer
     }
 
     /**
-     * Setting the global frame duration overrides all
-     * frame duration settings in the frames of the the movie track.
+     * Setting the global frame duration overrides all frame duration settings
+     * in the frames of the the movie track.
      *
-     * @param frameDuration Frame Duration in milliseconds. Set this to
-     * -1 if you do not want to override the frame durations in
-     * the frames of the movie track.
+     * @param frameDuration Frame Duration in milliseconds. Set this to -1 if
+     * you do not want to override the frame durations in the frames of the
+     * movie track.
      */
     public void setGlobalFrameDuration(int frameDuration) {
         this.globalFrameDuration = frameDuration;
@@ -689,10 +715,8 @@ public class SEQPlayer
     }
 
     /**
-     * Does the started state.
-     * Is called by run().
-     * Does not change the value of targetState but may
-     * change state in case of an error.
+     * Does the started state. Is called by run(). Does not change the value of
+     * targetState but may change state in case of an error.
      */
     @Override
     protected void doStarted() {
@@ -722,7 +746,7 @@ public class SEQPlayer
                     }
                 }
                 if (globalFrameDuration == -1) {
-                    mediaTime = System.currentTimeMillis() + (long) (max(track.getFrameDuration(index),1) * jiffieMillis);
+                    mediaTime = System.currentTimeMillis() + (long) (max(track.getFrameDuration(index), 1) * jiffieMillis);
                 } else {
                     mediaTime = System.currentTimeMillis() + globalFrameDuration;
                 }
@@ -732,41 +756,39 @@ public class SEQPlayer
                     muteAudio();
                 }
                 renderVideo(index);
-            } else {
-                if (mediaTime > System.currentTimeMillis()) {
-                    if (isAudioEnabled) {
-                        prepareAudio(index);
+            } else if (mediaTime > System.currentTimeMillis()) {
+                if (isAudioEnabled) {
+                    prepareAudio(index);
+                }
+                prepareVideo(index);
+                sleepTime = mediaTime - System.currentTimeMillis();
+                if (sleepTime > 0) {
+                    try {
+                        Thread.sleep(sleepTime);
+                    } catch (InterruptedException e) {
                     }
-                    prepareVideo(index);
-                    sleepTime = mediaTime - System.currentTimeMillis();
-                    if (sleepTime > 0) {
-                        try {
-                            Thread.sleep(sleepTime);
-                        } catch (InterruptedException e) {
-                        }
-                    }
-                    if (globalFrameDuration == -1) {
-                        mediaTime += (long) (max(track.getFrameDuration(index),1) * jiffieMillis);
-                    } else {
-                        mediaTime += (long) globalFrameDuration;
-                    }
-                    if (isAudioEnabled && !timeModel.getValueIsAdjusting()) {
-                        renderAudio(index);
-                    } else {
-                        muteAudio();
-                    }
-                    renderVideo(index);
+                }
+                if (globalFrameDuration == -1) {
+                    mediaTime += (long) (max(track.getFrameDuration(index), 1) * jiffieMillis);
                 } else {
-                    if (isAudioEnabled && !timeModel.getValueIsAdjusting()) {
-                        renderAudio(index);
-                    } else {
-                        muteAudio();
-                    }
-                    if (globalFrameDuration == -1) {
-                        mediaTime += (long) (max(track.getFrameDuration(index),1) * jiffieMillis);
-                    } else {
-                        mediaTime += (long) globalFrameDuration;
-                    }
+                    mediaTime += (long) globalFrameDuration;
+                }
+                if (isAudioEnabled && !timeModel.getValueIsAdjusting()) {
+                    renderAudio(index);
+                } else {
+                    muteAudio();
+                }
+                renderVideo(index);
+            } else {
+                if (isAudioEnabled && !timeModel.getValueIsAdjusting()) {
+                    renderAudio(index);
+                } else {
+                    muteAudio();
+                }
+                if (globalFrameDuration == -1) {
+                    mediaTime += (long) (max(track.getFrameDuration(index), 1) * jiffieMillis);
+                } else {
+                    mediaTime += (long) globalFrameDuration;
                 }
             }
 
@@ -831,12 +853,10 @@ public class SEQPlayer
                 frame = track.getFrame(fetched);
                 frame.decode(bitmap, track);
                 return;
-            } else {
-                if (fetched > index) {
-                    frame = track.getFrame(0);
-                    frame.decode(bitmap, track);
-                    fetched = 0;
-                }
+            } else if (fetched > index) {
+                frame = track.getFrame(0);
+                frame.decode(bitmap, track);
+                fetched = 0;
             }
         } else {
             // odd?
@@ -850,14 +870,12 @@ public class SEQPlayer
                 frame = track.getFrame(fetched);
                 frame.decode(bitmap, track);
                 return;
-            } else {
-                if (fetched > index) {
-                    frame = track.getFrame(0);
-                    frame.decode(bitmap, track);
-                    frame = track.getFrame(1);
-                    frame.decode(bitmap, track);
-                    fetched = 1;
-                }
+            } else if (fetched > index) {
+                frame = track.getFrame(0);
+                frame.decode(bitmap, track);
+                frame = track.getFrame(1);
+                frame.decode(bitmap, track);
+                fetched = 1;
             }
         }
         for (int i = fetched + interleave; i <= index; i += interleave) {
@@ -900,24 +918,28 @@ public class SEQPlayer
         SEQFrame frame = track.getFrame(index);
         ColorModel cm = frame.getColorModel();
         bitmap.setPlanarColorModel(cm);
-        if (prepared == index - interleave && //
-                (bitmap.getPixelType() == BitmapImage.BYTE_PIXEL || //
-                cm == track.getFrame(prepared).getColorModel())) {
+        if (prepared == index - interleave
+              && //
+              (bitmap.getPixelType() == BitmapImage.BYTE_PIXEL
+              || //
+              cm == track.getFrame(prepared).getColorModel())) {
             bitmap.convertToChunky(
-                    frame.getTopBound(track),
-                    frame.getLeftBound(track),
-                    frame.getBottomBound(track),
-                    frame.getRightBound(track));
+                  frame.getTopBound(track),
+                  frame.getLeftBound(track),
+                  frame.getBottomBound(track),
+                  frame.getRightBound(track));
 
-        } else if (isPingPong && prepared == index + interleave &&//
-                (bitmap.getPixelType() == BitmapImage.BYTE_PIXEL || //
-                cm == track.getFrame(prepared).getColorModel())) {
+        } else if (isPingPong && prepared == index + interleave
+              &&//
+              (bitmap.getPixelType() == BitmapImage.BYTE_PIXEL
+              || //
+              cm == track.getFrame(prepared).getColorModel())) {
             frame = track.getFrame(index + interleave);
             bitmap.convertToChunky(
-                    frame.getTopBound(track),
-                    frame.getLeftBound(track),
-                    frame.getBottomBound(track),
-                    frame.getRightBound(track));
+                  frame.getTopBound(track),
+                  frame.getLeftBound(track),
+                  frame.getBottomBound(track),
+                  frame.getRightBound(track));
         } else {
             bitmap.convertToChunky();
         }
@@ -1038,6 +1060,8 @@ public class SEQPlayer
 
     /**
      * Returns the total duration in milliseconds.
+     *
+     * @return TODO
      */
     @Override
     public long getTotalDuration() {
@@ -1049,17 +1073,21 @@ public class SEQPlayer
     }
 
     /**
-     * Returns true when the player has completely cached all movie data.
-     * This player informs all property change listeners, when the value of this
+     * Returns true when the player has completely cached all movie data. This
+     * player informs all property change listeners, when the value of this
      * property changes. The name of the property is 'cached'.
+     *
+     * @return TODO
      */
     @Override
     public boolean isCached() {
         return isCached;
     }
 
-    /** Returns true if audio is available.
+    /**
+     * Returns true if audio is available.
      *
+     * @return TODO
      */
     @Override
     public boolean isAudioAvailable() {
@@ -1091,13 +1119,21 @@ public class SEQPlayer
         propertyChangeSupport.firePropertyChange("colorCyclingAvailable", oldValue, newValue);
     }
 
-    /** Returns true if color cycling is available in the movie track. */
+    /**
+     * Returns true if color cycling is available in the movie track.
+     *
+     * @return TODO
+     */
     @Override
     public boolean isColorCyclingStarted() {
         return isColorCyclingStarted;
     }
 
-    /** Starts or stops color cycling. */
+    /**
+     * Starts or stops color cycling.
+     *
+     * @param newValue TODO
+     */
     @Override
     public void setColorCyclingStarted(boolean newValue) {
         boolean oldValue = isColorCyclingStarted;
@@ -1108,13 +1144,21 @@ public class SEQPlayer
         }
     }
 
-    /** Starts or stops color cycling. */
+    /**
+     * Starts or stops color cycling.
+     *
+     * @return TODO
+     */
     @Override
     public boolean isColorCyclingAvailable() {
         return isColorCyclingAvailable;
     }
 
-    /** Sets whether colors are blended during color cycling. */
+    /**
+     * Sets whether colors are blended during color cycling.
+     *
+     * @param newValue TODO
+     */
     @Override
     public void setBlendedColorCycling(boolean newValue) {
         if (memoryImage != null) {
@@ -1124,7 +1168,11 @@ public class SEQPlayer
         }
     }
 
-    /** Returns true if colors are blended during color cycling. */
+    /**
+     * Returns true if colors are blended during color cycling.
+     *
+     * @return TODO
+     */
     @Override
     public boolean isBlendedColorCycling() {
         return memoryImage == null ? false : memoryImage.isBlendedColorCycling();

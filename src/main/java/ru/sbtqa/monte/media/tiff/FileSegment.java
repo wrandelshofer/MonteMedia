@@ -6,7 +6,7 @@ package ru.sbtqa.monte.media.tiff;
 
 /**
  * Holds offset and length of a TIFF file segment.
- * <p>
+ * 
  * In a JPEG JFIF stream, a TIFF file can be segmented over multiple APP
  * markers.
  *

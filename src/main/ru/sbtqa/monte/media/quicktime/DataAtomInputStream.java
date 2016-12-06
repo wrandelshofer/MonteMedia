@@ -106,7 +106,7 @@ public class DataAtomInputStream extends FilterInputStream {
     /**
      * Reads a 32-bit Mac timestamp (seconds since 1902).
      * @return date
-     * @throws java.io.IOException
+     * @throws java.io.IOException TODO
      */
     public Date readMacTimestamp() throws IOException {
         long timestamp = ((long) readInt()) & 0xffffffffL;

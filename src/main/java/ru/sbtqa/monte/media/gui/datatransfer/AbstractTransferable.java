@@ -2,7 +2,6 @@
  * Copyright © 2007 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-
 package ru.sbtqa.monte.media.gui.datatransfer;
 
 import java.awt.datatransfer.*;
@@ -14,9 +13,14 @@ import java.awt.datatransfer.*;
  * @version 1.0 22. August 2007 Created.
  */
 public abstract class AbstractTransferable implements Transferable {
+
     private DataFlavor[] flavors;
-    
-    /** Creates a new instance. */
+
+    /**
+     * Creates a new instance.
+     *
+     * @param flavors TODO
+     */
     public AbstractTransferable(DataFlavor[] flavors) {
         this.flavors = flavors;
     }

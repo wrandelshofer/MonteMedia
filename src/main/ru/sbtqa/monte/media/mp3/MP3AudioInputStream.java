@@ -14,7 +14,7 @@ import javax.sound.sampled.AudioInputStream;
 
 /**
  * {@code AudioInputStream} adapter for {@link MP3ElementaryInputStream}.
- * <p>
+ * 
  * Unlike a regular audio input stream, an MP3 audio input stream can have a
  * variable frame size and can change its encoding method in mid-stream.
  * Therefore method getFormat can return different values for each frame,

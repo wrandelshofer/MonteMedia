@@ -15,6 +15,7 @@ import ru.sbtqa.monte.media.math.Rational;
  * @version 1.0 2011-09-01 Created.
  */
 public abstract class AbstractMovie extends AbstractBean implements Movie {
+
     private URI uri;
     private Rational playhead;
     private Rational in;
@@ -24,11 +25,13 @@ public abstract class AbstractMovie extends AbstractBean implements Movie {
     public URI getURI() {
         return uri;
     }
+
     public void setURI(URI newValue) {
-        URI oldValue=uri;
-        this.uri=newValue;
+        URI oldValue = uri;
+        this.uri = newValue;
         firePropertyChange(URI_PROPERTY, oldValue, newValue);
-    }    
+    }
+
     @Override
     public Rational getInsertionPoint() {
         return playhead;
@@ -36,7 +39,7 @@ public abstract class AbstractMovie extends AbstractBean implements Movie {
 
     @Override
     public void setInsertionPoint(Rational newValue) {
-        Rational oldValue=this.playhead;
+        Rational oldValue = this.playhead;
         this.playhead = newValue;
         firePropertyChange(INSERTION_POINT_PROPERTY, oldValue, newValue);
     }
@@ -48,7 +51,7 @@ public abstract class AbstractMovie extends AbstractBean implements Movie {
 
     @Override
     public void setSelectionStart(Rational newValue) {
-        Rational oldValue=in;
+        Rational oldValue = in;
         this.in = newValue;
         firePropertyChange(SELECTION_START_PROPERTY, oldValue, newValue);
     }
@@ -60,7 +63,7 @@ public abstract class AbstractMovie extends AbstractBean implements Movie {
 
     @Override
     public void setSelectionEnd(Rational newValue) {
-        Rational oldValue=out;
+        Rational oldValue = out;
         this.out = newValue;
         firePropertyChange(SELECTION_END_PROPERTY, oldValue, newValue);
     }

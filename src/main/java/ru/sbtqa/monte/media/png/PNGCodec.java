@@ -22,14 +22,14 @@ import ru.sbtqa.monte.media.io.ByteArrayImageOutputStream;
 
 /**
  * {@code PNGCodec} encodes a BufferedImage as a byte[] array..
- * <p>
+ * 
  * Supported input/output formats:
- * <ul>
- * <li>{@code VideoFormat} with {@code BufferedImage.class}, any width, any height,
- * any depth.</li>
- * <li>{@code VideoFormat} with {@code byte[].class}, same width and height as input
- * format, depth=24.</li>
- * </ul>
+ * 
+ * {@code VideoFormat} with {@code BufferedImage.class}, any width, any
+ * height, any depth.
+ * {@code VideoFormat} with {@code byte[].class}, same width and height as
+ * input format, depth=24.
+ * 
  *
  * @author Werner Randelshofer
  * @version $Id: PNGCodec.java 364 2016-11-09 19:54:25Z werner $
@@ -38,50 +38,50 @@ public class PNGCodec extends AbstractVideoCodec {
 
     public PNGCodec() {
         super(new Format[]{
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
-                    EncodingKey, ENCODING_BUFFERED_IMAGE), //
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                    DepthKey, 24,
-                    EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
-                    //
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-                    DepthKey, 24,
-                    EncodingKey, ENCODING_AVI_PNG, DataClassKey, byte[].class), //
-                },
-                new Format[]{
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
-                    EncodingKey, ENCODING_BUFFERED_IMAGE), //
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                    DepthKey, 24,
-                    EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
-                    //
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-                    DepthKey, 24,
-                    EncodingKey, ENCODING_AVI_PNG, DataClassKey, byte[].class), //
-                });
-         name = "PNG Codec";
+            new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
+            EncodingKey, ENCODING_BUFFERED_IMAGE), //
+            new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
+            DepthKey, 24,
+            EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
+            //
+            new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+            DepthKey, 24,
+            EncodingKey, ENCODING_AVI_PNG, DataClassKey, byte[].class), //
+        },
+              new Format[]{
+                  new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
+                        EncodingKey, ENCODING_BUFFERED_IMAGE), //
+                  new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                        DepthKey, 24,
+                        EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
+                  //
+                  new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+                        DepthKey, 24,
+                        EncodingKey, ENCODING_AVI_PNG, DataClassKey, byte[].class), //
+              });
+        name = "PNG Codec";
     }
 
     @Override
     public Format setOutputFormat(Format f) {
         String mimeType = f.get(MimeTypeKey, MIME_QUICKTIME);
         if (mimeType != null && !mimeType.equals(MIME_AVI)) {
-             super.setOutputFormat(
-                    f.prepend(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                    EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey,
-                    byte[].class, DepthKey, 24));
+            super.setOutputFormat(
+                  f.prepend(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                        EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey,
+                        byte[].class, DepthKey, 24));
         } else {
-             super.setOutputFormat(
-                    f.prepend(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-                    EncodingKey, ENCODING_AVI_PNG, DataClassKey,
-                    byte[].class, DepthKey, 24));
+            super.setOutputFormat(
+                  f.prepend(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+                        EncodingKey, ENCODING_AVI_PNG, DataClassKey,
+                        byte[].class, DepthKey, 24));
         }
 
         // This codec can not scale an image.
         // Enforce these properties
         if (outputFormat != null) {
             if (inputFormat != null) {
-                outputFormat = outputFormat.prepend(inputFormat.intersectKeys(WidthKey, HeightKey,DepthKey));
+                outputFormat = outputFormat.prepend(inputFormat.intersectKeys(WidthKey, HeightKey, DepthKey));
             }
         }
         return this.outputFormat;
@@ -89,7 +89,7 @@ public class PNGCodec extends AbstractVideoCodec {
 
     @Override
     public int process(Buffer in, Buffer out) {
-          if (ENCODING_BUFFERED_IMAGE.equals(outputFormat.get(EncodingKey))) {
+        if (ENCODING_BUFFERED_IMAGE.equals(outputFormat.get(EncodingKey))) {
             return decode(in, out);
         } else {
             return encode(in, out);
@@ -136,6 +136,7 @@ public class PNGCodec extends AbstractVideoCodec {
             return CODEC_FAILED;
         }
     }
+
     public int decode(Buffer in, Buffer out) {
         out.setMetaTo(in);
         out.format = outputFormat;
@@ -148,13 +149,13 @@ public class PNGCodec extends AbstractVideoCodec {
             return CODEC_FAILED;
         }
         ByteArrayImageInputStream tmp = new ByteArrayImageInputStream(data);
-        
+
         try {
             ImageReader ir = (ImageReader) ImageIO.getImageReadersByMIMEType("image/png").next();
             ir.setInput(tmp);
             out.data = ir.read(0);
             ir.dispose();
-            
+
             out.sampleCount = 1;
             out.offset = 0;
             out.length = (int) tmp.getStreamPosition();
