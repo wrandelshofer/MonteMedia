@@ -2,7 +2,7 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.gui.datatransfer;
+package ru.sbtqa.monte.media.gui.datatransfer;
 
 import java.awt.datatransfer.*;
 import java.awt.im.InputContext;

@@ -2,14 +2,14 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.avi;
+package ru.sbtqa.monte.media.avi;
 
-import org.monte.media.riff.RIFFChunk;
+import ru.sbtqa.monte.media.riff.RIFFChunk;
 import java.util.Map;
-import org.monte.media.Buffer;
-import org.monte.media.Codec;
-import org.monte.media.Format;
-import org.monte.media.io.SubImageOutputStream;
+import ru.sbtqa.monte.media.Buffer;
+import ru.sbtqa.monte.media.Codec;
+import ru.sbtqa.monte.media.Format;
+import ru.sbtqa.monte.media.io.SubImageOutputStream;
 import java.awt.Dimension;
 import java.awt.image.IndexColorModel;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import javax.imageio.stream.ImageOutputStream;
-import static org.monte.media.VideoFormatKeys.*;
+import static ru.sbtqa.monte.media.VideoFormatKeys.*;
 
 /**
  * This is the base class for low-level AVI stream IO.

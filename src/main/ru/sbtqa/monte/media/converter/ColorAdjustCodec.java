@@ -2,19 +2,19 @@
  * Copyright © 2012 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.converter;
+package ru.sbtqa.monte.media.converter;
 
-import org.monte.media.BezierInterpolator;
-import org.monte.media.SplineInterpolator;
+import ru.sbtqa.monte.media.BezierInterpolator;
+import ru.sbtqa.monte.media.SplineInterpolator;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import org.monte.media.AbstractVideoCodec;
-import org.monte.media.Buffer;
-import org.monte.media.Format;
-import org.monte.media.image.ColorModels;
-import org.monte.media.image.Images;
-import static org.monte.media.VideoFormatKeys.*;
-import static org.monte.media.BufferFlag.*;
+import ru.sbtqa.monte.media.AbstractVideoCodec;
+import ru.sbtqa.monte.media.Buffer;
+import ru.sbtqa.monte.media.Format;
+import ru.sbtqa.monte.media.image.ColorModels;
+import ru.sbtqa.monte.media.image.Images;
+import static ru.sbtqa.monte.media.VideoFormatKeys.*;
+import static ru.sbtqa.monte.media.BufferFlag.*;
 import static java.lang.Math.*;
 
 /**

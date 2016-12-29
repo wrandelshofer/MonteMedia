@@ -2,7 +2,7 @@
  * Copyright © 2009-2010 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.ilbm;
+package ru.sbtqa.monte.media.ilbm;
 
 import java.util.Arrays;
 

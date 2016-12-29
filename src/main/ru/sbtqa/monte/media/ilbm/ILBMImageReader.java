@@ -2,7 +2,7 @@
  * Copyright © 2009 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.ilbm;
+package ru.sbtqa.monte.media.ilbm;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -14,7 +14,7 @@ import javax.imageio.ImageReader;
 import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.stream.ImageInputStream;
-import org.monte.media.io.ImageInputStreamAdapter;
+import ru.sbtqa.monte.media.io.ImageInputStreamAdapter;
 
 /**
  * Reads an image in the Amiga IFF Interleaved Bitmap image format (ILBM).

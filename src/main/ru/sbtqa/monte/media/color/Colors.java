@@ -2,7 +2,7 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.color;
+package ru.sbtqa.monte.media.color;
 
 import java.awt.image.IndexColorModel;
 import static java.lang.Math.*;

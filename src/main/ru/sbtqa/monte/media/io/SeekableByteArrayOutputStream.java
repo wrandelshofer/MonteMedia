@@ -4,7 +4,7 @@
  * You may only use this software in accordance with the license terms.
  */
 
-package org.monte.media.io;
+package ru.sbtqa.monte.media.io;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

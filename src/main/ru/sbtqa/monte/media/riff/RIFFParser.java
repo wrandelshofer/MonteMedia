@@ -2,11 +2,11 @@
  * Copyright © 2005-2012 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.riff;
+package ru.sbtqa.monte.media.riff;
 
-import org.monte.media.AbortException;
-import org.monte.media.ParseException;
-import org.monte.media.io.ImageInputStreamAdapter;
+import ru.sbtqa.monte.media.AbortException;
+import ru.sbtqa.monte.media.ParseException;
+import ru.sbtqa.monte.media.io.ImageInputStreamAdapter;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;

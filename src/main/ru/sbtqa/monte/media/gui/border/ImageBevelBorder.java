@@ -3,9 +3,9 @@
  * You may only use this software in accordance with the license terms.
  */
 
-package org.monte.media.gui.border;
+package ru.sbtqa.monte.media.gui.border;
 
-import org.monte.media.image.Images;
+import ru.sbtqa.monte.media.image.Images;
 import java.awt.*;
 import javax.swing.border.*;
 import java.awt.image.*;

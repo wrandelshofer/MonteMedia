@@ -6,27 +6,27 @@
  * license agreement you entered into onlyWith Werner Randelshofer. For details
  * see accompanying license terms.
  */
-package org.monte.media.avi;
+package ru.sbtqa.monte.media.avi;
 
 import java.util.EnumSet;
-import org.monte.media.math.Rational;
-import org.monte.media.Format;
-import org.monte.media.Codec;
-import org.monte.media.Buffer;
-import org.monte.media.MovieWriter;
-import org.monte.media.Registry;
-import org.monte.media.io.ByteArrayImageOutputStream;
-import org.monte.media.riff.RIFFParser;
+import ru.sbtqa.monte.media.math.Rational;
+import ru.sbtqa.monte.media.Format;
+import ru.sbtqa.monte.media.Codec;
+import ru.sbtqa.monte.media.Buffer;
+import ru.sbtqa.monte.media.MovieWriter;
+import ru.sbtqa.monte.media.Registry;
+import ru.sbtqa.monte.media.io.ByteArrayImageOutputStream;
+import ru.sbtqa.monte.media.riff.RIFFParser;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.*;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 import javax.imageio.stream.*;
-import static org.monte.media.AudioFormatKeys.*;
-import static org.monte.media.VideoFormatKeys.*;
-import org.monte.media.BufferFlag;
-import static org.monte.media.BufferFlag.*;
+import static ru.sbtqa.monte.media.AudioFormatKeys.*;
+import static ru.sbtqa.monte.media.VideoFormatKeys.*;
+import ru.sbtqa.monte.media.BufferFlag;
+import static ru.sbtqa.monte.media.BufferFlag.*;
 
 /**
  * Provides high-level support for encoding and writing audio and video samples

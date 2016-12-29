@@ -2,7 +2,7 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.avi;
+package ru.sbtqa.monte.media.avi;
 
 import java.awt.image.DataBufferInt;
 import java.awt.image.DataBufferUShort;
@@ -14,18 +14,18 @@ import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
 import java.awt.image.ColorModel;
 import java.util.Hashtable;
-import org.monte.media.Format;
+import ru.sbtqa.monte.media.Format;
 import java.awt.image.WritableRaster;
 import java.awt.Rectangle;
-import org.monte.media.AbstractVideoCodec;
-import org.monte.media.Buffer;
-import org.monte.media.io.SeekableByteArrayOutputStream;
+import ru.sbtqa.monte.media.AbstractVideoCodec;
+import ru.sbtqa.monte.media.Buffer;
+import ru.sbtqa.monte.media.io.SeekableByteArrayOutputStream;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import org.monte.media.BufferFlag;
-import static org.monte.media.VideoFormatKeys.*;
-import static org.monte.media.BufferFlag.*;
-import org.monte.media.io.ByteArrayImageInputStream;
+import ru.sbtqa.monte.media.BufferFlag;
+import static ru.sbtqa.monte.media.VideoFormatKeys.*;
+import static ru.sbtqa.monte.media.BufferFlag.*;
+import ru.sbtqa.monte.media.io.ByteArrayImageInputStream;
 
 /**
  * {@code TechSmithCodec} (tscc) encodes a BufferedImage as a byte[] array. 

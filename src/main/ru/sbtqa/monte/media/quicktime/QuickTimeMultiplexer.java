@@ -3,10 +3,10 @@
  * You may only use this software in accordance with the license terms.
  */
 
-package org.monte.media.quicktime;
+package ru.sbtqa.monte.media.quicktime;
 
-import org.monte.media.Buffer;
-import org.monte.media.Multiplexer;
+import ru.sbtqa.monte.media.Buffer;
+import ru.sbtqa.monte.media.Multiplexer;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;

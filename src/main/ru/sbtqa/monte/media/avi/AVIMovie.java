@@ -2,13 +2,13 @@
  * Copyright © 2013 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.avi;
+package ru.sbtqa.monte.media.avi;
 
-import org.monte.media.anim.*;
-import org.monte.media.AbstractMovie;
-import org.monte.media.Format;
-import org.monte.media.MovieReader;
-import org.monte.media.math.Rational;
+import ru.sbtqa.monte.media.anim.*;
+import ru.sbtqa.monte.media.AbstractMovie;
+import ru.sbtqa.monte.media.Format;
+import ru.sbtqa.monte.media.MovieReader;
+import ru.sbtqa.monte.media.math.Rational;
 
 /**
  * {@code AVIMovie}.

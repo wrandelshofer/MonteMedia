@@ -2,9 +2,9 @@
  * Copyright © 2010 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.tiff;
+package ru.sbtqa.monte.media.tiff;
 
-import static org.monte.media.tiff.TIFFTag.*;
+import static ru.sbtqa.monte.media.tiff.TIFFTag.*;
 
 /**
  * A class representing the set of tags found in the baseline TIFF specification

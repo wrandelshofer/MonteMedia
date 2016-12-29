@@ -2,9 +2,9 @@
  * Copyright © 2009 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.tiff;
+package ru.sbtqa.monte.media.tiff;
 
-import org.monte.media.math.Rational;
+import ru.sbtqa.monte.media.math.Rational;
 import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.FilterInputStream;

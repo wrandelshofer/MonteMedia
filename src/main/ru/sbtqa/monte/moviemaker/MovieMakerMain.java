@@ -5,12 +5,12 @@
 package org.monte.moviemaker;
 
 import javax.swing.UIManager;
-import org.monte.media.math.Rational;
-import org.monte.media.Buffer;
-import org.monte.media.Format;
-import org.monte.media.gui.datatransfer.FileTextFieldTransferHandler;
-import org.monte.media.mp3.MP3AudioInputStream;
-import org.monte.media.quicktime.QuickTimeWriter;
+import ru.sbtqa.monte.media.math.Rational;
+import ru.sbtqa.monte.media.Buffer;
+import ru.sbtqa.monte.media.Format;
+import ru.sbtqa.monte.media.gui.datatransfer.FileTextFieldTransferHandler;
+import ru.sbtqa.monte.media.mp3.MP3AudioInputStream;
+import ru.sbtqa.monte.media.quicktime.QuickTimeWriter;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -36,10 +36,10 @@ import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileSystemView;
 import static java.lang.Math.*;
-import static org.monte.media.FormatKeys.*;
-import static org.monte.media.AudioFormatKeys.*;
-import static org.monte.media.VideoFormatKeys.*;
-import org.monte.media.gui.BackgroundTask;
+import static ru.sbtqa.monte.media.FormatKeys.*;
+import static ru.sbtqa.monte.media.AudioFormatKeys.*;
+import static ru.sbtqa.monte.media.VideoFormatKeys.*;
+import ru.sbtqa.monte.media.gui.BackgroundTask;
 
 /**
  * A demo for the {@link QuickTimeWriter} class.

@@ -2,22 +2,22 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.avi;
+package ru.sbtqa.monte.media.avi;
 
-import org.monte.media.Format;
-import org.monte.media.io.ByteArrayImageOutputStream;
+import ru.sbtqa.monte.media.Format;
+import ru.sbtqa.monte.media.io.ByteArrayImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.WritableRaster;
 import java.awt.Rectangle;
-import org.monte.media.AbstractVideoCodec;
-import org.monte.media.Buffer;
+import ru.sbtqa.monte.media.AbstractVideoCodec;
+import ru.sbtqa.monte.media.Buffer;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteOrder;
 import static java.lang.Math.*;
-import static org.monte.media.VideoFormatKeys.*;
-import static org.monte.media.BufferFlag.*;
+import static ru.sbtqa.monte.media.VideoFormatKeys.*;
+import static ru.sbtqa.monte.media.BufferFlag.*;
 
 /**
  * {@code RunLengthCodec} encodes a BufferedImage as a byte[] array.

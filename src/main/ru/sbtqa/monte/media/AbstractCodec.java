@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.monte.media;
+package ru.sbtqa.monte.media;
 
 import java.util.ArrayList;
 /**

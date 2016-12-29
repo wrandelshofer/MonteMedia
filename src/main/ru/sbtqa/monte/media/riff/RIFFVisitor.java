@@ -2,10 +2,10 @@
  * Copyright © 2005 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.riff;
+package ru.sbtqa.monte.media.riff;
 
-import org.monte.media.AbortException;
-import org.monte.media.ParseException;
+import ru.sbtqa.monte.media.AbortException;
+import ru.sbtqa.monte.media.ParseException;
 
 /**
  * RIFFVIsitor is notified each time the RIFFParser visits

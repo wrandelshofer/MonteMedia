@@ -2,16 +2,16 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.avi;
+package ru.sbtqa.monte.media.avi;
 
-import org.monte.media.AbortException;
-import org.monte.media.Format;
-import org.monte.media.ParseException;
-import org.monte.media.io.ByteArrayImageInputStream;
-import org.monte.media.math.Rational;
-import org.monte.media.riff.RIFFChunk;
-import org.monte.media.riff.RIFFParser;
-import org.monte.media.riff.RIFFVisitor;
+import ru.sbtqa.monte.media.AbortException;
+import ru.sbtqa.monte.media.Format;
+import ru.sbtqa.monte.media.ParseException;
+import ru.sbtqa.monte.media.io.ByteArrayImageInputStream;
+import ru.sbtqa.monte.media.math.Rational;
+import ru.sbtqa.monte.media.riff.RIFFChunk;
+import ru.sbtqa.monte.media.riff.RIFFParser;
+import ru.sbtqa.monte.media.riff.RIFFVisitor;
 import java.awt.Dimension;
 import java.io.EOFException;
 import java.io.File;
@@ -20,8 +20,8 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
-import static org.monte.media.AudioFormatKeys.*;
-import static org.monte.media.VideoFormatKeys.*;
+import static ru.sbtqa.monte.media.AudioFormatKeys.*;
+import static ru.sbtqa.monte.media.VideoFormatKeys.*;
 
 /**
  * Provides low-level support for reading encoded audio and video samples from

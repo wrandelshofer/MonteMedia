@@ -5,7 +5,7 @@
  * license agreement you entered into with Werner Randelshofer. 
  * For details see accompanying license terms.
  */
-package org.monte.media.math;
+package ru.sbtqa.monte.media.math;
 
 import static java.lang.Math.*;
 

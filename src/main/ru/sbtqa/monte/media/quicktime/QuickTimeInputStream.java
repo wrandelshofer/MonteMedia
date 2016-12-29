@@ -2,7 +2,7 @@
  * Copyright © 2012 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.quicktime;
+package ru.sbtqa.monte.media.quicktime;
 
 import java.awt.PageAttributes;
 import java.io.ByteArrayInputStream;
@@ -17,12 +17,12 @@ import java.util.HashSet;
 import java.util.zip.InflaterInputStream;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
-import org.monte.media.FormatKeys;
-import org.monte.media.io.ImageInputStreamAdapter;
-import static org.monte.media.AudioFormatKeys.*;
-import org.monte.media.Format;
-import static org.monte.media.VideoFormatKeys.*;
-import org.monte.media.math.Rational;
+import ru.sbtqa.monte.media.FormatKeys;
+import ru.sbtqa.monte.media.io.ImageInputStreamAdapter;
+import static ru.sbtqa.monte.media.AudioFormatKeys.*;
+import ru.sbtqa.monte.media.Format;
+import static ru.sbtqa.monte.media.VideoFormatKeys.*;
+import ru.sbtqa.monte.media.math.Rational;
 
 /**
  * Provides low-level support for reading encoded audio and video samples from a

@@ -29,7 +29,7 @@ public class MPOImageReaderSpi extends ImageReaderSpi {
               new String[]{"MPO"},//names
               new String[]{"mpo"},//suffixes,
               new String[]{"image/mpo"},// MIMETypes,
-              "org.monte.media.mpo.MPOImageReader",// readerClassName,
+              "ru.sbtqa.monte.media.mpo.MPOImageReader",// readerClassName,
               new Class<?>[]{ImageInputStream.class},// inputTypes,
               null,// writerSpiNames,
               false,// supportsStandardStreamMetadataFormat,

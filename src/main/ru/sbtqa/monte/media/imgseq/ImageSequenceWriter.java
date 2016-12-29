@@ -2,24 +2,24 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.imgseq;
+package ru.sbtqa.monte.media.imgseq;
 
-import org.monte.media.math.Rational;
-import org.monte.media.Buffer;
-import org.monte.media.Codec;
-import org.monte.media.Format;
-import org.monte.media.MovieWriter;
-import org.monte.media.jpeg.JPEGCodec;
-import org.monte.media.png.PNGCodec;
+import ru.sbtqa.monte.media.math.Rational;
+import ru.sbtqa.monte.media.Buffer;
+import ru.sbtqa.monte.media.Codec;
+import ru.sbtqa.monte.media.Format;
+import ru.sbtqa.monte.media.MovieWriter;
+import ru.sbtqa.monte.media.jpeg.JPEGCodec;
+import ru.sbtqa.monte.media.png.PNGCodec;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import static org.monte.media.VideoFormatKeys.*;
-import static org.monte.media.BufferFlag.*;
-import org.monte.media.io.IOStreams;
+import static ru.sbtqa.monte.media.VideoFormatKeys.*;
+import static ru.sbtqa.monte.media.BufferFlag.*;
+import ru.sbtqa.monte.media.io.IOStreams;
 
 /**
  * {@code ImageSequenceWriter}.

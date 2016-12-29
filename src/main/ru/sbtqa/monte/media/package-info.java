@@ -10,13 +10,13 @@
  * 
  * The framework is defined by the following interfaces and classes.
  * 
- * {@link org.monte.media.Player}
- * {@link org.monte.media.Format}
- * {@link org.monte.media.Codec}
- * {@link org.monte.media.Buffer}
- * {@link org.monte.media.MovieWriter}
+ * {@link ru.sbtqa.monte.media.Player}
+ * {@link ru.sbtqa.monte.media.Format}
+ * {@link ru.sbtqa.monte.media.Codec}
+ * {@link ru.sbtqa.monte.media.Buffer}
+ * {@link ru.sbtqa.monte.media.MovieWriter}
  * 
  * 
  * Media writers follow the following design
  */
-package org.monte.media;
+package ru.sbtqa.monte.media;

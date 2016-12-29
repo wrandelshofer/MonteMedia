@@ -2,12 +2,12 @@
  * Copyright © 2006-2013 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.iff;
+package ru.sbtqa.monte.media.iff;
 
 import java.io.*;
 import java.util.*;
 import javax.swing.tree.*;
-import org.monte.media.gui.tree.TreeNodeImpl;
+import ru.sbtqa.monte.media.gui.tree.TreeNodeImpl;
 
 /**
  * MutableIFFChunk.

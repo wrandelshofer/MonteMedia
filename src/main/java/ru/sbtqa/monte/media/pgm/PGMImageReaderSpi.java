@@ -28,7 +28,7 @@ public class PGMImageReaderSpi extends ImageReaderSpi {
               new String[]{"PGM"},//names
               new String[]{"pgm"},//suffixes,
               new String[]{"image/pgm"},// MIMETypes,
-              "org.monte.media.pgm.PGMImageReader",// readerClassName,
+              "ru.sbtqa.monte.media.pgm.PGMImageReader",// readerClassName,
               new Class<?>[]{ImageInputStream.class},// inputTypes,
               null,// writerSpiNames,
               false,// supportsStandardStreamMetadataFormat,

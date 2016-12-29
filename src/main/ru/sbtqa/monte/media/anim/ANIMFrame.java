@@ -2,11 +2,11 @@
  * Copyright © 1999-2013 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.anim;
+package ru.sbtqa.monte.media.anim;
 
 import java.awt.image.ColorModel;
 import java.util.*;
-import org.monte.media.image.BitmapImage;
+import ru.sbtqa.monte.media.image.BitmapImage;
 
 /**
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland

@@ -2,7 +2,7 @@
  * Copyright © 1999-2003 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.iff;
+package ru.sbtqa.monte.media.iff;
 
 import java.io.*;
 

@@ -2,20 +2,20 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.audio;
+package ru.sbtqa.monte.media.audio;
 
-import org.monte.media.AbstractAudioCodec;
-import org.monte.media.Buffer;
-import org.monte.media.Format;
-import org.monte.media.io.ByteArrayImageInputStream;
-import org.monte.media.io.ByteArrayImageOutputStream;
+import ru.sbtqa.monte.media.AbstractAudioCodec;
+import ru.sbtqa.monte.media.Buffer;
+import ru.sbtqa.monte.media.Format;
+import ru.sbtqa.monte.media.io.ByteArrayImageInputStream;
+import ru.sbtqa.monte.media.io.ByteArrayImageOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.nio.ByteOrder;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
-import static org.monte.media.AudioFormatKeys.*;
-import static org.monte.media.BufferFlag.*;
+import static ru.sbtqa.monte.media.AudioFormatKeys.*;
+import static ru.sbtqa.monte.media.BufferFlag.*;
 
 /**
  * {@code PCMAudioCodec} performs sign conversion, endian conversion and

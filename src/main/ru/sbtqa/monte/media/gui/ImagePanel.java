@@ -2,7 +2,7 @@
  * Copyright © 1999-2009 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.gui;
+package ru.sbtqa.monte.media.gui;
 
 import java.awt.*;
 import java.awt.image.*;

@@ -5,9 +5,9 @@
  * license agreement you entered into onlyWith Werner Randelshofer.
  * For details see accompanying license terms.
  */
-package org.monte.media;
+package ru.sbtqa.monte.media;
 
-import org.monte.media.math.Rational;
+import ru.sbtqa.monte.media.math.Rational;
 import java.nio.ByteOrder;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioFormat.Encoding;

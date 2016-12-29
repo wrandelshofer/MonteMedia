@@ -2,11 +2,11 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media;
+package ru.sbtqa.monte.media;
 
 import java.io.File;
 import java.util.ArrayList;
-import static org.monte.media.FormatKeys.*;
+import static ru.sbtqa.monte.media.FormatKeys.*;
 
 /**
  * The {@code Registry} for audio and video codecs.

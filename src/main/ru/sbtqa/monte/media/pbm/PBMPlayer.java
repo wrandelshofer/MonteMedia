@@ -2,15 +2,15 @@
  * Copyright © 2010 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.pbm;
+package ru.sbtqa.monte.media.pbm;
 
-import org.monte.media.gui.ImagePanel;
-import org.monte.media.io.BoundedRangeInputStream;
-import org.monte.media.AbstractPlayer;
-import org.monte.media.gui.JMovieControlAqua;
-import org.monte.media.MovieControl;
-import org.monte.media.ColorCyclePlayer;
-import org.monte.media.ilbm.ColorCyclingMemoryImageSource;
+import ru.sbtqa.monte.media.gui.ImagePanel;
+import ru.sbtqa.monte.media.io.BoundedRangeInputStream;
+import ru.sbtqa.monte.media.AbstractPlayer;
+import ru.sbtqa.monte.media.gui.JMovieControlAqua;
+import ru.sbtqa.monte.media.MovieControl;
+import ru.sbtqa.monte.media.ColorCyclePlayer;
+import ru.sbtqa.monte.media.ilbm.ColorCyclingMemoryImageSource;
 import java.awt.Component;
 import java.awt.image.ColorModel;
 import java.awt.image.ImageProducer;

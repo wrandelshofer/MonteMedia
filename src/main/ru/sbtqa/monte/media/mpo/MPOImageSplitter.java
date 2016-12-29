@@ -2,9 +2,9 @@
  * Copyright © 2011-2012 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.mpo;
+package ru.sbtqa.monte.media.mpo;
 
-import org.monte.media.gui.Worker;
+import ru.sbtqa.monte.media.gui.Worker;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
@@ -19,7 +19,7 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import org.monte.media.gui.BackgroundTask;
+import ru.sbtqa.monte.media.gui.BackgroundTask;
 
 /**
  * MPOImageSplitter.

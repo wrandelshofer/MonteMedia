@@ -2,7 +2,7 @@
  * Copyright © 2009-2013 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.quicktime;
+package ru.sbtqa.monte.media.quicktime;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -10,7 +10,7 @@ import java.nio.ByteOrder;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import javax.imageio.stream.ImageInputStream;
-import org.monte.media.io.FilterImageInputStream;
+import ru.sbtqa.monte.media.io.FilterImageInputStream;
 import static java.lang.Math.*;
 
 /**

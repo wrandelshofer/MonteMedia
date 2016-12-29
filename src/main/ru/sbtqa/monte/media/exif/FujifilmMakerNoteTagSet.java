@@ -2,10 +2,10 @@
  * Copyright © 2010-2011 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.exif;
+package ru.sbtqa.monte.media.exif;
 
-import org.monte.media.tiff.*;
-import static org.monte.media.tiff.TIFFTag.*;
+import ru.sbtqa.monte.media.tiff.*;
+import static ru.sbtqa.monte.media.tiff.TIFFTag.*;
 
 /**
  * Enumeration of Fujifilm MakerNote tags.

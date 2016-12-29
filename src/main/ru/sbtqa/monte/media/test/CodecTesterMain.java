@@ -2,11 +2,11 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.test;
+package ru.sbtqa.monte.media.test;
 
-import org.monte.media.VideoFormatKeys;
-import org.monte.media.avi.AVIWriter;
-import org.monte.media.color.Colors;
+import ru.sbtqa.monte.media.VideoFormatKeys;
+import ru.sbtqa.monte.media.avi.AVIWriter;
+import ru.sbtqa.monte.media.color.Colors;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;

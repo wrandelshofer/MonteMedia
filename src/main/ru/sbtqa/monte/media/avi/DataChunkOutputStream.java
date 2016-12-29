@@ -3,7 +3,7 @@
  * Copyright © 2008-2011 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.avi;
+package ru.sbtqa.monte.media.avi;
 
 import java.io.*;
 

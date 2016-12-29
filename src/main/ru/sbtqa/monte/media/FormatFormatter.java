@@ -2,14 +2,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.monte.media;
+package ru.sbtqa.monte.media;
 
 import java.nio.ByteOrder;
-import static org.monte.media.AudioFormatKeys.*;
-import static org.monte.media.FormatKeys.*;
-import org.monte.media.FormatKeys.MediaType;
-import static org.monte.media.VideoFormatKeys.*;
-import org.monte.media.math.Rational;
+import static ru.sbtqa.monte.media.AudioFormatKeys.*;
+import static ru.sbtqa.monte.media.FormatKeys.*;
+import ru.sbtqa.monte.media.FormatKeys.MediaType;
+import static ru.sbtqa.monte.media.VideoFormatKeys.*;
+import ru.sbtqa.monte.media.math.Rational;
 
 /**
  * {@code FormatFormatter}.

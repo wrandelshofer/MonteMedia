@@ -2,7 +2,7 @@
  * Copyright © 2010-2011 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.jpeg;
+package ru.sbtqa.monte.media.jpeg;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +27,7 @@ public class CMYKJPEGImageReaderSpi extends ImageReaderSpi {
                 new String[]{"JPEG","JPG"},//names
                 new String[]{"jpg"},//suffixes,
                 new String[]{"image/jpg"},// MIMETypes,
-                "org.monte.media.jpeg.CMYKJPEGImageReader",// readerClassName,
+                "ru.sbtqa.monte.media.jpeg.CMYKJPEGImageReader",// readerClassName,
                 new Class<?>[]{ImageInputStream.class,InputStream.class,byte[].class},// inputTypes,
                 null,// writerSpiNames,
                 false,// supportsStandardStreamMetadataFormat,

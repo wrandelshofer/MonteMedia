@@ -2,16 +2,16 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.anim;
+package ru.sbtqa.monte.media.anim;
 
-import org.monte.media.Buffer;
-import org.monte.media.Multiplexer;
-import org.monte.media.image.BitmapImage;
-import org.monte.media.math.Rational;
+import ru.sbtqa.monte.media.Buffer;
+import ru.sbtqa.monte.media.Multiplexer;
+import ru.sbtqa.monte.media.image.BitmapImage;
+import ru.sbtqa.monte.media.math.Rational;
 import java.io.File;
 import java.io.IOException;
 import static java.lang.Math.*;
-import static org.monte.media.BufferFlag.*;
+import static ru.sbtqa.monte.media.BufferFlag.*;
 
 /**
  * {@code ANIMMultiplexer}.

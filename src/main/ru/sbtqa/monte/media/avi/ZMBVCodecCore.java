@@ -2,14 +2,14 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.avi;
+package ru.sbtqa.monte.media.avi;
 
 //import com.jcraft.jzlib.InflaterInputStream;
 import java.util.zip.InflaterInputStream;
 import java.io.IOException;
-import org.monte.media.io.AppendableByteArrayInputStream;
-import org.monte.media.io.ByteArrayImageInputStream;
-import org.monte.media.io.UncachedImageInputStream;
+import ru.sbtqa.monte.media.io.AppendableByteArrayInputStream;
+import ru.sbtqa.monte.media.io.ByteArrayImageInputStream;
+import ru.sbtqa.monte.media.io.UncachedImageInputStream;
 import java.nio.ByteOrder;
 import javax.imageio.stream.ImageInputStream;
 import static java.lang.Math.*;

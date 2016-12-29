@@ -5,7 +5,7 @@
  * license agreement you entered into onlyWith Werner Randelshofer.
  * For details see accompanying license terms.
  */
-package org.monte.media;
+package ru.sbtqa.monte.media;
 
 import java.util.Collections;
 import java.util.HashMap;

@@ -2,13 +2,13 @@
  * Copyright © 2000-2013 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.binary;
+package ru.sbtqa.monte.media.binary;
 
-import org.monte.media.math.ExtendedReal;
-import org.monte.media.io.ByteArrayImageInputStream;
+import ru.sbtqa.monte.media.math.ExtendedReal;
+import ru.sbtqa.monte.media.io.ByteArrayImageInputStream;
 import java.io.*;
-import org.monte.media.ParseException;
-import org.monte.media.io.StreamPosTokenizer;
+import ru.sbtqa.monte.media.ParseException;
+import ru.sbtqa.monte.media.io.StreamPosTokenizer;
 import java.util.*;
 import java.text.*;
 import javax.imageio.stream.ImageInputStream;

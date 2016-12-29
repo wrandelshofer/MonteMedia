@@ -2,17 +2,17 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.converter;
+package ru.sbtqa.monte.media.converter;
 
-import org.monte.media.AbstractVideoCodec;
-import org.monte.media.Buffer;
-import org.monte.media.Format;
+import ru.sbtqa.monte.media.AbstractVideoCodec;
+import ru.sbtqa.monte.media.Buffer;
+import ru.sbtqa.monte.media.Format;
 import java.util.ArrayList;
-import org.monte.media.math.Rational;
+import ru.sbtqa.monte.media.math.Rational;
 import java.awt.image.BufferedImage;
 import static java.lang.Math.*;
-import static org.monte.media.VideoFormatKeys.*;
-import static org.monte.media.BufferFlag.*;
+import static ru.sbtqa.monte.media.VideoFormatKeys.*;
+import static ru.sbtqa.monte.media.BufferFlag.*;
 
 /**
  * This codec converts frames from one frame rate into another.

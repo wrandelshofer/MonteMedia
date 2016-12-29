@@ -2,9 +2,9 @@
  * Copyright © 2010-2013 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.seq;
+package ru.sbtqa.monte.media.seq;
 
-import org.monte.media.ilbm.ColorCycle;
+import ru.sbtqa.monte.media.ilbm.ColorCycle;
 import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
 import java.applet.AudioClip;

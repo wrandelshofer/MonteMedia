@@ -26,9 +26,9 @@ import javafx.scene.layout.BorderPane;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
-import org.monte.media.color.ColorSpaces;
-import org.monte.media.image.Images;
-import org.monte.media.jpeg.CMYKJPEGImageReader;
+import ru.sbtqa.monte.media.color.ColorSpaces;
+import ru.sbtqa.monte.media.image.Images;
+import ru.sbtqa.monte.media.jpeg.CMYKJPEGImageReader;
 
 /**
  * MainFX.

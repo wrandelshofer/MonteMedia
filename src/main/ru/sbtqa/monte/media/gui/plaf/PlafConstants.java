@@ -3,7 +3,7 @@
  * You may only use this software in accordance with the license terms.
  */
 
-package org.monte.media.gui.plaf;
+package ru.sbtqa.monte.media.gui.plaf;
 
 /**
  *

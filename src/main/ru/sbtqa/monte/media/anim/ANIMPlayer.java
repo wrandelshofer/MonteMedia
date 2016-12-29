@@ -2,18 +2,18 @@
  * Copyright © 1999-2013 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.anim;
+package ru.sbtqa.monte.media.anim;
 
-import org.monte.media.MovieControl;
-import org.monte.media.ColorCyclePlayer;
-import org.monte.media.AbstractPlayer;
-import org.monte.media.gui.JMovieControlAqua;
-import org.monte.media.image.BitmapImage;
-import org.monte.media.*;
-import org.monte.media.gui.ImagePanel;
-import org.monte.media.io.BoundedRangeInputStream;
-import org.monte.media.ilbm.ColorCycle;
-import org.monte.media.ilbm.ColorCyclingMemoryImageSource;
+import ru.sbtqa.monte.media.MovieControl;
+import ru.sbtqa.monte.media.ColorCyclePlayer;
+import ru.sbtqa.monte.media.AbstractPlayer;
+import ru.sbtqa.monte.media.gui.JMovieControlAqua;
+import ru.sbtqa.monte.media.image.BitmapImage;
+import ru.sbtqa.monte.media.*;
+import ru.sbtqa.monte.media.gui.ImagePanel;
+import ru.sbtqa.monte.media.io.BoundedRangeInputStream;
+import ru.sbtqa.monte.media.ilbm.ColorCycle;
+import ru.sbtqa.monte.media.ilbm.ColorCyclingMemoryImageSource;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;

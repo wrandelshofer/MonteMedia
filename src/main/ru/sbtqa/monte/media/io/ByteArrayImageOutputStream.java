@@ -8,7 +8,7 @@
  * accordance with the license agreement you entered into with  
  * Werner Randelshofer. For details see accompanying license terms.
  */
-package org.monte.media.io;
+package ru.sbtqa.monte.media.io;
 
 import java.io.OutputStream;
 import javax.imageio.stream.ImageOutputStreamImpl;

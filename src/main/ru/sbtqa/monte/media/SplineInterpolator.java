@@ -39,7 +39,7 @@
  *     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package org.monte.media;
+package ru.sbtqa.monte.media;
 
 import java.awt.geom.Point2D.Float;
 import java.util.Comparator;

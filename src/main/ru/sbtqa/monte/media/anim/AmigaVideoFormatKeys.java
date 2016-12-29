@@ -5,12 +5,12 @@
  * license agreement you entered into onlyWith Werner Randelshofer.
  * For details see accompanying license terms.
  */
-package org.monte.media.anim;
+package ru.sbtqa.monte.media.anim;
 
-import org.monte.media.Format;
-import org.monte.media.FormatKey;
-import org.monte.media.VideoFormatKeys;
-import org.monte.media.math.Rational;
+import ru.sbtqa.monte.media.Format;
+import ru.sbtqa.monte.media.FormatKey;
+import ru.sbtqa.monte.media.VideoFormatKeys;
+import ru.sbtqa.monte.media.math.Rational;
 import java.util.ArrayList;
 import java.util.Iterator;
 

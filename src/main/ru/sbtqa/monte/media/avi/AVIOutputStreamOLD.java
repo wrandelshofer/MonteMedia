@@ -3,9 +3,9 @@
  * Copyright © 2008-2011 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.avi;
+package ru.sbtqa.monte.media.avi;
 
-import org.monte.media.io.ImageOutputStreamAdapter;
+import ru.sbtqa.monte.media.io.ImageOutputStreamAdapter;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import javax.imageio.*;
 import javax.imageio.stream.*;
-import org.monte.media.io.IOStreams;
+import ru.sbtqa.monte.media.io.IOStreams;
 
 /**
  * This class supports writing of images into an AVI 1.0 video file.

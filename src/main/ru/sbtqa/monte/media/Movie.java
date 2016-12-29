@@ -2,9 +2,9 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media;
+package ru.sbtqa.monte.media;
 
-import org.monte.media.math.Rational;
+import ru.sbtqa.monte.media.math.Rational;
 import java.beans.PropertyChangeListener;
 import java.net.URI;
 

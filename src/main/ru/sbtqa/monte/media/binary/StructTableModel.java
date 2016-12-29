@@ -2,7 +2,7 @@
  * Copyright © 2000-2013 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.binary;
+package ru.sbtqa.monte.media.binary;
 
 import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;

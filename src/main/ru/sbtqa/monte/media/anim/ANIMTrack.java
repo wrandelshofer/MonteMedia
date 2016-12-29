@@ -3,14 +3,14 @@
  * You may only use this software in accordance with the license terms.
  */
 
-package org.monte.media.anim;
+package ru.sbtqa.monte.media.anim;
 
 import java.util.EnumSet;
-import org.monte.media.Buffer;
-import org.monte.media.Track;
-import org.monte.media.image.BitmapImage;
-import org.monte.media.math.Rational;
-import static org.monte.media.BufferFlag.*;
+import ru.sbtqa.monte.media.Buffer;
+import ru.sbtqa.monte.media.Track;
+import ru.sbtqa.monte.media.image.BitmapImage;
+import ru.sbtqa.monte.media.math.Rational;
+import static ru.sbtqa.monte.media.BufferFlag.*;
 
 /**
  * {@code ANIMTrack}.

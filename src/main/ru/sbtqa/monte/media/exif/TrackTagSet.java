@@ -3,10 +3,10 @@
  * You may only use this software in accordance with the license terms.
  */
 
-package org.monte.media.exif;
+package ru.sbtqa.monte.media.exif;
 
-import org.monte.media.tiff.TIFFTag;
-import org.monte.media.tiff.TagSet;
+import ru.sbtqa.monte.media.tiff.TIFFTag;
+import ru.sbtqa.monte.media.tiff.TagSet;
 
 /**
  * TrackTagSet.

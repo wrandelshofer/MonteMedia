@@ -6,22 +6,22 @@
 package org.monte.iodemo;
 
 import java.util.ArrayList;
-import org.monte.media.MovieReader;
-import org.monte.media.MovieWriter;
+import ru.sbtqa.monte.media.MovieReader;
+import ru.sbtqa.monte.media.MovieWriter;
 import java.util.HashSet;
-import org.monte.media.Codec;
-import org.monte.media.Buffer;
-import org.monte.media.math.Rational;
-import org.monte.media.Format;
+import ru.sbtqa.monte.media.Codec;
+import ru.sbtqa.monte.media.Buffer;
+import ru.sbtqa.monte.media.math.Rational;
+import ru.sbtqa.monte.media.Format;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.*;
 import java.util.Random;
-import org.monte.media.BufferFlag;
-import org.monte.media.Registry;
-import org.monte.media.image.Images;
-import static org.monte.media.VideoFormatKeys.*;
+import ru.sbtqa.monte.media.BufferFlag;
+import ru.sbtqa.monte.media.Registry;
+import ru.sbtqa.monte.media.image.Images;
+import static ru.sbtqa.monte.media.VideoFormatKeys.*;
 
 /**
  * Demonstrates the use of {@link MovieReader} and {@link MovieWriter}.  This

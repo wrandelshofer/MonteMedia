@@ -2,9 +2,9 @@
  * Copyright © 2001-2011 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.gui.tree;
+package ru.sbtqa.monte.media.gui.tree;
 
-import org.monte.media.util.EnumerationIterator;
+import ru.sbtqa.monte.media.util.EnumerationIterator;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;

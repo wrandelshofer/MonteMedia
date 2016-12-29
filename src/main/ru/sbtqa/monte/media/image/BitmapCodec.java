@@ -2,15 +2,15 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.image;
+package ru.sbtqa.monte.media.image;
 
-import org.monte.media.AbstractVideoCodec;
-import org.monte.media.Buffer;
-import org.monte.media.Codec;
-import org.monte.media.Format;
-import org.monte.media.ilbm.ColorCyclingMemoryImageSource;
-import org.monte.media.ilbm.ILBMDecoder;
-import org.monte.media.pbm.PBMDecoder;
+import ru.sbtqa.monte.media.AbstractVideoCodec;
+import ru.sbtqa.monte.media.Buffer;
+import ru.sbtqa.monte.media.Codec;
+import ru.sbtqa.monte.media.Format;
+import ru.sbtqa.monte.media.ilbm.ColorCyclingMemoryImageSource;
+import ru.sbtqa.monte.media.ilbm.ILBMDecoder;
+import ru.sbtqa.monte.media.pbm.PBMDecoder;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
-import static org.monte.media.VideoFormatKeys.*;
-import static org.monte.media.BufferFlag.*;
+import static ru.sbtqa.monte.media.VideoFormatKeys.*;
+import static ru.sbtqa.monte.media.BufferFlag.*;
 
 /**
  * Decodes media data into a {@code Bitmap}.

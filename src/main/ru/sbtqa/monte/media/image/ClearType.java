@@ -6,7 +6,7 @@
  * Source taken from
  * http://blog.monstuff.com/archives/000022.html
  */
-package org.monte.media.image;
+package ru.sbtqa.monte.media.image;
 
 import java.awt.*;
 import java.awt.geom.*;

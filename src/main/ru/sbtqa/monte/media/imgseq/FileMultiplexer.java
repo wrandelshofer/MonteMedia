@@ -2,18 +2,18 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.imgseq;
+package ru.sbtqa.monte.media.imgseq;
 
-import org.monte.media.Buffer;
-import org.monte.media.Multiplexer;
+import ru.sbtqa.monte.media.Buffer;
+import ru.sbtqa.monte.media.Multiplexer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import static org.monte.media.BufferFlag.*;
-import org.monte.media.io.IOStreams;
+import static ru.sbtqa.monte.media.BufferFlag.*;
+import ru.sbtqa.monte.media.io.IOStreams;
 
 /**
  * Multiplexes samples into individual files.

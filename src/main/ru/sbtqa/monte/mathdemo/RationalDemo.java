@@ -1,6 +1,6 @@
 package org.monte.mathdemo;
 
-import org.monte.media.math.Rational;
+import ru.sbtqa.monte.media.math.Rational;
 
 /**
  * {@code RationalDemo}.

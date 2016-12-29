@@ -2,14 +2,14 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.avi;
+package ru.sbtqa.monte.media.avi;
 
-import org.monte.media.audio.*;
-import org.monte.media.Format;
+import ru.sbtqa.monte.media.audio.*;
+import ru.sbtqa.monte.media.Format;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.HashSet;
-import static org.monte.media.AudioFormatKeys.*;
+import static ru.sbtqa.monte.media.AudioFormatKeys.*;
 
 /**
  * {@code PCMAudioCodec} performs sign conversion, endian conversion and

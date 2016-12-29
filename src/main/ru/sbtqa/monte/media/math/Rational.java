@@ -2,11 +2,11 @@
  * Copyright © 2009-2011 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.math;
+package ru.sbtqa.monte.media.math;
 
 import static java.lang.Math.*;
 import java.math.BigInteger;
-import static org.monte.media.math.IntMath.*;
+import static ru.sbtqa.monte.media.math.IntMath.*;
 
 /**
  * Represents a Rational number {@code numerator/denominator}.  

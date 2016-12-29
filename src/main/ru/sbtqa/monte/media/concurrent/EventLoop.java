@@ -2,7 +2,7 @@
  * Copyright © 2001-2013 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.concurrent;
+package ru.sbtqa.monte.media.concurrent;
 
 import java.util.*;
 /**

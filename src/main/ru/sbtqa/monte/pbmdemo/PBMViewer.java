@@ -27,12 +27,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import org.monte.media.gui.Worker;
-import org.monte.media.ilbm.ColorCyclingMemoryImageSource;
-import org.monte.media.ilbm.ILBMDecoder;
-import org.monte.media.pbm.PBMDecoder;
-import org.monte.media.io.ByteArrayImageInputStream;
-import org.monte.media.io.IOStreams;
+import ru.sbtqa.monte.media.gui.Worker;
+import ru.sbtqa.monte.media.ilbm.ColorCyclingMemoryImageSource;
+import ru.sbtqa.monte.media.ilbm.ILBMDecoder;
+import ru.sbtqa.monte.media.pbm.PBMDecoder;
+import ru.sbtqa.monte.media.io.ByteArrayImageInputStream;
+import ru.sbtqa.monte.media.io.IOStreams;
 
 /**
  * PBM and ILBM Image Viewer.

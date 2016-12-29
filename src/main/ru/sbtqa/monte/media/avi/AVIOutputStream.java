@@ -5,24 +5,24 @@
  *
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.avi;
+package ru.sbtqa.monte.media.avi;
 
 import java.awt.image.ColorModel;
-import org.monte.media.riff.RIFFChunk;
-import org.monte.media.math.Rational;
+import ru.sbtqa.monte.media.riff.RIFFChunk;
+import ru.sbtqa.monte.media.math.Rational;
 import java.util.ArrayList;
-import org.monte.media.Format;
-import org.monte.media.riff.RIFFParser;
+import ru.sbtqa.monte.media.Format;
+import ru.sbtqa.monte.media.riff.RIFFParser;
 import java.awt.Dimension;
 import java.awt.image.IndexColorModel;
 import java.io.*;
 import java.nio.ByteOrder;
 import javax.imageio.stream.*;
 import static java.lang.Math.*;
-import static org.monte.media.FormatKeys.*;
-import static org.monte.media.AudioFormatKeys.*;
-import static org.monte.media.VideoFormatKeys.*;
-import org.monte.media.io.IOStreams;
+import static ru.sbtqa.monte.media.FormatKeys.*;
+import static ru.sbtqa.monte.media.AudioFormatKeys.*;
+import static ru.sbtqa.monte.media.VideoFormatKeys.*;
+import ru.sbtqa.monte.media.io.IOStreams;
 
 /**
  * Provides low-level support for writing already encoded audio and video

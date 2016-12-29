@@ -2,7 +2,7 @@
  * Copyright © 2012 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.math;
+package ru.sbtqa.monte.media.math;
 
 /**
  * {@code LinearEquations}.

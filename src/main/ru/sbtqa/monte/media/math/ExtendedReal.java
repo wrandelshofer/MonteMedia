@@ -2,7 +2,7 @@
  * Copyright © 1999-2000 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.math;
+package ru.sbtqa.monte.media.math;
 
 /**
  * Represents an extended-real number as specified by IEEE 754.

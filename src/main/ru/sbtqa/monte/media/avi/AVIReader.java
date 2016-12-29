@@ -2,30 +2,30 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.avi;
+package ru.sbtqa.monte.media.avi;
 
-import org.monte.media.Codec;
+import ru.sbtqa.monte.media.Codec;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.util.EnumSet;
-import org.monte.media.math.Rational;
-import org.monte.media.Format;
-import org.monte.media.Buffer;
-import org.monte.media.MovieReader;
+import ru.sbtqa.monte.media.math.Rational;
+import ru.sbtqa.monte.media.Format;
+import ru.sbtqa.monte.media.Buffer;
+import ru.sbtqa.monte.media.MovieReader;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.stream.ImageInputStream;
 import static java.lang.Math.*;
 import java.nio.ByteOrder;
 import java.util.Arrays;
-import static org.monte.media.FormatKeys.*;
-import static org.monte.media.AudioFormatKeys.*;
-import static org.monte.media.VideoFormatKeys.*;
-import org.monte.media.BufferFlag;
-import org.monte.media.Registry;
-import static org.monte.media.BufferFlag.*;
-import org.monte.media.io.ByteArrayImageInputStream;
-import org.monte.media.io.ByteArrayImageOutputStream;
+import static ru.sbtqa.monte.media.FormatKeys.*;
+import static ru.sbtqa.monte.media.AudioFormatKeys.*;
+import static ru.sbtqa.monte.media.VideoFormatKeys.*;
+import ru.sbtqa.monte.media.BufferFlag;
+import ru.sbtqa.monte.media.Registry;
+import static ru.sbtqa.monte.media.BufferFlag.*;
+import ru.sbtqa.monte.media.io.ByteArrayImageInputStream;
+import ru.sbtqa.monte.media.io.ByteArrayImageOutputStream;
 
 /**
  * Provides high-level support for decoding and reading audio and video samples

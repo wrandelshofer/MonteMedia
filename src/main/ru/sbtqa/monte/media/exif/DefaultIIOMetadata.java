@@ -3,7 +3,7 @@
  * You may only use this software in accordance with the license terms.
  */
 
-package org.monte.media.exif;
+package ru.sbtqa.monte.media.exif;
 
 import javax.imageio.metadata.IIOInvalidTreeException;
 import javax.imageio.metadata.IIOMetadata;

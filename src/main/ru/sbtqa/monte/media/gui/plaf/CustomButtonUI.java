@@ -3,9 +3,9 @@
  * You may only use this software in accordance with the license terms.
  */
 
-package org.monte.media.gui.plaf;
+package ru.sbtqa.monte.media.gui.plaf;
 
-import org.monte.media.gui.border.BackdropBorder;
+import ru.sbtqa.monte.media.gui.border.BackdropBorder;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.plaf.basic.*;

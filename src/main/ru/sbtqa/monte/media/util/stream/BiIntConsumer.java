@@ -3,7 +3,7 @@
  * You may only use this software in accordance with the license terms.
  */
 
-package org.monte.media.util.stream;
+package ru.sbtqa.monte.media.util.stream;
 
 /**
  * BiIntConsumer.

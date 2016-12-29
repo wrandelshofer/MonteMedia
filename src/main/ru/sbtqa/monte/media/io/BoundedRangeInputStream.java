@@ -2,7 +2,7 @@
  * Copyright © 1999-2011 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.io;
+package ru.sbtqa.monte.media.io;
 
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;

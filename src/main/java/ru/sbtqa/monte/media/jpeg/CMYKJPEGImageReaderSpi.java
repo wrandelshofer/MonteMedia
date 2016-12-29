@@ -26,7 +26,7 @@ public class CMYKJPEGImageReaderSpi extends ImageReaderSpi {
               new String[]{"JPEG", "JPG"},//names
               new String[]{"jpg"},//suffixes,
               new String[]{"image/jpg"},// MIMETypes,
-              "org.monte.media.jpeg.CMYKJPEGImageReader",// readerClassName,
+              "ru.sbtqa.monte.media.jpeg.CMYKJPEGImageReader",// readerClassName,
               new Class<?>[]{ImageInputStream.class, InputStream.class, byte[].class},// inputTypes,
               null,// writerSpiNames,
               false,// supportsStandardStreamMetadataFormat,

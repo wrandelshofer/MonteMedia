@@ -33,7 +33,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.monte.media.beans;
+package ru.sbtqa.monte.media.beans;
 
 import java.beans.*;
 import java.lang.ref.*;

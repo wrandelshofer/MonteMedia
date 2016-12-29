@@ -9,20 +9,20 @@ import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.util.ArrayList;
-import org.monte.media.Buffer;
-import org.monte.media.BufferFlag;
-import org.monte.media.Codec;
-import org.monte.media.Format;
-import org.monte.media.FormatFormatter;
-import org.monte.media.FormatKeys;
-import static org.monte.media.FormatKeys.*;
-import org.monte.media.MovieReader;
-import org.monte.media.MovieWriter;
-import org.monte.media.Registry;
-import org.monte.media.converter.AdjustTimeCodec;
-import org.monte.media.converter.CodecChain;
-import org.monte.media.converter.TrimTimeCodec;
-import org.monte.media.math.Rational;
+import ru.sbtqa.monte.media.Buffer;
+import ru.sbtqa.monte.media.BufferFlag;
+import ru.sbtqa.monte.media.Codec;
+import ru.sbtqa.monte.media.Format;
+import ru.sbtqa.monte.media.FormatFormatter;
+import ru.sbtqa.monte.media.FormatKeys;
+import static ru.sbtqa.monte.media.FormatKeys.*;
+import ru.sbtqa.monte.media.MovieReader;
+import ru.sbtqa.monte.media.MovieWriter;
+import ru.sbtqa.monte.media.Registry;
+import ru.sbtqa.monte.media.converter.AdjustTimeCodec;
+import ru.sbtqa.monte.media.converter.CodecChain;
+import ru.sbtqa.monte.media.converter.TrimTimeCodec;
+import ru.sbtqa.monte.media.math.Rational;
 
 /**
  * Demonstrates how to trim a movie file without re-encoding the entire media

@@ -2,9 +2,9 @@
  * Copyright © 2012 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.converter;
+package ru.sbtqa.monte.media.converter;
 
-import org.monte.media.beans.AbstractBean;
+import ru.sbtqa.monte.media.beans.AbstractBean;
 
 /**
  * {@code DefaultImageAdjustmentModel}.

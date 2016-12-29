@@ -8,7 +8,7 @@
  * accordance with the license agreement you entered into with  
  * Werner Randelshofer. For details see accompanying license terms. 
  */
-package org.monte.media;
+package ru.sbtqa.monte.media;
 
 import java.awt.geom.Point2D;
 import java.util.Arrays;

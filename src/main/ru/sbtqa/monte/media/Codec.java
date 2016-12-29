@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.monte.media;
+package ru.sbtqa.monte.media;
 
 /**
  * A {@code Codec} processes a {@code Buffer} and stores the result in another

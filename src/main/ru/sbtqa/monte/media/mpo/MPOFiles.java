@@ -3,10 +3,10 @@
  * You may only use this software in accordance with the license terms.
  */
 
-package org.monte.media.mpo;
+package ru.sbtqa.monte.media.mpo;
 
-import org.monte.media.jpeg.JFIFInputStream;
-import org.monte.media.jpeg.JFIFOutputStream;
+import ru.sbtqa.monte.media.jpeg.JFIFInputStream;
+import ru.sbtqa.monte.media.jpeg.JFIFOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;

@@ -2,14 +2,14 @@
  * Copyright © 2003-2012 Werner Randelshofer, Switzerland.
  * You may only use this file in compliance with the accompanying license terms. 
  */
-package org.monte.media.gui;
+package ru.sbtqa.monte.media.gui;
 
-import org.monte.media.ColorCyclePlayer;
-import org.monte.media.Player;
-import org.monte.media.MovieControl;
-import org.monte.media.gui.border.*;
-import org.monte.media.gui.plaf.CustomButtonUI;
-import org.monte.media.image.Images;
+import ru.sbtqa.monte.media.ColorCyclePlayer;
+import ru.sbtqa.monte.media.Player;
+import ru.sbtqa.monte.media.MovieControl;
+import ru.sbtqa.monte.media.gui.border.*;
+import ru.sbtqa.monte.media.gui.plaf.CustomButtonUI;
+import ru.sbtqa.monte.media.image.Images;
 import java.awt.*;
 import java.beans.*;
 import javax.swing.*;
@@ -52,7 +52,7 @@ public class JMovieControlAqua extends JComponent
         setLayout(gridbag);
         GridBagConstraints c;
 
-        ResourceBundle labels = ResourceBundle.getBundle("org.monte.media.Labels");
+        ResourceBundle labels = ResourceBundle.getBundle("ru.sbtqa.monte.media.Labels");
         colorCyclingButton = new JToggleButton();
         colorCyclingButton.setToolTipText(labels.getString("colorCycling.toolTipText"));
         colorCyclingButton.addActionListener(this);

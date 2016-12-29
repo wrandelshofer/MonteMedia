@@ -2,12 +2,12 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.gui;
+package ru.sbtqa.monte.media.gui;
 
-import org.monte.media.Movie;
-import org.monte.media.gui.border.ImageBevelBorder;
-import org.monte.media.image.Images;
-import org.monte.media.math.Rational;
+import ru.sbtqa.monte.media.Movie;
+import ru.sbtqa.monte.media.gui.border.ImageBevelBorder;
+import ru.sbtqa.monte.media.image.Images;
+import ru.sbtqa.monte.media.math.Rational;
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.image.BufferedImage;
@@ -126,7 +126,7 @@ public class JMovieControlPanel extends javax.swing.JPanel {
         java.awt.GridBagConstraints gridBagConstraints;
 
         timeLabel = new javax.swing.JLabel();
-        timelineEditor = new org.monte.media.gui.JTimelineEditor();
+        timelineEditor = new ru.sbtqa.monte.media.gui.JTimelineEditor();
 
         FormListener formListener = new FormListener();
 
@@ -188,7 +188,7 @@ private void timeLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 }//GEN-LAST:event_timeLabelMouseClicked
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel timeLabel;
-    private org.monte.media.gui.JTimelineEditor timelineEditor;
+    private ru.sbtqa.monte.media.gui.JTimelineEditor timelineEditor;
     // End of variables declaration//GEN-END:variables
 
     public void setMovie(Movie movie) {

@@ -2,9 +2,9 @@
  * Copyright © 2004-2011 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.image;
+package ru.sbtqa.monte.media.image;
 
-import org.monte.media.ilbm.HAMColorModel;
+import ru.sbtqa.monte.media.ilbm.HAMColorModel;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.DataBufferByte;

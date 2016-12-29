@@ -2,7 +2,7 @@
  * Copyright © 2014 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.color;
+package ru.sbtqa.monte.media.color;
 
 import java.awt.color.ColorSpace;
 import java.awt.color.ICC_ColorSpace;

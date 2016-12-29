@@ -2,11 +2,11 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.anim;
+package ru.sbtqa.monte.media.anim;
 
-import org.monte.media.seq.SEQMovieTrack;
-import org.monte.media.seq.*;
-import org.monte.media.image.BitmapImage;
+import ru.sbtqa.monte.media.seq.SEQMovieTrack;
+import ru.sbtqa.monte.media.seq.*;
+import ru.sbtqa.monte.media.image.BitmapImage;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;

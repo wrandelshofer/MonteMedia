@@ -2,10 +2,10 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.imgseq;
+package ru.sbtqa.monte.media.imgseq;
 
-import org.monte.media.Demultiplexer;
-import org.monte.media.Track;
+import ru.sbtqa.monte.media.Demultiplexer;
+import ru.sbtqa.monte.media.Track;
 import java.io.IOException;
 
 /**

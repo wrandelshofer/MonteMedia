@@ -32,7 +32,7 @@ public class ILBMImageReaderSpi extends ImageReaderSpi {
               new String[]{"ILBM"},//names
               new String[]{"ilbm", "lbm", ""},//suffixes,
               new String[]{"image/ilbm"},// MIMETypes,
-              "org.monte.media.ilbm.ILBMImageReader",// readerClassName,
+              "ru.sbtqa.monte.media.ilbm.ILBMImageReader",// readerClassName,
               new Class<?>[]{ImageInputStream.class},// inputTypes,
               null,// writerSpiNames,
               false,// supportsStandardStreamMetadataFormat,

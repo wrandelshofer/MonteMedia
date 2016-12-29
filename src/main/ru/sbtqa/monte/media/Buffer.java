@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.monte.media;
+package ru.sbtqa.monte.media;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -11,8 +11,8 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.monte.media.math.Rational;
-import org.monte.media.util.Methods;
+import ru.sbtqa.monte.media.math.Rational;
+import ru.sbtqa.monte.media.util.Methods;
 
 /**
  * A {@code Buffer} carries media data from one media processing unit to another.

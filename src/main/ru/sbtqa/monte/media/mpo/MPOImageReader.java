@@ -2,18 +2,18 @@
  * Copyright © 2009-2011 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.mpo;
+package ru.sbtqa.monte.media.mpo;
 
-import org.monte.media.io.SubImageInputStream;
-import org.monte.media.exif.DefaultIIOMetadata;
-import org.monte.media.exif.EXIFReader;
-import org.monte.media.exif.EXIFTagSet;
-import org.monte.media.exif.MPEntryTagSet;
-import org.monte.media.exif.MPFTagSet;
-import org.monte.media.tiff.TIFFDirectory;
-import org.monte.media.tiff.TIFFField;
-import org.monte.media.tiff.TIFFNode;
-import org.monte.media.tiff.TIFFTag;
+import ru.sbtqa.monte.media.io.SubImageInputStream;
+import ru.sbtqa.monte.media.exif.DefaultIIOMetadata;
+import ru.sbtqa.monte.media.exif.EXIFReader;
+import ru.sbtqa.monte.media.exif.EXIFTagSet;
+import ru.sbtqa.monte.media.exif.MPEntryTagSet;
+import ru.sbtqa.monte.media.exif.MPFTagSet;
+import ru.sbtqa.monte.media.tiff.TIFFDirectory;
+import ru.sbtqa.monte.media.tiff.TIFFField;
+import ru.sbtqa.monte.media.tiff.TIFFNode;
+import ru.sbtqa.monte.media.tiff.TIFFTag;
 import java.awt.image.BufferedImage;
 import java.awt.image.DirectColorModel;
 import java.io.IOException;
@@ -25,8 +25,8 @@ import javax.imageio.ImageReader;
 import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.stream.ImageInputStream;
-import org.monte.media.jpeg.CMYKJPEGImageReader;
-import org.monte.media.tiff.BaselineTagSet;
+import ru.sbtqa.monte.media.jpeg.CMYKJPEGImageReader;
+import ru.sbtqa.monte.media.tiff.BaselineTagSet;
 
 /**
  * Reads an image in the MultiPicture Object format (MPO).

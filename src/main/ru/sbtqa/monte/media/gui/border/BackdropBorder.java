@@ -3,7 +3,7 @@
  * You may only use this file in compliance with the accompanying license terms. 
  */
 
-package org.monte.media.gui.border;
+package ru.sbtqa.monte.media.gui.border;
 
 import java.awt.*;
 import javax.swing.*;

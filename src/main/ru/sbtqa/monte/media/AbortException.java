@@ -2,7 +2,7 @@
  * Copyright © 1999-2012 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media;
+package ru.sbtqa.monte.media;
 
 /**
  * This exception is thrown when the production of an image

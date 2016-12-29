@@ -2,18 +2,18 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.gui;
+package ru.sbtqa.monte.media.gui;
 
-import org.monte.media.Movie;
-import org.monte.media.math.Rational;
+import ru.sbtqa.monte.media.Movie;
+import ru.sbtqa.monte.media.math.Rational;
 import java.awt.Window;
 import java.awt.Component;
 import javax.swing.ImageIcon;
 import javax.swing.Icon;
-import org.monte.media.gui.border.ImageBevelBorder;
+import ru.sbtqa.monte.media.gui.border.ImageBevelBorder;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import org.monte.media.image.Images;
+import ru.sbtqa.monte.media.image.Images;
 import javax.swing.border.Border;
 import java.awt.Color;
 import java.awt.event.FocusEvent;

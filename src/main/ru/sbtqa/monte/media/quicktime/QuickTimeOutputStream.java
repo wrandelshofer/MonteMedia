@@ -2,12 +2,12 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.quicktime;
+package ru.sbtqa.monte.media.quicktime;
 
 import java.awt.image.ColorModel;
-import org.monte.media.Format;
-import org.monte.media.io.ImageOutputStreamAdapter;
-import org.monte.media.math.Rational;
+import ru.sbtqa.monte.media.Format;
+import ru.sbtqa.monte.media.io.ImageOutputStreamAdapter;
+import ru.sbtqa.monte.media.math.Rational;
 import java.awt.image.IndexColorModel;
 import java.io.*;
 import java.nio.ByteOrder;
@@ -15,9 +15,9 @@ import java.util.Date;
 import java.util.zip.DeflaterOutputStream;
 import javax.imageio.stream.*;
 import static java.lang.Math.*;
-import static org.monte.media.VideoFormatKeys.*;
-import static org.monte.media.AudioFormatKeys.*;
-import org.monte.media.io.IOStreams;
+import static ru.sbtqa.monte.media.VideoFormatKeys.*;
+import static ru.sbtqa.monte.media.AudioFormatKeys.*;
+import ru.sbtqa.monte.media.io.IOStreams;
 
 /**
  * This class provides low-level support for writing already encoded audio and

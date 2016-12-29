@@ -2,7 +2,7 @@
  * Copyright © 2010 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media;
+package ru.sbtqa.monte.media;
 
 /**
  * A {@link Player} which supports a second layer of animation by cycling colors

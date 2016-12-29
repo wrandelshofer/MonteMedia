@@ -2,7 +2,7 @@
  * Copyright © 2013 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.quicktime;
+package ru.sbtqa.monte.media.quicktime;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -16,13 +16,13 @@ import java.util.Locale;
 import java.util.zip.InflaterInputStream;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
-import org.monte.media.FormatKeys;
-import org.monte.media.FormatKeys.MediaType;
+import ru.sbtqa.monte.media.FormatKeys;
+import ru.sbtqa.monte.media.FormatKeys.MediaType;
 import static java.lang.Math.*;
 import java.util.ArrayList;
 import java.util.Stack;
-import org.monte.media.io.ByteArrayImageInputStream;
-import static org.monte.media.math.MathUtils.*;
+import ru.sbtqa.monte.media.io.ByteArrayImageInputStream;
+import static ru.sbtqa.monte.media.math.MathUtils.*;
 
 /**
  * {@code QuickTimeDeserializer}.

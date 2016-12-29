@@ -15,10 +15,10 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
-import org.monte.media.AudioFormatKeys;
-import org.monte.media.Buffer;
-import org.monte.media.math.Rational;
-import org.monte.media.avi.AVIWriter;
+import ru.sbtqa.monte.media.AudioFormatKeys;
+import ru.sbtqa.monte.media.Buffer;
+import ru.sbtqa.monte.media.math.Rational;
+import ru.sbtqa.monte.media.avi.AVIWriter;
 
 /**
  * {@code AudioRecorder} records audio into an AVI file.

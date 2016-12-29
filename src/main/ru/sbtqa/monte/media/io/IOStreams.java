@@ -2,7 +2,7 @@
  * Copyright (c) 2016 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.io;
+package ru.sbtqa.monte.media.io;
 
 import java.io.File;
 import java.io.IOException;

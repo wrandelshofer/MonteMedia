@@ -3,13 +3,13 @@
  * Copyright © 2010 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.anim;
+package ru.sbtqa.monte.media.anim;
 
 import java.util.Map;
 import java.util.HashMap;
-import org.monte.media.image.BitmapImage;
-import org.monte.media.io.SeekableByteArrayOutputStream;
-import org.monte.media.iff.IFFOutputStream;
+import ru.sbtqa.monte.media.image.BitmapImage;
+import ru.sbtqa.monte.media.io.SeekableByteArrayOutputStream;
+import ru.sbtqa.monte.media.iff.IFFOutputStream;
 import java.awt.image.IndexColorModel;
 import java.io.File;
 import java.io.IOException;

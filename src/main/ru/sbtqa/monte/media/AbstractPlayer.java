@@ -2,10 +2,10 @@
  * Copyright © 1999-2011 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media;
+package ru.sbtqa.monte.media;
 
 
-import org.monte.media.concurrent.SequentialDispatcher;
+import ru.sbtqa.monte.media.concurrent.SequentialDispatcher;
 import java.beans.*;
 
 import javax.swing.event.*;

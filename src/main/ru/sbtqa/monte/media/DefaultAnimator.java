@@ -10,7 +10,7 @@
  * Werner Randelshofer. For details see accompanying license terms. 
  */
 
-package org.monte.media;
+package ru.sbtqa.monte.media;
 
 import java.util.*;
 import javax.swing.event.*;

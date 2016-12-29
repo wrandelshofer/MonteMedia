@@ -2,9 +2,9 @@
  * Copyright © 2010 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.tiff;
+package ru.sbtqa.monte.media.tiff;
 
-import org.monte.media.math.Rational;
+import ru.sbtqa.monte.media.math.Rational;
 
 /**
  * A class defining the notion of a TIFF tag. A TIFF tag is a key that may

@@ -2,21 +2,21 @@
  * Copyright © 2012 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.quicktime;
+package ru.sbtqa.monte.media.quicktime;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.stream.ImageInputStream;
-import org.monte.media.Buffer;
-import static org.monte.media.BufferFlag.*;
-import org.monte.media.Codec;
-import org.monte.media.Format;
-import org.monte.media.FormatKeys.MediaType;
-import org.monte.media.MovieReader;
-import org.monte.media.Registry;
-import static org.monte.media.VideoFormatKeys.*;
-import org.monte.media.math.Rational;
+import ru.sbtqa.monte.media.Buffer;
+import static ru.sbtqa.monte.media.BufferFlag.*;
+import ru.sbtqa.monte.media.Codec;
+import ru.sbtqa.monte.media.Format;
+import ru.sbtqa.monte.media.FormatKeys.MediaType;
+import ru.sbtqa.monte.media.MovieReader;
+import ru.sbtqa.monte.media.Registry;
+import static ru.sbtqa.monte.media.VideoFormatKeys.*;
+import ru.sbtqa.monte.media.math.Rational;
 
 /**
  * {@code QuickTimeReader}.

@@ -2,9 +2,9 @@
  * Copyright © 2009 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.avi;
+package ru.sbtqa.monte.media.avi;
 
-import org.monte.media.io.ImageInputStreamAdapter;
+import ru.sbtqa.monte.media.io.ImageInputStreamAdapter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;

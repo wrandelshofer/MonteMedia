@@ -2,7 +2,7 @@
  * Copyright © 2010-2011 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.jpeg;
+package ru.sbtqa.monte.media.jpeg;
 
 import java.awt.color.ICC_Profile;
 import java.awt.image.BufferedImage;
@@ -22,15 +22,15 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.spi.ImageReaderSpi;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.MemoryCacheImageInputStream;
-import org.monte.media.image.CMYKImages;
-import static org.monte.media.image.CMYKImages.createImageFromInvertedCMYK;
-import static org.monte.media.image.CMYKImages.createImageFromInvertedYCCK;
-import static org.monte.media.image.CMYKImages.createImageFromRGB;
-import static org.monte.media.image.CMYKImages.createImageFromYCC;
-import static org.monte.media.image.CMYKImages.createImageFromYCCK;
-import org.monte.media.io.ByteArrayImageInputStream;
-import org.monte.media.io.IOStreams;
-import org.monte.media.io.ImageInputStreamAdapter;
+import ru.sbtqa.monte.media.image.CMYKImages;
+import static ru.sbtqa.monte.media.image.CMYKImages.createImageFromInvertedCMYK;
+import static ru.sbtqa.monte.media.image.CMYKImages.createImageFromInvertedYCCK;
+import static ru.sbtqa.monte.media.image.CMYKImages.createImageFromRGB;
+import static ru.sbtqa.monte.media.image.CMYKImages.createImageFromYCC;
+import static ru.sbtqa.monte.media.image.CMYKImages.createImageFromYCCK;
+import ru.sbtqa.monte.media.io.ByteArrayImageInputStream;
+import ru.sbtqa.monte.media.io.IOStreams;
+import ru.sbtqa.monte.media.io.ImageInputStreamAdapter;
 
 /**
  * Reads a JPEG image with colors in the CMYK color space.

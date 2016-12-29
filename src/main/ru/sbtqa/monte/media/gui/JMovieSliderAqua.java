@@ -2,7 +2,7 @@
  * Copyright © 2003-2009 Werner Randelshofer, Switzerland.
  * You may only use this file in compliance with the accompanying license terms. 
  */
-package org.monte.media.gui;
+package ru.sbtqa.monte.media.gui;
 
 import java.awt.Image;
 import java.awt.MediaTracker;
@@ -13,7 +13,7 @@ import java.awt.Graphics;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
-import org.monte.media.image.Images;
+import ru.sbtqa.monte.media.image.Images;
 
 /**
  * MovieSliderAqua.

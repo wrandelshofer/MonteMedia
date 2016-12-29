@@ -2,9 +2,9 @@
  * Copyright © 2010-2011 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.jpeg;
+package ru.sbtqa.monte.media.jpeg;
 
-import org.monte.media.avi.AVIBMPDIB;
+import ru.sbtqa.monte.media.avi.AVIBMPDIB;
 import java.awt.image.BufferedImage;
 import java.awt.image.DirectColorModel;
 import java.io.IOException;

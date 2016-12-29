@@ -2,7 +2,7 @@
  * Copyright © 2001-2010 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.gui;
+package ru.sbtqa.monte.media.gui;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;

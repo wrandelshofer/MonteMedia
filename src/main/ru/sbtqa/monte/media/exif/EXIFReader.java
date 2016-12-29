@@ -2,29 +2,29 @@
  * Copyright © 2009-2011 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.exif;
+package ru.sbtqa.monte.media.exif;
 
-import org.monte.media.io.ImageInputStreamAdapter;
-import org.monte.media.io.ByteArrayImageInputStream;
-import org.monte.media.jpeg.JFIFInputStream;
-import org.monte.media.jpeg.JFIFInputStream.Segment;
-import org.monte.media.riff.RIFFChunk;
-import org.monte.media.riff.RIFFParser;
-import org.monte.media.riff.RIFFVisitor;
-import org.monte.media.tiff.FileSegment;
-import org.monte.media.tiff.BaselineTagSet;
-import org.monte.media.tiff.IFDDataType;
-import org.monte.media.tiff.IFD;
-import org.monte.media.tiff.IFDEntry;
-import org.monte.media.math.Rational;
-import org.monte.media.tiff.TIFFDirectory;
-import org.monte.media.tiff.TIFFField;
-import org.monte.media.tiff.TIFFInputStream;
-import org.monte.media.tiff.TIFFNode;
-import org.monte.media.tiff.TIFFTag;
-import org.monte.media.tiff.TagSet;
-import org.monte.media.AbortException;
-import org.monte.media.ParseException;
+import ru.sbtqa.monte.media.io.ImageInputStreamAdapter;
+import ru.sbtqa.monte.media.io.ByteArrayImageInputStream;
+import ru.sbtqa.monte.media.jpeg.JFIFInputStream;
+import ru.sbtqa.monte.media.jpeg.JFIFInputStream.Segment;
+import ru.sbtqa.monte.media.riff.RIFFChunk;
+import ru.sbtqa.monte.media.riff.RIFFParser;
+import ru.sbtqa.monte.media.riff.RIFFVisitor;
+import ru.sbtqa.monte.media.tiff.FileSegment;
+import ru.sbtqa.monte.media.tiff.BaselineTagSet;
+import ru.sbtqa.monte.media.tiff.IFDDataType;
+import ru.sbtqa.monte.media.tiff.IFD;
+import ru.sbtqa.monte.media.tiff.IFDEntry;
+import ru.sbtqa.monte.media.math.Rational;
+import ru.sbtqa.monte.media.tiff.TIFFDirectory;
+import ru.sbtqa.monte.media.tiff.TIFFField;
+import ru.sbtqa.monte.media.tiff.TIFFInputStream;
+import ru.sbtqa.monte.media.tiff.TIFFNode;
+import ru.sbtqa.monte.media.tiff.TIFFTag;
+import ru.sbtqa.monte.media.tiff.TagSet;
+import ru.sbtqa.monte.media.AbortException;
+import ru.sbtqa.monte.media.ParseException;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;

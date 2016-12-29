@@ -2,10 +2,10 @@
  * Copyright © 1999-2005 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media;
+package ru.sbtqa.monte.media;
 
-import org.monte.media.StateEvent;
-import org.monte.media.StateListener;
+import ru.sbtqa.monte.media.StateEvent;
+import ru.sbtqa.monte.media.StateListener;
 
 /**
  * Tracks state changes in a StateModel.

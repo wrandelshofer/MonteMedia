@@ -10,4 +10,4 @@
  * Provides classes for reading MP3 elementary streams.
  */
 
-package org.monte.media.mp3;
+package ru.sbtqa.monte.media.mp3;

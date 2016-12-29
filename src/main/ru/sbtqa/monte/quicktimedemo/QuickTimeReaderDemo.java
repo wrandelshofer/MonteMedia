@@ -2,8 +2,8 @@ package org.monte.quicktimedemo;
 
 import java.io.File;
 import java.net.URI;
-import org.monte.media.quicktime.QuickTimeDeserializer;
-import org.monte.media.quicktime.QuickTimeMeta;
+import ru.sbtqa.monte.media.quicktime.QuickTimeDeserializer;
+import ru.sbtqa.monte.media.quicktime.QuickTimeMeta;
 
 /**
  * {@code QuickTimeReaderDemo}.

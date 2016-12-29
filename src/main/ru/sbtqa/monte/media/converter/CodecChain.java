@@ -2,11 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.monte.media.converter;
+package ru.sbtqa.monte.media.converter;
 
-import org.monte.media.Buffer;
-import org.monte.media.Codec;
-import org.monte.media.Format;
+import ru.sbtqa.monte.media.Buffer;
+import ru.sbtqa.monte.media.Codec;
+import ru.sbtqa.monte.media.Format;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

@@ -6,16 +6,16 @@
  * For details see accompanying license terms.
  */
 
-package org.monte.media.seq;
+package ru.sbtqa.monte.media.seq;
 
-import org.monte.media.Buffer;
-import org.monte.media.Track;
-import org.monte.media.Format;
-import org.monte.media.image.BitmapImage;
-import org.monte.media.math.Rational;
+import ru.sbtqa.monte.media.Buffer;
+import ru.sbtqa.monte.media.Track;
+import ru.sbtqa.monte.media.Format;
+import ru.sbtqa.monte.media.image.BitmapImage;
+import ru.sbtqa.monte.media.math.Rational;
 import java.io.IOException;
-import static org.monte.media.VideoFormatKeys.*;
-import static org.monte.media.BufferFlag.*;
+import static ru.sbtqa.monte.media.VideoFormatKeys.*;
+import static ru.sbtqa.monte.media.BufferFlag.*;
 
 /**
  * {@code SEQTrack}.

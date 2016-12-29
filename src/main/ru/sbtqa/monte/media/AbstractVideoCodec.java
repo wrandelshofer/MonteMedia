@@ -2,7 +2,7 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media;
+package ru.sbtqa.monte.media;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -15,7 +15,7 @@ import java.awt.image.DirectColorModel;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
 import javax.imageio.stream.ImageOutputStream;
-import static org.monte.media.VideoFormatKeys.*;
+import static ru.sbtqa.monte.media.VideoFormatKeys.*;
 
 /**
  * {@code AbstractVideoCodec}.

@@ -75,136 +75,136 @@ public class DefaultRegistry extends Registry {
         putCodec(
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_ANIM, EncodingKey, ENCODING_BITMAP_IMAGE),
-              "org.monte.media.anim.BitmapCodec");
+              "ru.sbtqa.monte.media.anim.BitmapCodec");
 
         // AVI
         // --------
         putBidiCodec(
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_DIB),
-              "org.monte.media.avi.DIBCodec");
+              "ru.sbtqa.monte.media.avi.DIBCodec");
 
         putBidiCodec(
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_MJPG),
-              "org.monte.media.jpeg.JPEGCodec");
+              "ru.sbtqa.monte.media.jpeg.JPEGCodec");
 
         putBidiCodec(
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_PNG),
-              "org.monte.media.png.PNGCodec");
+              "ru.sbtqa.monte.media.png.PNGCodec");
 
         putBidiCodec(
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_RLE8),
-              "org.monte.media.avi.RunLengthCodec");
+              "ru.sbtqa.monte.media.avi.RunLengthCodec");
         putBidiCodec(
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_RLE4),
-              "org.monte.media.avi.RunLengthCodec");
+              "ru.sbtqa.monte.media.avi.RunLengthCodec");
 
         putBidiCodec(
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE),
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
-              "org.monte.media.avi.TechSmithCodec");
+              "ru.sbtqa.monte.media.avi.TechSmithCodec");
 
         putCodec(
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_DOSBOX_SCREEN_CAPTURE),
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
-              "org.monte.media.avi.ZMBVCodec");
+              "ru.sbtqa.monte.media.avi.ZMBVCodec");
 
         putBidiCodec(
               new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_SIGNED),
               new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_PCM),
-              "org.monte.media.avi.AVIPCMAudioCodec");
+              "ru.sbtqa.monte.media.avi.AVIPCMAudioCodec");
         putBidiCodec(
               new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_UNSIGNED),
               new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_PCM),
-              "org.monte.media.avi.AVIPCMAudioCodec");
+              "ru.sbtqa.monte.media.avi.AVIPCMAudioCodec");
 
         // QuickTime
         // --------
         putCodec(
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_RAW),
-              "org.monte.media.quicktime.RawCodec");
+              "ru.sbtqa.monte.media.quicktime.RawCodec");
 
         putCodec(
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_ANIMATION),
-              "org.monte.media.quicktime.AnimationCodec");
+              "ru.sbtqa.monte.media.quicktime.AnimationCodec");
 
         putBidiCodec(
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_JPEG),
-              "org.monte.media.jpeg.JPEGCodec");
+              "ru.sbtqa.monte.media.jpeg.JPEGCodec");
         putBidiCodec(
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI, EncodingKey, ENCODING_AVI_MJPG),
-              "org.monte.media.jpeg.JPEGCodec");
+              "ru.sbtqa.monte.media.jpeg.JPEGCodec");
 
         putBidiCodec(
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_PNG),
-              "org.monte.media.png.PNGCodec");
+              "ru.sbtqa.monte.media.png.PNGCodec");
 
         putBidiCodec(
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
                     EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE),
               new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE),
-              "org.monte.media.avi.TechSmithCodec");
+              "ru.sbtqa.monte.media.avi.TechSmithCodec");
 
         putCodec(
               new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_SIGNED),
               new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_TWOS_PCM),
-              "org.monte.media.quicktime.QuickTimePCMAudioCodec");
+              "ru.sbtqa.monte.media.quicktime.QuickTimePCMAudioCodec");
         putCodec(
               new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_UNSIGNED),
               new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_TWOS_PCM),
-              "org.monte.media.quicktime.QuickTimePCMAudioCodec");
+              "ru.sbtqa.monte.media.quicktime.QuickTimePCMAudioCodec");
 
         putCodec(
               new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_SIGNED),
               new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_SOWT_PCM),
-              "org.monte.media.quicktime.QuickTimePCMAudioCodec");
+              "ru.sbtqa.monte.media.quicktime.QuickTimePCMAudioCodec");
         putCodec(
               new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_UNSIGNED),
               new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_SOWT_PCM),
-              "org.monte.media.quicktime.QuickTimePCMAudioCodec");
+              "ru.sbtqa.monte.media.quicktime.QuickTimePCMAudioCodec");
 
         putBidiCodec(
               new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_SIGNED),
               new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_IN24_PCM),
-              "org.monte.media.quicktime.QuickTimePCMAudioCodec");
+              "ru.sbtqa.monte.media.quicktime.QuickTimePCMAudioCodec");
         putBidiCodec(
               new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_UNSIGNED),
               new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_IN24_PCM),
-              "org.monte.media.quicktime.QuickTimePCMAudioCodec");
+              "ru.sbtqa.monte.media.quicktime.QuickTimePCMAudioCodec");
 
         putBidiCodec(
               new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_SIGNED),
               new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_IN32_PCM),
-              "org.monte.media.quicktime.QuickTimePCMAudioCodec");
+              "ru.sbtqa.monte.media.quicktime.QuickTimePCMAudioCodec");
         putBidiCodec(
               new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_UNSIGNED),
               new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_IN32_PCM),
-              "org.monte.media.quicktime.QuickTimePCMAudioCodec");
+              "ru.sbtqa.monte.media.quicktime.QuickTimePCMAudioCodec");
 
         putBidiCodec(
               new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_SIGNED),
               new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_RAW_PCM),
-              "org.monte.media.quicktime.QuickTimePCMAudioCodec");
+              "ru.sbtqa.monte.media.quicktime.QuickTimePCMAudioCodec");
         putBidiCodec(
               new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_PCM_UNSIGNED),
               new Format(MediaTypeKey, MediaType.AUDIO, MimeTypeKey, MIME_QUICKTIME, EncodingKey, ENCODING_QUICKTIME_RAW_PCM),
-              "org.monte.media.quicktime.QuickTimePCMAudioCodec");
+              "ru.sbtqa.monte.media.quicktime.QuickTimePCMAudioCodec");
 
-        putReader(new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_AVI), "org.monte.media.avi.AVIReader");
-        putReader(new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_QUICKTIME), "org.monte.media.quicktime.QuickTimeReader");
-        putReader(new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_ANIM), "org.monte.media.anim.ANIMReader");
-        putWriter(new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_AVI), "org.monte.media.avi.AVIWriter");
-        putWriter(new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_QUICKTIME), "org.monte.media.quicktime.QuickTimeWriter");
-        putWriter(new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_ANIM), "org.monte.media.anim.ANIMWriter");
+        putReader(new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_AVI), "ru.sbtqa.monte.media.avi.AVIReader");
+        putReader(new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_QUICKTIME), "ru.sbtqa.monte.media.quicktime.QuickTimeReader");
+        putReader(new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_ANIM), "ru.sbtqa.monte.media.anim.ANIMReader");
+        putWriter(new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_AVI), "ru.sbtqa.monte.media.avi.AVIWriter");
+        putWriter(new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_QUICKTIME), "ru.sbtqa.monte.media.quicktime.QuickTimeWriter");
+        putWriter(new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_ANIM), "ru.sbtqa.monte.media.anim.ANIMWriter");
 
         putFileFormat("avi", new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_AVI));
         putFileFormat("mov", new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_QUICKTIME));

@@ -2,13 +2,13 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this file in compliance with the accompanying license terms. 
  */
-package org.monte.media.converter;
+package ru.sbtqa.monte.media.converter;
 
-import org.monte.media.AbstractCodec;
-import org.monte.media.Buffer;
-import org.monte.media.BufferFlag;
-import org.monte.media.Format;
-import org.monte.media.math.Rational;
+import ru.sbtqa.monte.media.AbstractCodec;
+import ru.sbtqa.monte.media.Buffer;
+import ru.sbtqa.monte.media.BufferFlag;
+import ru.sbtqa.monte.media.Format;
+import ru.sbtqa.monte.media.math.Rational;
 
 /**
  * Adjusts the time stamp of the media.

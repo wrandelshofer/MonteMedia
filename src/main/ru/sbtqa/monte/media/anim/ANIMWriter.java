@@ -2,17 +2,17 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.anim;
+package ru.sbtqa.monte.media.anim;
 
-import org.monte.media.Format;
-import org.monte.media.MovieWriter;
-import org.monte.media.math.Rational;
+import ru.sbtqa.monte.media.Format;
+import ru.sbtqa.monte.media.MovieWriter;
+import ru.sbtqa.monte.media.math.Rational;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import static org.monte.media.FormatKeys.*;
-import static org.monte.media.AudioFormatKeys.*;
-import static org.monte.media.anim.AmigaVideoFormatKeys.*;
+import static ru.sbtqa.monte.media.FormatKeys.*;
+import static ru.sbtqa.monte.media.AudioFormatKeys.*;
+import static ru.sbtqa.monte.media.anim.AmigaVideoFormatKeys.*;
 
 /**
  * {@code ANIMWriter}.

@@ -45,7 +45,7 @@
  *   Published In:
  *   Tritonus 0.3.1.
  */
-package org.monte.media.eightsvx;
+package ru.sbtqa.monte.media.eightsvx;
 
 import java.io.*;
 import javax.sound.sampled.Clip;

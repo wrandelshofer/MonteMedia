@@ -4,10 +4,10 @@
  */
 package org.monte.movieconverter;
 
-import org.monte.media.Buffer;
-import org.monte.media.Movie;
-import org.monte.media.gui.Worker;
-import org.monte.media.math.Rational;
+import ru.sbtqa.monte.media.Buffer;
+import ru.sbtqa.monte.media.Movie;
+import ru.sbtqa.monte.media.gui.Worker;
+import ru.sbtqa.monte.media.math.Rational;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -97,8 +97,8 @@ private Buffer imageBuffer=new Buffer();
         toolBar = new javax.swing.JToolBar();
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        movieControlPanel = new org.monte.media.gui.JMovieControlPanel();
-        imagePanel = new org.monte.media.gui.ImagePanel();
+        movieControlPanel = new ru.sbtqa.monte.media.gui.JMovieControlPanel();
+        imagePanel = new ru.sbtqa.monte.media.gui.ImagePanel();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -117,10 +117,10 @@ private Buffer imageBuffer=new Buffer();
         add(jPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private org.monte.media.gui.ImagePanel imagePanel;
+    private ru.sbtqa.monte.media.gui.ImagePanel imagePanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
-    private org.monte.media.gui.JMovieControlPanel movieControlPanel;
+    private ru.sbtqa.monte.media.gui.JMovieControlPanel movieControlPanel;
     private javax.swing.JToolBar toolBar;
     // End of variables declaration//GEN-END:variables
 

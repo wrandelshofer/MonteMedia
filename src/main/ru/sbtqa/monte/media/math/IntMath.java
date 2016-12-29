@@ -3,7 +3,7 @@
  * You may only use this file in compliance with the accompanying license terms. 
  */
 
-package org.monte.media.math;
+package ru.sbtqa.monte.media.math;
 
 import java.math.BigInteger;
 

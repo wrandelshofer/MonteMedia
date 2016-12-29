@@ -2,9 +2,9 @@
  * Copyright © 2012 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.pbm;
+package ru.sbtqa.monte.media.pbm;
 
-import org.monte.media.iff.IFFParser;
+import ru.sbtqa.monte.media.iff.IFFParser;
 import java.io.IOException;
 import java.util.Locale;
 import javax.imageio.ImageReader;
@@ -30,7 +30,7 @@ public class PBMImageReaderSpi extends ImageReaderSpi {
                 new String[]{"PBM"},//names
                 new String[]{"pbm","PBM","lbm","LBM"},//suffixes,
                 new String[]{"image/pbm"},// MIMETypes,
-                "org.monte.media.pbm.PBMImageReader",// readerClassName,
+                "ru.sbtqa.monte.media.pbm.PBMImageReader",// readerClassName,
                 new Class<?>[]{ImageInputStream.class},// inputTypes,
                 null,// writerSpiNames,
                 false,// supportsStandardStreamMetadataFormat,

@@ -2,7 +2,7 @@
  * Copyright © 2009 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.pgm;
+package ru.sbtqa.monte.media.pgm;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -27,7 +27,7 @@ public class PGMImageReaderSpi extends ImageReaderSpi {
                 new String[]{"PGM"},//names
                 new String[]{"pgm"},//suffixes,
                 new String[]{"image/pgm"},// MIMETypes,
-                "org.monte.media.pgm.PGMImageReader",// readerClassName,
+                "ru.sbtqa.monte.media.pgm.PGMImageReader",// readerClassName,
                 new Class<?>[]{ImageInputStream.class},// inputTypes,
                 null,// writerSpiNames,
                 false,// supportsStandardStreamMetadataFormat,

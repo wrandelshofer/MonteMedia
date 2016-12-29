@@ -31,7 +31,7 @@ public class PBMImageReaderSpi extends ImageReaderSpi {
               new String[]{"PBM"},//names
               new String[]{"pbm", "PBM", "lbm", "LBM"},//suffixes,
               new String[]{"image/pbm"},// MIMETypes,
-              "org.monte.media.pbm.PBMImageReader",// readerClassName,
+              "ru.sbtqa.monte.media.pbm.PBMImageReader",// readerClassName,
               new Class<?>[]{ImageInputStream.class},// inputTypes,
               null,// writerSpiNames,
               false,// supportsStandardStreamMetadataFormat,

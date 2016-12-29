@@ -3,18 +3,18 @@
  * You may only use this software in accordance with the license terms.
  */
 
-package org.monte.media.iff;
+package ru.sbtqa.monte.media.iff;
 
-import org.monte.media.AbortException;
-import org.monte.media.ParseException;
-import org.monte.media.gui.Worker;
+import ru.sbtqa.monte.media.AbortException;
+import ru.sbtqa.monte.media.ParseException;
+import ru.sbtqa.monte.media.gui.Worker;
 import java.text.NumberFormat;
 import javax.swing.tree.*;
 import javax.swing.*;
 import java.io.*;
 import java.util.*;
-import org.monte.media.gui.BackgroundTask;
-import org.monte.media.gui.tree.TreeNodeImpl;
+import ru.sbtqa.monte.media.gui.BackgroundTask;
+import ru.sbtqa.monte.media.gui.tree.TreeNodeImpl;
 /**
  * Merges two IFF ANIM files.
  *

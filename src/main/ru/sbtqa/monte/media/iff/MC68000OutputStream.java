@@ -2,7 +2,7 @@
  * Copyright © 2006-2010 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.iff;
+package ru.sbtqa.monte.media.iff;
 
 import java.io.*;
 import java.util.Arrays;

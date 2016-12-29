@@ -2,7 +2,7 @@
  * Copyright © 2016 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.util.stream;
+package ru.sbtqa.monte.media.util.stream;
 
 import java.util.function.IntConsumer;
 import java.util.concurrent.Executor;

@@ -35,7 +35,7 @@ public class MJPGImageReaderSpi extends ImageReaderSpi {
               new String[]{"MJPG"},//names
               new String[]{"mjpg"},//suffixes,
               new String[]{"image/mjpg"},// MIMETypes,
-              "org.monte.media.jmf.renderer.video.MJPGImageReader",// readerClassName,
+              "ru.sbtqa.monte.media.jmf.renderer.video.MJPGImageReader",// readerClassName,
               new Class<?>[]{ImageInputStream.class, InputStream.class, byte[].class/*,javax.media.Buffer.class*/},// inputTypes,
               null,// writerSpiNames,
               false,// supportsStandardStreamMetadataFormat,

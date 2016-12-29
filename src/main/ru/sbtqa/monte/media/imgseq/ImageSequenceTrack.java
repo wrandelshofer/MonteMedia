@@ -3,16 +3,16 @@
  * You may only use this software in accordance with the license terms.
  */
 
-package org.monte.media.imgseq;
+package ru.sbtqa.monte.media.imgseq;
 
-import org.monte.media.Buffer;
-import org.monte.media.Track;
-import org.monte.media.math.Rational;
+import ru.sbtqa.monte.media.Buffer;
+import ru.sbtqa.monte.media.Track;
+import ru.sbtqa.monte.media.math.Rational;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Arrays;
-import static org.monte.media.BufferFlag.*;
+import static ru.sbtqa.monte.media.BufferFlag.*;
 
 /**
  * {@code ImageSequenceTrack}.

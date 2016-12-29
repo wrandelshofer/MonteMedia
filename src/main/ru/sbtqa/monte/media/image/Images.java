@@ -2,7 +2,7 @@
  * Copyright © 2005-2008 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.image;
+package ru.sbtqa.monte.media.image;
 
 import java.awt.*;
 import java.awt.color.ColorSpace;
@@ -10,13 +10,13 @@ import java.awt.color.ICC_ColorSpace;
 import java.awt.image.*;
 import java.net.*;
 import java.util.Hashtable;
-import org.monte.media.util.stream.RangeStream;
+import ru.sbtqa.monte.media.util.stream.RangeStream;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.PixelFormat;
 import javafx.scene.image.WritableImage;
 
 import javax.swing.*;
-import org.monte.media.color.ColorSpaces;
+import ru.sbtqa.monte.media.color.ColorSpaces;
 
 /**
  * Image processing methods for buffered images.

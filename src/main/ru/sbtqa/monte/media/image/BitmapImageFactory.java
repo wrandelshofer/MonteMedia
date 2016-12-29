@@ -3,12 +3,12 @@
  * You may only use this software in accordance with the license terms.
  */
 
-package org.monte.media.image;
+package ru.sbtqa.monte.media.image;
 
-import org.monte.media.iff.MC68000OutputStream;
-import org.monte.media.iff.MutableIFFChunk;
-import org.monte.media.ilbm.ColorCyclingMemoryImageSource;
-import org.monte.media.ilbm.HAMColorModel;
+import ru.sbtqa.monte.media.iff.MC68000OutputStream;
+import ru.sbtqa.monte.media.iff.MutableIFFChunk;
+import ru.sbtqa.monte.media.ilbm.ColorCyclingMemoryImageSource;
+import ru.sbtqa.monte.media.ilbm.HAMColorModel;
 import java.awt.*;
 import java.awt.image.*;
 import java.io.*;

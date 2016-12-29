@@ -2,10 +2,10 @@
  * Copyright © 1999 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.iff;
+package ru.sbtqa.monte.media.iff;
 
-import org.monte.media.AbortException;
-import org.monte.media.ParseException;
+import ru.sbtqa.monte.media.AbortException;
+import ru.sbtqa.monte.media.ParseException;
 
 /**
 IFFVisitor is notified each time the IFFParser visits

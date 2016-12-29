@@ -2,16 +2,16 @@
  * Copyright © 1999-2011 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.anim;
+package ru.sbtqa.monte.media.anim;
 
-import org.monte.media.AbortException;
-import org.monte.media.ParseException;
-import org.monte.media.iff.*;
-import org.monte.media.ilbm.HAMColorModel;
-import org.monte.media.eightsvx.EightSVXDecoder;
-import org.monte.media.ilbm.CRNGColorCycle;
-import org.monte.media.ilbm.ColorCycle;
-import org.monte.media.ilbm.DRNGColorCycle;
+import ru.sbtqa.monte.media.AbortException;
+import ru.sbtqa.monte.media.ParseException;
+import ru.sbtqa.monte.media.iff.*;
+import ru.sbtqa.monte.media.ilbm.HAMColorModel;
+import ru.sbtqa.monte.media.eightsvx.EightSVXDecoder;
+import ru.sbtqa.monte.media.ilbm.CRNGColorCycle;
+import ru.sbtqa.monte.media.ilbm.ColorCycle;
+import ru.sbtqa.monte.media.ilbm.DRNGColorCycle;
 
 import java.io.*;
 import java.util.*;

@@ -3,7 +3,7 @@
  * Copyright © 2013 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.quicktime;
+package ru.sbtqa.monte.media.quicktime;
 
 /**
  * {@code QuickTimeSerializer} takes a {@link QuickTimeMovie} and flattens

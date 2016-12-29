@@ -3,7 +3,7 @@
  * You may only use this software in accordance with the license terms.
  */
 
-package org.monte.media.image;
+package ru.sbtqa.monte.media.image;
 
 import java.awt.color.ColorSpace;
 import java.awt.color.ICC_ColorSpace;
@@ -23,8 +23,8 @@ import java.util.Hashtable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.IntStream;
-import org.monte.media.color.ICCPackedColorModel;
-import org.monte.media.util.stream.RangeStream;
+import ru.sbtqa.monte.media.color.ICCPackedColorModel;
+import ru.sbtqa.monte.media.util.stream.RangeStream;
 
 /**
  * Provides utility methods for images in the CMYK color space..

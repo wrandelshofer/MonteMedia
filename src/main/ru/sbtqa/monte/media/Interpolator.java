@@ -9,7 +9,7 @@
  * Werner Randelshofer. For details see accompanying license terms. 
  */
 
-package org.monte.media;
+package ru.sbtqa.monte.media;
 
 /**
  * A linear interpolator for use in conjunction with an Animator object.

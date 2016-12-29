@@ -7,11 +7,11 @@ package org.monte.iodemo;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import org.monte.media.Buffer;
-import org.monte.media.BufferFlag;
-import org.monte.media.MovieReader;
-import org.monte.media.MovieWriter;
-import org.monte.media.Registry;
+import ru.sbtqa.monte.media.Buffer;
+import ru.sbtqa.monte.media.BufferFlag;
+import ru.sbtqa.monte.media.MovieReader;
+import ru.sbtqa.monte.media.MovieWriter;
+import ru.sbtqa.monte.media.Registry;
 
 /**
  * Demonstrates how to concatenate multiple movie files without re-encoding the

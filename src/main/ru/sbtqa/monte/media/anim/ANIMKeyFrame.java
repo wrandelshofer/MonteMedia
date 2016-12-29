@@ -2,11 +2,11 @@
  * Copyright © 1999-2010 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.anim;
+package ru.sbtqa.monte.media.anim;
 
-import org.monte.media.image.BitmapImage;
-import org.monte.media.iff.IFFParser;
-import org.monte.media.ParseException;
+import ru.sbtqa.monte.media.image.BitmapImage;
+import ru.sbtqa.monte.media.iff.IFFParser;
+import ru.sbtqa.monte.media.ParseException;
 
 /**
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
