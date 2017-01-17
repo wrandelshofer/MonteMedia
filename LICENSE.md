@@ -1,16 +1,13 @@
-#License
+Copyright sbtqa
 
-The MonteMedia library is Copyright (c) Werner Randelshofer, Switzerland.
-You may only use this library in accordance with the license terms.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-You can choose from the following licenses:
+    http://www.apache.org/licenses/LICENSE-2.0
 
-* Creative Commons Attribution 4.0 International
-  http://creativecommons.org/licenses/by/4.0/
-
-* Apache License 2.0
-  http://www.apache.org/licenses/LICENSE-2.0
-
-* LGPL 3.0
-  http://www.gnu.org/licenses/lgpl-3.0.en.html
-
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
