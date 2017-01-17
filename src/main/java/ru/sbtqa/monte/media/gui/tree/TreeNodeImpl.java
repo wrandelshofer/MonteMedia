@@ -219,15 +219,15 @@ public class TreeNodeImpl<T extends TreeNodeImpl<T>> extends DefaultMutableTreeN
     }
 
     public Iterable<T> pathFromAncestorIterable(final TreeNode ancestor) {
-        return () -> new EnumerationIterator<>((Enumeration<T>) (Enumeration<?>) pathFromAncestorEnumeration(ancestor));
+        return (Iterable<T>) new EnumerationIterator<>((Enumeration<T>) (Enumeration<?>) pathFromAncestorEnumeration(ancestor));
     }
 
     public Iterable<T> postorderIterable() {
-        return () -> new EnumerationIterator<>((Enumeration<T>) (Enumeration<?>) postorderEnumeration());
+        return (Iterable<T>) new EnumerationIterator<>((Enumeration<T>) (Enumeration<?>) postorderEnumeration());
     }
 
     public Iterable<T> preorderIterable() {
-        return () -> new EnumerationIterator<>((Enumeration<T>) (Enumeration<?>) preorderEnumeration());
+        return (Iterable<T>) new EnumerationIterator<>((Enumeration<T>) (Enumeration<?>) preorderEnumeration());
     }
 
     @Override

@@ -11,8 +11,11 @@ import java.io.UncheckedIOException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -118,7 +121,13 @@ public class MainFX extends Application {
 
         root = new BorderPane();
         root.setCenter(dropLabel);
-        root.addEventHandler(DragEvent.ANY, this::onDragEvent);
+        root.addEventHandler(DragEvent.ANY, new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                onDragEvent(event);
+
+            }
+        });
 
         Scene scene = new Scene(root, 300, 250);
 
@@ -163,58 +172,88 @@ public class MainFX extends Application {
      *
      * @param file a file
      */
-    private void loadAndDisplayImage(File file) {
+    private void loadAndDisplayImage(final File file) {
         stage.setTitle(file.getName());
         root.setCenter(dropLabel);
         root.setBottom(null);
         imageView.setImage(null);
-        Platform.runLater(() -> dropLabel.setText("..."));
-        long start = System.currentTimeMillis();
 
-        CompletableFuture.supplyAsync(() -> {// on worker thread
-            try {
-                Platform.runLater(() -> dropLabel.setText("Loading..."));
-                BufferedImage sourceImage = loadImage(file);
+        Platform.runLater(new RunLater(dropLabel, "..."));
 
-                Platform.runLater(() -> dropLabel.setText("Converting image to RGB..."));
-                BufferedImage rgbImage = convertToRGB(sourceImage);
+        final long start = System.currentTimeMillis();
 
-                Platform.runLater(() -> dropLabel.setText("Converting image to FX..."));
-                WritableImage fxImage = convertToFX(rgbImage);
+        CompletableFuture.supplyAsync(new Supplier<Object[]>() {
+            @Override
+            public Object[] get() {
+                try {
+                    Platform.runLater(new RunLater(dropLabel, "Loading..."));
+                    BufferedImage sourceImage = loadImage(file);
 
-                return new Object[]{sourceImage, fxImage};
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }).handleAsync((images, ex) -> {// on application thread
-            long end = System.currentTimeMillis();
-            System.out.println("elapsed:" + (end - start));
+                    Platform.runLater(new RunLater(dropLabel, "Converting image to RGB..."));
+                    BufferedImage rgbImage = convertToRGB(sourceImage);
 
-            if (ex != null) {
-                Throwable cause = ex;
-                while ((cause instanceof UncheckedIOException) || (cause instanceof CompletionException)) {
-                    cause = cause.getCause();
+                    Platform.runLater(new RunLater(dropLabel, "Converting image to FX..."));
+                    WritableImage fxImage = convertToFX(rgbImage);
+
+                    return new Object[]{sourceImage, fxImage};
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
                 }
-                String msg = (cause == null) ? ex.getLocalizedMessage() : cause.getLocalizedMessage();
-                dropLabel.setText(msg != null ? msg : ex.toString());
-                ex.printStackTrace();
-            } else {
-                BufferedImage sourceImage = (BufferedImage) images[0];
-                WritableImage fxImage = (WritableImage) images[1];
-                if (sourceImage == null) {
-                    dropLabel.setText("No image found");
+            }
+        });
+
+        CompletableFuture.supplyAsync(new Supplier<Object[]>() {
+            @Override
+            public Object[] get() {
+                try {
+                    Platform.runLater(new RunLater(dropLabel, "Loading..."));
+                    BufferedImage sourceImage = loadImage(file);
+
+                    Platform.runLater(new RunLater(dropLabel, "Converting image to RGB..."));
+                    BufferedImage rgbImage = convertToRGB(sourceImage);
+
+                    Platform.runLater(new RunLater(dropLabel, "Converting image to FX..."));
+                    WritableImage fxImage = convertToFX(rgbImage);
+
+                    return new Object[]{sourceImage, fxImage};
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                }
+            }
+        }).handleAsync(new BiFunction<Object[], Throwable, Object[]>() {
+
+            @Override
+            public Object[] apply(Object[] images, Throwable ex) {
+                long end = System.currentTimeMillis();
+                System.out.println("elapsed:" + (end - start));
+
+                if (ex != null) {
+                    Throwable cause = ex;
+                    while ((cause instanceof UncheckedIOException) || (cause instanceof CompletionException)) {
+                        cause = cause.getCause();
+                    }
+                    String msg = (cause == null) ? ex.getLocalizedMessage() : cause.getLocalizedMessage();
+                    dropLabel.setText(msg != null ? msg : ex.toString());
+                    ex.printStackTrace();
                 } else {
-                    imageView.setImage(fxImage);
-                    root.setCenter(imageView);
-                    infoLabel.setText("Dimension: " + sourceImage.getWidth() + " x " + sourceImage.getHeight()
-                          + "\n" + sourceImage.getColorModel()
-                          + "\nColor Space: " + ColorSpaces.toString(sourceImage.getColorModel().getColorSpace()).replace(',', ' '));
+                    BufferedImage sourceImage = (BufferedImage) images[0];
+                    WritableImage fxImage = (WritableImage) images[1];
+                    if (sourceImage == null) {
+                        Platform.runLater(new RunLater(dropLabel, "No image found"));
+                    } else {
+                        imageView.setImage(fxImage);
+                        root.setCenter(imageView);
+                        infoLabel.setText("Dimension: " + sourceImage.getWidth() + " x " + sourceImage.getHeight()
+                                + "\n" + sourceImage.getColorModel()
+                                + "\nColor Space: " + ColorSpaces.toString(sourceImage.getColorModel().getColorSpace()).replace(',', ' '));
 
-                    root.setBottom(infoLabel);
+                        root.setBottom(infoLabel);
+                    }
                 }
+                return null;
             }
-            return null;
-        }, Platform::runLater);
+        }
+        );
     }
 
     private WritableImage convertToFX(BufferedImage bufferedImage) {
@@ -264,6 +303,24 @@ public class MainFX extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+    }
+
+    private static class RunLater implements Runnable {
+
+        private final Label dropLabel;
+        private final String text;
+
+        public RunLater(Label dropLabel, String text) {
+            this.text = text;
+            this.dropLabel = dropLabel;
+        }
+
+        @Override
+        public void run() {
+            dropLabel.setText(text);
+
+        }
+
     }
 
 }

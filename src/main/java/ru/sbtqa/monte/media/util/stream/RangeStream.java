@@ -64,17 +64,20 @@ public class RangeStream {
     /**
      * Invokes the consumer to process an integer from the range until the
      * entire reange is consumed.
-     * 
+     *
      * If this stream is parallel, the consumer is invoked in parallel.
-     * 
+     *
      * If this stream is sequential, the consumer is invoked sequentially.
      *
      * @param consumer TODO
      */
-    public void forEach(IntConsumer consumer) {
-        forEach((lo, hi) -> {
-            for (int i = lo; i < hi; i++) {
-                consumer.accept(i);
+    public void forEach(final IntConsumer consumer) {
+        forEach(new BiIntConsumer() {
+            @Override
+            public void accept(int lo, int hi) {
+                for (int i = lo; i < hi; i++) {
+                    consumer.accept(i);
+                }
             }
         });
     }
@@ -82,10 +85,10 @@ public class RangeStream {
     /**
      * Invokes the consumer to process sub-ranges until the entire range has
      * been processed.
-     * 
+     *
      * If this stream is parallel, the range is split up into sub-ranges and the
      * consumer is invoked for each sub-range in parallel.
-     * 
+     *
      * If this stream is sequential, the consumer is invoked with the entire
      * range.
      *

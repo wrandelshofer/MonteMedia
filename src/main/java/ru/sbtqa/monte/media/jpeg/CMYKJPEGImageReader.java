@@ -34,12 +34,12 @@ import ru.sbtqa.monte.media.io.ImageInputStreamAdapter;
 
 /**
  * Reads a JPEG image with colors in the CMYK color space.
- * 
+ *
  * For optimal performance with CMYK images, please run the JVM with the
  * following VM option:
- * 
+ *
  * -Dsun.java2d.cmm=sun.java2d.cmm.kcms.KcmsServiceProvider
- * 
+ *
  *
  * @author Werner Randelshofer
  * @version $Id: CMYKJPEGImageReader.java 364 2016-11-09 19:54:25Z werner $
@@ -180,7 +180,7 @@ public class CMYKJPEGImageReader extends ImageReader {
     }
 
     public static BufferedImage read(ImageInputStream in, boolean inverseYCCKColors, boolean ignoreProfile,
-          ICC_Profile defaultProfile) throws IOException {
+            ICC_Profile defaultProfile) throws IOException {
         // Seek to start of input stream
         in.seek(0);
 
@@ -198,9 +198,9 @@ public class CMYKJPEGImageReader extends ImageReader {
         JFIFInputStream fifi = new JFIFInputStream(new ImageInputStreamAdapter(in));
         for (JFIFInputStream.Segment seg = fifi.getNextSegment(); seg != null; seg = fifi.getNextSegment()) {
             if (0xffc0 <= seg.marker && seg.marker <= 0xffc3
-                  || 0xffc5 <= seg.marker && seg.marker <= 0xffc7
-                  || 0xffc9 <= seg.marker && seg.marker <= 0xffcb
-                  || 0xffcd <= seg.marker && seg.marker <= 0xffcf) {
+                    || 0xffc5 <= seg.marker && seg.marker <= 0xffc7
+                    || 0xffc9 <= seg.marker && seg.marker <= 0xffcb
+                    || 0xffcd <= seg.marker && seg.marker <= 0xffcf) {
                 // SOF0 - SOF15: Start of Frame Header marker segment
                 DataInputStream dis = new DataInputStream(fifi);
                 samplePrecision = dis.readUnsignedByte();
@@ -295,7 +295,7 @@ public class CMYKJPEGImageReader extends ImageReader {
     }
 
     public static ImageReader createNativeJPEGReader() {
-        for (ImageReader r : (Iterable<ImageReader>) () -> ImageIO.getImageReadersByFormatName("jpeg")) {
+        for (ImageReader r : (Iterable<ImageReader>) ImageIO.getImageReadersByFormatName("jpeg")) {
             if ("com.sun.imageio.plugins.jpeg.JPEGImageReader".equals(r.getClass().getName())) {
                 return r;
             }
@@ -307,7 +307,7 @@ public class CMYKJPEGImageReader extends ImageReader {
      * Reads a CMYK JPEG image from the provided InputStream, converting the
      * colors to RGB using the provided CMYK ICC_Profile. The image data must be
      * in the CMYK color space.
-     * 
+     *
      * Use this method, if you have already determined that the input stream
      * contains a CMYK JPEG image.
      *
@@ -338,7 +338,7 @@ public class CMYKJPEGImageReader extends ImageReader {
      * Reads a RGBA JPEG image from the provided InputStream, converting the
      * colors to RGBA using the provided RGBA ICC_Profile. The image data must
      * be in the RGBA color space.
-     * 
+     *
      * Use this method, if you have already determined that the input stream
      * contains a RGBA JPEG image.
      *
@@ -397,7 +397,7 @@ public class CMYKJPEGImageReader extends ImageReader {
      * Reads a YCCK JPEG image from the provided InputStream, converting the
      * colors to RGB using the provided CMYK ICC_Profile. The image data must be
      * in the YCCK color space.
-     * 
+     *
      * Use this method, if you have already determined that the input stream
      * contains a YCCK JPEG image.
      *
@@ -428,7 +428,7 @@ public class CMYKJPEGImageReader extends ImageReader {
      * Reads an inverted-YCCK JPEG image from the provided InputStream,
      * converting the colors to RGB using the provided CMYK ICC_Profile. The
      * image data must be in the inverted-YCCK color space.
-     * 
+     *
      * Use this method, if you have already determined that the input stream
      * contains an inverted-YCCK JPEG image.
      *

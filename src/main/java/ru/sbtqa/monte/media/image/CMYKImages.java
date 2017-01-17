@@ -21,8 +21,11 @@ import static java.lang.Math.min;
 import java.util.Hashtable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.IntStream;
+import java.util.function.IntConsumer;
+import java.util.function.Supplier;
+
 import ru.sbtqa.monte.media.color.ICCPackedColorModel;
+import ru.sbtqa.monte.media.util.stream.BiIntConsumer;
 import ru.sbtqa.monte.media.util.stream.RangeStream;
 
 /**
@@ -91,38 +94,49 @@ public class CMYKImages {
      * be an RGB image. !!!! FIXME always create a CMYK image!
      * @return a BufferedImage.
      */
-    public static BufferedImage createImageFromCMYK(Raster cmykRaster, ICC_Profile cmykProfile) {
+    public static BufferedImage createImageFromCMYK(final Raster cmykRaster, ICC_Profile cmykProfile) {
         if (cmykProfile != null) {
             return createImageFromICCProfile(cmykRaster, cmykProfile);
         } else {
             // => There is no color profile. 
             // Convert image to RGB using a simple conversion algorithm.
-            int w = cmykRaster.getWidth();
-            int h = cmykRaster.getHeight();
+            final int w = cmykRaster.getWidth();
+            final int h = cmykRaster.getHeight();
 
-            int[] rgb = new int[w * h];
+            final int[] rgb = new int[w * h];
 
-            int[][] cmyk = new int[4][0];
-            IntStream.range(0, 4).forEach(i -> cmyk[i] = cmykRaster.getSamples(0, 0, w, h, i, (int[]) null));
-            int[] C = cmyk[0];
-            int[] M = cmyk[1];
-            int[] Y = cmyk[2];
-            int[] K = cmyk[3];
+            final int[][] cmyk = new int[4][0];
+            RangeStream.
+                    range(0, 4).
+                    forEach(new IntConsumer() {
+                        @Override
+                        public void accept(int i) {
+                            cmyk[i] = cmykRaster.getSamples(0, 0, w, h, i, (int[]) null);
+                        }
+                    });
+            final int[] C = cmyk[0];
+            final int[] M = cmyk[1];
+            final int[] Y = cmyk[2];
+            final int[] K = cmyk[3];
 
             // Split the array into bands and process each band in parallel.
             // for (int i=0;i<rgb.length;i++) {
-            RangeStream.range(0, rgb.length).parallel().forEach((lo, hi) -> {
-                for (int i = lo; i < hi; i++) {
-                    int k = min(255, K[i]);
-                    rgb[i] = (255 - min(255, C[i] + k)) << 16
-                          | (255 - min(255, M[i] + k)) << 8
-                          | (255 - min(255, Y[i] + k));
+            RangeStream.range(0, rgb.length).parallel().forEach(new BiIntConsumer() {
+                @Override
+                public void accept(int lo, int hi) {
+                    for (int i = lo; i < hi; i++) {
+                        int k = min(255, K[i]);
+                        rgb[i] = (255 - min(255, C[i] + k)) << 16
+                                | (255 - min(255, M[i] + k)) << 8
+                                | (255 - min(255, Y[i] + k));
+                    }
                 }
             });
+
             Hashtable<Object, Object> properties = new Hashtable<Object, Object>();
             Raster rgbRaster = Raster.createPackedRaster(
-                  new DataBufferInt(rgb, rgb.length),
-                  w, h, w, new int[]{0xff0000, 0xff00, 0xff}, null);
+                    new DataBufferInt(rgb, rgb.length),
+                    w, h, w, new int[]{0xff0000, 0xff00, 0xff}, null);
             ColorModel cm = RGB;//new DirectColorModel(cs, 24, 0xff0000, 0xff00, 0xff, 0x0, false, DataBuffer.TYPE_INT);
             return new BufferedImage(cm, (WritableRaster) rgbRaster, cm.isAlphaPremultiplied(), properties);
         }
@@ -139,36 +153,75 @@ public class CMYKImages {
      * profile is used.
      * @return a BufferedImage in the RGB color space.
      */
-    public static BufferedImage createImageFromInvertedCMYK(Raster rgbwRaster, ICC_Profile cmykProfile) {
-        int w = rgbwRaster.getWidth();
-        int h = rgbwRaster.getHeight();
+    public static BufferedImage createImageFromInvertedCMYK(final Raster rgbwRaster, ICC_Profile cmykProfile) {
+        final int w = rgbwRaster.getWidth();
+        final int h = rgbwRaster.getHeight();
 
         try {
-            CompletableFuture<int[]> cfR = CompletableFuture.supplyAsync(() -> rgbwRaster.getSamples(0, 0, w, h, 0, (int[]) null));
-            CompletableFuture<int[]> cfG = CompletableFuture.supplyAsync(() -> rgbwRaster.getSamples(0, 0, w, h, 1, (int[]) null));
-            CompletableFuture<int[]> cfB = CompletableFuture.supplyAsync(() -> rgbwRaster.getSamples(0, 0, w, h, 2, (int[]) null));
-            CompletableFuture<int[]> cfW = CompletableFuture.supplyAsync(() -> rgbwRaster.getSamples(0, 0, w, h, 3, (int[]) null));
-            int[] rgb = new int[w * h];
-            int[] R = cfR.get();
-            int[] G = cfG.get();
-            int[] B = cfB.get();
-            int[] W = cfW.get();
+
+            CompletableFuture<int[]> cfR = CompletableFuture.supplyAsync(new Supplier<int[]>() {
+                @Override
+                public int[] get() {
+                    return rgbwRaster.getSamples(0, 0, w, h, 0, (int[]) null);
+                }
+
+            });
+
+            CompletableFuture<int[]> cfG = CompletableFuture.supplyAsync(new Supplier<int[]>() {
+                @Override
+                public int[] get() {
+                    return rgbwRaster.getSamples(0, 0, w, h, 1, (int[]) null);
+                }
+            });
+
+            CompletableFuture<int[]> cfB = CompletableFuture.supplyAsync(new Supplier<int[]>() {
+                @Override
+                public int[] get() {
+                    return rgbwRaster.getSamples(0, 0, w, h, 2, (int[]) null);
+                }
+            });
+
+            CompletableFuture<int[]> cfW = CompletableFuture.supplyAsync(new Supplier<int[]>() {
+                @Override
+                public int[] get() {
+                    return rgbwRaster.getSamples(0, 0, w, h, 3, (int[]) null);
+                }
+            });
+
+            final int[] rgb = new int[w * h];
+            final int[] R = cfR.get();
+            final int[] G = cfG.get();
+            final int[] B = cfB.get();
+            final int[] W = cfW.get();
 
             // Split the rgb array into bands and process each band in parallel.
             // for (int i=0;i<rgb.length;i++) {
-            RangeStream.range(0, rgb.length).parallel().forEach((lo, hi) -> {
-                for (int i = lo; i < hi; i++) {
-                    rgb[i] = (255 - W[i]) << 24 | (255 - R[i]) << 16 | (255 - G[i]) << 8 | (255 - B[i]) << 0;
+            RangeStream.range(0, rgb.length).parallel().forEach(
+                    new BiIntConsumer() {
+                @Override
+                public void accept(int lo, int hi) {
+                    for (int i = lo; i < hi; i++) {
+                        rgb[i] = (255 - W[i]) << 24 | (255 - R[i]) << 16 | (255 - G[i]) << 8 | (255 - B[i]) << 0;
+                    }
                 }
             });
 
             Raster packedRaster = Raster.createPackedRaster(
-                  new DataBufferInt(rgb, rgb.length),
-                  w, h, w, new int[]{0xff0000, 0xff00, 0xff, 0xff000000}, null);
+                    new DataBufferInt(rgb, rgb.length),
+                    w, h, w, new int[]{0xff0000, 0xff00, 0xff, 0xff000000}, null);
             return createImageFromCMYK(packedRaster, cmykProfile);
         } catch (ExecutionException | InterruptedException e) {
             throw new InternalError(e);
         }
+    }
+
+    private static Supplier<int[]> getSupplier(final Raster rgbRaster, final int z) {
+        return new Supplier<int[]>() {
+            @Override
+            public int[] get() {
+                return rgbRaster.getSamples(0, 0, rgbRaster.getWidth(), rgbRaster.getHeight(), z, (int[]) null);
+            }
+        };
     }
 
     public static BufferedImage createImageFromRGB(Raster rgbRaster, ICC_Profile rgbProfile) {
@@ -180,28 +233,31 @@ public class CMYKImages {
             int h = rgbRaster.getHeight();
 
             try {
-                CompletableFuture<int[]> cfR = CompletableFuture.supplyAsync(() -> rgbRaster.getSamples(0, 0, w, h, 0, (int[]) null));
-                CompletableFuture<int[]> cfG = CompletableFuture.supplyAsync(() -> rgbRaster.getSamples(0, 0, w, h, 1, (int[]) null));
-                CompletableFuture<int[]> cfB = CompletableFuture.supplyAsync(() -> rgbRaster.getSamples(0, 0, w, h, 2, (int[]) null));
-                int[] rgb = new int[w * h];
-                int[] R = cfR.get();
-                int[] G = cfG.get();
-                int[] B = cfB.get();
+                CompletableFuture<int[]> cfR = CompletableFuture.supplyAsync(getSupplier(rgbRaster, 0));
+                CompletableFuture<int[]> cfG = CompletableFuture.supplyAsync(getSupplier(rgbRaster, 1));
+                CompletableFuture<int[]> cfB = CompletableFuture.supplyAsync(getSupplier(rgbRaster, 2));
+                final int[] rgb = new int[w * h];
+                final int[] R = cfR.get();
+                final int[] G = cfG.get();
+                final int[] B = cfB.get();
 
                 // Split the rgb array into bands and process each band in parallel.
                 // for (int i=0;i<rgb.length;i++) {
-                RangeStream.range(0, rgb.length).parallel().forEach((lo, hi) -> {
-                    for (int i = lo; i < hi; i++) {
-                        rgb[i] = 0xff << 24 | R[i] << 16 | G[i] << 8 | B[i];
+                RangeStream.range(0, rgb.length).parallel().forEach(new BiIntConsumer() {
+                    @Override
+                    public void accept(int lo, int hi) {
+                        for (int i = lo; i < hi; i++) {
+                            rgb[i] = 0xff << 24 | R[i] << 16 | G[i] << 8 | B[i];
+                        }
                     }
                 });
 
                 WritableRaster packedRaster = Raster.createPackedRaster(
-                      new DataBufferInt(rgb, rgb.length),
-                      w, h, w, new int[]{0xff0000, 0xff00, 0xff, 0xff000000}, null);
+                        new DataBufferInt(rgb, rgb.length),
+                        w, h, w, new int[]{0xff0000, 0xff00, 0xff, 0xff000000}, null);
                 ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_sRGB);
                 ColorModel cm = ColorModel.getRGBdefault();//new DirectColorModel(cs, 32, 0xff0000, 0xff00, 0xff, 0x0ff000000, false, DataBuffer.TYPE_INT);
-                Hashtable<Object, Object> properties = new Hashtable<Object, Object>();
+                Hashtable<Object, Object> properties = new Hashtable<>();
                 return new BufferedImage(cm, packedRaster, cm.isAlphaPremultiplied(), properties);
             } catch (ExecutionException | InterruptedException e) {
                 throw new InternalError(e);
@@ -218,43 +274,46 @@ public class CMYKImages {
             int h = yccRaster.getHeight();
 
             try {
-                CompletableFuture<int[]> cfY = CompletableFuture.supplyAsync(() -> yccRaster.getSamples(0, 0, w, h, 0, (int[]) null));
-                CompletableFuture<int[]> cfCb = CompletableFuture.supplyAsync(() -> yccRaster.getSamples(0, 0, w, h, 1, (int[]) null));
-                CompletableFuture<int[]> cfCr = CompletableFuture.supplyAsync(() -> yccRaster.getSamples(0, 0, w, h, 2, (int[]) null));
-                int[] rgb = new int[w * h];
-                int[] Y = cfY.get();
-                int[] Cb = cfCb.get();
-                int[] Cr = cfCr.get();
+                CompletableFuture<int[]> cfY = CompletableFuture.supplyAsync(getSupplier(yccRaster, 0));
+                CompletableFuture<int[]> cfCb = CompletableFuture.supplyAsync(getSupplier(yccRaster, 1));
+                CompletableFuture<int[]> cfCr = CompletableFuture.supplyAsync(getSupplier(yccRaster, 2));
+                final int[] rgb = new int[w * h];
+                final int[] Y = cfY.get();
+                final int[] Cb = cfCb.get();
+                final int[] Cr = cfCr.get();
 
                 // Split the rgb array into bands and process each band in parallel.
                 // for (int i=0;i<rgb.length;i++) {
-                RangeStream.range(0, rgb.length).parallel().forEach((lo, hi) -> {
-                    for (int i = lo; i < hi; i++) {
-                        int Yi, Cbi, Cri;
-                        int R, G, B;
+                RangeStream.range(0, rgb.length).parallel().forEach(new BiIntConsumer() {
+                    @Override
+                    public void accept(int lo, int hi) {
+                        for (int i = lo; i < hi; i++) {
+                            int Yi, Cbi, Cri;
+                            int R, G, B;
 
-                        //RGB can be computed directly from YCbCr (256 levels) as follows:
-                        //R = Y + 1.402 (Cr-128)
-                        //G = Y - 0.34414 (Cb-128) - 0.71414 (Cr-128) 
-                        //B = Y + 1.772 (Cb-128)
-                        Yi = Y[i];
-                        Cbi = Cb[i];
-                        Cri = Cr[i];
-                        R = (1000 * Yi + 1402 * (Cri - 128)) / 1000;
-                        G = (100000 * Yi - 34414 * (Cbi - 128) - 71414 * (Cri - 128)) / 100000;
-                        B = (1000 * Yi + 1772 * (Cbi - 128)) / 1000;
+                            //RGB can be computed directly from YCbCr (256 levels) as follows:
+                            //R = Y + 1.402 (Cr-128)
+                            //G = Y - 0.34414 (Cb-128) - 0.71414 (Cr-128) 
+                            //B = Y + 1.772 (Cb-128)
+                            Yi = Y[i];
+                            Cbi = Cb[i];
+                            Cri = Cr[i];
+                            R = (1000 * Yi + 1402 * (Cri - 128)) / 1000;
+                            G = (100000 * Yi - 34414 * (Cbi - 128) - 71414 * (Cri - 128)) / 100000;
+                            B = (1000 * Yi + 1772 * (Cbi - 128)) / 1000;
 
-                        R = min(255, max(0, R));
-                        G = min(255, max(0, G));
-                        B = min(255, max(0, B));
+                            R = min(255, max(0, R));
+                            G = min(255, max(0, G));
+                            B = min(255, max(0, B));
 
-                        rgb[i] = 0xff << 24 | R << 16 | G << 8 | B;
+                            rgb[i] = 0xff << 24 | R << 16 | G << 8 | B;
+                        }
                     }
                 });
                 Hashtable<Object, Object> properties = new Hashtable<>();
                 Raster rgbRaster = Raster.createPackedRaster(
-                      new DataBufferInt(rgb, rgb.length),
-                      w, h, w, new int[]{0xff0000, 0xff00, 0xff, 0xff000000}, null);
+                        new DataBufferInt(rgb, rgb.length),
+                        w, h, w, new int[]{0xff0000, 0xff00, 0xff, 0xff000000}, null);
                 ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_sRGB);
                 ColorModel cm = ColorModel.getRGBdefault();//new DirectColorModel(cs, 32, 0xff0000, 0xff00, 0xff, 0x0ff000000, false, DataBuffer.TYPE_INT);
                 return new BufferedImage(cm, (WritableRaster) rgbRaster, cm.isAlphaPremultiplied(), properties);
@@ -319,34 +378,36 @@ public class CMYKImages {
         }
 
         // XXX foolishly assume that raster width = w, raster height=h, and scanline stride = 4*w
-        byte[] ycck = ((DataBufferByte) ycckRaster.getDataBuffer()).getData();
-        int[] cmyk = new int[w * h];
+        final byte[] ycck = ((DataBufferByte) ycckRaster.getDataBuffer()).getData();
+        final int[] cmyk = new int[w * h];
 
         // Split the cmyk array into bands and process each band in parallel.
         // for (int i=0;i<cmyk.length;i++) {
-        RangeStream.range(0, cmyk.length).parallel().forEach((lo, hi) -> {
-            for (int i = lo; i < hi; i++) {
-                int j = i * 4;
-                int y = 255 - (ycck[j] & 0xff);
-                int cb = 255 - (ycck[j + 1] & 0xff);
-                int cr = 255 - (ycck[j + 2] & 0xff);
-                int k = 255 - (ycck[j + 3] & 0xff);
-                // Range-limiting is essential due to noise introduced by DCT losses.
-                int cmykC = MAXJSAMPLE - (y + Cr_r_tab[cr]);
-                int cmykM = MAXJSAMPLE - (y + (Cb_g_tab[cb] + Cr_g_tab[cr] >> SCALEBITS));
-                int cmykY = MAXJSAMPLE - (y + Cb_b_tab[cb]);
-                // k passes through unchanged 
-                cmyk[i] = (cmykC < 0 ? 0 : (cmykC > 255) ? 255 : cmykC) << 24
-                      | (cmykM < 0 ? 0 : (cmykM > 255) ? 255 : cmykM) << 16
-                      | (cmykY < 0 ? 0 : (cmykY > 255) ? 255 : cmykY) << 8
-                      | k;
+        RangeStream.range(0, cmyk.length).parallel().forEach(new BiIntConsumer() {
+            @Override
+            public void accept(int lo, int hi) {
+                for (int i = lo; i < hi; i++) {
+                    int j = i * 4;
+                    int y = 255 - (ycck[j] & 0xff);
+                    int cb = 255 - (ycck[j + 1] & 0xff);
+                    int cr = 255 - (ycck[j + 2] & 0xff);
+                    int k = 255 - (ycck[j + 3] & 0xff);
+                    // Range-limiting is essential due to noise introduced by DCT losses.
+                    int cmykC = MAXJSAMPLE - (y + Cr_r_tab[cr]);
+                    int cmykM = MAXJSAMPLE - (y + (Cb_g_tab[cb] + Cr_g_tab[cr] >> SCALEBITS));
+                    int cmykY = MAXJSAMPLE - (y + Cb_b_tab[cb]);
+                    // k passes through unchanged 
+                    cmyk[i] = (cmykC < 0 ? 0 : (cmykC > 255) ? 255 : cmykC) << 24
+                            | (cmykM < 0 ? 0 : (cmykM > 255) ? 255 : cmykM) << 16
+                            | (cmykY < 0 ? 0 : (cmykY > 255) ? 255 : cmykY) << 8
+                            | k;
+                }
             }
-        }
-        );
+        });
 
         Raster cmykRaster = Raster.createPackedRaster(
-              new DataBufferInt(cmyk, cmyk.length),
-              w, h, w, new int[]{0xff000000, 0xff0000, 0xff00, 0xff}, null);
+                new DataBufferInt(cmyk, cmyk.length),
+                w, h, w, new int[]{0xff000000, 0xff0000, 0xff00, 0xff}, null);
         return cmykRaster;
 
     }
@@ -359,34 +420,37 @@ public class CMYKImages {
         buildYCCtoRGBtable();
         int w = ycckRaster.getWidth(), h = ycckRaster.getHeight();
 
-        int[] ycck = ycckRaster.getPixels(0, 0, w, h, (int[]) null);
+        final int[] ycck = ycckRaster.getPixels(0, 0, w, h, (int[]) null);
 
-        int[] cmyk = new int[w * h];
+        final int[] cmyk = new int[w * h];
 
         // Split the cmyk array into bands and process each band in parallel.
         // for (int i=0;i<cmyk.length;i++) {
-        RangeStream.range(0, cmyk.length).parallel().forEach((lo, hi) -> {
-            for (int i = lo; i < hi; i++) {
-                int j = i * 4;
-                int y = 255 - ycck[j];
-                int cb = 255 - ycck[j + 1];
-                int cr = 255 - ycck[j + 2];
-                int cmykC, cmykM, cmykY;
-                // Range-limiting is essential due to noise introduced by DCT losses.
-                cmykC = MAXJSAMPLE - (y + Cr_r_tab[cr]);
-                cmykM = MAXJSAMPLE - (y + (Cb_g_tab[cb] + Cr_g_tab[cr] >> SCALEBITS));
-                cmykY = MAXJSAMPLE - (y + Cb_b_tab[cb]);
-                // K passes through unchanged 
-                cmyk[i] = (cmykC < 0 ? 0 : (cmykC > 255) ? 255 : cmykC) << 24
-                      | (cmykM < 0 ? 0 : (cmykM > 255) ? 255 : cmykM) << 16
-                      | (cmykY < 0 ? 0 : (cmykY > 255) ? 255 : cmykY) << 8
-                      | 255 - ycck[j + 3];
+        RangeStream.range(0, cmyk.length).parallel().forEach(new BiIntConsumer() {
+            @Override
+            public void accept(int lo, int hi) {
+                for (int i = lo; i < hi; i++) {
+                    int j = i * 4;
+                    int y = 255 - ycck[j];
+                    int cb = 255 - ycck[j + 1];
+                    int cr = 255 - ycck[j + 2];
+                    int cmykC, cmykM, cmykY;
+                    // Range-limiting is essential due to noise introduced by DCT losses.
+                    cmykC = MAXJSAMPLE - (y + Cr_r_tab[cr]);
+                    cmykM = MAXJSAMPLE - (y + (Cb_g_tab[cb] + Cr_g_tab[cr] >> SCALEBITS));
+                    cmykY = MAXJSAMPLE - (y + Cb_b_tab[cb]);
+                    // K passes through unchanged 
+                    cmyk[i] = (cmykC < 0 ? 0 : (cmykC > 255) ? 255 : cmykC) << 24
+                            | (cmykM < 0 ? 0 : (cmykM > 255) ? 255 : cmykM) << 16
+                            | (cmykY < 0 ? 0 : (cmykY > 255) ? 255 : cmykY) << 8
+                            | 255 - ycck[j + 3];
+                }
             }
         });
 //      }
         Raster cmykRaster = Raster.createPackedRaster(
-              new DataBufferInt(cmyk, cmyk.length),
-              w, h, w, new int[]{0xff000000, 0xff0000, 0xff00, 0xff}, null);
+                new DataBufferInt(cmyk, cmyk.length),
+                w, h, w, new int[]{0xff000000, 0xff0000, 0xff00, 0xff}, null);
         return cmykRaster;
     }
 
@@ -398,42 +462,45 @@ public class CMYKImages {
         int w = ycckRaster.getWidth(), h = ycckRaster.getHeight();
 
         try {
-            CompletableFuture<int[]> cfY = CompletableFuture.supplyAsync(() -> ycckRaster.getSamples(0, 0, w, h, 0, (int[]) null));
-            CompletableFuture<int[]> cfCb = CompletableFuture.supplyAsync(() -> ycckRaster.getSamples(0, 0, w, h, 1, (int[]) null));
-            CompletableFuture<int[]> cfCr = CompletableFuture.supplyAsync(() -> ycckRaster.getSamples(0, 0, w, h, 2, (int[]) null));
-            CompletableFuture<int[]> cfK = CompletableFuture.supplyAsync(() -> ycckRaster.getSamples(0, 0, w, h, 3, (int[]) null));
-            int[] cmyk = new int[w * h];
-            int[] ycckY = cfY.get();
-            int[] ycckCb = cfCb.get();
-            int[] ycckCr = cfCr.get();
-            int[] ycckK = cfK.get();
+            CompletableFuture<int[]> cfY = CompletableFuture.supplyAsync(getSupplier(ycckRaster, 0));
+            CompletableFuture<int[]> cfCb = CompletableFuture.supplyAsync(getSupplier(ycckRaster, 1));
+            CompletableFuture<int[]> cfCr = CompletableFuture.supplyAsync(getSupplier(ycckRaster, 2));
+            CompletableFuture<int[]> cfK = CompletableFuture.supplyAsync(getSupplier(ycckRaster, 3));
+            final int[] cmyk = new int[w * h];
+            final int[] ycckY = cfY.get();
+            final int[] ycckCb = cfCb.get();
+            final int[] ycckCr = cfCr.get();
+            final int[] ycckK = cfK.get();
 
             // Split the cmyk array into bands and process each band in parallel.
             // for (int i=0;i<cmyk.length;i++) {
-            RangeStream.range(0, cmyk.length).parallel().forEach((lo, hi) -> {
-                for (int i = lo; i < hi; i++) {
-                    int y = 255 - ycckY[i];
-                    int cb = 255 - ycckCb[i];
-                    int cr = 255 - ycckCr[i];
-                    int cmykC, cmykM, cmykY;
-                    // Range-limiting is essential due to noise introduced by DCT losses.
-                    cmykC = MAXJSAMPLE - (y + Cr_r_tab[cr]);	// red
-                    cmykM = MAXJSAMPLE - (y
-                          + // green
-                          (Cb_g_tab[cb] + Cr_g_tab[cr]
-                          >> SCALEBITS));
-                    cmykY = MAXJSAMPLE - (y + Cb_b_tab[cb]);	// blue
-                    // K passes through unchanged 
-                    cmyk[i] = (cmykC < 0 ? 0 : (cmykC > 255) ? 255 : cmykC) << 24
-                          | (cmykM < 0 ? 0 : (cmykM > 255) ? 255 : cmykM) << 16
-                          | (cmykY < 0 ? 0 : (cmykY > 255) ? 255 : cmykY) << 8
-                          | 255 - ycckK[i];
+            RangeStream.range(0, cmyk.length).parallel().forEach(new BiIntConsumer() {
+                @Override
+                public void accept(int lo, int hi) {
+                    for (int i = lo; i < hi; i++) {
+                        int y = 255 - ycckY[i];
+                        int cb = 255 - ycckCb[i];
+                        int cr = 255 - ycckCr[i];
+                        int cmykC, cmykM, cmykY;
+                        // Range-limiting is essential due to noise introduced by DCT losses.
+                        cmykC = MAXJSAMPLE - (y + Cr_r_tab[cr]);	// red
+                        cmykM = MAXJSAMPLE - (y
+                                + // green
+                                (Cb_g_tab[cb] + Cr_g_tab[cr]
+                                >> SCALEBITS));
+                        cmykY = MAXJSAMPLE - (y + Cb_b_tab[cb]);	// blue
+                        // K passes through unchanged 
+                        cmyk[i] = (cmykC < 0 ? 0 : (cmykC > 255) ? 255 : cmykC) << 24
+                                | (cmykM < 0 ? 0 : (cmykM > 255) ? 255 : cmykM) << 16
+                                | (cmykY < 0 ? 0 : (cmykY > 255) ? 255 : cmykY) << 8
+                                | 255 - ycckK[i];
+                    }
                 }
             });
 
             Raster cmykRaster = Raster.createPackedRaster(
-                  new DataBufferInt(cmyk, cmyk.length),
-                  w, h, w, new int[]{0xff000000, 0xff0000, 0xff00, 0xff}, null);
+                    new DataBufferInt(cmyk, cmyk.length),
+                    w, h, w, new int[]{0xff000000, 0xff0000, 0xff00, 0xff}, null);
             return cmykRaster;
         } catch (InterruptedException | ExecutionException ex) {
             throw new InternalError(ex);
@@ -445,42 +512,45 @@ public class CMYKImages {
 
         int w = ycckRaster.getWidth(), h = ycckRaster.getHeight();
         try {
-            CompletableFuture<int[]> cfY = CompletableFuture.supplyAsync(() -> ycckRaster.getSamples(0, 0, w, h, 0, (int[]) null));
-            CompletableFuture<int[]> cfCb = CompletableFuture.supplyAsync(() -> ycckRaster.getSamples(0, 0, w, h, 1, (int[]) null));
-            CompletableFuture<int[]> cfCr = CompletableFuture.supplyAsync(() -> ycckRaster.getSamples(0, 0, w, h, 2, (int[]) null));
-            CompletableFuture<int[]> cfK = CompletableFuture.supplyAsync(() -> ycckRaster.getSamples(0, 0, w, h, 3, (int[]) null));
-            int[] cmyk = new int[w * h];
-            int[] ycckY = cfY.get();
-            int[] ycckCb = cfCb.get();
-            int[] ycckCr = cfCr.get();
-            int[] ycckK = cfK.get();
+            CompletableFuture<int[]> cfY = CompletableFuture.supplyAsync(getSupplier(ycckRaster, 0));
+            CompletableFuture<int[]> cfCb = CompletableFuture.supplyAsync(getSupplier(ycckRaster, 1));
+            CompletableFuture<int[]> cfCr = CompletableFuture.supplyAsync(getSupplier(ycckRaster, 2));
+            CompletableFuture<int[]> cfK = CompletableFuture.supplyAsync(getSupplier(ycckRaster, 3));
+            final int[] cmyk = new int[w * h];
+            final int[] ycckY = cfY.get();
+            final int[] ycckCb = cfCb.get();
+            final int[] ycckCr = cfCr.get();
+            final int[] ycckK = cfK.get();
 
             // Split the cmyk array into bands and process each band in parallel.
             // for (int i=0;i<cmyk.length;i++) {
-            RangeStream.range(0, cmyk.length).parallel().forEach((lo, hi) -> {
-                for (int i = lo; i < hi; i++) {
-                    int y = ycckY[i];
-                    int cb = ycckCb[i];
-                    int cr = ycckCr[i];
-                    int cmykC, cmykM, cmykY;
-                    // Range-limiting is essential due to noise introduced by DCT losses.
-                    cmykC = MAXJSAMPLE - (y + Cr_r_tab[cr]);	// red
-                    cmykM = MAXJSAMPLE - (y
-                          + // green
-                          (Cb_g_tab[cb] + Cr_g_tab[cr]
-                          >> SCALEBITS));
-                    cmykY = MAXJSAMPLE - (y + Cb_b_tab[cb]);	// blue
-                    // K passes through unchanged
-                    cmyk[i] = (cmykC < 0 ? 0 : (cmykC > 255) ? 255 : cmykC) << 24
-                          | (cmykM < 0 ? 0 : (cmykM > 255) ? 255 : cmykM) << 16
-                          | (cmykY < 0 ? 0 : (cmykY > 255) ? 255 : cmykY) << 8
-                          | ycckK[i];
+            RangeStream.range(0, cmyk.length).parallel().forEach(new BiIntConsumer() {
+                @Override
+                public void accept(int lo, int hi) {
+                    for (int i = lo; i < hi; i++) {
+                        int y = ycckY[i];
+                        int cb = ycckCb[i];
+                        int cr = ycckCr[i];
+                        int cmykC, cmykM, cmykY;
+                        // Range-limiting is essential due to noise introduced by DCT losses.
+                        cmykC = MAXJSAMPLE - (y + Cr_r_tab[cr]);	// red
+                        cmykM = MAXJSAMPLE - (y
+                                + // green
+                                (Cb_g_tab[cb] + Cr_g_tab[cr]
+                                >> SCALEBITS));
+                        cmykY = MAXJSAMPLE - (y + Cb_b_tab[cb]);	// blue
+                        // K passes through unchanged
+                        cmyk[i] = (cmykC < 0 ? 0 : (cmykC > 255) ? 255 : cmykC) << 24
+                                | (cmykM < 0 ? 0 : (cmykM > 255) ? 255 : cmykM) << 16
+                                | (cmykY < 0 ? 0 : (cmykY > 255) ? 255 : cmykY) << 8
+                                | ycckK[i];
+                    }
                 }
             });
 
             return Raster.createPackedRaster(
-                  new DataBufferInt(cmyk, cmyk.length),
-                  w, h, w, new int[]{0xff000000, 0xff0000, 0xff00, 0xff}, null);
+                    new DataBufferInt(cmyk, cmyk.length),
+                    w, h, w, new int[]{0xff000000, 0xff0000, 0xff00, 0xff}, null);
         } catch (InterruptedException | ExecutionException e) {
             throw new InternalError(e);
         }

@@ -25,6 +25,7 @@ import static javafx.scene.image.PixelFormat.getIntArgbInstance;
 import static javafx.scene.image.PixelFormat.getIntArgbPreInstance;
 import javafx.scene.image.WritableImage;
 import javax.swing.*;
+import ru.sbtqa.monte.media.util.stream.BiIntConsumer;
 import static ru.sbtqa.monte.media.util.stream.RangeStream.range;
 
 /**
@@ -99,36 +100,39 @@ public class Images {
     /**
      * Converts the image into a buffered image with an RGB color model. This
      * method returns the same image, if no conversion is needed.
-     * 
+     *
      * This method should be run with "KCMS" (Kodak Color Management System).
      * The "Little CMS" which is the default in JVMs is 4 times slower.
-     * 
+     *
      * Start the VM with the following options:
-     * 
+     *
      * -Dsun.java2d.cmm=sun.java2d.cmm.kcms.KcmsServiceProvider
-     * 
+     *
      *
      * @param img an image
      * @param cm the destination color model
      * @return the converted image, may be the same as the source image
      */
     public static BufferedImage toImageWithColorModel_usingColorConvertOp(Image img, ColorModel cm) {
-        BufferedImage src = toBufferedImage(img);
+        final BufferedImage src = toBufferedImage(img);
         if (src.getColorModel().equals(cm)) {
             return src;
         }
-        int w = src.getWidth();
+        final int w = src.getWidth();
         int h = src.getHeight();
 
-        ColorConvertOp op = new ColorConvertOp(src.getColorModel().getColorSpace(), cm.getColorSpace(), null);
-        BufferedImage dest = new BufferedImage(cm, cm.createCompatibleWritableRaster(w, h), cm.isAlphaPremultiplied(), new Hashtable<>());
+        final ColorConvertOp op = new ColorConvertOp(src.getColorModel().getColorSpace(), cm.getColorSpace(), null);
+        final BufferedImage dest = new BufferedImage(cm, cm.createCompatibleWritableRaster(w, h), cm.isAlphaPremultiplied(), new Hashtable<>());
 
         // split the image into bands and convert each band in parallel
         //op.filter(src.getRaster(), dest.getRaster());
-        range(0, h).parallel().forEach((lo, hi) -> {
-            Raster src1 = src.getRaster().createChild(0, lo, w, hi - lo, 0, 0, null);
-            WritableRaster dest1 = (WritableRaster) dest.getRaster().createChild(0, lo, w, hi - lo, 0, 0, null);
-            op.filter(src1, dest1);
+        range(0, h).parallel().forEach(new BiIntConsumer() {
+            @Override
+            public void accept(int lo, int hi) {
+                Raster src1 = src.getRaster().createChild(0, lo, w, hi - lo, 0, 0, null);
+                WritableRaster dest1 = (WritableRaster) dest.getRaster().createChild(0, lo, w, hi - lo, 0, 0, null);
+                op.filter(src1, dest1);
+            }
         });
 
         return dest;
@@ -169,13 +173,13 @@ public class Images {
         } else {
             Raster r = rImg.getData();
             WritableRaster wr = createWritableRaster(
-                  r.getSampleModel(), null);
+                    r.getSampleModel(), null);
             rImg.copyData(wr);
             image = new BufferedImage(
-                  rImg.getColorModel(),
-                  wr,
-                  rImg.getColorModel().isAlphaPremultiplied(),
-                  null
+                    rImg.getColorModel(),
+                    wr,
+                    rImg.getColorModel().isAlphaPremultiplied(),
+                    null
             );
         }
         return image;
@@ -192,13 +196,13 @@ public class Images {
 
         Raster r = rImg.getData();
         WritableRaster wr = createWritableRaster(
-              r.getSampleModel(), null);
+                r.getSampleModel(), null);
         rImg.copyData(wr);
         image = new BufferedImage(
-              rImg.getColorModel(),
-              wr,
-              rImg.getColorModel().isAlphaPremultiplied(),
-              null
+                rImg.getColorModel(),
+                wr,
+                rImg.getColorModel().isAlphaPremultiplied(),
+                null
         );
 
         return image;
@@ -246,7 +250,7 @@ public class Images {
                 GraphicsDevice gs = ge.getDefaultScreenDevice();
                 GraphicsConfiguration gc = gs.getDefaultConfiguration();
                 bimage = gc.createCompatibleImage(
-                      image.getWidth(null), image.getHeight(null), transparency);
+                        image.getWidth(null), image.getHeight(null), transparency);
             } catch (Exception e) {
                 //} catch (HeadlessException e) {
                 // The system does not have a screen
@@ -303,7 +307,7 @@ public class Images {
 
     /**
      * Converts an AWT image to Java FX.
-     * 
+     *
      * This method performs better than SwingFXUtils on Java SE 8 if the
      * underlying Raster has a DataBufferInt.
      *
@@ -322,7 +326,7 @@ public class Images {
         // perform fast conversion if possible
         fast:
         if ((bimg.getSampleModel() instanceof SinglePixelPackedSampleModel)
-              && bimg.getRaster().getDataBuffer() instanceof DataBufferInt) {
+                && bimg.getRaster().getDataBuffer() instanceof DataBufferInt) {
             int[] p = ((DataBufferInt) bimg.getRaster().getDataBuffer()).getData();
             if (p.length != w * h) {
                 break fast; // can't do it the fast way, because we do not know if there is an offset and/or a scanline stride
@@ -336,15 +340,15 @@ public class Images {
                         o[i] = p[i] | 0xff000000;
                     }
                     wimg.getPixelWriter().setPixels(0, 0, w, h, getIntArgbInstance(),
-                          o, 0, bimg.getWidth());
+                            o, 0, bimg.getWidth());
                     return wimg;
                 case TYPE_INT_ARGB:
                     wimg.getPixelWriter().setPixels(0, 0, w, h, getIntArgbInstance(),
-                          p, 0, bimg.getWidth());
+                            p, 0, bimg.getWidth());
                     return wimg;
                 case TYPE_INT_ARGB_PRE:
                     wimg.getPixelWriter().setPixels(0, 0, w, h, getIntArgbPreInstance(),
-                          p, 0, bimg.getWidth());
+                            p, 0, bimg.getWidth());
                     return wimg;
             }
         }
@@ -400,13 +404,13 @@ public class Images {
         for (int i = 0; i < count; i++) {
             if (isHorizontal) {
                 parts[i] = src.getSubimage(
-                      src.getWidth() / count * i, 0,
-                      src.getWidth() / count, src.getHeight()
+                        src.getWidth() / count * i, 0,
+                        src.getWidth() / count, src.getHeight()
                 );
             } else {
                 parts[i] = src.getSubimage(
-                      0, src.getHeight() / count * i,
-                      src.getWidth(), src.getHeight() / count
+                        0, src.getHeight() / count * i,
+                        src.getWidth(), src.getHeight() / count
                 );
             }
         }
@@ -453,10 +457,10 @@ public class Images {
      */
     public static BufferedImage toImage(int[] pixels, int width, int height) {
         return new BufferedImage(getRGBdefault(),//
-              createWritableRaster(new SinglePixelPackedSampleModel(TYPE_INT, width, height,
-                    new int[]{0xff00000, 0xff00, 0xff}),//
-                    new DataBufferInt(pixels, width * height), new Point(0, 0)),
-              false, null
+                createWritableRaster(new SinglePixelPackedSampleModel(TYPE_INT, width, height,
+                        new int[]{0xff00000, 0xff00, 0xff}),//
+                        new DataBufferInt(pixels, width * height), new Point(0, 0)),
+                false, null
         );
     }
 }

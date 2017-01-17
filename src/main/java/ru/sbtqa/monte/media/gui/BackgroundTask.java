@@ -11,7 +11,7 @@ import static javax.swing.SwingUtilities.invokeLater;
 /**
  * This is an abstract class that you can subclass to perform GUI-related work
  * in a dedicated event dispatcher.
- * 
+ *
  * This class is similar to SwingWorker but less complex.
  *
  * @author Werner Randelshofer
@@ -31,17 +31,23 @@ public abstract class BackgroundTask implements Runnable {
             construct();
         } catch (Throwable e) {
             setError(e);
-            invokeLater(() -> {
-                failed(getError());
-                finished();
+            invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    failed(getError());
+                    finished();
+                }
             });
             return;
         }
-        invokeLater(() -> {
-            try {
-                done();
-            } finally {
-                finished();
+        invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    done();
+                } finally {
+                    finished();
+                }
             }
         });
     }
@@ -56,7 +62,7 @@ public abstract class BackgroundTask implements Runnable {
     /**
      * Called on the event dispatching thread (not on the worker thread) after
      * the <code>construct</code> method has returned without throwing an error.
-     * 
+     *
      * The default implementation does nothing. Subclasses may override this
      * method to perform done actions on the Event Dispatch Thread.
      *
@@ -67,7 +73,7 @@ public abstract class BackgroundTask implements Runnable {
     /**
      * Called on the event dispatching thread (not on the worker thread) after
      * the <code>construct</code> method has thrown an error.
-     * 
+     *
      * The default implementation prints a stack trace. Subclasses may override
      * this method to perform failure actions on the Event Dispatch Thread.
      *
@@ -82,7 +88,7 @@ public abstract class BackgroundTask implements Runnable {
      * Called on the event dispatching thread (not on the worker thread) after
      * the <code>construct</code> method has finished and after done() or
      * failed() has been invoked.
-     * 
+     *
      * The default implementation does nothing. Subclasses may override this
      * method to perform completion actions on the Event Dispatch Thread.
      */

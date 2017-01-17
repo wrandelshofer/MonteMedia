@@ -22,9 +22,9 @@ import ru.sbtqa.monte.media.avi.AVIBMPDIB;
 
 /**
  * Reads an image in the Motion JPEG (MJPG) format.
- * 
+ *
  * . This class can read Motion JPEG files with omitted Huffmann table.
- * 
+ *
  * For more information see: Microsoft Windows Bitmap Format. Multimedia
  * Technical Note: JPEG DIB Format. (c) 1993 Microsoft Corporation. All rights
  * reserved. <a
@@ -125,7 +125,7 @@ public class MJPGImageReader extends ImageReader {
      * not implement the actual decoding.
      */
     private static ImageReader getBasicJPEGImageReader() {
-        for (ImageReader r : (Iterable<ImageReader>) () -> ImageIO.getImageReadersByFormatName("jpeg")) {
+        for (ImageReader r : (Iterable<ImageReader>) ImageIO.getImageReadersByFormatName("jpeg")) {
             if ("com.sun.imageio.plugins.jpeg.JPEGImageReader".equals(r.getClass().getName())) {
                 return r;
             }
