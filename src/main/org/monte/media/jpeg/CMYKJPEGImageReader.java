@@ -432,8 +432,7 @@ public class CMYKJPEGImageReader extends ImageReader {
    * @param cmykProfile An ICC_Profile for conversion from the CMYK color space
    * to the RGB color space. If this parameter is null, a default profile is
    * used.
-   * @return a BufferedImage containing the decoded image converted into the RGB
-   * color space.
+   * @return a BufferedImage containing the decoded image.
    * @throws java.io.IOException
    */
   public static BufferedImage readImageFromInvertedYCCK(InputStream in, ICC_Profile cmykProfile) throws IOException {
