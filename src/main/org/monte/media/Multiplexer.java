@@ -16,13 +16,15 @@ import java.io.IOException;
  */
 public interface Multiplexer {
     /** Writes a sample.
-     * Does nothing if the discard-flag in the buffer is set to true.
+     * Does nothing if the discard-flag or the prefetch-flag in the buffer is set to true.
      *
      * @param track The track number.
      * @param buf The buffer containing the sample data.
+     * @throws java.io.IOException if the write fails
      */
     public void write(int track, Buffer buf) throws IOException;
 
-    /** Closes the Multiplexer. */
+    /** Closes the Multiplexer.
+     * @throws java.io.IOException if close fails */
     public void close() throws IOException;
 }
