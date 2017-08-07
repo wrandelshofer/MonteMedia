@@ -4,7 +4,6 @@
  */
 package org.monte.media.jmf.jpeg;
 
-import org.monte.media.avi.AVIBMPDIB;
 import java.awt.image.BufferedImage;
 import java.awt.image.DirectColorModel;
 import java.io.IOException;
@@ -19,7 +18,7 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.spi.ImageReaderSpi;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.MemoryCacheImageInputStream;
-import javax.media.Buffer;
+import org.monte.media.avi.AVIBMPDIB;
 
 /**
  * Reads an image in the Motion JPEG (MJPG) format.
