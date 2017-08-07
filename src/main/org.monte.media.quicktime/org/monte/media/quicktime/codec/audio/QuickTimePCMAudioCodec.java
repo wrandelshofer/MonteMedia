@@ -2,7 +2,7 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.quicktime;
+package org.monte.media.quicktime.codec.audio;
 
 import org.monte.media.codec.audio.PCMAudioCodec;
 import org.monte.media.codec.Format;

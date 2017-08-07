@@ -4,7 +4,7 @@
  */
 package org.monte.media.jmf.codec.video;
 
-import org.monte.media.quicktime.AnimationCodec;
+import org.monte.media.quicktime.codec.video.AnimationCodec;
 import java.awt.image.BufferedImage;
 import javax.media.Buffer;
 import javax.media.Format;

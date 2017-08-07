@@ -5,7 +5,7 @@
  * license agreement you entered into onlyWith Werner Randelshofer.
  * For details see accompanying license terms.
  */
-package org.monte.media.quicktime;
+package org.monte.media.quicktime.codec.video;
 
 import org.monte.media.codec.video.AbstractVideoCodec;
 import org.monte.media.codec.Buffer;
