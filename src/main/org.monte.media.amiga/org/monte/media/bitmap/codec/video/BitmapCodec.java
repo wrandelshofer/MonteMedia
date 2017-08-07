@@ -2,7 +2,7 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.bitmap;
+package org.monte.media.bitmap.codec.video;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
@@ -13,6 +13,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import org.monte.media.bitmap.BitmapImage;
+import org.monte.media.bitmap.BitmapImage;
+import org.monte.media.bitmap.BitmapImageFactory;
 import org.monte.media.codec.video.AbstractVideoCodec;
 import org.monte.media.codec.Buffer;
 import static org.monte.media.codec.BufferFlag.DISCARD;
