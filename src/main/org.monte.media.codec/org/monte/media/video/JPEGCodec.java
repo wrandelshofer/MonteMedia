@@ -4,6 +4,8 @@
  */
 package org.monte.media.video;
 
+import org.monte.media.mjpg.MJPGImageReader;
+import org.monte.media.mjpg.MJPGImageReaderSpi;
 import org.monte.media.io.ByteArrayImageInputStream;
 import javax.imageio.ImageReader;
 import org.monte.media.codec.Format;

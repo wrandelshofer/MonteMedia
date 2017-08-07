@@ -2,7 +2,7 @@
  * Copyright © 2010-2011 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.video;
+package org.monte.media.mjpg;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DirectColorModel;
@@ -18,6 +18,7 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.spi.ImageReaderSpi;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.MemoryCacheImageInputStream;
+import org.monte.media.video.AVIBMPDIB;
 
 /**
  * Reads an image in the Motion JPEG (MJPG) format.

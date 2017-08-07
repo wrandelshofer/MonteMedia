@@ -2,7 +2,7 @@
  * Copyright © 2010-2011 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.video;
+package org.monte.media.mjpg;
 
 import java.io.IOException;
 import java.io.InputStream;
