@@ -15,9 +15,11 @@ import java.io.IOException;
  * @version 1.0 2011-02-19 Created.
  */
 public interface Demultiplexer {
-    /** Returns the tracks. */
+    /** Returns the tracks.
+     * @return  the tracks */
     public Track[] getTracks();
   
-    /** Closes the Demultiplexer. */
+    /** Closes the Demultiplexer.
+     * @throws java.io.IOException if closing fails */
     public void close() throws IOException;
 }
