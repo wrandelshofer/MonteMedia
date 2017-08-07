@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="montemedia" default="all" basedir=".">
+    <target name="init">
+        <exec executable="git" outputproperty="git.revision" failifexecutionfails="false" errorproperty="">
+            <arg value="describe"/>
+            <arg value="--tags"/>
+            <arg value="--always"/>
+            <arg value="HEAD"/>
+        </exec>
+        <property name="version" value="${git.revision}"/>
+        <property name="srcdirs" value="src/demo:src/main"/>
+        <property name="classdir" value="build/classes"/>
+        <property name="libdir" value="lib"/>
+    </target>
+    <target name="clean">
+        <delete dir="${classdir}" />
+    </target>
+    <target name="compile" depends="init">
+        <mkdir dir="${classdir}" />
+        <javac
+                destdir="${classdir}"
+                debug="true"
+                modulesourcepath="${srcdirs}" 
+                includeantruntime="false"
+        >
+             <classpath>
+                <fileset dir="${libdir}">
+                    <include name="jai_core.jar"/>
+                    <include name="jmf.jar"/>
+                </fileset>
+            </classpath>
+           
+        </javac>
+    </target>
+    <target name="all">
+    </target>
+
+</project>
