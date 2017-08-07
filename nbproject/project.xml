@@ -5,7 +5,22 @@
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
             <name>MonteMedia</name>
             <source-roots>
-                <root id="src.main.jmf.dir"/>
+                <root id="src.core.dir"/>
+                <root id="src.movie.dir"/>
+                <root id="src.player.dir"/>
+                <root id="src.jpeg.dir"/>
+                <root id="src.pc.dir"/>
+                <root id="src.amiga.dir"/>
+                <root id="src.atari.dir"/>
+                <root id="src.avi.dir"/>
+                <root id="src.quicktime.dir"/>
+                <root id="src.iff.dir"/>
+                <root id="src.jfif.dir"/>
+                <root id="src.jmf.dir"/>
+                <root id="src.misc.dir"/>
+                <root id="src.riff.dir"/>
+                <root id="src.tiff.dir"/>
+                <root id="src.animmerger.dir"/>
                 <root id="src.audiodemo.dir"/>
                 <root id="src.avidemo.dir"/>
                 <root id="src.cmykdemo.dir"/>
@@ -17,10 +32,9 @@
                 <root id="src.pbmdemo.dir"/>
                 <root id="src.quicktimedemo.dir"/>
                 <root id="src.screenrecorder.dir"/>
-                <root id="src.main.dir"/>
             </source-roots>
             <test-roots>
-                <root id="test.src.dir"/>
+                <root id="test.main.dir"/>
             </test-roots>
         </data>
     </configuration>

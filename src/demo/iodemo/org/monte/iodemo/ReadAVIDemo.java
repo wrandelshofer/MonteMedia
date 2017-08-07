@@ -16,15 +16,15 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.monte.media.Buffer;
-import org.monte.media.BufferFlag;
-import org.monte.media.Codec;
-import org.monte.media.Format;
-import org.monte.media.FormatKeys;
-import org.monte.media.FormatKeys.MediaType;
-import org.monte.media.MovieReader;
-import org.monte.media.Registry;
-import org.monte.media.VideoFormatKeys;
+import org.monte.media.player.Buffer;
+import org.monte.media.player.BufferFlag;
+import org.monte.media.player.Codec;
+import org.monte.media.player.Format;
+import org.monte.media.player.FormatKeys;
+import org.monte.media.player.FormatKeys.MediaType;
+import org.monte.media.movie.MovieReader;
+import org.monte.media.player.Registry;
+import org.monte.media.player.VideoFormatKeys;
 import org.monte.media.image.Images;
 
 /**

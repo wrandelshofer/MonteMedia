@@ -7,16 +7,16 @@ package org.monte.quicktimedemo;
 
 import org.monte.quicktimedemo.*;
 import org.monte.media.quicktime.QuickTimeReader;
-import org.monte.media.Buffer;
+import org.monte.media.player.Buffer;
 import org.monte.media.math.Rational;
 import org.monte.media.quicktime.QuickTimeWriter;
-import org.monte.media.Format;
+import org.monte.media.player.Format;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.*;
 import java.util.Random;
-import static org.monte.media.VideoFormatKeys.*;
+import static org.monte.media.player.VideoFormatKeys.*;
 
 /**
  * Demonstrates the use of {@link QuickTimeReader} and {@link QuickTimeWriter}.

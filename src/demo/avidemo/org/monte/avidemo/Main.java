@@ -6,10 +6,10 @@
 package org.monte.avidemo;
 
 import org.monte.media.avi.AVIReader;
-import org.monte.media.Buffer;
+import org.monte.media.player.Buffer;
 import org.monte.media.math.Rational;
 import org.monte.media.avi.AVIWriter;
-import org.monte.media.Format;
+import org.monte.media.player.Format;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
@@ -17,7 +17,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.*;
 import java.util.Random;
-import static org.monte.media.VideoFormatKeys.*;
+import static org.monte.media.player.VideoFormatKeys.*;
 
 /**
  * Demonstrates the use of {@link AVIReader} and {@link AVIWriter}.

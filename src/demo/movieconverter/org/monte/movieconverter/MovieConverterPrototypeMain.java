@@ -4,7 +4,7 @@
  */
 package org.monte.movieconverter;
 
-import org.monte.media.Buffer;
+import org.monte.media.player.Buffer;
 
 /**
  * {@code MovieConverterPrototypeMain}.

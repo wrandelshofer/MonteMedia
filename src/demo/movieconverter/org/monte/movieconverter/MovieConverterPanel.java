@@ -4,8 +4,8 @@
  */
 package org.monte.movieconverter;
 
-import org.monte.media.Buffer;
-import org.monte.media.Movie;
+import org.monte.media.player.Buffer;
+import org.monte.media.movie.Movie;
 import org.monte.media.gui.Worker;
 import org.monte.media.math.Rational;
 import java.awt.image.BufferedImage;

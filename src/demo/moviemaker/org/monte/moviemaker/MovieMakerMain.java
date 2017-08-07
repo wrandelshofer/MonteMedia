@@ -6,8 +6,8 @@ package org.monte.moviemaker;
 
 import javax.swing.UIManager;
 import org.monte.media.math.Rational;
-import org.monte.media.Buffer;
-import org.monte.media.Format;
+import org.monte.media.player.Buffer;
+import org.monte.media.player.Format;
 import org.monte.media.gui.datatransfer.FileTextFieldTransferHandler;
 import org.monte.media.mp3.MP3AudioInputStream;
 import org.monte.media.quicktime.QuickTimeWriter;
@@ -36,9 +36,9 @@ import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileSystemView;
 import static java.lang.Math.*;
-import static org.monte.media.FormatKeys.*;
-import static org.monte.media.AudioFormatKeys.*;
-import static org.monte.media.VideoFormatKeys.*;
+import static org.monte.media.player.FormatKeys.*;
+import static org.monte.media.player.AudioFormatKeys.*;
+import static org.monte.media.player.VideoFormatKeys.*;
 import org.monte.media.gui.BackgroundTask;
 
 /**

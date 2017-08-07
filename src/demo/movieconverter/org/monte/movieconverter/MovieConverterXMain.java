@@ -4,10 +4,10 @@
  */
 package org.monte.movieconverter;
 
-import org.monte.media.DefaultMovie;
-import org.monte.media.Movie;
-import org.monte.media.MovieReader;
-import org.monte.media.Registry;
+import org.monte.media.player.DefaultMovie;
+import org.monte.media.movie.Movie;
+import org.monte.media.movie.MovieReader;
+import org.monte.media.player.Registry;
 import org.monte.media.gui.Worker;
 import org.monte.media.gui.datatransfer.DropFileTransferHandler;
 import java.awt.event.ActionEvent;
