@@ -3,14 +3,15 @@
 <project name="build-CMYKDemo" default="all" basedir=".">
     <target name="init">
         <property name="libdir" value="lib"/>
-        <property name="srcdir" value="src/main"/>
+        <property name="srcdir.main" value="src/main"/>
+        <property name="srcdir.demo" value="src/demo/cmykdemo"/>
         <property name="rscdir" value="resources"/>
         <property name="builddir" value="build"/>
         <property name="classdir" value="${builddir}/classes"/>
         <property name="distdir" value="dist/CMYKDemo"/>
         <property name="author" value="Werner Randelshofer"/>
-        <property name="version" value="2.0.1"/>
-        <property name="versionDate" value="2016-10-23"/>
+        <property name="version" value="2.0.2"/>
+        <property name="versionDate" value="2017-08-07"/>
         <property name="versionLong" value="${version}"/>
         <property name="versionLong" value="${version} ${versionDate}"/>
     </target>
@@ -25,7 +26,7 @@
         -->
         <javac
                 destdir="${classdir}"
-                srcdir="${srcdir}"
+                srcdir="${srcdir.main}:${srcdir.demo}"
                 debug="true"
                 source="1.8"
                 target="1.8"
@@ -38,24 +39,6 @@
             <include name="org/monte/media/jpeg/CMYK*.java"/> 
             <include name="org/monte/media/jpeg/JPEGImageIO.java"/> 
         </javac>
-        <copy todir="${classdir}">
-            <fileset dir="${srcdir}" >
-                <include name="org/monte/media/color/ColorSpaces.java"/>
-                <include name="org/monte/media/color/ICCPackedColorModel.java"/>
-                <include name="org/monte/media/image/CMYKImages.java"/>
-                <include name="org/monte/media/image/Images.java"/>
-                <include name="org/monte/media/jpeg/CMYK*.java"/>
-                <include name="org/monte/media/jpeg/JFIFInputStream.java"/>
-                <include name="org/monte/media/io/ByteArrayImageInputStream.java"/>
-                <include name="org/monte/media/io/ImageInputStreamAdapter.java"/>
-                <include name="org/monte/media/io/ImageInputStreamImpl2.java"/>
-                <include name="org/monte/media/io/IOStreams.java"/>
-                <include name="org/monte/cmykdemo/*.java"/>
-                <include name="org/monte/util/BiIntConsumer.java"/>
-                <include name="org/monte/util/RangeStream.java"/>
-                <exclude name="**/.*"/>
-            </fileset>
-        </copy>
         <echo file="${classdir}/META-INF/services/javax.imageio.spi.ImageReaderSpi"
 >org.monte.media.jpeg.CMYKJPEGImageReaderSpi
 </echo>

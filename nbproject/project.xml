@@ -6,6 +6,17 @@
             <name>MonteMedia</name>
             <source-roots>
                 <root id="src.main.jmf.dir"/>
+                <root id="src.audiodemo.dir"/>
+                <root id="src.avidemo.dir"/>
+                <root id="src.cmykdemo.dir"/>
+                <root id="src.ilbmdemo.dir"/>
+                <root id="src.iodemo.dir"/>
+                <root id="src.mathdemo.dir"/>
+                <root id="src.movieconverter.dir"/>
+                <root id="src.moviemaker.dir"/>
+                <root id="src.pbmdemo.dir"/>
+                <root id="src.quicktimedemo.dir"/>
+                <root id="src.screenrecorder.dir"/>
                 <root id="src.main.dir"/>
             </source-roots>
             <test-roots>
