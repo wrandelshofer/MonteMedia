@@ -4,7 +4,7 @@
  */
 package org.monte.media.jmf.codec.video;
 
-import org.monte.media.avi.ZMBVCodecCore;
+import org.monte.media.avi.codec.video.ZMBVCodecCore;
 import java.awt.Dimension;
 import javax.media.Buffer;
 import javax.media.Format;
