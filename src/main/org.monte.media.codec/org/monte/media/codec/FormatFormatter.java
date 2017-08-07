@@ -5,10 +5,22 @@
 package org.monte.media.codec;
 
 import java.nio.ByteOrder;
-import static org.monte.media.codec.audio.AudioFormatKeys.*;
-import static org.monte.media.codec.FormatKeys.*;
+import static org.monte.media.codec.FormatKeys.EncodingKey;
+import static org.monte.media.codec.FormatKeys.FrameRateKey;
 import org.monte.media.codec.FormatKeys.MediaType;
-import static org.monte.media.codec.video.VideoFormatKeys.*;
+import static org.monte.media.codec.FormatKeys.MediaTypeKey;
+import static org.monte.media.codec.FormatKeys.MimeTypeKey;
+import static org.monte.media.codec.audio.AudioFormatKeys.ByteOrderKey;
+import static org.monte.media.codec.audio.AudioFormatKeys.ChannelsKey;
+import static org.monte.media.codec.audio.AudioFormatKeys.ENCODING_AVI_PCM;
+import static org.monte.media.codec.audio.AudioFormatKeys.SampleRateKey;
+import static org.monte.media.codec.audio.AudioFormatKeys.SampleSizeInBitsKey;
+import static org.monte.media.codec.audio.AudioFormatKeys.SignedKey;
+import static org.monte.media.codec.video.VideoFormatKeys.DepthKey;
+import static org.monte.media.codec.video.VideoFormatKeys.FixedFrameRateKey;
+import static org.monte.media.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.codec.video.VideoFormatKeys.PixelAspectRatioKey;
+import static org.monte.media.codec.video.VideoFormatKeys.WidthKey;
 import org.monte.media.math.Rational;
 
 /**
