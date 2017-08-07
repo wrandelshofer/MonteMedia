@@ -284,8 +284,4 @@ public class EXIFTagSet extends TagSet {
         }
         return instance;
     }
-
-    public static void main(String[] args) {
-        getInstance();
-    }
 }
