@@ -60,99 +60,45 @@ public class AmigaVideoFormatKeys extends VideoFormatKeys {
             ArrayList<AmigaDisplayInfo> infs = new ArrayList<AmigaDisplayInfo>(AmigaDisplayInfo.getAllInfos().values());
             if (fmt.containsKey(InterlaceKey)) {
                 boolean value = fmt.get(InterlaceKey);
-                reduceListBoolean(value, new InfGetter<Boolean>() {
-
-                    @Override
-                    public Boolean get(AmigaDisplayInfo inf) {
-                        return inf.isInterlace();
-                    }
-                }, infs);
+                reduceListBoolean(value, AmigaDisplayInfo::isInterlace, infs);
             }
             if (fmt.containsKey(FrameRateKey)) {
                 Rational value = fmt.get(FrameRateKey);
-                reduceListRational(value, new InfGetter<Rational>() {
-
-                    @Override
-                    public Rational get(AmigaDisplayInfo inf) {
-                        return new Rational(inf.fps, 1);
-                    }
-                }, infs);
+                reduceListRational(value, inf -> new Rational(inf.fps, 1), infs);
             }
             if (fmt.containsKey(PixelAspectRatioKey)) {
                 Rational value = fmt.get(PixelAspectRatioKey);
-                reduceListRational(value, new InfGetter<Rational>() {
-
-                    @Override
-                    public Rational get(AmigaDisplayInfo inf) {
-                        return new Rational(inf.resolutionX, inf.resolutionY);
-                    }
-                }, infs);
+                reduceListRational(value, inf -> new Rational(inf.resolutionX, inf.resolutionY), infs);
             }
             ArrayList<AmigaDisplayInfo> bestInfs = new ArrayList<AmigaDisplayInfo>(infs);
             if (fmt.containsKey(WidthKey)) {
                 int value = fmt.get(WidthKey);
-                reduceListIntegerOnlyTakeIfSmaller(value, new InfGetter<Integer>() {
-
-                    @Override
-                    public Integer get(AmigaDisplayInfo inf) {
-                        return inf.textOverscanWidth;
-                    }
-                }, infs);
+                reduceListIntegerOnlyTakeIfSmaller(value, inf -> inf.textOverscanWidth, infs);
             }
             if (fmt.containsKey(HeightKey)) {
                 Integer value = fmt.get(HeightKey);
-                reduceListIntegerOnlyTakeIfSmaller(value, new InfGetter<Integer>() {
-
-                    @Override
-                    public Integer get(AmigaDisplayInfo inf) {
-                        return inf.textOverscanHeight;
-                    }
-                }, infs);
+                reduceListIntegerOnlyTakeIfSmaller(value, inf -> inf.textOverscanHeight, infs);
             }
             if (infs.isEmpty()) {
                 infs = new ArrayList<AmigaDisplayInfo>(bestInfs);
                 if (fmt.containsKey(WidthKey)) {
                     Integer value = fmt.get(WidthKey);
-                    reduceListIntegerOnlyTakeIfSmaller(value, new InfGetter<Integer>() {
-
-                        @Override
-                        public Integer get(AmigaDisplayInfo inf) {
-                            return inf.maxOverscanWidth;
-                        }
-                    }, infs);
+                    reduceListIntegerOnlyTakeIfSmaller(value, inf -> inf.maxOverscanWidth, infs);
                 }
                 if (fmt.containsKey(HeightKey)) {
                     Integer value = fmt.get(HeightKey);
-                    reduceListIntegerOnlyTakeIfSmaller(value, new InfGetter<Integer>() {
-
-                        @Override
-                        public Integer get(AmigaDisplayInfo inf) {
-                            return inf.maxOverscanHeight;
-                        }
-                    }, infs);
+                    reduceListIntegerOnlyTakeIfSmaller(value, inf -> inf.maxOverscanHeight, infs);
                 }
             }
             if (infs.isEmpty()) {
                 infs = new ArrayList<AmigaDisplayInfo>(bestInfs);
                 if (fmt.containsKey(WidthKey)) {
                     Integer value = fmt.get(WidthKey);
-                    reduceListInteger(value, new InfGetter<Integer>() {
-
-                        @Override
-                        public Integer get(AmigaDisplayInfo inf) {
-                            return inf.maxOverscanWidth;
-                        }
-                    }, infs);
+                    reduceListInteger(value, inf -> inf.maxOverscanWidth, infs);
                 }
                 if (fmt.containsKey(HeightKey)) {
                     Integer value = fmt.get(HeightKey);
-                    reduceListInteger(value, new InfGetter<Integer>() {
-
-                        @Override
-                        public Integer get(AmigaDisplayInfo inf) {
-                            return inf.maxOverscanHeight;
-                        }
-                    }, infs);
+                    reduceListInteger(value, inf -> inf.maxOverscanHeight, infs);
                 }
             }
         }
