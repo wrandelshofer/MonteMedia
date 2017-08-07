@@ -7,7 +7,7 @@
  */
 package org.monte.media.quicktime;
 
-import org.monte.media.codec.AbstractVideoCodec;
+import org.monte.media.codec.video.AbstractVideoCodec;
 import org.monte.media.codec.Buffer;
 import org.monte.media.codec.Format;
 import org.monte.media.io.SeekableByteArrayOutputStream;
@@ -16,7 +16,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.io.OutputStream;
-import static org.monte.media.codec.VideoFormatKeys.*;
+import static org.monte.media.codec.video.VideoFormatKeys.*;
 import static org.monte.media.codec.BufferFlag.*;
 
 /**

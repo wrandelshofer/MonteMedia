@@ -8,7 +8,7 @@ import java.util.zip.InflaterInputStream;
 import java.util.zip.DeflaterOutputStream;
 import org.monte.media.io.UncachedImageInputStream;
 import java.io.ByteArrayInputStream;
-import org.monte.media.codec.AbstractVideoCodecCore;
+import org.monte.media.codec.video.AbstractVideoCodecCore;
 import org.monte.media.io.ByteArrayImageInputStream;
 import org.monte.media.io.ByteArrayImageOutputStream;
 import java.io.IOException;

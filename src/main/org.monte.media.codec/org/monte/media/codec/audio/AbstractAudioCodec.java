@@ -3,7 +3,10 @@
  * You may only use this software in accordance with the license terms.
  */
 
-package org.monte.media.codec;
+package org.monte.media.codec.audio;
+
+import org.monte.media.codec.AbstractCodec;
+import org.monte.media.codec.Format;
 
 /**
  * {@code AbstractAudioCodec}.

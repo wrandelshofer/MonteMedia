@@ -4,7 +4,7 @@
  */
 package org.monte.media.anim;
 
-import org.monte.media.codec.AbstractVideoCodec;
+import org.monte.media.codec.video.AbstractVideoCodec;
 import org.monte.media.codec.Buffer;
 import org.monte.media.codec.Format;
 import org.monte.media.bitmap.BitmapImage;

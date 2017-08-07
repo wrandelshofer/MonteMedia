@@ -16,7 +16,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.*;
 import java.util.Random;
-import static org.monte.media.codec.VideoFormatKeys.*;
+import static org.monte.media.codec.video.VideoFormatKeys.*;
 
 /**
  * Demonstrates the use of {@link QuickTimeReader} and {@link QuickTimeWriter}.

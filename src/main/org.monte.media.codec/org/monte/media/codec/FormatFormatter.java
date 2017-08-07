@@ -5,10 +5,10 @@
 package org.monte.media.codec;
 
 import java.nio.ByteOrder;
-import static org.monte.media.codec.AudioFormatKeys.*;
+import static org.monte.media.codec.audio.AudioFormatKeys.*;
 import static org.monte.media.codec.FormatKeys.*;
 import org.monte.media.codec.FormatKeys.MediaType;
-import static org.monte.media.codec.VideoFormatKeys.*;
+import static org.monte.media.codec.video.VideoFormatKeys.*;
 import org.monte.media.math.Rational;
 
 /**

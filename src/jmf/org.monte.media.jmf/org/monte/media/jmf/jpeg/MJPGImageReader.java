@@ -18,7 +18,7 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.spi.ImageReaderSpi;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.MemoryCacheImageInputStream;
-import org.monte.media.video.AVIBMPDIB;
+import org.monte.media.codec.video.AVIBMPDIB;
 
 /**
  * Reads an image in the Motion JPEG (MJPG) format.

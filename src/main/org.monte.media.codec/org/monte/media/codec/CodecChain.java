@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.monte.media.converter;
+package org.monte.media.codec;
 
 import org.monte.media.codec.Buffer;
 import org.monte.media.codec.Codec;

@@ -5,12 +5,15 @@
  * license agreement you entered into onlyWith Werner Randelshofer.
  * For details see accompanying license terms.
  */
-package org.monte.media.codec;
+package org.monte.media.codec.audio;
 
 import org.monte.media.math.Rational;
 import java.nio.ByteOrder;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioFormat.Encoding;
+import org.monte.media.codec.Format;
+import org.monte.media.codec.FormatKey;
+import org.monte.media.codec.FormatKeys;
 
 /**
  * Defines common format keys for audio media.

@@ -15,7 +15,7 @@ import org.monte.media.codec.Buffer;
 import org.monte.media.codec.Codec;
 import org.monte.media.codec.Format;
 import static org.monte.media.codec.FormatKeys.EncodingKey;
-import static org.monte.media.codec.VideoFormatKeys.ENCODING_AVI_DIB;
+import static org.monte.media.codec.video.VideoFormatKeys.ENCODING_AVI_DIB;
 import org.monte.media.riff.RIFFChunk;
 
 /**

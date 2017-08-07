@@ -9,7 +9,7 @@ package org.monte.media.anim;
 
 import org.monte.media.codec.Format;
 import org.monte.media.codec.FormatKey;
-import org.monte.media.codec.VideoFormatKeys;
+import org.monte.media.codec.video.VideoFormatKeys;
 import org.monte.media.math.Rational;
 import java.util.ArrayList;
 import java.util.Iterator;

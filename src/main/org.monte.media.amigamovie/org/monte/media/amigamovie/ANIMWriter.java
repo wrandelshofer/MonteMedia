@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import org.monte.media.anim.ANIMMultiplexer;
 import static org.monte.media.codec.FormatKeys.*;
-import static org.monte.media.codec.AudioFormatKeys.*;
+import static org.monte.media.codec.audio.AudioFormatKeys.*;
 import static org.monte.media.anim.AmigaVideoFormatKeys.*;
 
 /**

@@ -9,14 +9,14 @@ import org.monte.media.io.ByteArrayImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.WritableRaster;
 import java.awt.Rectangle;
-import org.monte.media.codec.AbstractVideoCodec;
+import org.monte.media.codec.video.AbstractVideoCodec;
 import org.monte.media.codec.Buffer;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteOrder;
 import static java.lang.Math.*;
-import static org.monte.media.codec.VideoFormatKeys.*;
+import static org.monte.media.codec.video.VideoFormatKeys.*;
 import static org.monte.media.codec.BufferFlag.*;
 
 /**

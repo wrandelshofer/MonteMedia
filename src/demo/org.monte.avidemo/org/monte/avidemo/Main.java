@@ -23,17 +23,17 @@ import static org.monte.media.codec.FormatKeys.EncodingKey;
 import static org.monte.media.codec.FormatKeys.FrameRateKey;
 import org.monte.media.codec.FormatKeys.MediaType;
 import static org.monte.media.codec.FormatKeys.MediaTypeKey;
-import static org.monte.media.codec.VideoFormatKeys.DepthKey;
-import static org.monte.media.codec.VideoFormatKeys.ENCODING_AVI_DIB;
-import static org.monte.media.codec.VideoFormatKeys.ENCODING_AVI_MJPG;
-import static org.monte.media.codec.VideoFormatKeys.ENCODING_AVI_PNG;
-import static org.monte.media.codec.VideoFormatKeys.ENCODING_AVI_RLE8;
-import static org.monte.media.codec.VideoFormatKeys.ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE;
-import static org.monte.media.codec.VideoFormatKeys.HeightKey;
-import org.monte.media.codec.VideoFormatKeys.PixelFormat;
-import static org.monte.media.codec.VideoFormatKeys.PixelFormatKey;
-import static org.monte.media.codec.VideoFormatKeys.QualityKey;
-import static org.monte.media.codec.VideoFormatKeys.WidthKey;
+import static org.monte.media.codec.video.VideoFormatKeys.DepthKey;
+import static org.monte.media.codec.video.VideoFormatKeys.ENCODING_AVI_DIB;
+import static org.monte.media.codec.video.VideoFormatKeys.ENCODING_AVI_MJPG;
+import static org.monte.media.codec.video.VideoFormatKeys.ENCODING_AVI_PNG;
+import static org.monte.media.codec.video.VideoFormatKeys.ENCODING_AVI_RLE8;
+import static org.monte.media.codec.video.VideoFormatKeys.ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE;
+import static org.monte.media.codec.video.VideoFormatKeys.HeightKey;
+import org.monte.media.codec.video.VideoFormatKeys.PixelFormat;
+import static org.monte.media.codec.video.VideoFormatKeys.PixelFormatKey;
+import static org.monte.media.codec.video.VideoFormatKeys.QualityKey;
+import static org.monte.media.codec.video.VideoFormatKeys.WidthKey;
 import org.monte.media.math.Rational;
 
 /**

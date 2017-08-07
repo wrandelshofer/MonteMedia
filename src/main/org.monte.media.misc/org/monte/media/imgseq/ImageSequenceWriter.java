@@ -19,21 +19,21 @@ import static org.monte.media.codec.FormatKeys.MIME_JAVA;
 import org.monte.media.codec.FormatKeys.MediaType;
 import static org.monte.media.codec.FormatKeys.MediaTypeKey;
 import static org.monte.media.codec.FormatKeys.MimeTypeKey;
-import static org.monte.media.codec.VideoFormatKeys.DataClassKey;
-import static org.monte.media.codec.VideoFormatKeys.DepthKey;
-import static org.monte.media.codec.VideoFormatKeys.ENCODING_AVI_MJPG;
-import static org.monte.media.codec.VideoFormatKeys.ENCODING_AVI_PNG;
-import static org.monte.media.codec.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
-import static org.monte.media.codec.VideoFormatKeys.ENCODING_QUICKTIME_JPEG;
-import static org.monte.media.codec.VideoFormatKeys.ENCODING_QUICKTIME_PNG;
-import static org.monte.media.codec.VideoFormatKeys.HeightKey;
-import static org.monte.media.codec.VideoFormatKeys.WidthKey;
+import static org.monte.media.codec.video.VideoFormatKeys.DataClassKey;
+import static org.monte.media.codec.video.VideoFormatKeys.DepthKey;
+import static org.monte.media.codec.video.VideoFormatKeys.ENCODING_AVI_MJPG;
+import static org.monte.media.codec.video.VideoFormatKeys.ENCODING_AVI_PNG;
+import static org.monte.media.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
+import static org.monte.media.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_JPEG;
+import static org.monte.media.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_PNG;
+import static org.monte.media.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.codec.video.VideoFormatKeys.WidthKey;
 import org.monte.media.io.IOStreams;
 import org.monte.media.math.Rational;
 import org.monte.media.movie.MovieWriter;
 import org.monte.media.movie.MovieWriter;
-import org.monte.media.video.JPEGCodec;
-import org.monte.media.video.PNGCodec;
+import org.monte.media.codec.video.JPEGCodec;
+import org.monte.media.codec.video.PNGCodec;
 
 /**
  * {@code ImageSequenceWriter}.

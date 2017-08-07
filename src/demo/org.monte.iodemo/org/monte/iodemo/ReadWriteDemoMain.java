@@ -21,7 +21,7 @@ import java.util.Random;
 import org.monte.media.codec.BufferFlag;
 import org.monte.media.movie.Registry;
 import org.monte.media.image.Images;
-import static org.monte.media.codec.VideoFormatKeys.*;
+import static org.monte.media.codec.video.VideoFormatKeys.*;
 
 /**
  * Demonstrates the use of {@link MovieReader} and {@link MovieWriter}. <p> This

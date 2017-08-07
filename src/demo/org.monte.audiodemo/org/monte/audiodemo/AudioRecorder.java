@@ -13,7 +13,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
-import org.monte.media.codec.AudioFormatKeys;
+import org.monte.media.codec.audio.AudioFormatKeys;
 import org.monte.media.codec.Buffer;
 import org.monte.media.math.Rational;
 import org.monte.media.avimovie.AVIWriter;

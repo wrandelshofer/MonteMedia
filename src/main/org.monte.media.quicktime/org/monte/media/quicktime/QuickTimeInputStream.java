@@ -19,9 +19,9 @@ import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
 import org.monte.media.codec.FormatKeys;
 import org.monte.media.io.ImageInputStreamAdapter;
-import static org.monte.media.codec.AudioFormatKeys.*;
+import static org.monte.media.codec.audio.AudioFormatKeys.*;
 import org.monte.media.codec.Format;
-import static org.monte.media.codec.VideoFormatKeys.*;
+import static org.monte.media.codec.video.VideoFormatKeys.*;
 import org.monte.media.math.Rational;
 
 /**

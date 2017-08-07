@@ -2,7 +2,7 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this file in compliance with the accompanying license terms. 
  */
-package org.monte.media.converter;
+package org.monte.media.codec.time;
 
 import org.monte.media.codec.AbstractCodec;
 import org.monte.media.codec.Buffer;

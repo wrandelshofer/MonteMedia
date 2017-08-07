@@ -2,16 +2,15 @@
  * Copyright © 2012 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.converter;
+package org.monte.media.codec.video;
 
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
-import org.monte.media.codec.AbstractVideoCodec;
 import org.monte.media.codec.Buffer;
 import org.monte.media.codec.Format;
-import static org.monte.media.codec.VideoFormatKeys.*;
+import static org.monte.media.codec.video.VideoFormatKeys.*;
 import static org.monte.media.codec.BufferFlag.*;
 
 /**

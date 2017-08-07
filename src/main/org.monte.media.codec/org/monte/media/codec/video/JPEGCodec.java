@@ -1,130 +1,127 @@
-/* @(#)PNGCodec.java
- * Copyright © 2011-2012 Werner Randelshofer, Switzerland.
+/* @(#)JPGCodec.java
+ * Copyright © 2011 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.video;
+package org.monte.media.codec.video;
 
+import org.monte.media.mjpg.MJPGImageReader;
+import org.monte.media.mjpg.MJPGImageReaderSpi;
+import org.monte.media.io.ByteArrayImageInputStream;
+import javax.imageio.ImageReader;
 import org.monte.media.codec.Format;
-import org.monte.media.codec.AbstractVideoCodec;
 import org.monte.media.codec.Buffer;
 import org.monte.media.io.ByteArrayImageOutputStream;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
-import static org.monte.media.codec.VideoFormatKeys.*;
+import static org.monte.media.codec.video.VideoFormatKeys.*;
 import static org.monte.media.codec.BufferFlag.*;
-import org.monte.media.io.ByteArrayImageInputStream;
 
 /**
- * {@code PNGCodec} encodes a BufferedImage as a byte[] array..
+ * {@code JPEGCodec} encodes a BufferedImage as a byte[] array. 
  * <p>
- * Supported input/output formats:
- * <ul>
- * <li>{@code VideoFormat} with {@code BufferedImage.class}, any width, any height,
- * any depth.</li>
+ * Supported input/output formats: 
+ * <ul> 
+ * <li>@code VideoFormat} with {@code BufferedImage.class}, any
+ * width, any height, any depth.</li>
  * <li>{@code VideoFormat} with {@code byte[].class}, same width and height as input
  * format, depth=24.</li>
  * </ul>
  *
  * @author Werner Randelshofer
- * @version $Id: PNGCodec.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id: JPEGCodec.java 364 2016-11-09 19:54:25Z werner $
  */
-public class PNGCodec extends AbstractVideoCodec {
-
-    public PNGCodec() {
+public class JPEGCodec extends AbstractVideoCodec {
+    
+    public JPEGCodec() {
         super(new Format[]{
                     new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
                     EncodingKey, ENCODING_BUFFERED_IMAGE), //
                     new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                    DepthKey, 24,
-                    EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
+                    EncodingKey, ENCODING_QUICKTIME_JPEG,//
+                    CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_JPEG, //
+                    DataClassKey, byte[].class, DepthKey, 24), //
                     //
                     new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-                    DepthKey, 24,
-                    EncodingKey, ENCODING_AVI_PNG, DataClassKey, byte[].class), //
+                    EncodingKey, ENCODING_AVI_MJPG, DataClassKey, byte[].class, DepthKey, 24), //
+                    //
+                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                    EncodingKey, ENCODING_QUICKTIME_JPEG, DataClassKey, byte[].class, DepthKey, 24), //
                 },
                 new Format[]{
                     new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
                     EncodingKey, ENCODING_BUFFERED_IMAGE), //
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                    DepthKey, 24,
-                    EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
+                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,//
+                    EncodingKey, ENCODING_QUICKTIME_JPEG,//
+                    CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_JPEG, //
+                    DataClassKey, byte[].class, DepthKey, 24), //
                     //
                     new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-                    DepthKey, 24,
-                    EncodingKey, ENCODING_AVI_PNG, DataClassKey, byte[].class), //
-                });
-         name = "PNG Codec";
+                    EncodingKey, ENCODING_AVI_MJPG, DataClassKey, byte[].class, DepthKey, 24), //
+                }//
+                );
+        name = "JPEG Codec";
     }
-
-    @Override
-    public Format setOutputFormat(Format f) {
-        String mimeType = f.get(MimeTypeKey, MIME_QUICKTIME);
-        if (mimeType != null && !mimeType.equals(MIME_AVI)) {
-             super.setOutputFormat(
-                    f.prepend(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                    EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey,
-                    byte[].class, DepthKey, 24));
-        } else {
-             super.setOutputFormat(
-                    f.prepend(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-                    EncodingKey, ENCODING_AVI_PNG, DataClassKey,
-                    byte[].class, DepthKey, 24));
-        }
-
-        // This codec can not scale an image.
-        // Enforce these properties
-        if (outputFormat != null) {
-            if (inputFormat != null) {
-                outputFormat = outputFormat.prepend(inputFormat.intersectKeys(WidthKey, HeightKey,DepthKey));
-            }
-        }
-        return this.outputFormat;
-    }
-
+    
     @Override
     public int process(Buffer in, Buffer out) {
-          if (ENCODING_BUFFERED_IMAGE.equals(outputFormat.get(EncodingKey))) {
+        if (ENCODING_BUFFERED_IMAGE.equals(outputFormat.get(EncodingKey))) {
             return decode(in, out);
         } else {
             return encode(in, out);
         }
     }
 
+    @Override
+    public Format setOutputFormat(Format f) {
+        super.setOutputFormat(f);
+
+        // This codec can not scale an image nor producing anything else
+        // than 24-bit images. 
+        // Enforce these properties
+        if (outputFormat != null) {
+            outputFormat = outputFormat.prepend(DepthKey, 24);
+            if (inputFormat != null) {
+                outputFormat = outputFormat.prepend(inputFormat.intersectKeys(WidthKey, HeightKey));
+            }
+        }
+        return this.outputFormat;
+    }
+    
     public int encode(Buffer in, Buffer out) {
         out.setMetaTo(in);
         out.format = outputFormat;
         if (in.isFlag(DISCARD)) {
             return CODEC_OK;
         }
-
         BufferedImage image = getBufferedImage(in);
         if (image == null) {
             out.setFlag(DISCARD);
             return CODEC_FAILED;
         }
-
         ByteArrayImageOutputStream tmp;
         if (out.data instanceof byte[]) {
             tmp = new ByteArrayImageOutputStream((byte[]) out.data);
         } else {
             tmp = new ByteArrayImageOutputStream();
         }
-
+        
         try {
-            ImageWriter iw = ImageIO.getImageWritersByMIMEType("image/png").next();
+            ImageWriter iw = ImageIO.getImageWritersByMIMEType("image/jpeg").next();
             ImageWriteParam iwParam = iw.getDefaultWriteParam();
+            iwParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+            float quality = outputFormat.get(QualityKey, 1f);
+            iwParam.setCompressionQuality(quality);
             iw.setOutput(tmp);
             IIOImage img = new IIOImage(image, null, null);
             iw.write(null, img, iwParam);
             iw.dispose();
-
+            
+            out.sampleCount = 1;
             out.setFlag(KEYFRAME);
-            out.header = null;
             out.data = tmp.getBuffer();
             out.offset = 0;
             out.length = (int) tmp.getStreamPosition();
@@ -135,6 +132,7 @@ public class PNGCodec extends AbstractVideoCodec {
             return CODEC_FAILED;
         }
     }
+    
     public int decode(Buffer in, Buffer out) {
         out.setMetaTo(in);
         out.format = outputFormat;
@@ -149,7 +147,8 @@ public class PNGCodec extends AbstractVideoCodec {
         ByteArrayImageInputStream tmp = new ByteArrayImageInputStream(data);
         
         try {
-            ImageReader ir = (ImageReader) ImageIO.getImageReadersByMIMEType("image/png").next();
+            // ImageReader ir = (ImageReader) ImageIO.getImageReadersByMIMEType("image/jpeg").next();
+            ImageReader ir = new MJPGImageReader(new MJPGImageReaderSpi());
             ir.setInput(tmp);
             out.data = ir.read(0);
             ir.dispose();

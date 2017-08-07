@@ -2,7 +2,7 @@
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.codec;
+package org.monte.media.codec.video;
 
 import org.monte.media.codec.AbstractCodec;
 import java.awt.Graphics2D;
@@ -16,7 +16,10 @@ import java.awt.image.DirectColorModel;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
 import javax.imageio.stream.ImageOutputStream;
-import static org.monte.media.codec.VideoFormatKeys.*;
+import org.monte.media.codec.AbstractCodec;
+import org.monte.media.codec.Buffer;
+import org.monte.media.codec.Format;
+import static org.monte.media.codec.video.VideoFormatKeys.*;
 
 /**
  * {@code AbstractVideoCodec}.

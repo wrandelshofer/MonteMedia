@@ -4,12 +4,12 @@
  */
 package org.monte.media.avi;
 
-import org.monte.media.audio.*;
+import org.monte.media.codec.audio.PCMAudioCodec;
 import org.monte.media.codec.Format;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.HashSet;
-import static org.monte.media.codec.AudioFormatKeys.*;
+import static org.monte.media.codec.audio.AudioFormatKeys.*;
 
 /**
  * {@code PCMAudioCodec} performs sign conversion, endian conversion and

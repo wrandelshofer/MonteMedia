@@ -15,8 +15,8 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.ByteOrder;
 import javax.imageio.stream.*;
-import static org.monte.media.codec.VideoFormatKeys.*;
-import static org.monte.media.codec.AudioFormatKeys.*;
+import static org.monte.media.codec.video.VideoFormatKeys.*;
+import static org.monte.media.codec.audio.AudioFormatKeys.*;
 import static org.monte.media.codec.BufferFlag.*;
 
 /**

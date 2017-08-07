@@ -17,13 +17,13 @@ import java.util.Hashtable;
 import org.monte.media.codec.Format;
 import java.awt.image.WritableRaster;
 import java.awt.Rectangle;
-import org.monte.media.codec.AbstractVideoCodec;
+import org.monte.media.codec.video.AbstractVideoCodec;
 import org.monte.media.codec.Buffer;
 import org.monte.media.io.SeekableByteArrayOutputStream;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import org.monte.media.codec.BufferFlag;
-import static org.monte.media.codec.VideoFormatKeys.*;
+import static org.monte.media.codec.video.VideoFormatKeys.*;
 import static org.monte.media.codec.BufferFlag.*;
 import org.monte.media.io.ByteArrayImageInputStream;
 

@@ -14,7 +14,7 @@ import org.monte.media.codec.Format;
 import org.monte.media.bitmap.BitmapImage;
 import org.monte.media.math.Rational;
 import java.io.IOException;
-import static org.monte.media.codec.VideoFormatKeys.*;
+import static org.monte.media.codec.video.VideoFormatKeys.*;
 import static org.monte.media.codec.BufferFlag.*;
 
 /**

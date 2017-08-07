@@ -24,7 +24,7 @@ import org.monte.media.codec.FormatKeys;
 import org.monte.media.codec.FormatKeys.MediaType;
 import org.monte.media.movie.MovieReader;
 import org.monte.media.movie.Registry;
-import org.monte.media.codec.VideoFormatKeys;
+import org.monte.media.codec.video.VideoFormatKeys;
 import org.monte.media.image.Images;
 
 /**

@@ -20,8 +20,8 @@ import java.nio.ByteOrder;
 import javax.imageio.stream.*;
 import static java.lang.Math.*;
 import static org.monte.media.codec.FormatKeys.*;
-import static org.monte.media.codec.AudioFormatKeys.*;
-import static org.monte.media.codec.VideoFormatKeys.*;
+import static org.monte.media.codec.audio.AudioFormatKeys.*;
+import static org.monte.media.codec.video.VideoFormatKeys.*;
 import org.monte.media.io.IOStreams;
 
 /**

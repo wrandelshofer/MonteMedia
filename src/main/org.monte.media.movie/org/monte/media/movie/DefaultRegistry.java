@@ -15,8 +15,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
-import static org.monte.media.codec.VideoFormatKeys.*;
-import static org.monte.media.codec.AudioFormatKeys.*;
+import static org.monte.media.codec.video.VideoFormatKeys.*;
+import static org.monte.media.codec.audio.AudioFormatKeys.*;
 
 /**
  * {@code DefaultRegistry}. 

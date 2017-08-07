@@ -19,9 +19,9 @@ import static org.monte.media.codec.FormatKeys.*;
 import org.monte.media.movie.MovieReader;
 import org.monte.media.movie.MovieWriter;
 import org.monte.media.movie.Registry;
-import org.monte.media.converter.AdjustTimeCodec;
-import org.monte.media.converter.CodecChain;
-import org.monte.media.converter.TrimTimeCodec;
+import org.monte.media.codec.time.AdjustTimeCodec;
+import org.monte.media.codec.CodecChain;
+import org.monte.media.codec.time.TrimTimeCodec;
 import org.monte.media.math.Rational;
 
 /**
