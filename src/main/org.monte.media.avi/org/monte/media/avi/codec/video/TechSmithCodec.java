@@ -12,8 +12,6 @@ import java.awt.image.DirectColorModel;
 import java.awt.image.DataBufferByte;
 import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
-import java.awt.image.ColorModel;
-import java.util.Hashtable;
 import org.monte.media.codec.Format;
 import java.awt.image.WritableRaster;
 import java.awt.Rectangle;
@@ -25,7 +23,7 @@ import java.io.IOException;
 import org.monte.media.codec.BufferFlag;
 import static org.monte.media.codec.video.VideoFormatKeys.*;
 import static org.monte.media.codec.BufferFlag.*;
-import org.monte.media.io.ByteArrayImageInputStream;
+import org.monte.media.image.BufferedImageWithColorModel;
 
 /**
  * {@code TechSmithCodec} (tscc) encodes a BufferedImage as a byte[] array. <p>
@@ -239,9 +237,9 @@ public class TechSmithCodec extends AbstractVideoCodec {
             return CODEC_FAILED;
         }
 
-        MyBufferedImage img = null;
-        if (out.data instanceof MyBufferedImage) {
-            img = (MyBufferedImage) out.data;
+        BufferedImageWithColorModel img = null;
+        if (out.data instanceof BufferedImageWithColorModel) {
+            img = (BufferedImageWithColorModel) out.data;
         }
         switch (outputDepth) {
             case 8: {
@@ -249,10 +247,10 @@ public class TechSmithCodec extends AbstractVideoCodec {
                 if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
                     int[] cmap = new int[256];
                     IndexColorModel icm = new IndexColorModel(8, 256, cmap, 0, false, -1, DataBuffer.TYPE_BYTE);
-                    img = new MyBufferedImage(width, height, imgType, icm);
+                    img = new BufferedImageWithColorModel(width, height, imgType, icm);
                 } else {
-                    MyBufferedImage oldImg = img;
-                    img = new MyBufferedImage(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
+                    BufferedImageWithColorModel oldImg = img;
+                    img = new BufferedImageWithColorModel(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
                 }
                 int[] cmap = new int[256];//state.getPalette();
                 for (int i = 0; i < 256; i++) {
@@ -268,10 +266,10 @@ public class TechSmithCodec extends AbstractVideoCodec {
                 int imgType = BufferedImage.TYPE_USHORT_555_RGB;
                 if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
                     DirectColorModel cm = new DirectColorModel(15, 0x1f << 10, 0x1f << 5, 0x1f << 0);
-                    img = new MyBufferedImage(cm, Raster.createWritableRaster(cm.createCompatibleSampleModel(width, height), new Point(0, 0)), false);
+                    img = new BufferedImageWithColorModel(cm, Raster.createWritableRaster(cm.createCompatibleSampleModel(width, height), new Point(0, 0)), false);
                 } else {
-                    MyBufferedImage oldImg = img;
-                    img = new MyBufferedImage(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
+                    BufferedImageWithColorModel oldImg = img;
+                    img = new BufferedImageWithColorModel(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
                 }
                 short[] pixels = ((DataBufferUShort) img.getRaster().getDataBuffer()).getData();
                 System.arraycopy((short[]) newPixels, 0, pixels, 0, width * height);
@@ -283,10 +281,10 @@ public class TechSmithCodec extends AbstractVideoCodec {
                 if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
                     //DirectColorModel cm = new DirectColorModel(24, 0x1f << 11, 0x3f << 5, 0x1f << 0);
                     DirectColorModel cm = new DirectColorModel(24, 0xff << 16, 0xff << 8, 0xff << 0);
-                    img = new MyBufferedImage(cm, Raster.createWritableRaster(cm.createCompatibleSampleModel(width, height), new Point(0, 0)), false);
+                    img = new BufferedImageWithColorModel(cm, Raster.createWritableRaster(cm.createCompatibleSampleModel(width, height), new Point(0, 0)), false);
                 } else {
-                    MyBufferedImage oldImg = img;
-                    img = new MyBufferedImage(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
+                    BufferedImageWithColorModel oldImg = img;
+                    img = new BufferedImageWithColorModel(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
                 }
                 /*
                  short[] pixels = ((DataBufferUShort) img.getRaster().getDataBuffer()).getData();
@@ -300,10 +298,10 @@ public class TechSmithCodec extends AbstractVideoCodec {
                 int imgType = BufferedImage.TYPE_INT_RGB;
                 if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
                     DirectColorModel cm = new DirectColorModel(24, 0xff << 16, 0xff << 8, 0xff << 0);
-                    img = new MyBufferedImage(cm, Raster.createWritableRaster(cm.createCompatibleSampleModel(width, height), new Point(0, 0)), false);
+                    img = new BufferedImageWithColorModel(cm, Raster.createWritableRaster(cm.createCompatibleSampleModel(width, height), new Point(0, 0)), false);
                 } else {
-                    MyBufferedImage oldImg = img;
-                    img = new MyBufferedImage(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
+                    BufferedImageWithColorModel oldImg = img;
+                    img = new BufferedImageWithColorModel(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
                 }
                 int[] pixels = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
                 System.arraycopy((int[]) newPixels, 0, pixels, 0, width * height);
@@ -450,35 +448,4 @@ public class TechSmithCodec extends AbstractVideoCodec {
         }
     }
 
-    private static class MyBufferedImage extends BufferedImage {
-
-        private ColorModel colorModel;
-
-        public MyBufferedImage(ColorModel cm, WritableRaster raster, boolean isRasterPremultiplied) {
-            this(cm, raster, isRasterPremultiplied, new  Hashtable<Object,Object> ());
-        }
-
-        public MyBufferedImage(ColorModel cm, WritableRaster raster, boolean isRasterPremultiplied, Hashtable<?, ?> properties) {
-            super(cm, raster, isRasterPremultiplied, properties);
-            colorModel = cm;
-        }
-
-        public MyBufferedImage(int width, int height, int imageType, IndexColorModel cm) {
-            super(width, height, imageType, cm);
-            colorModel = cm;
-        }
-
-        public MyBufferedImage(int width, int height, int imageType) {
-            super(width, height, imageType);
-        }
-
-        @Override
-        public ColorModel getColorModel() {
-            return colorModel;
-        }
-
-        public void setColorModel(ColorModel newValue) {
-            this.colorModel = newValue;
-        }
-    }
 }

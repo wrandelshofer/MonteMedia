@@ -11,16 +11,14 @@ import org.monte.media.codec.video.AbstractVideoCodec;
 import org.monte.media.codec.Buffer;
 import org.monte.media.codec.Format;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
 import java.awt.image.IndexColorModel;
 import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
-import java.util.Hashtable;
 import static java.lang.Math.*;
 import static org.monte.media.codec.video.VideoFormatKeys.*;
 import static org.monte.media.codec.BufferFlag.*;
+import org.monte.media.image.BufferedImageWithColorModel;
 
 
 /**
@@ -96,9 +94,9 @@ public class ZMBVCodec extends AbstractVideoCodec {
         newPixels = newPixelHolder[0];
         oldPixels = oldPixelHolder[0];
 
-        MyBufferedImage img = null;
-        if (out.data instanceof MyBufferedImage) {
-            img = (MyBufferedImage) out.data;
+        BufferedImageWithColorModel img = null;
+        if (out.data instanceof BufferedImageWithColorModel) {
+            img = (BufferedImageWithColorModel) out.data;
         }
         switch (depth) {
             case 8: {
@@ -106,10 +104,10 @@ public class ZMBVCodec extends AbstractVideoCodec {
                 if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
                     int[] cmap = new int[256];
                     IndexColorModel icm = new IndexColorModel(8, 256, cmap, 0, false, -1, DataBuffer.TYPE_BYTE);
-                    img = new MyBufferedImage(width, height, imgType, icm);
+                    img = new BufferedImageWithColorModel(width, height, imgType, icm);
                 } else {
-                    MyBufferedImage oldImg = img;
-                    img = new MyBufferedImage(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
+                    BufferedImageWithColorModel oldImg = img;
+                    img = new BufferedImageWithColorModel(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
                 }
                 int[] cmap = state.getPalette();
                 IndexColorModel icm = new IndexColorModel(8, 256, cmap, 0, false, -1, DataBuffer.TYPE_BYTE);
@@ -122,10 +120,10 @@ public class ZMBVCodec extends AbstractVideoCodec {
                 int imgType = BufferedImage.TYPE_USHORT_555_RGB; // FIXME - Don't hardcode this value
                 if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
                     DirectColorModel cm = new DirectColorModel(15, 0x1f << 10, 0x1f << 5, 0x1f << 0);
-                    img = new MyBufferedImage(cm, Raster.createWritableRaster(cm.createCompatibleSampleModel(width, height), new Point(0, 0)), false);
+                    img = new BufferedImageWithColorModel(cm, Raster.createWritableRaster(cm.createCompatibleSampleModel(width, height), new Point(0, 0)), false);
                 } else {
-                    MyBufferedImage oldImg = img;
-                    img = new MyBufferedImage(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
+                    BufferedImageWithColorModel oldImg = img;
+                    img = new BufferedImageWithColorModel(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
                 }
                 short[] pixels = ((DataBufferUShort) img.getRaster().getDataBuffer()).getData();
                 System.arraycopy((short[]) newPixels, 0, pixels, 0, width * height);
@@ -135,10 +133,10 @@ public class ZMBVCodec extends AbstractVideoCodec {
                 int imgType = BufferedImage.TYPE_USHORT_565_RGB; // FIXME - Don't hardcode this value
                 if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
                     DirectColorModel cm = new DirectColorModel(15, 0x1f << 11, 0x3f << 5, 0x1f << 0);
-                    img = new MyBufferedImage(cm, Raster.createWritableRaster(cm.createCompatibleSampleModel(width, height), new Point(0, 0)), false);
+                    img = new BufferedImageWithColorModel(cm, Raster.createWritableRaster(cm.createCompatibleSampleModel(width, height), new Point(0, 0)), false);
                 } else {
-                    MyBufferedImage oldImg = img;
-                    img = new MyBufferedImage(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
+                    BufferedImageWithColorModel oldImg = img;
+                    img = new BufferedImageWithColorModel(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
                 }
                 short[] pixels = ((DataBufferUShort) img.getRaster().getDataBuffer()).getData();
                 System.arraycopy((short[]) newPixels, 0, pixels, 0, width * height);
@@ -157,36 +155,4 @@ public class ZMBVCodec extends AbstractVideoCodec {
         return CODEC_OK;
     }
 
-    private static class MyBufferedImage extends BufferedImage {
-
-        private ColorModel colorModel;
-
-        public MyBufferedImage(ColorModel cm, WritableRaster raster, boolean isRasterPremultiplied) {
-            super(cm, raster, isRasterPremultiplied, new Hashtable<Object,Object>());
-            colorModel = cm;
-        }
-
-        public MyBufferedImage(ColorModel cm, WritableRaster raster, boolean isRasterPremultiplied, Hashtable<?, ?> properties) {
-            super(cm, raster, isRasterPremultiplied, properties);
-            colorModel = cm;
-        }
-
-        public MyBufferedImage(int width, int height, int imageType, IndexColorModel cm) {
-            super(width, height, imageType, cm);
-            colorModel = cm;
-        }
-
-        public MyBufferedImage(int width, int height, int imageType) {
-            super(width, height, imageType);
-        }
-
-        @Override
-        public ColorModel getColorModel() {
-            return colorModel;
-        }
-
-        public void setColorModel(ColorModel newValue) {
-            this.colorModel = newValue;
-        }
     }
-}
