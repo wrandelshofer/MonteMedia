@@ -5,13 +5,13 @@
 package org.monte.media.jmf.jpeg;
 
 import org.monte.media.avi.AVIBMPDIB;
-import com.sun.imageio.plugins.jpeg.JPEGImageReader;
 import java.awt.image.BufferedImage;
 import java.awt.image.DirectColorModel;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.LinkedList;
+import javax.imageio.ImageIO;
 import javax.imageio.ImageReadParam;
 import javax.imageio.ImageReader;
 import javax.imageio.ImageTypeSpecifier;
@@ -37,9 +37,16 @@ import javax.media.Buffer;
  */
 public class MJPGImageReader extends ImageReader {
 
+
     private static DirectColorModel RGB = new DirectColorModel(24, 0xff0000, 0xff00, 0xff, 0x0);
-    /** When we read the header, we read the whole image. */
+    /**
+     * When we read the header, we read the whole image.
+     */
     private BufferedImage image;
+    /**
+     * This value is set to true, when we returned the image.
+     */
+    private boolean didReturnImage;
 
     public MJPGImageReader(ImageReaderSpi originatingProvider) {
         super(originatingProvider);
@@ -90,18 +97,19 @@ public class MJPGImageReader extends ImageReader {
         return image;
     }
 
-    /** Reads the image header.
-     * Does nothing if the header has already been loaded.
+    /**
+     * Reads the image header. Does nothing if the header has already been
+     * loaded.
      */
     private void readHeader() throws IOException {
         if (image == null) {
-            ImageReader r = new JPEGImageReader(getOriginatingProvider());
-            Object in = getInput();
-            if (in instanceof Buffer) {
-                Buffer buffer = (Buffer) in;
-                in=buffer.getData();
-            }
 
+            ImageReader r = getBasicJPEGImageReader();
+            Object in = getInput();
+            /*if (in instanceof Buffer) {
+             Buffer buffer = (Buffer) in;
+             in=buffer.getData();
+             }*/
             if (in instanceof byte[]) {
                 r.setInput(new MemoryCacheImageInputStream(AVIBMPDIB.prependDHTSeg((byte[]) in)));
             } else if (in instanceof ImageInputStream) {
@@ -109,7 +117,39 @@ public class MJPGImageReader extends ImageReader {
             } else {
                 r.setInput(AVIBMPDIB.prependDHTSeg((InputStream) in));
             }
+            didReturnImage = false;
             image = r.read(0);
+        }
+    }
+
+    /**
+     * Gets the JPEG image reader from ImageIO. This method ensures that we do
+     * not get a reader from the Monte Media library, because this library does
+     * not implement the actual decoding.
+     */
+    private static ImageReader getBasicJPEGImageReader() {
+        for (ImageReader r : (Iterable<ImageReader>) () -> ImageIO.getImageReadersByFormatName("jpeg")) {
+            if ("com.sun.imageio.plugins.jpeg.JPEGImageReader".equals(r.getClass().getName())) {
+                return r;
+            }
+        }
+        throw new InternalError("could not find native JPEG Reader");
+    }
+
+    /**
+     * Disposes of resources held internally by the reader.
+     */
+    @Override
+    public void dispose() {
+        try {
+            if (image != null && !didReturnImage) {
+                image.flush();
+            }
+        } catch (Throwable ex) {
+            // we don't care about exceptions here, because we don't need
+            // image anymore
+        } finally {
+            image = null;
         }
     }
 }
