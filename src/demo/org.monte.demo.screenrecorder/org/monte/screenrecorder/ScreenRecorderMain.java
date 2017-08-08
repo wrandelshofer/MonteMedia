@@ -59,6 +59,7 @@ import org.monte.media.swing.BackgroundTask;
  * @version $Id: ScreenRecorderMain.java 364 2016-11-09 19:54:25Z werner $
  */
 public class ScreenRecorderMain extends javax.swing.JFrame {
+
     private final static long serialVersionUID = 1L;
 
     private class Handler implements ChangeListener {
@@ -213,7 +214,6 @@ public class ScreenRecorderMain extends javax.swing.JFrame {
         }
         movieFolder = new File(prefs.get("ScreenRecorder.movieFolder", movieFolder.toString()));
 
-
         final String infoLabelText = infoLabel.getText();
         infoLabel.setText(infoLabelText.replaceAll("\"Movies\"", "\"<a href=\"" + movieFolder.toURI() + "\">" + movieFolder.getName() + "</a>\""));
         new JLabelHyperlinkHandler(infoLabel, new ActionListener() {
@@ -241,7 +241,6 @@ public class ScreenRecorderMain extends javax.swing.JFrame {
             }
         }));
 
-
         depth = min(max(0, prefs.getInt("ScreenRecording.colorDepth", 3)), colorsChoice.getItemCount() - 1);
         colorsChoice.setSelectedIndex(depth);
         format = min(max(0, prefs.getInt("ScreenRecording.format", 0)), formatChoice.getItemCount() - 1);
@@ -259,18 +258,17 @@ public class ScreenRecorderMain extends javax.swing.JFrame {
         SpinnerNumberModel mouseRateModel = new SpinnerNumberModel(mouseRate, 1, 30, 1);
         mouseRateField.setModel(mouseRateModel);
 
-
         // FIXME - 8-bit recording is currently broken
         audioRateChoice.setModel(new DefaultComboBoxModel<AudioRateItem>(new AudioRateItem[]{
-                    //new AudioItem("No Audio", 0, 0),
-                    //new AudioItem("8.000 Hz, 8-bit",8000,8),
-                    new AudioRateItem("8.000 Hz", 8000, 16),
-                    //new AudioItem("11.025 Hz, 8-bit",11025,8),
-                    new AudioRateItem("11.025 Hz", 11025, 16),
-                    //new AudioItem("22.050 Hz, 8-bit",22050,8),
-                    new AudioRateItem("22.050 Hz", 22050, 16),
-                    //new AudioItem("44.100 Hz, 8-bit",44100,8),
-                    new AudioRateItem("44.100 Hz", 44100, 16),}));
+            //new AudioItem("No Audio", 0, 0),
+            //new AudioItem("8.000 Hz, 8-bit",8000,8),
+            new AudioRateItem("8.000 Hz", 8000, 16),
+            //new AudioItem("11.025 Hz, 8-bit",11025,8),
+            new AudioRateItem("11.025 Hz", 11025, 16),
+            //new AudioItem("22.050 Hz, 8-bit",22050,8),
+            new AudioRateItem("22.050 Hz", 22050, 16),
+            //new AudioItem("44.100 Hz, 8-bit",44100,8),
+            new AudioRateItem("44.100 Hz", 44100, 16),}));
         audioRate = prefs.getInt("ScreenRecording.audioRate", 0);
         audioRateChoice.setSelectedIndex(audioRate);
         audioSourceChoice.setModel(new DefaultComboBoxModel<AudioSourceItem>(getAudioSources()));
@@ -283,20 +281,20 @@ public class ScreenRecorderMain extends javax.swing.JFrame {
                 prefs.getInt("ScreenRecording.customAreaX", 100),
                 prefs.getInt("ScreenRecording.customAreaY", 100));
         areaChoice.setModel(new DefaultComboBoxModel<AreaItem>(new AreaItem[]{
-                    new AreaItem("Entire Screen", null, SwingConstants.NORTH_WEST),
-                    new AreaItem("Center 1280 x 720", new Dimension(1280, 720), SwingConstants.CENTER),
-                    new AreaItem("Center 1024 x 768", new Dimension(1024, 768), SwingConstants.CENTER),
-                    new AreaItem("Center   800 x 600", new Dimension(800, 600), SwingConstants.CENTER),
-                    new AreaItem("Center   640 x 480", new Dimension(640, 480), SwingConstants.CENTER),
-                    new AreaItem("Top Left 1280 x 720", new Dimension(1280, 720), SwingConstants.NORTH_WEST),
-                    new AreaItem("Top Left 1024 x 768", new Dimension(1024, 768), SwingConstants.NORTH_WEST),
-                    new AreaItem("Top Left   800 x 600", new Dimension(800, 600), SwingConstants.NORTH_WEST),
-                    new AreaItem("Top Left   640 x 480", new Dimension(640, 480), SwingConstants.NORTH_WEST),
-                    new AreaItem("Bottom Left 1280 x 720", new Dimension(1280, 720), SwingConstants.SOUTH_WEST),
-                    new AreaItem("Bottom Left 1024 x 768", new Dimension(1024, 768), SwingConstants.SOUTH_WEST),
-                    new AreaItem("Bottom Left   800 x 600", new Dimension(800, 600), SwingConstants.SOUTH_WEST),
-                    new AreaItem("Bottom Left   640 x 480", new Dimension(640, 480), SwingConstants.SOUTH_WEST),
-                    new AreaItem("Custom: " + customLoc.x + ", " + customLoc.y + "; " + customDim.width + " x " + customDim.height + "", customDim, null, SwingConstants.NORTH_WEST, customLoc),}));
+            new AreaItem("Entire Screen", null, SwingConstants.NORTH_WEST),
+            new AreaItem("Center 1280 x 720", new Dimension(1280, 720), SwingConstants.CENTER),
+            new AreaItem("Center 1024 x 768", new Dimension(1024, 768), SwingConstants.CENTER),
+            new AreaItem("Center   800 x 600", new Dimension(800, 600), SwingConstants.CENTER),
+            new AreaItem("Center   640 x 480", new Dimension(640, 480), SwingConstants.CENTER),
+            new AreaItem("Top Left 1280 x 720", new Dimension(1280, 720), SwingConstants.NORTH_WEST),
+            new AreaItem("Top Left 1024 x 768", new Dimension(1024, 768), SwingConstants.NORTH_WEST),
+            new AreaItem("Top Left   800 x 600", new Dimension(800, 600), SwingConstants.NORTH_WEST),
+            new AreaItem("Top Left   640 x 480", new Dimension(640, 480), SwingConstants.NORTH_WEST),
+            new AreaItem("Bottom Left 1280 x 720", new Dimension(1280, 720), SwingConstants.SOUTH_WEST),
+            new AreaItem("Bottom Left 1024 x 768", new Dimension(1024, 768), SwingConstants.SOUTH_WEST),
+            new AreaItem("Bottom Left   800 x 600", new Dimension(800, 600), SwingConstants.SOUTH_WEST),
+            new AreaItem("Bottom Left   640 x 480", new Dimension(640, 480), SwingConstants.SOUTH_WEST),
+            new AreaItem("Custom: " + customLoc.x + ", " + customLoc.y + "; " + customDim.width + " x " + customDim.height + "", customDim, null, SwingConstants.NORTH_WEST, customLoc),}));
         areaChoice.setMaximumRowCount(16);
         area = prefs.getInt("ScreenRecording.area", 0);
         areaChoice.setSelectedIndex(min(areaChoice.getItemCount() - 1, max(0, area)));
@@ -545,11 +543,11 @@ public class ScreenRecorderMain extends javax.swing.JFrame {
         DataLine.Info lineInfo = new DataLine.Info(
                 TargetDataLine.class,
                 new javax.sound.sampled.AudioFormat(
-                44100.0f,
-                16,
-                2,
-                true,
-                true));
+                        44100.0f,
+                        16,
+                        2,
+                        true,
+                        true));
 
         for (Mixer.Info info : mixers) {
             Mixer mixer = AudioSystem.getMixer(info);
@@ -588,7 +586,6 @@ public class ScreenRecorderMain extends javax.swing.JFrame {
 
     private void start() throws IOException, AWTException {
         updateValues();
-
 
         if (screenRecorder == null) {
             setSettingsEnabled(false);
@@ -698,8 +695,6 @@ public class ScreenRecorderMain extends javax.swing.JFrame {
                 audioBitsPerSample = rate.bitsPerSample;
             }
 
-
-
             String crsr;
             switch (cursor) {
                 default:
@@ -723,30 +718,29 @@ public class ScreenRecorderMain extends javax.swing.JFrame {
                 outputDimension = areaRect.getSize();
             }
 
-
             screenRecorder = new ScreenRecorder(cfg, areaRect,
                     // the file format:
                     new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, mimeType),
                     //
                     // the output format for screen capture:
                     new Format(MediaTypeKey, MediaType.VIDEO, EncodingKey, videoFormatName,
-                    CompressorNameKey, compressorName,
-                    WidthKey, outputDimension.width,
-                    HeightKey, outputDimension.height,
-                    DepthKey, bitDepth, FrameRateKey, Rational.valueOf(screenRate),
-                    QualityKey, quality,
-                    KeyFrameIntervalKey, (int) (screenRate * 60) // one keyframe per minute is enough
+                            CompressorNameKey, compressorName,
+                            WidthKey, outputDimension.width,
+                            HeightKey, outputDimension.height,
+                            DepthKey, bitDepth, FrameRateKey, Rational.valueOf(screenRate),
+                            QualityKey, quality,
+                            KeyFrameIntervalKey, (int) (screenRate * 60) // one keyframe per minute is enough
                     ),
                     //
                     // the output format for mouse capture:
                     crsr == null ? null : new Format(MediaTypeKey, MediaType.VIDEO, EncodingKey, crsr,
-                    FrameRateKey, Rational.valueOf(mouseRate)),
+                                    FrameRateKey, Rational.valueOf(mouseRate)),
                     //
                     // the output format for audio capture:
                     audioRate == 0 ? null : new Format(MediaTypeKey, MediaType.AUDIO,
-                    //EncodingKey, audioFormatName,
-                    SampleRateKey, Rational.valueOf(audioRate),
-                    SampleSizeInBitsKey, audioBitsPerSample),
+                                    //EncodingKey, audioFormatName,
+                                    SampleRateKey, Rational.valueOf(audioRate),
+                                    SampleSizeInBitsKey, audioBitsPerSample),
                     //
                     // the storage location of the movie
                     movieFolder);
@@ -864,7 +858,9 @@ public class ScreenRecorderMain extends javax.swing.JFrame {
         final JRecordingAreaFrame f = new JRecordingAreaFrame();
         AreaItem ai = (AreaItem) areaChoice.getSelectedItem();
         Rectangle r = ai.getBounds(getGraphicsConfiguration());
-        f.setBounds(r);
+        if (r.getWidth() > 16 && r.getHeight() > 16) {
+            f.setBounds(r);
+        }
         f.updateLabel();
         f.addWindowListener(new WindowAdapter() {
             @Override

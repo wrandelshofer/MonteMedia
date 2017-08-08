@@ -1,0 +1,3 @@
+org.monte.media.quicktime.QuickTimeWriterSpi
+org.monte.media.anim.ANIMWriterSpi
+org.monte.media.avi.AVIWriterSpi

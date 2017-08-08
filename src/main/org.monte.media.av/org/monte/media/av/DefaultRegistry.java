@@ -31,12 +31,12 @@ public class DefaultRegistry extends Registry {
     private List<CodecSpi> codecSpis;
     private List<MovieReaderSpi> readerSpis;
     private List<MovieWriterSpi> writerSpis;
-    private Map<Format, String> formatToExtensionMap;
-    private Map<String,Format> extensionToFormatMap;
+    private Map<String, String> mimeTypeToExtensionMap;
+    private Map<String, Format> extensionToFormatMap;
 
     private synchronized List<CodecSpi> getCodecSpis() {
         if (codecSpis == null) {
-            codecSpis=new ArrayList<>();
+            codecSpis = new ArrayList<>();
             for (CodecSpi spi : ServiceLoader.load(CodecSpi.class)) {
                 codecSpis.add(spi);
             }
@@ -44,44 +44,49 @@ public class DefaultRegistry extends Registry {
         return codecSpis;
     }
 
-    private synchronized Map<Format, String> getFormatToExtensionMap() {
-        if (formatToExtensionMap==null) {
-            formatToExtensionMap=new LinkedHashMap<>();
-           for (MovieReaderSpi spi:getReaderSpis()) {
-             formatToExtensionMap.put( spi.getFileFormat(), spi.getExtensions().isEmpty()?"":spi.getExtensions().get(0));
-           }
-           for (MovieWriterSpi spi:getWriterSpis()) {
-             formatToExtensionMap.put( spi.getFileFormat(), spi.getExtensions().isEmpty()?"":spi.getExtensions().get(0));
-           }
+    private synchronized Map<String, String> getMimeTypeToExtensionMap() {
+        if (mimeTypeToExtensionMap == null) {
+            mimeTypeToExtensionMap = new LinkedHashMap<>();
+            for (MovieReaderSpi spi : getReaderSpis()) {
+                mimeTypeToExtensionMap.put(spi.getFileFormat().get(FormatKeys.MimeTypeKey), spi.getExtensions().isEmpty() ? "" : spi.getExtensions().get(0));
+            }
+            for (MovieWriterSpi spi : getWriterSpis()) {
+                mimeTypeToExtensionMap.put(spi.getFileFormat().get(FormatKeys.MimeTypeKey), spi.getExtensions().isEmpty() ? "" : spi.getExtensions().get(0));
+            }
         }
-        return formatToExtensionMap;
+        return mimeTypeToExtensionMap;
     }
+
     private synchronized Map<String, Format> getExtensionToFormatMap() {
-        if (extensionToFormatMap==null) {
-            extensionToFormatMap=new LinkedHashMap<>();
-           for (MovieReaderSpi spi:getReaderSpis()) {
-               for (String ext:spi.getExtensions())
-             extensionToFormatMap.put(ext, spi.getFileFormat());
-           }
-           for (MovieWriterSpi spi:getWriterSpis()) {
-               for (String ext:spi.getExtensions())
-             extensionToFormatMap.put(ext, spi.getFileFormat());
-           }
+        if (extensionToFormatMap == null) {
+            extensionToFormatMap = new LinkedHashMap<>();
+            for (MovieReaderSpi spi : getReaderSpis()) {
+                for (String ext : spi.getExtensions()) {
+                    extensionToFormatMap.put(ext, spi.getFileFormat());
+                }
+            }
+            for (MovieWriterSpi spi : getWriterSpis()) {
+                for (String ext : spi.getExtensions()) {
+                    extensionToFormatMap.put(ext, spi.getFileFormat());
+                }
+            }
         }
         return extensionToFormatMap;
     }
+
     private synchronized List<MovieReaderSpi> getReaderSpis() {
         if (readerSpis == null) {
-            readerSpis=new ArrayList<>();
+            readerSpis = new ArrayList<>();
             for (MovieReaderSpi spi : ServiceLoader.load(MovieReaderSpi.class)) {
                 readerSpis.add(spi);
             }
         }
         return readerSpis;
     }
+
     private synchronized List<MovieWriterSpi> getWriterSpis() {
         if (writerSpis == null) {
-            writerSpis=new ArrayList<>();
+            writerSpis = new ArrayList<>();
             for (MovieWriterSpi spi : ServiceLoader.load(MovieWriterSpi.class)) {
                 writerSpis.add(spi);
             }
@@ -113,53 +118,63 @@ public class DefaultRegistry extends Registry {
 
     @Override
     public String getExtension(Format ff) {
-      return getFormatToExtensionMap().get(ff);
+        return getMimeTypeToExtensionMap().get(ff.get(FormatKeys.MimeTypeKey));
     }
+
     private String getExtension(File file) {
-        final String name=file.getName();
-        final int p=name.lastIndexOf('.');
-        return p==-1?"":name.substring(p+1).toLowerCase();
+        final String name = file.getName();
+        final int p = name.lastIndexOf('.');
+        return p == -1 ? "" : name.substring(p + 1).toLowerCase();
     }
 
     @Override
     public Format getFileFormat(File file) {
-       final String extension=getExtension(file);
-       return getExtensionToFormatMap().get(extension);
+        final String extension = getExtension(file);
+        return getExtensionToFormatMap().get(extension);
     }
 
     @Override
     public List<Format> getReaderFormats() {
-         Set<Format> result=new LinkedHashSet<>();
-         for (MovieReaderSpi spi:getReaderSpis()) {
-             result.add(spi.getFileFormat());
-         }
-         return Collections.unmodifiableList(new ArrayList<>(result));
+        Set<Format> result = new LinkedHashSet<>();
+        for (MovieReaderSpi spi : getReaderSpis()) {
+            result.add(spi.getFileFormat());
+        }
+        return Collections.unmodifiableList(new ArrayList<>(result));
     }
 
     @Override
     public MovieReader getReader(Format fileFormat, File file) throws IOException {
-         for (MovieReaderSpi spi:getReaderSpis()) {
-             if (spi.getFileFormat().matches(fileFormat))
-                 return spi.create(file);
-         }
-         return null;
+        if (fileFormat == null) {
+            fileFormat = getFileFormat(file);
+        }
+        for (MovieReaderSpi spi : getReaderSpis()) {
+            if (spi.getFileFormat().matches(fileFormat)) {
+                return spi.create(file);
+            }
+        }
+        return null;
     }
+
     @Override
     public MovieWriter getWriter(Format fileFormat, File file) throws IOException {
-         for (MovieWriterSpi spi:getWriterSpis()) {
-             if (spi.getFileFormat().matches(fileFormat))
-                 return spi.create(file);
-         }
-         return null;
+        if (fileFormat == null) {
+            fileFormat = getFileFormat(file);
+        }
+        for (MovieWriterSpi spi : getWriterSpis()) {
+            if (spi.getFileFormat().matches(fileFormat)) {
+                return spi.create(file);
+            }
+        }
+        return null;
     }
 
     @Override
     public List<Format> getWriterFormats() {
-         Set<Format> result=new LinkedHashSet<>();
-         for (MovieWriterSpi spi:getWriterSpis()) {
-             result.add(spi.getFileFormat());
-         }
-         return Collections.unmodifiableList(new ArrayList<>(result));
+        Set<Format> result = new LinkedHashSet<>();
+        for (MovieWriterSpi spi : getWriterSpis()) {
+            result.add(spi.getFileFormat());
+        }
+        return Collections.unmodifiableList(new ArrayList<>(result));
     }
 
 }
