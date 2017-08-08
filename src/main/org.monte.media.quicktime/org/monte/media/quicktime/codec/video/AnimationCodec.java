@@ -9,9 +9,9 @@ package org.monte.media.quicktime.codec.video;
 
 import java.io.EOFException;
 import javax.imageio.stream.ImageInputStream;
-import org.monte.media.codec.video.AbstractVideoCodec;
-import org.monte.media.codec.Buffer;
-import org.monte.media.codec.Format;
+import org.monte.media.av.codec.video.AbstractVideoCodec;
+import org.monte.media.av.Buffer;
+import org.monte.media.av.Format;
 import org.monte.media.io.ByteArrayImageOutputStream;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.nio.ByteOrder;
 import javax.imageio.stream.ImageOutputStream;
 import static java.lang.Math.*;
-import static org.monte.media.codec.video.VideoFormatKeys.*;
-import static org.monte.media.codec.BufferFlag.*;
+import static org.monte.media.av.codec.video.VideoFormatKeys.*;
+import static org.monte.media.av.BufferFlag.*;
 
 /**
  * Implements the Apple Animation codec. <p> Supports lossless delta- and

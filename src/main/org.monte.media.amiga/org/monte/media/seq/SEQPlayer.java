@@ -6,8 +6,8 @@ package org.monte.media.seq;
 
 import org.monte.media.player.ColorCyclePlayer;
 import org.monte.media.player.AbstractPlayer;
-import org.monte.media.player.gui.JPlayerControlAqua;
-import org.monte.media.gui.ImagePanel;
+import org.monte.media.swing.player.JPlayerControlAqua;
+import org.monte.media.swing.ImagePanel;
 import org.monte.media.bitmap.BitmapImage;
 import org.monte.media.io.BoundedRangeInputStream;
 import org.monte.media.ilbm.ColorCycle;

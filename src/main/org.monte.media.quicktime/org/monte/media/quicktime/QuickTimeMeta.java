@@ -9,12 +9,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
-import org.monte.media.movie.AbstractMovie;
-import org.monte.media.codec.Format;
-import org.monte.media.codec.FormatKeys;
-import org.monte.media.movie.MovieReader;
+import org.monte.media.av.AbstractMovie;
+import org.monte.media.av.Format;
+import org.monte.media.av.FormatKeys;
+import org.monte.media.av.MovieReader;
 import org.monte.media.math.Rational;
-import static org.monte.media.codec.FormatKeys.*;
+import static org.monte.media.av.FormatKeys.*;
+import static org.monte.media.av.codec.video.VideoFormatKeys.*;
 
 /**
  * {@code QuickTimeMeta} holds the meta-data contained in a QuickTime movie.
@@ -202,6 +203,47 @@ public class QuickTimeMeta extends AbstractMovie {
         clear();
     }
 
+    private void deriveTrackFormat(int trackIndex) {
+        Track track = tracks.get(trackIndex);
+        Format format = new Format(MimeTypeKey, MIME_QUICKTIME,
+                MediaTypeKey, track.mediaType);
+        if (track.mediaList.size() != 1) {
+            throw new UnsupportedOperationException("not implemented for tracks with multiple media. " + trackIndex + " " + track.mediaType + " " + track.mediaList);
+        }
+        Media m = track.mediaList.get(0);
+        // FIXME implement me
+        switch (track.mediaType) {
+            case VIDEO:
+                if (m.sampleDescriptions.size() != 1) {
+                    throw new UnsupportedOperationException("not implemented for media with multiple sample descriptions.. " + trackIndex + " " + track.mediaType + " " + m + " " + m.sampleDescriptions);
+                }
+
+                SampleDescription desc = m.sampleDescriptions.get(0);
+                format = format.append(
+                        EncodingKey, desc.mediaType,
+                        CompressorNameKey, desc.videoCompressorName,
+                        HeightKey, desc.videoHeight,
+                        WidthKey, desc.videoWidth,
+                        DepthKey, desc.videoDepth
+                );
+                if (m.timeToSamples.size() == 1) {
+                    TimeToSampleGroup ttsg = m.timeToSamples.get(0);
+                    format = format.append(FrameRateKey, new Rational(ttsg.getSampleDuration(), m.mediaTimeScale));
+                } else {
+                    format = format.append(FrameRateKey, new Rational(1, m.mediaTimeScale));
+                }
+                break;
+            case AUDIO:
+            case META:
+            case MIDI:
+            case FILE:
+            case TEXT:
+            default:
+                throw new UnsupportedOperationException("not implemented " + track.mediaType);
+        }
+        track.format = format;
+    }
+
     public Date getCreationTime() {
         return creationTime;
     }
@@ -320,6 +362,9 @@ public class QuickTimeMeta extends AbstractMovie {
 
     @Override
     public Format getFormat(int track) {
+        if (tracks.get(track).format == null) {
+            deriveTrackFormat(track);
+        }
         return tracks.get(track).format;
     }
 
@@ -839,14 +884,7 @@ public class QuickTimeMeta extends AbstractMovie {
         // BEGIN Sound Media Header
         protected double soundBalance;
         // END Sound Media Header
-        /**
-         * The compression type of the media.
-         */
-        protected String mediaCompressionType;
-        /**
-         * The compressor name.
-         */
-        protected String mediaCompressorName;
+
         // END Media Header
         // BEGIN Data Reference List
         /**
@@ -906,7 +944,7 @@ public class QuickTimeMeta extends AbstractMovie {
         public void addSampleDescription(SampleDescription d) {
             sampleDescriptions.add(d);
         }
-        
+
         public void addSample(Sample sample, int sampleDescriptionId, boolean isSyncSample) {
             mediaDuration += sample.duration;
             sampleCount++;
@@ -996,8 +1034,6 @@ public class QuickTimeMeta extends AbstractMovie {
                     + ", mediaQuality=" + mediaQuality //
                     + ", videoColorTable=" + videoColorTable//
                     + ", soundBalance=" + soundBalance//
-                    + ", mediaCompressionType=" + mediaCompressionType //
-                    + ", mediaCompressorName=" + mediaCompressorName //
                     + ", dataReferenceList=" + dataReferenceList //
                     + ", chunks=" + chunks//
                     + ", timeToSamples=" + timeToSamples //

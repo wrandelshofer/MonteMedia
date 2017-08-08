@@ -11,13 +11,13 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import javax.swing.BoundedRangeModel;
 import javax.swing.DefaultBoundedRangeModel;
-import org.monte.media.gui.ImagePanel;
+import org.monte.media.swing.ImagePanel;
 import org.monte.media.ilbm.ColorCyclingMemoryImageSource;
 import org.monte.media.io.BoundedRangeInputStream;
 import org.monte.media.player.AbstractPlayer;
 import org.monte.media.player.ColorCyclePlayer;
 import org.monte.media.player.PlayerControl;
-import org.monte.media.player.gui.JPlayerControlAqua;
+import org.monte.media.swing.player.JPlayerControlAqua;
 
 /**
  * A Player for PBM images with color cycling.

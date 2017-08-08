@@ -5,7 +5,7 @@
 package org.monte.media.quicktime;
 
 import java.awt.image.ColorModel;
-import org.monte.media.codec.Format;
+import org.monte.media.av.Format;
 import org.monte.media.io.ImageOutputStreamAdapter;
 import org.monte.media.math.Rational;
 import java.awt.image.IndexColorModel;
@@ -15,8 +15,8 @@ import java.util.Date;
 import java.util.zip.DeflaterOutputStream;
 import javax.imageio.stream.*;
 import static java.lang.Math.*;
-import static org.monte.media.codec.video.VideoFormatKeys.*;
-import static org.monte.media.codec.audio.AudioFormatKeys.*;
+import static org.monte.media.av.codec.video.VideoFormatKeys.*;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.*;
 import org.monte.media.io.IOStreams;
 
 /**

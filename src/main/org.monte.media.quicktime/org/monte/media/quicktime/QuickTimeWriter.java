@@ -5,19 +5,19 @@
  */
 package org.monte.media.quicktime;
 
-import org.monte.media.movie.Registry;
-import org.monte.media.codec.Format;
-import org.monte.media.codec.Codec;
-import org.monte.media.codec.Buffer;
-import org.monte.media.movie.MovieWriter;
+import org.monte.media.av.Registry;
+import org.monte.media.av.Format;
+import org.monte.media.av.Codec;
+import org.monte.media.av.Buffer;
+import org.monte.media.av.MovieWriter;
 import org.monte.media.math.Rational;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.ByteOrder;
 import javax.imageio.stream.*;
-import static org.monte.media.codec.video.VideoFormatKeys.*;
-import static org.monte.media.codec.audio.AudioFormatKeys.*;
-import static org.monte.media.codec.BufferFlag.*;
+import static org.monte.media.av.codec.video.VideoFormatKeys.*;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.*;
+import static org.monte.media.av.BufferFlag.*;
 
 /**
  * Supports writing of time-based video and audio data into a QuickTime movie
@@ -28,7 +28,8 @@ import static org.monte.media.codec.BufferFlag.*;
  * it. Then samples can be written into the track(s). A sample is a single
  * element in a sequence of time-ordered data. For video data a sample typically
  * consists of a single video frame, for uncompressed stereo audio data a sample
- * contains one PCM impulse per channel. Samples of compressed media data may encompass larger time units.
+ * contains one PCM impulse per channel. Samples of compressed media data may
+ * encompass larger time units.
  * <p>
  * Tracks support edit lists. An edit list specifies when to play which portion
  * of the media data at what speed. An empty edit can be used to insert an empty
@@ -41,23 +42,24 @@ import static org.monte.media.codec.BufferFlag.*;
  * list can be used to select the desired portion of the audio data, while the
  * track stores the media starting from the nearest sync frame.
  * <p>
- * Samples are stored in a QuickTime file in the same sequence as they are written.
- * In order to getCodec optimal movie playback, the samples from different tracks
- * should be interleaved from time to time. An interleave should occur about twice
- * per second. Furthermore, to overcome any latencies in sound playback, at
- * least one second of sound data needs to be placed at the beginning of the
- * movie. So that the sound and video data is offset from each other in the file
- * by one second.
+ * Samples are stored in a QuickTime file in the same sequence as they are
+ * written. In order to getCodec optimal movie playback, the samples from
+ * different tracks should be interleaved from time to time. An interleave
+ * should occur about twice per second. Furthermore, to overcome any latencies
+ * in sound playback, at least one second of sound data needs to be placed at
+ * the beginning of the movie. So that the sound and video data is offset from
+ * each other in the file by one second.
  * <p>
- * For convenience, this class has built-in encoders for video frames in the following
- * formats: RAW, ANIMATION, JPEG and PNG. Media data in other formats, including all audio
- * data, must be encoded before it can be written with {@code QuickTimeWriter}.
- * Alternatively, you can plug in your own codec.
+ * For convenience, this class has built-in encoders for video frames in the
+ * following formats: RAW, ANIMATION, JPEG and PNG. Media data in other formats,
+ * including all audio data, must be encoded before it can be written with
+ * {@code QuickTimeWriter}. Alternatively, you can plug in your own codec.
  * <p>
  * <b>Example:</b> Writing 10 seconds of a movie with 640x480 pixel, 30 fps,
  * PNG-encoded video and 16-bit stereo, 44100 Hz, PCM-encoded audio.
  * <p>
- * <pre>
+ * <
+ * pre>
  * QuickTimeWriter w = new QuickTimeWriter(new File("mymovie.mov"));
  * w.addAudioTrack(new AudioFormat(AudioFormat.Encoding.PCM_SIGNED), 44100, 2, 16, 2, 44100, true)); // audio in track 0
  * w.addVideoTrack(QuickTimeWriter.VIDEO_PNG, 30, 640, 480);  // video in track 1
@@ -107,8 +109,8 @@ import static org.monte.media.codec.BufferFlag.*;
  * w.close();
  * </pre>
  * <p>
- * For information about the QuickTime file format see the
- * "QuickTime File Format Specification", Apple Inc. 2010-08-03. (qtff)
+ * For information about the QuickTime file format see the "QuickTime File
+ * Format Specification", Apple Inc. 2010-08-03. (qtff)
  * <a href="http://developer.apple.com/library/mac/documentation/QuickTime/QTFF/qtff.pdf/">
  * http://developer.apple.com/library/mac/documentation/QuickTime/QTFF/qtff.pdf
  * </a>
@@ -116,17 +118,17 @@ import static org.monte.media.codec.BufferFlag.*;
  * @author Werner Randelshofer
  * @version 1.3.4 2011-03-12 Streamlines the code with {@code AVIWriter}.
  * <br>1.3.3 2011-01-17 Improves writing of compressed movie headers.
- * <br>1.3.2 2011-01-17 Fixes out of bounds exception when writing
- * sub-images with ANIMATION codec. Fixes writing of compressed movie headers.
+ * <br>1.3.2 2011-01-17 Fixes out of bounds exception when writing sub-images
+ * with ANIMATION codec. Fixes writing of compressed movie headers.
  * <br>1.3.1 2011-01-09 Fixes broken RAW codec.
- * <br>1.3 2011-01-07 Improves robustness of API.
- *                    Adds method toWebOptimizedMovie().
+ * <br>1.3 2011-01-07 Improves robustness of API. Adds method
+ * toWebOptimizedMovie().
  * <br>1.2.2 2011-01-07 Reduces file seeking with "ANIMATION" codec.
  * <br>1.2.1 2011-01-07 Fixed default syncInterval for "ANIMATION" video.
  * <br>1.2 2011-01-05 Adds support for "ANIMATION" encoded video.
  * <br>1.1 2011-01-04 Adds "depth" parameter to addVideoTrack method.
- * <br>1.0 2011-01-02 Adds support for edit lists. Adds support for MP3
- * audio format.
+ * <br>1.0 2011-01-02 Adds support for edit lists. Adds support for MP3 audio
+ * format.
  * <br>0.1.1 2010-12-05 Updates the link to the QuickTime file format
  * specification.
  * <br>0.1 2010-09-30 Created.
@@ -183,7 +185,8 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
         return tracks.get(track).format;
     }
 
-    /** Adds a track.
+    /**
+     * Adds a track.
      *
      * @param fmt The format of the track.
      * @return The track number.
@@ -191,12 +194,12 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
     @Override
     public int addTrack(Format fmt) throws IOException {
         if (fmt.get(MediaTypeKey) == MediaType.VIDEO) {
-            int t= addVideoTrack(fmt.get(EncodingKey),
-                    fmt.get(CompressorNameKey,fmt.get(EncodingKey)),
-                    Math.min(6000,fmt.get(FrameRateKey).getNumerator() * fmt.get(FrameRateKey).getDenominator()),
+            int t = addVideoTrack(fmt.get(EncodingKey),
+                    fmt.get(CompressorNameKey, fmt.get(EncodingKey)),
+                    Math.min(6000, fmt.get(FrameRateKey).getNumerator() * fmt.get(FrameRateKey).getDenominator()),
                     fmt.get(WidthKey), fmt.get(HeightKey), fmt.get(DepthKey),
                     (int) fmt.get(FrameRateKey).getDenominator());
-            setCompressionQuality(t,fmt.get(QualityKey,1.0f));
+            setCompressionQuality(t, fmt.get(QualityKey, 1.0f));
             return t;
         } else if (fmt.get(MediaTypeKey) == MediaType.AUDIO) {
             // fill in unspecified values
@@ -207,13 +210,13 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
             Rational frameRate = fmt.get(FrameRateKey, fmt.get(SampleRateKey));
             int channels = fmt.get(ChannelsKey, 1);
             int frameSize = fmt.get(FrameSizeKey, (sampleSizeInBits + 7) / 8 * sampleSizeInBits);
-            if (encoding == null||encoding.length()!=4) {
+            if (encoding == null || encoding.length() != 4) {
                 if (signed) {
                     encoding = bo == ByteOrder.BIG_ENDIAN ? "twos" : "sowt";
                 } else {
                     encoding = "raw ";
                 }
-            } 
+            }
 
             return addAudioTrack(encoding,
                     fmt.get(SampleRateKey).longValue(),
@@ -231,15 +234,16 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
         }
     }
 
-    /** Adds a video track.
+    /**
+     * Adds a video track.
      *
      * @param format The QuickTime video format.
      * @param timeScale The media time scale. This is typically the frame rate.
      * If the frame rate is not an integer fraction of a second, specify a
      * multiple of the frame rate and specify a correspondingly multiplied
      * sampleDuration when writing frames. For example, for a rate of 23.976 fps
-     * specify a time scale of 23976 and multiply the sampleDuration of a video frame
-     * by 1000.
+     * specify a time scale of 23976 and multiply the sampleDuration of a video
+     * frame by 1000.
      * @param width The width of a video image. Must be larger than 0.
      * @param height The height of a video image. Must be larger than 0.
      *
@@ -253,7 +257,8 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
         return addVideoTrack(format.get(EncodingKey), format.get(CompressorNameKey), timeScale, width, height, 24, 30);
     }
 
-    /** Adds a video track.
+    /**
+     * Adds a video track.
      *
      * @param format The QuickTime video format.
      * @param width The width of a video image. Must be larger than 0.
@@ -269,8 +274,9 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
         return addVideoTrack(format.get(EncodingKey), format.get(CompressorNameKey), format.get(FrameRateKey).getDenominator() * format.get(FrameRateKey).getNumerator(), width, height, depth, syncInterval);
     }
 
-    /** Adds an audio track, and configures it using an
-     * {@code AudioFormat} object from the javax.sound API.
+    /**
+     * Adds an audio track, and configures it using an {@code AudioFormat}
+     * object from the javax.sound API.
      * <p>
      * Use this method for writing audio data from an {@code AudioInputStream}
      * into a QuickTime Movie file.
@@ -355,7 +361,9 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
         return tracks.size();
     }
 
-    /** Returns the sampleDuration of the track in seconds. */
+    /**
+     * Returns the sampleDuration of the track in seconds.
+     */
     @Override
     public Rational getDuration(int track) {
         Track tr = tracks.get(track);
@@ -363,13 +371,11 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
     }
 
     private Codec createCodec(Format fmt) {
-        Codec[] codecs = Registry.getInstance().getEncoders(fmt.prepend(MimeTypeKey, MIME_QUICKTIME));
-        Codec c= codecs.length == 0 ? null : codecs[0];
-        return c;
+        return Registry.getInstance().getEncoder(fmt.prepend(MimeTypeKey, MIME_QUICKTIME));
     }
 
     private void createCodec(int track) {
-        Track tr=tracks.get(track);
+        Track tr = tracks.get(track);
         Format fmt = tr.format;
         tr.codec = createCodec(fmt);
         String enc = fmt.get(EncodingKey);
@@ -382,9 +388,9 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
 
                 if (null == tr.codec.setOutputFormat(
                         fmt.prepend(
-                        QualityKey, getCompressionQuality(track),
-                        MimeTypeKey, MIME_QUICKTIME,
-                        DataClassKey, byte[].class))) {
+                                QualityKey, getCompressionQuality(track),
+                                MimeTypeKey, MIME_QUICKTIME,
+                                DataClassKey, byte[].class))) {
                     throw new UnsupportedOperationException("Input format not supported:" + fmt);
                 }
                 //tr.codec.setQuality(tr.videoQuality);
@@ -403,18 +409,23 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
         }
     }
 
-    /** Returns the codec of the specified track. */
+    /**
+     * Returns the codec of the specified track.
+     */
     public Codec getCodec(int track) {
         return tracks.get(track).codec;
     }
 
-    /** Sets the codec for the specified track. */
+    /**
+     * Sets the codec for the specified track.
+     */
     public void setCodec(int track, Codec codec) {
         tracks.get(track).codec = codec;
     }
 
-    /** Writes a sample.
-     * Does nothing if the discard-flag in the buffer is set to true.
+    /**
+     * Writes a sample. Does nothing if the discard-flag in the buffer is set to
+     * true.
      *
      * @param track The track number.
      * @param buf The buffer containing the sample data.
@@ -431,7 +442,7 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
                 tr.outputBuffer.format = tr.format;
             }
             Buffer outBuf;
-            if (tr.format.matchesWithout(buf.format,FrameRateKey)) {
+            if (tr.format.matchesWithout(buf.format, FrameRateKey)) {
                 outBuf = buf;
             } else {
                 outBuf = tr.outputBuffer;
@@ -446,7 +457,7 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
 
                 tr.codec.process(buf, outBuf);
             }
-            if (outBuf.isFlag(DISCARD)||outBuf.sampleCount==0) {
+            if (outBuf.isFlag(DISCARD) || outBuf.sampleCount == 0) {
                 return;
             }
 
@@ -475,13 +486,14 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
      *
      * @param track The track index.
      * @param image The image of the video frame.
-     * @param duration The sampleDuration of the video frame in media time scale units.
+     * @param duration The sampleDuration of the video frame in media time scale
+     * units.
      *
      * @throws IndexOutofBoundsException if the track index is out of bounds.
      * @throws if the duration is less than 1, or if the dimension of the frame
      * does not match the dimension of the video.
-     * @throws UnsupportedOperationException if the QuickTimeWriter does not have
-     * a built-in codec for this video format.
+     * @throws UnsupportedOperationException if the QuickTimeWriter does not
+     * have a built-in codec for this video format.
      * @throws IOException if writing the sample data failed.
      */
     public void write(int track, BufferedImage image, long duration) throws IOException {
@@ -566,15 +578,15 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
     /**
      * Writes multiple already encoded samples from a byte array into a track.
      * <p>
-     * This method does not inspect the contents of the data. The
-     * contents has to match the format and dimensions of the media in this
-     * track.
+     * This method does not inspect the contents of the data. The contents has
+     * to match the format and dimensions of the media in this track.
      *
      * @param track The track index.
      * @param sampleCount The number of samples.
      * @param data The encoded sample data.
      * @param off The start offset in the data.
-     * @param len The number of bytes to write. Must be dividable by sampleCount.
+     * @param len The number of bytes to write. Must be dividable by
+     * sampleCount.
      * @param sampleDuration The sampleDuration of a sample. All samples must
      * have the same sampleDuration.
      * @param isSync Whether the samples are sync samples. All samples must
@@ -610,25 +622,29 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
         }
     }
 
-    /** Returns true because QuickTime supports variable frame rates. */
+    /**
+     * Returns true because QuickTime supports variable frame rates.
+     */
     public boolean isVFRSupported() {
         return true;
     }
 
-    /** Returns true if the limit for media samples has been reached.
-     * If this limit is reached, no more samples should be added to the movie.
+    /**
+     * Returns true if the limit for media samples has been reached. If this
+     * limit is reached, no more samples should be added to the movie.
      * <p>
      * QuickTime files can be up to 64 TB long, but there are other values that
-     * may overflow before this size is reached. This method returns true
-     * when the files size exceeds 2^60 or when the media sampleDuration value of a
+     * may overflow before this size is reached. This method returns true when
+     * the files size exceeds 2^60 or when the media sampleDuration value of a
      * track exceeds 2^61.
      */
     @Override
     public boolean isDataLimitReached() {
         return super.isDataLimitReached();
     }
+
     @Override
     public boolean isEmpty(int track) {
-       return tracks.get(track).isEmpty();
+        return tracks.get(track).isEmpty();
     }
 }

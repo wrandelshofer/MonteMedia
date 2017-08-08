@@ -1,18 +1,18 @@
-/* @(#)PCMAudioCodec.java
+/* @(#)AbstractPCMAudioCodec.java
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
 package org.monte.media.avi.codec.audio;
 
-import org.monte.media.codec.audio.PCMAudioCodec;
-import org.monte.media.codec.Format;
+import org.monte.media.av.codec.audio.AbstractPCMAudioCodec;
+import org.monte.media.av.Format;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.HashSet;
-import static org.monte.media.codec.audio.AudioFormatKeys.*;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.*;
 
 /**
- * {@code PCMAudioCodec} performs sign conversion, endian conversion and
+ * {@code AbstractPCMAudioCodec} performs sign conversion, endian conversion and
  * quantization conversion of PCM audio data.
  * <p>
  * Does not perform sampling rate conversion or channel conversion.
@@ -22,7 +22,7 @@ import static org.monte.media.codec.audio.AudioFormatKeys.*;
  * @author Werner Randelshofer
  * @version 1.0 2011-07-10 Created.
  */
-public class AVIPCMAudioCodec extends PCMAudioCodec {
+public class AVIPCMAudioCodec extends AbstractPCMAudioCodec {
 
     private final static HashSet<String> supportedEncodings = new HashSet<String>(
             Arrays.asList(new String[]{

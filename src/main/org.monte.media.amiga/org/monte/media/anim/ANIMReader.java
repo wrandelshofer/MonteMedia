@@ -18,7 +18,7 @@ import org.monte.media.seq.SEQMovieTrack;
  * @author Werner Randelshofer
  * @version 1.0 2011-02-19 Created.
  */
-public class ANIMReader {
+public class ANIMReader  {
 
     private ANIMMovieTrack track;
     // ---- BEGIN Decoder variables ----

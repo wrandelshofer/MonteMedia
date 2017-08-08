@@ -11,7 +11,7 @@ import java.awt.image.ColorModel;
 import org.monte.media.riff.RIFFChunk;
 import org.monte.media.math.Rational;
 import java.util.ArrayList;
-import org.monte.media.codec.Format;
+import org.monte.media.av.Format;
 import org.monte.media.riff.RIFFParser;
 import java.awt.Dimension;
 import java.awt.image.IndexColorModel;
@@ -19,9 +19,9 @@ import java.io.*;
 import java.nio.ByteOrder;
 import javax.imageio.stream.*;
 import static java.lang.Math.*;
-import static org.monte.media.codec.FormatKeys.*;
-import static org.monte.media.codec.audio.AudioFormatKeys.*;
-import static org.monte.media.codec.video.VideoFormatKeys.*;
+import static org.monte.media.av.FormatKeys.*;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.*;
+import static org.monte.media.av.codec.video.VideoFormatKeys.*;
 import org.monte.media.io.IOStreams;
 
 /**

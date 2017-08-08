@@ -4,29 +4,21 @@
  */
 package org.monte.media.quicktime;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.zip.InflaterInputStream;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
-import org.monte.media.codec.FormatKeys;
-import org.monte.media.codec.FormatKeys.MediaType;
-import static java.lang.Math.*;
-import java.util.ArrayList;
-import java.util.Stack;
-import org.monte.media.io.ByteArrayImageInputStream;
-import static org.monte.media.math.MathUtils.*;
+import org.monte.media.av.FormatKeys.MediaType;
+import static org.monte.media.math.MathUtils.clamp;
 
 /**
- * {@code QuickTimeDeserializer}.
- * This is an internal class of QuickTimeInputStream.
+ * {@code QuickTimeDeserializer}. This is an internal class of
+ * QuickTimeInputStream.
  *
  * @author Werner Randelshofer
  * @version 1.0 2013-03-21 Created.
@@ -107,10 +99,10 @@ public class QuickTimeDeserializer {
      *
      * <pre>
      * struct atom {
-     *    uint32 size; 
+     *    uint32 size;
      *    type   type;  // exists only if size &gt;= 8
      *    byte[size-8] body; // exists only if size &gt; 8
-     *   
+     *
      * }
      * </pre>
      */
@@ -150,7 +142,7 @@ public class QuickTimeDeserializer {
             }
 
             String t = atom.type;
-            System.out.println("Collecting atom: " + atom.type + " size:" + atom.size + " headerSize=" + atom.headerSize);
+
             if (compositeAtoms.contains(atom.type)) {
                 // Perform pre-processing
                 if ("trak".equals(t)) {
@@ -1110,15 +1102,23 @@ public class QuickTimeDeserializer {
     protected void parseSampleSize(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
         in.skipBytes(3);
+        int sampleSize = in.readInt();
         int numberOfEntries = in.readInt();
         m.sampleSizes.clear();
-        QuickTimeMeta.SampleSizeGroup ssg = null;
-        for (int i = 0; i < numberOfEntries; i++) {
-            int sampleSize = in.readInt();
-            QuickTimeMeta.Sample s = new QuickTimeMeta.Sample(-1, -1, sampleSize);
-            if (ssg == null || !ssg.maybeAddSample(s)) {
-                ssg = new QuickTimeMeta.SampleSizeGroup(s);
-                m.sampleSizes.add(ssg);
+        if (sampleSize != 0) {
+            // all samples have the same size
+            QuickTimeMeta.Sample firstSample = new QuickTimeMeta.Sample(-1, -1, sampleSize);
+            QuickTimeMeta.Sample lastSample = new QuickTimeMeta.Sample(-1, -1, sampleSize);
+            QuickTimeMeta.SampleSizeGroup ssg = new QuickTimeMeta.SampleSizeGroup(firstSample, lastSample, numberOfEntries);
+        } else {
+            QuickTimeMeta.SampleSizeGroup ssg = null;
+            for (int i = 0; i < numberOfEntries; i++) {
+                int size = in.readInt();
+                QuickTimeMeta.Sample s = new QuickTimeMeta.Sample(-1, -1, size);
+                if (ssg == null || !ssg.maybeAddSample(s)) {
+                    ssg = new QuickTimeMeta.SampleSizeGroup(s);
+                    m.sampleSizes.add(ssg);
+                }
             }
         }
     }

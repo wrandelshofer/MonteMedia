@@ -4,25 +4,12 @@
  */
 package org.monte.media.quicktime;
 
-import java.awt.PageAttributes;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteOrder;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.zip.InflaterInputStream;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
-import org.monte.media.codec.FormatKeys;
-import org.monte.media.io.ImageInputStreamAdapter;
-import static org.monte.media.codec.audio.AudioFormatKeys.*;
-import org.monte.media.codec.Format;
-import static org.monte.media.codec.video.VideoFormatKeys.*;
-import org.monte.media.math.Rational;
 
 /**
  * Provides low-level support for reading encoded audio and video samples from a

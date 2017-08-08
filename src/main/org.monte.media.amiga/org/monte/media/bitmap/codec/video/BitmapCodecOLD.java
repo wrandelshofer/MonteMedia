@@ -4,13 +4,13 @@
  */
 package org.monte.media.bitmap.codec.video;
 
-import org.monte.media.codec.video.AbstractVideoCodec;
-import org.monte.media.codec.Buffer;
-import org.monte.media.codec.Format;
+import org.monte.media.av.codec.video.AbstractVideoCodec;
+import org.monte.media.av.Buffer;
+import org.monte.media.av.Format;
 import org.monte.media.bitmap.BitmapImage;
 import java.awt.image.BufferedImage;
 import static org.monte.media.anim.AmigaVideoFormatKeys.*;
-import static org.monte.media.codec.BufferFlag.*;
+import static org.monte.media.av.BufferFlag.*;
 
 /**
  * Converts BufferedImage to BitmapImage. 

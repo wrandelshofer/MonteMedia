@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import javax.imageio.stream.ImageOutputStream;
-import org.monte.media.codec.Buffer;
-import org.monte.media.codec.Codec;
-import org.monte.media.codec.Format;
-import org.monte.media.codec.FormatKeys.MediaType;
+import org.monte.media.av.Buffer;
+import org.monte.media.av.Codec;
+import org.monte.media.av.Format;
+import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.io.ImageOutputStreamAdapter;
 import org.monte.media.math.Rational;
 

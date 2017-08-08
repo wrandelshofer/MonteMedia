@@ -17,7 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
-import org.monte.media.gui.BackgroundTask;
+import org.monte.media.swing.BackgroundTask;
 
 /**
  * Main.

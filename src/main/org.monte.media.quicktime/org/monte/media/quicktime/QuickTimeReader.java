@@ -8,14 +8,16 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.stream.ImageInputStream;
-import org.monte.media.codec.Buffer;
-import static org.monte.media.codec.BufferFlag.*;
-import org.monte.media.codec.Codec;
-import org.monte.media.codec.Format;
-import org.monte.media.codec.FormatKeys.MediaType;
-import org.monte.media.movie.MovieReader;
-import org.monte.media.movie.Registry;
-import static org.monte.media.codec.video.VideoFormatKeys.*;
+import org.monte.media.av.Buffer;
+import static org.monte.media.av.BufferFlag.*;
+import org.monte.media.av.Codec;
+import org.monte.media.av.Format;
+import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
+import org.monte.media.av.FormatKeys.MediaType;
+import static org.monte.media.av.FormatKeys.MimeTypeKey;
+import org.monte.media.av.MovieReader;
+import org.monte.media.av.Registry;
+import static org.monte.media.av.codec.video.VideoFormatKeys.*;
 import org.monte.media.math.Rational;
 
 /**
@@ -68,7 +70,7 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
     @Override
     public Format getFormat(int track) throws IOException {
         ensureRealized();
-        return meta.tracks.get(track).format;
+        return meta.getFormat(track);
     }
 
     @Override
@@ -120,24 +122,24 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
     @Override
     public void read(int track, Buffer buffer) throws IOException {
         ensureRealized();
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("read() not supported yet.");
     }
 
     @Override
     public int nextTrack() throws IOException {
         ensureRealized();
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("nextTrack() supported yet.");
     }
 
     @Override
     public void setMovieReadTime(Rational newValue) throws IOException {
         ensureRealized();
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("setMovieReadTime() supported yet.");
     }
 
     @Override
     public Rational getReadTime(int track) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("getReadTime() not supported yet.");
     }
 
     @Override
@@ -165,23 +167,23 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
         return -1;
     }
 
-    private void createCodec(int track) {
+    private void createCodec(int track) throws IOException {
         QuickTimeMeta.Track tr = meta.tracks.get(track);
         Format fmt = tr.format;
         Codec codec = createCodec(fmt);
         String enc = fmt.get(EncodingKey);
         if (codec == null) {
-            throw new UnsupportedOperationException("Track " + tr + " no codec found for format " + fmt);
+            throw new IOException("Track " + tr + " no codec found for format " + fmt);
         } else {
             if (fmt.get(MediaTypeKey) == MediaType.VIDEO) {
                 if (null == codec.setInputFormat(fmt)) {
-                    throw new UnsupportedOperationException("Track " + tr + " codec " + codec + " does not support input format " + fmt + ". codec=" + codec);
+                    throw new IOException("Track " + tr + " codec " + codec + " does not support input format " + fmt + ". codec=" + codec);
                 }
                 Format outFormat = fmt.prepend(MediaTypeKey, MediaType.VIDEO,//
                         MimeTypeKey, MIME_JAVA,
                         EncodingKey, ENCODING_BUFFERED_IMAGE, DataClassKey, BufferedImage.class);
                 if (null == codec.setOutputFormat(outFormat)) {
-                    throw new UnsupportedOperationException("Track " + tr + " codec does not support output format " + outFormat + ". codec=" + codec);
+                    throw new IOException("Track " + tr + " codec does not support output format " + outFormat + ". codec=" + codec);
                 }
             }
         }
@@ -190,7 +192,6 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
     }
 
     private Codec createCodec(Format fmt) {
-        Codec[] codecs = Registry.getInstance().getDecoders(fmt.prepend(MimeTypeKey, MIME_QUICKTIME));
-        return codecs.length == 0 ? null : codecs[0];
+        return Registry.getInstance().getDecoder(fmt.prepend(MimeTypeKey, MIME_QUICKTIME));
     }
 }

@@ -4,8 +4,8 @@
  */
 package org.monte.media.anim;
 
-import org.monte.media.codec.Demultiplexer;
-import org.monte.media.codec.Track;
+import org.monte.media.av.Demultiplexer;
+import org.monte.media.av.Track;
 import java.io.File;
 import java.io.IOException;
 

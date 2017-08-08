@@ -5,8 +5,8 @@
 
 package org.monte.media.quicktime;
 
-import org.monte.media.codec.Buffer;
-import org.monte.media.codec.Multiplexer;
+import org.monte.media.av.Buffer;
+import org.monte.media.av.Multiplexer;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;

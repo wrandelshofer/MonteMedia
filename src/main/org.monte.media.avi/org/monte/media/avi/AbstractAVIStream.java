@@ -11,11 +11,11 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import javax.imageio.stream.ImageOutputStream;
-import org.monte.media.codec.Buffer;
-import org.monte.media.codec.Codec;
-import org.monte.media.codec.Format;
-import static org.monte.media.codec.FormatKeys.EncodingKey;
-import static org.monte.media.codec.video.VideoFormatKeys.ENCODING_AVI_DIB;
+import org.monte.media.av.Buffer;
+import org.monte.media.av.Codec;
+import org.monte.media.av.Format;
+import static org.monte.media.av.FormatKeys.EncodingKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_DIB;
 import org.monte.media.riff.RIFFChunk;
 
 /**

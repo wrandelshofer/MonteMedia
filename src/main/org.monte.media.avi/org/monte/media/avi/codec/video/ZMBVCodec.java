@@ -7,17 +7,17 @@ package org.monte.media.avi.codec.video;
 import java.awt.image.DataBufferUShort;
 import java.awt.Point;
 import java.awt.image.DirectColorModel;
-import org.monte.media.codec.video.AbstractVideoCodec;
-import org.monte.media.codec.Buffer;
-import org.monte.media.codec.Format;
+import org.monte.media.av.codec.video.AbstractVideoCodec;
+import org.monte.media.av.Buffer;
+import org.monte.media.av.Format;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
 import java.awt.image.IndexColorModel;
 import java.awt.image.Raster;
 import static java.lang.Math.*;
-import static org.monte.media.codec.video.VideoFormatKeys.*;
-import static org.monte.media.codec.BufferFlag.*;
+import static org.monte.media.av.codec.video.VideoFormatKeys.*;
+import static org.monte.media.av.BufferFlag.*;
 import org.monte.media.image.BufferedImageWithColorModel;
 
 

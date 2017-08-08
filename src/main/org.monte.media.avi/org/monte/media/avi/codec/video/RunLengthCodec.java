@@ -4,20 +4,20 @@
  */
 package org.monte.media.avi.codec.video;
 
-import org.monte.media.codec.Format;
+import org.monte.media.av.Format;
 import org.monte.media.io.ByteArrayImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.WritableRaster;
 import java.awt.Rectangle;
-import org.monte.media.codec.video.AbstractVideoCodec;
-import org.monte.media.codec.Buffer;
+import org.monte.media.av.codec.video.AbstractVideoCodec;
+import org.monte.media.av.Buffer;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteOrder;
 import static java.lang.Math.*;
-import static org.monte.media.codec.video.VideoFormatKeys.*;
-import static org.monte.media.codec.BufferFlag.*;
+import static org.monte.media.av.codec.video.VideoFormatKeys.*;
+import static org.monte.media.av.BufferFlag.*;
 
 /**
  * {@code RunLengthCodec} encodes a BufferedImage as a byte[] array.

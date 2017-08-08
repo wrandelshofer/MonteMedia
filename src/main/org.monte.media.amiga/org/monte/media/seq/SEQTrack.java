@@ -8,14 +8,14 @@
 
 package org.monte.media.seq;
 
-import org.monte.media.codec.Buffer;
-import org.monte.media.codec.Track;
-import org.monte.media.codec.Format;
+import org.monte.media.av.Buffer;
+import org.monte.media.av.Track;
+import org.monte.media.av.Format;
 import org.monte.media.bitmap.BitmapImage;
 import org.monte.media.math.Rational;
 import java.io.IOException;
-import static org.monte.media.codec.video.VideoFormatKeys.*;
-import static org.monte.media.codec.BufferFlag.*;
+import static org.monte.media.av.codec.video.VideoFormatKeys.*;
+import static org.monte.media.av.BufferFlag.*;
 
 /**
  * {@code SEQTrack}.

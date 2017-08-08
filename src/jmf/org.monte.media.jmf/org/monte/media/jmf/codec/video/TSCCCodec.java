@@ -4,7 +4,7 @@
  */
 package org.monte.media.jmf.codec.video;
 
-import org.monte.media.avi.codec.video.TechSmithCodecCore;
+import org.monte.media.av.codec.video.TechSmithCodecCore;
 import org.monte.media.io.SeekableByteArrayOutputStream;
 import com.sun.media.format.AviVideoFormat;
 import java.awt.Dimension;

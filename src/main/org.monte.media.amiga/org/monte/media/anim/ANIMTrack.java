@@ -6,11 +6,11 @@
 package org.monte.media.anim;
 
 import java.util.EnumSet;
-import org.monte.media.codec.Buffer;
-import org.monte.media.codec.Track;
+import org.monte.media.av.Buffer;
+import org.monte.media.av.Track;
 import org.monte.media.bitmap.BitmapImage;
 import org.monte.media.math.Rational;
-import static org.monte.media.codec.BufferFlag.*;
+import static org.monte.media.av.BufferFlag.*;
 
 /**
  * {@code ANIMTrack}.

@@ -12,8 +12,8 @@
         <property name="classdir" value="build/classes9"/>
         <property name="libdir" value="lib"/>
     </target>
-    <target name="clean">
-        <delete dir="${classdir}" />
+    <target name="clean" depends="init">
+        <delete dir="${classdir}"/>
     </target>
     <target name="compile" depends="init">
         <mkdir dir="${classdir}" />

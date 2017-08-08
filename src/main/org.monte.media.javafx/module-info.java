@@ -4,4 +4,9 @@
  */
 
 module org.monte.media.javafx {
+    requires java.desktop;
+    requires javafx.graphics;
+    requires javafx.swing;
+    
+    exports org.monte.media.javafx;
 }

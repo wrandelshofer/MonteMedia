@@ -6,8 +6,14 @@
 module org.monte.media.quicktime {
     requires java.desktop;
     
-    requires transitive org.monte.media.codec;
-    requires transitive org.monte.media.movie;
+    requires transitive org.monte.media.av;
     
     exports org.monte.media.quicktime;
+    provides org.monte.media.av.CodecSpi with
+            org.monte.media.quicktime.codec.audio.QuickTimePCMAudioCodecSpi,
+            org.monte.media.quicktime.codec.video.AnimationCodecSpi,
+            org.monte.media.quicktime.codec.video.RawCodecSpi
+            ;
+    provides org.monte.media.av.MovieWriterSpi with org.monte.media.quicktime.QuickTimeWriterSpi;
+    provides org.monte.media.av.MovieReaderSpi with org.monte.media.quicktime.QuickTimeReaderSpi;
 }

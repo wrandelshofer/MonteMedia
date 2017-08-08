@@ -4,14 +4,15 @@
  */
 package org.monte.media.anim;
 
-import org.monte.media.codec.Buffer;
-import org.monte.media.codec.Multiplexer;
+import org.monte.media.av.Buffer;
+import org.monte.media.av.Multiplexer;
 import org.monte.media.bitmap.BitmapImage;
 import org.monte.media.math.Rational;
 import java.io.File;
 import java.io.IOException;
 import static java.lang.Math.*;
-import static org.monte.media.codec.BufferFlag.*;
+import javax.imageio.stream.ImageOutputStream;
+import static org.monte.media.av.BufferFlag.*;
 
 /**
  * {@code ANIMMultiplexer}.
@@ -25,6 +26,9 @@ public class ANIMMultiplexer extends ANIMOutputStream implements Multiplexer {
 
     public ANIMMultiplexer(File file) throws IOException {
         super(file);
+    }
+    public ANIMMultiplexer(ImageOutputStream out) throws IOException {
+        super(out);
     }
 
     @Override

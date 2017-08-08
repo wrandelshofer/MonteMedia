@@ -6,7 +6,7 @@
 module org.monte.media.riff {
     requires java.desktop;
     
-    requires transitive org.monte.media.core;
+    requires transitive org.monte.media.base;
     
     exports org.monte.media.riff;
 }

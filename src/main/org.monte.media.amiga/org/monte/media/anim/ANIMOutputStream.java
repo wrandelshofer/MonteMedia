@@ -11,9 +11,11 @@ import java.io.IOException;
 import static java.lang.Math.max;
 import java.util.Arrays;
 import javax.imageio.stream.FileImageOutputStream;
+import javax.imageio.stream.ImageOutputStream;
 import org.monte.media.bitmap.BitmapImage;
 import org.monte.media.iff.IFFOutputStream;
 import org.monte.media.io.SeekableByteArrayOutputStream;
+
 /**
  * {@code ANIMOutputStream}.
  * <p>
@@ -25,65 +27,115 @@ import org.monte.media.io.SeekableByteArrayOutputStream;
  * @version 1.0 2010-12-26 Created.
  */
 public class ANIMOutputStream {
-/** CAMG monitor ID mask. */
+
+    /**
+     * CAMG monitor ID mask.
+     */
     public final static int MONITOR_ID_MASK = 0xffff1000;
-    /** Default ID chooses a system dependent screen mode. We always fall back
-     * to NTSC OCS with 60fps.
-     * 
-     * The default monitor ID triggers OCS mode!
-     * OCS stands for "Original Chip Set". The OCS chip set only had 4 bits per color register.
-     * All later chip sets hat 8 bits per color register. 
+    /**
+     * Default ID chooses a system dependent screen mode. We always fall back to
+     * NTSC OCS with 60fps.
+     *
+     * The default monitor ID triggers OCS mode! OCS stands for "Original Chip
+     * Set". The OCS chip set only had 4 bits per color register. All later chip
+     * sets hat 8 bits per color register.
      */
     public final static int DEFAULT_MONITOR_ID = 0x00000000;
-    /** NTSC, 60fps, 44:52. */
+    /**
+     * NTSC, 60fps, 44:52.
+     */
     public final static int NTSC_MONITOR_ID = 0x00011000;
-    /** PAL, 50fps, 44:44. */
+    /**
+     * PAL, 50fps, 44:44.
+     */
     public final static int PAL_MONITOR_ID = 0x00021000;
-    /** MULTISCAN (VGA), 58fps, 44:44. */
+    /**
+     * MULTISCAN (VGA), 58fps, 44:44.
+     */
     public final static int MULTISCAN_MONITOR_ID = 0x00031000;
-    /** A2024, 60fps (I don't know the real value). */
+    /**
+     * A2024, 60fps (I don't know the real value).
+     */
     public final static int A2024_MONITOR_ID = 0x00041000;
-    /** PROTO, 60fps (I don't know the real value). */
+    /**
+     * PROTO, 60fps (I don't know the real value).
+     */
     public final static int PROTO_MONITOR_ID = 0x00051000;
-    /** EURO72, 69fps, 44:44. */
+    /**
+     * EURO72, 69fps, 44:44.
+     */
     public final static int EURO72_MONITOR_ID = 0x00061000;
-    /** EURO36, 73fps, 44:44. */
+    /**
+     * EURO36, 73fps, 44:44.
+     */
     public final static int EURO36_MONITOR_ID = 0x00071000;
-    /** SUPER72, 71fps, 34:40. */
+    /**
+     * SUPER72, 71fps, 34:40.
+     */
     public final static int SUPER72_MONITOR_ID = 0x00081000;
-     /** DBLNTSC, 58fps, 44:52. */
-   public final static int DBLNTSC_MONITOR_ID = 0x00091000;
-    /** DBLPAL, 48fps, 44:44. */
+    /**
+     * DBLNTSC, 58fps, 44:52.
+     */
+    public final static int DBLNTSC_MONITOR_ID = 0x00091000;
+    /**
+     * DBLPAL, 48fps, 44:44.
+     */
     public final static int DBLPAL_MONITOR_ID = 0x00001000;
-    
-    /** CAMG Mode mask. */
+
+    /**
+     * CAMG Mode mask.
+     */
     public final static int MODE_MASK = 0x00000880;
-    /** CAMG HAM mode. */
+    /**
+     * CAMG HAM mode.
+     */
     public final static int HAM_MODE = 0x00000800;
-    /** CAMG EHB mode. */
+    /**
+     * CAMG EHB mode.
+     */
     public final static int EHB_MODE = 0x00000080;
-    
-    /** "jiffies" defines the time base of the movie. */
+
+    /**
+     * "jiffies" defines the time base of the movie.
+     */
     private int jiffies = 60;
-    /** Commodore Amiga graphics mode. */
+    /**
+     * Commodore Amiga graphics mode.
+     */
     private int camg;
     private boolean debug = false;
     private IFFOutputStream out = null;
-    /** Frame count. */
+    /**
+     * Frame count.
+     */
     protected int frameCount = 0;
-    /** Current absolute frame time. */
+    /**
+     * Current absolute frame time.
+     */
     protected int absTime = 0;
-    /** double buffering previous frame for odd frames. */
+    /**
+     * double buffering previous frame for odd frames.
+     */
     private BitmapImage oddPrev;
-    /** double buffering previous frame for even frames. */
+    /**
+     * double buffering previous frame for even frames.
+     */
     private BitmapImage evenPrev;
-    /** store first frame so that we can write wrap up frame. */
+    /**
+     * store first frame so that we can write wrap up frame.
+     */
     private BitmapImage firstFrame;
-    /** Duration of the first wrapup frame. */
+    /**
+     * Duration of the first wrapup frame.
+     */
     private int firstWrapupDuration = 1;
-    /** Duration of the second wrapup frame. */
+    /**
+     * Duration of the second wrapup frame.
+     */
     private int secondWrapupDuration = 1;
-    /** Offset of the DPAN chunk. */
+    /**
+     * Offset of the DPAN chunk.
+     */
     private long numberOfFramesOffset = -1;
 
     /**
@@ -102,17 +154,26 @@ public class ANIMOutputStream {
         out = new IFFOutputStream(new FileImageOutputStream(file));
     }
 
-    /** Sets the time base of the movie. The default value is 60. */
+    public ANIMOutputStream(ImageOutputStream out) throws IOException {
+        this.out = new IFFOutputStream(out);
+    }
+
+    /**
+     * Sets the time base of the movie. The default value is 60.
+     */
     public void setJiffies(int newValue) {
         this.jiffies = newValue;
     }
 
-    /** Gets the time base of the movie. The default value is 60. */
+    /**
+     * Gets the time base of the movie. The default value is 60.
+     */
     public int getJiffies() {
         return this.jiffies;
     }
 
-    /** Sets the Commodore Amiga Graphics Mode. The default value is 0.
+    /**
+     * Sets the Commodore Amiga Graphics Mode. The default value is 0.
      * <p>
      * The graphics mode is an or-combination of the monitor ID and the mode ID.
      * <p>
@@ -120,16 +181,20 @@ public class ANIMOutputStream {
      * <pre>
      * setCAMG(PAL_MONITOR_ID|HAM_MODE);
      * </pre>
-     * 
+     *
      * Also sets the Jiffies for the Graphics Mode.
      */
     public void setCAMG(int newValue) {
         this.camg = newValue;
-        AmigaDisplayInfo info=AmigaDisplayInfo.getInfo(newValue);
-        if (info!=null)this.jiffies=info.fps;
+        AmigaDisplayInfo info = AmigaDisplayInfo.getInfo(newValue);
+        if (info != null) {
+            this.jiffies = info.fps;
+        }
     }
 
-    /** Gets the Commodore Amiga Graphics Mode. The default value is 0. */
+    /**
+     * Gets the Commodore Amiga Graphics Mode. The default value is 0.
+     */
     public int getCAMG() {
         return this.camg;
     }
@@ -146,8 +211,7 @@ public class ANIMOutputStream {
     /**
      * Sets the state of the QuickTimeWriter to started.
      * <p>
-     * If the state is changed by this method, the prolog is
-     * written.
+     * If the state is changed by this method, the prolog is written.
      */
     private void ensureStarted() throws IOException {
         ensureOpen();
@@ -161,12 +225,12 @@ public class ANIMOutputStream {
     }
 
     /**
-     * Finishes writing the contents of the QuickTime output stream without closing
-     * the underlying stream. Use this method when applying multiple filters
-     * in succession to the same output stream.
+     * Finishes writing the contents of the QuickTime output stream without
+     * closing the underlying stream. Use this method when applying multiple
+     * filters in succession to the same output stream.
      *
-     * @exception IllegalStateException if the dimension of the video track
-     * has not been specified or determined yet.
+     * @exception IllegalStateException if the dimension of the video track has
+     * not been specified or determined yet.
      * @exception IOException if an I/O exception has occurred
      */
     public void finish() throws IOException {
@@ -207,10 +271,10 @@ public class ANIMOutputStream {
             writeDeltaFrame(firstFrame, secondWrapupDuration);
         }
         out.popChunk();
-        if (numberOfFramesOffset!=-1) {
-            long pos=out.getStreamPosition();
+        if (numberOfFramesOffset != -1) {
+            long pos = out.getStreamPosition();
             out.seek(numberOfFramesOffset);
-            out.writeUWORD(max(0,frameCount-2));
+            out.writeUWORD(max(0, frameCount - 2));
             out.seek(pos);
         }
 
@@ -230,7 +294,7 @@ public class ANIMOutputStream {
         out.pushCompositeChunk("FORM", "ILBM");
         writeBMHD(out, img);
         writeCMAP(out, img);
-       // writeDPAN(out);
+        // writeDPAN(out);
         writeANHD(out, img.getWidth(), img.getHeight(), 0, absTime, duration); // 0=opDirect
         writeCAMG(out, camg);
         writeBODY(out, img);
@@ -262,13 +326,14 @@ public class ANIMOutputStream {
         System.arraycopy(img.getBitmap(), 0, prev.getBitmap(), 0, prev.getBitmap().length);
         prev.setPlanarColorModel(img.getPlanarColorModel());
 
-
         absTime += duration;
         firstWrapupDuration = secondWrapupDuration = duration;
         frameCount++;
     }
-    
-    public long getMovieTime() {return absTime;}
+
+    public long getMovieTime() {
+        return absTime;
+    }
 
     /**
      * Writes the bitmap header (ILBM BMHD).
@@ -302,9 +367,11 @@ public class ANIMOutputStream {
      * </pre>
      */
     private void writeBMHD(IFFOutputStream out, BitmapImage img) throws IOException {
-        AmigaDisplayInfo info=AmigaDisplayInfo.getInfo(camg);
-        if (info==null)info=AmigaDisplayInfo.getInfo(AmigaDisplayInfo.DEFAULT_MONITOR_ID);
-        
+        AmigaDisplayInfo info = AmigaDisplayInfo.getInfo(camg);
+        if (info == null) {
+            info = AmigaDisplayInfo.getInfo(AmigaDisplayInfo.DEFAULT_MONITOR_ID);
+        }
+
         out.pushDataChunk("BMHD");
         out.writeUWORD(img.getWidth());
         out.writeUWORD(img.getHeight());
@@ -339,7 +406,8 @@ public class ANIMOutputStream {
     }
 
     /**
-     * Writes the color map (ILBM CMAP) if it is different from the previous image.
+     * Writes the color map (ILBM CMAP) if it is different from the previous
+     * image.
      */
     private void writeCMAP(IFFOutputStream out, BitmapImage img, BitmapImage prev) throws IOException {
         IndexColorModel cm = (IndexColorModel) img.getPlanarColorModel();
@@ -367,16 +435,12 @@ public class ANIMOutputStream {
     }
 
     /**
-     * Writes the DPAN (Deluxe Paint Animation) chunk.
-     * We can fill in the value for numberOfFrames only after we have written
-     * all frames.
+     * Writes the DPAN (Deluxe Paint Animation) chunk. We can fill in the value
+     * for numberOfFrames only after we have written all frames.
      *
-     * typedef struct {
-     *    UWORD version;   // current version=4
-     *    UWORD numberOfFrames;   // number of frames in the animation.
-     *    ULONG flags;   // Not used
-     * }
-     * animDPAnimChunk;
+     * typedef struct { UWORD version; // current version=4 UWORD
+     * numberOfFrames; // number of frames in the animation. ULONG flags; // Not
+     * used } animDPAnimChunk;
      *
      */
     private void writeDPAN(IFFOutputStream out) throws IOException {
@@ -412,26 +476,26 @@ public class ANIMOutputStream {
      * Writes a delta frame (ILBM DLTA) with "byte vertical" (method 5).
      *
      * <p>
-     * The DLTA chunk for method 5 has 16 long pointers at the start.
-     * The first 8 are pointers to the start of the data for each of the
-     * bitplanes (up to a max of 8 planes). The second set of 8 are not used.
+     * The DLTA chunk for method 5 has 16 long pointers at the start. The first
+     * 8 are pointers to the start of the data for each of the bitplanes (up to
+     * a max of 8 planes). The second set of 8 are not used.
      * <p>
-     * Compression/decompression is performed on a plane-by-plane basis.
-     * Each column is compressed separately. A 320x200 bitplane would have 40
-     * columns of 200 bytes each. Each column starts with an op-count followed
-     * by a number of ops. If the op-count is zero, that's ok, it just means
-     * there's no change in this column from the last frame. If there is only
-     * one list of pointers ops for all planes, then the pointer to that list
-     * is repeated in all positions so the playback code need not even be
-     * aware of it.In fact, one could get fancy and have some bitplanes share
-     * lists while others have different lists, or no lists (the problem in
-     * these schemes lie in the generation, not in the playback).
+     * Compression/decompression is performed on a plane-by-plane basis. Each
+     * column is compressed separately. A 320x200 bitplane would have 40 columns
+     * of 200 bytes each. Each column starts with an op-count followed by a
+     * number of ops. If the op-count is zero, that's ok, it just means there's
+     * no change in this column from the last frame. If there is only one list
+     * of pointers ops for all planes, then the pointer to that list is repeated
+     * in all positions so the playback code need not even be aware of it.In
+     * fact, one could get fancy and have some bitplanes share lists while
+     * others have different lists, or no lists (the problem in these schemes
+     * lie in the generation, not in the playback).
      * <p>
      * The ops are of three classes, and followed by a varying amount of data
      * depending on which class:
      * <ol>
-     * <li>Skip ops - this is a byte whith the hi bit clear that says how
-     * many rows to move the "dest" pointer forward, ie to skip. It is non-zero.</li>
+     * <li>Skip ops - this is a byte whith the hi bit clear that says how many
+     * rows to move the "dest" pointer forward, ie to skip. It is non-zero.</li>
      * <li>Uniq ops - this is a byte with the hi bit set. The hi bit is masked
      * down and the remainder is a count of the number of bytes of data to copy
      * literally. It's followed by the data to copy.</li>
@@ -445,8 +509,7 @@ public class ANIMOutputStream {
      * <p>
      * Reference:<br>
      * Commodore-Amiga, Inc. (1991) Amiga ROM Kernel Reference Manual. Devices.
-     * Third Edition. Reading: Addison-Wesley.
-     * Pages 445 - 449.
+     * Third Edition. Reading: Addison-Wesley. Pages 445 - 449.
      */
     private void writeDLTA(IFFOutputStream out, BitmapImage img, BitmapImage prev) throws IOException {
         out.pushDataChunk("DLTA");
@@ -503,7 +566,6 @@ public class ANIMOutputStream {
                 }
             }
         }
-
 
         // write pointers for each bitmap plane
         for (int p = 0; p < pPointers.length; ++p) {
