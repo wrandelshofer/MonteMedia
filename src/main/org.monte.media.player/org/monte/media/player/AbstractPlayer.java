@@ -5,10 +5,12 @@
 package org.monte.media.player;
 
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.EventListenerList;
 import org.monte.media.concurrent.SequentialDispatcher;
-import java.beans.*;
-
-import javax.swing.event.*;
 
 /**
  * Generic interface for media players.
