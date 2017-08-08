@@ -4,7 +4,6 @@
  */
 
 module org.monte.media.core {
-    requires java.desktop;
 
     exports org.monte.media.beans;
     exports org.monte.media.exception;

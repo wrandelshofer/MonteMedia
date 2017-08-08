@@ -10,7 +10,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import org.monte.media.gui.tree.TreeNodeImpl;
+import java.util.Enumeration;
+import org.monte.media.tree.TreeNode;
 
 /**
  * MutableIFFChunk.
@@ -40,7 +41,7 @@ import org.monte.media.gui.tree.TreeNodeImpl;
  * @author Werner Randelshofer
  * @version $Id: MutableIFFChunk.java 364 2016-11-09 19:54:25Z werner $
  */
-public class MutableIFFChunk extends TreeNodeImpl<MutableIFFChunk> {
+public class MutableIFFChunk extends TreeNode<MutableIFFChunk> {
     private final static long serialVersionUID = 1L;
 
     /** ID for FORMGroupExpression. */
@@ -126,7 +127,7 @@ public class MutableIFFChunk extends TreeNodeImpl<MutableIFFChunk> {
             return data.length;
         } else {
             int length = 4;
-            for (MutableIFFChunk child : getChildren()) {
+            for (MutableIFFChunk child : children()) {
                 int childLength = child.getLength();
                 length += 8 + childLength + childLength % 2;
             }
@@ -155,7 +156,7 @@ public class MutableIFFChunk extends TreeNodeImpl<MutableIFFChunk> {
         if (getChildCount() > 0) {
             buf.append(' ');
             buf.append(idToString(getType()));
-            for (MutableIFFChunk child : getChildren()) {
+            for (MutableIFFChunk child : children()) {
                 buf.append('\n');
                 buf.append(child.dump(depth + 1));
             }
@@ -264,7 +265,7 @@ public class MutableIFFChunk extends TreeNodeImpl<MutableIFFChunk> {
         out.writeULONG(length);
         if (data == null) {
             out.writeULONG(type);
-            for (MutableIFFChunk child : getChildren()) {
+            for (MutableIFFChunk child : children()) {
                 child.write(out);
             }
         } else {

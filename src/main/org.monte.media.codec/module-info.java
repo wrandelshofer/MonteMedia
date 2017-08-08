@@ -8,9 +8,9 @@ module org.monte.media.codec {
     
     requires transitive org.monte.media.core;
     
-    exports org.monte.media.audio;
+    exports org.monte.media.codec.audio;
     exports org.monte.media.codec;
-    exports org.monte.media.video;
-    exports org.monte.media.converter;
+    exports org.monte.media.codec.video;
+    exports org.monte.media.codec.time;
     exports org.monte.media.interpolator;
 }

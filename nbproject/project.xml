@@ -5,6 +5,9 @@
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
             <name>MonteMedia</name>
             <source-roots>
+                <root id="src.org.monte.media.core.dir"/>
+                <root id="src.org.monte.media.desktop.dir"/>
+                <root id="src.org.monte.media.javafx.dir"/>
                 <root id="src.org.monte.animmerger.dir"/>
                 <root id="src.org.monte.audiodemo.dir"/>
                 <root id="src.org.monte.avidemo.dir"/>

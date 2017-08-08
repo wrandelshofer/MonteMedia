@@ -9,7 +9,7 @@
         </exec>
         <property name="version" value="${git.revision}"/>
         <property name="srcdirs" value="src/demo:src/main"/>
-        <property name="classdir" value="build/classes"/>
+        <property name="classdir" value="build/classes9"/>
         <property name="libdir" value="lib"/>
     </target>
     <target name="clean">
