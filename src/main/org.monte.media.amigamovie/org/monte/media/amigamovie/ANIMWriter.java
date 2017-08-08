@@ -85,6 +85,7 @@ public class ANIMWriter extends ANIMMultiplexer implements MovieWriter {
 
     @Override
     public boolean isDataLimitReached() {
+        // FIXME implement me
         return false;
     }
 
