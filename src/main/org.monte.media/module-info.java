@@ -42,8 +42,8 @@
  * Encode</td></tr>
  * <tr><td>SEQ</td><td>SEQ</td><td>Atari Cyber Paint
  * Sequence</td><td>Decode</td></tr>
- * <tr><td></td><td></td><td></td><td></td></tr>
- * <tr><td></td><td></td><td></td><td></td></tr>
+ * <tr><td>Animation</td><td>MOV</td><td>QuickTime Animation</td><td>Write</td></tr>
+ * <tr><td>Raw</td><td>MOV</td><td>QuickTime RAW</td><td>Write</td></tr>
  * </table>
  * <p>
  * Supports the following audio encodings:
@@ -135,7 +135,10 @@ module org.monte.media {
             org.monte.media.bitmap.codec.video.BitmapCodecSpi,
             org.monte.media.av.codec.video.JPEGCodecSpi,
             org.monte.media.av.codec.video.PNGCodecSpi,
-            org.monte.media.av.codec.video.TechSmithCodecSpi;
+            org.monte.media.av.codec.video.TechSmithCodecSpi,
+            org.monte.media.quicktime.codec.audio.QuickTimePCMAudioCodecSpi,
+            org.monte.media.quicktime.codec.video.AnimationCodecSpi,
+            org.monte.media.quicktime.codec.video.RawCodecSpi;
 
     provides org.monte.media.av.MovieWriterSpi with
             org.monte.media.anim.ANIMWriterSpi,
