@@ -3,9 +3,11 @@
  */
 
 module org.monte.media.jmf {
+    requires jmf;
+    requires java.desktop;
+    
     requires org.monte.media;
     
     exports org.monte.media.jmf.codec;
     exports org.monte.media.jmf.codec.video;
-    exports org.monte.media.jmf.jpeg;
 }

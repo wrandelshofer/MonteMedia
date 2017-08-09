@@ -8,5 +8,5 @@ module org.monte.demo.moviemaker {
     
     requires org.monte.media;    
     
-    exports org.monte.moviemaker;    
+    exports org.monte.demo.moviemaker;    
 }

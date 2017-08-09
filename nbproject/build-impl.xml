@@ -130,20 +130,18 @@ is divided into following sections:
                 <available file="${src.org.monte.media.dir}"/>
                 <available file="${src.org.monte.media.jmf.dir}"/>
                 <available file="${src.resources.dir}"/>
-                <available file="${src.org.monte.demo.jmfavidemo.dir}"/>
-                <available file="${src.org.monte.demo.jmftsccdemo.dir}"/>
                 <available file="${src.org.monte.demo.animmerger.dir}"/>
-                <available file="${src.org.monte.demo.audiodemo.dir}"/>
-                <available file="${src.org.monte.demo.avidemo.dir}"/>
-                <available file="${src.org.monte.demo.cleartypedemo.dir}"/>
-                <available file="${src.org.monte.demo.cmykdemo.dir}"/>
-                <available file="${src.org.monte.demo.iodemo.dir}"/>
-                <available file="${src.org.monte.demo.mathdemo.dir}"/>
+                <available file="${src.org.monte.demo.audiorecorder.dir}"/>
+                <available file="${src.org.monte.demo.aviwriter.dir}"/>
+                <available file="${src.org.monte.demo.cleartype.dir}"/>
+                <available file="${src.org.monte.demo.cmykimageviewer.dir}"/>
+                <available file="${src.org.monte.demo.imageioviewer.dir}"/>
+                <available file="${src.org.monte.demo.io.dir}"/>
                 <available file="${src.org.monte.demo.movieconverter.dir}"/>
                 <available file="${src.org.monte.demo.moviemaker.dir}"/>
                 <available file="${src.org.monte.demo.mpoimagesplitter.dir}"/>
-                <available file="${src.org.monte.demo.quicktimedemo.dir}"/>
-                <available file="${src.org.monte.demo.imageio.dir}"/>
+                <available file="${src.org.monte.demo.quicktimewriter.dir}"/>
+                <available file="${src.org.monte.demo.rationalnumber.dir}"/>
                 <available file="${src.org.monte.demo.screenrecorder.dir}"/>
             </or>
         </condition>
@@ -250,20 +248,18 @@ is divided into following sections:
         <fail unless="src.org.monte.media.dir">Must set src.org.monte.media.dir</fail>
         <fail unless="src.org.monte.media.jmf.dir">Must set src.org.monte.media.jmf.dir</fail>
         <fail unless="src.resources.dir">Must set src.resources.dir</fail>
-        <fail unless="src.org.monte.demo.jmfavidemo.dir">Must set src.org.monte.demo.jmfavidemo.dir</fail>
-        <fail unless="src.org.monte.demo.jmftsccdemo.dir">Must set src.org.monte.demo.jmftsccdemo.dir</fail>
         <fail unless="src.org.monte.demo.animmerger.dir">Must set src.org.monte.demo.animmerger.dir</fail>
-        <fail unless="src.org.monte.demo.audiodemo.dir">Must set src.org.monte.demo.audiodemo.dir</fail>
-        <fail unless="src.org.monte.demo.avidemo.dir">Must set src.org.monte.demo.avidemo.dir</fail>
-        <fail unless="src.org.monte.demo.cleartypedemo.dir">Must set src.org.monte.demo.cleartypedemo.dir</fail>
-        <fail unless="src.org.monte.demo.cmykdemo.dir">Must set src.org.monte.demo.cmykdemo.dir</fail>
-        <fail unless="src.org.monte.demo.iodemo.dir">Must set src.org.monte.demo.iodemo.dir</fail>
-        <fail unless="src.org.monte.demo.mathdemo.dir">Must set src.org.monte.demo.mathdemo.dir</fail>
+        <fail unless="src.org.monte.demo.audiorecorder.dir">Must set src.org.monte.demo.audiorecorder.dir</fail>
+        <fail unless="src.org.monte.demo.aviwriter.dir">Must set src.org.monte.demo.aviwriter.dir</fail>
+        <fail unless="src.org.monte.demo.cleartype.dir">Must set src.org.monte.demo.cleartype.dir</fail>
+        <fail unless="src.org.monte.demo.cmykimageviewer.dir">Must set src.org.monte.demo.cmykimageviewer.dir</fail>
+        <fail unless="src.org.monte.demo.imageioviewer.dir">Must set src.org.monte.demo.imageioviewer.dir</fail>
+        <fail unless="src.org.monte.demo.io.dir">Must set src.org.monte.demo.io.dir</fail>
         <fail unless="src.org.monte.demo.movieconverter.dir">Must set src.org.monte.demo.movieconverter.dir</fail>
         <fail unless="src.org.monte.demo.moviemaker.dir">Must set src.org.monte.demo.moviemaker.dir</fail>
         <fail unless="src.org.monte.demo.mpoimagesplitter.dir">Must set src.org.monte.demo.mpoimagesplitter.dir</fail>
-        <fail unless="src.org.monte.demo.quicktimedemo.dir">Must set src.org.monte.demo.quicktimedemo.dir</fail>
-        <fail unless="src.org.monte.demo.imageio.dir">Must set src.org.monte.demo.imageio.dir</fail>
+        <fail unless="src.org.monte.demo.quicktimewriter.dir">Must set src.org.monte.demo.quicktimewriter.dir</fail>
+        <fail unless="src.org.monte.demo.rationalnumber.dir">Must set src.org.monte.demo.rationalnumber.dir</fail>
         <fail unless="src.org.monte.demo.screenrecorder.dir">Must set src.org.monte.demo.screenrecorder.dir</fail>
         <fail unless="test.main.dir">Must set test.main.dir</fail>
         <fail unless="build.dir">Must set build.dir</fail>
@@ -286,7 +282,7 @@ is divided into following sections:
     </target>
     <target depends="-init-ap-cmdline-properties" if="ap.supported.internal" name="-init-macrodef-javac-with-processors">
         <macrodef name="javac" uri="http://www.netbeans.org/ns/j2se-project/3">
-            <attribute default="${src.org.monte.media.dir}:${src.org.monte.media.jmf.dir}:${src.resources.dir}:${src.org.monte.demo.jmfavidemo.dir}:${src.org.monte.demo.jmftsccdemo.dir}:${src.org.monte.demo.animmerger.dir}:${src.org.monte.demo.audiodemo.dir}:${src.org.monte.demo.avidemo.dir}:${src.org.monte.demo.cleartypedemo.dir}:${src.org.monte.demo.cmykdemo.dir}:${src.org.monte.demo.iodemo.dir}:${src.org.monte.demo.mathdemo.dir}:${src.org.monte.demo.movieconverter.dir}:${src.org.monte.demo.moviemaker.dir}:${src.org.monte.demo.mpoimagesplitter.dir}:${src.org.monte.demo.quicktimedemo.dir}:${src.org.monte.demo.imageio.dir}:${src.org.monte.demo.screenrecorder.dir}" name="srcdir"/>
+            <attribute default="${src.org.monte.media.dir}:${src.org.monte.media.jmf.dir}:${src.resources.dir}:${src.org.monte.demo.animmerger.dir}:${src.org.monte.demo.audiorecorder.dir}:${src.org.monte.demo.aviwriter.dir}:${src.org.monte.demo.cleartype.dir}:${src.org.monte.demo.cmykimageviewer.dir}:${src.org.monte.demo.imageioviewer.dir}:${src.org.monte.demo.io.dir}:${src.org.monte.demo.movieconverter.dir}:${src.org.monte.demo.moviemaker.dir}:${src.org.monte.demo.mpoimagesplitter.dir}:${src.org.monte.demo.quicktimewriter.dir}:${src.org.monte.demo.rationalnumber.dir}:${src.org.monte.demo.screenrecorder.dir}" name="srcdir"/>
             <attribute default="${build.classes.dir}" name="destdir"/>
             <attribute default="${javac.classpath}" name="classpath"/>
             <attribute default="${javac.processorpath}" name="processorpath"/>
@@ -327,7 +323,7 @@ is divided into following sections:
     </target>
     <target depends="-init-ap-cmdline-properties" name="-init-macrodef-javac-without-processors" unless="ap.supported.internal">
         <macrodef name="javac" uri="http://www.netbeans.org/ns/j2se-project/3">
-            <attribute default="${src.org.monte.media.dir}:${src.org.monte.media.jmf.dir}:${src.resources.dir}:${src.org.monte.demo.jmfavidemo.dir}:${src.org.monte.demo.jmftsccdemo.dir}:${src.org.monte.demo.animmerger.dir}:${src.org.monte.demo.audiodemo.dir}:${src.org.monte.demo.avidemo.dir}:${src.org.monte.demo.cleartypedemo.dir}:${src.org.monte.demo.cmykdemo.dir}:${src.org.monte.demo.iodemo.dir}:${src.org.monte.demo.mathdemo.dir}:${src.org.monte.demo.movieconverter.dir}:${src.org.monte.demo.moviemaker.dir}:${src.org.monte.demo.mpoimagesplitter.dir}:${src.org.monte.demo.quicktimedemo.dir}:${src.org.monte.demo.imageio.dir}:${src.org.monte.demo.screenrecorder.dir}" name="srcdir"/>
+            <attribute default="${src.org.monte.media.dir}:${src.org.monte.media.jmf.dir}:${src.resources.dir}:${src.org.monte.demo.animmerger.dir}:${src.org.monte.demo.audiorecorder.dir}:${src.org.monte.demo.aviwriter.dir}:${src.org.monte.demo.cleartype.dir}:${src.org.monte.demo.cmykimageviewer.dir}:${src.org.monte.demo.imageioviewer.dir}:${src.org.monte.demo.io.dir}:${src.org.monte.demo.movieconverter.dir}:${src.org.monte.demo.moviemaker.dir}:${src.org.monte.demo.mpoimagesplitter.dir}:${src.org.monte.demo.quicktimewriter.dir}:${src.org.monte.demo.rationalnumber.dir}:${src.org.monte.demo.screenrecorder.dir}" name="srcdir"/>
             <attribute default="${build.classes.dir}" name="destdir"/>
             <attribute default="${javac.classpath}" name="classpath"/>
             <attribute default="${javac.processorpath}" name="processorpath"/>
@@ -360,7 +356,7 @@ is divided into following sections:
     </target>
     <target depends="-init-macrodef-javac-with-processors,-init-macrodef-javac-without-processors" name="-init-macrodef-javac">
         <macrodef name="depend" uri="http://www.netbeans.org/ns/j2se-project/3">
-            <attribute default="${src.org.monte.media.dir}:${src.org.monte.media.jmf.dir}:${src.resources.dir}:${src.org.monte.demo.jmfavidemo.dir}:${src.org.monte.demo.jmftsccdemo.dir}:${src.org.monte.demo.animmerger.dir}:${src.org.monte.demo.audiodemo.dir}:${src.org.monte.demo.avidemo.dir}:${src.org.monte.demo.cleartypedemo.dir}:${src.org.monte.demo.cmykdemo.dir}:${src.org.monte.demo.iodemo.dir}:${src.org.monte.demo.mathdemo.dir}:${src.org.monte.demo.movieconverter.dir}:${src.org.monte.demo.moviemaker.dir}:${src.org.monte.demo.mpoimagesplitter.dir}:${src.org.monte.demo.quicktimedemo.dir}:${src.org.monte.demo.imageio.dir}:${src.org.monte.demo.screenrecorder.dir}" name="srcdir"/>
+            <attribute default="${src.org.monte.media.dir}:${src.org.monte.media.jmf.dir}:${src.resources.dir}:${src.org.monte.demo.animmerger.dir}:${src.org.monte.demo.audiorecorder.dir}:${src.org.monte.demo.aviwriter.dir}:${src.org.monte.demo.cleartype.dir}:${src.org.monte.demo.cmykimageviewer.dir}:${src.org.monte.demo.imageioviewer.dir}:${src.org.monte.demo.io.dir}:${src.org.monte.demo.movieconverter.dir}:${src.org.monte.demo.moviemaker.dir}:${src.org.monte.demo.mpoimagesplitter.dir}:${src.org.monte.demo.quicktimewriter.dir}:${src.org.monte.demo.rationalnumber.dir}:${src.org.monte.demo.screenrecorder.dir}" name="srcdir"/>
             <attribute default="${build.classes.dir}" name="destdir"/>
             <attribute default="${javac.classpath}" name="classpath"/>
             <sequential>
@@ -958,7 +954,7 @@ is divided into following sections:
                 <include name="*"/>
             </dirset>
         </pathconvert>
-        <j2seproject3:depend srcdir="${src.org.monte.media.dir}:${src.org.monte.media.jmf.dir}:${src.resources.dir}:${src.org.monte.demo.jmfavidemo.dir}:${src.org.monte.demo.jmftsccdemo.dir}:${src.org.monte.demo.animmerger.dir}:${src.org.monte.demo.audiodemo.dir}:${src.org.monte.demo.avidemo.dir}:${src.org.monte.demo.cleartypedemo.dir}:${src.org.monte.demo.cmykdemo.dir}:${src.org.monte.demo.iodemo.dir}:${src.org.monte.demo.mathdemo.dir}:${src.org.monte.demo.movieconverter.dir}:${src.org.monte.demo.moviemaker.dir}:${src.org.monte.demo.mpoimagesplitter.dir}:${src.org.monte.demo.quicktimedemo.dir}:${src.org.monte.demo.imageio.dir}:${src.org.monte.demo.screenrecorder.dir}:${build.generated.subdirs}"/>
+        <j2seproject3:depend srcdir="${src.org.monte.media.dir}:${src.org.monte.media.jmf.dir}:${src.resources.dir}:${src.org.monte.demo.animmerger.dir}:${src.org.monte.demo.audiorecorder.dir}:${src.org.monte.demo.aviwriter.dir}:${src.org.monte.demo.cleartype.dir}:${src.org.monte.demo.cmykimageviewer.dir}:${src.org.monte.demo.imageioviewer.dir}:${src.org.monte.demo.io.dir}:${src.org.monte.demo.movieconverter.dir}:${src.org.monte.demo.moviemaker.dir}:${src.org.monte.demo.mpoimagesplitter.dir}:${src.org.monte.demo.quicktimewriter.dir}:${src.org.monte.demo.rationalnumber.dir}:${src.org.monte.demo.screenrecorder.dir}:${build.generated.subdirs}"/>
     </target>
     <target depends="init,deps-jar,-pre-pre-compile,-pre-compile, -copy-persistence-xml,-compile-depend" if="have.sources" name="-do-compile">
         <j2seproject3:javac gensrcdir="${build.generated.sources.dir}"/>
@@ -966,20 +962,18 @@ is divided into following sections:
             <fileset dir="${src.org.monte.media.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
             <fileset dir="${src.org.monte.media.jmf.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
             <fileset dir="${src.resources.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
-            <fileset dir="${src.org.monte.demo.jmfavidemo.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
-            <fileset dir="${src.org.monte.demo.jmftsccdemo.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
             <fileset dir="${src.org.monte.demo.animmerger.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
-            <fileset dir="${src.org.monte.demo.audiodemo.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
-            <fileset dir="${src.org.monte.demo.avidemo.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
-            <fileset dir="${src.org.monte.demo.cleartypedemo.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
-            <fileset dir="${src.org.monte.demo.cmykdemo.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
-            <fileset dir="${src.org.monte.demo.iodemo.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
-            <fileset dir="${src.org.monte.demo.mathdemo.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
+            <fileset dir="${src.org.monte.demo.audiorecorder.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
+            <fileset dir="${src.org.monte.demo.aviwriter.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
+            <fileset dir="${src.org.monte.demo.cleartype.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
+            <fileset dir="${src.org.monte.demo.cmykimageviewer.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
+            <fileset dir="${src.org.monte.demo.imageioviewer.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
+            <fileset dir="${src.org.monte.demo.io.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
             <fileset dir="${src.org.monte.demo.movieconverter.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
             <fileset dir="${src.org.monte.demo.moviemaker.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
             <fileset dir="${src.org.monte.demo.mpoimagesplitter.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
-            <fileset dir="${src.org.monte.demo.quicktimedemo.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
-            <fileset dir="${src.org.monte.demo.imageio.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
+            <fileset dir="${src.org.monte.demo.quicktimewriter.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
+            <fileset dir="${src.org.monte.demo.rationalnumber.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
             <fileset dir="${src.org.monte.demo.screenrecorder.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
         </copy>
     </target>
@@ -1001,7 +995,7 @@ is divided into following sections:
     <target depends="init,deps-jar,-pre-pre-compile" name="-do-compile-single">
         <fail unless="javac.includes">Must select some files in the IDE or set javac.includes</fail>
         <j2seproject3:force-recompile/>
-        <j2seproject3:javac excludes="" gensrcdir="${build.generated.sources.dir}" includes="${javac.includes}" sourcepath="${src.org.monte.media.dir}:${src.org.monte.media.jmf.dir}:${src.resources.dir}:${src.org.monte.demo.jmfavidemo.dir}:${src.org.monte.demo.jmftsccdemo.dir}:${src.org.monte.demo.animmerger.dir}:${src.org.monte.demo.audiodemo.dir}:${src.org.monte.demo.avidemo.dir}:${src.org.monte.demo.cleartypedemo.dir}:${src.org.monte.demo.cmykdemo.dir}:${src.org.monte.demo.iodemo.dir}:${src.org.monte.demo.mathdemo.dir}:${src.org.monte.demo.movieconverter.dir}:${src.org.monte.demo.moviemaker.dir}:${src.org.monte.demo.mpoimagesplitter.dir}:${src.org.monte.demo.quicktimedemo.dir}:${src.org.monte.demo.imageio.dir}:${src.org.monte.demo.screenrecorder.dir}"/>
+        <j2seproject3:javac excludes="" gensrcdir="${build.generated.sources.dir}" includes="${javac.includes}" sourcepath="${src.org.monte.media.dir}:${src.org.monte.media.jmf.dir}:${src.resources.dir}:${src.org.monte.demo.animmerger.dir}:${src.org.monte.demo.audiorecorder.dir}:${src.org.monte.demo.aviwriter.dir}:${src.org.monte.demo.cleartype.dir}:${src.org.monte.demo.cmykimageviewer.dir}:${src.org.monte.demo.imageioviewer.dir}:${src.org.monte.demo.io.dir}:${src.org.monte.demo.movieconverter.dir}:${src.org.monte.demo.moviemaker.dir}:${src.org.monte.demo.mpoimagesplitter.dir}:${src.org.monte.demo.quicktimewriter.dir}:${src.org.monte.demo.rationalnumber.dir}:${src.org.monte.demo.screenrecorder.dir}"/>
     </target>
     <target name="-post-compile-single">
         <!-- Empty placeholder for easier customization. -->
@@ -1276,31 +1270,25 @@ is divided into following sections:
             <fileset dir="${src.resources.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
                 <filename name="**/*.java"/>
             </fileset>
-            <fileset dir="${src.org.monte.demo.jmfavidemo.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
-                <filename name="**/*.java"/>
-            </fileset>
-            <fileset dir="${src.org.monte.demo.jmftsccdemo.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
-                <filename name="**/*.java"/>
-            </fileset>
             <fileset dir="${src.org.monte.demo.animmerger.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
                 <filename name="**/*.java"/>
             </fileset>
-            <fileset dir="${src.org.monte.demo.audiodemo.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
+            <fileset dir="${src.org.monte.demo.audiorecorder.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
                 <filename name="**/*.java"/>
             </fileset>
-            <fileset dir="${src.org.monte.demo.avidemo.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
+            <fileset dir="${src.org.monte.demo.aviwriter.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
                 <filename name="**/*.java"/>
             </fileset>
-            <fileset dir="${src.org.monte.demo.cleartypedemo.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
+            <fileset dir="${src.org.monte.demo.cleartype.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
                 <filename name="**/*.java"/>
             </fileset>
-            <fileset dir="${src.org.monte.demo.cmykdemo.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
+            <fileset dir="${src.org.monte.demo.cmykimageviewer.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
                 <filename name="**/*.java"/>
             </fileset>
-            <fileset dir="${src.org.monte.demo.iodemo.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
+            <fileset dir="${src.org.monte.demo.imageioviewer.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
                 <filename name="**/*.java"/>
             </fileset>
-            <fileset dir="${src.org.monte.demo.mathdemo.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
+            <fileset dir="${src.org.monte.demo.io.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
                 <filename name="**/*.java"/>
             </fileset>
             <fileset dir="${src.org.monte.demo.movieconverter.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
@@ -1312,10 +1300,10 @@ is divided into following sections:
             <fileset dir="${src.org.monte.demo.mpoimagesplitter.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
                 <filename name="**/*.java"/>
             </fileset>
-            <fileset dir="${src.org.monte.demo.quicktimedemo.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
+            <fileset dir="${src.org.monte.demo.quicktimewriter.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
                 <filename name="**/*.java"/>
             </fileset>
-            <fileset dir="${src.org.monte.demo.imageio.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
+            <fileset dir="${src.org.monte.demo.rationalnumber.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
                 <filename name="**/*.java"/>
             </fileset>
             <fileset dir="${src.org.monte.demo.screenrecorder.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
@@ -1337,31 +1325,25 @@ is divided into following sections:
             <fileset dir="${src.resources.dir}" excludes="${excludes}" includes="${includes}">
                 <filename name="**/doc-files/**"/>
             </fileset>
-            <fileset dir="${src.org.monte.demo.jmfavidemo.dir}" excludes="${excludes}" includes="${includes}">
-                <filename name="**/doc-files/**"/>
-            </fileset>
-            <fileset dir="${src.org.monte.demo.jmftsccdemo.dir}" excludes="${excludes}" includes="${includes}">
-                <filename name="**/doc-files/**"/>
-            </fileset>
             <fileset dir="${src.org.monte.demo.animmerger.dir}" excludes="${excludes}" includes="${includes}">
                 <filename name="**/doc-files/**"/>
             </fileset>
-            <fileset dir="${src.org.monte.demo.audiodemo.dir}" excludes="${excludes}" includes="${includes}">
+            <fileset dir="${src.org.monte.demo.audiorecorder.dir}" excludes="${excludes}" includes="${includes}">
                 <filename name="**/doc-files/**"/>
             </fileset>
-            <fileset dir="${src.org.monte.demo.avidemo.dir}" excludes="${excludes}" includes="${includes}">
+            <fileset dir="${src.org.monte.demo.aviwriter.dir}" excludes="${excludes}" includes="${includes}">
                 <filename name="**/doc-files/**"/>
             </fileset>
-            <fileset dir="${src.org.monte.demo.cleartypedemo.dir}" excludes="${excludes}" includes="${includes}">
+            <fileset dir="${src.org.monte.demo.cleartype.dir}" excludes="${excludes}" includes="${includes}">
                 <filename name="**/doc-files/**"/>
             </fileset>
-            <fileset dir="${src.org.monte.demo.cmykdemo.dir}" excludes="${excludes}" includes="${includes}">
+            <fileset dir="${src.org.monte.demo.cmykimageviewer.dir}" excludes="${excludes}" includes="${includes}">
                 <filename name="**/doc-files/**"/>
             </fileset>
-            <fileset dir="${src.org.monte.demo.iodemo.dir}" excludes="${excludes}" includes="${includes}">
+            <fileset dir="${src.org.monte.demo.imageioviewer.dir}" excludes="${excludes}" includes="${includes}">
                 <filename name="**/doc-files/**"/>
             </fileset>
-            <fileset dir="${src.org.monte.demo.mathdemo.dir}" excludes="${excludes}" includes="${includes}">
+            <fileset dir="${src.org.monte.demo.io.dir}" excludes="${excludes}" includes="${includes}">
                 <filename name="**/doc-files/**"/>
             </fileset>
             <fileset dir="${src.org.monte.demo.movieconverter.dir}" excludes="${excludes}" includes="${includes}">
@@ -1373,10 +1355,10 @@ is divided into following sections:
             <fileset dir="${src.org.monte.demo.mpoimagesplitter.dir}" excludes="${excludes}" includes="${includes}">
                 <filename name="**/doc-files/**"/>
             </fileset>
-            <fileset dir="${src.org.monte.demo.quicktimedemo.dir}" excludes="${excludes}" includes="${includes}">
+            <fileset dir="${src.org.monte.demo.quicktimewriter.dir}" excludes="${excludes}" includes="${includes}">
                 <filename name="**/doc-files/**"/>
             </fileset>
-            <fileset dir="${src.org.monte.demo.imageio.dir}" excludes="${excludes}" includes="${includes}">
+            <fileset dir="${src.org.monte.demo.rationalnumber.dir}" excludes="${excludes}" includes="${includes}">
                 <filename name="**/doc-files/**"/>
             </fileset>
             <fileset dir="${src.org.monte.demo.screenrecorder.dir}" excludes="${excludes}" includes="${includes}">

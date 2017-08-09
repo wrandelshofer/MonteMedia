@@ -107,7 +107,7 @@ private void generatePerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:even
 
             @Override
             protected void construct() throws Exception {
-                    org.monte.jmfavidemo.Main.main(new String[]{f.getPath()});
+                    Main.main(new String[]{f.getPath()});
             }
 
             @Override

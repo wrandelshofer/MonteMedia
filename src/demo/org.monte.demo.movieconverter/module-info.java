@@ -7,5 +7,5 @@ module org.monte.demo.movieconverter {
     
     requires org.monte.media;
 
-    exports org.monte.movieconverter;
+    exports org.monte.demo.movieconverter;
 }

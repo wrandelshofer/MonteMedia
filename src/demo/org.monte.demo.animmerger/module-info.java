@@ -7,5 +7,5 @@ module org.monte.demo.animmerger {
     
     requires org.monte.media;
     
-    exports org.monte.animmerger;
+    exports org.monte.demo.animmerger;
 }

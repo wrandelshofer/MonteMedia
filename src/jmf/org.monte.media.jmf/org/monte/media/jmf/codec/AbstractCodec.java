@@ -6,7 +6,6 @@ package org.monte.media.jmf.codec;
 import javax.media.Buffer;
 import javax.media.Codec;
 import javax.media.Control;
-import javax.media.Format;
 import javax.media.ResourceUnavailableException;
 
 /**

@@ -1,27 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="montemedia" default="all" basedir=".">
+<project name="MonteMedia" default="all" basedir="."
+    xmlns:if="ant:if"
+    xmlns:unless="ant:unless">
     <target name="init">
         <exec executable="git" outputproperty="git.revision" failifexecutionfails="false" errorproperty="">
-            <arg value="describe"/>
-            <arg value="--tags"/>
-            <arg value="--always"/>
-            <arg value="HEAD"/>
+            <arg value="log"/>
+            <arg value="-1"/>
+            <arg value="--pretty=format:%cd.%h"/>
+            <arg value="--date=format:%Y%m%d.%H%M%S"/>
         </exec>
+        <property name="name" value="${ant.project.name}"/>
         <property name="version" value="${git.revision}"/>
-        <property name="srcdirs" value="src/demo:src/main"/>
+        <property name="author" value="Werner Randelshofer"/>
+        <echo message="${name} ${version}"/>
+        
+        <property name="srcdirs" value="src/demo:src/main:src/jmf"/>
         <property name="classdir" value="build/classes9"/>
         <property name="docdir" value="build/javadoc9"/>
         <property name="libdir" value="lib"/>
+        <property name="jardir" value="build/jar9"/>
     </target>
     <target name="clean" depends="init">
         <delete dir="${classdir}"/>
         <delete dir="${docdir}"/>
+        <delete dir="${jardir}"/>
     </target>
     <target name="javadoc" depends="init">
         <mkdir dir="${docdir}" />
         <exec executable="javadoc">
+            <arg value="-encoding"/>
+            <arg value="UTF-8"/>
             <arg value="-d"/>
             <arg value="${docdir}"/>
+            <arg value="-header"/>
+            <arg value="${name} ${version}"/>
             <arg value="--module-source-path"/>
             <arg value="${srcdirs}"/>
             <arg value="--module"/>
@@ -31,21 +43,58 @@
     <target name="compile" depends="init">
         <mkdir dir="${classdir}" />
         <javac
+                source="1.9"
+                target="1.9"
                 destdir="${classdir}"
                 debug="true"
                 modulesourcepath="${srcdirs}" 
+                modulepath="${libdir}"
                 includeantruntime="false"
         >
-             <classpath>
-                <fileset dir="${libdir}">
-                    <include name="jai_core.jar"/>
-                    <include name="jmf.jar"/>
-                </fileset>
-            </classpath>
-           
         </javac>
     </target>
-    <target name="all" depends="clean,compile,javadoc">
+    <macrodef name="jarmodule">
+        <attribute name="module"/>
+        <attribute name="mainclass" default=""/>
+        <sequential>
+        <exec executable="jar">
+            <arg value="--create"/>
+            <arg value="--file"/>
+            <arg value="${jardir}/@{module}.jar"/>
+            <arg value="--main-class" unless:blank="@{mainclass}"/>
+            <arg value="@{mainclass}" unless:blank="@{mainclass}"/>
+            <arg value="--module-version"/>
+            <arg value="${version}"/>
+            <arg value="-C"/>
+            <arg value="${classdir}/@{module}"/>
+            <arg value="."/>
+        </exec>
+        <exec executable="jar">
+            <arg value="-d"/>
+            <arg value="--file"/>
+            <arg value="${jardir}/@{module}.jar"/>
+        </exec>
+        </sequential>
+    </macrodef>
+    <target name="jar" depends="compile">
+        <mkdir dir="${jardir}" />
+        <jarmodule module="org.monte.media" mainclass="org.monte.media.screenrecorder.Main"/>
+        <jarmodule module="org.monte.media.jmf"/>
+        <jarmodule module="org.monte.demo.jmfavi"/>
+        <jarmodule module="org.monte.demo.animmerger" mainclass="org.monte.demo.animmerger.Main"/>
+        <jarmodule module="org.monte.demo.audiorecorder" mainclass="org.monte.demo.audiorecorder.Main"/>
+        <jarmodule module="org.monte.demo.aviwriter" mainclass="org.monte.demo.aviwriter.Main"/>
+        <jarmodule module="org.monte.demo.cleartype" mainclass="org.monte.demo.cleartype.Main"/>
+        <jarmodule module="org.monte.demo.cmykimageviewer" mainclass="org.monte.demo.cmykimageviewer.Main"/>
+        <jarmodule module="org.monte.demo.imageioviewer" mainclass="org.monte.demo.imageioviewer.Main"/>
+        <jarmodule module="org.monte.demo.io" mainclass="org.monte.demo.io.Main"/>
+        <jarmodule module="org.monte.demo.movieconverter" mainclass="org.monte.demo.movieconverter.Main"/>
+        <jarmodule module="org.monte.demo.moviemaker" mainclass="org.monte.demo.moviemaker.Main"/>
+        <jarmodule module="org.monte.demo.mpoimagesplitter" mainclass="org.monte.demo.mpoimagesplitter.Main"/>
+        <jarmodule module="org.monte.demo.quicktimewriter" mainclass="org.monte.demo.quicktimewriter.Main"/>
+        <jarmodule module="org.monte.demo.rationalnumber" mainclass="org.monte.demo.rationalnumber.Main"/>
+        <jarmodule module="org.monte.demo.screenrecorder" mainclass="org.monte.demo.screenrecorder.Main"/>
     </target>
-
+        <target name="all" depends="clean,compile,jar,javadoc">
+    </target>
 </project>

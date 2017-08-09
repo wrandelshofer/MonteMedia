@@ -7,5 +7,5 @@ module org.monte.demo.mpoimagesplitter {
     
     requires org.monte.media;    
     
-    exports org.monte.mpoimagesplitter;
+    exports org.monte.demo.mpoimagesplitter;
 }

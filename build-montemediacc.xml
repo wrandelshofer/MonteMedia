@@ -130,7 +130,6 @@
          >
             <classpath>
                 <fileset dir="${lib}">
-                    <include name="jai_core.jar"/>
                     <include name="jmf.jar"/>
                 </fileset>
             </classpath>

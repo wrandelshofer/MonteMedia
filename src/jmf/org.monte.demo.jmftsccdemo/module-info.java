@@ -3,5 +3,10 @@
  */
 
 module org.monte.demo.jmftsccdemo {
+    requires jmf;
+    requires java.desktop;
+    
+    requires org.monte.media;
+
     exports org.monte.jmftsccdemo;
 }

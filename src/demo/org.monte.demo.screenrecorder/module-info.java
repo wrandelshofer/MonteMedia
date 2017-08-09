@@ -8,5 +8,5 @@ module org.monte.demo.screenrecorder {
     
     requires org.monte.media;
     
-    exports org.monte.screenrecorder;
+    exports org.monte.demo.screenrecorder;
 }

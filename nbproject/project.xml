@@ -8,20 +8,18 @@
                 <root id="src.org.monte.media.dir"/>
                 <root id="src.org.monte.media.jmf.dir"/>
                 <root id="src.resources.dir"/>
-                <root id="src.org.monte.demo.jmfavidemo.dir"/>
-                <root id="src.org.monte.demo.jmftsccdemo.dir"/>
                 <root id="src.org.monte.demo.animmerger.dir"/>
-                <root id="src.org.monte.demo.audiodemo.dir"/>
-                <root id="src.org.monte.demo.avidemo.dir"/>
-                <root id="src.org.monte.demo.cleartypedemo.dir"/>
-                <root id="src.org.monte.demo.cmykdemo.dir"/>
-                <root id="src.org.monte.demo.iodemo.dir"/>
-                <root id="src.org.monte.demo.mathdemo.dir"/>
+                <root id="src.org.monte.demo.audiorecorder.dir"/>
+                <root id="src.org.monte.demo.aviwriter.dir"/>
+                <root id="src.org.monte.demo.cleartype.dir"/>
+                <root id="src.org.monte.demo.cmykimageviewer.dir"/>
+                <root id="src.org.monte.demo.imageioviewer.dir"/>
+                <root id="src.org.monte.demo.io.dir"/>
                 <root id="src.org.monte.demo.movieconverter.dir"/>
                 <root id="src.org.monte.demo.moviemaker.dir"/>
                 <root id="src.org.monte.demo.mpoimagesplitter.dir"/>
-                <root id="src.org.monte.demo.quicktimedemo.dir"/>
-                <root id="src.org.monte.demo.imageio.dir"/>
+                <root id="src.org.monte.demo.quicktimewriter.dir"/>
+                <root id="src.org.monte.demo.rationalnumber.dir"/>
                 <root id="src.org.monte.demo.screenrecorder.dir"/>
             </source-roots>
             <test-roots>
