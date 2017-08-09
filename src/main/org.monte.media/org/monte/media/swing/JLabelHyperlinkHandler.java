@@ -30,7 +30,7 @@ import javax.swing.text.html.HTML;
  * File f=new File(System.getProperty("user.home"));
  * JLabel l=new JLabel("&lt;html&gt;Click this &lt;a href="\""+
  *                      f.toURI();+
- *                      "\""&gt;link&lt;/a> to open your home folder.");
+ *                      "\""&gt;link&lt;/a&gt; to open your home folder.");
  * new JLabelHyperlinkHandler(l, new ActionListener() {
  *      public void ActionPerformed(ActionEvent evt) {
  *              try {

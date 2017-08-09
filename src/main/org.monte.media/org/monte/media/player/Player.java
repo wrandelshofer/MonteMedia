@@ -109,64 +109,64 @@ extends StateModel {
   /**
    * Initiates the following asynchronous
    * state transitions:
-   *   unrealized -> realizing -> realized
-   *                 realizing -> realized
+   *   unrealized → realizing → realized
+   *                 realizing → realized
    *                              realized
-   *   closed -> throws IllegalStateException
+   *   closed → throws IllegalStateException
    */
   public void realize();
   /**
    * Initiates the following asynchronous
    * state transitions:
-   *   unrealized -> realizing -> realized -> prefetching -> prefetched
-   *                 realizing -> realized -> prefetching -> prefetched
-   *                              realized -> prefetching -> prefetched
-   *                                          prefetching -> prefetched
+   *   unrealized → realizing → realized → prefetching → prefetched
+   *                 realizing → realized → prefetching → prefetched
+   *                              realized → prefetching → prefetched
+   *                                          prefetching → prefetched
    *                                                         prefetched
-   *   closed -> throws IllegalStateException
+   *   closed → throws IllegalStateException
    */
   public void prefetch();
   /**
    * Initiates the following asynchronous
    * state transitions:
-   *   realizing -> unrealized
-   *   prefetching -> realized
-   *   prefetched -> realized
+   *   realizing → unrealized
+   *   prefetching → realized
+   *   prefetched → realized
    *   realized
-   *   started -> throws IllegalStateException
-   *   closed -> throws IllegalStateException
+   *   started → throws IllegalStateException
+   *   closed → throws IllegalStateException
    */
   public void deallocate();
 
   /**
    * Initiates the following asynchronous
    * state transitions:
-   * unrealized -> realizing -> realized -> prefetching -> prefetched -> started
-   *               realizing -> realized -> prefetching -> prefetched -> started
-   *                            realized -> prefetching -> prefetched -> started
-   *                                        prefetching -> prefetched -> started
-   *                                                       prefetched -> started
+   * unrealized → realizing → realized → prefetching → prefetched → started
+   *               realizing → realized → prefetching → prefetched → started
+   *                            realized → prefetching → prefetched → started
+   *                                        prefetching → prefetched → started
+   *                                                       prefetched → started
    *                                                                     started
-   * closed -> throws IllegalStateException
+   * closed → throws IllegalStateException
    */
   public void start();
 
   /**
    * Initiates the following asynchronous
    * state transitions:
-   * started -> prefetched
+   * started → prefetched
    * unrealized
    * realizing
    * prefetching
    * prefetched
-   * closed -> throws IllegalStateException
+   * closed → throws IllegalStateException
    */
   public void stop();
 
   /**
    * Initiates the following asynchronous
    * state transitions:
-   * any state -> closed
+   * any state → closed
    */
   public void close();
 

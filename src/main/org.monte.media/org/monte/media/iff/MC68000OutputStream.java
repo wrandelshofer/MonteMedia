@@ -74,9 +74,9 @@ public class MC68000OutputStream extends FilterOutputStream {
      *    LOOP until produced the desired number of bytes
      *       Read the next source byte into n
      *       SELECT n FROM
-     *          [ 0..127 ] => copy the next n+1 bytes literally
-     *          [-1..-127] => replicate the next byte -n+1 timees
-     *          -128       => no operation
+     *          [ 0..127 ] ⇒ copy the next n+1 bytes literally
+     *          [-1..-127] ⇒ replicate the next byte -n+1 timees
+     *          -128       ⇒ no operation
      *       ENDCASE
      *    ENDLOOP
      * </pre>

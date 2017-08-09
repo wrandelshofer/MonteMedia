@@ -487,11 +487,6 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
      * @param duration The sampleDuration of the video frame in media time scale
      * units.
      *
-     * @throws IndexOutofBoundsException if the track index is out of bounds.
-     * @throws if the duration is less than 1, or if the dimension of the frame
-     * does not match the dimension of the video.
-     * @throws UnsupportedOperationException if the QuickTimeWriter does not
-     * have a built-in codec for this video format.
      * @throws IOException if writing the sample data failed.
      */
     public void write(int track, BufferedImage image, long duration) throws IOException {

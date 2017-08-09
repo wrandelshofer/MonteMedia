@@ -87,8 +87,6 @@ public class ImageInputStreamAdapter extends InputStream {
      * caller of a method for this input stream. The next caller might be
      * the same thread or another thread.  A single read or skip of this
      * many bytes will not block, but may read or skip fewer bytes.
-     * <p>
-     * This method returns the result of {@link #in in}.available().
      *
      * @return     an estimate of the number of bytes that can be read (or skipped
      *             over) from this input stream without blocking.

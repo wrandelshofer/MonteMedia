@@ -399,7 +399,7 @@ public class WhiteBalance {
      * [R'    [ Rnu  0   0  Rmu  0   0       R^2
      *  G'  =    0   1   0   0   0   0    *  G^2
      *  B']      0   0  Bnu  0   0  Bmu ]    B^2 ]
-     *          
+     * </pre>         
      * 
      * @param rgbHist 
      * @return a vector with the values {Rmu, Rnu, Bmu, Bnu}.

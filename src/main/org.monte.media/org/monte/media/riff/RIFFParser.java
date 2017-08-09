@@ -20,9 +20,13 @@ import javax.imageio.stream.ImageInputStream;
 /**
  * Interprets Resource Interchange File Format (RIFF) streams.
  *
- * <p><b>Abstract</b> <p> <b>RIFF File Format</b> A RIFF file consists of a RIFF
- * header followed by zero or more lists and chunks. <p> The RIFF header has the
- * following form:
+ * <p>
+ * <b>Abstract</b>
+ * <p>
+ * <b>RIFF File Format</b> A RIFF file consists of a RIFF header followed by
+ * zero or more lists and chunks.
+ * <p>
+ * The RIFF header has the following form:
  * <pre>
  * 'RIFF' fileSize fileType (data)
  * </pre> where 'RIFF' is the literal FOURCC code 'RIFF', fileSize is a 4-byte
@@ -30,31 +34,38 @@ import javax.imageio.stream.ImageInputStream;
  * identifies the specific file type. The value of fileSize includes the size of
  * the fileType FOURCC plus the size of the data that follows, but does not
  * include the size of the 'RIFF' FOURCC or the size of fileSize. The file data
- * consists of chunks and lists, in any order. <p> <b>FOURCCs</b><br> A FOURCC
- * (four-character code) is a 32-bit unsigned integer created by concatenating
- * four ASCII characters. For example, the FOURCC 'abcd' is represented on a
- * Little-Endian system as 0x64636261. FOURCCs can contain space characters, so
- * ' abc' is a valid FOURCC. The RIFF file format uses FOURCC codes to identify
- * stream types, data chunks, index entries, and other information. <p> A chunk
- * has the following form:
+ * consists of chunks and lists, in any order.
+ * <p>
+ * <b>FOURCCs</b><br> A FOURCC (four-character code) is a 32-bit unsigned
+ * integer created by concatenating four ASCII characters. For example, the
+ * FOURCC 'abcd' is represented on a Little-Endian system as 0x64636261. FOURCCs
+ * can contain space characters, so ' abc' is a valid FOURCC. The RIFF file
+ * format uses FOURCC codes to identify stream types, data chunks, index
+ * entries, and other information.
+ * <p>
+ * A chunk has the following form:
  * <pre>
  * ckID ckSize ckData
  * </pre> where ckID is a FOURCC that identifies the data contained in the
  * chunk, ckData is a 4-byte value giving the size of the data in ckData, and
  * ckData is zero or more bytes of data. The data is always padded to nearest
  * WORD boundary. ckSize gives the size of the valid data in the chunk; it does
- * not include the padding, the size of ckID, or the size of ckSize. <p> A list
- * has the following form:
+ * not include the padding, the size of ckID, or the size of ckSize.
+ * <p>
+ * A list has the following form:
  * <pre>
  * 'LIST' listSize listType listData
  * </pre> where 'LIST' is the literal FOURCC code 'LIST', listSize is a 4-byte
  * value giving the size of the list, listType is a FOURCC code, and listData
  * consists of chunks or lists, in any order. The value of listSize includes the
  * size of listType plus the size of listData; it does not include the 'LIST'
- * FOURCC or the size of listSize. <p> For more information see:
+ * FOURCC or the size of listSize.
+ * <p>
+ * For more information see:
  * http://msdn.microsoft.com/archive/default.asp?url=/archive/en-us/directx9_c/directx/htm/avirifffilereference.asp
  * http://msdn.microsoft.com/archive/default.asp?url=/archive/en-us/directx9_c/directx/htm/aboutriff.asp
- * <p> <p><b>Grammar for RIFF streams used by this parser</b>
+ * <p>
+ * <b>Grammar for RIFF streams used by this parser</b>
  * <pre>
  * RIFFFile    ::= 'RIFF' FormGroup
  * <br>
@@ -74,12 +85,15 @@ import javax.imageio.stream.ImageInputStream;
  * struct      ::= any C language struct built with primitive data types.
  * </pre>
  *
- * <p><b>Examples</b>
+ * <p>
+ * <b>Examples</b>
  *
- * <p><b>Traversing the raw structure of a RIFF file</b> <p>To traverse the file
- * structure you must first set up a RIFFVisitor object that does something
- * useful at each call to the visit method. Then create an instance of a
- * RIFFParser and invoke the #interpret method.
+ * <p>
+ * <b>Traversing the raw structure of a RIFF file</b>
+ * <p>
+ * To traverse the file structure you must first set up a RIFFVisitor object
+ * that does something useful at each call to the visit method. Then create an
+ * instance of a RIFFParser and invoke the #interpret method.
  *
  * <pre>
  * class RIFFRawTraversal
@@ -106,18 +120,21 @@ import javax.imageio.stream.ImageInputStream;
  * .	}
  * </pre>
  *
- * <p><b>Traversing the RIFF file and interpreting its content.</b> <p>Since
- * RIFF files are not completely self describing (there is no information that
- * helps differentiate between data chunks, property chunks and collection
+ * <p>
+ * <b>Traversing the RIFF file and interpreting its content.</b>
+ * <p>
+ * Since RIFF files are not completely self describing (there is no information
+ * that helps differentiate between data chunks, property chunks and collection
  * chunks) a reader must set up the interpreter with some contextual information
- * before starting the interpreter. <p> Once at least one chunk has been
- * declared, the interpreter will only call the visitor for occurences of the
- * declared group chunks and data chunks. The property chunks and the collection
- * chunks can be obtained from the current group chunk by calling #getProperty
- * or #getCollection. <br>Note: All information the visitor can obtain during
- * interpretation is only valid during the actual #visit... call. Dont try to
- * get information about properties or collections for chunks that the visitor
- * is not visiting right now.
+ * before starting the interpreter.
+ * <p>
+ * Once at least one chunk has been declared, the interpreter will only call the
+ * visitor for occurences of the declared group chunks and data chunks. The
+ * property chunks and the collection chunks can be obtained from the current
+ * group chunk by calling #getProperty or #getCollection. <br>Note: All
+ * information the visitor can obtain during interpretation is only valid during
+ * the actual #visit... call. Dont try to get information about properties or
+ * collections for chunks that the visitor is not visiting right now.
  *
  * <pre>
  * class InterpretingAnILBMFile
@@ -238,22 +255,27 @@ public class RIFFParser extends Object {
     }
 
     /* ---- accessor methods ---- */
-    /* ---- action methods ---- */
+ /* ---- action methods ---- */
     /**
      * Interprets the RIFFFile expression located at the current position of the
      * indicated InputStream. Lets the visitor traverse the RIFF parse tree
      * during interpretation.
      *
-     * <p>Pre condition <li>	Data-, property- and collection chunks must have
+     * <p>
+     * Pre condition <ul><li>	Data-, property- and collection chunks must have
      * been declared prior to this call. <li>	When the client never declared
      * chunks, then all local chunks will be interpreted as data chunks. <li>
      * The stream must be positioned at the beginning of the RIFFFileExpression.
+     * </ul>
      *
-     * <p>Post condition <li>	When no exception was thrown then the stream is
+     * <p>
+     * Post condition <ul><li>	When no exception was thrown then the stream is
      * positioned after the RIFFFile expression.
+     * </ul>
      *
-     * <p>Obligation The visitor may throw an ParseException or an
-     * AbortException during tree traversal.
+     * <p>
+     * Obligation The visitor may throw an ParseException or an AbortException
+     * during tree traversal.
      *
      * @exception ParseException Is thrown when an interpretation error occured.
      * The stream is positioned where the error occured.
@@ -309,7 +331,7 @@ public class RIFFParser extends Object {
      * | 'LIST' ListGroup  [pad] }
      * </pre>
      */
-    private void parseFORM(HashMap<Integer,RIFFChunk> props)
+    private void parseFORM(HashMap<Integer, RIFFChunk> props)
             throws ParseException, AbortException, IOException {
         long size = in.readULONG();
         long offset = getScan(in);
@@ -368,7 +390,7 @@ public class RIFFParser extends Object {
      * ListGroup ::= size GroupType { ChunkID LocalChunk [pad] | 'LIST ' ListGroup  [pad] }
      * </pre>
      */
-    private void parseLIST(HashMap<Integer,RIFFChunk> props)
+    private void parseLIST(HashMap<Integer, RIFFChunk> props)
             throws ParseException, AbortException, IOException {
         long size = in.readULONG();
         long scan = getScan(in);
@@ -435,7 +457,7 @@ public class RIFFParser extends Object {
         RIFFChunk chunk = new RIFFChunk(parent == null ? 0 : parent.getType(), id, size, scan);
 
         if (isDataChunk(chunk)) {
-            if (readData||(dataChunks!=null&&dataChunks.contains(chunk))) {
+            if (readData || (dataChunks != null && dataChunks.contains(chunk))) {
                 byte[] data = new byte[(int) size];
                 in.read(data, 0, (int) size);
                 chunk.setData(data);
@@ -509,18 +531,20 @@ public class RIFFParser extends Object {
     /**
      * Checks whether the ID of the chunk has been declared as a data chunk.
      *
-     * <p>Pre condition <li>	Data chunks must have been declared before the
+     * <p>
+     * Pre condition <ul><li>	Data chunks must have been declared before the
      * interpretation has been started. <li>	This method will always return true
      * when neither data chunks, property chunks nor collection chunks have been
      * declared,
+     * </ul>
      *
      * @param	chunk Chunk to be verified.
      * @return True when the parameter is a data chunk.
      */
     protected boolean isDataChunk(RIFFChunk chunk) {
         if (dataChunks == null) {
-            if (collectionChunks == null && propertyChunks == null && 
-                    (stopChunkTypes == null || !stopChunkTypes.contains(chunk.getType()))) {
+            if (collectionChunks == null && propertyChunks == null
+                    && (stopChunkTypes == null || !stopChunkTypes.contains(chunk.getType()))) {
                 return true;
             } else {
                 return false;
@@ -533,8 +557,10 @@ public class RIFFParser extends Object {
     /**
      * Checks whether the ID of the chunk has been declared as a group chunk.
      *
-     * <p>Pre condition <li>	Group chunks must have been declared before the
+     * <p>
+     * Pre condition <ul><li>	Group chunks must have been declared before the
      * interpretation has been started. (Otherwise the response is always true).
+     * </ul>
      *
      * @param	chunk Chunk to be verified.
      * @return True when the visitor is interested in this is a group chunk.
@@ -550,10 +576,12 @@ public class RIFFParser extends Object {
     /**
      * Checks wether the ID of the chunk has been declared as a property chunk.
      *
-     * <p>Pre condition <li>	Property chunks must have been declared before the
+     * <p>
+     * Pre condition <ul><li>	Property chunks must have been declared before the
      * interpretation has been started. <li>	This method will always return
      * false when neither data chunks, property chunks nor collection chunks
      * have been declared,
+     * </ul>
      */
     protected boolean isPropertyChunk(RIFFChunk chunk) {
         if (propertyChunks == null) {
@@ -567,10 +595,12 @@ public class RIFFParser extends Object {
      * Checks wether the ID of the chunk has been declared as a collection
      * chunk.
      *
-     * <p>Pre condition <li>	Collection chunks must have been declared before
+     * <p>
+     * Pre condition <ul><li>	Collection chunks must have been declared before
      * the interpretation has been started. <li>	This method will always return
      * true when neither data chunks, property chunks nor collection chunks have
      * been declared,
+     * </ul>
      *
      * @param	chunk Chunk to be verified.
      * @return True when the parameter is a collection chunk.
@@ -586,11 +616,15 @@ public class RIFFParser extends Object {
     /**
      * Declares a data chunk.
      *
-     * <p>Pre condition <li>	The chunk must not have already been declared as of
-     * a different type. <li>	Declarations may not be done during interpretation
-     * of an RIFFFileExpression.
+     * <p>
+     * Pre condition <ul><li>	The chunk must not have already been declared as
+     * of a different type. <li>	Declarations may not be done during
+     * interpretation of an RIFFFileExpression.
+     * </ul>
      *
-     * <p>Post condition <li>	Data chunk declared
+     * <p>
+     * Post condition <ul><li>	Data chunk declared
+     * </ul>
      *
      * @param	type Type of the chunk. Must be formulated as a TypeID conforming
      * to the method #isFormType.
@@ -608,11 +642,15 @@ public class RIFFParser extends Object {
     /**
      * Declares a FORM group chunk.
      *
-     * <p>Pre condition <li>	The chunk must not have already been declared as of
-     * a different type. <li>	Declarations may not be done during interpretation
-     * of an RIFFFileExpression.
+     * <p>
+     * Pre condition <ul><li>	The chunk must not have already been declared as
+     * of a different type. <li>	Declarations may not be done during
+     * interpretation of an RIFFFileExpression.
+     * </ul>
      *
-     * <p>Post condition <li>	Group chunk declared
+     * <p>
+     * Post condition <ul><li>	Group chunk declared
+     * </ul>
      *
      * @param	type Type of the chunk. Must be formulated as a TypeID conforming
      * to the method #isFormType.
@@ -630,11 +668,15 @@ public class RIFFParser extends Object {
     /**
      * Declares a property chunk.
      *
-     * <p>Pre condition <li>	The chunk must not have already been declared as of
-     * a different type. <li>	Declarations may not be done during interpretation
-     * of an RIFFFileExpression.
+     * <p>
+     * Pre condition <ul><li>	The chunk must not have already been declared as
+     * of a different type. <li>	Declarations may not be done during
+     * interpretation of an RIFFFileExpression.
+     * </ul>
      *
-     * <p>Post condition <li>	Group chunk declared
+     * <p>
+     * Post condition <ul><li>	Group chunk declared
+     * </ul>
      *
      *
      * @param	type Type of the chunk. Must be formulated as a TypeID conforming
@@ -653,11 +695,15 @@ public class RIFFParser extends Object {
     /**
      * Declares a collection chunk.
      *
-     * <p>Pre condition <li>	The chunk must not have already been declared as of
-     * a different type. <li>	Declarations may not be done during interpretation
-     * of an RIFFFileExpression.
+     * <p>
+     * Pre condition <ul><li>	The chunk must not have already been declared as
+     * of a different type. <li>	Declarations may not be done during
+     * interpretation of an RIFFFileExpression.
+     * </ul>
      *
-     * <p>Post condition <li>	Collection chunk declared
+     * <p>
+     * Post condition <ul><li>	Collection chunk declared
+     * </ul>
      *
      * @param	type Type of the chunk. Must be formulated as a TypeID conforming
      * to the method #isFormType.
@@ -675,11 +721,15 @@ public class RIFFParser extends Object {
     /**
      * Declares a stop chunk.
      *
-     * <p>Pre condition <li>	The chunk must not have already been declared as of
-     * a different type. <li>	Declarations may not be done during interpretation
-     * of an RIFFFileExpression.
-     *
-     * <p>Post condition <li>	Stop chunk declared
+     * <p>
+     * Pre condition
+     * <ul><li>	The chunk must not have already been declared as of a different
+     * type. <li>	Declarations may not be done during interpretation of an
+     * RIFFFileExpression.
+     * </ul>
+     * <p>
+     * Post condition
+     * <ul><li>	Stop chunk declared</ul>
      *
      * @param	type Type of the chunk. Must be formulated as a TypeID conforming
      * to the method #isFormType.
@@ -692,10 +742,12 @@ public class RIFFParser extends Object {
     }
 
     /**
-     * Whether the parse should stop at all chunks. <p> The parser does not read
-     * the data body of stop chunks. <p> By declaring stop chunks, and not
-     * declaring any data, group or property chunks, the file structure of a
-     * RIFF file can be quickly scanned through.
+     * Whether the parse should stop at all chunks.
+     * <p>
+     * The parser does not read the data body of stop chunks.
+     * <p>
+     * By declaring stop chunks, and not declaring any data, group or property
+     * chunks, the file structure of a RIFF file can be quickly scanned through.
      */
     public void declareStopChunks() {
         isStopChunks = true;
@@ -707,9 +759,10 @@ public class RIFFParser extends Object {
 
     /* ---- Class methods ---- */
     /**
-     * Checks wether the argument represents a valid RIFF GroupID.
+     * Checks whether the argument represents a valid RIFF GroupID.
      *
-     * <p>Validation <ul> <li>	Group ID must be one of RIFF_ID, LIST_ID.</li>
+     * <p>
+     * Validation <ul> <li>	Group ID must be one of RIFF_ID, LIST_ID.</li>
      * </ul>
      *
      * @param	id Chunk ID to be checked.
@@ -720,10 +773,15 @@ public class RIFFParser extends Object {
     }
 
     /**
-     * Checks wether the argument represents a valid RIFF Group Type.
+     * Checks whether the argument represents a valid RIFF Group Type.
      *
-     * <p>Validation <ul> <li>	Must be a valid ID.</li> <li>	Must not be a group
-     * ID.</li> <li>	Must not be a NULL_ID.</li> </ul>
+     * <p>
+     * Validation
+     * <ul>
+     * <li>	Must be a valid ID.</li>
+     * <li>	Must not be a group * ID.</li>
+     * <li>	Must not be a NULL_ID.</li>
+     * </ul>
      *
      * @param	id Chunk ID to be checked.
      * @return	True when the chunk ID is a valid Group ID.
@@ -733,10 +791,13 @@ public class RIFFParser extends Object {
     }
 
     /**
-     * Checks if the argument represents a valid RIFF ID.
+     * Checks whether the argument represents a valid RIFF ID.
      *
-     * <p>Validation <li>	Every byte of an ID must be in the range of 0x20..0x7e
+     * <p>
+     * Validation <ul><li>	Every byte of an ID must be in the range of
+     * 0x20..0x7e
      * <li>	The id may not have leading spaces (unless the id is a NULL_ID).
+     * </ul>
      *
      * @param	id Chunk ID to be checked.
      * @return	True when the ID is a valid IFF chunk ID.
@@ -757,8 +818,12 @@ public class RIFFParser extends Object {
     /**
      * Returns whether the argument is a valid Local Chunk ID.
      *
-     * <p>Validation <ud> <li>	Must be valid ID.</li> <li>	Local Chunk IDs may
-     * not collide with GroupIDs.</id> <li>	Must not be a NULL_ID.</li> </ud>
+     * <p>
+     * Validation <ul>
+     * <li>	Must be valid ID.</li>
+     * <li>	Local Chunk IDs may not collide with GroupIDs.</li>
+     * <li>	Must not be a NULL_ID.</li> 
+     * </ul>
      *
      * @param	id Chunk ID to be checked.
      * @return	True when the chunk ID is a Local Chunk ID.

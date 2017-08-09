@@ -598,10 +598,6 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
      * @param duration The duration of the sample in media time scale units.
      * @param isSync whether the sample is a sync sample (key frame).
      *
-     * @throws IndexOutofBoundsException if the track index is out of bounds.
-     * @throws IllegalArgumentException if the track does not support video, if
-     * the duration is less than 1, or if the dimension of the frame does not
-     * match the dimension of the video.
      * @throws IOException if writing the sample data failed.
      */
     public void writeSample(int track, File file, long duration, boolean isSync) throws IOException {

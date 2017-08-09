@@ -210,11 +210,6 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
      * @param image The image of the video frame.
      * @param duration Duration given in media time units.
      *
-     * @throws IndexOutofBoundsException if the track index is out of bounds.
-     * @throws if the duration is less than 1, or if the dimension of the frame
-     * does not match the dimension of the video.
-     * @throws UnsupportedOperationException if the {@code MovieWriter} does not
-     * have a built-in encoder for this video format.
      * @throws IOException if writing the sample data failed.
      */
     public void write(int track, BufferedImage image, long duration) throws IOException {
@@ -224,7 +219,7 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
         if (vt.codec == null) {
             createCodec(track);
             if (vt.codec == null) {
-                throw new UnsupportedOperationException("No codec for this format: " + vt.format);
+                throw new IOException("No codec for this format: " + vt.format);
             }
         }
 

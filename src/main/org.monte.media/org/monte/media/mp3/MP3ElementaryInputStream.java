@@ -486,7 +486,7 @@ public class MP3ElementaryInputStream extends FilterInputStream {
 
     /**
      * Reads {@code b.length} bytes from the current frame (its header and its data).
-     * @throws {@code IOException} on an attempt to read past the end of the frame.
+     * @throws IOException on an attempt to read past the end of the frame.
      */
     public final void readFully(byte b[]) throws IOException {
         readFully(b, 0, b.length);
@@ -494,7 +494,7 @@ public class MP3ElementaryInputStream extends FilterInputStream {
 
     /**
      * Reads {@code len} bytes from the current frame (its header and its data).
-     * @throws {@code IOException} on an attempt to read past the end of the frame.
+     * @throws IOException on an attempt to read past the end of the frame.
      */
     public final void readFully(byte b[], int off, int len) throws IOException {
         if (len < 0) {

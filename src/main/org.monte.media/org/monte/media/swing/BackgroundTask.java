@@ -64,8 +64,6 @@ public abstract class BackgroundTask implements Runnable {
      * <p>
      * The default implementation does nothing. Subclasses may override this
      * method to perform done actions on the Event Dispatch Thread.
-     *
-     * @param value The return value of the construct method.
      */
     protected void done() {
     }

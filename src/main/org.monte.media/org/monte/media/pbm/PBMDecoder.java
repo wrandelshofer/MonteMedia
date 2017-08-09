@@ -294,7 +294,7 @@ public class PBMDecoder implements IFFVisitor {
      * #define cmpByteRun1  1
      *
      * typedef struct {
-     *   UWORD       w, h; // raster width & height in pixels
+     *   UWORD       w, h; // raster width and height in pixels
      *   WORD        x, y; // pixel position for this image
      *   UBYTE       nbPlanes; // # source bitplanes
      *   Masking     masking;

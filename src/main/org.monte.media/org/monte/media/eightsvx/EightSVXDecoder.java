@@ -102,9 +102,9 @@ import java.util.ArrayList;
  * BODY       ::= "BODY" #{ BYTE* } [0]
  * </pre>
  * The token "#" represents a ckSize LONG count of the following {braced} data bytes.
- * E.g., a VHDR's "#" should equal sizeof(Voicd8Header). Literal items are shown in
+ * E.g., a VHDR's "#" should equal sizeof(Voice8Header). Literal items are shown in
  * "quotes", [square bracket items] are optional, and "*" means 0 ore more replications.
- * A sometimes-needed pad byte is shown als "[0]".
+ * A sometimes-needed pad byte is shown as "[0]".
  *
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
  * @version  $Id: EightSVXDecoder.java 364 2016-11-09 19:54:25Z werner $
@@ -182,21 +182,19 @@ implements IFFVisitor {
     /**
      * Visits the start of an IFF GroupChunkExpression.
      *
-     * Altough this method is declared as public it may only
+     * Although this method is declared as public it may only
      * be called from an IFFParser that has been invoked
      * by this class.
      *
      * Pre condition
-     * Vector <clips> must not be null.
-     * This method espects only FORM groups of type 8SVX.
+     * Vector "clips" must not be null.
+     * This method expects only FORM groups of type 8SVX.
      * Post condition
      * -
      * Obligation
      * -
      *
      * @param  group Group Chunk to be visited.
-     * @exception ParseException
-     * When an error has been encountered.
      */
     public void enterGroup(IFFChunk group) {
         if (group.getType() == EIGHT_SVX_ID) { within8SVXGroup = true;}

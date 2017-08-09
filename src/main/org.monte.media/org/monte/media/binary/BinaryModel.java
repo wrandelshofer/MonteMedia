@@ -17,8 +17,8 @@ public interface BinaryModel {
     /**
     Gets a sequence of bytes and copies them into the supplied byte array.
 
-    @param off the starting offset >= 0
-    @param len the number of bytes >= 0 && <= size - offset
+    @param off the starting offset &gt;= 0
+    @param len the number of bytes &gt;= 0 &amp;&amp; &lt;= size - offset
     @param target the target array to copy into
     @exception ArrayIndexOutOfBoundsException  Thrown if the area covered by
     the arguments is not contained in the model.

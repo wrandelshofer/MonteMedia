@@ -262,16 +262,15 @@ public class MC68000InputStream
      *  LOOP until produced the desired number of bytes
      *      Read the next source byte into n
      *      SELECT n FROM
-     *          [0..127] =&gt; copy the next n+1 bytes literally
-     *          [-1..-127] =&gt; replicate the next byte -n+1 times
-     *          -128    =&gt; no operation
+     *          [0..127] ⇒ copy the next n+1 bytes literally
+     *          [-1..-127] ⇒ replicate the next byte -n+1 times
+     *          -128    ⇒ no operation
      *      ENDCASE;
      *   ENDLOOP;
      * </pre>
      *
-     * @param in
-     * @param out
-     * @throws ParseException
+     * @param in input
+     * @param out output
      */
     public static int unpackByteRun1(byte[] in, byte[] out)
             throws IOException {
@@ -289,7 +288,7 @@ public class MC68000InputStream
                     iOut += n;
                     iIn += n;
                 } else {
-                    if (n != -128) {//[-1..-127] =&gt; replicate the next byte -n+1 times
+                    if (n != -128) {//[-1..-127] ⇒ replicate the next byte -n+1 times
                         copyByte = in[iIn++];
                         for (; n < 1; n++) {
                             out[iOut++] = copyByte;

@@ -7,7 +7,7 @@
  * A library for processing still images, video, audio and meta-data.
  * <p>
  * Supports the following container formats:
- * <table>
+ * <table><caption>Supported container formats.</caption>
  * <tr><td>IFF</td><td>Electronic Arts Interchange File Format</td><td>Read,
  * Write</td></tr>
  * <tr><td>RIFF</td><td>Microsoft Resource Interchange File
@@ -23,7 +23,7 @@
  * </table>
  * <p>
  * Supports the following video encodings:
- * <table>
+ * <table><caption>Supported video encodings.</caption>
  * <tr><td>Op5</td><td>ANIM</td><td>Amiga Animation</td><td>Decode,
  * Encode</td></tr>
  * <tr><td>Op7 Short/Long</td><td>ANIM</td><td>Amiga
@@ -35,27 +35,27 @@
  * <tr><td>DIB</td><td>AVI</td><td>Microsoft Device Independent
  * Bitmap</td><td>Encode</td></tr>
  * <tr><td>Run Length</td><td>AVI</td><td>Run Length
- * Encoding</td><td></td>Encode</tr>
+ * Encoding</td><td>Encode</td></tr>
  * <tr><td>ZMBV</td><td>AVI</td><td>DosBox Capture
- * Codec</td><td></td>Decode</tr>
- * <tr><td>MJPG</td><td>AVI, MOV</td><td>Motion JPEG</td><td></td>Decode,
- * Encode</tr>
- * <tr><td>SEQ</td><td>SEQ<td></td>Atari Cyber Paint
+ * Codec</td><td>Decode</td></tr>
+ * <tr><td>MJPG</td><td>AVI, MOV</td><td>Motion JPEG</td><td>Decode,
+ * Encode</td></tr>
+ * <tr><td>SEQ</td><td>SEQ</td><td>Atari Cyber Paint
  * Sequence</td><td>Decode</td></tr>
  * <tr><td></td><td></td><td></td><td></td></tr>
  * <tr><td></td><td></td><td></td><td></td></tr>
  * </table>
  * <p>
  * Supports the following audio encodings:
- * <table>
+ * <table><caption>Supported audio encodings.</caption>
  * <tr><td>PCM</td><td>AVI, MOV</td><td>Pulse Code Modulation</td><td>Decode,
  * Encode</td></tr>
  * <tr><td>8SVX</td><td>8SVX, ANIM</td><td>Pulse Code
- * Modulation</td><td></td>Decode</tr>
+ * Modulation</td><td>Decode</td></tr>
  * </table>
  * <p>
  * Provides the following image encodings to javax.imageio:
- * <table>
+ * <table><caption>Supported image encodings.</caption>
  * <tr><td>ILBM</td><td>IFF</td><td>Amiga Interleaved Bitmap</td><td>Decode,
  * Encode</td></tr>
  * <tr><td>PBM</td><td>IFF</td><td>Amiga Packed Bitmap</td><td>Decode,
@@ -67,7 +67,7 @@
  * </table>
  * <p>
  * Supports the following meta-data encodings:
- * <table>
+ * <table><caption>Supported meta-data encodings.</caption>
  * <tr><td>EXIF</td><td>AVI, JPEG, MPO</td><td>Exchangeable Image File
  * Format</td><td>Decode</td></tr>
  * </table>

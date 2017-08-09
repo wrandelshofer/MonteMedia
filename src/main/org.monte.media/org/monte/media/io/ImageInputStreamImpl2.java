@@ -24,7 +24,7 @@ public abstract class ImageInputStreamImpl2 extends ImageInputStreamImpl {
     /**
      * Byte buffer used for readFully(type[], int, int).  Note that this
      * array is also used for bulk reads in readShort(), readInt(), etc, so
-     * it should be large enough to hold a primitive value (i.e. >= 8 bytes).
+     * it should be large enough to hold a primitive value (i.e. &gt;= 8 bytes).
      * Also note that this array is package protected, so that it can be
      * used by ImageOutputStreamImpl in a similar manner.
      */

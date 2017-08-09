@@ -731,7 +731,7 @@ implements LoopableAudioClip {
      * Applies a lowpass filter to the audio data.
      *
      * @param input Linear8 encoded audio data.
-     * @param resofreq Resonation frequency (must be < sampleRate / 4)
+     * @param resofreq Resonation frequency (must be &lt; sampleRate / 4)
      * @param amp Magnitude at the resonation frequency
      *
      * @return Linear8 encoded audio data.
@@ -745,7 +745,7 @@ implements LoopableAudioClip {
      * *** Fast lowpass with resonance v2 ***
      *
      * Parameters:
-     *   resofreq = resonation frequency  (must be < SR/4)
+     *   resofreq = resonation frequency  (must be &lt; SR/4)
      *   amp = magnitude at the resonation frequency
      *
      * Init:
@@ -772,7 +772,7 @@ implements LoopableAudioClip {
      * float pos = 0;
      * float speed = 0;
      *
-     * for (int t=0; t < input.length; t++) {
+     * for (int t=0; t &lt; input.length; t++) {
      * speed = speed + (input[t] - pos) * c;
      * pos += speed;
      * speed *= r;
@@ -786,7 +786,7 @@ implements LoopableAudioClip {
      * Applies a lowpass filter to the audio data.
      *
      * @param input Linear8 encoded audio data.
-     * @param resofreq Resonation frequency (must be < sampleRate / 4)
+     * @param resofreq Resonation frequency (must be &lt; sampleRate / 4)
      * @param amp Magnitude at the resonation frequency
      *
      * @return Linear8 encoded audio data.
@@ -800,7 +800,7 @@ implements LoopableAudioClip {
      * *** Fast lowpass with resonance v2 ***
      *
      * Parameters:
-     *   resofreq = resonation frequency  (must be < SR/4)
+     *   resofreq = resonation frequency  (must be &lt; SR/4)
      *   amp = magnitude at the resonation frequency
      *
      * Init:
@@ -827,7 +827,7 @@ implements LoopableAudioClip {
      * double pos = 0;
      * double speed = 0;
      *
-     * for (int t=0; t < input.length; t++) {
+     * for (int t=0; t &lt; input.length; t++) {
      * speed = speed + (input[t] - pos) * c;
      * pos += speed;
      * speed *= r;
@@ -882,7 +882,7 @@ implements LoopableAudioClip {
      * // Create the output array
      * byte[] output = new byte[input.length];
      *
-     * for (int t=12; t < input.length; t++) {
+     * for (int t=12; t &lt; input.length; t++) {
      * output[t] = (byte) (
      * a0a12*(input[t] + input[t-12])
      * + a1a11*(input[t-1] + input[t-11])
@@ -898,7 +898,8 @@ implements LoopableAudioClip {
      * }
      * return output;
      * }
-     * /**
+     */
+     /**
      * Converts a buffer of signed 8bit samples to uLaw.
      * The uLaw bytes overwrite the original 8 bit values.
      * The first byte-offset of the uLaw bytes is byteOffset.
