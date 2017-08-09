@@ -1,5 +1,6 @@
 /* @(#)package-info.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License. */
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License.
+ */
 /**
  * Provides media handlers for JPEG images with CMYK colors.
  * 

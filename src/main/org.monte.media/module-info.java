@@ -1,5 +1,6 @@
 /* @(#)module-info.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License. */
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License.
+ */
 
 /**
  * A library for processing still images, video, audio and meta-data.

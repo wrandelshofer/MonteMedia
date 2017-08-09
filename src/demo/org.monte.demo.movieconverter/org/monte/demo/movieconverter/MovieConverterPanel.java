@@ -1,5 +1,6 @@
 /* @(#)MovieConverterPanel.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License. */
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License.
+ */
 package org.monte.demo.movieconverter;
 
 import org.monte.media.av.Buffer;

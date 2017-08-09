@@ -1,5 +1,6 @@
 /* @(#)AdjustTimeCodec
- * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License. */
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License.
+ */
 package org.monte.media.av.codec.time;
 
 import org.monte.media.av.AbstractCodec;

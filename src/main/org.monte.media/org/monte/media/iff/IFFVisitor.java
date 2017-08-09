@@ -1,5 +1,6 @@
 /* @(#)IFFVisitor.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License. */
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License.
+ */
 package org.monte.media.iff;
 
 import org.monte.media.exception.AbortException;

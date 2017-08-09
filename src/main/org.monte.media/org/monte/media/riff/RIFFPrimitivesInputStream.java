@@ -1,5 +1,6 @@
 /* @(#)RIFFPrimitivesInputStream.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License. */
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License.
+ */
 package org.monte.media.riff;
 
 import java.io.*;

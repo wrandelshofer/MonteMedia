@@ -1,5 +1,6 @@
 /* @(#)DropFileTransferHandler.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License. */
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License.
+ */
 package org.monte.media.swing.datatransfer;
 
 import java.awt.datatransfer.*;
