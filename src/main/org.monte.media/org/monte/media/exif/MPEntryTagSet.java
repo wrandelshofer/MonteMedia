@@ -17,7 +17,7 @@ import static org.monte.media.tiff.TIFFTag.*;
  * Source:
  * <p>
  * Multi-Picture Format
- * (February 4, 2009). Standard of the Camera & Imaging Products Association.
+ * (February 4, 2009). Standard of the Camera &amp; Imaging Products Association.
  * CIPA DC-007-Translation-2009.
  * <a href="http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf">
  * http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf</a>

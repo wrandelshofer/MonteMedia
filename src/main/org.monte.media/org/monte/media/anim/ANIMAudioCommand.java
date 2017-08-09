@@ -37,7 +37,8 @@ import org.monte.media.eightsvx.LoopableAudioClip;
  *          frequency; // If non-zero, overrides the VHDR value
  * Flags    flags;     // Flags, see above
  * UBYTE    pad[4];       // For future use
- *
+ *</pre>
+ * 
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
  * @version 1.2.1 2010-12-25 Minor fixes for J2SE 5.
  * <br>1.2 2005-09-16 Support for swapping left and right speakers added.

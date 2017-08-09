@@ -74,7 +74,7 @@ import static java.lang.Math.*;
  * <p>An intraframe consists of 768 bytes of palette data (for palettized modes)
  * and raw frame data.</p>
  * 
- * </p>An interframe is comprised of up to three parts:</p>
+ * <p>An interframe is comprised of up to three parts:</p>
  * <ol>
  * <li>if palette change flag was set then first 768 bytes represent XOR'ed 
  * palette difference</li>
@@ -96,7 +96,7 @@ import static java.lang.Math.*;
  *   b = block_info[current_block][1];
  *   dx = a &gt;&gt; 1;
  *   dy = b &gt;&gt; 1;
- *   flag = a & 1;
+ *   flag = a &amp; 1;
  *   copy block from offset (dx, dy) from previous frame.
  *   if (flag) {
  *     XOR block with data read from stream.

@@ -43,7 +43,7 @@ import java.util.*;
  * </tt></pre>
  * <p>
  * To use the class proceed like this:
- * <p><pre><tt>
+ * <pre><tt>
  * AsyncDisplay a = new AsyncDisplay();
  *  a.display("Hello World");
  * </tt></pre>

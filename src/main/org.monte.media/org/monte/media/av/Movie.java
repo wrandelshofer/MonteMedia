@@ -18,7 +18,6 @@ import org.monte.media.av.Format;
  * A movie has a time dimension and a track dimension. The time dimension is
  * the duration of the movie. The track dimension is a list of tracks.
  * A track has a duration and a time offset.
- * <p>
  * <pre>
  * Movie duration: |------------------------------------------------|
  * Track 0:         LOREMIPSUM
@@ -26,7 +25,7 @@ import org.monte.media.av.Format;
  * Track 2:         .....FARFARAWAYBEHINDTHEMOUNTAINS
  * Track 3:         .......................THENIGHTWASHOTANDWET
  *    ... 
- * <pre>
+ * </pre>
  * <p>
  * A track provides random access to decoded samples, either by index or
  * by a time offset.
@@ -47,7 +46,6 @@ import org.monte.media.av.Format;
  * <p>
  * A sample provides encoded data for a specified duration. A sample is a
  * sequence of bytes located in a file at a specific offset and length.
- * <p>
  * <pre>
  * Track 1:         THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG
  * Edits:           (0)( 1 )(  2   )(   3   )(4)(  5  )
@@ -60,7 +58,7 @@ import org.monte.media.av.Format;
  * File B:          BLA..J.UM.PS.OV.
  * File C:          ...ER.BLA.LA.ZYD...DOG
  * File D:          BR..OWNF..OXB..LAT..HEB..LAB.LA..
- ** <pre>
+ *</pre>
  *
  * @author Werner Randelshofer
  * @version $Id: Movie.java 364 2016-11-09 19:54:25Z werner $

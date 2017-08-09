@@ -42,7 +42,7 @@ import javax.sound.sampled.AudioFormat;
  * <a href="http://www.datavoyage.com/mpgscript/mpeghdr.htm">http://www.datavoyage.com/mpgscript/mpeghdr.htm</a><br>
  * <a href="http://www.mp3-tech.org/programmer/frame_header.html">http://www.mp3-tech.org/programmer/frame_header.html</a><br>
  * <a href="http://lame.sourceforge.net/tech-FAQ.txt">http://lame.sourceforge.net/tech-FAQ.txt</a><br>
- * <a href0"http://www.altera.com/literature/dc/1.4-2005_Taiwan_2nd_SouthernTaiwanU-web.pdf">http://www.altera.com/literature/dc/1.4-2005_Taiwan_2nd_SouthernTaiwanU-web.pdf</a><br>
+ * <a href="http://www.altera.com/literature/dc/1.4-2005_Taiwan_2nd_SouthernTaiwanU-web.pdf">http://www.altera.com/literature/dc/1.4-2005_Taiwan_2nd_SouthernTaiwanU-web.pdf</a><br>
  *
  * @author Werner Randelshofer
  * @version 1.1 2011-01-17 Renamed getHeader() to getHeaderCode().

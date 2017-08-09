@@ -24,13 +24,13 @@ import static java.lang.Math.*;
  * <p>
  * Supported input formats:
  * <ul>
- * {@code Format} with {@code BufferedImage.class}, any width, any height,
- * depth=8,16 or 24.
+ * <li>{@code Format} with {@code BufferedImage.class}, any width, any height,
+ * depth=8,16 or 24.</li>
  * </ul>
  * Supported output formats:
  * <ul>
- * {@code Format} with {@code byte[].class}, same width and height as input
- * format, depth=8,16 or 24.
+ * <li>{@code Format} with {@code byte[].class}, same width and height as input
+ * format, depth=8,16 or 24.</li>
  * </ul>
  * The codec supports lossless delta- and key-frame encoding of images with 8, 16 or
  * 24 bits per pixel.
@@ -40,7 +40,7 @@ import static java.lang.Math.*;
  * the resulting data is compressed again using zlib compression.
  * <p>
  * Apart from the second compression step and the support for 16- and 24-bit
- * data, this encoder is identical to the {@link RunLengthCodec}.
+ * data, this encoder is identical to the {@link org.monte.media.avi.codec.video.RunLengthCodec}.
  * <p>
  * Each line of a frame is compressed individually. A line consists of two-byte
  * op-codes optionally followed by data. The end of the line is marked with
@@ -87,7 +87,7 @@ import static java.lang.Math.*;
  * 00 01                   End of RLE bitmap
  * </pre>
  *
- * References:<br/>
+ * References:<br>
  * <a href="http://wiki.multimedia.cx/index.php?title=TechSmith_Screen_Capture_Codec"
  * >http://wiki.multimedia.cx/index.php?title=TechSmith_Screen_Capture_Codec</a><br>
  *

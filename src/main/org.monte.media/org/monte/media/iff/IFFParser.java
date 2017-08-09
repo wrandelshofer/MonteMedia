@@ -16,15 +16,10 @@ import org.monte.media.exception.ParseException;
 /**
  * Interprets IFF streams.
  *
- * <p><b>Design Pattern</b> <li>	Interpreter
- *
- * <p><b>Design Role</b> <li>	Interpreter
- *
- * <p><b>Responsibility</b> <li>	Hide the physical representation of an IFF
- * stream from the client. <li>	Let the client declare chunks to be visited by
- * the visitor object. <li>	Let a visitor object traverse the IFF parse tree.
- *
- * <p><b>Abstract</b> <p>"EA IFF 85" is the standard interchange file format on
+ * <p>
+ * <b>Abstract</b> 
+ * <p>
+ * "EA IFF 85" is the standard interchange file format on
  * Commodore Amiga Computers. An IFF File is built up of primitive data types,
  * local chunks and group chunks.
  *

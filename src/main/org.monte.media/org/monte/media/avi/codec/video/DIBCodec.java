@@ -36,13 +36,13 @@ import static org.monte.media.av.BufferFlag.*;
  * <p>
  * Supported input formats:
  * <ul>
- * {@code Format} with {@code BufferedImage.class}, any width, any height,
- * depth=4.
+ * <li>{@code Format} with {@code BufferedImage.class}, any width, any height,
+ * depth=4.</li>
  * </ul>
  * Supported output formats:
  * <ul>
- * {@code Format} with {@code byte[].class}, same width and height as input
- * format, depth=4.
+ * <li>{@code Format} with {@code byte[].class}, same width and height as input
+ * format, depth=4.</li>
  * </ul>
  *
  * @author Werner Randelshofer

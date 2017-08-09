@@ -60,7 +60,7 @@ import java.util.ArrayList;
  * #define ID_RLSE MakeID('R', 'L', 'S', 'E')
  *
  * typedef struct {
- * UWORD duration; // segment duration in milliseconds, > 0
+ * UWORD duration; // segment duration in milliseconds, &gt; 0
  * Fixed dest;     // destination volume factor
  * } EGPoint;
  *
@@ -76,7 +76,7 @@ import java.util.ArrayList;
  * typedef sampletype LONG;
  *
  * #define ID_PAN MakeID('P', 'A', 'N', ' ')
- * typedef sposition Fixed; // 0 <= sposition <= Unity
+ * typedef sposition Fixed; // 0 &lt;= sposition &lt;= Unity
  * // Unity refers to the maximum possible volume.
  *
  *

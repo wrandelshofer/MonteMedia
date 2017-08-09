@@ -24,16 +24,21 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.*;
 import static org.monte.media.av.BufferFlag.*;
 
 /**
- * Implements the Apple Animation codec. <p> Supports lossless delta- and
- * key-frame encoding of images onlyWith 8, 16 or 24 bits per pixel. <p> The
- * QuickTime player requires that a keyframe is written once per second. This
- * codec enforces this. <p> An encoded frame has the following format: <p>
+ * Implements the Apple Animation codec.
+ * <p>
+ * Supports lossless delta- and key-frame encoding of images onlyWith 8, 16 or
+ * 24 bits per pixel.
+ * <p>
+ * The QuickTime player requires that a keyframe is written once per second.
+ * This codec enforces this.
+ * <p>
+ * An encoded frame has the following format:
  * <pre>
  * Header:
  * uint32 chunkSize
  *
- * uint16 header 0x0000 => decode entire image
- *               0x0008 => starting line and number of lines follows
+ * uint16 header 0x0000 =&amp; decode entire image
+ *               0x0008 =&amp; starting line and number of lines follows
  * if header==0x0008 {
  *   uint16 startingLine at which to begin updating frame
  *   uint16 reserved 0x0000
@@ -79,25 +84,27 @@ import static org.monte.media.av.BufferFlag.*;
  * to skip. For example, a skip byte of 15 means "skip 14 pixels", while a skip
  * byte of 1 means "don't skip any pixels". If the skip byte is 0, then the
  * frame decode is finished. Therefore, the maximum skip byte value of 255
- * allows for a maximum of 254 pixels to be skipped. <p> After the skip byte is
- * the first RLE code, which is a single signed byte. The RLE code can have the
- * following meanings:<br> <ul> <li>equal to 0: There is another single-byte
- * skip code in the stream. Again, the actual number of pixels to skip is 1 less
- * than the skip code. Therefore, the maximum skip byte value of 255 allows for
- * a maximum of 254 pixels to be skipped.</li>
+ * allows for a maximum of 254 pixels to be skipped.
+ * <p>
+ * After the skip byte is the first RLE code, which is a single signed byte. The
+ * RLE code can have the following meanings:<br> <ul> <li>equal to 0: There is
+ * another single-byte skip code in the stream. Again, the actual number of
+ * pixels to skip is 1 less than the skip code. Therefore, the maximum skip byte
+ * value of 255 allows for a maximum of 254 pixels to be skipped.</li>
  *
  * <li>equal to -1: End of the RLE-compressed line</li>
  *
  * <li>greater than 0: Run of pixel data is copied directly from the encoded
  * stream to the output frame.</li>
  *
- * <li>less than -1: Repeat pixel data -(RLE code) times.</li> </ul> <p> The
- * pixel data has the following format: <ul> <li>8-bit data: Pixels are handled
- * in groups of four. Each pixel is a palette index (the palette is determined
- * by the Quicktime file transporting the data).<br> If (code &gt; 0), copy (4 *
- * code) pixels from the encoded stream to the output.<br> If (code &lt; -1),
- * extract the next 4 pixels from the encoded stream and render the entire group
- * -(code) times to the output frame. </li>
+ * <li>less than -1: Repeat pixel data -(RLE code) times.</li> </ul>
+ * <p>
+ * The pixel data has the following format: <ul> <li>8-bit data: Pixels are
+ * handled in groups of four. Each pixel is a palette index (the palette is
+ * determined by the Quicktime file transporting the data).<br> If (code &gt;
+ * 0), copy (4 * code) pixels from the encoded stream to the output.<br> If
+ * (code &lt; -1), extract the next 4 pixels from the encoded stream and render
+ * the entire group -(code) times to the output frame. </li>
  *
  * <li>16-bit data: Each pixel is represented by a 16-bit RGB value onlyWith 5
  * bits used for each of the red, green, and blue color components and 1 unused
@@ -123,7 +130,7 @@ import static org.monte.media.av.BufferFlag.*;
  * &lt; -1), unpack the next 32-bit ARGB value from the encoded stream and
  * render it to the output frame -(code) times.</li> </ul>
  *
- * References:<br/> <a
+ * References:<br> <a
  * href="http://multimedia.cx/qtrle.txt">http://multimedia.cx/qtrle.txt</a><br>
  *
  * @author Werner Randelshofer
@@ -139,18 +146,18 @@ public class AnimationCodec extends AbstractVideoCodec {
 
     public AnimationCodec() {
         super(new Format[]{
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
-                    EncodingKey, ENCODING_BUFFERED_IMAGE), //
-                },
+            new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
+            EncodingKey, ENCODING_BUFFERED_IMAGE), //
+        },
                 new Format[]{
                     new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                    EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 8), //
+                            EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 8), //
                     new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                    EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 16), //
+                            EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 16), //
                     new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                    EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 24), //
+                            EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 24), //
                     new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                    EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 32), //
+                            EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 32), //
                 });
     }
 
@@ -164,7 +171,7 @@ public class AnimationCodec extends AbstractVideoCodec {
             //outputFormat = outputFormat.prepend(KeyFrameIntervalKey, max(1, outputFormat.get(FrameRateKey).intValue()));
 
             if (inputFormat != null) {
-                outputFormat = outputFormat.prepend(inputFormat.intersectKeys(WidthKey, HeightKey,DepthKey));
+                outputFormat = outputFormat.prepend(inputFormat.intersectKeys(WidthKey, HeightKey, DepthKey));
             }
         }
         return this.outputFormat;
@@ -218,7 +225,8 @@ public class AnimationCodec extends AbstractVideoCodec {
                         //throw new UnsupportedOperationException("Unable to process buffer " + in);
                     }
 
-                    if (isKeyframe ||//
+                    if (isKeyframe
+                            ||//
                             previousPixels == null) {
 
                         encodeKey8(tmp, pixels, r.width, r.height, r.x + r.y * scanlineStride, scanlineStride);
@@ -460,7 +468,6 @@ public class AnimationCodec extends AbstractVideoCodec {
             out.write(-1);// End of line OP-code
         }
 
-
         // Complete the header
         long pos = out.getStreamPosition();
         out.seek(headerPos);
@@ -497,7 +504,6 @@ public class AnimationCodec extends AbstractVideoCodec {
                 }
             }
         }
-
 
         if (ymin == ymax) {
             // => Frame is identical to previous one
@@ -698,7 +704,6 @@ public class AnimationCodec extends AbstractVideoCodec {
             out.write(-1);// End of line OP-code
         }
 
-
         // Complete the header
         long pos = out.getStreamPosition();
         out.seek(headerPos);
@@ -736,7 +741,6 @@ public class AnimationCodec extends AbstractVideoCodec {
             }
         }
 
-
         if (ymin == ymax) {
             // => Frame is identical to previous one
             out.writeInt(4);
@@ -771,7 +775,6 @@ public class AnimationCodec extends AbstractVideoCodec {
             out.writeShort((ymax - ymin + 1 - offset) / scanlineStride);
             out.writeShort(0);
         }
-
 
         // Encode each scanline
         for (int y = ymin; y < ymax; y += scanlineStride) {
@@ -861,7 +864,6 @@ public class AnimationCodec extends AbstractVideoCodec {
             out.write(-1);// End of line OP-code
         }
 
-
         // Complete the header
         long pos = out.getStreamPosition();
         out.seek(headerPos);
@@ -938,7 +940,6 @@ public class AnimationCodec extends AbstractVideoCodec {
             out.write(-1);// End of line OP-code
         }
 
-
         // Complete the header
         long pos = out.getStreamPosition();
         out.seek(headerPos);
@@ -976,7 +977,6 @@ public class AnimationCodec extends AbstractVideoCodec {
             }
         }
 
-
         if (ymin == ymax) {
             // => Frame is identical to previous one
             out.writeInt(4);
@@ -1011,7 +1011,6 @@ public class AnimationCodec extends AbstractVideoCodec {
             out.writeShort((ymax - ymin + 1 - offset) / scanlineStride);
             out.writeShort(0);
         }
-
 
         // Encode each scanline
         for (int y = ymin; y < ymax; y += scanlineStride) {
@@ -1107,7 +1106,6 @@ public class AnimationCodec extends AbstractVideoCodec {
 
             out.write(-1);// End of line OP-code
         }
-
 
         // Complete the header
         long pos = out.getStreamPosition();

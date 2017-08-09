@@ -4,9 +4,7 @@
  */
 
 /**
- * Provides classes for processing audio, video and images.
- * Also includes a small screen-recorder application, and classes for parsing
- * EXIF meta data..
+ * A library for processing still images, video, audio and meta-data.
  * <p>
  * Supports the following container formats:
  * <table>

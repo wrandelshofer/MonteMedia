@@ -57,9 +57,7 @@ import static org.monte.media.av.BufferFlag.*;
  * <p>
  * <b>Example:</b> Writing 10 seconds of a movie with 640x480 pixel, 30 fps,
  * PNG-encoded video and 16-bit stereo, 44100 Hz, PCM-encoded audio.
- * <p>
- * <
- * pre>
+ * <pre>
  * QuickTimeWriter w = new QuickTimeWriter(new File("mymovie.mov"));
  * w.addAudioTrack(new AudioFormat(AudioFormat.Encoding.PCM_SIGNED), 44100, 2, 16, 2, 44100, true)); // audio in track 0
  * w.addVideoTrack(QuickTimeWriter.VIDEO_PNG, 30, 640, 480);  // video in track 1

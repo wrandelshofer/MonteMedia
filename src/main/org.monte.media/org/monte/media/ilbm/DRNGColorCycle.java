@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 /**
  * Implements DRNG color cycling for an IFF ILBM image.
- * <p>
+ * 
  * <pre>
  * ILBM DRNG DPaint IV enhanced color cycle chunk
  * --------------------------------------------

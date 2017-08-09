@@ -541,75 +541,116 @@ public abstract class AbstractAVIStream {
      * is defined in a "strf" chunk, which contains a {@code BITMAPINFOHEADER}
      * struct.
      *
-     * </pre> //---------------------- // AVI Bitmap Info Header //
-     * ---------------------- typedef struct { BYTE blue; BYTE green; BYTE red;
-     * BYTE reserved; } RGBQUAD;
+     * <pre>
+     * //---------------------- 
+     * // AVI Bitmap Info Header 
+     * // ---------------------- 
+     * typedef struct { 
+     *      BYTE blue; 
+     *      BYTE green; 
+     *      BYTE red;
+     *      BYTE reserved; 
+     * } RGBQUAD;
      *
-     * // Values for this enum taken from: //
-     * http://www.fourcc.org/index.php?http%3A//www.fourcc.org/rgb.php enum {
-     * BI_RGB = 0x00000000, RGB = 0x32424752, // Alias for BI_RGB BI_RLE8 =
-     * 0x01000000, RLE8 = 0x38454C52, // Alias for BI_RLE8 BI_RLE4 = 0x00000002,
-     * RLE4 = 0x34454C52, // Alias for BI_RLE4 BI_BITFIELDS = 0x00000003, raw =
-     * 0x32776173, RGBA = 0x41424752, RGBT = 0x54424752, cvid = "cvid" }
-     * bitmapCompression;
+     * // Values for this enum taken from: 
+     * // http://www.fourcc.org/index.php?http%3A//www.fourcc.org/rgb.php 
+     * enum {
+     *      BI_RGB = 0x00000000, 
+     *      RGB = 0x32424752, // Alias for BI_RGB 
+     *      BI_RLE8 =0x01000000, 
+     *      RLE8 = 0x38454C52, // Alias for BI_RLE8 
+     *      BI_RLE4 = 0x00000002,
+     *      RLE4 = 0x34454C52, // Alias for BI_RLE4 
+     *      BI_BITFIELDS = 0x00000003, 
+     *      raw = 0x32776173, 
+     *      RGBA = 0x41424752, 
+     *      RGBT = 0x54424752, 
+     *      cvid = "cvid" 
+     *  } bitmapCompression;
      *
-     * typedef struct { DWORD structSize; // Specifies the number of bytes
-     * required by the structure. LONG width; // Specifies the width of the
-     * bitmap. // - For RGB formats, the width is specified in pixels. // - The
-     * same is true for YUV formats if the bitdepth is an even power // of 2. //
-     * - For YUV formats where the bitdepth is not an even power of 2, //
-     * however, the width is specified in bytes. // Decoders and video sources
-     * should propose formats where "width" is // the width of the image. If the
-     * video renderer is using DirectDraw, it // modifies the format so that
-     * "width" equals the stride of the surface, // and the "target" member of
-     * the VIDEOINFOHEADER or VIDEOINFOHEADER2 // structure specifies the image
-     * width. Then it proposes the modified // format using IPin::QueryAccept.
-     * // For RGB and even-power-of-2 YUV formats, if the video renderer does //
-     * not specify the stride, then round the width up to the nearst DWORD //
-     * boundary to find the stride. LONG height; // Specifies the height of the
-     * bitmap, in pixels. // - For uncompressed RGB bitmaps, if "height" is
-     * positive, the bitmap // is a bottom-up DIB with the origin at the lower
-     * left corner. If // "height" is negative, the bitmap is a top-down DIB
-     * with the origin // at the upper left corner. // - For YUV bitmaps, the
-     * bitmap is always top-down, regardless of the // sign of "height".
-     * Decoders should offer YUV formats with postive // "height", but for
-     * backward compatibility they should accept YUV // formats with either
-     * positive or negative "height". // - For compressed formats, height must
-     * be positive, regardless of // image orientation. WORD planes; //
-     * Specifies the number of planes for the target device. This value must //
-     * be set to 1. WORD bitCount; // Specifies the number of bits per pixel.
-     * //DWORD enum bitmapCompression compression; FOURCC enum bitmapCompression
-     * compression; // If the bitmap is compressed, this member is a FOURCC the
-     * specifies // the compression. // Value Description // BI_RLE8 A
-     * run-length encoded (RLE) format for bitmaps with 8 // bpp. The
-     * compression format is a 2-byte format // consisting of a count byte
-     * followed by a byte containing a color index. For more information, see
-     * Bitmap Compression. // BI_RLE4 An RLE format for bitmaps with 4 bpp. The
-     * compression // format is a 2-byte format consisting of a count byte //
-     * followed by two word-length color indexes. For more // information, see
-     * Bitmap Compression. // BI_JPEG Windows 98/Me, Windows 2000/XP: Indicates
-     * that the // image is a JPEG image. // BI_PNG Windows 98/Me, Windows
-     * 2000/XP: Indicates that the // image is a PNG image. // For uncompressed
-     * formats, the following values are possible: // Value Description //
-     * BI_RGB Uncompressed RGB. // BI_BITFIELDS Specifies that the bitmap is not
-     * compressed and that // the color table consists of three DWORD color
-     * masks // that specify the red, green, and blue components, //
-     * respectively, of each pixel. This is valid when used // with 16- and
-     * 32-bpp bitmaps. DWORD imageSizeInBytes; // Specifies the size, in bytes,
-     * of the image. This can be set to 0 for // uncompressed RGB bitmaps. LONG
-     * xPelsPerMeter; // Specifies the horizontal resolution, in pixels per
-     * meter, of the // target device for the bitmap. LONG yPelsPerMeter; //
-     * Specifies the vertical resolution, in pixels per meter, of the target //
-     * device for the bitmap. DWORD numberOfColorsUsed; // Specifies the number
-     * of color indices in the color table that are // actually used by the
-     * bitmap DWORD numberOfColorsImportant; // Specifies the number of color
-     * indices that are considered important // for displaying the bitmap. If
-     * this value is zero, all colors are // important. RGBQUAD colors[]; // If
-     * the bitmap is 8-bpp or less, the bitmap uses a color table, which //
-     * immediately follows the BITMAPINFOHEADER. The color table consists of //
-     * an array of RGBQUAD values. The size of the array is given by the //
-     * "clrUsed" member. If "clrUsed" is zero, the array contains the // maximum
-     * number of colors for the given bitdepth; that is, // 2^"bitCount" colors.
+     * typedef struct { 
+     *      DWORD structSize;
+     *                      // Specifies the number of bytes required by the structure. 
+     *      LONG width; 
+     *                      // Specifies the width of the bitmap. 
+     *                      // - For RGB formats, the width is specified in pixels. 
+     *                      // - The same is true for YUV formats if the bitdepth is an even power 
+     *                      // of 2.
+     *                      // - For YUV formats where the bitdepth is not an even power of 2, 
+     *                      // however, the width is specified in bytes. 
+     *                      // Decoders and video sources should propose formats where "width" is 
+     *                      // the width of the image. If the video renderer is using DirectDraw, it 
+     *                      // modifies the format so that "width" equals the stride of the surface, 
+     *                      // and the "target" member of the VIDEOINFOHEADER or VIDEOINFOHEADER2 
+     *                      // structure specifies the image width. Then it proposes the modified 
+     *                      // format using IPin::QueryAccept.
+     *                      // For RGB and even-power-of-2 YUV formats, if the video renderer does 
+     *                      // not specify the stride, then round the width up to the nearst DWORD
+     *                      // boundary to find the stride. 
+     *      LONG height; 
+     *                      // Specifies the height of the bitmap, in pixels. 
+     *                      // - For uncompressed RGB bitmaps, if "height" is positive, the bitmap 
+     *                      // is a bottom-up DIB with the origin at the lower left corner. If 
+     *                      // "height" is negative, the bitmap is a top-down DIB with the origin 
+     *                      // at the upper left corner. 
+     *                      // - For YUV bitmaps, the bitmap is always top-down, regardless of the 
+     *                      // sign of "height". Decoders should offer YUV formats with positive 
+     *                      // "height", but for backward compatibility they should accept YUV 
+     *                      // formats with either positive or negative "height". 
+     *                      // - For compressed formats, height must be positive, regardless of 
+     *                      // image orientation.
+     *      WORD planes; 
+     *                      // Specifies the number of planes for the target device. This value must
+     *                      // be set to 1. 
+     *      WORD bitCount; 
+     *                      // Specifies the number of bits per pixel.
+     *      FOURCC enum bitmapCompression compression; 
+     *                      // If the bitmap is compressed, this member is a FOURCC that specifies 
+     *                      // the compression. 
+     *                      // Value     Description 
+     *                      // BI_RLE8  A run-length encoded (RLE) format for bitmaps with 8 
+     *                      //              bpp. The compression format is a 2-byte format 
+     *                      //              consisting of a count byte followed by a byte containing a color index.
+     *                      //              For more information, see Bitmap Compression. 
+     *                      // BI_RLE4  An RLE format for bitmaps with 4 bpp. The compression
+     *                      //              format is a 2-byte format consisting of a count byte 
+     *                      //              followed by two word-length color indexes. For more 
+     *                      //              information, see Bitmap Compression. 
+     *                      // BI_JPEG  Windows 98/Me, Windows 2000/XP: Indicates that the 
+     *                      //              image is a JPEG image. 
+     *                      // BI_PNG  Windows 98/Me, Windows 2000/XP: Indicates that the 
+     *                      //              image is a PNG image. 
+     *                      // For uncompressed formats, the following values are possible: 
+     *                      // Value     Description
+     *                      // BI_RGB  Uncompressed RGB. 
+     *                      // BI_BITFIELDS Specifies that the bitmap is not compressed and that 
+     *                      //              the color table consists of three DWORD color masks 
+     *                      //              that specify the red, green, and blue components,
+     *                      //              respectively, of each pixel. This is valid when used 
+     *                      //              with 16- and 32-bpp bitmaps. 
+     *      DWORD imageSizeInBytes; 
+     *                      // Specifies the size, in bytes, of the image. This can be set to 0 for 
+     *                      // uncompressed RGB bitmaps. 
+     *      LONG xPelsPerMeter; 
+     *                      // Specifies the horizontal resolution, in pixels per meter, of the 
+     *                      // target device for the bitmap. 
+     *      LONG yPelsPerMeter; 
+     *                      // Specifies the vertical resolution, in pixels per meter, of the target 
+     *                      // device for the bitmap. 
+     *      DWORD numberOfColorsUsed; 
+     *                      // Specifies the number of color indices in the color table that are 
+     *                      // actually used by the bitmap 
+     *      DWORD numberOfColorsImportant; 
+     *                      // Specifies the number of color indices that are considered important 
+     *                      // for displaying the bitmap. If this value is zero, all colors are 
+     *                      // important. 
+     *      RGBQUAD colors[]; 
+     *                      // If the bitmap is 8-bpp or less, the bitmap uses a color table, which 
+     *                      // immediately follows the BITMAPINFOHEADER. The color table consists of 
+     *                      // an array of RGBQUAD values. The size of the array is given by the 
+     *                      // "clrUsed" member. If "clrUsed" is zero, the array contains the 
+     *                      // maximum number of colors for the given bitdepth; that is,
+     *                      // 2^"bitCount" colors.
      * } BITMAPINFOHEADER;
      * </pre>
      */
@@ -859,17 +900,17 @@ public abstract class AbstractAVIStream {
      *         WAVE_FORMAT_FM_TOWNS_SND = 0x0300,
      *         //  Brooktree Corporation
      *         WAVE_FORMAT_BTV_DIGITAL = 0x0400,
-     *         //  Ing C. Olivetti & C., S.p.A.
+     *         //  Ing C. Olivetti + C., S.p.A.
      *         WAVE_FORMAT_OLIGSM = 0x1000,
-     *         //  Ing C. Olivetti & C., S.p.A.
+     *         //  Ing C. Olivetti + C., S.p.A.
      *         WAVE_FORMAT_OLIADPCM = 0x1001,
-     *         //  Ing C. Olivetti & C., S.p.A.
+     *         //  Ing C. Olivetti + C., S.p.A.
      *         WAVE_FORMAT_OLICELP = 0x1002,
-     *         //  Ing C. Olivetti & C., S.p.A.
+     *         //  Ing C. Olivetti + C., S.p.A.
      *         WAVE_FORMAT_OLISBC = 0x1003,
-     *         //  Ing C. Olivetti & C., S.p.A.
+     *         //  Ing C. Olivetti + C., S.p.A.
      *         WAVE_FORMAT_OLIOPR = 0x1004,
-     *         //  Lernout & Hauspie
+     *         //  Lernout + Hauspie
      *         WAVE_FORMAT_LH_CODEC = 0x1100,
      *         //  Norris Communications, Inc.
      *         WAVE_FORMAT_NORRIS = 0x1400,

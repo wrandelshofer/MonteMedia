@@ -6,7 +6,7 @@
 package org.monte.media.quicktime;
 
 /**
- * {@code QuickTimeSerializer} takes a {@link QuickTimeMovie} and flattens
+ * {@code QuickTimeSerializer} takes a {@code QuickTimeMovie} and flattens
  * it into an {@code ImageOutputStream}.
  *
  * This is in internal class of QuickTimeOutputStream.

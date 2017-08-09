@@ -33,7 +33,7 @@ import java.util.*;
  * <p>
  *   Pennebaker, W., Mitchell, J. (1993).<br>
  *   JPEG Still Image Data Compression Standard.<br>
- *   Chapmann & Hall, New York.<br>
+ *   Chapmann &amp; Hall, New York.<br>
  *   ISBN 0-442-01272-1<br>
  *
  *

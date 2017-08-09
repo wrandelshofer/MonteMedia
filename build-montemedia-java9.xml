@@ -10,10 +10,23 @@
         <property name="version" value="${git.revision}"/>
         <property name="srcdirs" value="src/demo:src/main"/>
         <property name="classdir" value="build/classes9"/>
+        <property name="docdir" value="build/javadoc9"/>
         <property name="libdir" value="lib"/>
     </target>
     <target name="clean" depends="init">
         <delete dir="${classdir}"/>
+        <delete dir="${docdir}"/>
+    </target>
+    <target name="javadoc" depends="init">
+        <mkdir dir="${docdir}" />
+        <exec executable="javadoc">
+            <arg value="-d"/>
+            <arg value="${docdir}"/>
+            <arg value="--module-source-path"/>
+            <arg value="${srcdirs}"/>
+            <arg value="--module"/>
+            <arg value="org.monte.media"/>
+        </exec>
     </target>
     <target name="compile" depends="init">
         <mkdir dir="${classdir}" />

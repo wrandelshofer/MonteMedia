@@ -24,46 +24,47 @@ import java.awt.image.Raster;
  * The bit-planes can be stored contiguously or can be interleaved at each
  * scanline of the image.
  * <p>
- * <p>
  * Fig 1. A sample image:
- * <p><pre>
+ * <pre>
  * .+++..@...@.+..###...+++.     This sample uses 4 colors:
  * +...+.@@.@@.+.#.....+...+     . = color 0 (all bits clear)
  * +++++:@.@.@.+.#..##.+++++     + = color 1 (bit 0 set, bit 1 clear)
  * +...+.@...@.+.#...#.+...+     @ = color 2 (bit 0 clear, bit 1 set)
  * +...+.@...@.+..####.+...+     # = color 3 (all bits set)
- * </pre><p>
+ * </pre>
+ * <p>
  * Fig 2. Contiguous bit-plane storage layout.
- * <p><pre>
+ * <pre>
  * 01110000 00001001 11000111 0.......     This is the first bit-plane.
  * 10001000 00001010 00001000 1.......     Each number represents a bit
  * 11111000 00001010 01101111 1.......     in the storage layout. Eight
  * 10001000 00001010 00101000 1.......     bits are grouped into one byte.
  * 10001000 00001001 11101000 1.......     Dots indicate unused bits.
- * <p>
+ *
  * 00000010 00100001 11000000 0.......     This is the second bit-plane.
  * 00000011 01100010 00000000 0.......
  * 00000010 10100010 01100000 0.......
  * 00000010 00100010 00100000 0.......
  * 00000010 00100001 11100000 0.......
- * <p></pre>
+ * </pre>
+ * <p>
  * Fig 3. Interleaved bit-plane storage layout.
- * <p><pre>
+ * <pre>
  * 01110000 00001001 11000111 0.......     This is the first bit-plane.
  * 00000010 00100001 11000000 0.......     This is the second bit-plane.
- * <p>
+ * 
  * 10001000 00001010 00001000 1.......     The bit-planes are interleaved
  * 00000011 01100010 00000000 0.......     at every scanline of the image.
- * <p>
+ * 
  * 11111000 00001010 01101111 1.......
  * 00000010 10100010 01100000 0.......
- * <p>
+ * 
  * 10001000 00001010 00101000 1.......
  * 00000010 00100010 00100000 0.......
- * <p>
+ * 
  * 10001000 00001001 11101000 1.......
  * 00000010 00100001 11100000 0.......
- * <p></pre>
+ * </pre>
  * For more details refer to "Amiga ROM Kernel Reference Manual: Libraries,
  * Addison Wesley"
  * <p>
@@ -75,19 +76,6 @@ import java.awt.image.Raster;
  * Supports indexed color model, direct color model, 6 and 8 bit HAM color model.
  *
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version 1.5 2011-01-05 Adds support for RGB555.
- * <br>1.4 2011-01-03 Adds method setIntPixels().
- * <br>1.3 2010-10-25 Removed suffixes in instance variable names.
- * <br>1.2.1 2005-07-16 Setting a preferredColorModel is now better
- * honoured.
- * <br>1.2 2004-05-26 Improved performance of planar to chunky conversion
- * routines.
- * <br>1.1.1 2004-05-18 Fixed a bug, which caused an image to be all
- * transparent, when it was of bitmap type indexed color, and when the desired
- * bitmap type was true color, and the bitmap had a transparent color.
- * <br>1.1 2003-04-01 BitmapImage can now convert bitmaps with IndexColorModel's
- * into chunky pixels with DirectColorModel.
- * <br>1.0  1999-10-19
  */
 public class BitmapImage
         implements Cloneable {
