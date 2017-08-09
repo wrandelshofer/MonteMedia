@@ -3,10 +3,6 @@
  * You may only use this software in accordance with the license terms.
  */
 
-module org.monte.demo.quicktimedemo {
-    requires java.desktop;
-    
-    requires org.monte.media;
-    
-    exports org.monte.quicktimedemo;
+module org.monte.demo.jmfavidemo {
+    exports org.monte.jmfavidemo;
 }

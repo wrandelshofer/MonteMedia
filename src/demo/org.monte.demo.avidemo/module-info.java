@@ -6,7 +6,7 @@
 module org.monte.demo.avidemo {
     requires java.desktop;
     
-    requires org.monte.media.avi;
+    requires org.monte.media;
     
     exports org.monte.avidemo;
 }

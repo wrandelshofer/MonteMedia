@@ -6,7 +6,7 @@
 module org.monte.demo.animmerger {
     requires java.desktop;
     
-    requires org.monte.media.amiga;
+    requires org.monte.media;
     
     exports org.monte.animmerger;
 }

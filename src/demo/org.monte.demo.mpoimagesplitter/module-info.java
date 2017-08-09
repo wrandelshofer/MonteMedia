@@ -6,8 +6,7 @@
 module org.monte.demo.mpoimagesplitter {
     requires java.desktop;
     
-    requires org.monte.media.img;
-    requires org.monte.media.swing;    
+    requires org.monte.media;    
     
     exports org.monte.mpoimagesplitter;
 }

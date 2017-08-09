@@ -4,6 +4,7 @@
  */
 package org.monte.screenrecorder;
 
+import org.monte.media.screenrecorder.ScreenRecorder;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 

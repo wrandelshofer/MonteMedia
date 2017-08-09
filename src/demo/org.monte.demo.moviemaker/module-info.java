@@ -7,8 +7,7 @@ module org.monte.demo.moviemaker {
     requires java.desktop;
     requires java.prefs;
     
-    requires org.monte.media.quicktime;    
-    requires org.monte.media.swing;    
+    requires org.monte.media;    
     
     exports org.monte.moviemaker;    
 }

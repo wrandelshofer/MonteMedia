@@ -8,8 +8,7 @@ module org.monte.demo.cmykdemo {
     requires javafx.controls;
     requires javafx.graphics;
     
-    requires org.monte.media.img;
-    requires org.monte.media.javafx;
+    requires org.monte.media;
     
     exports org.monte.cmykdemo;
 }

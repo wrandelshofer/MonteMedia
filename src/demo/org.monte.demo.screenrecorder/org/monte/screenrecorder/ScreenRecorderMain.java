@@ -4,6 +4,8 @@
  */
 package org.monte.screenrecorder;
 
+import org.monte.media.screenrecorder.ScreenRecorder;
+import org.monte.media.screenrecorder.JRecordingAreaFrame;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.WindowAdapter;

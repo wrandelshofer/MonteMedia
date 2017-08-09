@@ -6,8 +6,7 @@
 module org.monte.demo.movieconverter {
     requires java.desktop;
     
-    requires org.monte.media.av;
-    requires org.monte.media.swing;
+    requires org.monte.media;
 
     exports org.monte.movieconverter;
 }

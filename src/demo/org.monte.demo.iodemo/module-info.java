@@ -6,8 +6,7 @@
 module org.monte.demo.iodemo {
     requires java.desktop;
     
-    requires org.monte.media.av;
-    requires org.monte.media.img;
+    requires org.monte.media;
     
     exports org.monte.iodemo;
 }

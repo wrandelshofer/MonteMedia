@@ -7,9 +7,7 @@ module org.monte.demo.screenrecorder {
     requires java.desktop;
     requires java.prefs;
     
-    requires org.monte.media.avi;
-    requires org.monte.media.quicktime;
-    requires org.monte.media.swing;
+    requires org.monte.media;
     
     exports org.monte.screenrecorder;
 }

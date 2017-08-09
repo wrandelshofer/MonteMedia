@@ -4,6 +4,6 @@
  */
 
 module org.monte.demo.mathdemo {
-    requires org.monte.media.base;
+    requires org.monte.media;
     exports org.monte.mathdemo;
 }

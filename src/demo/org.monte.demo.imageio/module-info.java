@@ -3,10 +3,10 @@
  * You may only use this software in accordance with the license terms.
  */
 
-module org.monte.demo.quicktimedemo {
+module org.monte.demo.imageio {
     requires java.desktop;
     
     requires org.monte.media;
     
-    exports org.monte.quicktimedemo;
+    exports org.monte.imageiodemo;
 }
