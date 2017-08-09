@@ -86,7 +86,6 @@ module org.monte.media {
     exports org.monte.media.avi;
     exports org.monte.media.avi.codec.audio;
     exports org.monte.media.avi.codec.video;
-    exports org.monte.media.binary;
     exports org.monte.media.bitmap;
     exports org.monte.media.bitmap.codec.video;
     exports org.monte.media.concurrent;
