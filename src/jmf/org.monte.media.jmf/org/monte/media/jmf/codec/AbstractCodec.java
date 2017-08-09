@@ -1,6 +1,5 @@
 /* @(#)AbstractCodec.java  1.0  2011-04-05
- * Copyright © 2017 Werner Randelshofer, Switzerland. Under the MIT License.
- */
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License. */
 package org.monte.media.jmf.codec;
 
 import javax.media.Buffer;

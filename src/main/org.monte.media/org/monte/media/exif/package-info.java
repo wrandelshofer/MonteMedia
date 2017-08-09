@@ -1,6 +1,5 @@
 /* @(#)package-info.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. Under the MIT License.
- */
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License. */
 /**
  * Provides classes for processing EXIF meta-data.
  * 

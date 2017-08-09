@@ -1,6 +1,5 @@
 /* @(#)ZMBVDecoder.java  1.0  2011-08-27
- * Copyright © 2017 Werner Randelshofer, Switzerland. Under the MIT License.
- */
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License. */
 package org.monte.media.jmf.codec.video;
 
 import org.monte.media.avi.codec.video.ZMBVCodecCore;
