@@ -2,7 +2,7 @@
  * Copyright © 2017 Werner Randelshofer, Switzerland. Under the MIT License.
  */
 /**
- * Provides media handlers for the TIFF file format.
+ * Provides classes for reading TIFF files.
  * 
  *
  * @author Werner Randelshofer

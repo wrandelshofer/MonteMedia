@@ -3,13 +3,12 @@
  */
 package org.monte.media.interpolator;
 
-import java.awt.geom.Point2D.Float;
-import java.util.Comparator;
-import java.util.ArrayList;
 import java.awt.geom.Point2D;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 import java.util.Arrays;
+import java.util.Comparator;
 import org.monte.media.av.Interpolator;
-import static java.lang.Math.*;
 
 /**
  * {@code AbstractSplineInterpolator}.
@@ -19,46 +18,9 @@ import static java.lang.Math.*;
  */
 public abstract class AbstractSplineInterpolator extends Interpolator {
 
+    private static FractionComparator fractionComparator = new FractionComparator();
     /** Note: (x0,y0) and (x1,y1) are implicitly (0, 0) and (1,1) respectively. */
     private LengthItem[] fractions;
-
-    private static class LengthItem {
-
-        public float x, y, t;
-
-        public LengthItem(float x, float y, float t) {
-            this.x = x;
-            this.y = y;
-            this.t = t;
-        }
-
-        public LengthItem(Point2D.Float p, float t) {
-            this.x = p.x;
-            this.y = p.y;
-            this.t = t;
-        }
-
-        @Override
-        public String toString() {
-            return "LengthItem{" + "x=" + x + ", y=" + y + ", t=" + t + '}';
-        }
-        
-        
-    }
-
-    private static class FractionComparator implements Comparator<LengthItem> {
-
-        @Override
-        public int compare(LengthItem o1, LengthItem o2) {
-            if (o1.x > o2.x) {
-                return 1;
-            } else if (o1.x < o2.x) {
-                return -1;
-            }
-            return 0;
-        }
-    }
-    private static FractionComparator fractionComparator = new FractionComparator();
 
  public AbstractSplineInterpolator() {
         this(0f, 1f);
@@ -102,18 +64,6 @@ public abstract class AbstractSplineInterpolator extends Interpolator {
         super(startValue,endValue,timespan);
     }    
 
-    /** This method must be called by the subclass in the constructor.
-     * 
-     * @param N 
-     */
-    protected void updateFractions(int N) {
-        fractions = new LengthItem[N];
-        Point2D.Float p = new Point2D.Float();
-        for (int i = 0; i < N; i++) {
-            float t = (float) i / (N - 1);
-            fractions[i] = new LengthItem(getXY(t, p), t);
-        }
-    }
 
     /**
      * Evaluates the spline function at time t, and clamps the result value between 0
@@ -158,5 +108,52 @@ public abstract class AbstractSplineInterpolator extends Interpolator {
      * Subclasses don't have to call super.update(fraction). */
     @Override
     protected void update(float fraction) {
+    }
+    /** This method must be called by the subclass in the constructor.
+     *
+     * @param N
+     */
+    protected void updateFractions(int N) {
+        fractions = new LengthItem[N];
+        Point2D.Float p = new Point2D.Float();
+        for (int i = 0; i < N; i++) {
+            float t = (float) i / (N - 1);
+            fractions[i] = new LengthItem(getXY(t, p), t);
+        }
+    }
+    private static class FractionComparator implements Comparator<LengthItem> {
+        
+        @Override
+        public int compare(LengthItem o1, LengthItem o2) {
+            if (o1.x > o2.x) {
+                return 1;
+            } else if (o1.x < o2.x) {
+                return -1;
+            }
+            return 0;
+        }
+    }
+    private static class LengthItem {
+        
+        public float x, y, t;
+        
+        public LengthItem(float x, float y, float t) {
+            this.x = x;
+            this.y = y;
+            this.t = t;
+        }
+        
+        public LengthItem(Point2D.Float p, float t) {
+            this.x = p.x;
+            this.y = p.y;
+            this.t = t;
+        }
+        
+        @Override
+        public String toString() {
+            return "LengthItem{" + "x=" + x + ", y=" + y + ", t=" + t + '}';
+        }
+        
+        
     }
 }

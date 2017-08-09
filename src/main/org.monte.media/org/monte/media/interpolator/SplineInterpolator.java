@@ -3,12 +3,7 @@
  */
 package org.monte.media.interpolator;
 
-import java.awt.geom.Point2D.Float;
-import java.util.Comparator;
-import java.util.ArrayList;
 import java.awt.geom.Point2D;
-import java.util.Arrays;
-import static java.lang.Math.*;
 
 /**
  * A spline interpolator for use in conjunction with an Animator object.

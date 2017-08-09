@@ -3,7 +3,7 @@
  */
 
 /**
- * Provides classes for representing an Amiga bitmap image.
+ * Provides classes for representing Amiga bitmap images.
  * <p>
  * Reference:<br>
  * Commodore-Amiga, Inc. (1991) Amiga ROM Kernel Reference Manual. Devices.

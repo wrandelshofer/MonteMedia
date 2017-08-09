@@ -4,7 +4,6 @@
 package org.monte.media.interpolator;
 
 import java.awt.geom.Point2D;
-import java.util.Arrays;
 
 /**
  * A bezier interpolator for use in conjunction with an Animator object.

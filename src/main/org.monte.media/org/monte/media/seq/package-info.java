@@ -2,7 +2,7 @@
  * Copyright © 2017 Werner Randelshofer, Switzerland. Under the MIT License.
  */
 /**
- * Provides media handlers for the SEQ file format.
+ * Provides classes for playing SEQ files.
  * <p>
  * Atari "Cyber Paint Sequence" animations (SEQ).
  * 

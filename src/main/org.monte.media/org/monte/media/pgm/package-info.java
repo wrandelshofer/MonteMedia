@@ -2,7 +2,7 @@
  * Copyright © 2017 Werner Randelshofer, Switzerland. Under the MIT License.
  */
 /**
- * Provides media handlers for the PGM file format.
+ * Provides classes for reading PGM images.
  * <p>
  * Netpbm grayscale image format.
  * 

@@ -2,7 +2,7 @@
  * Copyright © 2017 Werner Randelshofer, Switzerland. Under the MIT License.
  */
 /**
- * Provides media handlers for the QuickTime file format.
+ * Provides classes for processing QuickTime files.
  *
  * <h2>Overview of the QuickTime movie file format</h2>
  * <p>
