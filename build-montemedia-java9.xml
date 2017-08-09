@@ -10,6 +10,7 @@
             <arg value="--date=format:%Y%m%d.%H%M%S"/>
         </exec>
         <property name="name" value="${ant.project.name}"/>
+        <property name="license" value="The MIT License. https://opensource.org/licenses/mit-license.php"/>
         <property name="version" value="${git.revision}"/>
         <property name="author" value="Werner Randelshofer"/>
         <echo message="${name} ${version}"/>
