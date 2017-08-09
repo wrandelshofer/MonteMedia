@@ -6,7 +6,7 @@
  * For details see accompanying license terms.
  */
 /**
- * Provides media handlers for the PNG file format.
+ * Provides base classes for video codecs, and common video codecs.
  * 
  * @author Werner Randelshofer
  * @version $Id: package-info.java 364 2016-11-09 19:54:25Z werner $
