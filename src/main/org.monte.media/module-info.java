@@ -86,8 +86,8 @@ module org.monte.media {
     exports org.monte.media.avi;
     exports org.monte.media.avi.codec.audio;
     exports org.monte.media.avi.codec.video;
-    exports org.monte.media.bitmap;
-    exports org.monte.media.bitmap.codec.video;
+    exports org.monte.media.amigabitmap;
+    exports org.monte.media.amigabitmap.codec.video;
     exports org.monte.media.concurrent;
     exports org.monte.media.color;
     exports org.monte.media.eightsvx;
@@ -131,7 +131,7 @@ module org.monte.media {
     uses org.monte.media.av.MovieReaderSpi;
 
     provides org.monte.media.av.CodecSpi with
-            org.monte.media.bitmap.codec.video.BitmapCodecSpi,
+            org.monte.media.amigabitmap.codec.video.AmigaBitmapCodecSpi,
             org.monte.media.av.codec.video.JPEGCodecSpi,
             org.monte.media.av.codec.video.PNGCodecSpi,
             org.monte.media.av.codec.video.TechSmithCodecSpi,

@@ -1,8 +1,8 @@
-/* @(#)BitmapCodec.java
+/* @(#)AmigaBitmapCodec.java
  * Copyright © 2011 Werner Randelshofer, Switzerland. 
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.bitmap.codec.video;
+package org.monte.media.amigabitmap.codec.video;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
@@ -41,8 +41,8 @@ import org.monte.media.pbm.PBMDecoder;
  * @author Werner Randelshofer
  * @version 1.0 2011-02-20 Created.
  */
-public class BitmapCodec extends AbstractVideoCodec {
-  public BitmapCodec() {
+public class AmigaBitmapCodec extends AbstractVideoCodec {
+  public AmigaBitmapCodec() {
         super(new Format[]{
                     new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
                     EncodingKey, ENCODING_BUFFERED_IMAGE), //

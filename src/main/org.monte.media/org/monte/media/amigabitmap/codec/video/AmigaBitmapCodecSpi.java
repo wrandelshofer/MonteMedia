@@ -1,23 +1,23 @@
-/* @(#)BitmapCodecSpi
+/* @(#)AmigaBitmapCodecSpi
  * Copyright (c) 2017 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
 
-package org.monte.media.bitmap.codec.video;
+package org.monte.media.amigabitmap.codec.video;
 
 import org.monte.media.av.CodecSpi;
 
 /**
- * BitmapCodecSpi.
+ * AmigaBitmapCodecSpi.
  *
  * @author Werner Randelshofer
  * @version $$Id$$
  */
-public class BitmapCodecSpi implements CodecSpi {
+public class AmigaBitmapCodecSpi implements CodecSpi {
 
     @Override
-    public BitmapCodec create() {
-       return new BitmapCodec();
+    public AmigaBitmapCodec create() {
+       return new AmigaBitmapCodec();
     }
 
 }
