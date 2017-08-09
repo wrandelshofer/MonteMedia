@@ -3,8 +3,8 @@
  */
 package org.monte.media.eightsvx;
 
-import java.io.*;
-import javax.sound.sampled.Clip;
+import java.io.IOException;
+import java.io.OutputStream;
 
 
 /**

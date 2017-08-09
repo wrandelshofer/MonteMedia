@@ -3,7 +3,6 @@
  */
 package org.monte.media.seq;
 
-import org.monte.media.anim.*;
 import org.monte.media.av.AbstractMovie;
 import org.monte.media.av.Format;
 import org.monte.media.av.MovieReader;

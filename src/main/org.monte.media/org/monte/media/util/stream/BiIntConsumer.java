@@ -8,7 +8,7 @@ package org.monte.media.util.stream;
  * BiIntConsumer.
  *
  * @author Werner Randelshofer
- * @version $$Id: BiIntConsumer.java 364 2016-11-09 19:54:25Z werner $$
+ * @version $Id$
  */
 @FunctionalInterface
 public interface BiIntConsumer {

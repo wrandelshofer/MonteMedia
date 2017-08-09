@@ -4,9 +4,11 @@
 
 package org.monte.media.player;
 
+import java.util.ArrayList;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.EventListenerList;
 import org.monte.media.av.Interpolator;
-import java.util.*;
-import javax.swing.event.*;
 /**
  * DefaultAnimator.
  *

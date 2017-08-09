@@ -3,10 +3,9 @@
  */
 package org.monte.media.jmf.codec.video;
 
-import java.util.Arrays;
-import org.monte.media.jmf.codec.AbstractCodec;
 import javax.media.Format;
 import javax.media.format.VideoFormat;
+import org.monte.media.jmf.codec.AbstractCodec;
 
 /**
  * {@code AbstractVideoDecoder}.

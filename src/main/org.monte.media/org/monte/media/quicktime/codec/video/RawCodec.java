@@ -3,17 +3,29 @@
  */
 package org.monte.media.quicktime.codec.video;
 
-import org.monte.media.av.codec.video.AbstractVideoCodec;
-import org.monte.media.av.Buffer;
-import org.monte.media.av.Format;
-import org.monte.media.io.SeekableByteArrayOutputStream;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.io.OutputStream;
-import static org.monte.media.av.codec.video.VideoFormatKeys.*;
-import static org.monte.media.av.BufferFlag.*;
+import org.monte.media.av.Buffer;
+import static org.monte.media.av.BufferFlag.DISCARD;
+import static org.monte.media.av.BufferFlag.KEYFRAME;
+import org.monte.media.av.Format;
+import static org.monte.media.av.FormatKeys.EncodingKey;
+import static org.monte.media.av.FormatKeys.MIME_JAVA;
+import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
+import org.monte.media.av.FormatKeys.MediaType;
+import static org.monte.media.av.FormatKeys.MediaTypeKey;
+import static org.monte.media.av.FormatKeys.MimeTypeKey;
+import org.monte.media.av.codec.video.AbstractVideoCodec;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_RAW;
+import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
+import org.monte.media.io.SeekableByteArrayOutputStream;
 
 /**
  * {@code RawCodec} encodes a BufferedImage as a byte[] array.

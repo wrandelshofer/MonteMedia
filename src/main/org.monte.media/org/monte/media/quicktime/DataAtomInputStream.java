@@ -3,7 +3,6 @@
  */
 package org.monte.media.quicktime;
 
-import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.FilterInputStream;
 import java.io.IOException;

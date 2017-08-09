@@ -4,13 +4,10 @@
 
 package org.monte.media.quicktime;
 
-import org.monte.media.av.Buffer;
-import org.monte.media.av.Multiplexer;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import javax.imageio.stream.ImageOutputStream;
+import org.monte.media.av.Multiplexer;
 
 /**
  * {@code QuickTimeMultiplexer}.

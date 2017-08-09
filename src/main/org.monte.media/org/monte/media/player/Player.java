@@ -6,7 +6,7 @@ package org.monte.media.player;
 import java.awt.Component;
 import java.beans.PropertyChangeListener;
 import javax.swing.BoundedRangeModel;
-import javax.swing.event.*;
+import javax.swing.event.ChangeListener;
 
 /**
  * {@code Player} is a media handler for rendering and controlling time based

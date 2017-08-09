@@ -1,4 +1,4 @@
-/* @(#)AVIWriterSpi
+/* @(#)AVIWriterSpi.java
  * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License.
  */
 package org.monte.media.avi;

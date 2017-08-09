@@ -3,10 +3,13 @@
  */
 package org.monte.media.exif;
 
-import org.monte.media.tiff.TagSet;
 import org.monte.media.tiff.EnumValueFormatter;
-import org.monte.media.tiff.*;
-import static org.monte.media.tiff.TIFFTag.*;
+import org.monte.media.tiff.TIFFTag;
+import static org.monte.media.tiff.TIFFTag.LONG_MASK;
+import static org.monte.media.tiff.TIFFTag.SHORT_MASK;
+import static org.monte.media.tiff.TIFFTag.SRATIONAL_MASK;
+import static org.monte.media.tiff.TIFFTag.UNDEFINED_MASK;
+import org.monte.media.tiff.TagSet;
 
 /**
  * Enumeration of Sony MakerNote tags.

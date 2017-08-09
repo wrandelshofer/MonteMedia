@@ -3,7 +3,8 @@
  */
 package org.monte.media.io;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.LinkedList;
 
 /**

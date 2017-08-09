@@ -1,5 +1,5 @@
-/**
- *
+/* @(#)ReadAVIDemo.java
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License.
  */
 package org.monte.demo.io;
 
@@ -12,7 +12,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
-import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;

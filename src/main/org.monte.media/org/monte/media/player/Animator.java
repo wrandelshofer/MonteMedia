@@ -4,9 +4,8 @@
 
 package org.monte.media.player;
 
+import javax.swing.event.ChangeListener;
 import org.monte.media.av.Interpolator;
-import java.util.*;
-import javax.swing.event.*;
 /**
  * Animator executes multiple Interpolator's on a worker thread.
  *

@@ -3,21 +3,35 @@
  */
 package org.monte.media.quicktime.codec.video;
 
-import java.io.EOFException;
-import javax.imageio.stream.ImageInputStream;
-import org.monte.media.av.codec.video.AbstractVideoCodec;
-import org.monte.media.av.Buffer;
-import org.monte.media.av.Format;
-import org.monte.media.io.ByteArrayImageOutputStream;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+import java.io.EOFException;
 import java.io.IOException;
+import static java.lang.Math.min;
 import java.nio.ByteOrder;
+import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
-import static java.lang.Math.*;
-import static org.monte.media.av.codec.video.VideoFormatKeys.*;
-import static org.monte.media.av.BufferFlag.*;
+import org.monte.media.av.Buffer;
+import static org.monte.media.av.BufferFlag.DISCARD;
+import static org.monte.media.av.BufferFlag.KEYFRAME;
+import org.monte.media.av.Format;
+import static org.monte.media.av.FormatKeys.EncodingKey;
+import static org.monte.media.av.FormatKeys.FrameRateKey;
+import static org.monte.media.av.FormatKeys.KeyFrameIntervalKey;
+import static org.monte.media.av.FormatKeys.MIME_JAVA;
+import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
+import org.monte.media.av.FormatKeys.MediaType;
+import static org.monte.media.av.FormatKeys.MediaTypeKey;
+import static org.monte.media.av.FormatKeys.MimeTypeKey;
+import org.monte.media.av.codec.video.AbstractVideoCodec;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_ANIMATION;
+import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
+import org.monte.media.io.ByteArrayImageOutputStream;
 
 /**
  * Implements the Apple Animation codec.

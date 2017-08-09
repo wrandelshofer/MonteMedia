@@ -4,9 +4,17 @@
 
 package org.monte.media.eightsvx;
 
-import javax.sound.sampled.*;
-import java.util.*;
-import java.io.*;
+import java.io.IOException;
+import java.util.LinkedList;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.Line;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.Mixer;
+import javax.sound.sampled.SourceDataLine;
 /**
  * JDK13AppletAudioClip.
  * Supports playback of JDK13_SAMPLE_RATE Hz linear 8 encoded PCM data.

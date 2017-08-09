@@ -7,8 +7,8 @@ package org.monte.media.io;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import static java.lang.Math.max;
 import java.util.Arrays;
-import static java.lang.Math.*;
 /**
  * {@code SeekableByteArrayOutputStream}.
  *

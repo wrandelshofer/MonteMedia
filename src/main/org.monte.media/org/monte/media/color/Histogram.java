@@ -3,7 +3,6 @@
  */
 package org.monte.media.color;
 
-import java.awt.image.DataBuffer;
 import java.awt.image.WritableRaster;
 
 /**

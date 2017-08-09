@@ -3,17 +3,23 @@
  */
 package org.monte.media.ilbm;
 
-import org.monte.media.amigabitmap.AmigaHAMColorModel;
+import java.awt.image.ColorModel;
+import java.awt.image.DirectColorModel;
+import java.awt.image.IndexColorModel;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Hashtable;
 import org.monte.media.amigabitmap.AmigaBitmapImage;
+import org.monte.media.amigabitmap.AmigaHAMColorModel;
 import org.monte.media.exception.AbortException;
 import org.monte.media.exception.ParseException;
-import org.monte.media.iff.*;
-
-
-import java.io.*;
-import java.util.*;
-import java.awt.image.*;
-import java.net.URL;
+import org.monte.media.iff.IFFChunk;
+import org.monte.media.iff.IFFParser;
+import org.monte.media.iff.IFFVisitor;
+import org.monte.media.iff.MC68000InputStream;
 
 /**
  * Creates Image objects by reading an IFF ILBM stream.

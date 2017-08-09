@@ -3,15 +3,19 @@
  */
 package org.monte.media.av.codec.video;
 
-import org.monte.media.av.codec.video.AbstractVideoCodec;
-import org.monte.media.av.Buffer;
-import org.monte.media.av.Format;
-import java.util.ArrayList;
-import org.monte.media.math.Rational;
 import java.awt.image.BufferedImage;
-import static java.lang.Math.*;
-import static org.monte.media.av.codec.video.VideoFormatKeys.*;
-import static org.monte.media.av.BufferFlag.*;
+import java.util.ArrayList;
+import org.monte.media.av.Buffer;
+import static org.monte.media.av.BufferFlag.DISCARD;
+import org.monte.media.av.Format;
+import static org.monte.media.av.FormatKeys.EncodingKey;
+import static org.monte.media.av.FormatKeys.FrameRateKey;
+import org.monte.media.av.FormatKeys.MediaType;
+import static org.monte.media.av.FormatKeys.MediaTypeKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
+import static org.monte.media.av.codec.video.VideoFormatKeys.FixedFrameRateKey;
+import org.monte.media.math.Rational;
 
 /**
  * This codec converts frames from one frame rate into another.

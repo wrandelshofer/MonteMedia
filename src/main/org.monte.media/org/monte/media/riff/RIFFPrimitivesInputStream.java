@@ -3,7 +3,10 @@
  */
 package org.monte.media.riff;
 
-import java.io.*;
+import java.io.EOFException;
+import java.io.FilterInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * A RIFF primitives input stream lets an application read primitive data

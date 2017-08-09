@@ -4,7 +4,6 @@
 package org.monte.media.io;
 
 import java.io.ByteArrayInputStream;
-import java.util.zip.Adler32;
 
 /**
  * A {@code ByteArrayInputStream} which allows to replace the byte buffer underneath.

@@ -3,7 +3,7 @@
  */
 
 package org.monte.media.util;
-import java.util.*;
+import java.util.Enumeration;
 
 /**
  * Wraps an Enumeration with the Iterator interface.

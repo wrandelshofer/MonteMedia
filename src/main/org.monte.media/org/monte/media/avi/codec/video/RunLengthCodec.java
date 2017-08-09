@@ -3,20 +3,36 @@
  */
 package org.monte.media.avi.codec.video;
 
-import org.monte.media.av.Format;
-import org.monte.media.io.ByteArrayImageOutputStream;
-import javax.imageio.stream.ImageOutputStream;
-import java.awt.image.WritableRaster;
 import java.awt.Rectangle;
-import org.monte.media.av.codec.video.AbstractVideoCodec;
-import org.monte.media.av.Buffer;
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.io.OutputStream;
+import static java.lang.Math.min;
 import java.nio.ByteOrder;
-import static java.lang.Math.*;
-import static org.monte.media.av.codec.video.VideoFormatKeys.*;
-import static org.monte.media.av.BufferFlag.*;
+import javax.imageio.stream.ImageOutputStream;
+import org.monte.media.av.Buffer;
+import static org.monte.media.av.BufferFlag.DISCARD;
+import static org.monte.media.av.BufferFlag.KEYFRAME;
+import org.monte.media.av.Format;
+import static org.monte.media.av.FormatKeys.EncodingKey;
+import static org.monte.media.av.FormatKeys.FrameRateKey;
+import static org.monte.media.av.FormatKeys.KeyFrameIntervalKey;
+import static org.monte.media.av.FormatKeys.MIME_AVI;
+import static org.monte.media.av.FormatKeys.MIME_JAVA;
+import org.monte.media.av.FormatKeys.MediaType;
+import static org.monte.media.av.FormatKeys.MediaTypeKey;
+import static org.monte.media.av.FormatKeys.MimeTypeKey;
+import org.monte.media.av.codec.video.AbstractVideoCodec;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_RLE4;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_RLE8;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
+import static org.monte.media.av.codec.video.VideoFormatKeys.FixedFrameRateKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
+import org.monte.media.io.ByteArrayImageOutputStream;
 
 /**
  * {@code RunLengthCodec} encodes a BufferedImage as a byte[] array.

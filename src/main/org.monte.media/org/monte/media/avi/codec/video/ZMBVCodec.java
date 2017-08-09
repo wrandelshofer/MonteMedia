@@ -3,20 +3,32 @@
  */
 package org.monte.media.avi.codec.video;
 
-import java.awt.image.DataBufferUShort;
 import java.awt.Point;
-import java.awt.image.DirectColorModel;
-import org.monte.media.av.codec.video.AbstractVideoCodec;
-import org.monte.media.av.Buffer;
-import org.monte.media.av.Format;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferUShort;
+import java.awt.image.DirectColorModel;
 import java.awt.image.IndexColorModel;
 import java.awt.image.Raster;
-import static java.lang.Math.*;
-import static org.monte.media.av.codec.video.VideoFormatKeys.*;
-import static org.monte.media.av.BufferFlag.*;
+import static java.lang.Math.abs;
+import org.monte.media.av.Buffer;
+import static org.monte.media.av.BufferFlag.DISCARD;
+import static org.monte.media.av.BufferFlag.KEYFRAME;
+import org.monte.media.av.Format;
+import static org.monte.media.av.FormatKeys.EncodingKey;
+import static org.monte.media.av.FormatKeys.MIME_JAVA;
+import org.monte.media.av.FormatKeys.MediaType;
+import static org.monte.media.av.FormatKeys.MediaTypeKey;
+import static org.monte.media.av.FormatKeys.MimeTypeKey;
+import org.monte.media.av.codec.video.AbstractVideoCodec;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_DOSBOX_SCREEN_CAPTURE;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
+import static org.monte.media.av.codec.video.VideoFormatKeys.FixedFrameRateKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 import org.monte.media.image.BufferedImageWithColorModel;
 
 

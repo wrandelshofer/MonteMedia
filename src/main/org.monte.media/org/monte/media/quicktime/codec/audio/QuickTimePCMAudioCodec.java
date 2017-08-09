@@ -3,13 +3,27 @@
  */
 package org.monte.media.quicktime.codec.audio;
 
-import org.monte.media.av.codec.audio.AbstractPCMAudioCodec;
-import org.monte.media.av.Format;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.HashSet;
-import static org.monte.media.av.FormatKeys.*;
-import static org.monte.media.av.codec.audio.AudioFormatKeys.*;
+import org.monte.media.av.Format;
+import static org.monte.media.av.FormatKeys.EncodingKey;
+import static org.monte.media.av.FormatKeys.MIME_JAVA;
+import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
+import org.monte.media.av.FormatKeys.MediaType;
+import static org.monte.media.av.FormatKeys.MediaTypeKey;
+import static org.monte.media.av.FormatKeys.MimeTypeKey;
+import org.monte.media.av.codec.audio.AbstractPCMAudioCodec;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ByteOrderKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ENCODING_PCM_SIGNED;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ENCODING_PCM_UNSIGNED;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ENCODING_QUICKTIME_IN24_PCM;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ENCODING_QUICKTIME_IN32_PCM;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ENCODING_QUICKTIME_RAW_PCM;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ENCODING_QUICKTIME_SOWT_PCM;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ENCODING_QUICKTIME_TWOS_PCM;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleSizeInBitsKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
 
 /**
  * {@code AbstractPCMAudioCodec} performs sign conversion, endian conversion and

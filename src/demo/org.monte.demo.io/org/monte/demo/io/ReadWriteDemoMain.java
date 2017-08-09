@@ -1,27 +1,38 @@
-/**
- * @(#)Main.java
- * Copyright © 2012 Werner Randelshofer, Switzerland.
- * You may only use this software in accordance with the license terms.
+/* @(#)ReadWriteDemoMain.java
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License.
  */
 package org.monte.demo.io;
 
-import java.util.ArrayList;
-import org.monte.media.av.MovieReader;
-import org.monte.media.av.MovieWriter;
-import java.util.HashSet;
-import org.monte.media.av.Codec;
-import org.monte.media.av.Buffer;
-import org.monte.media.math.Rational;
-import org.monte.media.av.Format;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
+import org.monte.media.av.Buffer;
 import org.monte.media.av.BufferFlag;
+import org.monte.media.av.Codec;
+import org.monte.media.av.Format;
+import static org.monte.media.av.FormatKeys.EncodingKey;
+import static org.monte.media.av.FormatKeys.FrameRateKey;
+import static org.monte.media.av.FormatKeys.MIME_AVI;
+import org.monte.media.av.FormatKeys.MediaType;
+import static org.monte.media.av.FormatKeys.MediaTypeKey;
+import static org.monte.media.av.FormatKeys.MimeTypeKey;
+import org.monte.media.av.MovieReader;
+import org.monte.media.av.MovieWriter;
 import org.monte.media.av.Registry;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_MJPG;
+import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 import org.monte.media.image.Images;
-import static org.monte.media.av.codec.video.VideoFormatKeys.*;
+import org.monte.media.math.Rational;
 
 /**
  * Demonstrates the use of {@link MovieReader} and {@link MovieWriter}. <p> This

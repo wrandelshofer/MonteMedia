@@ -3,14 +3,19 @@
  */
 package org.monte.media.swing.datatransfer;
 
-import java.awt.datatransfer.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.im.InputContext;
-import java.io.*;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.text.*;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.util.List;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.TransferHandler;
 
 /**
  * The DropFileTransferHandler can be used to add drag and drop

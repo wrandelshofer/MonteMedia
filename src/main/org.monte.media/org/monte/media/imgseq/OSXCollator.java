@@ -4,8 +4,11 @@
 
 package org.monte.media.imgseq;
 
-import java.util.*;
-import java.text.*;
+import java.text.CollationKey;
+import java.text.Collator;
+import java.text.ParseException;
+import java.text.RuleBasedCollator;
+import java.util.Locale;
 
 /**
  * The OSXCollator strives to match the collation rules used by the Mac OS X

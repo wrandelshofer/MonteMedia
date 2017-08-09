@@ -3,8 +3,16 @@
  */
 package org.monte.media.exif;
 
-import org.monte.media.tiff.*;
-import static org.monte.media.tiff.TIFFTag.*;
+import org.monte.media.tiff.ASCIIValueFormatter;
+import org.monte.media.tiff.EnumValueFormatter;
+import org.monte.media.tiff.TIFFTag;
+import static org.monte.media.tiff.TIFFTag.ASCII_MASK;
+import static org.monte.media.tiff.TIFFTag.LONG_MASK;
+import static org.monte.media.tiff.TIFFTag.RATIONAL_MASK;
+import static org.monte.media.tiff.TIFFTag.SHORT_MASK;
+import static org.monte.media.tiff.TIFFTag.SRATIONAL_MASK;
+import static org.monte.media.tiff.TIFFTag.UNDEFINED_MASK;
+import org.monte.media.tiff.TagSet;
 
 /**
  * Enumeration of Fujifilm MakerNote tags.

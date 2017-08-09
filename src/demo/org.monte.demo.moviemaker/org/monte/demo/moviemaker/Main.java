@@ -3,13 +3,6 @@
  */
 package org.monte.demo.moviemaker;
 
-import javax.swing.UIManager;
-import org.monte.media.math.Rational;
-import org.monte.media.av.Buffer;
-import org.monte.media.av.Format;
-import org.monte.media.swing.datatransfer.FileTextFieldTransferHandler;
-import org.monte.media.mp3.MP3AudioInputStream;
-import org.monte.media.quicktime.QuickTimeWriter;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -17,6 +10,7 @@ import java.awt.image.DataBufferInt;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import static java.lang.Math.min;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.LinkedList;
@@ -31,14 +25,18 @@ import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.ProgressMonitor;
-import javax.swing.SwingWorker;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileSystemView;
-import static java.lang.Math.*;
-import static org.monte.media.av.FormatKeys.*;
-import static org.monte.media.av.codec.audio.AudioFormatKeys.*;
-import static org.monte.media.av.codec.video.VideoFormatKeys.*;
+import org.monte.media.av.Buffer;
+import org.monte.media.av.Format;
+import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
+import org.monte.media.math.Rational;
+import org.monte.media.mp3.MP3AudioInputStream;
+import org.monte.media.quicktime.QuickTimeWriter;
 import org.monte.media.swing.BackgroundTask;
+import org.monte.media.swing.datatransfer.FileTextFieldTransferHandler;
 
 /**
  * A demo for the {@link QuickTimeWriter} class.

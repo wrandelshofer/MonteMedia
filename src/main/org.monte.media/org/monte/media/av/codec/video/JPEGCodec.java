@@ -3,21 +3,38 @@
  */
 package org.monte.media.av.codec.video;
 
-import org.monte.media.mjpg.MJPGImageReader;
-import org.monte.media.mjpg.MJPGImageReaderSpi;
-import org.monte.media.io.ByteArrayImageInputStream;
-import javax.imageio.ImageReader;
-import org.monte.media.av.Format;
-import org.monte.media.av.Buffer;
-import org.monte.media.io.ByteArrayImageOutputStream;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
-import static org.monte.media.av.codec.video.VideoFormatKeys.*;
-import static org.monte.media.av.BufferFlag.*;
+import org.monte.media.av.Buffer;
+import static org.monte.media.av.BufferFlag.DISCARD;
+import static org.monte.media.av.BufferFlag.KEYFRAME;
+import org.monte.media.av.Format;
+import static org.monte.media.av.FormatKeys.EncodingKey;
+import static org.monte.media.av.FormatKeys.MIME_AVI;
+import static org.monte.media.av.FormatKeys.MIME_JAVA;
+import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
+import org.monte.media.av.FormatKeys.MediaType;
+import static org.monte.media.av.FormatKeys.MediaTypeKey;
+import static org.monte.media.av.FormatKeys.MimeTypeKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.COMPRESSOR_NAME_QUICKTIME_JPEG;
+import static org.monte.media.av.codec.video.VideoFormatKeys.CompressorNameKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_MJPG;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_JPEG;
+import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.QualityKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
+import org.monte.media.io.ByteArrayImageInputStream;
+import org.monte.media.io.ByteArrayImageOutputStream;
+import org.monte.media.mjpg.MJPGImageReader;
+import org.monte.media.mjpg.MJPGImageReaderSpi;
 
 /**
  * {@code JPEGCodec} encodes a BufferedImage as a byte[] array. 

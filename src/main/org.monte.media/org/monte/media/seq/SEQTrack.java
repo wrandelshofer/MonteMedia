@@ -4,14 +4,19 @@
 
 package org.monte.media.seq;
 
-import org.monte.media.av.Buffer;
-import org.monte.media.av.Track;
-import org.monte.media.av.Format;
 import org.monte.media.amigabitmap.AmigaBitmapImage;
+import org.monte.media.av.Buffer;
+import static org.monte.media.av.BufferFlag.DISCARD;
+import static org.monte.media.av.BufferFlag.KEYFRAME;
+import org.monte.media.av.Format;
+import static org.monte.media.av.FormatKeys.EncodingKey;
+import static org.monte.media.av.FormatKeys.MIME_JAVA;
+import org.monte.media.av.FormatKeys.MediaType;
+import static org.monte.media.av.FormatKeys.MediaTypeKey;
+import static org.monte.media.av.FormatKeys.MimeTypeKey;
+import org.monte.media.av.Track;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
 import org.monte.media.math.Rational;
-import java.io.IOException;
-import static org.monte.media.av.codec.video.VideoFormatKeys.*;
-import static org.monte.media.av.BufferFlag.*;
 
 /**
  * {@code SEQTrack}.

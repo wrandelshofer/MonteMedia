@@ -3,8 +3,9 @@
  */
 package org.monte.media.beans;
 
-import java.beans.*;
-import java.lang.ref.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.lang.ref.WeakReference;
 
 /**
  *  Property change listener that holds weak reference to a

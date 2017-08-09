@@ -1,3 +1,6 @@
+/* @(#)Main.java
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License.
+ */
 package org.monte.demo.rationalnumber;
 
 import org.monte.media.math.Rational;

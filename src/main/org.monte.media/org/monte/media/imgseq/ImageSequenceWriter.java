@@ -18,6 +18,9 @@ import static org.monte.media.av.FormatKeys.MIME_JAVA;
 import org.monte.media.av.FormatKeys.MediaType;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.FormatKeys.MimeTypeKey;
+import org.monte.media.av.MovieWriter;
+import org.monte.media.av.codec.video.JPEGCodec;
+import org.monte.media.av.codec.video.PNGCodec;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_MJPG;
@@ -29,10 +32,6 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 import org.monte.media.io.IOStreams;
 import org.monte.media.math.Rational;
-import org.monte.media.av.MovieWriter;
-import org.monte.media.av.MovieWriter;
-import org.monte.media.av.codec.video.JPEGCodec;
-import org.monte.media.av.codec.video.PNGCodec;
 
 /**
  * {@code ImageSequenceWriter}.

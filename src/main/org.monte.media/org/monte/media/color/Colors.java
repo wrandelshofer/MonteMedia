@@ -4,7 +4,8 @@
 package org.monte.media.color;
 
 import java.awt.image.IndexColorModel;
-import static java.lang.Math.*;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 /**
  * {@code Colors}.

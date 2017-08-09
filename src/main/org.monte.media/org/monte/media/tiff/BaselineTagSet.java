@@ -3,7 +3,16 @@
  */
 package org.monte.media.tiff;
 
-import static org.monte.media.tiff.TIFFTag.*;
+import static org.monte.media.tiff.TIFFTag.ASCII_MASK;
+import static org.monte.media.tiff.TIFFTag.BYTE_MASK;
+import static org.monte.media.tiff.TIFFTag.IFD_MASK;
+import static org.monte.media.tiff.TIFFTag.LONG_MASK;
+import static org.monte.media.tiff.TIFFTag.RATIONAL_MASK;
+import static org.monte.media.tiff.TIFFTag.SBYTE_MASK;
+import static org.monte.media.tiff.TIFFTag.SHORT_MASK;
+import static org.monte.media.tiff.TIFFTag.SLONG_MASK;
+import static org.monte.media.tiff.TIFFTag.SSHORT_MASK;
+import static org.monte.media.tiff.TIFFTag.UNDEFINED_MASK;
 
 /**
  * A class representing the set of tags found in the baseline TIFF specification

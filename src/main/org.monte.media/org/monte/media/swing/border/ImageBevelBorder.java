@@ -4,10 +4,16 @@
 
 package org.monte.media.swing.border;
 
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.TexturePaint;
+import java.awt.image.BufferedImage;
+import javax.swing.border.Border;
 import org.monte.media.image.Images;
-import java.awt.*;
-import javax.swing.border.*;
-import java.awt.image.*;
 
 /**
  * Draws a filled bevel border using an image and insets.

@@ -3,7 +3,9 @@
  */
 package org.monte.media.riff;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 /**
  * RIFF Chunks form the building blocks of a RIFF file.
  *

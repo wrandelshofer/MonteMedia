@@ -3,37 +3,35 @@
  */
 package org.monte.media.swing.movie;
 
-import org.monte.media.av.Movie;
-import org.monte.media.math.Rational;
-import java.awt.Window;
-import java.awt.Component;
-import javax.swing.ImageIcon;
-import javax.swing.Icon;
-import org.monte.media.swing.border.ImageBevelBorder;
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import org.monte.media.image.Images;
-import javax.swing.border.Border;
 import java.awt.Color;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.Graphics2D;
-import java.awt.Polygon;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.Window;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
 import org.monte.media.av.Movie;
-import static java.lang.Math.*;
+import org.monte.media.image.Images;
+import org.monte.media.math.Rational;
+import org.monte.media.swing.border.ImageBevelBorder;
 
 /**
  * JTimelineEditor visualizes the movie timeline, an insertion point and

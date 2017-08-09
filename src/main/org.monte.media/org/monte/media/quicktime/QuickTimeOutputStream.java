@@ -4,19 +4,41 @@
 package org.monte.media.quicktime;
 
 import java.awt.image.ColorModel;
-import org.monte.media.av.Format;
-import org.monte.media.io.ImageOutputStreamAdapter;
-import org.monte.media.math.Rational;
 import java.awt.image.IndexColorModel;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import static java.lang.Math.max;
 import java.nio.ByteOrder;
 import java.util.Date;
 import java.util.zip.DeflaterOutputStream;
-import javax.imageio.stream.*;
-import static java.lang.Math.*;
-import static org.monte.media.av.codec.video.VideoFormatKeys.*;
-import static org.monte.media.av.codec.audio.AudioFormatKeys.*;
+import javax.imageio.stream.FileImageOutputStream;
+import javax.imageio.stream.ImageOutputStream;
+import javax.imageio.stream.MemoryCacheImageOutputStream;
+import org.monte.media.av.Format;
+import static org.monte.media.av.FormatKeys.EncodingKey;
+import static org.monte.media.av.FormatKeys.FrameRateKey;
+import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
+import org.monte.media.av.FormatKeys.MediaType;
+import static org.monte.media.av.FormatKeys.MediaTypeKey;
+import static org.monte.media.av.FormatKeys.MimeTypeKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ByteOrderKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ChannelsKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.FrameSizeKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleRateKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleSizeInBitsKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.CompressorNameKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 import org.monte.media.io.IOStreams;
+import org.monte.media.io.ImageOutputStreamAdapter;
+import org.monte.media.math.Rational;
 
 /**
  * This class provides low-level support for writing already encoded audio and

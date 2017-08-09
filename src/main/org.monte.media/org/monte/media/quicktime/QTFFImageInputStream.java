@@ -1,16 +1,16 @@
-/* @(#)FilterImageInputStream.java
+/* @(#)QTFFImageInputStream.java
  * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License.
  */
 package org.monte.media.quicktime;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import static java.lang.Math.min;
 import java.nio.ByteOrder;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import javax.imageio.stream.ImageInputStream;
 import org.monte.media.io.FilterImageInputStream;
-import static java.lang.Math.*;
 
 /**
  * {@code QuickTimeImageInputStream}.

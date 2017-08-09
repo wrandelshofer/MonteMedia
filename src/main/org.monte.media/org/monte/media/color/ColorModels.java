@@ -3,10 +3,13 @@
  */
 package org.monte.media.color;
 
-import java.awt.*;
-import java.awt.image.*;
-import java.util.*;
-import static java.lang.Math.*;
+import java.awt.Transparency;
+import java.awt.image.ColorModel;
+import java.awt.image.DirectColorModel;
+import java.awt.image.IndexColorModel;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import java.util.Arrays;
 
 /**
  * Utility methods for ColorModels.

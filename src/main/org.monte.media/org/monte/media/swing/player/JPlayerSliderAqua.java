@@ -1,17 +1,20 @@
-/* @(#)MovieSliderAqua.java
+/* @(#)JPlayerSliderAqua.java
  * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License.
  */
 package org.monte.media.swing.player;
 
-import java.awt.Image;
-import java.awt.MediaTracker;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
+import java.awt.Image;
+import java.awt.MediaTracker;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import javax.swing.BoundedRangeModel;
+import javax.swing.DefaultBoundedRangeModel;
+import javax.swing.JComponent;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.monte.media.image.Images;
 
 /**

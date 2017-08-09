@@ -1,21 +1,33 @@
-/**
- * @(#)Main.java
- * Copyright © 2013 Werner Randelshofer, Switzerland.
- * You may only use this software in accordance with the license terms.
+/* @(#)Main.java
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License.
  */
 package org.monte.demo.quicktimewriter;
 
-import org.monte.media.quicktime.QuickTimeReader;
-import org.monte.media.av.Buffer;
-import org.monte.media.math.Rational;
-import org.monte.media.quicktime.QuickTimeWriter;
-import org.monte.media.av.Format;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
-import static org.monte.media.av.codec.video.VideoFormatKeys.*;
+import org.monte.media.av.Format;
+import static org.monte.media.av.FormatKeys.EncodingKey;
+import static org.monte.media.av.FormatKeys.FrameRateKey;
+import org.monte.media.av.FormatKeys.MediaType;
+import static org.monte.media.av.FormatKeys.MediaTypeKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_ANIMATION;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_JPEG;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_PNG;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_RAW;
+import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.QualityKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
+import org.monte.media.math.Rational;
+import org.monte.media.quicktime.QuickTimeReader;
+import org.monte.media.quicktime.QuickTimeWriter;
 
 /**
  * Demonstrates the use of {@link QuickTimeReader} and {@link QuickTimeWriter}.

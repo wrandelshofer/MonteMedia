@@ -3,26 +3,44 @@
  */
 package org.monte.media.av.codec.video;
 
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
 import java.awt.image.DataBufferUShort;
-import java.awt.image.Raster;
-import java.awt.Point;
 import java.awt.image.DirectColorModel;
-import java.awt.image.DataBufferByte;
-import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
-import org.monte.media.av.Format;
+import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
-import java.awt.Rectangle;
-import org.monte.media.av.codec.video.AbstractVideoCodec;
-import org.monte.media.av.Buffer;
-import org.monte.media.io.SeekableByteArrayOutputStream;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
+import org.monte.media.av.Buffer;
 import org.monte.media.av.BufferFlag;
-import static org.monte.media.av.codec.video.VideoFormatKeys.*;
-import static org.monte.media.av.BufferFlag.*;
+import static org.monte.media.av.BufferFlag.DISCARD;
+import static org.monte.media.av.BufferFlag.KEYFRAME;
+import static org.monte.media.av.BufferFlag.SAME_DATA;
+import org.monte.media.av.Format;
+import static org.monte.media.av.FormatKeys.EncodingKey;
+import static org.monte.media.av.FormatKeys.FrameRateKey;
+import static org.monte.media.av.FormatKeys.KeyFrameIntervalKey;
+import static org.monte.media.av.FormatKeys.MIME_AVI;
+import static org.monte.media.av.FormatKeys.MIME_JAVA;
+import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
+import org.monte.media.av.FormatKeys.MediaType;
+import static org.monte.media.av.FormatKeys.MediaTypeKey;
+import static org.monte.media.av.FormatKeys.MimeTypeKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE;
+import static org.monte.media.av.codec.video.VideoFormatKeys.CompressorNameKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
+import static org.monte.media.av.codec.video.VideoFormatKeys.FixedFrameRateKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 import org.monte.media.image.BufferedImageWithColorModel;
+import org.monte.media.io.SeekableByteArrayOutputStream;
 
 /**
  * {@code TechSmithCodec} (tscc) encodes a BufferedImage as a byte[] array.

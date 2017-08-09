@@ -8,15 +8,20 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.stream.ImageInputStream;
 import org.monte.media.av.Buffer;
-import static org.monte.media.av.BufferFlag.*;
+import static org.monte.media.av.BufferFlag.DISCARD;
+import static org.monte.media.av.BufferFlag.END_OF_MEDIA;
 import org.monte.media.av.Codec;
 import org.monte.media.av.Format;
+import static org.monte.media.av.FormatKeys.EncodingKey;
+import static org.monte.media.av.FormatKeys.MIME_JAVA;
 import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
 import org.monte.media.av.FormatKeys.MediaType;
+import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.FormatKeys.MimeTypeKey;
 import org.monte.media.av.MovieReader;
 import org.monte.media.av.Registry;
-import static org.monte.media.av.codec.video.VideoFormatKeys.*;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
 import org.monte.media.math.Rational;
 
 /**

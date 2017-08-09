@@ -3,17 +3,32 @@
  */
 package org.monte.media.av.codec.audio;
 
-import org.monte.media.av.Buffer;
-import org.monte.media.av.Format;
-import org.monte.media.io.ByteArrayImageInputStream;
-import org.monte.media.io.ByteArrayImageOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.nio.ByteOrder;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
-import static org.monte.media.av.codec.audio.AudioFormatKeys.*;
-import static org.monte.media.av.BufferFlag.*;
+import org.monte.media.av.Buffer;
+import static org.monte.media.av.BufferFlag.DISCARD;
+import static org.monte.media.av.BufferFlag.KEYFRAME;
+import org.monte.media.av.Format;
+import static org.monte.media.av.FormatKeys.EncodingKey;
+import static org.monte.media.av.FormatKeys.MIME_JAVA;
+import org.monte.media.av.FormatKeys.MediaType;
+import static org.monte.media.av.FormatKeys.MediaTypeKey;
+import static org.monte.media.av.FormatKeys.MimeTypeKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ByteOrderKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ChannelsKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ENCODING_PCM_SIGNED;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ENCODING_PCM_UNSIGNED;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.FrameSizeKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleRateKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleSizeInBitsKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.SilenceBugKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.toAudioFormat;
+import org.monte.media.io.ByteArrayImageInputStream;
+import org.monte.media.io.ByteArrayImageOutputStream;
 
 /**
  * {@code AbstractPCMAudioCodec} performs sign conversion, endian conversion and

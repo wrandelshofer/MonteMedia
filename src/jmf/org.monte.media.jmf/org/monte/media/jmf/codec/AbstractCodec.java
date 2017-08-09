@@ -1,4 +1,4 @@
-/* @(#)AbstractCodec.java  1.0  2011-04-05
+/* @(#)AbstractCodec.java
  * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License.
  */
 package org.monte.media.jmf.codec;
@@ -12,7 +12,7 @@ import javax.media.ResourceUnavailableException;
  * {@code AbstractCodec}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-04-05 Created.
+ * @version $Id$
  */
 public abstract class AbstractCodec implements Codec {
 

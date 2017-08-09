@@ -1,12 +1,17 @@
-/* @(#)BackdropBorder.java
+/* @(#)ButtonStateBorder.java
  * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License.
  */
 
 package org.monte.media.swing.border;
 
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.border.*;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Insets;
+import javax.swing.AbstractButton;
+import javax.swing.ButtonModel;
+import javax.swing.JButton;
+import javax.swing.border.Border;
 /**
  * ButtonStateBorder.
  *

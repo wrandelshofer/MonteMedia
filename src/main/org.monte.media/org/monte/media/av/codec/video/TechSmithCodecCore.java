@@ -3,17 +3,16 @@
  */
 package org.monte.media.av.codec.video;
 
-import java.util.zip.InflaterInputStream;
-import java.util.zip.DeflaterOutputStream;
-import org.monte.media.io.UncachedImageInputStream;
 import java.io.ByteArrayInputStream;
-import org.monte.media.av.codec.video.AbstractVideoCodecCore;
-import org.monte.media.io.ByteArrayImageInputStream;
-import org.monte.media.io.ByteArrayImageOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import static java.lang.Math.min;
 import java.nio.ByteOrder;
-import static java.lang.Math.*;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.InflaterInputStream;
+import org.monte.media.io.ByteArrayImageInputStream;
+import org.monte.media.io.ByteArrayImageOutputStream;
+import org.monte.media.io.UncachedImageInputStream;
 
 /**
  * {@code TechSmithCodec} (tscc) encodes a BufferedImage as a byte[] array.

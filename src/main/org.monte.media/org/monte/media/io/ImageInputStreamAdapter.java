@@ -4,7 +4,6 @@
 
 package org.monte.media.io;
 
-import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.stream.ImageInputStream;

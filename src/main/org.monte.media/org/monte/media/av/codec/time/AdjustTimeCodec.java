@@ -1,11 +1,10 @@
-/* @(#)AdjustTimeCodec
+/* @(#)AdjustTimeCodec.java
  * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License.
  */
 package org.monte.media.av.codec.time;
 
 import org.monte.media.av.AbstractCodec;
 import org.monte.media.av.Buffer;
-import org.monte.media.av.BufferFlag;
 import org.monte.media.av.Format;
 import org.monte.media.math.Rational;
 

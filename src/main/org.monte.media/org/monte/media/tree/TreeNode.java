@@ -1,4 +1,4 @@
-/* @(#)TreeNode
+/* @(#)TreeNode.java
  * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License.
  */
 package org.monte.media.tree;
@@ -12,7 +12,7 @@ import java.util.List;
  * TreeNode.
  *
  * @author Werner Randelshofer
- * @version $$Id$$
+ * @version $Id$
  */
 public class TreeNode<T extends TreeNode<T>> {
 

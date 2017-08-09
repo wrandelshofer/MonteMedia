@@ -12,7 +12,7 @@ import java.util.function.IntConsumer;
  * sub-ranges.
  *
  * @author Werner Randelshofer
- * @version $$Id: RangeStream.java 366 2016-11-09 20:08:18Z werner $$
+ * @version $Id$
  */
 public class RangeStream {
 

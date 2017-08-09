@@ -18,8 +18,7 @@ import java.util.List;
  * one entry.
  *
  * @author Werner Randelshofer
- * @version 2.0 2010-07-24 Reworked.
- * <br>1.0 2009-12-26 Created.
+ * @version $Id$
  */
 public class IFD {
 

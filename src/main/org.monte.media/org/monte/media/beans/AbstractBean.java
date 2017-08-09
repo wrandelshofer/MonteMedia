@@ -3,7 +3,8 @@
  */
 package org.monte.media.beans;
 
-import java.beans.*;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 /**
  * Abstract class for models that have to support property change listeners.<p>

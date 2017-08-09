@@ -3,19 +3,50 @@
  */
 package org.monte.media.quicktime;
 
-import org.monte.media.av.Registry;
-import org.monte.media.av.Format;
-import org.monte.media.av.Codec;
-import org.monte.media.av.Buffer;
-import org.monte.media.av.MovieWriter;
-import org.monte.media.math.Rational;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteOrder;
-import javax.imageio.stream.*;
-import static org.monte.media.av.codec.video.VideoFormatKeys.*;
-import static org.monte.media.av.codec.audio.AudioFormatKeys.*;
-import static org.monte.media.av.BufferFlag.*;
+import javax.imageio.stream.ImageOutputStream;
+import org.monte.media.av.Buffer;
+import static org.monte.media.av.BufferFlag.DISCARD;
+import static org.monte.media.av.BufferFlag.KEYFRAME;
+import org.monte.media.av.Codec;
+import org.monte.media.av.Format;
+import static org.monte.media.av.FormatKeys.EncodingKey;
+import static org.monte.media.av.FormatKeys.FrameRateKey;
+import static org.monte.media.av.FormatKeys.MIME_JAVA;
+import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
+import org.monte.media.av.FormatKeys.MediaType;
+import static org.monte.media.av.FormatKeys.MediaTypeKey;
+import static org.monte.media.av.FormatKeys.MimeTypeKey;
+import org.monte.media.av.MovieWriter;
+import org.monte.media.av.Registry;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ByteOrderKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ChannelsKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ENCODING_PCM_SIGNED;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ENCODING_PCM_UNSIGNED;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.FrameSizeKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleRateKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleSizeInBitsKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.COMPRESSOR_NAME_QUICKTIME_ANIMATION;
+import static org.monte.media.av.codec.video.VideoFormatKeys.COMPRESSOR_NAME_QUICKTIME_JPEG;
+import static org.monte.media.av.codec.video.VideoFormatKeys.COMPRESSOR_NAME_QUICKTIME_PNG;
+import static org.monte.media.av.codec.video.VideoFormatKeys.COMPRESSOR_NAME_QUICKTIME_RAW;
+import static org.monte.media.av.codec.video.VideoFormatKeys.CompressorNameKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_ANIMATION;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_JPEG;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_PNG;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_RAW;
+import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.QualityKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
+import org.monte.media.math.Rational;
 
 /**
  * Supports writing of time-based video and audio data into a QuickTime movie

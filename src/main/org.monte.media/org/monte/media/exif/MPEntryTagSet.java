@@ -1,12 +1,16 @@
-/* @(#)BaselineTIFFTagSet.java
+/* @(#)MPEntryTagSet.java
  * Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT License.
  */
 package org.monte.media.exif;
 
-import org.monte.media.tiff.TagSet;
 import org.monte.media.tiff.EnumValueFormatter;
-import org.monte.media.tiff.*;
-import static org.monte.media.tiff.TIFFTag.*;
+import org.monte.media.tiff.TIFFTag;
+import static org.monte.media.tiff.TIFFTag.BYTE_MASK;
+import static org.monte.media.tiff.TIFFTag.LONG_MASK;
+import static org.monte.media.tiff.TIFFTag.RATIONAL_MASK;
+import static org.monte.media.tiff.TIFFTag.SHORT_MASK;
+import static org.monte.media.tiff.TIFFTag.SRATIONAL_MASK;
+import org.monte.media.tiff.TagSet;
 
 /**
  * Syntethic tags for the entry information Multi-Picture format (MPF) tags
