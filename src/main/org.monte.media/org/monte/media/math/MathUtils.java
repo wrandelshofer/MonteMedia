@@ -1,9 +1,5 @@
 /* @(#)MathUtils.java
- * Copyright © 2013 Werner Randelshofer, Switzerland.
- * 
- * You may not use, copy or modify this file, except in compliance with the 
- * license agreement you entered into with Werner Randelshofer. 
- * For details see accompanying license terms.
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Under the MIT License.
  */
 package org.monte.media.math;
 

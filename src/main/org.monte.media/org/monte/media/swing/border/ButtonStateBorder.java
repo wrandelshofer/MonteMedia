@@ -1,7 +1,5 @@
-/*
-* @(#)ButtonStateBorder.java  1.2  2009-11-20
- * Copyright © 2006-2009 Werner Randelshofer, Switzerland.
- * You may only use this software in accordance with the license terms.
+/* @(#)BackdropBorder.java
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Under the MIT License.
  */
 
 package org.monte.media.swing.border;

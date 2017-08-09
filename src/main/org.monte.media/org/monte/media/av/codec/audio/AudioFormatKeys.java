@@ -1,9 +1,5 @@
 /* @(#)AudioFormatKeys.java
- * Copyright © 2011 Werner Randelshofer, Switzerland.
- * 
- * You may not use, copy or modify this file, except in compliance onlyWith the
- * license agreement you entered into onlyWith Werner Randelshofer.
- * For details see accompanying license terms.
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Under the MIT License.
  */
 package org.monte.media.av.codec.audio;
 

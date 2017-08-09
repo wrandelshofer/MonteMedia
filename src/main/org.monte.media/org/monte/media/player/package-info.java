@@ -1,6 +1,5 @@
 /* @(#)package-info.java  1.0  2011-08-19
- * Copyright © 2011 Werner Randelshofer, Switzerland. 
- * You may only use this software in accordance with the license terms.
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Under the MIT License.
  */
 
 /** Defines a framework for media processing and provides default implementations. 

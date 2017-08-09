@@ -1,7 +1,5 @@
-/**
- * @(#)DataAtomOutputStream.java 
- * Copyright © 2008-2012 Werner Randelshofer, Switzerland.
- * You may only use this software in accordance with the license terms.
+/* @(#)DataAtomOutputStream.java
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Under the MIT License.
  */
 package org.monte.media.quicktime;
 

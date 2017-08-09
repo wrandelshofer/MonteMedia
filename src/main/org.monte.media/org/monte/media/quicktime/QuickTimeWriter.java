@@ -1,7 +1,5 @@
-/**
- * @(#)QuickTimeWriter.java  1.3.5  2011-03-12
- * Copyright © 2010-2011 Werner Randelshofer, Switzerland.
- * You may only use this software in accordance with the license terms.
+/* @(#)QuickTimeWriter.java
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Under the MIT License.
  */
 package org.monte.media.quicktime;
 
@@ -114,22 +112,7 @@ import static org.monte.media.av.BufferFlag.*;
  * </a>
  *
  * @author Werner Randelshofer
- * @version 1.3.4 2011-03-12 Streamlines the code with {@code AVIWriter}.
- * <br>1.3.3 2011-01-17 Improves writing of compressed movie headers.
- * <br>1.3.2 2011-01-17 Fixes out of bounds exception when writing sub-images
- * with ANIMATION codec. Fixes writing of compressed movie headers.
- * <br>1.3.1 2011-01-09 Fixes broken RAW codec.
- * <br>1.3 2011-01-07 Improves robustness of API. Adds method
- * toWebOptimizedMovie().
- * <br>1.2.2 2011-01-07 Reduces file seeking with "ANIMATION" codec.
- * <br>1.2.1 2011-01-07 Fixed default syncInterval for "ANIMATION" video.
- * <br>1.2 2011-01-05 Adds support for "ANIMATION" encoded video.
- * <br>1.1 2011-01-04 Adds "depth" parameter to addVideoTrack method.
- * <br>1.0 2011-01-02 Adds support for edit lists. Adds support for MP3 audio
- * format.
- * <br>0.1.1 2010-12-05 Updates the link to the QuickTime file format
- * specification.
- * <br>0.1 2010-09-30 Created.
+ * @version $Id$
  */
 public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWriter {
 

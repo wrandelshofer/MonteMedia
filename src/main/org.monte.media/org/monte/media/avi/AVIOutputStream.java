@@ -1,9 +1,5 @@
-/**
- * @(#)AVIOutputStream.java
- * Copyright © 2011-2012 Werner Randelshofer, Goldau, Switzerland. All
- * rights reserved.
- *
- * You may only use this software in accordance with the license terms.
+/* @(#)AVIOutputStream.java
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Under the MIT License.
  */
 package org.monte.media.avi;
 

@@ -1,13 +1,5 @@
-/**
- * @(#)DefaultAnimator.java  
- * Copyright © 2008-2013 Werner Randelshofer
- * Hausmatt 10, CH-6405 Goldau, Switzerland
- * All rights reserved.
- *
- * The copyright of this software is owned by Werner Randelshofer. 
- * You may not use, copy or modify this software, except in  
- * accordance with the license agreement you entered into with  
- * Werner Randelshofer. For details see accompanying license terms. 
+/* @(#)DefaultAnimator.java
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Under the MIT License.
  */
 
 package org.monte.media.player;

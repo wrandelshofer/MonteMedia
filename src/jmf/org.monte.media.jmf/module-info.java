@@ -1,6 +1,5 @@
 /* @(#)module-info.java
- * Copyright © 2007 Werner Randelshofer, Switzerland.
- * You may only use this software in accordance with the license terms.
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Under the MIT License.
  */
 
 module org.monte.media.jmf {

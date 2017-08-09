@@ -1,6 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/* @(#)Codec.java
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Under the MIT License.
  */
 package org.monte.media.av;
 

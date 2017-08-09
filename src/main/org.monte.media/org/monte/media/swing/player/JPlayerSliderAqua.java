@@ -1,6 +1,5 @@
 /* @(#)MovieSliderAqua.java
- * Copyright © 2003-2009 Werner Randelshofer, Switzerland.
- * You may only use this file in compliance with the accompanying license terms. 
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Under the MIT License.
  */
 package org.monte.media.swing.player;
 

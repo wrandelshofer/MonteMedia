@@ -1,6 +1,5 @@
 /* @(#)AbstractCodec.java  1.0  2011-04-05
- * Copyright (c) 2011 Werner Randelshofer, Switzerland. 
- * You may only use this file in compliance with the accompanying license terms.
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Under the MIT License.
  */
 package org.monte.media.jmf.codec;
 

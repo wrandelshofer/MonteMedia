@@ -1,49 +1,5 @@
 /* @(#)EightSVXAudioClip.java
- * Copyright © 1999 Werner Randelshofer, Switzerland.
- * You may only use this software in accordance with the license terms.
- *
- *
- * Parts of this software (as marked) is
- *   Copyright (c) 21 Jan 1985 Steve Hayes, Electronic Arts
- *
- *   This software is in the public domain.
- *
- *   Published in:
- *   Commodore Electronics Ltd. (1991) Amiga ROM Kernel Manual. Reference Manual.
- *   Devices. Third Edition. Addison-Wesley: Reading.
- *
- * Parts of this software (as marked) is
- *   Copyright (c) 30.4.2000 Olli Niemitalo.
- *
- *   I, as the author and copyright holder, allow you to do anything you wish
- *   with this book free of charge, including copying, printing and republishing.
- *   In return, you must preserve this notification and the book�s website URL
- *   on the title page.
- *
- *   Published In:
- *   Niemitalo, O. (2000). Audio DSP for the Braindead.
- *   Online: http://www.student.oulu.fi/�oniemita/DSP/INDEX.HTM
- *
- * Parts of this software (as marked) is
- *   Copyright (c) 1999,2000 by Florian Bomers <florian@bome.com>
- *   Copyright (c) 2000 by Matthias Pfisterer <matthias.pfisterer@gmx.de>
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU Library General Public License as published
- *   by the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU Library General Public License for more details.
- *
- *   You should have received a copy of the GNU Library General Public
- *   License along with this program; if not, write to the Free Software
- *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- *
- *   Published In:
- *   Tritonus 0.3.1.
+ * Copyright © 2017 Werner Randelshofer, Switzerland. Under the MIT License.
  */
 package org.monte.media.eightsvx;
 
