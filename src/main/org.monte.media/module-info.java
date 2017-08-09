@@ -77,7 +77,7 @@
 module org.monte.media {
     requires java.desktop;
     requires javafx.swing;
-    requires java.util.prefs;
+    requires java.prefs;
 
     exports org.monte.media.beans;
     exports org.monte.media.anim;
