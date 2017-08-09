@@ -8,7 +8,7 @@ import org.monte.media.player.ColorCyclePlayer;
 import org.monte.media.player.AbstractPlayer;
 import org.monte.media.swing.player.JPlayerControlAqua;
 import org.monte.media.swing.ImagePanel;
-import org.monte.media.bitmap.BitmapImage;
+import org.monte.media.amigabitmap.AmigaBitmapImage;
 import org.monte.media.io.BoundedRangeInputStream;
 import org.monte.media.ilbm.ColorCycle;
 import org.monte.media.ilbm.ColorCyclingMemoryImageSource;
@@ -71,7 +71,7 @@ public class SEQPlayer
      */
     private SEQMovieTrack track;
     /** Two bitmaps are needed for double buffering. */
-    private BitmapImage bitmapEven, bitmapOdd;
+    private AmigaBitmapImage bitmapEven, bitmapOdd;
     /**
      * Index of the frame, that has been prepared
      * in its even or odd bitmap buffer for display.
@@ -486,12 +486,12 @@ public class SEQPlayer
         } else {
             cm = new DirectColorModel(24, 0xff0000, 0xff00, 0xff);
         }
-        bitmapEven = new BitmapImage(
+        bitmapEven = new AmigaBitmapImage(
                 width,
                 height,
                 nbPlanes + (masking == SEQMovieTrack.MSK_HAS_MASK ? 1 : 0),
                 cm);
-        bitmapOdd = new BitmapImage(
+        bitmapOdd = new AmigaBitmapImage(
                 width,
                 height,
                 nbPlanes + (masking == SEQMovieTrack.MSK_HAS_MASK ? 1 : 0),
@@ -820,7 +820,7 @@ public class SEQPlayer
         SEQFrame frame = null;
         int fetched;
         int interleave = track.getInterleave();
-        BitmapImage bitmap;
+        AmigaBitmapImage bitmap;
         if (interleave == 1 || (index & 1) == 0) {
             // even?
             if (fetchedEven == index) {
@@ -872,7 +872,7 @@ public class SEQPlayer
      * Prepare video data for the specified frame index.
      */
     private void prepareVideo(int index) {
-        BitmapImage bitmap;
+        AmigaBitmapImage bitmap;
         int prepared;
         int interleave = track.getInterleave();
 
@@ -903,7 +903,7 @@ public class SEQPlayer
         ColorModel cm = frame.getColorModel();
         bitmap.setPlanarColorModel(cm);
         if (prepared == index - interleave && //
-                (bitmap.getPixelType() == BitmapImage.BYTE_PIXEL || //
+                (bitmap.getPixelType() == AmigaBitmapImage.BYTE_PIXEL || //
                 cm == track.getFrame(prepared).getColorModel())) {
             bitmap.convertToChunky(
                     frame.getTopBound(track),
@@ -912,7 +912,7 @@ public class SEQPlayer
                     frame.getRightBound(track));
 
         } else if (isPingPong && prepared == index + interleave &&//
-                (bitmap.getPixelType() == BitmapImage.BYTE_PIXEL || //
+                (bitmap.getPixelType() == AmigaBitmapImage.BYTE_PIXEL || //
                 cm == track.getFrame(prepared).getColorModel())) {
             frame = track.getFrame(index + interleave);
             bitmap.convertToChunky(
@@ -947,7 +947,7 @@ public class SEQPlayer
         }
         int interleave = track.getInterleave();
 
-        BitmapImage bitmap;
+        AmigaBitmapImage bitmap;
         if (interleave == 1 || (index & 1) == 0) {
             // even?
             bitmap = bitmapEven;
@@ -958,7 +958,7 @@ public class SEQPlayer
 
         prepareVideo(index);
         ColorModel cm = bitmap.getChunkyColorModel();
-        if (bitmap.getPixelType() == BitmapImage.INT_PIXEL) {
+        if (bitmap.getPixelType() == AmigaBitmapImage.INT_PIXEL) {
             memoryImage.newPixels(bitmap.getIntPixels(), cm, 0, track.getWidth());
         } else {
             memoryImage.newPixels(bitmap.getBytePixels(), cm, 0, track.getWidth());

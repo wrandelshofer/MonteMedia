@@ -1,8 +1,8 @@
-/* @(#)BitmapImage.java
+/* @(#)AmigaBitmapImage.java
  * Copyright © 2004-2011 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.bitmap;
+package org.monte.media.amigabitmap;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -77,7 +77,7 @@ import java.awt.image.Raster;
  *
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
  */
-public class BitmapImage
+public class AmigaBitmapImage
         implements Cloneable {
 
     /**  The bitmap data array. */
@@ -168,7 +168,7 @@ public class BitmapImage
      * @param  depth  Number of bits per pixel.
      * @param  colorModel  Color model to be used for conversions from/to chunky pixels.
      */
-    public BitmapImage(int width, int height, int depth, ColorModel colorModel) {
+    public AmigaBitmapImage(int width, int height, int depth, ColorModel colorModel) {
         this(width, height, depth, colorModel, true);
     }
 
@@ -193,7 +193,7 @@ public class BitmapImage
      * @param  colorModel  Color model to be used for conversions from/to chunky pixels.
      * @param  isInterleaved  Indicator for contiguous or interleaved bit-planes.
      */
-    public BitmapImage(int width, int height, int depth, ColorModel colorModel, boolean isInterleaved) {
+    public AmigaBitmapImage(int width, int height, int depth, ColorModel colorModel, boolean isInterleaved) {
         this.width = width;
         this.height = height;
         this.depth = depth;
@@ -231,7 +231,7 @@ public class BitmapImage
      * @param  scanlineStride  Number of data array elements between a given pixel and the pixel in the same column of
      * the next scanline.
      */
-    public BitmapImage(int width, int height, int depth, ColorModel colorModel, int bitStride, int scanlineStride) {
+    public AmigaBitmapImage(int width, int height, int depth, ColorModel colorModel, int bitStride, int scanlineStride) {
         this.width = width;
         this.height = height;
         this.depth = depth;
@@ -395,11 +395,11 @@ public class BitmapImage
      * <p>
      * Post condition: -
      * <p>
-     * Obligation: The bitmap data array remains property
-     * of the BitmapImage and will be used at the next
-     * conversion to chunky. You can access it as you
-     * like (even during conversion) since this class
-     * does never change the contents of the bitmap.
+ Obligation: The bitmap data array remains property
+ of the AmigaBitmapImage and will be used at the next
+ conversion to chunky. You can access it as you
+ like (even during conversion) since this class
+ does never change the contents of the bitmap.
      *
      * @return  A reference to the bitmap data.
      */
@@ -510,9 +510,9 @@ public class BitmapImage
      * @return  A clone.
      */
     @Override
-    public BitmapImage clone() {
+    public AmigaBitmapImage clone() {
         try {
-            BitmapImage theClone = (BitmapImage) super.clone();
+            AmigaBitmapImage theClone = (AmigaBitmapImage) super.clone();
             theClone.bitmap = bitmap.clone();
             if (getPixelType() == BYTE_PIXEL) {
                 theClone.bytePixels = bytePixels.clone();
@@ -588,16 +588,16 @@ public class BitmapImage
         }
 
         /* */
-        if (planarColorModel instanceof HAMColorModel) {
+        if (planarColorModel instanceof AmigaHAMColorModel) {
             if (intPixels == null || intPixels.length != getWidth() * getHeight()) {
                 bytePixels = null;
                 shortPixels = null;
                 intPixels = new int[getWidth() * getHeight()];
             }
             currentChunkyColorModel_ = planarColorModel;
-            if (((HAMColorModel) planarColorModel).getHAMType() == HAMColorModel.HAM6) {
+            if (((AmigaHAMColorModel) planarColorModel).getHAMType() == AmigaHAMColorModel.HAM6) {
                 ham6PlanesToDirectPixels(top, left, bottom, right);
-            } else if (((HAMColorModel) planarColorModel).getHAMType() == HAMColorModel.HAM8) {
+            } else if (((AmigaHAMColorModel) planarColorModel).getHAMType() == AmigaHAMColorModel.HAM8) {
                 ham8PlanesToDirectPixels(top, left, bottom, right);
             } else {
                 throw new InternalError("unsupported ham model:" + planarColorModel);
@@ -698,7 +698,7 @@ public class BitmapImage
      */
     public void convertFromChunky(BufferedImage image) {
         /* */
-        if (planarColorModel instanceof HAMColorModel) {
+        if (planarColorModel instanceof AmigaHAMColorModel) {
 
             throw new UnsupportedOperationException("HAM mode not implemented:"+ planarColorModel);
 
@@ -2572,8 +2572,8 @@ public class BitmapImage
         bottom++;
         right++;
 
-        final int[] HAMColors = new int[((HAMColorModel) planarColorModel).getMapSize()];
-        ((HAMColorModel) planarColorModel).getRGBs(HAMColors);
+        final int[] HAMColors = new int[((AmigaHAMColorModel) planarColorModel).getMapSize()];
+        ((AmigaHAMColorModel) planarColorModel).getRGBs(HAMColors);
         final int scanlineStride = getScanlineStride();
         final int bitplaneStride = getBitplaneStride();
         final int depth = getDepth();
@@ -2712,8 +2712,8 @@ public class BitmapImage
         bottom++;
         right++;
 
-        final int[] HAMColors = new int[((HAMColorModel) planarColorModel).getMapSize()];
-        ((HAMColorModel) planarColorModel).getRGBs(HAMColors);
+        final int[] HAMColors = new int[((AmigaHAMColorModel) planarColorModel).getMapSize()];
+        ((AmigaHAMColorModel) planarColorModel).getRGBs(HAMColors);
         final int scanlineStride = getScanlineStride();
         final int bitplaneStride = getBitplaneStride();
         final int depth = getDepth();

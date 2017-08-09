@@ -11,7 +11,7 @@ package org.monte.media.seq;
 import org.monte.media.av.Buffer;
 import org.monte.media.av.Track;
 import org.monte.media.av.Format;
-import org.monte.media.bitmap.BitmapImage;
+import org.monte.media.amigabitmap.AmigaBitmapImage;
 import org.monte.media.math.Rational;
 import java.io.IOException;
 import static org.monte.media.av.codec.video.VideoFormatKeys.*;
@@ -51,10 +51,10 @@ public class SEQTrack implements Track {
     public void read(Buffer buf) {
         if (position < demux.getFrameCount()) {
             buf.setFlagsTo(KEYFRAME);
-            if (!(buf.data instanceof BitmapImage)) {
+            if (!(buf.data instanceof AmigaBitmapImage)) {
                 buf.data = demux.createCompatibleBitmap();
             }
-            demux.readFrame((int)position,(BitmapImage) buf.data);
+            demux.readFrame((int)position,(AmigaBitmapImage) buf.data);
             buf.sampleDuration = new Rational(demux.getDuration((int)position), demux.getJiffies());
             buf.format=outputFormat;
             position++;

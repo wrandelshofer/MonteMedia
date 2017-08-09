@@ -23,7 +23,7 @@ import org.monte.media.iff.MC68000InputStream;
 import org.monte.media.ilbm.CRNGColorCycle;
 import org.monte.media.ilbm.ColorCycle;
 import org.monte.media.ilbm.DRNGColorCycle;
-import org.monte.media.bitmap.HAMColorModel;
+import org.monte.media.amigabitmap.AmigaHAMColorModel;
 
 /**
  * Decodes IFF files and adds the data to an ANIMMovieTrack.
@@ -525,10 +525,10 @@ public class ANIMDecoder
             //return new IndexColorModel(track.getNbPlanes(),64,red,green,blue,-1);
 
             case ANIMMovieTrack.MODE_HAM6:
-                return new HAMColorModel(HAMColorModel.HAM6, 16, red, green, blue, false);
+                return new AmigaHAMColorModel(AmigaHAMColorModel.HAM6, 16, red, green, blue, false);
 
             case ANIMMovieTrack.MODE_HAM8:
-                return new HAMColorModel(HAMColorModel.HAM8, 64, red, green, blue, false);
+                return new AmigaHAMColorModel(AmigaHAMColorModel.HAM8, 64, red, green, blue, false);
 
             case ANIMMovieTrack.MODE_INDEXED_COLORS:
                 // Should return the effective number of planes, but

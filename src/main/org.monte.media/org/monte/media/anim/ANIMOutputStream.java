@@ -5,6 +5,7 @@
  */
 package org.monte.media.anim;
 
+import org.monte.media.amigabitmap.AmigaDisplayInfo;
 import java.awt.image.IndexColorModel;
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +13,7 @@ import static java.lang.Math.max;
 import java.util.Arrays;
 import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
-import org.monte.media.bitmap.BitmapImage;
+import org.monte.media.amigabitmap.AmigaBitmapImage;
 import org.monte.media.iff.IFFOutputStream;
 import org.monte.media.io.SeekableByteArrayOutputStream;
 
@@ -116,15 +117,15 @@ public class ANIMOutputStream {
     /**
      * double buffering previous frame for odd frames.
      */
-    private BitmapImage oddPrev;
+    private AmigaBitmapImage oddPrev;
     /**
      * double buffering previous frame for even frames.
      */
-    private BitmapImage evenPrev;
+    private AmigaBitmapImage evenPrev;
     /**
      * store first frame so that we can write wrap up frame.
      */
-    private BitmapImage firstFrame;
+    private AmigaBitmapImage firstFrame;
     /**
      * Duration of the first wrapup frame.
      */
@@ -280,7 +281,7 @@ public class ANIMOutputStream {
 
     }
 
-    public void writeFrame(BitmapImage image, int duration) throws IOException {
+    public void writeFrame(AmigaBitmapImage image, int duration) throws IOException {
         ensureStarted();
         if (frameCount == 0) {
             writeFirstFrame(image, duration);
@@ -289,7 +290,7 @@ public class ANIMOutputStream {
         }
     }
 
-    private void writeFirstFrame(BitmapImage img, int duration) throws IOException {
+    private void writeFirstFrame(AmigaBitmapImage img, int duration) throws IOException {
 
         out.pushCompositeChunk("FORM", "ILBM");
         writeBMHD(out, img);
@@ -300,9 +301,9 @@ public class ANIMOutputStream {
         writeBODY(out, img);
         out.popChunk();
 
-        firstFrame = new BitmapImage(img.getWidth(), img.getHeight(), img.getDepth(), img.getPlanarColorModel());
-        oddPrev = new BitmapImage(img.getWidth(), img.getHeight(), img.getDepth(), img.getPlanarColorModel());
-        evenPrev = new BitmapImage(img.getWidth(), img.getHeight(), img.getDepth(), img.getPlanarColorModel());
+        firstFrame = new AmigaBitmapImage(img.getWidth(), img.getHeight(), img.getDepth(), img.getPlanarColorModel());
+        oddPrev = new AmigaBitmapImage(img.getWidth(), img.getHeight(), img.getDepth(), img.getPlanarColorModel());
+        evenPrev = new AmigaBitmapImage(img.getWidth(), img.getHeight(), img.getDepth(), img.getPlanarColorModel());
 
         System.arraycopy(img.getBitmap(), 0, firstFrame.getBitmap(), 0, img.getBitmap().length);
         System.arraycopy(img.getBitmap(), 0, oddPrev.getBitmap(), 0, img.getBitmap().length);
@@ -313,9 +314,9 @@ public class ANIMOutputStream {
         frameCount++;
     }
 
-    private void writeDeltaFrame(BitmapImage img, int duration) throws IOException {
-        BitmapImage prev = (frameCount & 1) == 0 ? evenPrev : oddPrev; // double buffered previous
-        BitmapImage immPrev = (frameCount & 1) == 0 ? oddPrev : evenPrev; // immediate previous
+    private void writeDeltaFrame(AmigaBitmapImage img, int duration) throws IOException {
+        AmigaBitmapImage prev = (frameCount & 1) == 0 ? evenPrev : oddPrev; // double buffered previous
+        AmigaBitmapImage immPrev = (frameCount & 1) == 0 ? oddPrev : evenPrev; // immediate previous
 
         out.pushCompositeChunk("FORM", "ILBM");
         writeANHD(out, img.getWidth(), img.getHeight(), 0x5, absTime, duration); // 0x5=byteVerticalDeltaMode
@@ -366,7 +367,7 @@ public class ANIMOutputStream {
      *   } BitmapHeader;
      * </pre>
      */
-    private void writeBMHD(IFFOutputStream out, BitmapImage img) throws IOException {
+    private void writeBMHD(IFFOutputStream out, AmigaBitmapImage img) throws IOException {
         AmigaDisplayInfo info = AmigaDisplayInfo.getInfo(camg);
         if (info == null) {
             info = AmigaDisplayInfo.getInfo(AmigaDisplayInfo.DEFAULT_MONITOR_ID);
@@ -392,7 +393,7 @@ public class ANIMOutputStream {
     /**
      * Writes the color map (ILBM CMAP).
      */
-    private void writeCMAP(IFFOutputStream out, BitmapImage img) throws IOException {
+    private void writeCMAP(IFFOutputStream out, AmigaBitmapImage img) throws IOException {
         out.pushDataChunk("CMAP");
 
         IndexColorModel cm = (IndexColorModel) img.getPlanarColorModel();
@@ -409,7 +410,7 @@ public class ANIMOutputStream {
      * Writes the color map (ILBM CMAP) if it is different from the previous
      * image.
      */
-    private void writeCMAP(IFFOutputStream out, BitmapImage img, BitmapImage prev) throws IOException {
+    private void writeCMAP(IFFOutputStream out, AmigaBitmapImage img, AmigaBitmapImage prev) throws IOException {
         IndexColorModel cm = (IndexColorModel) img.getPlanarColorModel();
         IndexColorModel prevCm = (IndexColorModel) prev.getPlanarColorModel();
 
@@ -455,7 +456,7 @@ public class ANIMOutputStream {
     /**
      * Writes the body (ILBM BODY).
      */
-    private void writeBODY(IFFOutputStream out, BitmapImage img) throws IOException {
+    private void writeBODY(IFFOutputStream out, AmigaBitmapImage img) throws IOException {
         out.pushDataChunk("BODY");
         int widthInBytes = (img.getWidth() + 7) / 8;
         int ss = img.getScanlineStride();
@@ -511,7 +512,7 @@ public class ANIMOutputStream {
      * Commodore-Amiga, Inc. (1991) Amiga ROM Kernel Reference Manual. Devices.
      * Third Edition. Reading: Addison-Wesley. Pages 445 - 449.
      */
-    private void writeDLTA(IFFOutputStream out, BitmapImage img, BitmapImage prev) throws IOException {
+    private void writeDLTA(IFFOutputStream out, AmigaBitmapImage img, AmigaBitmapImage prev) throws IOException {
         out.pushDataChunk("DLTA");
 
         int height = img.getHeight();

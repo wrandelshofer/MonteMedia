@@ -4,7 +4,7 @@
  */
 package org.monte.media.anim;
 
-import org.monte.media.bitmap.BitmapImage;
+import org.monte.media.amigabitmap.AmigaBitmapImage;
 import org.monte.media.iff.IFFParser;
 import org.monte.media.exception.ParseException;
 
@@ -33,7 +33,7 @@ public class ANIMKeyFrame
     }
 
     @Override
-    public void decode(BitmapImage bitmap, ANIMMovieTrack track) {
+    public void decode(AmigaBitmapImage bitmap, ANIMMovieTrack track) {
         switch (compression) {
 
             case ANIMMovieTrack.CMP_BYTE_RUN_1:
@@ -143,7 +143,7 @@ public class ANIMKeyFrame
      * </pre>
      *
      */
-    public void unpackVertical(byte[] in, BitmapImage bm)
+    public void unpackVertical(byte[] in, AmigaBitmapImage bm)
              {
         byte[] out = bm.getBitmap();
         int iIn = 0; // input index

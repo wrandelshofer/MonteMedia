@@ -6,7 +6,7 @@ package org.monte.media.anim;
 
 import org.monte.media.av.Buffer;
 import org.monte.media.av.Multiplexer;
-import org.monte.media.bitmap.BitmapImage;
+import org.monte.media.amigabitmap.AmigaBitmapImage;
 import org.monte.media.math.Rational;
 import java.io.File;
 import java.io.IOException;
@@ -56,7 +56,7 @@ public class ANIMMultiplexer extends ANIMOutputStream implements Multiplexer {
             outputTime.add(new Rational(outputMediaDuration,jiffies));
            // System.out.println("ANIMMultiplexer #" + frameCount + " jiffies:"+jiffies+" movieT:" + outputTime + " inputT:" + inputTime+" diff:"+(outputTime.subtract(inputTime))+ " sampleDuration:" + outputMediaDuration + " == " + outputDuration+" ~= "+buf.sampleDuration);
 
-            writeFrame((BitmapImage) buf.data, outputMediaDuration);
+            writeFrame((AmigaBitmapImage) buf.data, outputMediaDuration);
         }
     }
 }

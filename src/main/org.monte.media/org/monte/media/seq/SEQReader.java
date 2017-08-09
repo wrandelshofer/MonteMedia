@@ -4,7 +4,7 @@
  */
 package org.monte.media.seq;
 
-import org.monte.media.bitmap.BitmapImage;
+import org.monte.media.amigabitmap.AmigaBitmapImage;
 import java.awt.image.IndexColorModel;
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +27,7 @@ public class SEQReader {
      */
     private int fetchedEven = -1, fetchedOdd = -1;
     /** Two bitmaps are needed for double buffering. */
-    private BitmapImage bitmapEven, bitmapOdd;
+    private AmigaBitmapImage bitmapEven, bitmapOdd;
     // ---- END Decoder variables ----
 
     public SEQReader(File file) throws IOException {
@@ -64,8 +64,8 @@ public class SEQReader {
         return track.getJiffies();
     }
 
-    public BitmapImage createCompatibleBitmap() {
-        return new BitmapImage(
+    public AmigaBitmapImage createCompatibleBitmap() {
+        return new AmigaBitmapImage(
                 track.getWidth(),
                 track.getHeight(),
                 track.getNbPlanes() + (track.getMasking() == SEQMovieTrack.MSK_HAS_MASK ? 1 : 0),
@@ -73,8 +73,8 @@ public class SEQReader {
     }
 
     /** Reads a frame into the supplied image. */
-    public void readFrame(int index, BitmapImage image) {
-        BitmapImage fetched = fetchFrame(index);
+    public void readFrame(int index, AmigaBitmapImage image) {
+        AmigaBitmapImage fetched = fetchFrame(index);
 
         System.arraycopy(fetched.getBitmap(), 0, image.getBitmap(), 0, fetched.getBitmap().length);
         image.setPlanarColorModel(track.getFrame(index).getColorModel());
@@ -90,7 +90,7 @@ public class SEQReader {
         return (int) track.getFrame(index).getRelTime();
     }
 
-    private BitmapImage fetchFrame(int index) {
+    private AmigaBitmapImage fetchFrame(int index) {
         if (bitmapOdd == null || bitmapEven == null) {
             bitmapOdd = createCompatibleBitmap();
             bitmapEven = createCompatibleBitmap();
@@ -99,7 +99,7 @@ public class SEQReader {
         SEQFrame frame = null;
         int fetched;
         int interleave = track.getInterleave();
-        BitmapImage bitmap;
+        AmigaBitmapImage bitmap;
         if (interleave == 1 || (index & 1) == 0) {
             // even?
             if (fetchedEven == index) {
@@ -153,7 +153,7 @@ public class SEQReader {
         int height = track.getHeight();
 
         SEQFrame f0 = track.getFrame(0);
-        BitmapImage bmp = new BitmapImage(width, height, track.getNbPlanes(), f0.getColorModel());
+        AmigaBitmapImage bmp = new AmigaBitmapImage(width, height, track.getNbPlanes(), f0.getColorModel());
         bmp.setPreferredChunkyColorModel(f0.getColorModel());
         byte[] previousBmp = new byte[bmp.getBitmap().length];
         int[] previousColors = new int[16];

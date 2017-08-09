@@ -4,7 +4,7 @@
  */
 package org.monte.media.anim;
 
-import org.monte.media.bitmap.BitmapImage;
+import org.monte.media.amigabitmap.AmigaBitmapImage;
 
 /**
  * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
@@ -82,7 +82,7 @@ public class ANIMDeltaFrame
     }
 
     @Override
-    public void decode(BitmapImage bitmap, ANIMMovieTrack track) {
+    public void decode(AmigaBitmapImage bitmap, ANIMMovieTrack track) {
         switch (getEncoding()) {
             case ENCODING_BYTE_VERTICAL:
                 decodeByteVertical(bitmap, track);
@@ -145,7 +145,7 @@ public class ANIMDeltaFrame
      *    If there are no changed words in a given plane, then the pointer
      *    in the first 32 bytes of the chunk is =0.
      */
-    private void decodeMethod2(BitmapImage bitmap, ANIMMovieTrack track) {
+    private void decodeMethod2(AmigaBitmapImage bitmap, ANIMMovieTrack track) {
         throw new UnsupportedOperationException();
 
     }
@@ -215,7 +215,7 @@ public class ANIMDeltaFrame
      *    speed, the core, at least, of this routine should be coded in
      *    assembly language.
      */
-    private void decodeMethod4(BitmapImage bitmap, ANIMMovieTrack track) {
+    private void decodeMethod4(AmigaBitmapImage bitmap, ANIMMovieTrack track) {
         throw new UnsupportedOperationException();
 
     }
@@ -261,7 +261,7 @@ public class ANIMDeltaFrame
      *           than horizontally, so to get to the next byte in the destination
      *           we add the number of bytes per row instead of one!
      */
-    private void decodeByteVertical(BitmapImage bitmap, ANIMMovieTrack track) {
+    private void decodeByteVertical(AmigaBitmapImage bitmap, ANIMMovieTrack track) {
         int columns = 0;
         int iOp = 0;
         byte[] planeBytes = bitmap.getBitmap();
@@ -383,7 +383,7 @@ public class ANIMDeltaFrame
         }
     }
 
-    private void decodeVertical8Short(BitmapImage bitmap, ANIMMovieTrack track) {
+    private void decodeVertical8Short(AmigaBitmapImage bitmap, ANIMMovieTrack track) {
         int columns = 0;
         int iOp = 0;
         byte[] planeBytes = bitmap.getBitmap();
@@ -479,7 +479,7 @@ public class ANIMDeltaFrame
         }
     }
 
-    private void decodeVertical8Long(BitmapImage bitmap, ANIMMovieTrack track) {
+    private void decodeVertical8Long(AmigaBitmapImage bitmap, ANIMMovieTrack track) {
         int columns = 0;
         int iOp = 0;
         byte[] planeBytes = bitmap.getBitmap();
@@ -595,7 +595,7 @@ public class ANIMDeltaFrame
         }
     }
 
-    private void decodeVertical7Short(BitmapImage bitmap, ANIMMovieTrack track) {
+    private void decodeVertical7Short(AmigaBitmapImage bitmap, ANIMMovieTrack track) {
         int columns = 0;
         int iOp = 0;
         int iData = 0;
@@ -691,7 +691,7 @@ public class ANIMDeltaFrame
         }
     }
 
-    private void decodeVertical7Long(BitmapImage bitmap, ANIMMovieTrack track) {
+    private void decodeVertical7Long(AmigaBitmapImage bitmap, ANIMMovieTrack track) {
         int columns = 0;
         int iOp = 0;
         int iData = 0;
@@ -835,7 +835,7 @@ public class ANIMDeltaFrame
      * (Anyway, it is described in the original documentation for "pilbm" if
      * you're curious.
      */
-    private void decodeJ(BitmapImage bitmap, ANIMMovieTrack track) {
+    private void decodeJ(AmigaBitmapImage bitmap, ANIMMovieTrack track) {
 
         int nbPlanes = track.getNbPlanes();
         int widthInBytes = bitmap.getBitplaneStride();

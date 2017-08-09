@@ -6,7 +6,7 @@ package org.monte.media.anim;
 
 import java.awt.image.ColorModel;
 import java.util.*;
-import org.monte.media.bitmap.BitmapImage;
+import org.monte.media.amigabitmap.AmigaBitmapImage;
 
 /**
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
@@ -111,7 +111,7 @@ public abstract class ANIMFrame {
     public long getRelTime() { return this.reltime; }
     public int getInterleave() { return this.interleave; }
     
-    public abstract void decode(BitmapImage bitmap, ANIMMovieTrack track);
+    public abstract void decode(AmigaBitmapImage bitmap, ANIMMovieTrack track);
     
     public int getTopBound(ANIMMovieTrack track) { return 0; }
     public int getBottomBound(ANIMMovieTrack track) { return track.getHeight()-1; }

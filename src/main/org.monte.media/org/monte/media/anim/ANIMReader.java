@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import org.monte.media.bitmap.BitmapImage;
+import org.monte.media.amigabitmap.AmigaBitmapImage;
 import org.monte.media.seq.SEQMovieTrack;
 
 /**
@@ -28,7 +28,7 @@ public class ANIMReader  {
      */
     private int fetchedEven = -1, fetchedOdd = -1;
     /** Two bitmaps are needed for double buffering. */
-    private BitmapImage bitmapEven, bitmapOdd;
+    private AmigaBitmapImage bitmapEven, bitmapOdd;
     // ---- END Decoder variables ----
 
     public ANIMReader(File file) throws IOException {
@@ -57,8 +57,8 @@ public class ANIMReader  {
         return track.getJiffies();
     }
 
-    public BitmapImage createCompatibleBitmap() {
-        return new BitmapImage(
+    public AmigaBitmapImage createCompatibleBitmap() {
+        return new AmigaBitmapImage(
                 track.getWidth(),
                 track.getHeight(),
                 track.getNbPlanes() + (track.getMasking() == SEQMovieTrack.MSK_HAS_MASK ? 1 : 0),
@@ -66,8 +66,8 @@ public class ANIMReader  {
     }
 
     /** Reads a frame into the supplied image. */
-    public void readFrame(int index,BitmapImage image) {
-        BitmapImage fetched = fetchFrame(index);
+    public void readFrame(int index,AmigaBitmapImage image) {
+        AmigaBitmapImage fetched = fetchFrame(index);
 
         System.arraycopy(fetched.getBitmap(), 0, image.getBitmap(), 0, fetched.getBitmap().length);
         image.setPlanarColorModel(track.getFrame(index).getColorModel());
@@ -78,7 +78,7 @@ public class ANIMReader  {
         return (int) track.getFrame(index).getRelTime();
     }
 
-    private BitmapImage fetchFrame(int index) {
+    private AmigaBitmapImage fetchFrame(int index) {
         if (bitmapOdd == null || bitmapEven == null) {
             bitmapOdd = createCompatibleBitmap();
             bitmapEven = createCompatibleBitmap();
@@ -87,7 +87,7 @@ public class ANIMReader  {
         ANIMFrame frame = null;
         int fetched;
         int interleave = track.getInterleave();
-        BitmapImage bitmap;
+        AmigaBitmapImage bitmap;
         if (interleave == 1 || (index & 1) == 0) {
             // even?
             if (fetchedEven == index) {

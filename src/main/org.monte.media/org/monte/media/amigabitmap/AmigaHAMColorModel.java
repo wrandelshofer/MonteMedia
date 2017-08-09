@@ -2,7 +2,7 @@
  * Copyright © 1999 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
-package org.monte.media.bitmap;
+package org.monte.media.amigabitmap;
 
 import java.awt.image.DirectColorModel;
 
@@ -13,7 +13,7 @@ import java.awt.image.DirectColorModel;
  * @version 1.1 2006-12-25 New constructor added.
  * <br>1.0  1999-10-19
  */
-public class HAMColorModel extends DirectColorModel {
+public class AmigaHAMColorModel extends DirectColorModel {
     //insert class definition here
     public final static int
             HAM6 = 6,
@@ -34,7 +34,7 @@ public class HAMColorModel extends DirectColorModel {
      * @param b The blue colors as 8 bit or as 4 bit values.
      * @param isOCS Set this to true if the colors are 4 bit values.
      */
-    public HAMColorModel(int aHAMType,int size,byte r[],byte g[],byte b[], boolean isOCS) {
+    public AmigaHAMColorModel(int aHAMType,int size,byte r[],byte g[],byte b[], boolean isOCS) {
         super(24,0x00ff0000,0x0000ff00,0x000000ff);
         if (aHAMType != HAM6 && aHAMType != HAM8) {
             throw new IllegalArgumentException("Unknown HAM Type: " + aHAMType);
@@ -63,7 +63,7 @@ public class HAMColorModel extends DirectColorModel {
      * @param rgb The rgb colors.
      * @param isOCS Set this to true if the colors are 12 bit precision only.
      */
-    public HAMColorModel(int aHAMType,int size,int rgb[], boolean isOCS) {
+    public AmigaHAMColorModel(int aHAMType,int size,int rgb[], boolean isOCS) {
         super(24,0x00ff0000,0x0000ff00,0x000000ff);
         if (aHAMType != HAM6 && aHAMType != HAM8) {
             throw new IllegalArgumentException("Unknown HAM Type: " + aHAMType);
@@ -97,7 +97,7 @@ public class HAMColorModel extends DirectColorModel {
     }
     
     /**
-     * Returns the HAM Type of this HAMColorModel: HAM8 or HAM6.
+     * Returns the HAM Type of this AmigaHAMColorModel: HAM8 or HAM6.
      */
     public int getHAMType() {
         return HAMType;
@@ -105,7 +105,7 @@ public class HAMColorModel extends DirectColorModel {
     
     /**
      * Returns the number of planes required to represent
-     * this HAMColorModel in a Bitmap.
+ this AmigaHAMColorModel in a Bitmap.
      */
     public int getDepth() {
         return HAMType;

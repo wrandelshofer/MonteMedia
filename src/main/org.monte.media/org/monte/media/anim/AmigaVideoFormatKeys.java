@@ -7,6 +7,7 @@
  */
 package org.monte.media.anim;
 
+import org.monte.media.amigabitmap.AmigaDisplayInfo;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKey;
 import org.monte.media.av.codec.video.VideoFormatKeys;

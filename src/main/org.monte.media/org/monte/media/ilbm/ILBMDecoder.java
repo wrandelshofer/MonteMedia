@@ -4,8 +4,8 @@
  */
 package org.monte.media.ilbm;
 
-import org.monte.media.bitmap.HAMColorModel;
-import org.monte.media.bitmap.BitmapImage;
+import org.monte.media.amigabitmap.AmigaHAMColorModel;
+import org.monte.media.amigabitmap.AmigaBitmapImage;
 import org.monte.media.exception.AbortException;
 import org.monte.media.exception.ParseException;
 import org.monte.media.iff.*;
@@ -112,7 +112,7 @@ public class ILBMDecoder
     /** Stores all the ILBM pictures found during decoding
      * as an instance of ColorCyclingMemoryImageSource. */
     protected ArrayList<ColorCyclingMemoryImageSource> sources;
-    protected ArrayList<BitmapImage> bitmapSources;
+    protected ArrayList<AmigaBitmapImage> bitmapSources;
     /** BMHD data. */
     /** Raster width and height in pixels */
     protected int bmhdWidth, bmhdHeight;
@@ -137,7 +137,7 @@ public class ILBMDecoder
     /** CMAP data. */
     protected ColorModel cmapColorModel;
     /** BODY data */
-    protected BitmapImage bodyBitmap;
+    protected AmigaBitmapImage bodyBitmap;
 
     /** Constructors */
     public ILBMDecoder(InputStream in) {
@@ -190,11 +190,11 @@ public class ILBMDecoder
      *
      * @return  A vector of java.awt.img.ColorCyclingMemoryImageSource.
      */
-    public ArrayList<BitmapImage> produceBitmaps()
+    public ArrayList<AmigaBitmapImage> produceBitmaps()
             throws IOException {
         InputStream in = null;
         sources = null;
-        bitmapSources = new ArrayList<BitmapImage>();
+        bitmapSources = new ArrayList<AmigaBitmapImage>();
         boolean mustCloseStream;
         if (inputStream != null) {
             in = inputStream;
@@ -314,7 +314,7 @@ public class ILBMDecoder
 
         if (sources != null) {
             ColorCyclingMemoryImageSource mis;
-            if (bodyBitmap.convertToChunky() == BitmapImage.BYTE_PIXEL) {
+            if (bodyBitmap.convertToChunky() == AmigaBitmapImage.BYTE_PIXEL) {
                 mis = new ColorCyclingMemoryImageSource(
                         bmhdWidth, bmhdHeight,
                         cmapColorModel,
@@ -589,10 +589,10 @@ public class ILBMDecoder
                 }
                 break;
             case MODE_HAM6:
-                cmapColorModel = new HAMColorModel(HAMColorModel.HAM6, 16, red, green, blue, false);
+                cmapColorModel = new AmigaHAMColorModel(AmigaHAMColorModel.HAM6, 16, red, green, blue, false);
                 break;
             case MODE_HAM8:
-                cmapColorModel = new HAMColorModel(HAMColorModel.HAM8, 64, red, green, blue, false);
+                cmapColorModel = new AmigaHAMColorModel(AmigaHAMColorModel.HAM8, 64, red, green, blue, false);
                 break;
             case MODE_INDEXED_COLORS:
                 if ((bmhdMasking & MSK_HAS_MASK) != 0) {
@@ -775,9 +775,9 @@ public class ILBMDecoder
     protected void decodeBODY(IFFChunk chunk)
             throws ParseException {
         if ((bmhdMasking & MSK_HAS_MASK) != 0) {
-            bodyBitmap = new BitmapImage(bmhdWidth, bmhdHeight, bmhdNbPlanes + 1, cmapColorModel);
+            bodyBitmap = new AmigaBitmapImage(bmhdWidth, bmhdHeight, bmhdNbPlanes + 1, cmapColorModel);
         } else {
-            bodyBitmap = new BitmapImage(bmhdWidth, bmhdHeight, bmhdNbPlanes, cmapColorModel);
+            bodyBitmap = new AmigaBitmapImage(bmhdWidth, bmhdHeight, bmhdNbPlanes, cmapColorModel);
         }
 
         byte[] data = chunk.getData();
@@ -874,7 +874,7 @@ public class ILBMDecoder
      * </pre>
      *
      */
-    public void unpackVertical(byte[] in, BitmapImage bm)
+    public void unpackVertical(byte[] in, AmigaBitmapImage bm)
             throws ParseException {
         byte[] out = bm.getBitmap();
         int iIn = 0; // input index

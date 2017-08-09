@@ -5,7 +5,7 @@
  */
 package org.monte.media.ilbm;
 
-import org.monte.media.bitmap.BitmapImage;
+import org.monte.media.amigabitmap.AmigaBitmapImage;
 import org.monte.media.iff.IFFOutputStream;
 import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
@@ -24,7 +24,7 @@ public class ILBMEncoder {
     public ILBMEncoder() {
     }
 
-    public void write(File f, BitmapImage img, int camg) throws IOException {
+    public void write(File f, AmigaBitmapImage img, int camg) throws IOException {
         IFFOutputStream out = null;
         try {
             out = new IFFOutputStream(new FileImageOutputStream(f));
@@ -73,7 +73,7 @@ public class ILBMEncoder {
      *   } BitmapHeader;
      * </pre>
      */
-    private void writeBMHD(IFFOutputStream out, BitmapImage img) throws IOException {
+    private void writeBMHD(IFFOutputStream out, AmigaBitmapImage img) throws IOException {
         out.pushDataChunk("BMHD");
         out.writeUWORD(img.getWidth());
         out.writeUWORD(img.getHeight());
@@ -94,7 +94,7 @@ public class ILBMEncoder {
     /**
      * Writes the color map (ILBM CMAP).
      */
-    private void writeCMAP(IFFOutputStream out, BitmapImage img) throws IOException {
+    private void writeCMAP(IFFOutputStream out, AmigaBitmapImage img) throws IOException {
         out.pushDataChunk("CMAP");
 
         IndexColorModel cm = (IndexColorModel) img.getPlanarColorModel();
@@ -121,7 +121,7 @@ public class ILBMEncoder {
     /**
      * Writes the body (ILBM BODY).
      */
-    private void writeBODY(IFFOutputStream out, BitmapImage img) throws IOException {
+    private void writeBODY(IFFOutputStream out, AmigaBitmapImage img) throws IOException {
         out.pushDataChunk("BODY");
 
         int w = img.getWidth()/8;

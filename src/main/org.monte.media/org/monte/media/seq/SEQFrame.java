@@ -6,7 +6,7 @@ package org.monte.media.seq;
 
 import java.awt.image.ColorModel;
 import java.util.*;
-import org.monte.media.bitmap.BitmapImage;
+import org.monte.media.amigabitmap.AmigaBitmapImage;
 
 /**
  * Represents a frame in a movie track.
@@ -107,7 +107,7 @@ public abstract class SEQFrame {
     public long getRelTime() { return this.reltime; }
     public int getInterleave() { return this.interleave; }
     
-    public abstract void decode(BitmapImage bitmap, SEQMovieTrack track);
+    public abstract void decode(AmigaBitmapImage bitmap, SEQMovieTrack track);
     
     public int getTopBound(SEQMovieTrack track) { return 0; }
     public int getBottomBound(SEQMovieTrack track) { return track.getHeight()-1; }

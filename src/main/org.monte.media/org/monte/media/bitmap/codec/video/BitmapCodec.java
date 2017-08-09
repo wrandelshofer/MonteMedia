@@ -12,9 +12,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
-import org.monte.media.bitmap.BitmapImage;
-import org.monte.media.bitmap.BitmapImage;
-import org.monte.media.bitmap.BitmapImageFactory;
+import org.monte.media.amigabitmap.AmigaBitmapImage;
+import org.monte.media.amigabitmap.AmigaBitmapImage;
+import org.monte.media.amigabitmap.AmigaBitmapImageFactory;
 import org.monte.media.av.codec.video.AbstractVideoCodec;
 import org.monte.media.av.Buffer;
 import static org.monte.media.av.BufferFlag.DISCARD;
@@ -49,7 +49,7 @@ public class BitmapCodec extends AbstractVideoCodec {
                 },
                 new Format[]{
                     new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
-                    EncodingKey, ENCODING_BITMAP_IMAGE, DataClassKey, BitmapImage.class), //
+                    EncodingKey, ENCODING_BITMAP_IMAGE, DataClassKey, AmigaBitmapImage.class), //
                 });
     }
     @Override
@@ -83,8 +83,8 @@ public class BitmapCodec extends AbstractVideoCodec {
                     InputStream ins = new BufferedInputStream(new FileInputStream(f));
                     try {
                         ILBMDecoder d = new ILBMDecoder(ins);
-                        ArrayList<BitmapImage> imgs = d.produceBitmaps();
-                        BitmapImage img = imgs.get(0);
+                        ArrayList<AmigaBitmapImage> imgs = d.produceBitmaps();
+                        AmigaBitmapImage img = imgs.get(0);
                         out.data = img;
                         success = true;
                     } catch (IOException e) {
@@ -100,7 +100,7 @@ public class BitmapCodec extends AbstractVideoCodec {
                         ArrayList<ColorCyclingMemoryImageSource> imgs = d.produce();
                         ColorCyclingMemoryImageSource mis = imgs.get(0);
 
-                        out.data = BitmapImageFactory.toBitmapImage(mis);
+                        out.data = AmigaBitmapImageFactory.toBitmapImage(mis);
                         success = true;
                     } catch (IOException e) {
                         success = false;
@@ -110,13 +110,13 @@ public class BitmapCodec extends AbstractVideoCodec {
                 }
                 if (!success) {
                     BufferedImage img = ImageIO.read(f);
-                    out.data = BitmapImageFactory.toBitmapImage(img);
+                    out.data = AmigaBitmapImageFactory.toBitmapImage(img);
                     success = true;
                 }
-            } else if (in.data instanceof BitmapImage) {
+            } else if (in.data instanceof AmigaBitmapImage) {
                 out.data = in.data;
             } else if (in.data instanceof BufferedImage) {
-                out.data = BitmapImageFactory.toBitmapImage((BufferedImage) in.data);
+                out.data = AmigaBitmapImageFactory.toBitmapImage((BufferedImage) in.data);
             }
             return CODEC_OK;
         } catch (IOException e) {

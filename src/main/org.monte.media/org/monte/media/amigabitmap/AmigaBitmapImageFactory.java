@@ -1,9 +1,9 @@
-/* @(#)BitmapImageFactory.java
+/* @(#)AmigaBitmapImageFactory.java
  * Copyright © 2006 Werner Randelshofer, Switzerland.
  * You may only use this software in accordance with the license terms.
  */
 
-package org.monte.media.bitmap;
+package org.monte.media.amigabitmap;
 
 import java.awt.Image;
 import java.awt.Point;
@@ -24,7 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Hashtable;
-import org.monte.media.bitmap.BitmapImage;
+import org.monte.media.amigabitmap.AmigaBitmapImage;
 import org.monte.media.iff.MC68000OutputStream;
 import org.monte.media.iff.MutableIFFChunk;
 import org.monte.media.ilbm.ColorCyclingMemoryImageSource;
@@ -32,32 +32,32 @@ import org.monte.media.ilbm.ColorCyclingMemoryImageSource;
 /**
  * Creates a BufferedImage from a BitmapImage.
  * <p>
- * We put these factory methods into this class instead of into class BitmapImage,
- * because we don't want to put this additional code into Java applets that
- * don't need this functionality.
+ We put these factory methods into this class instead of into class AmigaBitmapImage,
+ because we don't want to put this additional code into Java applets that
+ don't need this functionality.
  *
  * @author Werner Randelshofer
  * @version 1.0 December 25, 2006 Created.
  */
-public class BitmapImageFactory {
+public class AmigaBitmapImageFactory {
     
     /** Prevent instance creation. */
-    private BitmapImageFactory() {
+    private AmigaBitmapImageFactory() {
     }
     
     /**
-     * Creates a BufferedImage using the provided BitmapImage.
+     * Creates a BufferedImage using the provided AmigaBitmapImage.
      *
-     * @param bm The BitmapImage holding the image data.
+     * @param bm The AmigaBitmapImage holding the image data.
      */
-    public static BufferedImage toBufferedImage(BitmapImage bm) {
+    public static BufferedImage toBufferedImage(AmigaBitmapImage bm) {
         BufferedImage image = null;
         Hashtable<?,?> properties = new Hashtable<Object,Object>() ;
-        //properties.put("comment","BitmapImage");
+        //properties.put("comment","AmigaBitmapImage");
         
         bm.convertToChunky();
         switch (bm.getPixelType()) {
-            case BitmapImage.BYTE_PIXEL : {
+            case AmigaBitmapImage.BYTE_PIXEL : {
                 
                 image = new BufferedImage(bm.getWidth(), bm.getHeight(),
                         BufferedImage.TYPE_BYTE_INDEXED, (IndexColorModel) bm.getChunkyColorModel());
@@ -66,7 +66,7 @@ public class BitmapImageFactory {
                 System.arraycopy(bm.getBytePixels(), 0, pixels, 0, bm.getBytePixels().length);
                 break;
             }
-            case BitmapImage.INT_PIXEL : {
+            case AmigaBitmapImage.INT_PIXEL : {
                 WritableRaster ras = Raster.createPackedRaster(
                         DataBuffer.TYPE_INT, bm.getWidth(), bm.getHeight(),
                         3, 8, new Point());
@@ -80,17 +80,17 @@ public class BitmapImageFactory {
         
         return image;
     }
-    public static Image toMemoryImage(BitmapImage bm) {
+    public static Image toMemoryImage(AmigaBitmapImage bm) {
         bm.convertToChunky();
         switch (bm.getPixelType()) {
-            case BitmapImage.BYTE_PIXEL : {
+            case AmigaBitmapImage.BYTE_PIXEL : {
                 
                 MemoryImageSource mis = new MemoryImageSource(
                         bm.getWidth(), bm.getHeight(), bm.getChunkyColorModel(),
                         bm.getBytePixels().clone(), 0, bm.getWidth());
                 return Toolkit.getDefaultToolkit().createImage(mis);
             }
-            case BitmapImage.INT_PIXEL : {
+            case AmigaBitmapImage.INT_PIXEL : {
                 MemoryImageSource mis = new MemoryImageSource(
                         bm.getWidth(), bm.getHeight(), bm.getChunkyColorModel(),
                         bm.getIntPixels().clone(), 0, bm.getWidth());
@@ -101,17 +101,17 @@ public class BitmapImageFactory {
         return null;
     }
 
-    public static BitmapImage toBitmapImage(MemoryImageSource mis) {
+    public static AmigaBitmapImage toBitmapImage(MemoryImageSource mis) {
         return null;
     }
-    public static BitmapImage toBitmapImage(ColorCyclingMemoryImageSource mis) {
+    public static AmigaBitmapImage toBitmapImage(ColorCyclingMemoryImageSource mis) {
         return null;
     }
-    public static BitmapImage toBitmapImage(BufferedImage mis) {
+    public static AmigaBitmapImage toBitmapImage(BufferedImage mis) {
         return null;
     }
     
-    public static void write(BitmapImage bm, File f) throws IOException {
+    public static void write(AmigaBitmapImage bm, File f) throws IOException {
         OutputStream out = new BufferedOutputStream(new FileOutputStream(f));
         try {
             write(bm, out);
@@ -119,7 +119,7 @@ public class BitmapImageFactory {
             out.close();
         }
     }
-    public static void write(BitmapImage bm, OutputStream out) throws IOException {
+    public static void write(AmigaBitmapImage bm, OutputStream out) throws IOException {
         MutableIFFChunk form = new MutableIFFChunk("FORM", "ILBM");
         
         ByteArrayOutputStream buf;
@@ -199,7 +199,7 @@ public class BitmapImageFactory {
          */
         struct = new MC68000OutputStream(buf = new ByteArrayOutputStream());
         int viewMode = 0;
-        if (cm instanceof HAMColorModel) {
+        if (cm instanceof AmigaHAMColorModel) {
             viewMode |= 0x00800;
         }
         struct.writeULONG(viewMode);
@@ -219,8 +219,8 @@ public class BitmapImageFactory {
             ilbmColorRegister color[];
         } ilbmColorMapChunk;
          */
-        if (cm instanceof HAMColorModel) {
-            HAMColorModel hcm = (HAMColorModel) cm;
+        if (cm instanceof AmigaHAMColorModel) {
+            AmigaHAMColorModel hcm = (AmigaHAMColorModel) cm;
             struct = new MC68000OutputStream(buf = new ByteArrayOutputStream());
             byte[] r = new byte[hcm.getMapSize()];
             byte[] g = new byte[hcm.getMapSize()];

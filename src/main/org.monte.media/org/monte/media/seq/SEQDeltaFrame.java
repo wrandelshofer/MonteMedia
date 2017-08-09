@@ -4,7 +4,7 @@
  */
 package org.monte.media.seq;
 
-import org.monte.media.bitmap.BitmapImage;
+import org.monte.media.amigabitmap.AmigaBitmapImage;
 import java.util.Arrays;
 
 /**
@@ -43,7 +43,7 @@ public class SEQDeltaFrame
     }
 
     @Override
-    public void decode(BitmapImage bitmap, SEQMovieTrack track) {
+    public void decode(AmigaBitmapImage bitmap, SEQMovieTrack track) {
         switch (getEncoding()) {
             case ENCODING_COPY_UNCOMPRESSED:
                 decodeCopyUncompressed(bitmap, track);
@@ -62,7 +62,7 @@ public class SEQDeltaFrame
         }
     }
 
-    private void decodeCopyUncompressed(BitmapImage bitmap, SEQMovieTrack track) {
+    private void decodeCopyUncompressed(AmigaBitmapImage bitmap, SEQMovieTrack track) {
     }
 
     /**
@@ -73,7 +73,7 @@ public class SEQDeltaFrame
      * of bytes equal to the absolute value of the control WORD value is to be
      * read from the compressed data.
      */
-    private void decodeCopyCompressed(BitmapImage bitmap, SEQMovieTrack track) {
+    private void decodeCopyCompressed(AmigaBitmapImage bitmap, SEQMovieTrack track) {
         int di = 0; // data index
         byte[] screen = bitmap.getBitmap();
         Arrays.fill(screen, (byte) 0);
@@ -207,10 +207,10 @@ public class SEQDeltaFrame
         }
     }
 
-    private void decodeXORUncompressed(BitmapImage bitmap, SEQMovieTrack track) {
+    private void decodeXORUncompressed(AmigaBitmapImage bitmap, SEQMovieTrack track) {
     }
 
-    private void decodeXORCompressed(BitmapImage bitmap, SEQMovieTrack track) {
+    private void decodeXORCompressed(AmigaBitmapImage bitmap, SEQMovieTrack track) {
         int di = 0; // data index
         byte[] screen = bitmap.getBitmap();
         int bStride = bitmap.getBitplaneStride();
