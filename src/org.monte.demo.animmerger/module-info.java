@@ -3,7 +3,7 @@
  */
 
 /**
- * Animmerger demo.
+ * Merging of ANIM files demo.
  * 
  * @author Werner Randelshofer
  * @version $Id$

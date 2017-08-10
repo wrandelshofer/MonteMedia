@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="MonteMedia" default="all" basedir="."
-    xmlns:if="ant:if"
-    xmlns:unless="ant:unless">
+         xmlns:if="ant:if"
+         xmlns:unless="ant:unless">
+    
     <target name="init">
         <exec executable="git" outputproperty="git.hash.date.author" failifexecutionfails="false" errorproperty="">
             <arg value="log"/>
@@ -15,64 +16,99 @@
             <arg value="HEAD"/>
         </exec>
         <property name="name" value="${ant.project.name}"/>
-        <property name="license" value="MIT License. https://opensource.org/licenses/mit-license.php"/>
+        <property name="license.name" value="MIT License"/>
+        <property name="license" value="${license.name}. https://opensource.org/licenses/mit-license.php"/>
         <property name="version" value="${git.describe}"/>
         <property name="author" value="Werner Randelshofer. http://www.randelshofer.ch"/>
         <echo message="${name} ${version} / desc:${git.describe} rev:${git.hash.date.author}"/>
         
         <property name="srcdir" value="src"/>
         <property name="classdir" value="build/classes9"/>
-        <property name="docdir" value="build/javadoc9"/>
         <property name="libdir" value="lib"/>
         <property name="jardir" value="build/jar9"/>
-        <property name="distdir" value="dist/dist9"/>
+        <property name="distdir" value="dist/java9"/>
+        <property name="docdir" value="build/javadoc9"/>
     </target>
+    
     <target name="clean" depends="init">
         <delete dir="${classdir}"/>
         <delete dir="${docdir}"/>
         <delete dir="${jardir}"/>
         <delete dir="${distdir}"/>
     </target>
+    
     <target name="javadoc" depends="init">
         <mkdir dir="${docdir}" />
+        
+        <pathconvert property="moduleList" pathsep="," >
+            <map from="${basedir}/${srcdir}/" to=""/>
+            <dirset dir="${srcdir}" includes="*" excludes="resources"/>
+        </pathconvert>
+        
         <exec executable="javadoc">
             <arg value="-encoding"/>
             <arg value="UTF-8"/>
             <arg value="-d"/>
             <arg value="${docdir}"/>
             <arg value="-html5"/>
+            <arg value="-doctitle"/>
+            <arg value="${name} ${version}"/>
             <arg value="-header"/>
             <arg value="${name} ${version}"/>
+            <arg value="-footer"/>
+            <arg value="${license.name}"/>
             <arg value="--module-path"/>
             <arg value="${libdir}"/>
             <arg value="--module-source-path"/>
             <arg value="${srcdir}"/>
             <arg value="--module"/>
-            <arg value="org.monte.media"/>
-            <arg value="--module"/>
-            <arg value="org.monte.media.jmf"/>
+            <arg value="${moduleList}"/>
         </exec>
+        
+        <jar destfile="${distdir}/${name}-javadoc.jar">
+           <manifest>
+               <attribute name="Implementation-Title" value="${name}"/>
+               <attribute name="Implementation-Version" value="${version}"/>
+               <attribute name="Implementation-Vendor" value="${author}"/>
+               <attribute name="License" value="${license}"/>
+           </manifest>
+           <fileset dir="${docdir}">
+               <exclude name="**/.*"/>
+           </fileset>
+       </jar>
+       
     </target>
     <target name="compile" depends="init">
         <mkdir dir="${classdir}" />
         <javac
                 source="1.9"
                 target="1.9"
-                destdir="${classdir}"
-                debug="true"
-                modulesourcepath="${srcdir}" 
-                modulepath="${libdir}"
-                includeantruntime="false"
+            destdir="${classdir}"
+            debug="true"
+            modulesourcepath="${srcdir}" 
+            modulepath="${libdir}"
+            includeantruntime="false"
         >
         </javac>
+        <copy todir="${classdir}">
+            <fileset dir="${srcdir}">
+                <exclude name="**/*.java"/>
+                <exclude name="**/.*"/>
+            </fileset>
+        </copy>
     </target>
     <macrodef name="makejars">
         <attribute name="module"/>
         <attribute name="mainclass" default=""/>
         <sequential>
-         <makeclassjar module="@{module}" mainclass="@{mainclass}"/>
-         <makesourcejar module="@{module}" />
-         <makepom module="@{module}" />
+            <copy todir="${classdir}/@{module}">
+                <fileset dir=".">
+                    <include name="*.md"/>
+                </fileset>
+            </copy>
+            <makeclassjar module="@{module}" mainclass="@{mainclass}"/>
+            <makesourcejar module="@{module}" />
+            <makepom module="@{module}" />
         </sequential>
     </macrodef>
     <macrodef name="makeclassjar">
@@ -80,64 +116,73 @@
         <attribute name="mainclass" default=""/>
         
         <sequential>
-        <mkdir dir="${jardir}/@{module}" />
-        <mkdir dir="${distdir}/@{module}" />
-        <!-- note: the last line must be given twice, because the jar command ignores the last line of a manifest -->
-        <echo encoding="UTF-8" file="${jardir}/@{module}/manifest.txt" >Implementation-Title: @{module}
+            <mkdir dir="${jardir}/@{module}" />
+            <mkdir dir="${distdir}/modules" />
+            <echo encoding="UTF-8" file="${jardir}/@{module}/manifest.txt" >Implementation-Title: @{module}
 Implementation-Version: ${version}
 Implementation-Vendor: ${author}
 License: ${license}
-License: ${license}
-        </echo>
-        <exec executable="jar">
-            <arg value="--create"/>
-            <arg value="--file"/>
-            <arg value="${distdir}/@{module}/@{module}.jar"/>
-            <arg value="--main-class" unless:blank="@{mainclass}"/>
-            <arg value="@{mainclass}" unless:blank="@{mainclass}"/>
-            <arg value="--manifest"/>
-            <arg value="${jardir}/@{module}/manifest.txt"/>
-            <arg value="--module-version"/>
-            <arg value="${version}"/>
-            <arg value="-C"/>
-            <arg value="${classdir}/@{module}"/>
-            <arg value="."/>
-        </exec>
-        <exec executable="jar">
-            <arg value="-d"/>
-            <arg value="--file"/>
-            <arg value="${distdir}/@{module}/@{module}.jar"/>
-        </exec>
+${environment::newline()}</echo>
+            <exec executable="jar">
+                <arg value="--create"/>
+                <arg value="--file"/>
+                <arg value="${distdir}/modules/@{module}.jar"/>
+                <arg value="--main-class" unless:blank="@{mainclass}"/>
+                <arg value="@{mainclass}" unless:blank="@{mainclass}"/>
+                <arg value="--manifest"/>
+                <arg value="${jardir}/@{module}/manifest.txt"/>
+                <arg value="--module-version"/>
+                <arg value="${version}"/>
+                <arg value="-C"/>
+                <arg value="${classdir}/@{module}"/>
+                <arg value="."/>
+            </exec>
+            <exec executable="jar">
+                <arg value="-d"/>
+                <arg value="--file"/>
+                <arg value="${distdir}/modules/@{module}.jar"/>
+            </exec>
         </sequential>
     </macrodef>
     <macrodef name="makesourcejar">
         <attribute name="module"/>
         <sequential>
-        <copy todir="${jardir}/@{module}-source">
-            <fileset dir="${srcdir}/@{module}">
-                <exclude name="**/.*"/>
-            </fileset>
-            <filterset begintoken="$" endtoken="$">
-                <filter token="Id" value="$Id: ${git.hash.date.author} $"/>
-            </filterset>
-        </copy>
-        <jar destfile="${distdir}/@{module}/@{module}-source.jar">
-            <fileset dir="${jardir}/@{module}-source">
-                <exclude name="**/.*"/>
-            </fileset>
-        </jar>
+            <mkdir dir="${distdir}/sources" />
+            <copy todir="${jardir}/@{module}-sources">
+                <fileset dir="${srcdir}/@{module}">
+                    <exclude name="**/.*"/>
+                </fileset>
+                <filterset begintoken="$" endtoken="$">
+                    <filter token="Id" value="$Id: ${git.hash.date.author} $"/>
+                </filterset>
+            </copy>
+            <jar destfile="${distdir}/sources/@{module}-sources.jar">
+                <manifest>
+                    <attribute name="Implementation-Title" value="@{module}"/>
+                    <attribute name="Implementation-Version" value="${version}"/>
+                    <attribute name="Implementation-Vendor" value="${author}"/>
+                    <attribute name="License" value="${license}"/>
+                </manifest>
+                <fileset dir="${jardir}/@{module}-sources">
+                    <exclude name="**/.*"/>
+                </fileset>
+                <fileset dir=".">
+                    <include name="*.md"/>
+                </fileset>
+            </jar>
         </sequential>
     </macrodef>
     <macrodef name="makepom">
         <attribute name="module"/>
         <sequential>
-        <copy file="pom-template.xml" tofile="${distdir}/@{module}/pom.xml" >
-            <filterset>
-                <filter token="name" value="${name}"/>
-                <filter token="module" value="@{module}"/>
-                <filter token="version" value="${version}"/>
-            </filterset>
-        </copy>
+            <mkdir dir="${distdir}/poms" />
+            <copy file="pom-template.xml" tofile="${distdir}/poms/@{module}-pom.xml" >
+                <filterset>
+                    <filter token="name" value="${name}"/>
+                    <filter token="module" value="@{module}"/>
+                    <filter token="version" value="${version}"/>
+                </filterset>
+            </copy>
         </sequential>
     </macrodef>
     <target name="jar" depends="compile">

@@ -28,6 +28,7 @@ import static java.lang.Math.min;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Vector;
 import java.util.prefs.Preferences;
 import javax.sound.sampled.AudioSystem;
@@ -53,6 +54,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.ButtonUI;
 import javax.swing.plaf.basic.BasicButtonUI;
+import org.monte.media.av.Codec;
 import org.monte.media.av.Format;
 import static org.monte.media.av.FormatKeys.EncodingKey;
 import static org.monte.media.av.FormatKeys.FrameRateKey;
@@ -62,6 +64,7 @@ import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
 import org.monte.media.av.FormatKeys.MediaType;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.FormatKeys.MimeTypeKey;
+import org.monte.media.av.Registry;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.ChannelsKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleRateKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleSizeInBitsKey;
@@ -82,10 +85,10 @@ import org.monte.media.swing.datatransfer.DropFileTransferHandler;
  * ScreenRecorderMain.
  *
  * @author Werner Randelshofer
- * @version $Id$
- $
+ * @version $Id$ $
  */
 public class Main extends javax.swing.JFrame {
+
     private final static long serialVersionUID = 1L;
 
     private void setSelectedIndex(ButtonGroup group, int index) {
@@ -126,10 +129,9 @@ public class Main extends javax.swing.JFrame {
 
         audioSource = prefs.getInt("ScreenRecording.audioSource", 0);
 
-
         Vector<AudioSourceItem> items = getAudioSources();
         audioSource = max(0, min(items.size() - 1, audioSource));
-        System.out.println("audioSource:" + audioSource);
+
         int i = 0;
         for (AudioSourceItem item : items) {
             JRadioButtonMenuItem mi = new JRadioButtonMenuItem(item.title);
@@ -282,7 +284,8 @@ public class Main extends javax.swing.JFrame {
      */
     public Main() {
         setContentPane(new JPanel() {
-    private final static long serialVersionUID = 1L;
+            private final static long serialVersionUID = 1L;
+
             @Override
             public void paintComponent(Graphics gr) {
                 Graphics2D g = (Graphics2D) gr;
@@ -337,7 +340,6 @@ public class Main extends javax.swing.JFrame {
         optionsButton.setMargin(new Insets(0, 0, 0, 0));
         optionsButton.setBorder(new EmptyBorder(2, 2, 2, 2));
 
-
         infoLabelText = infoLabel.getText();
         updateInfoLabel();
         /*
@@ -370,7 +372,6 @@ public class Main extends javax.swing.JFrame {
             }
         }));
 
-
         depth = min(max(0, prefs.getInt("ScreenRecording.colorDepth", 3)), colorGroup.getButtonCount() - 1);
         setSelectedIndex(colorGroup, depth);
         format = min(max(0, prefs.getInt("ScreenRecording.format", 1)), formatGroup.getButtonCount() - 1);
@@ -382,7 +383,6 @@ public class Main extends javax.swing.JFrame {
 
         fps = min(max(0, prefs.getInt("ScreenRecording.fps", 1)), fpsGroup.getButtonCount() - 1);
         setSelectedIndex(fpsGroup, fps);
-
 
         audioRate = min(max(0, prefs.getInt("ScreenRecording.audioRate", 1)), audioRateGroup.getButtonCount() - 1);
         setSelectedIndex(audioRateGroup, audioRate);
@@ -682,7 +682,7 @@ public class Main extends javax.swing.JFrame {
         prefs.putInt("ScreenRecording.customAreaHeight", customAreaRect.height);
     }
 
-private void start() throws IOException, AWTException {
+    private void start() throws IOException, AWTException {
         updateValues();
 
         if (screenRecorder == null) {
@@ -795,35 +795,34 @@ private void start() throws IOException, AWTException {
                     break;
             }
 
-
             screenRecorder = new ScreenRecorder(cfg, areaRect,
                     // the file format:
                     new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, mimeType),
                     //
                     // the output format for screen capture:
                     new Format(MediaTypeKey, MediaType.VIDEO, EncodingKey, videoFormatName,
-                    CompressorNameKey, compressorName,
-                    WidthKey, outputDimension.width,
-                    HeightKey, outputDimension.height,
-                    DepthKey, bitDepth, FrameRateKey, Rational.valueOf(screenRate),
-                    QualityKey, quality,
-                    KeyFrameIntervalKey, (screenRate * 60) // one keyframe per minute is enough
+                            CompressorNameKey, compressorName,
+                            WidthKey, outputDimension.width,
+                            HeightKey, outputDimension.height,
+                            DepthKey, bitDepth, FrameRateKey, Rational.valueOf(screenRate),
+                            QualityKey, quality,
+                            KeyFrameIntervalKey, (screenRate * 60) // one keyframe per minute is enough
                     ),
                     //
                     // the output format for mouse capture:
                     crsr == null ? null : new Format(MediaTypeKey, MediaType.VIDEO, EncodingKey, crsr,
-                    FrameRateKey, Rational.valueOf(mouseRate)),
+                                    FrameRateKey, Rational.valueOf(mouseRate)),
                     //
                     // the output format for audio capture:
                     !asi.isEnabled ? null : new Format(MediaTypeKey, MediaType.AUDIO,
-                    //EncodingKey, audioFormatName,
-                    SampleRateKey, Rational.valueOf(audioRate),
-                    SampleSizeInBitsKey, audioBitsPerSample,
-                    ChannelsKey, audioChannels),
+                                    //EncodingKey, audioFormatName,
+                                    SampleRateKey, Rational.valueOf(audioRate),
+                                    SampleSizeInBitsKey, audioBitsPerSample,
+                                    ChannelsKey, audioChannels),
                     //
                     // the storage location of the movie
                     movieFolder);
-                    screenRecorder.setAudioMixer(asi.mixerInfo == null ? null : AudioSystem.getMixer(asi.mixerInfo));
+            screenRecorder.setAudioMixer(asi.mixerInfo == null ? null : AudioSystem.getMixer(asi.mixerInfo));
 
             if (timer == null) {
                 timer = new Timer(500, new ActionListener() {
@@ -844,8 +843,6 @@ private void start() throws IOException, AWTException {
             audioMonitor.start();
         }
     }
-
-
 
     private void updateTimeLabel() {
         if (screenRecorder != null) {
@@ -907,7 +904,7 @@ private void start() throws IOException, AWTException {
             timeLabel.setText("Failed");
             setExtendedState(Frame.NORMAL);
             JOptionPane.showMessageDialog(Main.this,
-                    "<html><b>Sorry. Screen Recording failed.</b><br>"+msg.getMessage().replace("\n","<br>"),
+                    "<html><b>Sorry. Screen Recording failed.</b><br>" + msg.getMessage().replace("\n", "<br>"),
                     "Screen Recorder", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -974,6 +971,49 @@ private void start() throws IOException, AWTException {
             stop();
         }
     }//GEN-LAST:event_startStopPerformed
+
+    /**
+     * Checks whether the registry provides all the codecs that we need.
+     */
+    private static void checkRegistry() throws IOException {
+        Registry r = Registry.getInstance();
+
+        // Check writers
+        {
+            List<Format> writerFormats = r.getWriterFormats();
+            Outer:
+            for (String mimeType : new String[]{MIME_AVI, MIME_QUICKTIME}) {
+                Format requiredFileFormat = new Format(MimeTypeKey, mimeType, MediaTypeKey, MediaType.FILE);
+                for (Format availableFileFormat : writerFormats) {
+                    if (availableFileFormat.matches(requiredFileFormat)) {
+                        continue Outer;
+                    }
+                }
+                throw new IOException("No writer found for file format: " + requiredFileFormat);
+            }
+        }
+        // Check video codecs
+        {
+            Format requiredVideoFormat = new Format(MediaTypeKey, MediaType.VIDEO, EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE);
+            Codec availableVideoCodec = r.getCodec(null, requiredVideoFormat);
+            if (availableVideoCodec == null) {
+                throw new IOException("No video codec found for format: " + requiredVideoFormat);
+            }
+        }
+        // Check audio codecs
+        {
+            Format requiredAudioFormat = new Format(MediaTypeKey, MediaType.AUDIO,
+                    //EncodingKey, audioFormatName,
+                    SampleRateKey, Rational.valueOf(44100),
+                    SampleSizeInBitsKey, 16,
+                    ChannelsKey, 1);
+            Codec availableAudioCodec = r.getCodec(null, requiredAudioFormat);
+            if (availableAudioCodec == null) {
+                throw new IOException("No audio codec found for format: " + requiredAudioFormat);
+            }
+        }
+    }
+
     private static Vector<AudioSourceItem> getAudioSources() {
         Vector<AudioSourceItem> l = new Vector<AudioSourceItem>();
 
@@ -983,11 +1023,11 @@ private void start() throws IOException, AWTException {
         DataLine.Info lineInfo = new DataLine.Info(
                 TargetDataLine.class,
                 new javax.sound.sampled.AudioFormat(
-                44100.0f,
-                16,
-                2,
-                true,
-                true));
+                        44100.0f,
+                        16,
+                        2,
+                        true,
+                        true));
 
         for (Mixer.Info info : mixers) {
             Mixer mixer = AudioSystem.getMixer(info);
@@ -1002,15 +1042,28 @@ private void start() throws IOException, AWTException {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+        try {
+            checkRegistry();
+        } catch (IOException ex) {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                String msg=ex.getMessage();
+                JOptionPane.showMessageDialog(null,
+                    "<html><b>Sorry. Could not load required audio/video services.</b><br>" + msg.replace("\n", "<br>"),
+                    "Screen Recorder", JOptionPane.ERROR_MESSAGE);
+                System.exit(10);
+            }
+        });
+        }
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
                 try {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                    //UIManager.put(area, area);
                     ToolTipManager.sharedInstance().setDismissDelay(20000);
                 } catch (Exception e) {
-                    //ignore
+                    //Ignore, the UI will look less beautiful, but will still work.
                 }
                 new Main().setVisible(true);
             }

@@ -3,7 +3,7 @@
  */
 
 /**
- * Audiorecorder demo.
+ * Audio recorder demo.
  * 
  * @author Werner Randelshofer
  * @version $Id$

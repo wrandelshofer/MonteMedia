@@ -3,9 +3,9 @@
  */
 
 /**
- * Provides codecs for the Java Media Framework (JMF).
+ * Provides codecs to the Java Media Framework (JMF).
  * <p>
- * Please note that you must register the codecs with the JMF Registry application, to make them
+ * Please note that you must register the codecs with the JMF Registry application to make them
  * available in JMF.
  * 
  * @author Werner Randelshofer

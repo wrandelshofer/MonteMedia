@@ -84,7 +84,7 @@ public class DefaultRegistry extends Registry {
         if (writerSpis == null) {
             writerSpis = new ArrayList<>();
             for (MovieWriterSpi spi : ServiceLoader.load(MovieWriterSpi.class)) {
-                writerSpis.add(spi);
+                writerSpis.add(spi);                
             }
         }
         return writerSpis;
