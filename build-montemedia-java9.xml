@@ -26,7 +26,7 @@
         <property name="classdir" value="build/classes9"/>
         <property name="libdir" value="lib"/>
         <property name="jardir" value="build/jar9"/>
-        <property name="distdir" value="dist/java9"/>
+        <property name="distdir" value="dist/${name}-${version}-java9"/>
         <property name="docdir" value="build/javadoc9"/>
     </target>
     
@@ -203,6 +203,13 @@ ${environment::newline()}</echo>
         <makejars module="org.monte.demo.rationalnumber" mainclass="org.monte.demo.rationalnumber.Main"/>
         <makejars module="org.monte.demo.screenrecorder" mainclass="org.monte.demo.screenrecorder.Main"/>
     </target>
-    <target name="all" depends="clean,compile,jar,javadoc">
+   <target name="dist" depends="clean,compile,jar,javadoc">
+        <copy todir="${distdir}">
+            <fileset dir=".">
+                <include name="*.md"/>
+            </fileset>
+        </copy>
     </target>
-</project>
+    <target name="all" depends="clean,dist">
+    </target>
+ </project>

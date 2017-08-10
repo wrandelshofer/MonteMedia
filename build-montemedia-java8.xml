@@ -25,7 +25,7 @@
         <property name="classdir" value="build/classes8"/>
         <property name="libdir" value="lib"/>
         <property name="jardir" value="build/jar8"/>
-        <property name="distdir" value="dist/java8"/>
+        <property name="distdir" value="dist/${name}-${version}-java8"/>
         <property name="docdir" value="build/javadoc8"/>
     </target>
     <target name="clean" depends="init">
@@ -56,23 +56,18 @@
                 </fileset>
             </classpath>
         </javadoc>
-        <exec executable="javadoc">
-            <arg value="-encoding"/>
-            <arg value="UTF-8"/>
-            <arg value="-d"/>
-            <arg value="${docdir}"/>
-            <arg value="-html5"/>
-            <arg value="-header"/>
-            <arg value="${name} ${version}"/>
-            <arg value="-footer"/>
-            <arg value="${license.name}"/>
-            <arg value="--module-path"/>
-            <arg value="${libdir}"/>
-            <arg value="--module-source-path"/>
-            <arg value="${srcdir}"/>
-            <arg value="--module"/>
-            <arg value="${moduleList}"/>
-        </exec>
+        
+        <jar destfile="${distdir}/${name}-javadoc.jar">
+           <manifest>
+               <attribute name="Implementation-Title" value="${name}"/>
+               <attribute name="Implementation-Version" value="${version}"/>
+               <attribute name="Implementation-Vendor" value="${author}"/>
+               <attribute name="License" value="${license}"/>
+           </manifest>
+           <fileset dir="${docdir}">
+               <exclude name="**/.*"/>
+           </fileset>
+       </jar>
     </target>
     <target name="compile" depends="init">
         <mkdir dir="${classdir}" />
@@ -193,8 +188,6 @@
     <target name="jar" depends="compile">
             <makejars/>
     </target>
-    <target name="all" depends="clean,compile,jar,javadoc">
-    </target>
     
     <target depends="init" name="run JMF Registry">
         <java classname="JMFRegistry"
@@ -219,4 +212,14 @@
             <jvmarg value="-Djava.library.path=${lib}"/>
         </java>
     </target>    
+    
+    <target name="dist" depends="clean,compile,jar,javadoc">
+        <copy todir="${distdir}">
+            <fileset dir=".">
+                <include name="*.md"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="all" depends="clean,dist">
+    </target>
 </project>
