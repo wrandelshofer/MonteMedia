@@ -70,6 +70,9 @@
  * <tr><td>EXIF</td><td>AVI, JPEG, MPO</td><td>Exchangeable Image File
  * Format</td><td>Decode</td></tr>
  * </table>
+ * 
+ * @author Werner Randelshofer
+ * @version $Id$
  */
 module org.monte.media {
     requires java.desktop;

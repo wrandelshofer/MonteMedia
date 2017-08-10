@@ -2,6 +2,12 @@
  * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
  */
 
+/**
+ * Audiorecorder demo.
+ * 
+ * @author Werner Randelshofer
+ * @version $Id$
+ */
 module org.monte.demo.audiorecorder {
     requires java.desktop;
     

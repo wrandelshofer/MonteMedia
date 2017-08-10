@@ -30,13 +30,4 @@ Copyright © 2017 Werner Randelshofer, Switzerland. Licensed under the MIT Licen
         <connection>scm:git:git://github.com/wrandelshofer/MonteMedia</connection>
         <developerConnection>scm:git:git://github.com:wrandelshofer/MonteMedia.git</developerConnection>
     </scm>
-    
-    <dependencies>
-        <dependency>
-            <groupId>javax.media</groupId>
-            <artifactId>jmf</artifactId>
-            <version>2.1.1e</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
 </project>

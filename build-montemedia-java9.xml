@@ -3,11 +3,10 @@
     xmlns:if="ant:if"
     xmlns:unless="ant:unless">
     <target name="init">
-        <exec executable="git" outputproperty="git.revision" failifexecutionfails="false" errorproperty="">
+        <exec executable="git" outputproperty="git.hash.date.author" failifexecutionfails="false" errorproperty="">
             <arg value="log"/>
             <arg value="-1"/>
-            <arg value="--pretty=format:%cd.%h"/>
-            <arg value="--date=format:%Y%m%d.%H%M%S"/>
+            <arg value="--pretty=format:%h %cI %cn"/>
         </exec>
         <exec executable="git" outputproperty="git.describe" failifexecutionfails="false" errorproperty="">
             <arg value="describe"/>
@@ -19,7 +18,7 @@
         <property name="license" value="MIT License. https://opensource.org/licenses/mit-license.php"/>
         <property name="version" value="${git.describe}"/>
         <property name="author" value="Werner Randelshofer. http://www.randelshofer.ch"/>
-        <echo message="${name} ${version} / rev:${git.revision} desc:${git.describe}"/>
+        <echo message="${name} ${version} / desc:${git.describe} rev:${git.hash.date.author}"/>
         
         <property name="srcdir" value="src"/>
         <property name="classdir" value="build/classes9"/>
@@ -67,9 +66,19 @@
         >
         </javac>
     </target>
-    <macrodef name="jarmodule">
+    <macrodef name="makejars">
         <attribute name="module"/>
         <attribute name="mainclass" default=""/>
+        <sequential>
+         <makeclassjar module="@{module}" mainclass="@{mainclass}"/>
+         <makesourcejar module="@{module}" />
+         <makepom module="@{module}" />
+        </sequential>
+    </macrodef>
+    <macrodef name="makeclassjar">
+        <attribute name="module"/>
+        <attribute name="mainclass" default=""/>
+        
         <sequential>
         <mkdir dir="${jardir}/@{module}" />
         <mkdir dir="${distdir}/@{module}" />
@@ -99,37 +108,55 @@ License: ${license}
             <arg value="--file"/>
             <arg value="${distdir}/@{module}/@{module}.jar"/>
         </exec>
-        <jar destfile="${distdir}/@{module}/@{module}-source.jar">
+        </sequential>
+    </macrodef>
+    <macrodef name="makesourcejar">
+        <attribute name="module"/>
+        <sequential>
+        <copy todir="${jardir}/@{module}-source">
             <fileset dir="${srcdir}/@{module}">
                 <exclude name="**/.*"/>
             </fileset>
+            <filterset begintoken="$" endtoken="$">
+                <filter token="Id" value="$Id: ${git.hash.date.author} $"/>
+            </filterset>
+        </copy>
+        <jar destfile="${distdir}/@{module}/@{module}-source.jar">
+            <fileset dir="${jardir}/@{module}-source">
+                <exclude name="**/.*"/>
+            </fileset>
         </jar>
+        </sequential>
+    </macrodef>
+    <macrodef name="makepom">
+        <attribute name="module"/>
+        <sequential>
         <copy file="pom-template.xml" tofile="${distdir}/@{module}/pom.xml" >
             <filterset>
                 <filter token="name" value="${name}"/>
-                <filter token="module" value="org.monte.media"/>
+                <filter token="module" value="@{module}"/>
                 <filter token="version" value="${version}"/>
             </filterset>
         </copy>
         </sequential>
     </macrodef>
     <target name="jar" depends="compile">
-        <jarmodule module="org.monte.media" mainclass="org.monte.media.screenrecorder.Main"/>
-        <jarmodule module="org.monte.media.jmf"/>
-        <jarmodule module="org.monte.demo.jmfavi"/>
-        <jarmodule module="org.monte.demo.animmerger" mainclass="org.monte.demo.animmerger.Main"/>
-        <jarmodule module="org.monte.demo.audiorecorder" mainclass="org.monte.demo.audiorecorder.Main"/>
-        <jarmodule module="org.monte.demo.aviwriter" mainclass="org.monte.demo.aviwriter.Main"/>
-        <jarmodule module="org.monte.demo.cleartype" mainclass="org.monte.demo.cleartype.Main"/>
-        <jarmodule module="org.monte.demo.cmykimageviewer" mainclass="org.monte.demo.cmykimageviewer.Main"/>
-        <jarmodule module="org.monte.demo.imageioviewer" mainclass="org.monte.demo.imageioviewer.Main"/>
-        <jarmodule module="org.monte.demo.io" mainclass="org.monte.demo.io.Main"/>
-        <jarmodule module="org.monte.demo.movieconverter" mainclass="org.monte.demo.movieconverter.Main"/>
-        <jarmodule module="org.monte.demo.moviemaker" mainclass="org.monte.demo.moviemaker.Main"/>
-        <jarmodule module="org.monte.demo.mpoimagesplitter" mainclass="org.monte.demo.mpoimagesplitter.Main"/>
-        <jarmodule module="org.monte.demo.quicktimewriter" mainclass="org.monte.demo.quicktimewriter.Main"/>
-        <jarmodule module="org.monte.demo.rationalnumber" mainclass="org.monte.demo.rationalnumber.Main"/>
-        <jarmodule module="org.monte.demo.screenrecorder" mainclass="org.monte.demo.screenrecorder.Main"/>
+        <makejars module="org.monte.media" mainclass="org.monte.media.screenrecorder.Main"/>
+        <makejars module="org.monte.media.jmf"/>
+        <makejars module="org.monte.demo.jmfavi"/>
+        <makejars module="org.monte.demo.animmerger" mainclass="org.monte.demo.animmerger.Main"/>
+        <makejars module="org.monte.demo.audiorecorder" mainclass="org.monte.demo.audiorecorder.Main"/>
+        <makejars module="org.monte.demo.aviwriter" mainclass="org.monte.demo.aviwriter.Main"/>
+        <makejars module="org.monte.demo.cleartype" mainclass="org.monte.demo.cleartype.Main"/>
+        <makejars module="org.monte.demo.cmykimageviewer" mainclass="org.monte.demo.cmykimageviewer.Main"/>
+        <makejars module="org.monte.demo.imageioviewer" mainclass="org.monte.demo.imageioviewer.Main"/>
+        <makejars module="org.monte.demo.io" mainclass="org.monte.demo.io.Main"/>
+        <makejars module="org.monte.demo.movieconverter" mainclass="org.monte.demo.movieconverter.Main"/>
+        <makejars module="org.monte.demo.moviemaker" mainclass="org.monte.demo.moviemaker.Main"/>
+        <makejars module="org.monte.demo.mpoimagesplitter" mainclass="org.monte.demo.mpoimagesplitter.Main"/>
+        <makejars module="org.monte.demo.quicktimewriter" mainclass="org.monte.demo.quicktimewriter.Main"/>
+        <makejars module="org.monte.demo.rationalnumber" mainclass="org.monte.demo.rationalnumber.Main"/>
+        <makejars module="org.monte.demo.screenrecorder" mainclass="org.monte.demo.screenrecorder.Main"/>
     </target>
     <target name="all" depends="clean,compile,jar,javadoc">
     </target>
