@@ -19,7 +19,7 @@ import java.awt.geom.Point2D;
  * >http://www.w3.org/TR/smil/smil-animation.html#animationNS-InterpolationKeysplines</a>
  *
  * @author Werner Randelshofer
- * @version $Id: SplineInterpolator.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class SplineInterpolator extends AbstractSplineInterpolator {
 

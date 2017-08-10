@@ -15,7 +15,7 @@ import javax.imageio.stream.ImageOutputStream;
  * IOStreams.
  *
  * @author Werner Randelshofer
- * @version $$Id$$
+ * @version $Id$
  */
 public class IOStreams {
     /**

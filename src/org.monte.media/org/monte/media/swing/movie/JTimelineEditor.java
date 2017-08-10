@@ -42,7 +42,7 @@ import org.monte.media.swing.border.ImageBevelBorder;
  * If a movie has n time steps, then there are n+1 insertion points.
  * 
  * @author Werner Randelshofer
- * @version 1.0 2011-09-01 Created.
+ * @version $Id$
  */
 public class JTimelineEditor extends javax.swing.JPanel {
     private final static long serialVersionUID = 1L;

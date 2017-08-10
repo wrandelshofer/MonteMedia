@@ -10,7 +10,7 @@ import java.util.Comparator;
  * {@code FileComparator}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-02-20 Created.
+ * @version $Id$
  */
 public class FileComparator implements Comparator<File> {
 

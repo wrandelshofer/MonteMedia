@@ -11,7 +11,7 @@ import org.monte.media.amigabitmap.AmigaBitmapImage;
  * Represents a frame in a movie track.
  *
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version 1.0 2010-12-25 Created.
+ * @version $Id$
  */
 public abstract class SEQFrame {
     protected ColorModel colorModel;

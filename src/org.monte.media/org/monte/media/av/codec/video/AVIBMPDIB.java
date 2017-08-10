@@ -23,7 +23,7 @@ import org.monte.media.io.ImageInputStreamAdapter;
  * <a href="http://www.fileformat.info/format/bmp/spec/b7c72ebab8064da48ae5ed0c053c67a4/BMPDIB.TXT">BMPDIB.txt</a>
  *
  * @author Werner Randelshofer
- * @version 1.0 2009-12-30 Created.
+ * @version $Id$
  */
  public class AVIBMPDIB {
 

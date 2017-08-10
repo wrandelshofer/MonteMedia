@@ -36,7 +36,7 @@ import org.monte.media.io.ByteArrayImageOutputStream;
  * conversion or channel conversion.
  *
  * @author Werner Randelshofer
- * @version $Id: AbstractPCMAudioCodec.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public abstract class AbstractPCMAudioCodec extends AbstractAudioCodec {
 

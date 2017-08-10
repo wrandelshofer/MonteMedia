@@ -18,7 +18,7 @@ import java.nio.ByteOrder;
  * generating an {@code IOException}.
  *
  * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau
- * @version $Id: ByteArrayImageInputStream.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class ByteArrayImageInputStream extends ImageInputStreamImpl2 {
     /**

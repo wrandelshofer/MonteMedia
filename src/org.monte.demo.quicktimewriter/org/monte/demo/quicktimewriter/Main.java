@@ -33,7 +33,7 @@ import org.monte.media.quicktime.QuickTimeWriter;
  * Demonstrates the use of {@link QuickTimeReader} and {@link QuickTimeWriter}.
  *
  * @author Werner Randelshofer
- * @version $Id: Main.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class Main {
 

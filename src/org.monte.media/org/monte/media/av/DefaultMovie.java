@@ -13,7 +13,7 @@ import org.monte.media.av.MovieReader;
  * {@code DefaultMovie}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-09-01 Created.
+ * @version $Id$
  */
 public class DefaultMovie extends AbstractMovie {
     private final static long serialVersionUID = 1L;

@@ -16,7 +16,7 @@ import org.monte.media.util.Methods;
  * another.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-03-12 Created.
+ * @version $Id$
  */
 public class Buffer {
 

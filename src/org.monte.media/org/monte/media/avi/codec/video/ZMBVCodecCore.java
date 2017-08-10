@@ -114,7 +114,7 @@ import org.monte.media.io.UncachedImageInputStream;
  * 
  * *
  * @author Werner Randelshofer
- * @version 1.0 2011-08-29 Created.
+ * @version $Id$
  */
 public class ZMBVCodecCore {
 

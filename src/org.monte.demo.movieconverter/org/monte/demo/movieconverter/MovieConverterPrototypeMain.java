@@ -9,7 +9,7 @@ import org.monte.media.av.Buffer;
  * {@code MovieConverterPrototypeMain}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-09-03 Created.
+ * @version $Id$
  */
 public class MovieConverterPrototypeMain {
     private static class MovieReader {

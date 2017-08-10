@@ -16,17 +16,7 @@ import javax.swing.border.Border;
  * ButtonStateBorder.
  *
  * @author  Werner Randelshofer
- * @version 1.2 2009-11-20 Added more constructors.
- * <br>1.1 2005-11-30 Method getBorderInsets() returns border insets from
- * variable borderInsets, if it is not null. This allows to defer image loading
- * until the border needs to be painted.
- * <br>1.0.4 2005-10-03 Draw default state only, if button is not pressed.
- * <br>1.0.3 2005-09-30 Draw pressed state only, if button state "isPressed"
- * _and_ "isArmed" are true.
- * <br>1.0.2 2005-06-25 Return a new instance of insets in method getBorderInsets.
- * <br>1.0.1 2005-04-17 Blinking default button needs to be drawn on
- * all window types, and not just on JDialog's.
- * <br>1.0  18 March 2005  Created.
+ * @version $Id$
  */
 public class ButtonStateBorder implements Border {
     public final static int E = 0;

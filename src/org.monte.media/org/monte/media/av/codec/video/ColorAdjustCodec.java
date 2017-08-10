@@ -25,7 +25,7 @@ import org.monte.media.interpolator.SplineInterpolator;
  * Adjusts the colors of a buffered image.
  *
  * @author Werner Randelshofer
- * @version 1.0 2012-01-16 Created.
+ * @version $Id$
  */
 public class ColorAdjustCodec extends AbstractVideoCodec {
 

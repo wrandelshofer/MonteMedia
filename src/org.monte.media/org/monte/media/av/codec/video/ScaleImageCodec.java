@@ -24,7 +24,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
  * Scales a buffered image.
  *
  * @author Werner Randelshofer
- * @version 1.0 2012-04-24 Created.
+ * @version $Id$
  */
 public class ScaleImageCodec extends AbstractVideoCodec {
 

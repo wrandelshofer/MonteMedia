@@ -9,7 +9,7 @@ import java.util.HashMap;
  * Formats integer values as an enumeration.
  *
  * @author Werner Randelshofer
- * @version 1.0 2010-03-22 Created.
+ * @version $Id$
  */
 public class EnumValueFormatter implements ValueFormatter  {
 

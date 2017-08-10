@@ -18,7 +18,7 @@ import static org.monte.media.av.FormatKeys.MimeTypeKey;
  * The {@code Registry} for audio and video codecs.
  *
  * @author Werner Randelshofer
- * @version $Id: Registry.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public abstract class Registry {
 

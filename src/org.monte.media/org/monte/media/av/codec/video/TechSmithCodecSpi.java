@@ -10,7 +10,7 @@ import org.monte.media.av.CodecSpi;
  * TechSmithCodecSpi.
  *
  * @author Werner Randelshofer
- * @version $$Id$$
+ * @version $Id$
  */
 public class TechSmithCodecSpi implements CodecSpi {
 

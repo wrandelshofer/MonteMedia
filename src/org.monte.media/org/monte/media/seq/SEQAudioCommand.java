@@ -13,7 +13,7 @@ import org.monte.media.eightsvx.LoopableAudioClip;
  * a single frame of a SEQMovieTrack. This class is currently unused.
  *
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version 1.0 2010-12-25 Created.
+ * @version $Id$
  */
 public class SEQAudioCommand {
     /** Start playing a sound. */

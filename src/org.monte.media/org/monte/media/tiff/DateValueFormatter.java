@@ -8,7 +8,7 @@ package org.monte.media.tiff;
  * DateValueFormatter.
  *
  * @author Werner Randelshofer
- * @version 1.0 2010-07-24 Created.
+ * @version $Id$
  */
 public class DateValueFormatter implements ValueFormatter {
 

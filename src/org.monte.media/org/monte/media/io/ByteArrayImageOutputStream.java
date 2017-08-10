@@ -24,8 +24,7 @@ import static java.lang.Math.*;
  * generating an {@code IOException}.
  *
  * @author Werner Randelshofer
- * @version 1.0.1 2011-01-23 Implements length method.
- * <br>1.0 2011-01-18 Created.
+ * @version $Id$
  */
 public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
 

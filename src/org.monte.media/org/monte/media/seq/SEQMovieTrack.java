@@ -20,7 +20,7 @@ import org.monte.media.ilbm.ColorCycle;
  * a movie (image and audio data, global informations).
  *
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version $Id: SEQMovieTrack.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class SEQMovieTrack {
 

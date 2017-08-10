@@ -27,7 +27,7 @@ import org.monte.media.tiff.TagSet;
  * <a href="http://www.exiv2.org/tags.html">http://www.exiv2.org/tags.html</a>
  * 
  * @author Werner Randelshofer
- * @version 1.0 2010-07-24 Created.
+ * @version $Id$
  */
 public class GPSTagSet extends TagSet {
 

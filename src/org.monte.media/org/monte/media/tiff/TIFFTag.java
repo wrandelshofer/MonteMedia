@@ -17,7 +17,7 @@ import org.monte.media.math.Rational;
  * <p>
  *
  * @author Werner Randelshofer
- * @version 1.0 2010-07-24 Created.
+ * @version $Id$
  */
 public class TIFFTag {
 

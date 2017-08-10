@@ -9,7 +9,7 @@ import java.applet.AudioClip;
  * LoopableAudioClip.
  *
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version 1.0 April 25, 2003 Created.
+ * @version $Id$
  */
 public interface LoopableAudioClip extends AudioClip {
     /**

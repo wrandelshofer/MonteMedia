@@ -13,7 +13,7 @@ import org.monte.media.av.Multiplexer;
  * A simple API for writing movie data (audio and video) into a file.
  *
  * @author Werner Randelshofer
- * @version $Id: MovieWriter.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public interface MovieWriter extends Multiplexer, AutoCloseable {
 

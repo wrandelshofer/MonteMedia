@@ -10,14 +10,7 @@ import org.monte.media.av.Interpolator;
  * Animator executes multiple Interpolator's on a worker thread.
  *
  * @author  Werner Randelshofer
- * @version 3.0 2008-04-28 Turned class into an interface. 
- * <br>2.0 2007-11-15 Upgraded to Java 1.5.
- * <br>1.1 2007-09-09 Added support for  
- * <br>1.1 2007-08-26 Added support for interpolators which 
- * replace interpolators already in the execution queue of the Animator. 
- * <br>1.0.2 2006-10-02 Use 30 frames per second. 
- * <br>1.0.1 2006-02-21 Use 24 frames per second.
- * <br>1.0 December 22, 2003 Created.
+ * @version $Id$
  */
 public interface Animator extends Runnable {
     /**

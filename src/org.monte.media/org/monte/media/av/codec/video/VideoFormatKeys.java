@@ -11,7 +11,7 @@ import org.monte.media.math.Rational;
  * Defines common format keys for video media.
  *
  * @author Werner Randelshofer
- * @version $Id: VideoFormatKeys.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class VideoFormatKeys extends FormatKeys {
         // Standard video ENCODING strings for use with FormatKey.Encoding. 

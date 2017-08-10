@@ -27,8 +27,7 @@ import org.monte.media.tiff.TagSet;
  *
  * 
  * @author Werner Randelshofer
- * @version 1.1 2011-01-27 Adds constants.
- * <br>1.0 2010-07-24 Created.
+ * @version $Id$
  */
 public class MPFTagSet extends TagSet {
 

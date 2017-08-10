@@ -23,7 +23,7 @@ import org.monte.media.io.SeekableByteArrayOutputStream;
  * Third Edition. Reading: Addison-Wesley.
  *
  * @author Werner Randelshofer
- * @version 1.0 2010-12-26 Created.
+ * @version $Id$
  */
 public class ANIMOutputStream {
 

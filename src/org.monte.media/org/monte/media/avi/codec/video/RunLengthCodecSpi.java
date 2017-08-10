@@ -10,7 +10,7 @@ import org.monte.media.av.CodecSpi;
  * RunLengthCodecSpi.
  *
  * @author Werner Randelshofer
- * @version $$Id$$
+ * @version $Id$
  */
 public class RunLengthCodecSpi implements CodecSpi {
 

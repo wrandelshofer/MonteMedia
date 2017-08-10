@@ -10,7 +10,7 @@ import org.monte.media.av.CodecSpi;
  * QuickTimePCMAudioCodecSpi.
  *
  * @author Werner Randelshofer
- * @version $$Id$$
+ * @version $Id$
  */
 public class QuickTimePCMAudioCodecSpi implements CodecSpi {
 

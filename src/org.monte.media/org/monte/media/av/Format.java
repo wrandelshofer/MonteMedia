@@ -12,7 +12,7 @@ import java.util.Set;
  * Specifies the format of a media, for example of audio and video.
  *
  * @author Werner Randelshofer
- * @version $Id: Format.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class Format {
 

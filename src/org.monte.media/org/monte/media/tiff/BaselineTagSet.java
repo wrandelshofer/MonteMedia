@@ -18,8 +18,7 @@ import static org.monte.media.tiff.TIFFTag.UNDEFINED_MASK;
  * A class representing the set of tags found in the baseline TIFF specification
  * as well as some common additional tags.
  * @author Werner Randelshofer
- * @version 1.0.2 2011-01-28 Added some constants.
- * <br>1.0 2010-07-24 Created.
+ * @version $Id$
  */
 public class BaselineTagSet extends TagSet {
 

@@ -9,7 +9,7 @@ import java.io.UnsupportedEncodingException;
  * Formats byte arrays as string.
  *
  * @author Werner Randelshofer
- * @version 1.0 2010-03-22 Created.
+ * @version $Id$
  */
 public class ASCIIValueFormatter implements ValueFormatter  {
 

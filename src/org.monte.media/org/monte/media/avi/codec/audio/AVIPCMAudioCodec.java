@@ -30,7 +30,7 @@ import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
  * FIXME Maybe create separate subclasses for AVI PCM and QuickTime PCM.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-07-10 Created.
+ * @version $Id$
  */
 public class AVIPCMAudioCodec extends AbstractPCMAudioCodec {
 

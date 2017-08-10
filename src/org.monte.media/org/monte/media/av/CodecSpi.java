@@ -7,7 +7,7 @@ package org.monte.media.av;
  * Service provider interface for {@link Codec}.
  *
  * @author Werner Randelshofer
- * @version $$Id$$
+ * @version $Id$
  */
 public interface CodecSpi {
 

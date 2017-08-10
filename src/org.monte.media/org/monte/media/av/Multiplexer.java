@@ -11,7 +11,7 @@ import java.io.IOException;
  * single output stream.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-02-19 Created.
+ * @version $Id$
  */
 public interface Multiplexer {
     /** Writes a sample.

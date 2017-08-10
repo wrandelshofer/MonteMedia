@@ -60,7 +60,7 @@ import org.monte.media.av.Format;
  *</pre>
  *
  * @author Werner Randelshofer
- * @version $Id: Movie.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public interface Movie {
 

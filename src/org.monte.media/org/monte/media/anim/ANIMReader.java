@@ -15,7 +15,7 @@ import org.monte.media.seq.SEQMovieTrack;
  * {@code SEQReader}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-02-19 Created.
+ * @version $Id$
  */
 public class ANIMReader  {
 

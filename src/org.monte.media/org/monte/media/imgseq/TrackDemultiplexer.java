@@ -11,7 +11,7 @@ import java.io.IOException;
  * Can "demultiplex" an array of already demultiplexed tracks.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-02-20 Created.
+ * @version $Id$
  */
 public class TrackDemultiplexer implements Demultiplexer {
 

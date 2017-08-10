@@ -9,7 +9,7 @@ import java.io.ByteArrayInputStream;
  * A {@code ByteArrayInputStream} which allows to replace the byte buffer underneath.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-08-28 Created.
+ * @version $Id$
  */
 public class AppendableByteArrayInputStream extends ByteArrayInputStream {
 

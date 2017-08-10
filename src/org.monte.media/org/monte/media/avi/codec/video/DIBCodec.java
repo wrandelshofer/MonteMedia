@@ -58,7 +58,7 @@ import org.monte.media.io.SeekableByteArrayOutputStream;
  * </ul>
  *
  * @author Werner Randelshofer
- * @version $Id: DIBCodec.java 363 2016-11-09 19:32:30Z werner $
+ * @version $Id$
  */
 public class DIBCodec extends AbstractVideoCodec {
 

@@ -11,7 +11,7 @@ import javax.imageio.stream.ImageOutputStream;
  * {@code AbstractVideoCodecCore}.
  *
  * @author Werner Randelshofer
- * @version $Id: AbstractVideoCodecCore.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class AbstractVideoCodecCore {
 

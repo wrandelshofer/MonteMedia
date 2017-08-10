@@ -9,7 +9,7 @@ import org.monte.media.beans.AbstractBean;
  * {@code DefaultImageAdjustmentModel}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2012-01-18 Created.
+ * @version $Id$
  */
 public class DefaultColorAdjustModel
         extends AbstractBean implements ColorAdjustModel {

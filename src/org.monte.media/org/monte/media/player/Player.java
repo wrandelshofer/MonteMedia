@@ -13,11 +13,7 @@ import javax.swing.event.ChangeListener;
  * media data.
  *
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version 1.4 2009-12-25 Methods for color cycling added.
- * <br>1.3 2003-04-21 Method setAudioEnabled() and isAudioEnabled() added.
- * <br>1.2 2002-02-06 ChangeListener methods added.
- * <br>1.1 2000-10-02 Methods #setPaused and #isPaused removed.
- * <br> 1.0  1999-10-19
+ * @version $Id$
  */
 public interface Player
 extends StateModel {

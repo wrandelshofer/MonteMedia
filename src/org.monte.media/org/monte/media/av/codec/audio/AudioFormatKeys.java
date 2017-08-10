@@ -15,7 +15,7 @@ import org.monte.media.av.FormatKeys;
  * Defines common format keys for audio media.
  *
  * @author Werner Randelshofer
- * @version $Id: AudioFormatKeys.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class AudioFormatKeys extends FormatKeys {
     // Standard video EncodingKey strings for use onlyWith FormatKey.Encoding. 

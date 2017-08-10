@@ -32,7 +32,7 @@ import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
  * Does not perform sampling rate conversion or channel conversion.
  *
  * @author Werner Randelshofer
- * @version $Id: QuickTimePCMAudioCodec.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class QuickTimePCMAudioCodec extends AbstractPCMAudioCodec {
 

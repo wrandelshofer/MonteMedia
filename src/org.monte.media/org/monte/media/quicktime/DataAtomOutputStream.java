@@ -16,7 +16,7 @@ import javax.imageio.stream.ImageOutputStreamImpl;
  * of a QuickTime Data Atom.
  *
  * @author Werner Randelshofer
- * @version $Id: DataAtomOutputStream.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class DataAtomOutputStream extends FilterOutputStream {
 

@@ -12,7 +12,7 @@ import java.io.Serializable;
  * A format key has a name, a type and a value.
  * 
  * @author Werner Randelshofer
- * @version $Id: FormatKey.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class FormatKey<T> implements Serializable, Comparable<FormatKey<T> > {
 

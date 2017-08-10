@@ -11,7 +11,7 @@ import org.monte.media.tiff.TagSet;
  * ImageTagSet.
  *
  * @author Werner Randelshofer
- * @version 1.0 2010-07-25 Created.
+ * @version $Id$
  */
 public class ImageTagSet extends TagSet {
     private static ImageTagSet instance;

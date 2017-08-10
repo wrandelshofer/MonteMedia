@@ -22,7 +22,7 @@ import org.monte.media.swing.player.JPlayerControlAqua;
  * A Player for PBM images with color cycling.
  *
  * @author Werner Randelshofer
- * @version 1.0 2010-08-04 Created.
+ * @version $Id$
  */
 public class PBMPlayer extends AbstractPlayer implements ColorCyclePlayer {
 

@@ -14,7 +14,7 @@ import javafx.scene.image.WritableImage;
  * FXImages.
  *
  * @author Werner Randelshofer
- * @version $$Id$$
+ * @version $Id$
  */
 public class FXImages {
 

@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
  * java.lang.reflect.
  *
  * @author  Werner Randelshofer
- * @version $Id: Methods.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 
 @SuppressWarnings("unchecked")

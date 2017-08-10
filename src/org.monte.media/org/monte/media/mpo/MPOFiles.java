@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * Utility methods for {@code MPOFiles}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-02-27 Created.
+ * @version $Id$
  */
 public class MPOFiles {
 

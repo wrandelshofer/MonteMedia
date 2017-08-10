@@ -7,8 +7,7 @@ package org.monte.media.ilbm;
  * Base class for color cycling in an IFF ILBM image.
  *
  * @author Werner Randelshofer
- * @version 1.1 2010-08-03 Added support for blended cycles.
- * <br>1.0 2010-01-22 Created.
+ * @version $Id$
  */
 public abstract class ColorCycle implements Cloneable {
 

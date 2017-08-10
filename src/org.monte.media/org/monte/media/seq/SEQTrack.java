@@ -22,7 +22,7 @@ import org.monte.media.math.Rational;
  * {@code SEQTrack}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-02-20 Created.
+ * @version $Id$
  */
 public class SEQTrack implements Track {
     private SEQDemultiplexer demux;

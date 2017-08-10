@@ -30,7 +30,7 @@ import org.monte.media.image.Images;
  * {@code ReadAVIDemo}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2013-01-10 Created.
+ * @version $Id$
  */
 public class ReadAVIDemo {
 

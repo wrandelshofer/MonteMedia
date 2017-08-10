@@ -15,7 +15,7 @@ import javax.imageio.stream.ImageInputStream;
  * Bitmap image format (ILBM).
  *
  * @author Werner Randelshofer
- * @version $Id: PBMImageReaderSpi.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class PBMImageReaderSpi extends ImageReaderSpi {
     protected final static int FORM_ID = IFFParser.stringToID("FORM");

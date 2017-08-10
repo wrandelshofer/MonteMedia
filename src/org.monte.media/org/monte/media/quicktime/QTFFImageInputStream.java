@@ -16,7 +16,7 @@ import org.monte.media.io.FilterImageInputStream;
  * {@code QuickTimeImageInputStream}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2013-03-22 Created.
+ * @version $Id$
  */
 public class QTFFImageInputStream extends FilterImageInputStream {
     protected static final long MAC_TIMESTAMP_EPOCH = new GregorianCalendar(1904, GregorianCalendar.JANUARY, 1).getTimeInMillis();

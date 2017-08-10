@@ -15,16 +15,7 @@ import org.monte.media.concurrent.SequentialDispatcher;
  * Generic interface for media players.
  *
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version 3.1 2011-02-17 Merged with CubeTwister.
- * <br>2.1 2009-12-25 Added support for color cycling.
- * <br>2.0.1 2009-11-23 Removed unused imports.
- * <br>2.0 2005-07-09 Uses now a SequentialDispatcher for multithreading
- * instead of individual threads. The SequentialDispatcher guarantees, that all
- * animation steps are performed sequentially. This removes the need for clients
- * to wait until a specific state has been reached, before they can request
- * another state from the player.
- * <br>1.1 2002-02-06 Support for ChangeListeners added.
- * <br>1.0  1999-10-19
+ * @version $Id$
  */
 public abstract class AbstractPlayer
 implements Player, Runnable {

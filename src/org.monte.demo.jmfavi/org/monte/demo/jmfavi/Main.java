@@ -40,7 +40,7 @@ import javax.media.protocol.PullBufferStream;
  * {@code Main}.
  *
  * @author Werner Randelshofer
- * @version $Id: Main.java 348 2015-09-23 17:46:43Z werner $
+ * @version $Id$
  */
 public class Main {
 

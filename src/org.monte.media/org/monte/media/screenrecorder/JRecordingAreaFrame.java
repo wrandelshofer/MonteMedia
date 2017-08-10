@@ -26,7 +26,7 @@ import javax.swing.border.Border;
  * JRecordingAreaFrame.
  *
  * @author Werner Randelshofer
- * @version 1.0 2012-05-03 Created.
+ * @version $Id$
  */
 public class JRecordingAreaFrame extends javax.swing.JFrame {
     private final static long serialVersionUID = 1L;

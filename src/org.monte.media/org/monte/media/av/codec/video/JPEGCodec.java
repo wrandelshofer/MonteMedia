@@ -48,7 +48,7 @@ import org.monte.media.mjpg.MJPGImageReaderSpi;
  * </ul>
  *
  * @author Werner Randelshofer
- * @version $Id: JPEGCodec.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class JPEGCodec extends AbstractVideoCodec {
     

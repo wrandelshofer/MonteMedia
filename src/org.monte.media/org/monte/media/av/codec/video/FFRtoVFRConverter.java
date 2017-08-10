@@ -30,7 +30,7 @@ import org.monte.media.math.Rational;
  * the output sink supports a variable frame rate.
  *
  * @author Werner Randelshofer
- * @version $Id: FFRtoVFRConverter.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class FFRtoVFRConverter extends AbstractVideoCodec {
 

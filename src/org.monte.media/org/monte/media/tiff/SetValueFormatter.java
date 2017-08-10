@@ -10,7 +10,7 @@ import java.util.LinkedList;
  * Formats integer values as a set.
  *
  * @author Werner Randelshofer
- * @version 1.0 2010-03-22 Created.
+ * @version $Id$
  */
 public class SetValueFormatter implements ValueFormatter {
 

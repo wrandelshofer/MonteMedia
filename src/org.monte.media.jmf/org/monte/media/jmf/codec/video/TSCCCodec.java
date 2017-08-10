@@ -24,7 +24,7 @@ import org.monte.media.io.SeekableByteArrayOutputStream;
  * See {@link TechSmithCodecCore} for a description of the format.
  *
  * @author Werner Randelshofer
- * @version $Id: TSCCCodec.java 348 2015-09-23 17:46:43Z werner $
+ * @version $Id$
  */
 public class TSCCCodec extends AbstractVideoDecoder {
 

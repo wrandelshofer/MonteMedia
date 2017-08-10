@@ -10,7 +10,7 @@ import org.monte.media.av.CodecSpi;
  * PNGCodecSpi.
  *
  * @author Werner Randelshofer
- * @version $$Id$$
+ * @version $Id$
  */
 public class PNGCodecSpi implements CodecSpi {
 

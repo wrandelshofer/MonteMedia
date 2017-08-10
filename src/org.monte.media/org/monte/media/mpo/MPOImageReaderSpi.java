@@ -16,7 +16,7 @@ import javax.imageio.stream.ImageInputStream;
  * See: <a href="http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf">MPO Format Specification</a>.
  *
  * @author Werner Randelshofer
- * @version 1.0 2010-01-05 Created.
+ * @version $Id$
  */
 public class MPOImageReaderSpi extends ImageReaderSpi {
 

@@ -28,7 +28,7 @@ import org.monte.media.math.Rational;
  * {@code QuickTimeReader}.
  *
  * @author Werner Randelshofer
- * @version $Id: QuickTimeReader.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class QuickTimeReader extends QuickTimeInputStream implements MovieReader {
 

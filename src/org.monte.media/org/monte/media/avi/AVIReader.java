@@ -36,7 +36,7 @@ import org.monte.media.av.Registry;
  * from an AVI 1.0 file.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-08-24 Created.
+ * @version $Id$
  */
 public class AVIReader extends AVIInputStream implements MovieReader {
 

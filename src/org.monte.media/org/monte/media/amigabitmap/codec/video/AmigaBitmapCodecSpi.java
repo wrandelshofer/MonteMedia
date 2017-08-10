@@ -10,7 +10,7 @@ import org.monte.media.av.CodecSpi;
  * AmigaBitmapCodecSpi.
  *
  * @author Werner Randelshofer
- * @version $$Id$$
+ * @version $Id$
  */
 public class AmigaBitmapCodecSpi implements CodecSpi {
 

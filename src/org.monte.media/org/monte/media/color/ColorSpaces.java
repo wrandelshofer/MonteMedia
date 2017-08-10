@@ -10,6 +10,7 @@ import java.awt.color.ICC_Profile;
 /**
  * ColorSpaces.
  *
+ * @author Werner Randelshofer
  * @version $Id$
  */
 public class ColorSpaces {

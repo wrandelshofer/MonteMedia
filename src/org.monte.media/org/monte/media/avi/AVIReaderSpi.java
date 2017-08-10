@@ -16,7 +16,7 @@ import org.monte.media.av.MovieReaderSpi;
  * AVIReaderSpi.
  *
  * @author Werner Randelshofer
- * @version $$Id$$
+ * @version $Id$
  */
 public class AVIReaderSpi implements MovieReaderSpi {
 

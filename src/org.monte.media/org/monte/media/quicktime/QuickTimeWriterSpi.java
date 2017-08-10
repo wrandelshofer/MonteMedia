@@ -17,7 +17,7 @@ import org.monte.media.av.MovieWriterSpi;
  * QuickTimeWriterSpi.
  *
  * @author Werner Randelshofer
- * @version $$Id$$
+ * @version $Id$
  */
 public class QuickTimeWriterSpi implements MovieWriterSpi {
 

@@ -15,7 +15,7 @@ import java.awt.geom.Point2D;
  * FIXME - This interpolator does not work!
  *
  * @author Werner Randelshofer
- * @version $Id: BezierInterpolator.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class BezierInterpolator extends AbstractSplineInterpolator {
 

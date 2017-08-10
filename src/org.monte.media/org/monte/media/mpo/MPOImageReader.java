@@ -33,8 +33,7 @@ import org.monte.media.tiff.BaselineTagSet;
  * See: <a href="http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf">MPO Format Specification</a>.
  *
  * @author Werner Randelshofer
- * @version 1.1 2011-02-01 Improves performance of method getImageMetadata.
- * <br>1.0 2009-12-14 Created.
+ * @version $Id$
  */
 public class MPOImageReader extends ImageReader {
 

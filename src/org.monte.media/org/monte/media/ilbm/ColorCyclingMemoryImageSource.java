@@ -28,10 +28,7 @@ import javax.swing.Timer;
  * ColorCyclingMemoryImageSource.
  *
  * @author Werner Randelshofer
- * @version 1.1 2010-08-03 Added method putProperties. Added support for blended
- * color cycles.
- * <br>1.0.1 2010-11-08 Fixed color cycling rate.
- * <br>1.0 2009-12-17 Created.
+ * @version $Id$
  */
 public class ColorCyclingMemoryImageSource extends MemoryImageSource {
 

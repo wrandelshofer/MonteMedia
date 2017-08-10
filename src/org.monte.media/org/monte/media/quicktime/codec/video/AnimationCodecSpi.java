@@ -10,7 +10,7 @@ import org.monte.media.av.CodecSpi;
  * AnimationCodecSpi.
  *
  * @author Werner Randelshofer
- * @version $$Id$$
+ * @version $Id$
  */
 public class AnimationCodecSpi implements CodecSpi {
 

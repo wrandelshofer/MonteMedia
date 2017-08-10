@@ -9,7 +9,7 @@ import java.beans.PropertyChangeListener;
  * {@code ImageAdjustmentModel}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2012-01-18 Created.
+ * @version $Id$
  */
 public interface ColorAdjustModel {
     /** Level adjustment: white point in the range [0,1]. 

@@ -15,7 +15,7 @@ import javax.media.format.VideoFormat;
  * {@code ZMBVDecoder}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-08-27 Created.
+ * @version $Id$
  */
 public class ZMBVDecoder extends AbstractVideoDecoder {
 

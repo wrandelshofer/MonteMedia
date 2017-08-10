@@ -31,7 +31,7 @@ import org.monte.media.math.Rational;
  * the output sink.
  * 
  * @author Werner Randelshofer
- * @version $Id: FrameRateConverter.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class FrameRateConverter extends AbstractVideoCodec {
 

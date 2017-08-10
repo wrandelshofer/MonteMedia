@@ -14,7 +14,7 @@ import java.util.Hashtable;
  * BufferedImageWithColorModel.
  *
  * @author Werner Randelshofer
- * @version $$Id$$
+ * @version $Id$
  */
 public class BufferedImageWithColorModel extends BufferedImage {
 

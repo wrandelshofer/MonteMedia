@@ -23,9 +23,7 @@ import javax.swing.TransferHandler;
  * The filename is passed in the action command.
  *
  * @author Werner Randelshofer
- * @version 1.2 2010-10-03 Adds support for file filter.
- * <br>1.1 2008-12-03 Added file selection mode.
- * <br>1.0 September 8, 2007 Created.
+ * @version $Id$
  */
 public class DropFileTransferHandler extends TransferHandler {
     private final static long serialVersionUID = 1L;

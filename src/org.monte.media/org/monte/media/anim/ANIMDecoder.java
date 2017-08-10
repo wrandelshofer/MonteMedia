@@ -28,18 +28,7 @@ import org.monte.media.amigabitmap.AmigaHAMColorModel;
  * Decodes IFF files and adds the data to an ANIMMovieTrack.
  *
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version 2.3 2011-07-21 Treats CMAP specially if OCS chip set is detected.
- * <br>2.1 2010-04-11 Adds support for CCRT color cycling.
- * <br>2.1 2010-01-22 Adds support for CRNG color cycling.
- * <br>2.0 2009-12-25 Treat an ILBM file as an animation with a single
- * frame.
- * <br>1.3 2009-12-24 Added support for CRNG color cycling.
- * <br>1.2.1 2006-09-30 Decode CMAP even if it is too big or too small
- * for the number of bitplanes used of the animation.
- * <br>1.2 2003-04-21 Decode ANFI revised.
- * <br>1.0 2003-04-03 Support for ANIM+SLA (Animations with Statically
- * Loaded Audio) files added.
- * <br>1.0  1999-10-19
+ * @version $Id$
  */
 public class ANIMDecoder
         implements IFFVisitor {

@@ -17,7 +17,7 @@ import org.monte.media.io.ImageInputStreamAdapter;
  * {@code DataAtomInputStream}.
  *
  * @author Werner Randelshofer
- * @version $Id
+ * @version $Id$
  */
 public class DataAtomInputStream extends FilterInputStream {
 

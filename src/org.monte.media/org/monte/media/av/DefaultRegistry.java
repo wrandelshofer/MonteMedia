@@ -20,7 +20,7 @@ import java.util.Set;
  * FIXME - The registry should be read from a file.
  *
  * @author Werner Randelshofer
- * @version $Id: DefaultRegistry.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class DefaultRegistry extends Registry {
 

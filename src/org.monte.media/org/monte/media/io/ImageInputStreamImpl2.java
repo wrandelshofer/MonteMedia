@@ -15,7 +15,7 @@ import javax.imageio.stream.ImageInputStreamImpl;
  * not fulfill the read operation in a single step.
  *
  * @author Werner Randelshofer
- * @version $Id: ImageInputStreamImpl2.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public abstract class ImageInputStreamImpl2 extends ImageInputStreamImpl {
     // Length of the buffer used for readFully(type[], int, int)

@@ -29,7 +29,7 @@ import org.monte.media.util.stream.RangeStream;
  * Provides utility methods for images in the CMYK color space..
  *
  * @author Werner Randelshofer
- * @version $$Id$$
+ * @version $Id$
  */
 public class CMYKImages {
   public static final DirectColorModel RGB = new DirectColorModel(24, 0xff0000, 0xff00, 0xff);

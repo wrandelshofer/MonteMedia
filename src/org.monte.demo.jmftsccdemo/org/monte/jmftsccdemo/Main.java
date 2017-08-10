@@ -22,7 +22,7 @@ import org.monte.media.swing.BackgroundTask;
  * Main.
  *
  * @author Werner Randelshofer
- * @version $Id: Main.java 348 2015-09-23 17:46:43Z werner $
+ * @version $Id$
  */
 public class Main extends javax.swing.JFrame {
     private final static long serialVersionUID = 1L;

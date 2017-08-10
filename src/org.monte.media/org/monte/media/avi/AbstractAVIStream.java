@@ -21,7 +21,7 @@ import org.monte.media.riff.RIFFChunk;
  * This is the base class for low-level AVI stream IO.
  *
  * @author Werner Randelshofer
- * @version $Id: AbstractAVIStream.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public abstract class AbstractAVIStream {
 

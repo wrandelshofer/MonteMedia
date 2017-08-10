@@ -15,7 +15,7 @@ import java.util.HashMap;
  * all of its data values.
  *
  * @author Werner Randelshofer
- * @version 1.0 2010-07-24 Created.
+ * @version $Id$
  */
 public abstract class TagSet {
 

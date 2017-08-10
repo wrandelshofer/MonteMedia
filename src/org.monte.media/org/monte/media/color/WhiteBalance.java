@@ -29,7 +29,7 @@ Diplomarbeit_Kenfack.pdf
  * Automatic White 	Balance Algorithm using Gray Color Points in Images. 
  * 
  * @author Werner Randelshofer
- * @version $Id: WhiteBalance.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class WhiteBalance {
 

@@ -12,7 +12,7 @@ import javax.imageio.stream.ImageInputStream;
  * Service provider interface for {@link MovieReader}.
  *
  * @author Werner Randelshofer
- * @version $$Id$$
+ * @version $Id$
  */
 public interface MovieReaderSpi {
 

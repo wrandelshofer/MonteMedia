@@ -16,8 +16,7 @@ import javax.swing.event.EventListenerList;
  * of the input reading process.
  *
  * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland.
- * @version 1.1 2011-08-23 Set value works now.
- * <br>1.0 1999-10-19
+ * @version $Id$
  */
 public class BoundedRangeInputStream
         extends FilterInputStream

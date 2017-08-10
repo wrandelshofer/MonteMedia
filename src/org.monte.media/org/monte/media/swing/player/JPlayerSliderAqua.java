@@ -21,11 +21,7 @@ import org.monte.media.image.Images;
  * MovieSliderAqua.
  *
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version 3.0.1 2010-11-06 Removes synchronization of method setModel.
- * <br>3.0 2009-07-25 Added images for disabled state.
- * <br>2.0 2007-11-15 Upgraded to Java 1.4.
- * <br>1.1 2003-04-25 Thumb position was not computed correctly.
- * <br>1.0 April 22, 2003 Created.
+ * @version $Id$
  */
 public class JPlayerSliderAqua extends JComponent
         implements ChangeListener, MouseListener, MouseMotionListener {

@@ -12,7 +12,7 @@ import javax.imageio.stream.ImageOutputStream;
  * Service provider interface for {@link MovieWriter}.
  *
  * @author Werner Randelshofer
- * @version $$Id$$
+ * @version $Id$
  */
 public interface MovieWriterSpi {
 

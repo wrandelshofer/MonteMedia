@@ -25,7 +25,7 @@ import org.monte.media.tiff.TagSet;
  * http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf</a>
  * 
  * @author Werner Randelshofer
- * @version 1.0 2010-07-24 Created.
+ * @version $Id$
  */
 public class InteroperabilityTagSet extends TagSet {
 

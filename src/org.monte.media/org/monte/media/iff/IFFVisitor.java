@@ -10,7 +10,7 @@ import org.monte.media.exception.ParseException;
 IFFVisitor is notified each time the IFFParser visits
 a data chunk and when a group is entered or leaved.
 
-@version  1.0  1999-10-19
+@version $Id$
 */
 public interface IFFVisitor
   {

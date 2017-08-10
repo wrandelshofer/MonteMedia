@@ -21,9 +21,7 @@ import javax.sound.sampled.AudioInputStream;
  * the total number of frames in the stream.
  *
  * @author Werner Randelshofer
- * @version 1.0.1 2011-03-18 Method read(byte[],int,int) must not read multiple
- * frames of different sizes.
- * <br>1.0 2011-01-01 Created.
+ * @version $Id$
  */
 public class MP3AudioInputStream extends AudioInputStream {
 

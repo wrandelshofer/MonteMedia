@@ -12,7 +12,7 @@ import org.monte.media.math.Rational;
  * Adjusts the time stamp of the media.
  *
  * @author Werner Randelshofer
- * @version $Id: AdjustTimeCodec.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class AdjustTimeCodec extends AbstractCodec {
 

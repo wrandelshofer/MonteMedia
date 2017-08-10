@@ -8,7 +8,7 @@ import java.util.EventListener;
  * Event for state changes.
  *
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version    1.0  1999-10-19
+ * @version $Id$
  */
 public interface StateListener
 extends EventListener {

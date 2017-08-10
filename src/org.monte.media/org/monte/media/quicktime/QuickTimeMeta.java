@@ -20,7 +20,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.*;
  * {@code QuickTimeMeta} holds the meta-data contained in a QuickTime movie.
  *
  * @author Werner Randelshofer
- * @version $Id: QuickTimeMeta.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class QuickTimeMeta extends AbstractMovie {
 

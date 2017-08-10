@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * A convenience class for working with TIFF IFD's.
  *
  * @author Werner Randelshofer
- * @version 1.0 2010-07-25 Created.
+ * @version $Id$
  */
 public class TIFFDirectory extends TIFFNode {
     /** The tag set of this directory. */

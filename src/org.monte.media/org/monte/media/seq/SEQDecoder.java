@@ -19,7 +19,7 @@ import javax.imageio.stream.MemoryCacheImageInputStream;
  * <a href="http://www.atari-forum.com/wiki/index.php/ST_Picture_Formats">http://www.atari-forum.com/wiki/index.php/ST_Picture_Formats</a>
  *
  * @author Werner Randelshofer
- * @version 1.0 2010-12-25 Created.
+ * @version $Id$
  */
 public class SEQDecoder {
 

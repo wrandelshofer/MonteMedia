@@ -5,6 +5,6 @@
  * Provides classes for processing JFIF files.
  *
  * @author Werner Randelshofer
- * @version $Id: package-info.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 package org.monte.media.jfif;

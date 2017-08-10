@@ -17,7 +17,7 @@ import org.monte.media.av.MovieWriterSpi;
  * AVIWriterSpi.
  *
  * @author Werner Randelshofer
- * @version $$Id$$
+ * @version $Id$
  */
 public class AVIWriterSpi implements MovieWriterSpi {
 

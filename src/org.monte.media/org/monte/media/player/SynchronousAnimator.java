@@ -13,7 +13,7 @@ import javax.swing.event.*;
  * SynchronousAnimator.
  *
  * @author Werner Randelshofer
- * @version 1.0 Apr 28, 2008 Created.
+ * @version $Id$
  */
 public class SynchronousAnimator implements Animator {
     protected EventListenerList listenerList = new EventListenerList();

@@ -11,7 +11,7 @@ import org.monte.media.math.Rational;
  * {@code AbstractMovie}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-09-01 Created.
+ * @version $Id$
  */
 public abstract class AbstractMovie extends AbstractBean implements Movie {
     private URI uri;

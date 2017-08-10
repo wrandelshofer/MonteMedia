@@ -162,7 +162,7 @@ import org.monte.media.exception.ParseException;
  * @see	IFFVisitor
  *
  * @author	Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version $Id: IFFParser.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class IFFParser
         extends Object {

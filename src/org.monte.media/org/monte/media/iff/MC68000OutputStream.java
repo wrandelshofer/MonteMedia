@@ -12,10 +12,7 @@ import java.io.UnsupportedEncodingException;
  * MC68000OutputStream.
  *
  * @author Werner Randelshofer
- * @version 1.1 2010-12-26 Added method writeType().
- * <br>1.0.1 2008-08-03 The ByteRun1 encoder incorrectly added 1 to its
- * index when flushing the literal run.
- * <br>1.0 December 25, 2006 Created.
+ * @version $Id$
  */
 public class MC68000OutputStream extends FilterOutputStream {
     /**

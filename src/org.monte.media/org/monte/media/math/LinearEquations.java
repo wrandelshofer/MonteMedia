@@ -11,7 +11,7 @@ package org.monte.media.math;
  * http://en.wikipedia.org/wiki/Determinant
  *
  * @author Werner Randelshofer
- * @version $Id: LinearEquations.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class LinearEquations {
 

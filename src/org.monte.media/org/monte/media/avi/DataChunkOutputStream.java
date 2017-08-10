@@ -13,10 +13,7 @@ import java.io.UnsupportedEncodingException;
  * of an AVI RIFF Data Chunk.
  *
  * @author Werner Randelshofer
- * @version 1.1 2011-01-17 Adds functionality for preventing "flush" and "close"
- * of the underlying stream.
- * <br>1.0.1 2010-04-05 Removed unused constants.
- * <br>1.0  2008-08-11 Created.
+ * @version $Id$
  */
 public class DataChunkOutputStream extends FilterOutputStream {
 

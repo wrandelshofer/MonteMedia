@@ -29,7 +29,7 @@ import org.monte.media.io.ByteArrayImageInputStream;
  * </ul>
  *
  * @author Werner Randelshofer
- * @version $Id: PNGCodec.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class PNGCodec extends AbstractVideoCodec {
 

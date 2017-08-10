@@ -15,7 +15,7 @@ import org.monte.media.io.IOStreams;
  * Multiplexes samples into individual files.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-02-20 Created.
+ * @version $Id$
  */
 public class FileMultiplexer implements Multiplexer {
 

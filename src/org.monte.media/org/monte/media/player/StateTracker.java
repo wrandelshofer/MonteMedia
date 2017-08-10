@@ -10,8 +10,7 @@ import org.monte.media.player.StateListener;
  * Tracks state changes in a StateModel.
  *
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version    1.0.1 2005-06-19 Method waitForState sometimes waited forever.
- * <br>1.0  1999-10-19
+ * @version $Id$
  */
 public class StateTracker
 implements StateListener {

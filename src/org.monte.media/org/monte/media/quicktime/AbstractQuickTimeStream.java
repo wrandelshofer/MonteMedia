@@ -24,7 +24,7 @@ import org.monte.media.math.Rational;
  * down to QuickTimeOutputStream.</p>
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-03-15 Created.
+ * @version $Id$
  */
 public class AbstractQuickTimeStream {
 

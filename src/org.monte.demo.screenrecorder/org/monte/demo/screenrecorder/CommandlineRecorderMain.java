@@ -11,7 +11,7 @@ import java.awt.GraphicsEnvironment;
  * {@code CommandlineRecorderMain}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-08-05 Created.
+ * @version $Id$
  */
 public class CommandlineRecorderMain {
 

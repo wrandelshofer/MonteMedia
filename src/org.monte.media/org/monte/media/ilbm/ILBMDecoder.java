@@ -46,20 +46,7 @@ import org.monte.media.iff.MC68000InputStream;
  * "*" means 0 or more repetitions. A sometimes-needed pad byte is shown as "[0]".
  *
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version 1.8 2011-07-21 Treats CMAP specially if OCS chip set is detected.
- * <br>1.7 2011-04-10 Generates gray-scale color table if no CMAP is provided.
- * Adds support for CCRT color cycling.
- * <br>1.6 2011-02-20 Adds method produceBitmaps().
- * <br>1.5.1 2010-07-03 Improved performance of byterun1 decoder.
- * <br>1.4 2010-01-22 Added support for DRNG color cycling.
- * <br>1.3 2009-12-24 Added support for CRNG color cycling.
- * <br>1.2 2004-05-20 Support for masking bitplane added. Removed enforcing
- * of true colors (Apple fixed bugs in its Java VM).
- * <br>1.1 2003-08-15 Enforcing True color for images. Due to bug in Java 1.3.1, 1.4.1
- * on Mac OS X 10.0 through 10.2.
- * <br>1.0.2 2003-01-19 Conversion to JDK 1.3 continued.
- * <br>1.0.1   2001-06-17 Conversion to JDK 1.3 in progress.
- * <br> 1.0  1999-10-19
+ * @version $Id$
  */
 public class ILBMDecoder
         implements IFFVisitor {

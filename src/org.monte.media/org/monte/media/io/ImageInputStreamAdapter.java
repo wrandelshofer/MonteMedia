@@ -12,7 +12,7 @@ import javax.imageio.stream.ImageInputStream;
  * ImageInputStreamAdapter.
  *
  * @author Werner Randelshofer
- * @version $Id: ImageInputStreamAdapter.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class ImageInputStreamAdapter extends InputStream {
     private ImageInputStream iis;

@@ -10,7 +10,7 @@ import org.monte.media.av.CodecSpi;
  * AVIPCMAudioCodecSpi.
  *
  * @author Werner Randelshofer
- * @version $$Id$$
+ * @version $Id$
  */
 public class AVIPCMAudioCodecSpi implements CodecSpi {
 

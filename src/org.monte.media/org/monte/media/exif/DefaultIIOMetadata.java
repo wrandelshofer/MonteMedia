@@ -13,7 +13,7 @@ import org.w3c.dom.Node;
  * DefaultIIOMetadata.
  *
  * @author Werner Randelshofer
- * @version 1.0 2010-09-07 Created.
+ * @version $Id$
  */
 public class DefaultIIOMetadata extends IIOMetadata {
     private final IIOMetadataNode root;

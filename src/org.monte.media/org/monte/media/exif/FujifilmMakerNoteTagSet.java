@@ -26,11 +26,7 @@ import org.monte.media.tiff.TagSet;
  * <a href="http://homepage3.nifty.com/kamisaka/makernote/makernote_fuji.htm">http://homepage3.nifty.com/kamisaka/makernote/makernote_fuji.htm</a>
  * 
  * @author Werner Randelshofer
- * @version 1.3.1 2011-04-15 Adds enum for FinePixColor.
- * <br>1.3 2011-02-22 Adds principal point.
- * <br>1.2 2011-01-27 Adds constants.
- * <br>1.1 2011-01-23 Adds constants.
- * <br>1.0 2010-07-24 Created.
+ * @version $Id$
  */
 public class FujifilmMakerNoteTagSet extends TagSet {
 

@@ -15,7 +15,7 @@ import javax.imageio.stream.ImageInputStream;
  * QuickTime file.
  *
  * @author Werner Randelshofer
- * @version $Id: QuickTimeInputStream.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class QuickTimeInputStream {
 

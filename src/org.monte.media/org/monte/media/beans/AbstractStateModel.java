@@ -13,7 +13,7 @@ import javax.swing.event.EventListenerList;
  * state changes.
  *
  * @author Werner Randelshofer
- * @version 1.0 2002-05-09 Created.
+ * @version $Id$
  */
 public class AbstractStateModel {
     protected EventListenerList listenerList;

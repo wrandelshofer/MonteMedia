@@ -19,8 +19,8 @@ import org.monte.media.math.Rational;
  * Adobe Systems Inc.<br>
  * <a href="http://www.alternatiff.com/resources/TIFFPM6.pdf">http://www.alternatiff.com/resources/TIFFPM6.pdf</a>
  *
- *
  * @author Werner Randelshofer
+ * @version $Id$
  */
 public enum IFDDataType {
     /** 8-bit byte that contains a 7-bit ASCII code; the last byte

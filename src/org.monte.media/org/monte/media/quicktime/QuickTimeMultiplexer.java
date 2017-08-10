@@ -13,7 +13,7 @@ import org.monte.media.av.Multiplexer;
  * {@code QuickTimeMultiplexer}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-02-20 Created.
+ * @version $Id$
  */
 public class QuickTimeMultiplexer extends QuickTimeWriter implements Multiplexer {
  public QuickTimeMultiplexer(File file) throws IOException {

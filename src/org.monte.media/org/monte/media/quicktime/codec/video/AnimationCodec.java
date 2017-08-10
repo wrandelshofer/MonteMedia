@@ -144,10 +144,7 @@ import org.monte.media.io.ByteArrayImageOutputStream;
  * href="http://multimedia.cx/qtrle.txt">http://multimedia.cx/qtrle.txt</a><br>
  *
  * @author Werner Randelshofer
- * @version 1.3 2011-01-17 Fixes an index out of bounds exception when a
- * sub-image is compressed. <br>1.2 2011-01-07 Improves compression rate.
- * <br>1.1 2011-01-07 Reduces seeking operations on output stream by using a
- * seekable output stream internally. <br>1.0 2011-01-05 Created.
+ * @version $Id$
  */
 public class AnimationCodec extends AbstractVideoCodec {
 

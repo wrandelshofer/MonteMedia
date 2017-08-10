@@ -9,7 +9,7 @@ import org.monte.media.av.CodecSpi;
  * RawCodecSpi.
  *
  * @author Werner Randelshofer
- * @version $$Id$$
+ * @version $Id$
  */
 public class RawCodecSpi implements CodecSpi {
 

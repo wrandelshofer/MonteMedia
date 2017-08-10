@@ -32,7 +32,7 @@ import java.util.Locale;
  * 
  *
  * @author  Werner Randelshofer
- * @version $Id: OSXCollator.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class OSXCollator extends Collator {
     private Collator collator;

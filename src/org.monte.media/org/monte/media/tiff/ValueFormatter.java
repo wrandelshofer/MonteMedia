@@ -8,7 +8,7 @@ package org.monte.media.tiff;
  * ValueFormatter.
  *
  * @author Werner Randelshofer
- * @version 1.0 2010-03-22 Created.
+ * @version $Id$
  */
 public interface ValueFormatter {
     /** Formats the specified value.

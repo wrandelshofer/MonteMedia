@@ -20,7 +20,7 @@ import static org.monte.media.math.MathUtils.clamp;
  * QuickTimeInputStream.
  *
  * @author Werner Randelshofer
- * @version 1.0 2013-03-21 Created.
+ * @version $Id$
  */
 public class QuickTimeDeserializer {
 

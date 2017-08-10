@@ -39,10 +39,7 @@ import org.monte.media.eightsvx.LoopableAudioClip;
  *</pre>
  * 
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version 1.2.1 2010-12-25 Minor fixes for J2SE 5.
- * <br>1.2 2005-09-16 Support for swapping left and right speakers added.
- * <br>1.1 2003-04-25 Revised.
- * <br>1.0 April 3, 2003 Created.
+ * @version $Id$
  */
 public class ANIMAudioCommand {
     /** Start playing a sound. */

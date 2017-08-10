@@ -18,7 +18,7 @@ import java.io.InputStream;
  * http://msdn.microsoft.com/archive/default.asp?url=/archive/en-us/directx9_c/directx/htm/avirifffilereference.asp
  *
  * @author  Werner Randelshofer
- * @version $Id: RIFFPrimitivesInputStream.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class RIFFPrimitivesInputStream extends FilterInputStream {
     private long scan, mark;

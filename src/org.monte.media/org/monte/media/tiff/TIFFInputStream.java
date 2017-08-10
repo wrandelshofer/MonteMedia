@@ -20,7 +20,7 @@ import org.monte.media.math.Rational;
  * http://www.exif.org/specifications.html
  *
  * @author Werner Randelshofer
- * @version 1.0 2009-12-26 Created.
+ * @version $Id$
  */
 public class TIFFInputStream extends InputStream {
 

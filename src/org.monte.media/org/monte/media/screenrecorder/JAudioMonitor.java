@@ -15,7 +15,7 @@ import javax.swing.Timer;
  * JAudioMonitor.
  *
  * @author Werner Randelshofer
- * @version 1.0 2012-07-11 Created.
+ * @version $Id$
  */
 public class JAudioMonitor extends javax.swing.JPanel {
     private final static long serialVersionUID = 1L;

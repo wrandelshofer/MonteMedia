@@ -14,7 +14,7 @@ import org.monte.media.iff.IFFOutputStream;
  * {@code ILBMEncoder}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2010-12-26 Created.
+ * @version $Id$
  */
 public class ILBMEncoder {
 

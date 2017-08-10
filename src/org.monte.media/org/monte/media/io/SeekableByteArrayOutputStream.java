@@ -13,7 +13,7 @@ import java.util.Arrays;
  * {@code SeekableByteArrayOutputStream}.
  *
  * @author Werner Randelshofer
- * @version $Id: SeekableByteArrayOutputStream.java 363 2016-11-09 19:32:30Z werner $
+ * @version $Id$
  */
 public class SeekableByteArrayOutputStream extends ByteArrayOutputStream {
 

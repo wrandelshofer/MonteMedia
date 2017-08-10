@@ -28,7 +28,7 @@ import javax.imageio.stream.ImageOutputStream;
  *   ISBN 0-442-01272-1<br>
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-02-27 Created.
+ * @version $Id$
  */
 public class JFIFOutputStream extends OutputStream {
 

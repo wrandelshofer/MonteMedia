@@ -20,9 +20,7 @@ import java.nio.ByteOrder;
  * in the file, even after the image data.</li>
  * </ul>
  * @author Werner Randelshofer
- * @version 2.1 2010-09-07 Stores ifdOffset.
- * <br>2.0 2010-07-24 Reworked.
- * <br>1.0 2009-12-26 Created.
+ * @version $Id$
  */
 public class IFDEntry {
 

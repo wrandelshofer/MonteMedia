@@ -36,7 +36,7 @@ import org.monte.media.ilbm.ColorCyclingMemoryImageSource;
  don't need this functionality.
  *
  * @author Werner Randelshofer
- * @version 1.0 December 25, 2006 Created.
+ * @version $Id$
  */
 public class AmigaBitmapImageFactory {
     

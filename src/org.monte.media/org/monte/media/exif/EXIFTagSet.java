@@ -39,7 +39,7 @@ import org.monte.media.tiff.TagSet;
  * <p>
  * 
  * @author Werner Randelshofer
- * @version 1.0 2010-07-24 Created.
+ * @version $Id$
  */
 public class EXIFTagSet extends TagSet {
 

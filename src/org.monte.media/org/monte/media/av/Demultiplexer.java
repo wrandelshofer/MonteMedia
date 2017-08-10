@@ -11,7 +11,7 @@ import java.io.IOException;
  * as an input and outputs the media in individual tracks.
  * 
  * @author Werner Randelshofer
- * @version 1.0 2011-02-19 Created.
+ * @version $Id$
  */
 public interface Demultiplexer {
     /** Returns the tracks.

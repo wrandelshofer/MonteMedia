@@ -11,7 +11,7 @@ import org.monte.media.av.Format;
  * {@code AbstractAudioCodec}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-07-10 Created.
+ * @version $Id$
  */
 public abstract class AbstractAudioCodec extends AbstractCodec {
 

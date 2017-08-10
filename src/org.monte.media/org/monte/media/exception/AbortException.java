@@ -9,7 +9,7 @@ package org.monte.media.exception;
  *
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
  *
- * @version  $Id: AbortException.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class AbortException extends Exception {
 

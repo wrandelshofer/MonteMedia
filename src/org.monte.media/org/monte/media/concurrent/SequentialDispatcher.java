@@ -12,7 +12,7 @@ package org.monte.media.concurrent;
  * Role in design pattern: EventCollector and EventProcessor
  *
  * @author  Werner Randelshofef
- * @version $Id: SequentialDispatcher.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class SequentialDispatcher extends EventLoop<Runnable> {
     /**

@@ -37,7 +37,7 @@ import org.monte.media.math.Rational;
  * {@code ImageSequenceWriter}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-04-20 Created.
+ * @version $Id$
  */
 public class ImageSequenceWriter implements MovieWriter {
 

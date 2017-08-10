@@ -9,7 +9,7 @@ import java.awt.image.WritableRaster;
  * Histogram with 256 bins for each color band.
  *
  * @author Werner Randelshofer
- * @version $$Id$$
+ * @version $Id$
  */
 public class Histogram {
 

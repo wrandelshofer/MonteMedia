@@ -168,7 +168,7 @@ import javax.imageio.stream.ImageInputStream;
  * @see	RIFFVisitor
  *
  * @author	Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version $ID$
+ * @version $Id$
  */
 public class RIFFParser extends Object {
 

@@ -31,8 +31,7 @@ import javax.imageio.stream.ImageInputStream;
  * See: <a href="http://netpbm.sourceforge.net/doc/pgm.html">PGM Format Specification</a>.
  *
  * @author Werner Randelshofer
- * @version 1.1 2010-06-24 Skip comments in header.
- * <br>1.0 2009-12-14 Created.
+ * @version $Id$
  */
 public class PGMImageReader extends ImageReader {
 

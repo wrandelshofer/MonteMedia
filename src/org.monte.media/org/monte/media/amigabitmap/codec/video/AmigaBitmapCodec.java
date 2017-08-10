@@ -37,7 +37,7 @@ import org.monte.media.pbm.PBMDecoder;
  * Decodes media data into a {@code Bitmap}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-02-20 Created.
+ * @version $Id$
  */
 public class AmigaBitmapCodec extends AbstractVideoCodec {
   public AmigaBitmapCodec() {

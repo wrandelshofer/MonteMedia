@@ -47,9 +47,7 @@ import org.monte.media.ilbm.DRNGColorCycle;
  * sometimes-needed pad byte is shown as "[0]".
  *
  * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version 1.6 2010-08-02 Added support for CRNG and DRNG chunks. <br>1.5.1
- * 2010-07-03 Improved performance of byterun1 decoder. <br>1.0 2005-04-05
- * Created.
+ * @version $Id$
  */
 public class PBMDecoder implements IFFVisitor {
     /* ---- constants ---- */

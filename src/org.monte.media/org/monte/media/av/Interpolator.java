@@ -9,11 +9,7 @@ package org.monte.media.av;
  * 
  *
  * @author  Werner Randelshofer
- * @version 2.0 2008-04-28 Current time is currentTimeMillis a parameter.
- * <br>1.2 2007-08-26 An interpolator can currentTimeMillis override another
- * interpolator. 
- * <br>1.1 2005-11-02 Notify all, when finished.
- * <br>1.0 December 22, 2003 Created.
+ * @version $Id$
  */
 public abstract class Interpolator {
     private float startValue;

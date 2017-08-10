@@ -7,13 +7,7 @@ import org.monte.media.amigabitmap.AmigaBitmapImage;
 
 /**
  * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version 1.4.1 2010-12-25 Minor fixes.
- * <br>1.4 2010-01-10 Try to play Vertical7Long anims even if they are broken.
- * <br>1.3 2009-11-19 Added support for BYTE_VERTICAL with XOR Op.
- * <br> 1.2 2006-10-01 Added support for DECODER_J. Removed "_" suffix from
- * instance variable names.
- * <br> 1.1 2003-03-30 Static OP codes are now public.
- * <br> 1.0 1999-10-19
+ * @version $Id$
  */
 public class ANIMDeltaFrame
         extends ANIMFrame {

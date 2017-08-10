@@ -19,7 +19,7 @@ import javax.swing.TransferHandler;
  * MovieConverterPanel.
  *
  * @author Werner Randelshofer
- * @version $Id: MovieConverterPanel.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class MovieConverterPanel extends javax.swing.JPanel {
     private final static long serialVersionUID = 1L;

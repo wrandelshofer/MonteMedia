@@ -16,7 +16,7 @@ import java.util.LinkedList;
  * '.' and minus dot '-.' are not treated as numbers.
  *
  * @author  Werner Randelshofer, Hausmatt 10, Goldau, CH-6405, Switzerland
- * @version $Id: StreamPosTokenizer.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 
 

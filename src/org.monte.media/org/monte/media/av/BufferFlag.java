@@ -7,7 +7,7 @@ package org.monte.media.av;
  * {@code BufferFlag}.
  *
  * @author Werner Randelshofer
- * @version $Id: BufferFlag.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public enum BufferFlag {
 

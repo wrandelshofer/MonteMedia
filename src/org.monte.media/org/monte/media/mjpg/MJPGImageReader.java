@@ -30,7 +30,7 @@ import org.monte.media.av.codec.video.AVIBMPDIB;
  * href="http://www.fileformat.info/format/bmp/spec/b7c72ebab8064da48ae5ed0c053c67a4/BMPDIB.TXT">BMPDIB.txt</a>
  *
  * @author Werner Randelshofer
- * @version $Id: MJPGImageReader.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class MJPGImageReader extends ImageReader {
 

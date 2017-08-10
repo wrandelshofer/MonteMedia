@@ -17,9 +17,7 @@ import javax.imageio.stream.ImageOutputStream;
  * Third Edition. Reading: Addison-Wesley.
  *
  * @author Werner Randelshofer
- * @version 1.2 2011-09-01 Adds write buffer to improve performance.
- * <br>1.1 2011-02-19 Adds methods getStreamPosition() and seek().
- * <br>1.0 2010-12-26 Created.
+ * @version $Id$
  */
 public class IFFOutputStream extends OutputStream {
 

@@ -15,7 +15,7 @@ import org.monte.media.av.Format;
  * FIXME - MovieReader should extend Demultiplexer
  *
  * @author Werner Randelshofer
- * @version $Id: MovieReader.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public interface MovieReader extends AutoCloseable {
     /** Returns the number of tracks. */

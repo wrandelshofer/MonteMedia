@@ -82,7 +82,7 @@ import org.monte.media.swing.datatransfer.DropFileTransferHandler;
  * ScreenRecorderMain.
  *
  * @author Werner Randelshofer
- * @version $Id: Main.java 285 2012-11-21 21:04:07Z werner
+ * @version $Id$
  $
  */
 public class Main extends javax.swing.JFrame {

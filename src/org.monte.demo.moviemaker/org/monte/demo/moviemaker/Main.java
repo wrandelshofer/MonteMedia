@@ -42,7 +42,7 @@ import org.monte.media.swing.datatransfer.FileTextFieldTransferHandler;
  * A demo for the {@link QuickTimeWriter} class.
  *
  * @author Werner Randelshofer
- * @version $Id: Main.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class Main extends javax.swing.JFrame {
     private final static long serialVersionUID = 1L;

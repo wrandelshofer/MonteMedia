@@ -17,7 +17,7 @@ import static org.monte.media.av.BufferFlag.*;
  * {@code ANIMMultiplexer}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-02-20 Created.
+ * @version $Id$
  */
 public class ANIMMultiplexer extends ANIMOutputStream implements Multiplexer {
 

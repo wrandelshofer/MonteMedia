@@ -13,7 +13,7 @@ import org.monte.media.math.Rational;
  * {@code PassThroughCodec} passes through all buffers.
  *
  * @author Werner Randelshofer
- * @version $Id: PassThroughCodec.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class PassThroughCodec extends AbstractCodec {
 

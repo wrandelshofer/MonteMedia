@@ -60,7 +60,7 @@ package org.monte.media.math;
  * (2 The fraction for SNaN encodings must be non zero.
  *
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland.
- * @version 0.1 2000-10-06 Conversions from bit array, and to double only.
+ * @version $Id$
  */
 public class ExtendedReal
 extends Number {

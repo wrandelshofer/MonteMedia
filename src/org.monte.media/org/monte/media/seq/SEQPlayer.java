@@ -39,8 +39,7 @@ import org.monte.media.swing.player.JPlayerControlAqua;
  * >http://www.atari-forum.com/wiki/index.php/ST_Picture_Formats</a>
  *
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version 3.0.2 2011-08-23 Frame duration was too long by one jiffie.
- * <br>1.0 2010-12-25 Created.
+ * @version $Id$
  */
 public class SEQPlayer
         extends AbstractPlayer

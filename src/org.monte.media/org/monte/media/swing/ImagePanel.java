@@ -14,17 +14,7 @@ import javax.swing.JComponent;
  * Displays images on a panel.
  *
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland.
- * @version 2009-12-25 Display multi-line messages.
- * <br>2009-12-24 Request focus on mouse click.
- * <br>2006-10-01 Fixed message displaying.
- * <br>2006-07-23 Support for 16:9 anamorph pixel aspect added. 
- * <br>1.3.1 2005-01-22 Changing the pixel aspect triggers validation of
- * the parent component.
- * <br>1.3 2004-12-25 Access methods for rendering hints added. Method
- * setTexture added. Underline suffixes from instance variables removed.
- * <br>1.2 2002-04-02 Workaround for MRJ 1.3.1 Update 1 on Mac OS X.
- * <br>1.1 2000-09-28 Does not update scale factor property during paints anymore.
- * <br>1.0  1999-10-19
+ * @version $Id$
  */
 public class ImagePanel
         extends JComponent {

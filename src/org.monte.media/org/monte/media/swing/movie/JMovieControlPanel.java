@@ -21,7 +21,7 @@ import javax.swing.border.Border;
  * JMovieControlPanel.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-09-04 Created.
+ * @version $Id$
  */
 public class JMovieControlPanel extends javax.swing.JPanel {
     private final static long serialVersionUID = 1L;

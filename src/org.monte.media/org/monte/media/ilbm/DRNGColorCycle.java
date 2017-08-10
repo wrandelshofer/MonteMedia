@@ -44,8 +44,7 @@ import java.util.Arrays;
  * </pre>
  *
  * @author Werner Randelshofer
- * @version 1.0.1 2010-11-08 Fixed color cycling rate.
- * <br>1.0 2009-12-23 Created.
+ * @version $Id$
  */
 public class DRNGColorCycle extends ColorCycle {
 

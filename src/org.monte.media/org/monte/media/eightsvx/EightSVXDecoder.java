@@ -106,7 +106,7 @@ import java.util.ArrayList;
  * A sometimes-needed pad byte is shown as "[0]".
  *
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version  $Id: EightSVXDecoder.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class EightSVXDecoder
 implements IFFVisitor {

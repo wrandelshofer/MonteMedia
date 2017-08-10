@@ -44,8 +44,7 @@ import javax.sound.sampled.AudioFormat;
  * <a href="http://www.altera.com/literature/dc/1.4-2005_Taiwan_2nd_SouthernTaiwanU-web.pdf">http://www.altera.com/literature/dc/1.4-2005_Taiwan_2nd_SouthernTaiwanU-web.pdf</a><br>
  *
  * @author Werner Randelshofer
- * @version 1.1 2011-01-17 Renamed getHeader() to getHeaderCode().
- * <br>1.0 2011-01-03 Created.
+ * @version $Id$
  */
 public class MP3ElementaryInputStream extends FilterInputStream {
 

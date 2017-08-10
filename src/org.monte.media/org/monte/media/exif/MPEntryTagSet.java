@@ -27,7 +27,7 @@ import org.monte.media.tiff.TagSet;
  *
  * 
  * @author Werner Randelshofer
- * @version 1.0 2010-07-24 Created.
+ * @version $Id$
  */
 public class MPEntryTagSet extends TagSet {
 

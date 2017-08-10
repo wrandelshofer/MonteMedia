@@ -31,8 +31,7 @@ import org.monte.media.swing.border.BackdropBorder;
  * </pre>
  * 
  * @author Werner Randelshofer
- * @version 2.0 2006-09-24 Rewritten.
- * <br>1.0 2001-10-16 Created.
+ * @version $Id$
  */
 public class CustomButtonUI
         extends BasicButtonUI

@@ -30,7 +30,7 @@ import org.monte.media.math.Rational;
  * non-keyframe.
  *
  * @author Werner Randelshofer
- * @version $Id: TrimDemoMain.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class TrimDemoMain {
 

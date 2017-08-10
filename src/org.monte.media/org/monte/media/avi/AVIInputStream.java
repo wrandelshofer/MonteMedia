@@ -63,7 +63,7 @@ import org.monte.media.riff.RIFFVisitor;
  * FIXME - This class lacks readSample() methods.
  * 
  * @author Werner Randelshofer
- * @version $Id: AVIInputStream.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class AVIInputStream extends AbstractAVIStream {
 

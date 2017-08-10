@@ -14,7 +14,7 @@ import java.util.List;
  * {@code CodecChain}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-09-07 Created.
+ * @version $Id$
  */
 public class CodecChain implements Codec {
 

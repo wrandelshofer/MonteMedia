@@ -12,7 +12,7 @@ import javax.imageio.stream.ImageOutputStreamImpl;
  * {@code SubImageOutputStream}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-07-20 Created.
+ * @version $Id$
  */
 public class SubImageOutputStream extends ImageOutputStreamImpl {
 

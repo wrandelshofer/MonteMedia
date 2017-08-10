@@ -15,7 +15,7 @@ import static org.monte.media.av.BufferFlag.*;
  * {@code ANIMTrack}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-02-20 Created.
+ * @version $Id$
  */
 public class ANIMTrack implements Track {
     private ANIMDemultiplexer demux;

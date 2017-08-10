@@ -773,7 +773,7 @@ public class AmigaBitmapImage
      *   -
      *
      * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
-     * @version  1997-10-16  Created.
+     * @version $Id$
      */
     private void indexPlanesToIndexPixels(int top, int left, int bottom, int right) {
 
@@ -2564,7 +2564,7 @@ public class AmigaBitmapImage
      *   -
      *
      * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
-     * @version  1997-10-16  Created.
+     * @version $Id$
      */
     private void ham6PlanesToDirectPixels(int top, int left, int bottom, int right) {
         /* Add one to bottom and right to facilitate computations. */

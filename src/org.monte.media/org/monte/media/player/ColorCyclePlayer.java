@@ -12,7 +12,7 @@ package org.monte.media.player;
  * </p>
  *
  * @author Werner Randelshofer
- * @version 1.0 2010-08-04 Created.
+ * @version $Id$
  */
 public interface ColorCyclePlayer extends Player {
 

@@ -23,7 +23,7 @@ import org.monte.media.io.ImageInputStreamAdapter;
  * Reads an image in the Amiga IFF Packed Bitmap image format (PBM).
  *
  * @author Werner Randelshofer
- * @version $Id: PBMImageReader.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class PBMImageReader extends ImageReader implements AnimatedImageReader {
 

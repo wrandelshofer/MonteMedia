@@ -24,7 +24,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
  * {@code AbstractVideoCodec}.
  *
  * @author Werner Randelshofer
- * @version $Id: AbstractVideoCodec.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public abstract class AbstractVideoCodec extends AbstractCodec {
 

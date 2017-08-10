@@ -29,7 +29,7 @@ import static org.monte.media.av.BufferFlag.*;
  * into an AVI 1.0 file.
  *
  * @author Werner Randelshofer
- * @version $Id: AVIWriter.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class AVIWriter extends AVIOutputStream implements MovieWriter {
 

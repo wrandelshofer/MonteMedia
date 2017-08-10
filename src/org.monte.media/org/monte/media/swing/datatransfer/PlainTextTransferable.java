@@ -18,8 +18,7 @@ import java.io.StringReader;
  * PlainTextTransferable.
  *
  * @author Werner Randelshofer
- * @version 1.1 2009-09-01 Replaced use of deprecated class StringBufferInputStream.
- * <br>1.0 22. August 2007 Created.
+ * @version $Id$
  */
 public class PlainTextTransferable extends AbstractTransferable {
     private String plainText;

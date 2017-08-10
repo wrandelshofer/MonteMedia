@@ -11,7 +11,7 @@ import org.monte.media.jmf.codec.AbstractCodec;
  * {@code AbstractVideoDecoder}.
  *
  * @author Werner Randelshofer
- * @version $Id: AbstractVideoDecoder.java 348 2015-09-23 17:46:43Z werner $
+ * @version $Id$
  */
 public abstract class AbstractVideoDecoder extends AbstractCodec {
 

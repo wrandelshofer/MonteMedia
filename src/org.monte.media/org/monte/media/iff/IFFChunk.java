@@ -11,8 +11,7 @@ import java.util.HashMap;
  * reading purposes only. See MutableIFFChunk for writing purposes.
  *
  * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version 1.1 2006-07-20 Reworked for Java 1.5.
- * <br>1.0 1999-10-19
+ * @version $Id$
  */
 public class IFFChunk {
 

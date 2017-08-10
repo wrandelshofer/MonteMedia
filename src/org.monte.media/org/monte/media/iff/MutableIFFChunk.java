@@ -37,7 +37,7 @@ import org.monte.media.tree.TreeNode;
  *
  *
  * @author Werner Randelshofer
- * @version $Id: MutableIFFChunk.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class MutableIFFChunk extends TreeNode<MutableIFFChunk> {
     private final static long serialVersionUID = 1L;

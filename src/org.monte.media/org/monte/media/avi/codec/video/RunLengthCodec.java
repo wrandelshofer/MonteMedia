@@ -109,7 +109,7 @@ import org.monte.media.io.ByteArrayImageOutputStream;
  *
  *
  * @author Werner Randelshofer
- * @version $Id: RunLengthCodec.java 363 2016-11-09 19:32:30Z werner $
+ * @version $Id$
  */
 public class RunLengthCodec extends AbstractVideoCodec {
 

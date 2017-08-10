@@ -26,7 +26,7 @@ import org.monte.media.math.Rational;
  * {@code FormatFormatter}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2012-01-11 Created.
+ * @version $Id$
  */
 public class FormatFormatter {
 

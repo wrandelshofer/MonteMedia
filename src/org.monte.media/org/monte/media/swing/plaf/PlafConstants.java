@@ -7,7 +7,7 @@ package org.monte.media.swing.plaf;
 /**
  *
  * @author  Werner Randelshofer
- * @version 1.0 2001-10-17 Created.
+ * @version $Id$
  */
 public interface PlafConstants {
     /**

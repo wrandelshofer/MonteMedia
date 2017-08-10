@@ -56,7 +56,7 @@ import org.monte.media.tiff.TagSet;
  * http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf</a>
  *
  * @author Werner Randelshofer
- * @version $Id: EXIFReader.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class EXIFReader {
 

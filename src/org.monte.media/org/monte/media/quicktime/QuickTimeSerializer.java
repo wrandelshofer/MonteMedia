@@ -12,7 +12,7 @@ package org.monte.media.quicktime;
  * FIXME - Implement me.
  * 
  * @author Werner Randelshofer
- * @version 1.0 2013-03-21 Created.
+ * @version $Id$
  */
 public class QuickTimeSerializer {
 

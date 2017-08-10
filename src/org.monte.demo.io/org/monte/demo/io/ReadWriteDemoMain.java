@@ -41,7 +41,7 @@ import org.monte.media.math.Rational;
  * attempts to read the frames back from the video file.
  *
  * @author Werner Randelshofer
- * @version $Id: ReadWriteDemoMain.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class ReadWriteDemoMain {
 

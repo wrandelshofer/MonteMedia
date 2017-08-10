@@ -10,7 +10,7 @@ import java.io.IOException;
  * AnimatedImageReader.
  *
  * @author Werner Randelshofer
- * @version $$Id$$
+ * @version $Id$
  */
 public interface AnimatedImageReader {
 

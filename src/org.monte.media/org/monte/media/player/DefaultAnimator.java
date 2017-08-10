@@ -13,7 +13,7 @@ import org.monte.media.av.Interpolator;
  * DefaultAnimator.
  *
  * @author Werner Randelshofer
- * @version $Id: DefaultAnimator.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class DefaultAnimator implements Animator {
     protected EventListenerList listenerList = new EventListenerList();

@@ -9,7 +9,7 @@ import org.monte.media.math.Rational;
  * {@code Main}.
  *
  * @author Werner Randelshofer
- * @version $Id: Main.java 292 2012-12-04 08:20:59Z werner $
+ * @version $Id$
  */
 public class Main {
 

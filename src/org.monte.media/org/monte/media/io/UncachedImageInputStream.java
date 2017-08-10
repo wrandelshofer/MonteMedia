@@ -14,7 +14,7 @@ import java.nio.ByteOrder;
  * not supported.
  *
  * @author Werner Randelshofer
- * @version $Id: UncachedImageInputStream.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class UncachedImageInputStream extends ImageInputStreamImpl2 {
 

@@ -15,8 +15,7 @@ import javax.imageio.stream.ImageInputStream;
  * A reader for JPEG images in the CMYK color space.
  *
  * @author Werner Randelshofer
- * @version 1.2 2011-02-17 Removes support for JMF.
- * <br>1.0 2010-07-23 Created.
+ * @version $Id$
  */
 public class CMYKJPEGImageReaderSpi extends ImageReaderSpi {
 

@@ -26,9 +26,7 @@ import javax.swing.text.JTextComponent;
  * support for JTextFields, which contain the path to a file.
  *
  * @author Werner Randelshofer
- * @version 1.2 2010-10-03 Adds support for file filter.
- * <br>1.1 2008-12-03 Added file selection mode.
- * <br>1.0 September 8, 2007 Created.
+ * @version $Id$
  */
 public class FileTextFieldTransferHandler extends TransferHandler {
     private final static long serialVersionUID = 1L;

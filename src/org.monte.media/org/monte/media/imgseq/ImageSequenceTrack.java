@@ -17,7 +17,7 @@ import static org.monte.media.av.BufferFlag.*;
  * {@code ImageSequenceTrack}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-02-20 Created.
+ * @version $Id$
  */
 public class ImageSequenceTrack implements Track {
 

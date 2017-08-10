@@ -10,7 +10,7 @@ import org.monte.media.exception.ParseException;
  * RIFFVIsitor is notified each time the RIFFParser visits
  * a data chunk and when a group is entered or leaved.
  *
- * @version  1.0  2005-01-09 Created.
+ * @version $Id$
  */
 public interface RIFFVisitor {
     /** This method is invoked when the parser attempts to enter a group.

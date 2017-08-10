@@ -19,7 +19,7 @@ import javax.swing.JFileChooser;
  * Main.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-09-04 Created.
+ * @version $Id$
  */
 public class Main extends javax.swing.JFrame {
     private final static long serialVersionUID = 1L;

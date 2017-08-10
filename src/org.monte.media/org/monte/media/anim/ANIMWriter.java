@@ -24,7 +24,7 @@ import org.monte.media.av.MovieWriter;
  * {@code ANIMWriter}.
  *
  * @author Werner Randelshofer
- * @version $Id: ANIMWriter.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class ANIMWriter extends ANIMMultiplexer implements MovieWriter {
 

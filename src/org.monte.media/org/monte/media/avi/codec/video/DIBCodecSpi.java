@@ -10,7 +10,7 @@ import org.monte.media.av.CodecSpi;
  * DIBCodecSpi.
  *
  * @author Werner Randelshofer
- * @version $$Id$$
+ * @version $Id$
  */
 public class DIBCodecSpi implements CodecSpi {
 

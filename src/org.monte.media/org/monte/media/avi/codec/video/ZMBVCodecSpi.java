@@ -10,7 +10,7 @@ import org.monte.media.av.CodecSpi;
  * ZMBVCodecSpi.
  *
  * @author Werner Randelshofer
- * @version $$Id$$
+ * @version $Id$
  */
 public class ZMBVCodecSpi implements CodecSpi {
 

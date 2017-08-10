@@ -14,7 +14,7 @@ import org.monte.media.math.Rational;
  * range.
  *
  * @author Werner Randelshofer
- * @version $Id: TrimTimeCodec.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class TrimTimeCodec extends AbstractCodec {
 

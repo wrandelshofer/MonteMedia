@@ -14,7 +14,7 @@ import org.monte.media.av.Interpolator;
  * {@code AbstractSplineInterpolator}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2012-01-25 Created.
+ * @version $Id$
  */
 public abstract class AbstractSplineInterpolator extends Interpolator {
 

@@ -45,7 +45,7 @@ import org.monte.media.math.Rational;
  * video samples into a QuickTime file.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-08-19 Created.
+ * @version $Id$
  */
 public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 

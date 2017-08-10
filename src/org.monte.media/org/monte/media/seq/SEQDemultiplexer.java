@@ -12,7 +12,7 @@ import java.io.IOException;
  * {@code SEQDemultiplexer}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-02-20 Created.
+ * @version $Id$
  */
 public class SEQDemultiplexer extends SEQReader implements Demultiplexer {
 

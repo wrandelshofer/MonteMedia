@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
  * A field in a {@link TIFFDirectory}.
  *
  * @author Werner Randelshofer
- * @version 1.0 2010-07-25 Created.
+ * @version $Id$
  */
 public class TIFFField extends TIFFNode {
 

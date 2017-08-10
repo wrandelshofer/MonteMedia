@@ -27,7 +27,7 @@ import org.monte.media.tree.TreeNode;
  * Merges two IFF ANIM files.
  *
  * @author Werner Randelshofer
- * @version $Id: Main.java 364 2016-11-09 19:54:25Z werner $
+ * @version $Id$
  */
 public class Main extends javax.swing.JFrame {
 

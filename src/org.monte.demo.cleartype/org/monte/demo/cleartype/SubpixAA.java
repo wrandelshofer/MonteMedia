@@ -16,7 +16,7 @@ import java.awt.image.WritableRaster;
  * Scales an image down and applies Subpixel antialiasing to it.
  *
  * @author Werner Randelshofer
- * @version 1.0 2009-12-11 Created.
+ * @version $Id$
  */
 public class SubpixAA {
 

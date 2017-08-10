@@ -16,13 +16,7 @@ import java.io.InputStream;
  * This stream filter is suitable for IFF-EA85 files.
  *
  * @author	Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version 1.3 2010-08-03 Moved unpackByteRun1 method into this class.
- * <br>1.2.1 2004-08-09 Read methods for primitives throw now EOFException's,
- * when the unexpected EOF's occur.
- * <br>1.2 2003-04-01 Method skipFully added.
- * <br>1.1 2000-06-11 Method readFully added.
- * <br>1.0 1999-10-19
- * <br>0.1 1999-01-02	Created.
+ * @version $Id$
  */
 public class MC68000InputStream
         extends FilterInputStream {

@@ -48,7 +48,7 @@ import org.monte.media.io.SeekableByteArrayOutputStream;
  * </ul>
  *
  * @author Werner Randelshofer
- * @version 1.0 2011-03-15 Created.
+ * @version $Id$
  */
 public class RawCodec extends AbstractVideoCodec {
 

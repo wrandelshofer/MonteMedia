@@ -31,12 +31,7 @@ import org.monte.media.image.Images;
  * The inner area of the image is used to fill the inner area.
  *
  * @author  Werner Randelshofer
- * @version 4.2 2005-09-10 Lazily convert image into buffered image.
- * <br>4.1 2005-05-12 Workarounds for Java 1.4, 1.5 on Mac OS X 10.4 added.
- * <br>4.0 2005-04-25 Renamed from ImageBevelBorder to ImageBevelBorder.
- * Because we have now two optimized versions for Apple's Java 1.3 and one for
- * Java 1.4 and above.
- * <br>1.0 2001-10-16 Created.
+ * @version $Id$
  */
 public class ImageBevelBorder implements Border {
     private final static boolean VERBOSE = false;
