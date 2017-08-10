@@ -5,9 +5,6 @@
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
             <name>MonteMedia</name>
             <source-roots>
-                <root id="src.org.monte.media.dir"/>
-                <root id="src.org.monte.media.jmf.dir"/>
-                <root id="src.resources.dir"/>
                 <root id="src.org.monte.demo.animmerger.dir"/>
                 <root id="src.org.monte.demo.audiorecorder.dir"/>
                 <root id="src.org.monte.demo.aviwriter.dir"/>
@@ -15,12 +12,17 @@
                 <root id="src.org.monte.demo.cmykimageviewer.dir"/>
                 <root id="src.org.monte.demo.imageioviewer.dir"/>
                 <root id="src.org.monte.demo.io.dir"/>
+                <root id="src.org.monte.demo.jmfavi.dir"/>
+                <root id="src.org.monte.demo.jmftsccdemo.dir"/>
                 <root id="src.org.monte.demo.movieconverter.dir"/>
                 <root id="src.org.monte.demo.moviemaker.dir"/>
                 <root id="src.org.monte.demo.mpoimagesplitter.dir"/>
                 <root id="src.org.monte.demo.quicktimewriter.dir"/>
                 <root id="src.org.monte.demo.rationalnumber.dir"/>
                 <root id="src.org.monte.demo.screenrecorder.dir"/>
+                <root id="src.org.monte.media.dir"/>
+                <root id="src.org.monte.media.jmf.dir"/>
+                <root id="src.resources.dir"/>
             </source-roots>
             <test-roots>
                 <root id="test.main.dir"/>

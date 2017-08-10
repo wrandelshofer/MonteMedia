@@ -9,22 +9,30 @@
             <arg value="--pretty=format:%cd.%h"/>
             <arg value="--date=format:%Y%m%d.%H%M%S"/>
         </exec>
+        <exec executable="git" outputproperty="git.describe" failifexecutionfails="false" errorproperty="">
+            <arg value="describe"/>
+            <arg value="--tags"/>
+            <arg value="--always"/>
+            <arg value="HEAD"/>
+        </exec>
         <property name="name" value="${ant.project.name}"/>
-        <property name="license" value="The MIT License. https://opensource.org/licenses/mit-license.php"/>
-        <property name="version" value="${git.revision}"/>
-        <property name="author" value="Werner Randelshofer"/>
-        <echo message="${name} ${version}"/>
+        <property name="license" value="MIT License. https://opensource.org/licenses/mit-license.php"/>
+        <property name="version" value="${git.describe}"/>
+        <property name="author" value="Werner Randelshofer. http://www.randelshofer.ch"/>
+        <echo message="${name} ${version} / rev:${git.revision} desc:${git.describe}"/>
         
-        <property name="srcdirs" value="src/demo:src/main:src/jmf"/>
+        <property name="srcdir" value="src"/>
         <property name="classdir" value="build/classes9"/>
         <property name="docdir" value="build/javadoc9"/>
         <property name="libdir" value="lib"/>
         <property name="jardir" value="build/jar9"/>
+        <property name="distdir" value="dist/dist9"/>
     </target>
     <target name="clean" depends="init">
         <delete dir="${classdir}"/>
         <delete dir="${docdir}"/>
         <delete dir="${jardir}"/>
+        <delete dir="${distdir}"/>
     </target>
     <target name="javadoc" depends="init">
         <mkdir dir="${docdir}" />
@@ -33,12 +41,17 @@
             <arg value="UTF-8"/>
             <arg value="-d"/>
             <arg value="${docdir}"/>
+            <arg value="-html5"/>
             <arg value="-header"/>
             <arg value="${name} ${version}"/>
+            <arg value="--module-path"/>
+            <arg value="${libdir}"/>
             <arg value="--module-source-path"/>
-            <arg value="${srcdirs}"/>
+            <arg value="${srcdir}"/>
             <arg value="--module"/>
             <arg value="org.monte.media"/>
+            <arg value="--module"/>
+            <arg value="org.monte.media.jmf"/>
         </exec>
     </target>
     <target name="compile" depends="init">
@@ -48,7 +61,7 @@
                 target="1.9"
                 destdir="${classdir}"
                 debug="true"
-                modulesourcepath="${srcdirs}" 
+                modulesourcepath="${srcdir}" 
                 modulepath="${libdir}"
                 includeantruntime="false"
         >
@@ -58,12 +71,23 @@
         <attribute name="module"/>
         <attribute name="mainclass" default=""/>
         <sequential>
+        <mkdir dir="${jardir}/@{module}" />
+        <mkdir dir="${distdir}/@{module}" />
+        <!-- note: the last line must be given twice, because the jar command ignores the last line of a manifest -->
+        <echo encoding="UTF-8" file="${jardir}/@{module}/manifest.txt" >Implementation-Title: @{module}
+Implementation-Version: ${version}
+Implementation-Vendor: ${author}
+License: ${license}
+License: ${license}
+        </echo>
         <exec executable="jar">
             <arg value="--create"/>
             <arg value="--file"/>
-            <arg value="${jardir}/@{module}.jar"/>
+            <arg value="${distdir}/@{module}/@{module}.jar"/>
             <arg value="--main-class" unless:blank="@{mainclass}"/>
             <arg value="@{mainclass}" unless:blank="@{mainclass}"/>
+            <arg value="--manifest"/>
+            <arg value="${jardir}/@{module}/manifest.txt"/>
             <arg value="--module-version"/>
             <arg value="${version}"/>
             <arg value="-C"/>
@@ -73,12 +97,23 @@
         <exec executable="jar">
             <arg value="-d"/>
             <arg value="--file"/>
-            <arg value="${jardir}/@{module}.jar"/>
+            <arg value="${distdir}/@{module}/@{module}.jar"/>
         </exec>
+        <jar destfile="${distdir}/@{module}/@{module}-source.jar">
+            <fileset dir="${srcdir}/@{module}">
+                <exclude name="**/.*"/>
+            </fileset>
+        </jar>
+        <copy file="pom-template.xml" tofile="${distdir}/@{module}/pom.xml" >
+            <filterset>
+                <filter token="name" value="${name}"/>
+                <filter token="module" value="org.monte.media"/>
+                <filter token="version" value="${version}"/>
+            </filterset>
+        </copy>
         </sequential>
     </macrodef>
     <target name="jar" depends="compile">
-        <mkdir dir="${jardir}" />
         <jarmodule module="org.monte.media" mainclass="org.monte.media.screenrecorder.Main"/>
         <jarmodule module="org.monte.media.jmf"/>
         <jarmodule module="org.monte.demo.jmfavi"/>
@@ -96,6 +131,6 @@
         <jarmodule module="org.monte.demo.rationalnumber" mainclass="org.monte.demo.rationalnumber.Main"/>
         <jarmodule module="org.monte.demo.screenrecorder" mainclass="org.monte.demo.screenrecorder.Main"/>
     </target>
-        <target name="all" depends="clean,compile,jar,javadoc">
+    <target name="all" depends="clean,compile,jar,javadoc">
     </target>
 </project>

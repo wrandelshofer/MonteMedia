@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="http://maven.apache.org/xsd/maven-4.0.0.xsd" uri="nbproject/private/retriever/maven.apache.org/xsd/maven-4.0.0.xsd"/>
+</catalog>
