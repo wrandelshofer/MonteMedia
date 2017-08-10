@@ -4,10 +4,13 @@
 package org.monte.media.av.codec.video;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import static java.lang.Math.min;
+import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 import org.monte.media.io.ByteArrayImageInputStream;
@@ -161,9 +164,23 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
     private ByteArrayImageOutputStream temp = new ByteArrayImageOutputStream(ByteOrder.LITTLE_ENDIAN);
     private byte[] temp2;
     private int[] palette;
+    private ByteBuffer bbuf;
 
     public TechSmithCodecCore() {
         reset();
+    }
+
+    private void ensureBBufCapacity(int width, int height, int depth) {
+        // In the worst case, we need:
+        // +3 bytes for every 255 bytes of input data, because we can not compress them.
+        // +2 bytes for each scanline for the end of scanline marker
+        // +2 bytes for the end of image marker
+        int needed = depth*width*height+ 3*(width/255+1)+2*height+2;
+        if (bbuf == null || bbuf.capacity()<needed) {
+            bbuf = ByteBuffer.allocate(needed);
+            bbuf.order(ByteOrder.LITTLE_ENDIAN);
+        }
+        bbuf.clear();
     }
 
     public void reset() {
@@ -1218,7 +1235,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
      */
     public void encodeKey24(OutputStream out, int[] data, int width, int height, int offset, int scanlineStride)
             throws IOException {
-        temp.clear();temp.setByteOrder(ByteOrder.LITTLE_ENDIAN);
+        ensureBBufCapacity(width, height, 3);
         int ymax = offset + height * scanlineStride;
         int upsideDown = ymax - scanlineStride + offset;
 
@@ -1241,30 +1258,30 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                 if (repeatCount < 3) {
                     literalCount++;
                     if (literalCount == 254) {
-                        temp.write(0);
-                        temp.write(literalCount); // Literal OP-code
-                        writeInts24LE(temp, data, xy - literalCount + 1, literalCount);
+                        bbuf.put((byte)0);
+                        bbuf.put((byte)literalCount); // Literal OP-code
+                        writeInts24LE(bbuf, data, xy - literalCount + 1, literalCount);
                         literalCount = 0;
                     }
                 } else {
                     if (literalCount > 0) {
                         if (literalCount < 3) {
                             for (; literalCount > 0; --literalCount) {
-                                temp.write(1); // Repeat OP-code
-                                writeInt24LE(temp, data[xy - literalCount]);
+                                bbuf.put((byte)1); // Repeat OP-code
+                                writeInt24LE(bbuf, data[xy - literalCount]);
                             }
                         } else {
-                            temp.write(0);
-                            temp.write(literalCount); // Literal OP-code
-                            writeInts24LE(temp, data, xy - literalCount, literalCount);
+                            bbuf.put((byte)0);
+                            bbuf.put((byte)literalCount); // Literal OP-code
+                            writeInts24LE(bbuf, data, xy - literalCount, literalCount);
                             ///if (literalCount & 1 == 1) {
-                            ///    temp.write(0); // pad byte
+                            ///    bbuf.put((byte)0); // pad byte
                             ///}
                             literalCount = 0;
                         }
                     }
-                    temp.write(repeatCount); // Repeat OP-code
-                    writeInt24LE(temp, v);
+                    bbuf.put((byte)repeatCount); // Repeat OP-code
+                    writeInt24LE(bbuf, v);
                     xy += repeatCount - 1;
                 }
             }
@@ -1273,32 +1290,32 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
             if (literalCount > 0) {
                 if (literalCount < 3) {
                     for (; literalCount > 0; --literalCount) {
-                        temp.write(1); // Repeat OP-code
-                        writeInt24LE(temp, data[xy - literalCount]);
+                        bbuf.put((byte)1); // Repeat OP-code
+                        writeInt24LE(bbuf, data[xy - literalCount]);
                     }
                 } else {
-                    temp.write(0);
-                    temp.write(literalCount);
-                    writeInts24LE(temp, data, xy - literalCount, literalCount);
+                    bbuf.put((byte)0);
+                    bbuf.put((byte)literalCount);
+                    writeInts24LE(bbuf, data, xy - literalCount, literalCount);
                     ///if (literalCount & 1 == 1) {
-                    ///    temp.write(0); // pad byte
+                    ///    bbuf.put((byte)0); // pad byte
                     ///}
                 }
                 literalCount = 0;
             }
 
-            temp.write(0);
-            temp.write(0x0000);// End of line
+            bbuf.put((byte)0);
+            bbuf.put((byte)0x0000);// End of line
         }
-        temp.write(0);
-        temp.write(0x0001);// End of bitmap
-        //temp.toOutputStream(out);
+        bbuf.put((byte)0);
+        bbuf.put((byte)0x0001);// End of bitmap
+        //bbuf.toOutputStream(out);
 
         DeflaterOutputStream defl = new DeflaterOutputStream(out);
-        temp.toOutputStream(defl);
+        defl.write(bbuf.array(), 0, bbuf.position());
         defl.finish();
     }
-
+    
     /** Encodes a 24-bit delta frame.
      *
      * @param out The output stream. 
@@ -1310,8 +1327,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
      */
     public void encodeDelta24(OutputStream out, int[] data, int[] prev, int width, int height, int offset, int scanlineStride)
             throws IOException {
-
-        temp.clear();temp.setByteOrder(ByteOrder.LITTLE_ENDIAN);
+        ensureBBufCapacity(width, height, 3);
 
         int ymax = offset + height * scanlineStride;
         int upsideDown = ymax - scanlineStride + offset;
@@ -1337,10 +1353,10 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
             }
 
             while (verticalOffset > 0 || skipCount > 0) {
-                temp.write(0x00); // Escape code
-                temp.write(0x02); // Skip OP-code
-                temp.write(min(255, skipCount)); // horizontal offset
-                temp.write(min(255, verticalOffset)); // vertical offset
+                bbuf.put((byte)0x00); // Escape code
+                bbuf.put((byte)0x02); // Skip OP-code
+                bbuf.put((byte)min(255, skipCount)); // horizontal offset
+                bbuf.put((byte)min(255, verticalOffset)); // vertical offset
                 skipCount -= min(255, skipCount);
                 verticalOffset -= min(255, verticalOffset);
             }
@@ -1370,16 +1386,16 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                 } else {
                     while (literalCount > 0) {
                         if (literalCount < 3) {
-                            temp.write(1); // Repeat OP-code
-                            writeInt24LE(temp, data[xy - literalCount]);
+                            bbuf.put((byte)1); // Repeat OP-code
+                            writeInt24LE(bbuf, data[xy - literalCount]);
                             literalCount--;
                         } else {
                             int literalRun = min(254, literalCount);
-                            temp.write(0);
-                            temp.write(literalRun); // Literal OP-code
-                            writeInts24LE(temp, data, xy - literalCount, literalRun);
+                            bbuf.put((byte)0);
+                            bbuf.put((byte)literalRun); // Literal OP-code
+                            writeInts24LE(bbuf, data, xy - literalCount, literalRun);
                             ///if (literalRun & 1 == 1) {
-                            ///    temp.write(0); // pad byte
+                            ///    bbuf.put((byte)0); // pad byte
                             ///}
                             literalCount -= literalRun;
                         }
@@ -1390,17 +1406,17 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                         xy += skipCount - 1;
                     } else if (skipCount >= repeatCount) {
                         while (skipCount > 0) {
-                            temp.write(0);
-                            temp.write(0x0002); // Skip OP-code
-                            temp.write(min(255, skipCount));
-                            temp.write(0);
+                            bbuf.put((byte)0);
+                            bbuf.put((byte)0x0002); // Skip OP-code
+                            bbuf.put((byte)min(255, skipCount));
+                            bbuf.put((byte)0);
                             xy += min(255, skipCount);
                             skipCount -= min(255, skipCount);
                         }
                         xy -= 1;
                     } else {
-                        temp.write(repeatCount); // Repeat OP-code
-                        writeInt24LE(temp, v);
+                        bbuf.put((byte)repeatCount); // Repeat OP-code
+                        writeInt24LE(bbuf, v);
                         xy += repeatCount - 1;
                     }
                 }
@@ -1409,33 +1425,33 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
             // flush literal run
             while (literalCount > 0) {
                 if (literalCount < 3) {
-                    temp.write(1); // Repeat OP-code
-                    writeInt24LE(temp, data[xy - literalCount]);
+                    bbuf.put((byte)1); // Repeat OP-code
+                    writeInt24LE(bbuf, data[xy - literalCount]);
                     literalCount--;
                 } else {
                     int literalRun = min(254, literalCount);
-                    temp.write(0);
-                    temp.write(literalRun); // Literal OP-code
-                    writeInts24LE(temp, data, xy - literalCount, literalRun);
+                    bbuf.put((byte)0);
+                    bbuf.put((byte)literalRun); // Literal OP-code
+                    writeInts24LE(bbuf, data, xy - literalCount, literalRun);
                     ///if (literalRun & 1 == 1) {
-                    ///   temp.write(0); // pad byte
+                    ///   bbuf.put((byte)0); // pad byte
                     ///}
                     literalCount -= literalRun;
                 }
             }
 
-            temp.write(0); // Escape code
-            temp.write(0x00); // End of line OP-code
+            bbuf.put((byte)0); // Escape code
+            bbuf.put((byte)0x00); // End of line OP-code
         }
 
-        temp.write(0); // Escape code
-        temp.write(0x01);// End of bitmap
+        bbuf.put((byte)0); // Escape code
+        bbuf.put((byte)0x01);// End of bitmap
 
-        if (temp.length() == 2) {
-            temp.toOutputStream(out);
+        if (bbuf.position()== 2) {
+            out.write(bbuf.array(), 0, 2);
         } else {
             DeflaterOutputStream defl = new DeflaterOutputStream(out);
-            temp.toOutputStream(defl);
+            defl.write(bbuf.array(), 0, bbuf.position());
             defl.finish();
         }
     }
