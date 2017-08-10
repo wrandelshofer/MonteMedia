@@ -1,7 +1,7 @@
 <#if licenseFirst??>
 ${licenseFirst} @(#)${name}
 </#if>
-${licensePrefix}Copyright © ${date?date?string("yyyy")} Werner Randelshofer, Switzerland. Licensed under the MIT License.
+${licensePrefix}Copyright © ${date?date?string("yyyy")} Werner Randelshofer, Switzerland. MIT License.
 <#if licenseLast??>
 ${licenseLast}
 </#if>
