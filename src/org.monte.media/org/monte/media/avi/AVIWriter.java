@@ -203,7 +203,7 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
      *
      * @param track The track index.
      * @param image The image of the video frame.
-     * @param duration Duration given in media time units.
+     * @param duration Duration given in media time units (=number of frames to be written).
      *
      * @throws IOException if writing the sample data failed.
      */
@@ -246,32 +246,31 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
             isKeyframe = vt.outputBuffer.flags.contains(KEYFRAME);
             boolean paletteChange = writePalette(track, image, isKeyframe);
             writeSample(track, (byte[]) vt.outputBuffer.data, vt.outputBuffer.offset, vt.outputBuffer.length, isKeyframe && !paletteChange);
-            /*
-             long offset = getRelativeStreamPosition();
 
-             DataChunk videoFrameChunk = new DataChunk(vt.getSampleChunkFourCC(isKeyframe));
-             moviChunk.add(videoFrameChunk);
-             videoFrameChunk.getOutputStream().write((byte[]) vt.outputBuffer.data, vt.outputBuffer.offset, vt.outputBuffer.length);
-             videoFrameChunk.finish();
-             long length = getRelativeStreamPosition() - offset;
-
-             Sample s=new Sample(videoFrameChunk.chunkType, 1, offset, length, isKeyframe&&!paletteChange);
-             vt.addSample(s);
-             idx1.add(s);
-            
-             if (getRelativeStreamPosition() > 1L << 32) {
-             throw new IOException("AVI file is larger than 4 GB");
-             }*/
+            if (duration > 1) {
+                inputBuffer.flags = EnumSet.noneOf(BufferFlag.class); // not a keyframe
+                for (int i = 1; i < duration; i++) {
+                    vt.codec.process(inputBuffer, vt.outputBuffer);
+                    if (vt.outputBuffer.flags.contains(DISCARD)) {
+                        continue;
+                    }
+                    isKeyframe = vt.outputBuffer.flags.contains(KEYFRAME);
+                    paletteChange = writePalette(track, image, isKeyframe);
+                    writeSample(track, (byte[]) vt.outputBuffer.data, vt.outputBuffer.offset, vt.outputBuffer.length, isKeyframe&&!paletteChange);
+                }
+            }
         }
     }
 
     /**
      * Encodes the data provided in the buffer and then writes it into the
-     * specified track. <p> Does nothing if the discard-flag in the buffer is
-     * set to true.
+     * specified track.
+     * <p>
+     * Does nothing if the discard-flag in the buffer is set to true.
      *
      * @param track The track number.
-     * @param buf The buffer containing a data sample.
+     * @param buf The buffer containing a data sample. The duration of the buffer must match the
+     * sample rate of the track.
      */
     @Override
     public void write(int track, Buffer buf) throws IOException {
@@ -321,7 +320,7 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
             }
             Buffer outBuf = tr.outputBuffer;
             if (tr.codec.process(buf, outBuf) != Codec.CODEC_OK) {
-                throw new IOException("Codec failed or could not encode the sample in a single step. codec:"+tr.codec);
+                throw new IOException("Codec failed or could not encode the sample in a single step. codec:" + tr.codec);
             }
             if (outBuf.isFlag(DISCARD)) {
                 return;
