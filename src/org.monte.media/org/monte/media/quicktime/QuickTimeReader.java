@@ -132,13 +132,13 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
     @Override
     public int nextTrack() throws IOException {
         ensureRealized();
-        throw new UnsupportedOperationException("nextTrack() supported yet.");
+        throw new UnsupportedOperationException("nextTrack() not supported yet.");
     }
 
     @Override
     public void setMovieReadTime(Rational newValue) throws IOException {
         ensureRealized();
-        throw new UnsupportedOperationException("setMovieReadTime() supported yet.");
+        throw new UnsupportedOperationException("setMovieReadTime() not supported yet.");
     }
 
     @Override
