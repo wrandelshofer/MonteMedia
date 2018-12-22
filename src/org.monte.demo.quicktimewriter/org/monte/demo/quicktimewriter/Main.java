@@ -44,7 +44,7 @@ public class Main {
         System.out.println("QuickTimeDemo " + Main.class.getPackage().getImplementationVersion());
         System.out.println("This is a demo of the Monte Media library.");
         System.out.println("Copyright © Werner Randelshofer. All Rights Reserved.");
-        System.out.println("License: Creative Commons Attribution 3.0.");
+        System.out.println("License: MIT License");
         System.out.println();
 
         try {

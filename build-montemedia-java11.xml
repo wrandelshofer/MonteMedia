@@ -24,7 +24,7 @@
         
         <property name="srcdir" value="src"/>
         <property name="classdir" value="build/classes9"/>
-        <property name="libdir" value="lib"/>
+        <property name="libdir" value="lib/classpath:lib/modulepath/javafx-sdk-11.0.1/lib"/>
         <property name="jardir" value="build/jar9"/>
         <property name="distdir" value="dist/${name}-${version}-java9"/>
         <property name="docdir" value="build/javadoc9"/>
@@ -156,7 +156,7 @@ ${environment::newline()}</echo>
                     <filter token="Id" value="$Id: ${git.hash.date.author} $"/>
                 </filterset>
             </copy>
-            <jar destfile="${distdir}/sources/@{module}-sources.jar">
+            <jar destfile="${distdir}/sources/@{module}-src.jar">
                 <manifest>
                     <attribute name="Implementation-Title" value="@{module}"/>
                     <attribute name="Implementation-Version" value="${version}"/>

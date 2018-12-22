@@ -76,7 +76,6 @@
  */
 module org.monte.media {
     requires java.desktop;
-    requires javafx.swing;
     requires java.prefs;
 
     exports org.monte.media.beans;
@@ -101,7 +100,6 @@ module org.monte.media {
     exports org.monte.media.imgseq;
     exports org.monte.media.interpolator;
     exports org.monte.media.io;
-    exports org.monte.media.javafx;
     exports org.monte.media.jfif;
     exports org.monte.media.jpeg;
     exports org.monte.media.math;
