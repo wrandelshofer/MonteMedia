@@ -23,10 +23,10 @@
         <echo message="${name} ${version} / desc:${git.describe} rev:${git.hash.date.author}"/>
         
         <property name="srcdir" value="src"/>
-        <property name="classdir" value="build/classes9"/>
+        <property name="classdir" value="build/classes"/>
         <property name="libdir" value="lib/classpath:lib/modulepath/javafx-sdk-11.0.1/lib"/>
-        <property name="jardir" value="build/jar9"/>
-        <property name="distdir" value="dist/${name}-${version}-java9"/>
+        <property name="jardir" value="build/jar"/>
+        <property name="distdir" value="dist/${name}-${version}"/>
         <property name="docdir" value="build/javadoc9"/>
     </target>
     
