@@ -70,7 +70,7 @@
  * <tr><td>EXIF</td><td>AVI, JPEG, MPO</td><td>Exchangeable Image File
  * Format</td><td>Decode</td></tr>
  * </table>
- * 
+ *
  * @author Werner Randelshofer
  * @version $Id$
  */
@@ -137,7 +137,11 @@ module org.monte.media {
             org.monte.media.av.codec.video.TechSmithCodecSpi,
             org.monte.media.quicktime.codec.audio.QuickTimePCMAudioCodecSpi,
             org.monte.media.quicktime.codec.video.AnimationCodecSpi,
-            org.monte.media.quicktime.codec.video.RawCodecSpi;
+            org.monte.media.quicktime.codec.video.RawCodecSpi,
+            org.monte.media.avi.codec.audio.AVIPCMAudioCodecSpi,
+            org.monte.media.avi.codec.video.DIBCodecSpi,
+            org.monte.media.avi.codec.video.RunLengthCodecSpi,
+            org.monte.media.avi.codec.video.ZMBVCodecSpi;
 
     provides org.monte.media.av.MovieWriterSpi with
             org.monte.media.anim.ANIMWriterSpi,
