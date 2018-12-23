@@ -17,7 +17,7 @@ java -jar MonteMedia.jar
 On some operating systems, you can launch the screen recorder by double clicking the MonteMedia.jar file.
 
 
-## MonteMedia for Java 9
+## MonteMedia for Java 11
 The library is split up into a main module, a JMF module and demo modules.
 
 * org.monte.media    
