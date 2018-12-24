@@ -3,24 +3,24 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/MonteMedia.iml" filepath="$PROJECT_DIR$/.idea/MonteMedia.iml" />
-      <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.animmerger/org.monte.demo.animmerger.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.animmerger/org.monte.demo.animmerger.iml" />
-      <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.audiorecorder/org.monte.demo.audiorecorder.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.audiorecorder/org.monte.demo.audiorecorder.iml" />
-      <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.aviwriter/org.monte.demo.aviwriter.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.aviwriter/org.monte.demo.aviwriter.iml" />
-      <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.cleartype/org.monte.demo.cleartype.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.cleartype/org.monte.demo.cleartype.iml" />
-      <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.cmykimageviewer/org.monte.demo.cmykimageviewer.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.cmykimageviewer/org.monte.demo.cmykimageviewer.iml" />
-      <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.imageioviewer/org.monte.demo.imageioviewer.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.imageioviewer/org.monte.demo.imageioviewer.iml" />
-      <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.io/org.monte.demo.io.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.io/org.monte.demo.io.iml" />
-      <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.jmfavi/org.monte.demo.jmfavi.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.jmfavi/org.monte.demo.jmfavi.iml" />
-      <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.jmftsccdemo/org.monte.demo.jmftsccdemo.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.jmftsccdemo/org.monte.demo.jmftsccdemo.iml" />
-      <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.movieconverter/org.monte.demo.movieconverter.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.movieconverter/org.monte.demo.movieconverter.iml" />
-      <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.moviemaker/org.monte.demo.moviemaker.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.moviemaker/org.monte.demo.moviemaker.iml" />
-      <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.mpoimagesplitter/org.monte.demo.mpoimagesplitter.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.mpoimagesplitter/org.monte.demo.mpoimagesplitter.iml" />
-      <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.quicktimewriter/org.monte.demo.quicktimewriter.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.quicktimewriter/org.monte.demo.quicktimewriter.iml" />
-      <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.rationalnumber/org.monte.demo.rationalnumber.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.rationalnumber/org.monte.demo.rationalnumber.iml" />
-      <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.screenrecorder/org.monte.demo.screenrecorder.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.screenrecorder/org.monte.demo.screenrecorder.iml" />
-      <module fileurl="file://$PROJECT_DIR$/src/org.monte.media/org.monte.media.iml" filepath="$PROJECT_DIR$/src/org.monte.media/org.monte.media.iml" />
-      <module fileurl="file://$PROJECT_DIR$/src/org.monte.media.javafx/org.monte.media.javafx.iml" filepath="$PROJECT_DIR$/src/org.monte.media.javafx/org.monte.media.javafx.iml" />
-      <module fileurl="file://$PROJECT_DIR$/src/org.monte.media.jmf/org.monte.media.jmf.iml" filepath="$PROJECT_DIR$/src/org.monte.media.jmf/org.monte.media.jmf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/org.monte.demo.animmerger/org.monte.demo.animmerger.iml" filepath="$PROJECT_DIR$/modules/org.monte.demo.animmerger/org.monte.demo.animmerger.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/org.monte.demo.audiorecorder/org.monte.demo.audiorecorder.iml" filepath="$PROJECT_DIR$/modules/org.monte.demo.audiorecorder/org.monte.demo.audiorecorder.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/org.monte.demo.aviwriter/org.monte.demo.aviwriter.iml" filepath="$PROJECT_DIR$/modules/org.monte.demo.aviwriter/org.monte.demo.aviwriter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/org.monte.demo.cleartype/org.monte.demo.cleartype.iml" filepath="$PROJECT_DIR$/modules/org.monte.demo.cleartype/org.monte.demo.cleartype.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/org.monte.demo.cmykimageviewer/org.monte.demo.cmykimageviewer.iml" filepath="$PROJECT_DIR$/modules/org.monte.demo.cmykimageviewer/org.monte.demo.cmykimageviewer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/org.monte.demo.imageioviewer/org.monte.demo.imageioviewer.iml" filepath="$PROJECT_DIR$/modules/org.monte.demo.imageioviewer/org.monte.demo.imageioviewer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/org.monte.demo.io/org.monte.demo.io.iml" filepath="$PROJECT_DIR$/modules/org.monte.demo.io/org.monte.demo.io.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/org.monte.demo.jmfavi/org.monte.demo.jmfavi.iml" filepath="$PROJECT_DIR$/modules/org.monte.demo.jmfavi/org.monte.demo.jmfavi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/org.monte.demo.jmftsccdemo/org.monte.demo.jmftsccdemo.iml" filepath="$PROJECT_DIR$/modules/org.monte.demo.jmftsccdemo/org.monte.demo.jmftsccdemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/org.monte.demo.movieconverter/org.monte.demo.movieconverter.iml" filepath="$PROJECT_DIR$/modules/org.monte.demo.movieconverter/org.monte.demo.movieconverter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/org.monte.demo.moviemaker/org.monte.demo.moviemaker.iml" filepath="$PROJECT_DIR$/modules/org.monte.demo.moviemaker/org.monte.demo.moviemaker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/org.monte.demo.mpoimagesplitter/org.monte.demo.mpoimagesplitter.iml" filepath="$PROJECT_DIR$/modules/org.monte.demo.mpoimagesplitter/org.monte.demo.mpoimagesplitter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/org.monte.demo.quicktimewriter/org.monte.demo.quicktimewriter.iml" filepath="$PROJECT_DIR$/modules/org.monte.demo.quicktimewriter/org.monte.demo.quicktimewriter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/org.monte.demo.rationalnumber/org.monte.demo.rationalnumber.iml" filepath="$PROJECT_DIR$/modules/org.monte.demo.rationalnumber/org.monte.demo.rationalnumber.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/org.monte.demo.screenrecorder/org.monte.demo.screenrecorder.iml" filepath="$PROJECT_DIR$/modules/org.monte.demo.screenrecorder/org.monte.demo.screenrecorder.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/org.monte.media/org.monte.media.iml" filepath="$PROJECT_DIR$/modules/org.monte.media/org.monte.media.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/org.monte.media.javafx/org.monte.media.javafx.iml" filepath="$PROJECT_DIR$/modules/org.monte.media.javafx/org.monte.media.javafx.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/org.monte.media.jmf/org.monte.media.jmf.iml" filepath="$PROJECT_DIR$/modules/org.monte.media.jmf/org.monte.media.jmf.iml" />
     </modules>
   </component>
 </project>
