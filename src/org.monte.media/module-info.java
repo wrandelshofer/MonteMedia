@@ -121,6 +121,8 @@ module org.monte.media {
     exports org.monte.media.swing.movie;
     exports org.monte.media.swing.plaf;
     exports org.monte.media.swing.player;
+    opens org.monte.media.swing.images;
+    opens org.monte.media.swing.player.images;
     exports org.monte.media.tree;
     exports org.monte.media.tiff;
     exports org.monte.media.util;
