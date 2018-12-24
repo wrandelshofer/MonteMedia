@@ -70,7 +70,7 @@ public class JPlayerControlAqua extends JComponent
         setLayout(gridbag);
         GridBagConstraints c;
 
-        ResourceBundle labels = ResourceBundle.getBundle("org.monte.media.Labels");
+        ResourceBundle labels = ResourceBundle.getBundle("org.monte.media.player.Labels");
         colorCyclingButton = new JToggleButton();
         colorCyclingButton.setToolTipText(labels.getString("colorCycling.toolTipText"));
         colorCyclingButton.addActionListener(this);

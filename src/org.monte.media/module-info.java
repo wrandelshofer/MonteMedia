@@ -121,12 +121,14 @@ module org.monte.media {
     exports org.monte.media.swing.movie;
     exports org.monte.media.swing.plaf;
     exports org.monte.media.swing.player;
-    opens org.monte.media.swing.images;
-    opens org.monte.media.swing.player.images;
     exports org.monte.media.tree;
     exports org.monte.media.tiff;
     exports org.monte.media.util;
     exports org.monte.media.util.stream;
+
+    opens org.monte.media.player;
+    opens org.monte.media.swing.images;
+    opens org.monte.media.swing.player.images;
 
     uses org.monte.media.av.CodecSpi;
     uses org.monte.media.av.MovieWriterSpi;
