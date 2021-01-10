@@ -15,12 +15,17 @@ import java.util.Map;
  * <p>
  * Mostly lossless encoding, will only work in Chrome:
  * <pre>
- *     ffmpeg -i Baron.ani -vcodec h264 -pix_fmt yuv444p -profile:v high444 -crf 0 -preset:v slow Baron.anim.mp4
+ *     ffmpeg -i Baron.anim -vcodec h264 -pix_fmt yuv444p -profile:v high444 -crf 0 -preset:v slow Baron.anim.mp4
  * </pre>
  * H.264 Baseline Level 3 encoding, will work in most browsers:
  * We upscale the video to reduce artefacts due to yuv420.
  * <pre>
  *     ffmpeg -i Baron.anim -vf "scale=iw*2:ih*2" -sws_flags neighbor -vcodec h264 -pix_fmt yuv420p -profile:v baseline -level 3 -preset:v slow Baron.anim.mp4
+ * </pre>
+ * For small looping animations without sound, conversion to APNG
+ * is also a good possibility:
+ * <pre>
+ *     ffmpeg -i Baron.anim.mov -vf "scale=iw*2:ih*2" -sws_flags neighbor -f apng -plays 0 -vf "split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" Baron.png
  * </pre>
  */
 public class Main {
