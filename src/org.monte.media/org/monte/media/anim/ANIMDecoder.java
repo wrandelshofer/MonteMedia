@@ -88,7 +88,7 @@ public class ANIMDecoder
     /** CMAP data. */
     private ColorModel cmapColorModel;
     /** MovieTrack */
-    private ANIMMovieTrack track;
+    private ANIMMovieResources track;
     /** Number of ANIM Chunks found. */
     private int animCount;
     /** Index of ANIM Chunk to load. */
@@ -127,7 +127,7 @@ public class ANIMDecoder
      * @param n The index of the ANIM FORM to be read out of the IFF-File
      * @param loadAudio If this is set to false, audio data will be skipped.
      */
-    public void produce(ANIMMovieTrack track, int n, boolean loadAudio)
+    public void produce(ANIMMovieResources track, int n, boolean loadAudio)
             throws IOException {
         InputStream in = null;
         this.track = track;
@@ -315,7 +315,7 @@ public class ANIMDecoder
      * } BitmapHeader;
      * </pre>
      */
-    private void decodeBMHD(IFFChunk chunk, ANIMMovieTrack track)
+    private void decodeBMHD(IFFChunk chunk, ANIMMovieResources track)
             throws ParseException {
         try {
             MC68000InputStream in = new MC68000InputStream(new ByteArrayInputStream(chunk.getData()));
@@ -343,7 +343,7 @@ public class ANIMDecoder
      * The required information from the BMHD chunk must be provided
      * by the ANIMMovieTrack.
      */
-    private void decodeCAMG(IFFChunk chunk, ANIMMovieTrack track)
+    private void decodeCAMG(IFFChunk chunk, ANIMMovieResources track)
             throws ParseException {
 
 
@@ -362,13 +362,13 @@ public class ANIMDecoder
         // Extract color mode bits
         switch (camg & (MODE_MASK | MODE_MASK)) {
             case EHB_MODE:
-                track.setScreenMode(ANIMMovieTrack.MODE_EHB);
+                track.setScreenMode(ANIMMovieResources.MODE_EHB);
                 break;
             case HAM_MODE:
                 if (track.getNbPlanes() == 6) {
-                    track.setScreenMode(ANIMMovieTrack.MODE_HAM6);
+                    track.setScreenMode(ANIMMovieResources.MODE_HAM6);
                 } else if (track.getNbPlanes() == 8) {
-                    track.setScreenMode(ANIMMovieTrack.MODE_HAM8);
+                    track.setScreenMode(ANIMMovieResources.MODE_HAM8);
                 } else {
                     throw new ParseException("unsupported Ham Mode with " + track.getNbPlanes() + " bitplanes");
 
@@ -376,9 +376,9 @@ public class ANIMDecoder
                 break;
             default:
                 if (track.getNbPlanes() <= 8) {
-                    track.setScreenMode(ANIMMovieTrack.MODE_INDEXED_COLORS);
+                    track.setScreenMode(ANIMMovieResources.MODE_INDEXED_COLORS);
                 } else {
-                    track.setScreenMode(ANIMMovieTrack.MODE_DIRECT_COLORS);
+                    track.setScreenMode(ANIMMovieResources.MODE_DIRECT_COLORS);
                 }
         }
 
@@ -438,7 +438,7 @@ public class ANIMDecoder
      * typedef ColorRegister ColorMap[n]; // size = 3n bytes
      * </pre>
      */
-    private ColorModel decodeCMAP(IFFChunk chunk, ANIMMovieTrack track, boolean is4BitsPerChannel)
+    private ColorModel decodeCMAP(IFFChunk chunk, ANIMMovieResources track, boolean is4BitsPerChannel)
             throws ParseException {
         byte[] red;
         byte[] green;
@@ -458,20 +458,20 @@ public class ANIMDecoder
         }
 
         switch (track.getScreenMode()) {
-            case ANIMMovieTrack.MODE_EHB:
+            case ANIMMovieResources.MODE_EHB:
                 size = 64;
                 colorsToRead = Math.min(32, (int) chunk.getSize() / 3);
                 break;
-            case ANIMMovieTrack.MODE_HAM6:
-            case ANIMMovieTrack.MODE_HAM8:
+            case ANIMMovieResources.MODE_HAM6:
+            case ANIMMovieResources.MODE_HAM8:
                 size = 1 << (track.getNbPlanes() - 2);
                 colorsToRead = Math.min(size, (int) chunk.getSize() / 3);
                 break;
-            case ANIMMovieTrack.MODE_INDEXED_COLORS:
+            case ANIMMovieResources.MODE_INDEXED_COLORS:
                 size = 1 << (track.getNbPlanes());
                 colorsToRead = Math.min(size, (int) chunk.getSize() / 3);
                 break;
-            case ANIMMovieTrack.MODE_DIRECT_COLORS:
+            case ANIMMovieResources.MODE_DIRECT_COLORS:
                 return new DirectColorModel(24, 0xFF0000, 0x00FF00, 0x0000FF);
         }
 
@@ -500,7 +500,7 @@ public class ANIMDecoder
 
         switch (track.getScreenMode()) {
 
-            case ANIMMovieTrack.MODE_EHB:
+            case ANIMMovieResources.MODE_EHB:
                 j = 32;
                 for (int i = 0; i < 32; i++, j++) {
                     red[j] = (byte) ((red[i] & 255) / 2);
@@ -512,13 +512,13 @@ public class ANIMDecoder
                 return new IndexColorModel(8, 64, red, green, blue, -1);
             //return new IndexColorModel(track.getNbPlanes(),64,red,green,blue,-1);
 
-            case ANIMMovieTrack.MODE_HAM6:
+            case ANIMMovieResources.MODE_HAM6:
                 return new AmigaHAMColorModel(AmigaHAMColorModel.HAM6, 16, red, green, blue, false);
 
-            case ANIMMovieTrack.MODE_HAM8:
+            case ANIMMovieResources.MODE_HAM8:
                 return new AmigaHAMColorModel(AmigaHAMColorModel.HAM8, 64, red, green, blue, false);
 
-            case ANIMMovieTrack.MODE_INDEXED_COLORS:
+            case ANIMMovieResources.MODE_INDEXED_COLORS:
                 // Should return the effective number of planes, but
                 // runs on more Java VM's when allways returning 8.
                 //return new IndexColorModel(8,(int)chunk.getSize() / 3,red,green,blue,-1);
@@ -548,7 +548,7 @@ public class ANIMDecoder
      * } ilbmColorCyclingRangeAndTimingChunk;
      * </pre>
      */
-    protected void decodeCCRT(IFFChunk chunk, ANIMMovieTrack track)
+    protected void decodeCCRT(IFFChunk chunk, ANIMMovieResources track)
             throws ParseException {
         ColorCycle cc;
         try {
@@ -562,7 +562,7 @@ public class ANIMDecoder
             int pad = in.readWORD();
             cc = new CRNGColorCycle(1000000 / (int) (seconds * 1000 + microseconds / 1000), 1000, start, end,//
                     direction == 1 || direction == -1, //
-                    direction == 1, track.getScreenMode() == ANIMMovieTrack.MODE_EHB);
+                    direction == 1, track.getScreenMode() == ANIMMovieResources.MODE_EHB);
 
             in.close();
         } catch (IOException e) {
@@ -591,7 +591,7 @@ public class ANIMDecoder
      *  } ilbmColorRegisterRangeChunk;
      * </pre>
      */
-    protected void decodeCRNG(IFFChunk chunk, ANIMMovieTrack track)
+    protected void decodeCRNG(IFFChunk chunk, ANIMMovieResources track)
             throws ParseException {
         try {
             ColorCycle cc;
@@ -607,7 +607,7 @@ public class ANIMDecoder
                     low, high, //
                     (flags & 1) != 0 && rate > 36 && high > low, //
                     (flags & 2) != 0, //
-                    track.getScreenMode() == ANIMMovieTrack.MODE_EHB);
+                    track.getScreenMode() == ANIMMovieResources.MODE_EHB);
 
             if (cc.isActive()) {
                 track.addColorCycle(cc);
@@ -664,7 +664,7 @@ public class ANIMDecoder
      * } ilbmDRangeChunk;
      * </pre>
      */
-    protected void decodeDRNG(IFFChunk chunk, ANIMMovieTrack track)
+    protected void decodeDRNG(IFFChunk chunk, ANIMMovieResources track)
             throws ParseException {
         ColorCycle cc;
         try {
@@ -692,7 +692,7 @@ public class ANIMDecoder
 //System.out.println("DRNG min:"+min+" max:"+max+" rate:"+rate+" flags:"+flags+" ntrue:"+ntrue+" nregs:"+nregs);
             cc = new DRNGColorCycle(rate, 273, min, max, //
                     (flags & 1) != 0 && rate > 36 && min <= max && ntrue + nregs > 1,//
-                    track.getScreenMode() == ANIMMovieTrack.MODE_EHB, cells);
+                    track.getScreenMode() == ANIMMovieResources.MODE_EHB, cells);
             if (cc.isActive()) {
                 track.addColorCycle(cc);
             }
@@ -707,7 +707,7 @@ public class ANIMDecoder
      * Process CRNG and DRNG chunks in the sequence of their
      * location in the file.
      */
-    protected void decodeColorCycling(IFFChunk[] ccrtChunks, IFFChunk[] crngChunks, IFFChunk[] drngChunks, ANIMMovieTrack track) throws ParseException {
+    protected void decodeColorCycling(IFFChunk[] ccrtChunks, IFFChunk[] crngChunks, IFFChunk[] drngChunks, ANIMMovieResources track) throws ParseException {
         int activeCycles = 0;
         int j = 0, k = 0, l = 0;
         for (int i = 0, n = ccrtChunks.length + crngChunks.length + drngChunks.length; i < n; i++) {
@@ -728,7 +728,7 @@ public class ANIMDecoder
         track.setProperty("colorCycling", track.getColorCyclesCount());
     }
 
-    private void decodeBODY(ColorModel colorModel, IFFChunk group, IFFChunk body, ANIMMovieTrack track)
+    private void decodeBODY(ColorModel colorModel, IFFChunk group, IFFChunk body, ANIMMovieResources track)
             throws ParseException {
         ANIMKeyFrame frame = new ANIMKeyFrame();
         frame.setColorModel(colorModel);
@@ -749,7 +749,7 @@ public class ANIMDecoder
         track.addFrame(frame);
     }
 
-    private void decodeDLTA(ColorModel colorModel, IFFChunk group, IFFChunk dlta, ANIMMovieTrack track)
+    private void decodeDLTA(ColorModel colorModel, IFFChunk group, IFFChunk dlta, ANIMMovieResources track)
             throws ParseException {
         ANIMDeltaFrame frame = new ANIMDeltaFrame();
         frame.setColorModel(colorModel);
@@ -889,7 +889,7 @@ public class ANIMDecoder
      * } animANFIChunk;
      * </pre>
      */
-    private void decodeANFI(IFFChunk chunk, ANIMFrame frame, ANIMMovieTrack track)
+    private void decodeANFI(IFFChunk chunk, ANIMFrame frame, ANIMMovieResources track)
             throws ParseException {
         try {
             MC68000InputStream in = new MC68000InputStream(new ByteArrayInputStream(chunk.getData()));
@@ -969,7 +969,7 @@ public class ANIMDecoder
      *
      * </pre>
      */
-    private void decodeSCTL(IFFChunk chunk, ANIMFrame frame, ANIMMovieTrack track)
+    private void decodeSCTL(IFFChunk chunk, ANIMFrame frame, ANIMMovieResources track)
             throws ParseException {
         try {
             MC68000InputStream in = new MC68000InputStream(new ByteArrayInputStream(chunk.getData()));
@@ -990,7 +990,7 @@ public class ANIMDecoder
         }
     }
 
-    protected void decodeCOPYRIGHT(IFFChunk[] chunks, ANIMMovieTrack track)
+    protected void decodeCOPYRIGHT(IFFChunk[] chunks, ANIMMovieResources track)
             throws ParseException {
         for (int i = 0; i < chunks.length; i++) {
             String copyright = new String(chunks[i].getData());
@@ -999,7 +999,7 @@ public class ANIMDecoder
         }
     }
 
-    protected void decodeAUTH(IFFChunk[] chunks, ANIMMovieTrack track)
+    protected void decodeAUTH(IFFChunk[] chunks, ANIMMovieResources track)
             throws ParseException {
         for (int i = 0; i < chunks.length; i++) {
             String author = new String(chunks[i].getData());
@@ -1008,7 +1008,7 @@ public class ANIMDecoder
         }
     }
 
-    protected void decodeANNO(IFFChunk[] chunks, ANIMMovieTrack track)
+    protected void decodeANNO(IFFChunk[] chunks, ANIMMovieResources track)
             throws ParseException {
         for (int i = 0; i < chunks.length; i++) {
             String anno = new String(chunks[i].getData());

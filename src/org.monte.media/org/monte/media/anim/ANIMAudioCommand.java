@@ -112,7 +112,7 @@ public class ANIMAudioCommand {
         return command;
     }
     
-    public void prepare(ANIMMovieTrack track) {
+    public void prepare(ANIMMovieResources track) {
         if (command == COMMAND_PLAY_SOUND && audioClip == null) {
             float pan;
             if ((channelMask & CHANNEL_LEFT_MASK) != 0 
@@ -133,7 +133,7 @@ public class ANIMAudioCommand {
             );
         }
     }
-    public void play(ANIMMovieTrack track) {
+    public void play(ANIMMovieResources track) {
         prepare(track);
         if (audioClip != null) {
             if (repeats < 2) {
@@ -145,7 +145,7 @@ public class ANIMAudioCommand {
         activeChannelMask = channelMask;
     }
     
-    public void stop(ANIMMovieTrack track) {
+    public void stop(ANIMMovieResources track) {
         activeChannelMask = 0;
         if (audioClip != null) {
             audioClip.stop();
@@ -156,14 +156,14 @@ public class ANIMAudioCommand {
      * Stops playback of this audio command on the specified channels.
      *
      */
-    public void stop(ANIMMovieTrack track, int channelMask) {
+    public void stop(ANIMMovieResources track, int channelMask) {
         activeChannelMask &= ~channelMask;
         if (activeChannelMask == 0) {
             audioClip.stop();
         }
     }
     
-    public void doCommand(ANIMMovieTrack track, ANIMAudioCommand[] runningCommands) {
+    public void doCommand(ANIMMovieResources track, ANIMAudioCommand[] runningCommands) {
     //    long start = System.currentTimeMillis();
         switch (command) {
             case COMMAND_PLAY_SOUND : {

@@ -27,7 +27,10 @@ import org.monte.media.math.Rational;
 public class SEQTrack implements Track {
     private SEQDemultiplexer demux;
     private long position;
-    private Format outputFormat=new Format(MediaTypeKey,MediaType.VIDEO,MimeTypeKey,MIME_JAVA,EncodingKey,ENCODING_BUFFERED_IMAGE);
+    private Format outputFormat=new Format(
+            MediaTypeKey,MediaType.VIDEO,
+            MimeTypeKey,MIME_JAVA,
+            EncodingKey,ENCODING_BUFFERED_IMAGE);
 
     public SEQTrack(SEQDemultiplexer demux) {
         this.demux=demux;
@@ -62,5 +65,10 @@ public class SEQTrack implements Track {
         } else {
             buf.setFlagsTo(DISCARD);
         }
+    }
+
+    @Override
+    public Format getFormat() {
+        return outputFormat;
     }
 }

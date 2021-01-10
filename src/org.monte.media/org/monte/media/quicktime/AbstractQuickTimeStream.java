@@ -755,12 +755,12 @@ public class AbstractQuickTimeStream {
             0, 0, 1
         };
         protected double width, height;
-        
+
         private final static int TrackEnable = 0x1; // enabled track
         private final static int TrackInMovie = 0x2;// track in playback
         private final static int TrackInPreview = 0x4; // track in preview
         private final static int TrackInPoster = 0x8; // track in posterTrackEnable = 0x1, // enabled track
-       
+
         /**
          * <pre>
          * // Enumeration for track header flags
@@ -802,7 +802,7 @@ public class AbstractQuickTimeStream {
         public boolean isInPoster() {
            return (headerFlags & TrackInPoster) != 0;
         }
-       
+
         public void addSample(Sample sample, int sampleDescriptionId, boolean isSyncSample) {
             mediaDuration += sample.duration;
             sampleCount++;
@@ -946,12 +946,16 @@ public class AbstractQuickTimeStream {
              int numberOfEntries;
              sampleDescriptionEntry sampleDescriptionTable[numberOfEntries];
              } sampleDescriptionAtom;
-            
+
              typedef struct {
              int size;
              magic type;
              byte[6] reserved; // six bytes that must be zero
-             short dataReferenceIndex; // A 16-bit integer that contains the index of the data reference to use to retrieve data associated with samples that use this sample description. Data references are stored in data reference atoms.
+             short dataReferenceIndex; // A 16-bit integer that contains the index
+                                      //of the data reference to use to retrieve
+                                      //data associated with samples that use this
+                                      //sample description. Data references are
+                                      //stored in data reference atoms.
              byte[size - 16] data;
              } sampleDescriptionEntry;
              */
@@ -1052,8 +1056,6 @@ public class AbstractQuickTimeStream {
             // per pixel, this indicates a standard Macintosh color table
             // for the specified depth. Depths of 16, 24, and 32 have no
             // color table.
-
-
 
             if (videoColorTable != null) {
                 writeColorTableAtom(leaf);
@@ -1181,7 +1183,7 @@ public class AbstractQuickTimeStream {
              int numberOfEntries;
              soundSampleDescriptionEntry sampleDescriptionTable[numberOfEntries];
              } soundSampleDescriptionAtom;
-            
+
              typedef struct {
              int size;
              magic type;
@@ -1189,7 +1191,7 @@ public class AbstractQuickTimeStream {
              short dataReferenceIndex;
              soundSampleDescription data;
              } soundSampleDescriptionEntry;
-            
+
              typedef struct {
              ushort version;
              ushort revisionLevel;

@@ -25,22 +25,22 @@ public class ANIMKeyFrame
         this.data = data;
     }
 
-    /** For possible values see {@link ANIMMovieTrack}. */
+    /** For possible values see {@link ANIMMovieResources}. */
     public void setCompression(int compression) {
         this.compression = compression;
     }
 
     @Override
-    public void decode(AmigaBitmapImage bitmap, ANIMMovieTrack track) {
+    public void decode(AmigaBitmapImage bitmap, ANIMMovieResources track) {
         switch (compression) {
 
-            case ANIMMovieTrack.CMP_BYTE_RUN_1:
+            case ANIMMovieResources.CMP_BYTE_RUN_1:
                 unpackByteRun1(data, bitmap.getBitmap());
                 break;
-            case ANIMMovieTrack.CMP_VERTICAL:
+            case ANIMMovieResources.CMP_VERTICAL:
                 unpackVertical(data, bitmap);
                 break;
-            case ANIMMovieTrack.CMP_NONE:
+            case ANIMMovieResources.CMP_NONE:
             default:
                 System.arraycopy(data, 0, bitmap.getBitmap(), 0, data.length);
                 break;

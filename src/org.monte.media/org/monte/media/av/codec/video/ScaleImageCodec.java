@@ -28,6 +28,8 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
  */
 public class ScaleImageCodec extends AbstractVideoCodec {
 
+    private Object interpolationRenderingHint=RenderingHints.VALUE_INTERPOLATION_BICUBIC;
+
     public ScaleImageCodec() {
         super(new Format[]{
                     new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
@@ -82,12 +84,16 @@ public class ScaleImageCodec extends AbstractVideoCodec {
 
         }
         Graphics2D g = imgOut.createGraphics();
-        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, interpolationRenderingHint);
         g.drawImage(imgIn, 0, 0, imgOut.getWidth() - 1, imgOut.getHeight() - 1, 0, 0, imgIn.getWidth() - 1, imgIn.getHeight() - 1, null);
         g.dispose();
 
         out.data = imgOut;
 
         return CODEC_OK;
+    }
+
+    public void setInterpolationRenderingHint(Object interpolationRenderingHint) {
+        this.interpolationRenderingHint=interpolationRenderingHint;
     }
 }

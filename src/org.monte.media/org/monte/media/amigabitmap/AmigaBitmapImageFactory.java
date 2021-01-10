@@ -59,7 +59,8 @@ public class AmigaBitmapImageFactory {
             case AmigaBitmapImage.BYTE_PIXEL : {
                 
                 image = new BufferedImage(bm.getWidth(), bm.getHeight(),
-                        BufferedImage.TYPE_BYTE_INDEXED, (IndexColorModel) bm.getChunkyColorModel());
+                        BufferedImage.TYPE_BYTE_INDEXED,
+                        (IndexColorModel) bm.getChunkyColorModel());
                 WritableRaster ras = image.getRaster();
                 byte[] pixels = ((DataBufferByte) ras.getDataBuffer()).getData();
                 System.arraycopy(bm.getBytePixels(), 0, pixels, 0, bm.getBytePixels().length);

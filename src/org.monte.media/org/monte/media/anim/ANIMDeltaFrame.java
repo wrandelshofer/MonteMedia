@@ -75,7 +75,7 @@ public class ANIMDeltaFrame
     }
 
     @Override
-    public void decode(AmigaBitmapImage bitmap, ANIMMovieTrack track) {
+    public void decode(AmigaBitmapImage bitmap, ANIMMovieResources track) {
         switch (getEncoding()) {
             case ENCODING_BYTE_VERTICAL:
                 decodeByteVertical(bitmap, track);
@@ -138,7 +138,7 @@ public class ANIMDeltaFrame
      *    If there are no changed words in a given plane, then the pointer
      *    in the first 32 bytes of the chunk is =0.
      */
-    private void decodeMethod2(AmigaBitmapImage bitmap, ANIMMovieTrack track) {
+    private void decodeMethod2(AmigaBitmapImage bitmap, ANIMMovieResources track) {
         throw new UnsupportedOperationException();
 
     }
@@ -208,7 +208,7 @@ public class ANIMDeltaFrame
      *    speed, the core, at least, of this routine should be coded in
      *    assembly language.
      */
-    private void decodeMethod4(AmigaBitmapImage bitmap, ANIMMovieTrack track) {
+    private void decodeMethod4(AmigaBitmapImage bitmap, ANIMMovieResources track) {
         throw new UnsupportedOperationException();
 
     }
@@ -254,7 +254,7 @@ public class ANIMDeltaFrame
      *           than horizontally, so to get to the next byte in the destination
      *           we add the number of bytes per row instead of one!
      */
-    private void decodeByteVertical(AmigaBitmapImage bitmap, ANIMMovieTrack track) {
+    private void decodeByteVertical(AmigaBitmapImage bitmap, ANIMMovieResources track) {
         int columns = 0;
         int iOp = 0;
         byte[] planeBytes = bitmap.getBitmap();
@@ -376,7 +376,7 @@ public class ANIMDeltaFrame
         }
     }
 
-    private void decodeVertical8Short(AmigaBitmapImage bitmap, ANIMMovieTrack track) {
+    private void decodeVertical8Short(AmigaBitmapImage bitmap, ANIMMovieResources track) {
         int columns = 0;
         int iOp = 0;
         byte[] planeBytes = bitmap.getBitmap();
@@ -472,7 +472,7 @@ public class ANIMDeltaFrame
         }
     }
 
-    private void decodeVertical8Long(AmigaBitmapImage bitmap, ANIMMovieTrack track) {
+    private void decodeVertical8Long(AmigaBitmapImage bitmap, ANIMMovieResources track) {
         int columns = 0;
         int iOp = 0;
         byte[] planeBytes = bitmap.getBitmap();
@@ -588,7 +588,7 @@ public class ANIMDeltaFrame
         }
     }
 
-    private void decodeVertical7Short(AmigaBitmapImage bitmap, ANIMMovieTrack track) {
+    private void decodeVertical7Short(AmigaBitmapImage bitmap, ANIMMovieResources track) {
         int columns = 0;
         int iOp = 0;
         int iData = 0;
@@ -684,7 +684,7 @@ public class ANIMDeltaFrame
         }
     }
 
-    private void decodeVertical7Long(AmigaBitmapImage bitmap, ANIMMovieTrack track) {
+    private void decodeVertical7Long(AmigaBitmapImage bitmap, ANIMMovieResources track) {
         int columns = 0;
         int iOp = 0;
         int iData = 0;
@@ -828,7 +828,7 @@ public class ANIMDeltaFrame
      * (Anyway, it is described in the original documentation for "pilbm" if
      * you're curious.
      */
-    private void decodeJ(AmigaBitmapImage bitmap, ANIMMovieTrack track) {
+    private void decodeJ(AmigaBitmapImage bitmap, ANIMMovieResources track) {
 
         int nbPlanes = track.getNbPlanes();
         int widthInBytes = bitmap.getBitplaneStride();
@@ -991,22 +991,22 @@ public class ANIMDeltaFrame
     }
 
     @Override
-    public int getTopBound(ANIMMovieTrack track) {
+    public int getTopBound(ANIMMovieResources track) {
         return topBound;
     }
 
     @Override
-    public int getBottomBound(ANIMMovieTrack track) {
+    public int getBottomBound(ANIMMovieResources track) {
         return bottomBound;
     }
 
     @Override
-    public int getLeftBound(ANIMMovieTrack track) {
+    public int getLeftBound(ANIMMovieResources track) {
         return leftBound;
     }
 
     @Override
-    public int getRightBound(ANIMMovieTrack track) {
+    public int getRightBound(ANIMMovieResources track) {
         return rightBound;
     }
 

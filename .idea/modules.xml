@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/MonteMedia.iml" filepath="$PROJECT_DIR$/.idea/MonteMedia.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/org.monte.animconverter/org.monte.animconverter.iml" filepath="$PROJECT_DIR$/src/org.monte.animconverter/org.monte.animconverter.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.animmerger/org.monte.demo.animmerger.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.animmerger/org.monte.demo.animmerger.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.audiorecorder/org.monte.demo.audiorecorder.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.audiorecorder/org.monte.demo.audiorecorder.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.aviwriter/org.monte.demo.aviwriter.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.aviwriter/org.monte.demo.aviwriter.iml" />

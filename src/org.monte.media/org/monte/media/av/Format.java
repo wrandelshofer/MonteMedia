@@ -29,7 +29,7 @@ public class Format {
     }
 
     /**
-     * Creates a new format onlyWith the specified properties.
+     * Creates a new format with the specified properties.
      */
     private Format(Map<FormatKey<?>, Object> properties, boolean copy) {
         if (copy || ! (properties instanceof HashMap)) {
@@ -176,9 +176,9 @@ public class Format {
 
     /**
      * Creates a new format which contains all properties from the specified
-     * format and additional properties from this format. 
+     * format and additional properties from this format.
      * <p> If a property is specified in both formats, then the property value
-     * from that format is used. It overwrites this format. 
+     * from that format is used. It overwrites this format.
      * <p> If one of the format has more properties than the other, then the new
      * format is more specific than this format.
      *
@@ -194,10 +194,10 @@ public class Format {
     }
 
     /**
-     * Creates a new format which contains all specified properties and 
-     * additional properties from this format. 
+     * Creates a new format which contains all specified properties and
+     * additional properties from this format.
      * <p> If a property is specified in both formats, then the property value
-     * from this format is used. It overwrites that format. 
+     * from this format is used. It overwrites that format.
      * <p> If one of the format has more properties than the other, then the new
      * format is more specific than this format.
      *

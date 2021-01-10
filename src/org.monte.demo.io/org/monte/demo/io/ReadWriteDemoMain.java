@@ -179,11 +179,14 @@ public class ReadWriteDemoMain {
             Buffer inBuf = new Buffer();
             Buffer outBuf = new Buffer();
             do {
-                in.read(track, inBuf);
-                codec.process(inBuf, outBuf);
-                if (!outBuf.isFlag(BufferFlag.DISCARD)) {
-                    frames.add(Images.cloneImage((BufferedImage) outBuf.data));
-                }
+               in.read(track, inBuf) ;
+               int process;
+               do {
+                   process= codec.process(inBuf, outBuf);
+                   if (!outBuf.isFlag(BufferFlag.DISCARD)) {
+                       frames.add(Images.cloneImage((BufferedImage) outBuf.data));
+                   }
+               } while ((process & Codec.CODEC_INPUT_NOT_CONSUMED)==Codec.CODEC_INPUT_NOT_CONSUMED);
 
             } while (!inBuf.isFlag(BufferFlag.END_OF_MEDIA));
         } finally {

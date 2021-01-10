@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * {@code ANIMDemultiplexer}.
+ * Demultiplexes an ANIM file into a video track and an audio track.
  *
  * @author Werner Randelshofer
  * @version $Id$
@@ -25,7 +25,7 @@ public class ANIMDemultiplexer extends ANIMReader implements Demultiplexer {
     @Override
     public Track[] getTracks() {
         if (tracks == null) {
-            tracks = new Track[]{new ANIMTrack(this)};
+            tracks = new Track[]{new ANIMVideoTrack(this)};
         }
         return tracks.clone();
     }

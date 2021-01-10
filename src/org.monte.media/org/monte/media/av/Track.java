@@ -43,4 +43,10 @@ public interface Track {
      * @throws java.io.IOException if an error occurs
      */
     public void read(Buffer buf) throws IOException;
+
+    /**
+     * Gets the format of the track.
+     * @return the format of the track
+     */
+    Format getFormat();
 }

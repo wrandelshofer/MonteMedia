@@ -110,12 +110,12 @@ public abstract class ANIMFrame {
     public long getRelTime() { return this.reltime; }
     public int getInterleave() { return this.interleave; }
     
-    public abstract void decode(AmigaBitmapImage bitmap, ANIMMovieTrack track);
+    public abstract void decode(AmigaBitmapImage bitmap, ANIMMovieResources track);
     
-    public int getTopBound(ANIMMovieTrack track) { return 0; }
-    public int getBottomBound(ANIMMovieTrack track) { return track.getHeight()-1; }
-    public int getLeftBound(ANIMMovieTrack track) { return 0; }
-    public int getRightBound(ANIMMovieTrack track) { return track.getWidth()-1; }
+    public int getTopBound(ANIMMovieResources track) { return 0; }
+    public int getBottomBound(ANIMMovieResources track) { return track.getHeight()-1; }
+    public int getLeftBound(ANIMMovieResources track) { return 0; }
+    public int getRightBound(ANIMMovieResources track) { return track.getWidth()-1; }
     
     /** Returns true if the frame can be decoded over both the previous frame
      * or the subsequent frame. Bidirectional frames can be used efficiently

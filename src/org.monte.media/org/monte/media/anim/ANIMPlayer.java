@@ -68,7 +68,7 @@ public class ANIMPlayer
     /**
      * The movie track built from the movie data.
      */
-    private ANIMMovieTrack track;
+    private ANIMMovieResources track;
     /** Two bitmaps are needed for double buffering. */
     private AmigaBitmapImage bitmapEven, bitmapOdd;
     /**
@@ -85,11 +85,11 @@ public class ANIMPlayer
      * Index of the frame currently being displayed.
      */
     private int displayFrame = -1;
-    /** Indicates wether frames may be skipped or not. */
+    /** Indicates whether frames may be skipped or not. */
     private boolean isPlayEveryFrame = false;
-    /** Indicates wether playback shall loop or not. */
+    /** Indicates whether playback shall loop or not. */
     private volatile boolean isLoop = true;
-    /** Indicates wether the player is in pause mode. */
+    /** Indicates whether the player is in pause mode. */
     //private volatile boolean isPaused = true;
     /**
      * Jiffies are used be IFF ANIM's for timing.
@@ -350,7 +350,7 @@ public class ANIMPlayer
     /**
      * Returns the movie track.
      */
-    public ANIMMovieTrack getMovieTrack() {
+    public ANIMMovieResources getMovieTrack() {
         return track;
     }
 
@@ -407,7 +407,7 @@ public class ANIMPlayer
             cachingControlModel.setMaximum(inputFileSize);
         }
 
-        track = new ANIMMovieTrack();
+        track = new ANIMMovieResources();
         track.addPropertyChangeListener(handler);
 
         // If the components of the player have been created before
@@ -488,12 +488,12 @@ public class ANIMPlayer
         bitmapEven = new AmigaBitmapImage(
                 width,
                 height,
-                nbPlanes + (masking == ANIMMovieTrack.MSK_HAS_MASK ? 1 : 0),
+                nbPlanes + (masking == ANIMMovieResources.MSK_HAS_MASK ? 1 : 0),
                 cm);
         bitmapOdd = new AmigaBitmapImage(
                 width,
                 height,
-                nbPlanes + (masking == ANIMMovieTrack.MSK_HAS_MASK ? 1 : 0),
+                nbPlanes + (masking == ANIMMovieResources.MSK_HAS_MASK ? 1 : 0),
                 cm);
 //bitmapOdd=bitmapEven;
         jiffieMillis = 1000f / (float) track.getJiffies();
@@ -513,19 +513,19 @@ public class ANIMPlayer
         }
         String s;
         switch (track.getScreenMode()) {
-            case ANIMMovieTrack.MODE_INDEXED_COLORS:
+            case ANIMMovieResources.MODE_INDEXED_COLORS:
                 s = "Indexed Colors";
                 break;
-            case ANIMMovieTrack.MODE_DIRECT_COLORS:
+            case ANIMMovieResources.MODE_DIRECT_COLORS:
                 s = "Direct Colors";
                 break;
-            case ANIMMovieTrack.MODE_EHB:
+            case ANIMMovieResources.MODE_EHB:
                 s = "EHB";
                 break;
-            case ANIMMovieTrack.MODE_HAM6:
+            case ANIMMovieResources.MODE_HAM6:
                 s = "HAM 6";
                 break;
-            case ANIMMovieTrack.MODE_HAM8:
+            case ANIMMovieResources.MODE_HAM8:
                 s = "HAM 8";
                 break;
             default:

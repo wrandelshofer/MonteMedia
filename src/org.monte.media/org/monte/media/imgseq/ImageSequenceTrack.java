@@ -5,6 +5,8 @@
 package org.monte.media.imgseq;
 
 import org.monte.media.av.Buffer;
+import org.monte.media.av.Format;
+import org.monte.media.av.FormatKeys;
 import org.monte.media.av.Track;
 import org.monte.media.math.Rational;
 import java.io.File;
@@ -75,5 +77,12 @@ public class ImageSequenceTrack implements Track {
         buf.data=files[position];
         buf.sampleDuration=new Rational(duration,timeScale);
         position++;
+    }
+
+    private final Format format=new Format(FormatKeys.MediaTypeKey, FormatKeys.MediaType.VIDEO);
+
+    @Override
+    public Format getFormat() {
+        return format;
     }
 }

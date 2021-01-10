@@ -14,13 +14,13 @@ import java.util.*;
 import org.monte.media.anim.ANIMFrame;
 
 /**
- * A movie track gives access to the static resources of
+ * Gives access to the static resources of
  * a movie (image and audio data, global informations).
  *
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
  * @version $Id$
  */
-public class ANIMMovieTrack {
+public class ANIMMovieResources {
 
     /** Raster width and heigth in pixels. */
     private int width, height;

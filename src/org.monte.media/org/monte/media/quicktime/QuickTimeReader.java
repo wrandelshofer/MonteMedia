@@ -173,7 +173,7 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
 
     private void createCodec(int track) throws IOException {
         QuickTimeMeta.Track tr = meta.tracks.get(track);
-        Format fmt = tr.format;
+        Format fmt = meta.getFormat(track);
         Codec codec = createCodec(fmt);
         String enc = fmt.get(EncodingKey);
         if (codec == null) {

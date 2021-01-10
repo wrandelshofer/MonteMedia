@@ -12,6 +12,8 @@ import javax.imageio.stream.ImageOutputStream;
 import org.monte.media.av.Buffer;
 import static org.monte.media.av.BufferFlag.DISCARD;
 import static org.monte.media.av.BufferFlag.KEYFRAME;
+
+import org.monte.media.av.BufferFlag;
 import org.monte.media.av.Codec;
 import org.monte.media.av.Format;
 import static org.monte.media.av.FormatKeys.EncodingKey;

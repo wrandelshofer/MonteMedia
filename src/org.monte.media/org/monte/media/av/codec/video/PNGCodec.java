@@ -18,7 +18,7 @@ import static org.monte.media.av.BufferFlag.*;
 import org.monte.media.io.ByteArrayImageInputStream;
 
 /**
- * {@code PNGCodec} encodes a BufferedImage as a byte[] array..
+ * {@code PNGCodec} encodes a BufferedImage as a byte[] array.
  * <p>
  * Supported input/output formats:
  * <ul>
@@ -38,8 +38,18 @@ public class PNGCodec extends AbstractVideoCodec {
                     new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
                     EncodingKey, ENCODING_BUFFERED_IMAGE), //
                     new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                    DepthKey, 8,
+                    EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
+                //
+                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
+                    EncodingKey, ENCODING_BUFFERED_IMAGE), //
+                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
                     DepthKey, 24,
                     EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
+                    //
+                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+                    DepthKey, 8,
+                    EncodingKey, ENCODING_AVI_PNG, DataClassKey, byte[].class), //
                     //
                     new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
                     DepthKey, 24,
@@ -52,8 +62,16 @@ public class PNGCodec extends AbstractVideoCodec {
                     DepthKey, 24,
                     EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
                     //
+                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                    DepthKey, 8,
+                    EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
+                    //
                     new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
                     DepthKey, 24,
+                    EncodingKey, ENCODING_AVI_PNG, DataClassKey, byte[].class), //
+                    //
+                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+                    DepthKey, 8,
                     EncodingKey, ENCODING_AVI_PNG, DataClassKey, byte[].class), //
                 });
          name = "PNG Codec";
