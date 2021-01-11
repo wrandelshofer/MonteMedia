@@ -538,7 +538,7 @@ public class IFFParser
         } else if (isPropertyChunk(chunk)) {
             if (readData) {
                 byte[] data = new byte[(int) size];
-                in.read(data, 0, (int) size);
+                in.readFully(data, 0, (int) size);
                 chunk.setData(data);
             } else {
                 in.skipFully(size);
@@ -547,7 +547,7 @@ public class IFFParser
         } else if (isCollectionChunk(chunk)) {
             if (readData) {
                 byte[] data = new byte[(int) size];
-                in.read(data, 0, (int) size);
+                in.readFully(data, 0, (int) size);
                 chunk.setData(data);
             } else {
                 in.skipFully(size);

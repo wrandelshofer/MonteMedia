@@ -32,7 +32,7 @@ public class JDK13AppletAudioClip implements LoopableAudioClip, Runnable {
     private byte[] samples;
     /**
      * All instances share this mixer.
-     * Aquiring a line from a mixer is faster than aquiring it from
+     * Acquiring a line from a mixer is faster than acquiring it from
      * AudioSystem directly.
      */
     private static Mixer mixer;
@@ -111,35 +111,6 @@ public class JDK13AppletAudioClip implements LoopableAudioClip, Runnable {
         } catch (LineUnavailableException e) {
             throw new IOException(e.toString());
         }
-        /*
-        AudioInputStream src = new AudioInputStream(
-        new ByteArrayInputStream(samples),
-        new AudioFormat(
-        (float) sampleRate, // sample rate
-        8, //sampleSizeInBits
-        1, //number of channels
-        true, //isSigned
-        true //isBigEndian
-        ),
-        samples.length);
-        AudioInputStream in = AudioSystem.getAudioInputStream(
-        new AudioFormat(
-        (float) JDK13_SAMPLE_RATE, // sample rate
-        8, //sampleSizeInBits
-        1, //number of channels
-        true, //isSigned
-        true //isBigEndian
-        ),
-        src
-        );
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        int count;
-        byte[] buf = new byte[512];
-        while ((count = in.read(buf, 0, buf.length)) != -1) {
-            out.write(buf, 0, count);
-        }
-        samples = out.toByteArray();
-         */
     }
     /**
      * Lazily creates the shared mixer instance and returns it.
@@ -150,7 +121,7 @@ public class JDK13AppletAudioClip implements LoopableAudioClip, Runnable {
             mixer = AudioSystem.getMixer(AudioSystem.getMixerInfo()[0]);
             SourceDataLine[] l = new SourceDataLine[16];
             for (int i=0; i < 16; i++) {
-                l[i] = aquireLine();
+                l[i] = acquireLine();
             }
             for (int i=0; i < 16; i++) {
                 poolLine(l[i]);
@@ -163,7 +134,7 @@ public class JDK13AppletAudioClip implements LoopableAudioClip, Runnable {
      * Tries to get a SourceDataLine from the cache.
      * If none is available, a new line is created and opened.
      */
-    private synchronized static SourceDataLine aquireLine()
+    private synchronized static SourceDataLine acquireLine()
     throws LineUnavailableException {
         SourceDataLine line;
         if (!lines.isEmpty()) {
@@ -319,7 +290,7 @@ System.out.println("panning not supported "+pan);
         
         SourceDataLine out = null;
         try {
-            out = aquireLine();
+            out = acquireLine();
         } catch (LineUnavailableException e) {
             e.printStackTrace();
             return;
@@ -377,7 +348,7 @@ System.out.println("panning not supported "+pan);
                 elapsed = System.currentTimeMillis() - start;
             }
             
-        // Flus the line if the user aborted playback
+        // Flush the line if the user aborted playback
         if (workerThread != Thread.currentThread()) {
             out.flush();
         }

@@ -35,6 +35,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Hashtable;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import static org.monte.media.av.FormatKeys.EncodingKey;
 import static org.monte.media.av.FormatKeys.FrameRateKey;
@@ -86,8 +88,35 @@ public class AnimToQuickTimeConverter {
             throw new IOException("Output file must not be a directory: " + quickTimePath);
         }
 
-        ANIMDemultiplexer demux = new ANIMDemultiplexer(animPath.toFile());
-        QuickTimeMultiplexer mux = new QuickTimeMultiplexer(quickTimePath.toFile());
+        if (animFile.endsWith(".zip")) {
+            try (ZipInputStream zin =new ZipInputStream(Files.newInputStream(animPath))) {
+                for (ZipEntry entry=zin.getNextEntry();entry!=null;entry=zin.getNextEntry()) {
+                    if (!entry.isDirectory()) {
+                        System.out.println("converting "+entry.getName()+" inside "+animPath);
+                        ANIMDemultiplexer demux = new ANIMDemultiplexer(zin);
+                        QuickTimeMultiplexer mux = new QuickTimeMultiplexer(quickTimePath.getParent().resolve(entry.getName()+".mov").toFile());
+                        convert(demux,mux);
+                    }
+                }
+
+            }
+        } else {
+
+            ANIMDemultiplexer demux = new ANIMDemultiplexer(animPath.toFile());
+            QuickTimeMultiplexer mux = new QuickTimeMultiplexer(quickTimePath.toFile());
+            convert(demux,mux);
+        }
+
+    }
+
+    /**
+     * Converts the input from the given demultiplexer to the given multiplexer.
+     *
+     * @param demux      input file
+     * @param mux output file
+     * @throws IOException on io exception
+     */
+    public void convert(ANIMDemultiplexer demux  , QuickTimeMultiplexer mux) throws IOException {
 
         Track videoTrack = null;
         Track audioTrack = null;

@@ -29,6 +29,23 @@ public class ANIMDemultiplexer extends ANIMReader implements Demultiplexer {
     @Override
     public Track[] getTracks() {
         if (tracks == null) {
+            ANIMMovieResources res = getResources();
+            for (int i = 0, n = res.getFrameCount(); i<n; i++) {
+                ANIMFrame frame = res.getFrame(i);
+                for (ANIMAudioCommand cmd : frame.getAudioCommands()) {
+                    switch (cmd.getCommand()) {
+                    case ANIMAudioCommand.COMMAND_PLAY_SOUND:
+                        case ANIMAudioCommand.COMMAND_SET_FREQVOL:
+                            case ANIMAudioCommand.COMMAND_STOP_SOUND:
+                                System.out.println("AudioCommand "+cmd.getCommand());
+                                break;
+                    default:
+                        break;
+                    }
+                }
+
+            }
+
             tracks = new Track[]{new ANIMVideoTrack(this)};
         }
         return tracks.clone();

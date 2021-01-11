@@ -11,8 +11,6 @@
       <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.cmykimageviewer/org.monte.demo.cmykimageviewer.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.cmykimageviewer/org.monte.demo.cmykimageviewer.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.imageioviewer/org.monte.demo.imageioviewer.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.imageioviewer/org.monte.demo.imageioviewer.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.io/org.monte.demo.io.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.io/org.monte.demo.io.iml" />
-      <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.jmfavi/org.monte.demo.jmfavi.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.jmfavi/org.monte.demo.jmfavi.iml" />
-      <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.jmftsccdemo/org.monte.demo.jmftsccdemo.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.jmftsccdemo/org.monte.demo.jmftsccdemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.movieconverter/org.monte.demo.movieconverter.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.movieconverter/org.monte.demo.movieconverter.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.moviemaker/org.monte.demo.moviemaker.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.moviemaker/org.monte.demo.moviemaker.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.mpoimagesplitter/org.monte.demo.mpoimagesplitter.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.mpoimagesplitter/org.monte.demo.mpoimagesplitter.iml" />
@@ -21,7 +19,6 @@
       <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.screenrecorder/org.monte.demo.screenrecorder.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.screenrecorder/org.monte.demo.screenrecorder.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/org.monte.media/org.monte.media.iml" filepath="$PROJECT_DIR$/src/org.monte.media/org.monte.media.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/org.monte.media.javafx/org.monte.media.javafx.iml" filepath="$PROJECT_DIR$/src/org.monte.media.javafx/org.monte.media.javafx.iml" />
-      <module fileurl="file://$PROJECT_DIR$/src/org.monte.media.jmf/org.monte.media.jmf.iml" filepath="$PROJECT_DIR$/src/org.monte.media.jmf/org.monte.media.jmf.iml" />
     </modules>
   </component>
 </project>
