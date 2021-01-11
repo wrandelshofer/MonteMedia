@@ -7,6 +7,7 @@ import org.monte.media.av.Demultiplexer;
 import org.monte.media.av.Track;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Demultiplexes an ANIM file into a video track and an audio track.
@@ -20,6 +21,9 @@ public class ANIMDemultiplexer extends ANIMReader implements Demultiplexer {
 
     public ANIMDemultiplexer(File file) throws IOException {
         super(file);
+    }
+    public ANIMDemultiplexer(InputStream in) throws IOException {
+        super(in);
     }
 
     @Override

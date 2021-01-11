@@ -138,8 +138,7 @@ public class MC68000InputStream
     public void align()
             throws IOException {
         if (scan_ % 2 == 1) {
-            in.skip(1);
-            scan_++;
+            skipFully(1);
         }
     }
 

@@ -156,7 +156,7 @@ public class ANIMDecoder
             }
             iff.parse(in, this);
         } catch (ParseException e) { //System.out.println(e1);
-            throw new IOException(e.getMessage());
+            throw new IOException(e.getMessage(),e);
         } catch (AbortException e) { //System.out.println(e);
             throw new IOException(e.getMessage());
         } finally {

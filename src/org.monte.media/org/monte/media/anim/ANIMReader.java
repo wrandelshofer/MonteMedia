@@ -31,19 +31,17 @@ public class ANIMReader  {
     // ---- END Decoder variables ----
 
     public ANIMReader(File file) throws IOException {
-        InputStream in = null;
-        try {
-            in = new BufferedInputStream(new FileInputStream(file));
+        try (InputStream in = new BufferedInputStream(new FileInputStream(file))) {
             ANIMDecoder decoder = new ANIMDecoder(in);
             resources = new ANIMMovieResources();
             decoder.produce(resources, 0, true);
-        } finally {
-            if (in != null) {
-                in.close();
-            }
         }
     }
-
+    public ANIMReader(InputStream in) throws IOException {
+            ANIMDecoder decoder = new ANIMDecoder(in);
+            resources = new ANIMMovieResources();
+            decoder.produce(resources, 0, true);
+    }
     public void close() throws IOException {
         // nothing to do
     }
