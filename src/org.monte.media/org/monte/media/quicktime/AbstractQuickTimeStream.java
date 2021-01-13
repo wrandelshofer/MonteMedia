@@ -897,6 +897,14 @@ public class AbstractQuickTimeStream {
                 return duration;
             }
         }
+        /**
+         * Gets the time of the first sample in the movie time scale.
+         *
+         * @param movieTimeScale The time scale of the movie.
+         */
+        public int getFirstSampleTime(long movieTimeScale) {
+            return inputTime.multiply(movieTimeScale).intValue();
+        }
 
         //   protected abstract void writeMediaInformationHeaderAtom(CompositeAtom minfAtom) throws IOException;
         protected abstract void writeSampleDescriptionAtom(CompositeAtom stblAtom) throws IOException;
@@ -1112,7 +1120,7 @@ public class AbstractQuickTimeStream {
         protected int soundSampleSize;
         /**
          * Sound compressionId. The value -1 means fixed bit rate, -2 means
-         * varable bit rate.
+         * variable bit rate.
          */
         protected int soundCompressionId;
         /**

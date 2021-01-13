@@ -91,6 +91,8 @@ public class ANIMVideoTrack implements Track {
                     (int)(framePositionInJiffies+demux.getDuration(frameIndex)-jiffyPosition);
             buf.sampleDuration = new Rational(duration, demux.getJiffies());
             buf.format=getFormat();
+            buf.sampleCount=1;
+            buf.timeStamp=new Rational(jiffyPosition,demux.getJiffies());
             jiffyPosition+=duration;
         } else {
             buf.setFlagsTo(DISCARD,END_OF_MEDIA);

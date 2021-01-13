@@ -5,9 +5,17 @@ package org.monte.media.anim;
 
 import org.monte.media.av.Demultiplexer;
 import org.monte.media.av.Track;
+import org.monte.media.eightsvx.EightSVXAudioClip;
+import org.monte.media.eightsvx.LoopableAudioClip;
+
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Demultiplexes an ANIM file into a video track and an audio track.
@@ -19,9 +27,12 @@ public class ANIMDemultiplexer extends ANIMReader implements Demultiplexer {
 
     private Track[] tracks;
 
+    private boolean swapLeftRightChannels;
+
     public ANIMDemultiplexer(File file) throws IOException {
         super(file);
     }
+
     public ANIMDemultiplexer(InputStream in) throws IOException {
         super(in);
     }
@@ -29,25 +40,23 @@ public class ANIMDemultiplexer extends ANIMReader implements Demultiplexer {
     @Override
     public Track[] getTracks() {
         if (tracks == null) {
-            ANIMMovieResources res = getResources();
-            for (int i = 0, n = res.getFrameCount(); i<n; i++) {
-                ANIMFrame frame = res.getFrame(i);
-                for (ANIMAudioCommand cmd : frame.getAudioCommands()) {
-                    switch (cmd.getCommand()) {
-                    case ANIMAudioCommand.COMMAND_PLAY_SOUND:
-                        case ANIMAudioCommand.COMMAND_SET_FREQVOL:
-                            case ANIMAudioCommand.COMMAND_STOP_SOUND:
-                                System.out.println("AudioCommand "+cmd.getCommand());
-                                break;
-                    default:
-                        break;
-                    }
-                }
+            List<Track> trackList=new ArrayList<>();
 
-            }
-
-            tracks = new Track[]{new ANIMVideoTrack(this)};
+            ANIMAudioTrack e = new ANIMAudioTrack(this,swapLeftRightChannels);
+            if (e.getSampleCount()!=0)
+            trackList.add(e);
+            trackList.add(new ANIMVideoTrack(this));
+            tracks=trackList.toArray(new Track[0]);
         }
         return tracks.clone();
+    }
+
+
+    public boolean isSwapLeftRightChannels() {
+        return swapLeftRightChannels;
+    }
+
+    public void setSwapLeftRightChannels(boolean swapLeftRightChannels) {
+        this.swapLeftRightChannels = swapLeftRightChannels;
     }
 }

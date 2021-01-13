@@ -7,6 +7,7 @@ package org.monte.media.quicktime;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.stream.ImageOutputStream;
+
 import org.monte.media.av.Multiplexer;
 
 /**
@@ -16,10 +17,8 @@ import org.monte.media.av.Multiplexer;
  * @version $Id$
  */
 public class QuickTimeMultiplexer extends QuickTimeWriter implements Multiplexer {
- public QuickTimeMultiplexer(File file) throws IOException {
-
-super(file);
-
+    public QuickTimeMultiplexer(File file) throws IOException {
+        super(file);
     }
 
     /**

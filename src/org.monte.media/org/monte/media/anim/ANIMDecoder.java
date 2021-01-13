@@ -908,7 +908,12 @@ public class ANIMDecoder
                 int volume = in.readUBYTE();
                 //if (command == 0x28 || command == 0x81f) {
                 if (command != 0) {
-                    ANIMAudioCommand audioCommand = new ANIMAudioCommand(ANIMAudioCommand.COMMAND_PLAY_SOUND, volume - 1, sound, repeats, 1 << channel, 0 /*frequency*/, 0);
+                    ANIMAudioCommand audioCommand =
+                            new ANIMAudioCommand(
+                                    ANIMAudioCommand.COMMAND_PLAY_SOUND,
+                            volume, sound, repeats,
+                                    1 << (channel-1),
+                                    0 /*frequency*/, 0);
                     frame.addAudioCommand(audioCommand);
                     audioCommand.prepare(track);
                 }

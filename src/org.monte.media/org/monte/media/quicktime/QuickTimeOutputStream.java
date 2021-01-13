@@ -1194,7 +1194,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         if (elist == null || elist.length == 0) {
             d.writeUInt(1); // numberOfEntries
             d.writeUInt(t.getTrackDuration(movieTimeScale)); // trackDuration
-            d.writeUInt(0); // mediaTime
+            d.writeUInt(t.getFirstSampleTime(movieTimeScale)); // mediaTime
             d.writeFixed16D16(1); // mediaRate
         } else {
             d.writeUInt(elist.length); // numberOfEntries

@@ -15,12 +15,12 @@ import java.util.Map;
  * <p>
  * Mostly lossless encoding, will only work in Chrome:
  * <pre>
- *     ffmpeg -i Baron.anim -vcodec h264 -pix_fmt yuv444p -profile:v high444 -crf 0 -preset:v slow Baron.anim.mp4
+ *     ffmpeg -i Baron.anim.mov -vcodec h264 -pix_fmt yuv444p -profile:v high444 -crf 0 -preset:v slow Baron.mp4
  * </pre>
  * H.264 Baseline Level 3 encoding, will work in most browsers:
  * We upscale the video to reduce artefacts due to yuv420.
  * <pre>
- *     ffmpeg -i Baron.anim.mov -vf "scale=iw*4:ih*4" -sws_flags neighbor -vcodec h264 -pix_fmt yuv420p -profile:v baseline -level 3 -preset:v slow Baron.anim.mp4
+ *     ffmpeg -i Baron.anim.mov -vf "scale=iw*4:ih*4" -sws_flags neighbor -vcodec h264 -pix_fmt yuv420p -profile:v baseline -level 3 -preset:v slow -max_muxing_queue_size 9999 Baron.mp4
  * </pre>
  * For small looping animations without sound, conversion to APNG
  * is also a good possibility:
@@ -45,6 +45,7 @@ public class Main {
             System.out.println("  -?          show help");
             System.out.println("  -help       show help");
             System.out.println("  --help      show help");
+            System.out.println("  --swap-left-right-channels       swaps the left and right audio channel");
             System.out.println("  inputfile   Amiga IFF Cell Animation file");
             System.out.println("  outputfile  QuickTime movie file");
             System.out.println("              If this argument is omitted, then the output filename ");
@@ -56,13 +57,17 @@ public class Main {
             options.put(OUTPUTFILE_KEY,options.get(INPUTFILE_KEY)+".mov");
         }
 
-        new AnimToQuickTimeConverter().convert(
+
+        AnimToQuickTimeConverter converter = new AnimToQuickTimeConverter();
+        converter.setSwapLeftRightChannels(options.containsKey(SWAP_LEFT_RIGHT_CHANNELS));
+        converter.convert(
                 options.get(INPUTFILE_KEY),
                 options.get(OUTPUTFILE_KEY));
 
 
     }
 private final static String HELP_KEY="-h";
+private final static String SWAP_LEFT_RIGHT_CHANNELS="--swap-left-right-channels";
 private final static String INPUTFILE_KEY="-i";
 private final static String OUTPUTFILE_KEY="-o";
     private static  Map<String,String> parseArgs(String[] args) {
@@ -74,6 +79,9 @@ private final static String OUTPUTFILE_KEY="-o";
             case "-help":
             case "--help":
                 options.put(HELP_KEY,args[i]);
+                break;
+            case SWAP_LEFT_RIGHT_CHANNELS:
+                options.put(SWAP_LEFT_RIGHT_CHANNELS,args[i]);
                 break;
             default:
                 if (args[i].startsWith("-")) {

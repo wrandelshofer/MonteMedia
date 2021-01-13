@@ -478,11 +478,10 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
             // Compute sample sampleDuration in media time scale
             Rational sampleDuration;
             if (tr.inputTime == null) {
-                tr.inputTime = new Rational(0, 1);
-                tr.writeTime = new Rational(0, 1);
+                tr.inputTime = buf.timeStamp;
+                tr.writeTime =buf.timeStamp;
             }
-            tr.inputTime = tr.inputTime.add(outBuf.sampleDuration.multiply(outBuf.sampleCount));
-            Rational exactSampleDuration = tr.inputTime.subtract(tr.writeTime);
+            Rational exactSampleDuration = outBuf.sampleDuration.multiply(outBuf.sampleCount);
             sampleDuration = exactSampleDuration.floor(tr.mediaTimeScale);
             if (sampleDuration.compareTo(new Rational(0, 1)) <= 0) {
                 sampleDuration = new Rational(1, tr.mediaTimeScale);

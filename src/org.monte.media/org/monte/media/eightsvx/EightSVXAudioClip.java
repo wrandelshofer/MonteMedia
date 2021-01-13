@@ -71,7 +71,7 @@ public class EightSVXAudioClip
         name_ = value;
     }
 
-    protected String getName() {
+    public String getName() {
         return name_;
     }
 
@@ -211,6 +211,19 @@ public class EightSVXAudioClip
     public LoopableAudioClip createAudioClip(int sampleRate, int volume, float pan) {
         LoopableAudioClip clip = createJDK13AudioClip(sampleRate, volume, pan);
         return clip;
+    }
+
+    /**
+     * Gets the audio data in 8-bit linear PCM.
+     * @return the audio data as 8-bit linear PCM
+     */
+    public byte[] to8BitLinearPcm() {
+        // Decompress the sound data
+        if (sCompression_ == S_CMP_FIB_DELTA) {
+            return unpackFibonacciDeltaCompression(body_);
+        } else {
+            return body_.clone();
+        }
     }
 
     public LoopableAudioClip createJDK13AudioClip(int sampleRate, int volume, float pan) {
@@ -462,7 +475,7 @@ public class EightSVXAudioClip
         for (int j = 2; j < n; j++) {
             // Decode a data nibble; high nibble then low nibble.
 
-            d = source[j];    // Get one byte containig a pair of nibbles
+            d = source[j];    // Get one byte containing a pair of nibbles
 
             x += CODE_TO_DELTA[(d >> 4) & 0xf];
             // shift to get the high nibble and add in the

@@ -68,6 +68,7 @@ public class AnimToQuickTimeConverter {
      * producer/consumer protocol.
      */
     private ColorCyclingMemoryImageSource memoryImage;
+    private boolean setSwapLeftRightChannels;
 
     /**
      * Converts the given input file to the given output file.
@@ -119,7 +120,7 @@ public class AnimToQuickTimeConverter {
     public void convert(ANIMDemultiplexer demux  , QuickTimeMultiplexer mux) throws IOException {
 
         Track videoTrack = null;
-        Track audioTrack = null;
+
 
 
         Format inputVideoFormat = null;
@@ -155,6 +156,7 @@ public class AnimToQuickTimeConverter {
 
 
         int videoTrackId = -1;
+        int audioTrackId=-1;
         for (Track track : demux.getTracks()) {
             switch (track.getFormat().get(FormatKeys.MediaTypeKey)) {
             case VIDEO:
@@ -164,7 +166,13 @@ public class AnimToQuickTimeConverter {
                 );
                 break;
             case AUDIO:
-                audioTrack = track;
+                if (audioTrackId==-1) {
+                    Track audioTrack = track;
+                    audioTrackId = mux.addTrack(audioTrack.getFormat());
+                    track.read(inBuf);
+                    //new Codec();
+                    mux.write(audioTrackId, inBuf);
+                }
                 break;
             }
         }
@@ -180,5 +188,9 @@ public class AnimToQuickTimeConverter {
         } while (!outBuf.isFlag(BufferFlag.END_OF_MEDIA));
 
         mux.finish();
+    }
+
+    public void setSwapLeftRightChannels(boolean value) {
+        this.setSwapLeftRightChannels=value;
     }
 }

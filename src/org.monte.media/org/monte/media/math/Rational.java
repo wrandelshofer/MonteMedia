@@ -4,15 +4,17 @@
 package org.monte.media.math;
 
 import static java.lang.Math.*;
+
 import java.math.BigInteger;
+
 import static org.monte.media.math.IntMath.*;
 
 /**
- * Represents a Rational number {@code numerator/denominator}.  
- * <p> 
+ * Represents a Rational number {@code numerator/denominator}.
+ * <p>
  * A number is represented by two longs: the first represents the numerator of
- * a fraction; the second, the denominator. 
- * <p> 
+ * a fraction; the second, the denominator.
+ * <p>
  * Invariants:
  * <ul>
  * <li>{@code denominator &gt;=0}, the denominator is always a positive integer</li>
@@ -124,16 +126,24 @@ public class Rational extends Number implements Comparable<Rational> {
         return add(that, true);
     }
 
+    public Rational add(long num, long den) {
+        return add(num, den, true);
+    }
+
     private Rational add(Rational that, boolean reduceFraction) {
-        if (this.den == that.den) {
+        return add(that.num, that.den, reduceFraction);
+    }
+
+    private Rational add(long thatNum, long thatDen, boolean reduceFraction) {
+        if (this.den == thatDen) {
             // => same denominator: add numerators 
-            return new Rational(this.num + that.num, this.den, reduceFraction);
+            return new Rational(this.num + thatNum, this.den, reduceFraction);
         }
 
         // FIXME - handle overflow
-        long s = scm(this.den, that.den);
+        long s = scm(this.den, thatDen);
         Rational result = new Rational(
-                this.num * (s / this.den) + that.num * (s / that.den),
+                this.num * (s / this.den) + thatNum * (s / thatDen),
                 s, reduceFraction);
 
         return result;
@@ -167,6 +177,22 @@ public class Rational extends Number implements Comparable<Rational> {
             return valueOf(num * d / den, d);
         } else {
             return valueOf(num * d / den, d);
+        }
+    }
+    /**
+     * Returns the closest numerator for the specified denominator which is
+     * smaller or equal than this number.
+     */
+    public long floorNumerator(long d) {
+        if (d == den) {
+            return num;
+        }
+        long s = scm(this.den, d);
+
+        if (s == d) {
+            return num * s / den;
+        } else{
+            return num * d / den;
         }
     }
 
@@ -457,8 +483,8 @@ public class Rational extends Number implements Comparable<Rational> {
 
     /**
      * Parses a string.
-     *
-     * A rational can be represented in the following ways: 
+     * <p>
+     * A rational can be represented in the following ways:
      * <ul><li>As a long
      * number</li> <li>As a double number</li> <li>As an integer/integer
      * rational number</li></ul>

@@ -67,8 +67,11 @@ public class ANIMAudioCommand {
      */
     private int channelMask;
     
-    private final static int CHANNEL0_MASK = 1, CHANNEL1_MASK = 2, CHANNEL2_MASK = 4,
-    CHANNEL3_MASK = 8;
+    private final static int
+            CHANNEL0_MASK = 1,
+            CHANNEL1_MASK = 2,
+            CHANNEL2_MASK = 4,
+            CHANNEL3_MASK = 8;
     private final static int CHANNEL_LEFT_MASK = CHANNEL0_MASK | CHANNEL2_MASK;
     private final static int CHANNEL_RIGHT_MASK = CHANNEL1_MASK | CHANNEL3_MASK;
     
@@ -111,20 +114,24 @@ public class ANIMAudioCommand {
     public int getCommand() {
         return command;
     }
-    
+
+    public float getPan() {
+        float pan;
+        if ((channelMask & CHANNEL_LEFT_MASK) != 0
+                && (channelMask & CHANNEL_RIGHT_MASK) == 0) {
+            pan = -1f; // left speakers only
+        } else if ((channelMask & CHANNEL_RIGHT_MASK) != 0
+                && (channelMask & CHANNEL_LEFT_MASK) == 0) {
+            pan = 1f; // right speakers only
+        } else {
+            pan = 0f; // both speakers
+        }
+        return pan;
+    }
+
     public void prepare(ANIMMovieResources track) {
         if (command == COMMAND_PLAY_SOUND && audioClip == null) {
-            float pan;
-            if ((channelMask & CHANNEL_LEFT_MASK) != 0 
-            && (channelMask & CHANNEL_RIGHT_MASK) == 0) {
-                pan = -1f; // left speakers only
-            } else if ((channelMask & CHANNEL_RIGHT_MASK) != 0 
-            && (channelMask & CHANNEL_LEFT_MASK) == 0) {
-                pan = 1f; // right speakers only
-            } else {
-                pan = 0f; // both speakers
-            }
-
+            float pan=getPan();
             EightSVXAudioClip eightSVXAudioClip = (EightSVXAudioClip) track.getAudioClip(sound - 1);
             audioClip = eightSVXAudioClip.createAudioClip(
             (frequency == 0) ? eightSVXAudioClip.getSampleRate() : frequency,
@@ -179,7 +186,7 @@ public class ANIMAudioCommand {
                         if (! isPlayingOnOneChannel) {
                             // We only play an audio command on the first
                             // channel defined by the channel mask.
-                            // This is hopefully suff�cient for all cases we
+                            // This is hopefully sufficient for all cases we
                             // encounter.
                             isPlayingOnOneChannel = true;
                             play(track);
@@ -213,4 +220,6 @@ public class ANIMAudioCommand {
             audioClip = null;
         }
     }
+
+    public int getRepeats() { return repeats;}
 }
