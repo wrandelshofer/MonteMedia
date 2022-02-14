@@ -118,7 +118,8 @@ public class AVIOutputStream extends AbstractAVIStream {
                 DataClassKey, byte[].class,
                 WidthKey, width, HeightKey, height, DepthKey, depth,
                 FixedFrameRateKey, true,
-                FrameRateKey, new Rational(rate, scale)));
+                FrameRateKey, new Rational(rate, scale),
+                KeyFrameIntervalKey, syncInterval));
         vt.scale = scale;
         vt.rate = rate;
         vt.syncInterval = syncInterval;

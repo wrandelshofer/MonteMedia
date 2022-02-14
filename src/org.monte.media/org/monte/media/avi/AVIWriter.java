@@ -132,7 +132,7 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
         int tr = addVideoTrack(vf.get(EncodingKey),
                 vf.get(FrameRateKey).getDenominator(), vf.get(FrameRateKey).getNumerator(),
                 vf.get(WidthKey), vf.get(HeightKey), vf.get(DepthKey),
-                vf.get(FrameRateKey).floor(1).intValue());
+                vf.get(KeyFrameIntervalKey, vf.get(FrameRateKey).floor(1).intValue()));
         setCompressionQuality(tr, vf.get(QualityKey, 1.0f));
         return tr;
     }
