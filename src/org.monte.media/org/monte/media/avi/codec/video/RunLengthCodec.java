@@ -192,8 +192,10 @@ public class RunLengthCodec extends AbstractVideoCodec {
         }
         int offset = r.x + r.y * scanlineStride;
 
-        boolean isKeyframe = frameCounter== 0
-                || frameCounter % outputFormat.get(KeyFrameIntervalKey,outputFormat.get(FrameRateKey).intValue()) == 0;
+        Integer keyFrameInterval = outputFormat.get(KeyFrameIntervalKey, outputFormat.get(FrameRateKey).intValue());
+        boolean isKeyframe = frameCounter == 0
+                || keyFrameInterval == 0
+                || frameCounter % keyFrameInterval == 0;
         frameCounter++;
 
         try {
