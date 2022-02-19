@@ -83,7 +83,7 @@ public class ANIMReader  {
 
     /** Reads the duration of the specified frame. */
     public int getDuration(int index) {
-        return (int) resources.getFrame(index).getRelTime();
+        return Math.max(1,(int) resources.getFrame(index).getRelTime());
     }
 
     private AmigaBitmapImage fetchFrame(int index) {

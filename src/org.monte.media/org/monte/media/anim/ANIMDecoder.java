@@ -3,7 +3,6 @@
  */
 package org.monte.media.anim;
 
-import java.applet.AudioClip;
 import java.awt.image.ColorModel;
 import java.awt.image.DirectColorModel;
 import java.awt.image.IndexColorModel;
@@ -12,6 +11,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
+
+import org.monte.media.eightsvx.AudioClip;
 import org.monte.media.eightsvx.EightSVXDecoder;
 import org.monte.media.exception.AbortException;
 import org.monte.media.exception.ParseException;
@@ -139,8 +140,6 @@ public class ANIMDecoder
             in = location.openStream();
         }
         try {
-
-
             IFFParser iff = new IFFParser();
             registerChunks(iff, loadAudio);
             if (loadAudio) {

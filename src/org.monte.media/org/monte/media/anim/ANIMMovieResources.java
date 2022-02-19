@@ -3,15 +3,13 @@
  */
 package org.monte.media.anim;
 
-import org.monte.media.anim.ANIMAudioCommand;
+import org.monte.media.eightsvx.AudioClip;
 import org.monte.media.ilbm.ColorCycle;
 import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
-import java.applet.AudioClip;
 import java.beans.PropertyChangeSupport;
 import java.beans.PropertyChangeListener;
 import java.util.*;
-import org.monte.media.anim.ANIMFrame;
 
 /**
  * Gives access to the static resources of

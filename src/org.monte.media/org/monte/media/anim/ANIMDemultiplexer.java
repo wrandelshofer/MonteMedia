@@ -40,13 +40,14 @@ public class ANIMDemultiplexer extends ANIMReader implements Demultiplexer {
     @Override
     public Track[] getTracks() {
         if (tracks == null) {
-            List<Track> trackList=new ArrayList<>();
+            List<Track> trackList = new ArrayList<>();
 
-            ANIMAudioTrack e = new ANIMAudioTrack(this,swapLeftRightChannels);
-            if (e.getSampleCount()!=0)
-            trackList.add(e);
+            ANIMAudioTrack e = new ANIMAudioTrack(this, swapLeftRightChannels);
+            if (e.getSampleCount() != 0) {
+                trackList.add(e);
+            }
             trackList.add(new ANIMVideoTrack(this));
-            tracks=trackList.toArray(new Track[0]);
+            tracks = trackList.toArray(new Track[0]);
         }
         return tracks.clone();
     }

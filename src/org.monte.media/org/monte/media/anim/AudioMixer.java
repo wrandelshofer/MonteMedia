@@ -161,7 +161,6 @@ public class AudioMixer {
 
     public byte[] toByteArray() {
         int maxAbs = getMaxAbsoluteValue();
-        System.out.println("Mixer " + maxAbs);
         byte[] b = new byte[getSampleCount() * 4];
         if (maxAbs <= Short.MAX_VALUE) {
             int j = 0;

@@ -31,10 +31,16 @@ public class IFFOutputStream extends OutputStream {
         streamOffset = out.getStreamPosition();
     }
 
+    public void pushCompositeChunk(int compositeType, int chunkType) throws IOException {
+        this.pushCompositeChunk(IFFParser.idToString(compositeType),IFFParser.idToString(chunkType));
+    }
     public void pushCompositeChunk(String compositeType, String chunkType) throws IOException {
         stack.push(new CompositeChunk(compositeType, chunkType));
     }
 
+    public void pushDataChunk(int chunkType) throws IOException {
+        pushDataChunk(IFFParser.idToString(chunkType));
+    }
     public void pushDataChunk(String chunkType) throws IOException {
         stack.push(new DataChunk(chunkType));
     }
