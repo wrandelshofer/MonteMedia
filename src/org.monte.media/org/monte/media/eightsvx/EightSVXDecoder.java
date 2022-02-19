@@ -9,7 +9,6 @@ import org.monte.media.iff.*;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.applet.AudioClip;
 import java.util.ArrayList;
 
 /**

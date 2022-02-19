@@ -31,8 +31,13 @@ public class ANIMAudioTrack implements Track {
 
     private long position;
 
+    private byte[] convertedBytes;
+    private final int samplesPerSecond = 44100;
+
+    private long sampleCount;
+
     public ANIMAudioTrack(ANIMDemultiplexer demux) {
-        this(demux,false);
+        this(demux, false);
 
     }
 
@@ -46,7 +51,6 @@ public class ANIMAudioTrack implements Track {
         try {
             for (int i = 0, n = demux.getFrameCount(); i < n; i++) {
                 ANIMFrame frame = res.getFrame(i);
-                System.out.println("#"+i+" frame op "+frame.getOperation()+" "+demux.getDuration(i)+"");
                 Rational frameTime = new Rational(frameTimeInJiffies, jiffies);
                 if (frame.getAudioCommands() != null) {
                     for (ANIMAudioCommand cmd : frame.getAudioCommands()) {
@@ -55,26 +59,28 @@ public class ANIMAudioTrack implements Track {
                             byte[] linearPcm = audioClip.to8BitLinearPcm();
                             AudioInputStream audioInputStream = new AudioInputStream(new ByteArrayInputStream(linearPcm), getSourceFormat(cmd, res), linearPcm.length);
 
-                            System.out.println(
-                                    " #"+i
-                                            +" "
-                                            +new Rational(frameTimeInJiffies,jiffies).floatValue()
-                                            +" "
-                                            +     cmd.getSound()+" "
-                                            +audioClip.getName()+" "+cmd.getPan());
+                            /*
+                            System.out.println(" #" + i
+                                            + " "
+                                            + new Rational(frameTimeInJiffies, jiffies).floatValue()
+                                            + " "
+                                            + cmd.getSound() + " "
+                                            + audioClip.getName() + " " + cmd.getPan() + " repeats=" + cmd.getRepeats());
+                            */
 
                             int pan = (int) cmd.getPan();
-
                             mixer.add(audioInputStream, frameTime,
                                     cmd.getRepeats(),
                                     cmd.getVolume() / 64f,
-                                    swapLeftRightChannels?-pan:pan);
+                                    swapLeftRightChannels ? -pan : pan);
                         }
                     }
                 }
 
                 frameTimeInJiffies += demux.getDuration(i);
             }
+            convertedBytes = mixer.toByteArray();
+            sampleCount = mixer.getSampleCount();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -95,23 +101,23 @@ public class ANIMAudioTrack implements Track {
         return position;
     }
 
+    private int samplesPerBuffer = this.samplesPerSecond;
+
     @Override
     public void read(Buffer buf) throws IOException {
-        if (position == 0) {
-            byte[] convertedBytes = mixer.toByteArray();
+        if (position < sampleCount) {
 
             buf.data = convertedBytes;
             buf.format = getFormat();
-            buf.timeStamp = new Rational(0, 1);//new Rational(startTimeInJiffies, res.getJiffies());
-            buf.sampleCount = convertedBytes.length / 4;
-            buf.sampleDuration = new Rational(1,
-                    44100);
-            buf.offset = 0;
-            buf.length = convertedBytes.length;
+            buf.timeStamp = new Rational(position, samplesPerBuffer);
+            buf.sampleCount = (int) Math.min(samplesPerBuffer, sampleCount - position);
+            buf.sampleDuration = new Rational(1, samplesPerBuffer);
+            buf.offset = (int) (position * 4);
+            buf.length = buf.sampleCount * 4;
 
             buf.setFlagsTo(buf.sampleCount == 0 ? DISCARD : KEYFRAME);
 
-            position += mixer.getSampleCount();
+            position = Math.min(sampleCount, position + samplesPerBuffer);
         } else {
             buf.setFlagsTo(END_OF_MEDIA, DISCARD);
         }
@@ -122,7 +128,7 @@ public class ANIMAudioTrack implements Track {
         if (format == null) {
             format = new Format(
                     FormatKeys.MediaTypeKey, FormatKeys.MediaType.AUDIO,
-                    AudioFormatKeys.SampleRateKey, new Rational(44100, 1),
+                    AudioFormatKeys.SampleRateKey, new Rational(samplesPerSecond, 1),
                     AudioFormatKeys.SampleSizeInBitsKey, 16,
                     AudioFormatKeys.ChannelsKey, 2,
                     AudioFormatKeys.FrameSizeKey, 4,
@@ -147,7 +153,7 @@ public class ANIMAudioTrack implements Track {
 
     private AudioFormat getTargetFormat() {
         return new AudioFormat(
-                44100,
+                samplesPerSecond,
                 16,
                 2, true, true);
 

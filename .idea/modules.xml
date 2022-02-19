@@ -17,6 +17,7 @@
       <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.quicktimewriter/org.monte.demo.quicktimewriter.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.quicktimewriter/org.monte.demo.quicktimewriter.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.rationalnumber/org.monte.demo.rationalnumber.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.rationalnumber/org.monte.demo.rationalnumber.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.screenrecorder/org.monte.demo.screenrecorder.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.screenrecorder/org.monte.demo.screenrecorder.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/org.monte.demo.sift/org.monte.demo.sift.iml" filepath="$PROJECT_DIR$/src/org.monte.demo.sift/org.monte.demo.sift.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/org.monte.media/org.monte.media.iml" filepath="$PROJECT_DIR$/src/org.monte.media/org.monte.media.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/org.monte.media.javafx/org.monte.media.javafx.iml" filepath="$PROJECT_DIR$/src/org.monte.media.javafx/org.monte.media.javafx.iml" />
     </modules>

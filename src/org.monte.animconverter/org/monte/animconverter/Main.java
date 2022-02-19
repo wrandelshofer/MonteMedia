@@ -30,11 +30,11 @@ import java.util.Map;
  */
 public class Main {
     public static void main(String... args) throws IOException {
-        Map<String,String> options=parseArgs(args);
+        Map<String, String> options = parseArgs(args);
         if (options.containsKey(HELP_KEY)
-        ||!options.containsKey(INPUTFILE_KEY)) {
+                || !options.containsKey(INPUTFILE_KEY)) {
             String version = Main.class.getPackage().getImplementationVersion();
-            System.out.println("ANIMConverter" + (version==null?"":" "+version));
+            System.out.println("ANIMConverter" + (version == null ? "" : " " + version));
             System.out.println("Converts an Amiga IFF Cell Animation into a QuickTime movie.");
             System.out.println("Copyright © Werner Randelshofer, Switzerland.");
             System.out.println("License: MIT License");
@@ -46,7 +46,10 @@ public class Main {
             System.out.println("  -help       show help");
             System.out.println("  --help      show help");
             System.out.println("  --swap-left-right-channels       swaps the left and right audio channel");
-            System.out.println("  inputfile   Amiga IFF Cell Animation file");
+            System.out.println("  -xaspect    int   pixel x-aspect ratio, >= 1");
+            System.out.println("  -yaspect    int   pixel y-aspect ratio, >= 1");
+            System.out.println("  -frameduration    int   duration of a frame in jiffies, >= 1");
+            System.out.println("  inputfile   Amiga IFF Cell Animation file, zip file or directory");
             System.out.println("  outputfile  QuickTime movie file");
             System.out.println("              If this argument is omitted, then the output filename ");
             System.out.println("              is the input filename with \".mov\" appended. ");
@@ -54,11 +57,16 @@ public class Main {
         }
 
         if (!options.containsKey(OUTPUTFILE_KEY)) {
-            options.put(OUTPUTFILE_KEY,options.get(INPUTFILE_KEY)+".mov");
+            options.put(OUTPUTFILE_KEY, options.get(INPUTFILE_KEY) + ".mov");
         }
 
 
         AnimToQuickTimeConverter converter = new AnimToQuickTimeConverter();
+
+        converter.setXAspect(parseInteger(options.get(X_ASPECT)));
+        converter.setYAspect(parseInteger(options.get(Y_ASPECT)));
+        converter.setFrameDuration(parseInteger(options.get(FRAME_DURATION)));
+
         converter.setSwapLeftRightChannels(options.containsKey(SWAP_LEFT_RIGHT_CHANNELS));
         converter.convert(
                 options.get(INPUTFILE_KEY),
@@ -66,34 +74,56 @@ public class Main {
 
 
     }
-private final static String HELP_KEY="-h";
-private final static String SWAP_LEFT_RIGHT_CHANNELS="--swap-left-right-channels";
-private final static String INPUTFILE_KEY="-i";
-private final static String OUTPUTFILE_KEY="-o";
-    private static  Map<String,String> parseArgs(String[] args) {
-        Map<String,String> options=new LinkedHashMap<>();
-        for (int i=0;i<args.length;i++) {
+
+    private static Integer parseInteger(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch (NullPointerException|NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private final static String HELP_KEY = "-h";
+    private final static String X_ASPECT = "-xaspect";
+    private final static String Y_ASPECT = "-yaspect";
+    private final static String FRAME_DURATION = "-frameduration";
+    private final static String SWAP_LEFT_RIGHT_CHANNELS = "--swap-left-right-channels";
+    private final static String INPUTFILE_KEY = "-i";
+    private final static String OUTPUTFILE_KEY = "-o";
+
+    private static Map<String, String> parseArgs(String[] args) {
+        Map<String, String> options = new LinkedHashMap<>();
+        for (int i = 0; i < args.length; i++) {
             switch (args[i]) {
             case "-h":
             case "-?":
             case "-help":
             case "--help":
-                options.put(HELP_KEY,args[i]);
+                options.put(HELP_KEY, args[i]);
                 break;
             case SWAP_LEFT_RIGHT_CHANNELS:
-                options.put(SWAP_LEFT_RIGHT_CHANNELS,args[i]);
+                options.put(SWAP_LEFT_RIGHT_CHANNELS, args[i]);
+                break;
+            case X_ASPECT:
+            case Y_ASPECT:
+            case FRAME_DURATION:
+                if (i < args.length - 1) {
+                        options.put(args[i], args[++i]);
+                } else {
+                    System.err.println("Argument required after \"" + args[i] + "\".");
+                }
                 break;
             default:
                 if (args[i].startsWith("-")) {
-                    System.err.println("Unrecognized option \""+args[i]+"\".");
+                    System.err.println("Unrecognized option \"" + args[i] + "\".");
                     System.exit(10);
                 }
                 if (!options.containsKey(INPUTFILE_KEY)) {
-                    options.put(INPUTFILE_KEY,args[i]);
-                }else              if (!options.containsKey(OUTPUTFILE_KEY)) {
-                    options.put(OUTPUTFILE_KEY,args[i]);
+                    options.put(INPUTFILE_KEY, args[i]);
+                } else if (!options.containsKey(OUTPUTFILE_KEY)) {
+                    options.put(OUTPUTFILE_KEY, args[i]);
                 } else {
-                    System.err.println("Unrecognized argument \""+args[i]+"\".");
+                    System.err.println("Unrecognized argument \"" + args[i] + "\".");
                     System.exit(10);
                 }
                 break;

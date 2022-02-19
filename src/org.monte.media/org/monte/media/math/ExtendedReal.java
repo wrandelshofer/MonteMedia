@@ -117,12 +117,7 @@ extends Number {
     }
 
     public ExtendedReal(double d) {
-        if (Double.isNaN(d)) {
-            negSign = NaN.negSign;
-            exponent = NaN.exponent;
-            mantissa = NaN.mantissa;
-
-        } else if (Double.isInfinite(d)) {
+        if (Double.isInfinite(d)) {
             if (d < 0.0) {
                 negSign = NEGATIVE_INFINITY.negSign;
                 exponent = NEGATIVE_INFINITY.exponent;
@@ -132,6 +127,10 @@ extends Number {
                 exponent = POSITIVE_INFINITY.exponent;
                 mantissa = POSITIVE_INFINITY.mantissa;
             }
+        } else if (Double.isNaN(d)) {
+            negSign = NaN.negSign;
+            exponent = NaN.exponent;
+            mantissa = NaN.mantissa;
         } else if (d == +0.0) {
             // nothing to do
         } else if (d == -0.0) {
@@ -141,11 +140,26 @@ extends Number {
             long longBits = Double.doubleToLongBits(d);
 
             negSign = (longBits & 0x8000000000000000L) != 0L;
-            exponent = ((int) (longBits & 0x7ff0000000000000L) >>> 52) - 1023 + 16383;
+            exponent = (int) ((longBits & 0x7ff0000000000000L) >>> 52) + 16383- 1023 ;
             mantissa = 0x8000000000000000L | (longBits & 0x000fffffffffffffL) << 11;
         }
     }
 
+    public byte[] toByteArray() {
+        byte[] bits = new byte[10];
+
+        bits[0]=(byte)((negSign?0x80:0x00)|((exponent>>>8)&0x7f));
+        bits[1]=(byte)(exponent&0xff);
+        bits[2]=(byte)((mantissa>>>56)&0xff);
+        bits[3]=(byte)((mantissa>>>48)&0xff);
+        bits[4]=(byte)((mantissa>>>40)&0xff);
+        bits[5]=(byte)((mantissa>>>32)&0xff);
+        bits[6]=(byte)((mantissa>>>24)&0xff);
+        bits[7]=(byte)((mantissa>>>16)&0xff);
+        bits[8]=(byte)((mantissa>>>8)&0xff);
+        bits[9]=(byte)(mantissa&0xff);
+        return bits;
+    }
     public boolean isNaN() {
         return exponent == 0x7ffff && (mantissa & 0x7fffffffffffffffL) != 0;
     }
