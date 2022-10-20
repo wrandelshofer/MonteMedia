@@ -3,18 +3,19 @@
  */
 package org.monte.media.quicktime;
 
-import java.awt.image.IndexColorModel;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import javax.imageio.stream.ImageOutputStream;
 import org.monte.media.av.Buffer;
 import org.monte.media.av.Codec;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.io.ImageOutputStreamAdapter;
 import org.monte.media.math.Rational;
+
+import javax.imageio.stream.ImageOutputStream;
+import java.awt.image.IndexColorModel;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
 
 /**
  * This is the base class for low-level QuickTime stream IO.
@@ -114,35 +115,44 @@ public class AbstractQuickTimeStream {
 
         REALIZED, STARTED, FINISHED, CLOSED;
     }
+
     /**
      * The current state of the movie output stream.
      */
     protected States state = States.REALIZED;
 
-        public void setTrackEnabled(int track, boolean newValue) {
-            tracks.get(track).setEnabled(newValue);
-        }
-        public boolean isTrackEnabled(int track) {
-           return tracks.get(track).isEnabled();
-        }
-        public void setTrackInMovie(int track, boolean newValue) {
-            tracks.get(track).setInMovie(newValue);
-        }
-        public boolean isTrackInMovie(int track) {
-           return tracks.get(track).isInMovie();
-        }
-        public void setTrackInPreview(int track, boolean newValue) {
-            tracks.get(track).setInPreview(newValue);
-        }
-        public boolean isTrackInPreview(int track) {
-           return tracks.get(track).isInPreview();
-        }
-        public void setTrackInPoster(int track, boolean newValue) {
-            tracks.get(track).setInPoster(newValue);
-        }
-        public boolean isTrackInPoster(int track) {
-           return tracks.get(track).isInPoster();
-        }
+    public void setTrackEnabled(int track, boolean newValue) {
+        tracks.get(track).setEnabled(newValue);
+    }
+
+    public boolean isTrackEnabled(int track) {
+        return tracks.get(track).isEnabled();
+    }
+
+    public void setTrackInMovie(int track, boolean newValue) {
+        tracks.get(track).setInMovie(newValue);
+    }
+
+    public boolean isTrackInMovie(int track) {
+        return tracks.get(track).isInMovie();
+    }
+
+    public void setTrackInPreview(int track, boolean newValue) {
+        tracks.get(track).setInPreview(newValue);
+    }
+
+    public boolean isTrackInPreview(int track) {
+        return tracks.get(track).isInPreview();
+    }
+
+    public void setTrackInPoster(int track, boolean newValue) {
+        tracks.get(track).setInPoster(newValue);
+    }
+
+    public boolean isTrackInPoster(int track) {
+        return tracks.get(track).isInPoster();
+    }
+
     /**
      * Gets the position relative to the beginning of the QuickTime stream. <p>
      * Usually this value is equal to the stream position of the underlying
@@ -160,7 +170,6 @@ public class AbstractQuickTimeStream {
      * Seeks relative to the beginning of the QuickTime stream. <p> Usually this
      * equal to seeking in the underlying ImageOutputStream, but can be
      * different if the underlying stream already contained data.
-     *
      */
     protected void seekRelative(long newPosition) throws IOException {
         out.seek(newPosition + streamOffset);
@@ -203,7 +212,7 @@ public class AbstractQuickTimeStream {
          * Creates a new Atom at the current position of the ImageOutputStream.
          *
          * @param type The type of the atom. A string with a length of 4
-         * characters.
+         *             characters.
          */
         public Atom(String type, long offset) {
             this.type = type;
@@ -618,7 +627,7 @@ public class AbstractQuickTimeStream {
         /**
          * Creates a new Chunk.
          *
-         * @param firstSample The first sample contained in this chunk.
+         * @param firstSample         The first sample contained in this chunk.
          * @param sampleDescriptionId The description Id of the sample.
          */
         public Chunk(Sample firstSample, int sampleDescriptionId) {
@@ -629,7 +638,7 @@ public class AbstractQuickTimeStream {
         /**
          * Creates a new Chunk.
          *
-         * @param firstSample The first sample contained in this chunk.
+         * @param firstSample         The first sample contained in this chunk.
          * @param sampleDescriptionId The description Id of the sample.
          */
         public Chunk(Sample firstSample, Sample lastSample, int sampleCount, int sampleDescriptionId) {
@@ -750,9 +759,9 @@ public class AbstractQuickTimeStream {
          * The transformation matrix of the track.
          */
         protected double[] matrix = {//
-            1, 0, 0,//
-            0, 1, 0,//
-            0, 0, 1
+                1, 0, 0,//
+                0, 1, 0,//
+                0, 0, 1
         };
         protected double width, height;
 
@@ -772,35 +781,42 @@ public class AbstractQuickTimeStream {
          * } TrackHeaderFlags;
          * </pre>
          */
-        protected int headerFlags=TrackEnable|TrackInMovie|TrackInPreview|TrackInPoster;
+        protected int headerFlags = TrackEnable | TrackInMovie | TrackInPreview | TrackInPoster;
 
         public Track(MediaType mediaType) {
             this.mediaType = mediaType;
         }
 
         public void setEnabled(boolean newValue) {
-           headerFlags = (newValue) ? headerFlags | TrackEnable : headerFlags & (0xff ^ TrackEnable);
+            headerFlags = (newValue) ? headerFlags | TrackEnable : headerFlags & (0xff ^ TrackEnable);
         }
+
         public boolean isEnabled() {
-           return (headerFlags & TrackEnable) != 0;
+            return (headerFlags & TrackEnable) != 0;
         }
+
         public void setInMovie(boolean newValue) {
-           headerFlags = (newValue) ? headerFlags | TrackInMovie : headerFlags & (0xff ^ TrackInMovie);
+            headerFlags = (newValue) ? headerFlags | TrackInMovie : headerFlags & (0xff ^ TrackInMovie);
         }
+
         public boolean isInMovie() {
-           return (headerFlags & TrackInPreview) != 0;
+            return (headerFlags & TrackInPreview) != 0;
         }
+
         public void setInPreview(boolean newValue) {
-           headerFlags = (newValue) ? headerFlags | TrackInPreview : headerFlags & (0xff ^ TrackInPreview);
+            headerFlags = (newValue) ? headerFlags | TrackInPreview : headerFlags & (0xff ^ TrackInPreview);
         }
+
         public boolean isInPreview() {
-           return (headerFlags & TrackInPreview) != 0;
+            return (headerFlags & TrackInPreview) != 0;
         }
+
         public void setInPoster(boolean newValue) {
-           headerFlags = (newValue) ? headerFlags | TrackInPoster : headerFlags & (0xff ^ TrackInPoster);
+            headerFlags = (newValue) ? headerFlags | TrackInPoster : headerFlags & (0xff ^ TrackInPoster);
         }
+
         public boolean isInPoster() {
-           return (headerFlags & TrackInPoster) != 0;
+            return (headerFlags & TrackInPoster) != 0;
         }
 
         public void addSample(Sample sample, int sampleDescriptionId, boolean isSyncSample) {
@@ -897,13 +913,14 @@ public class AbstractQuickTimeStream {
                 return duration;
             }
         }
+
         /**
          * Gets the time of the first sample in the movie time scale.
          *
          * @param movieTimeScale The time scale of the movie.
          */
         public int getFirstSampleTime(long movieTimeScale) {
-            return inputTime.multiply(movieTimeScale).intValue();
+            return inputTime == null ? 0 : inputTime.multiply(movieTimeScale).intValue();
         }
 
         //   protected abstract void writeMediaInformationHeaderAtom(CompositeAtom minfAtom) throws IOException;
@@ -1364,10 +1381,10 @@ public class AbstractQuickTimeStream {
          * Creates an edit.
          *
          * @param trackDuration Duration of this edit in the movie's time scale.
-         * @param mediaTime Start time of this edit in the media's time scale.
-         * Specify -1 for an empty edit. The last edit in a track should never
-         * be an empty edit.
-         * @param mediaRate The relative rate at which to play this edit.
+         * @param mediaTime     Start time of this edit in the media's time scale.
+         *                      Specify -1 for an empty edit. The last edit in a track should never
+         *                      be an empty edit.
+         * @param mediaRate     The relative rate at which to play this edit.
          */
         public Edit(int trackDuration, int mediaTime, double mediaRate) {
             if (trackDuration < 0) {
@@ -1389,11 +1406,11 @@ public class AbstractQuickTimeStream {
          * the fixed point media rate by yourself.
          *
          * @param trackDuration Duration of this edit in the movie's time scale.
-         * @param mediaTime Start time of this edit in the media's time scale.
-         * Specify -1 for an empty edit. The last edit in a track should never
-         * be an empty edit.
-         * @param mediaRate The relative rate at which to play this edit given
-         * as a 16.16 fixed point value.
+         * @param mediaTime     Start time of this edit in the media's time scale.
+         *                      Specify -1 for an empty edit. The last edit in a track should never
+         *                      be an empty edit.
+         * @param mediaRate     The relative rate at which to play this edit given
+         *                      as a 16.16 fixed point value.
          */
         public Edit(int trackDuration, int mediaTime, int mediaRate) {
             if (trackDuration < 0) {
