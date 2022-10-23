@@ -56,7 +56,6 @@ public abstract class AbstractVideoCodec extends AbstractCodec {
         if (buf.data instanceof BufferedImage) {
             BufferedImage image = (BufferedImage) buf.data;
             if (image.getColorModel() instanceof DirectColorModel) {
-                DirectColorModel dcm = (DirectColorModel) image.getColorModel();
                 if (image.getRaster().getDataBuffer() instanceof DataBufferShort) {
                     // FIXME - Implement additional checks
                     return ((DataBufferShort) image.getRaster().getDataBuffer()).getData();

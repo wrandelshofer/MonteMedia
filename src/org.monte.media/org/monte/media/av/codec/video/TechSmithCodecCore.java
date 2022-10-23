@@ -3,19 +3,18 @@
  */
 package org.monte.media.av.codec.video;
 
+import org.monte.media.io.ByteArrayImageInputStream;
+import org.monte.media.io.UncachedImageInputStream;
+
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import static java.lang.Math.min;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Arrays;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
-import org.monte.media.io.ByteArrayImageInputStream;
-import org.monte.media.io.ByteArrayImageOutputStream;
-import org.monte.media.io.UncachedImageInputStream;
+
+import static java.lang.Math.min;
 
 /**
  * {@code TechSmithCodec} (tscc) encodes a BufferedImage as a byte[] array.
@@ -85,7 +84,7 @@ import org.monte.media.io.UncachedImageInputStream;
  * 09 1E                   1E 1E 1E 1E 1E 1E 1E 1E 1E
  * 00 01                   End of RLE bitmap
  * </pre>
- *
+ * <p>
  * References:<br>
  * <a href="http://wiki.multimedia.cx/index.php?title=TechSmith_Screen_Capture_Codec"
  * >http://wiki.multimedia.cx/index.php?title=TechSmith_Screen_Capture_Codec</a><br>
@@ -155,7 +154,6 @@ import org.monte.media.io.UncachedImageInputStream;
  * } AVIPALCHANGE;
  * </pre>
  *
- *
  * @author Werner Randelshofer
  * @version $Id$
  */
@@ -180,11 +178,21 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
     }
 
     private void ensureBBufCapacity(int width, int height, int depth) {
-        // In the worst case, we need:
-        // +3 bytes for every 255 bytes of input data, because we can not compress them.
-        // +2 bytes for each scanline for the end of scanline marker
-        // +2 bytes for the end of image marker
-        int needed = depth * width * height + 3 * (width / 255 + 1) + 2 * height + 2;
+        final int needed;
+        if (depth==1){
+            // In the worst case, we need:
+            // 2 bytes for every byte of input data because we can not compress them.
+            // +2 bytes for each scanline for the end of scanline marker
+            // +2 bytes for the end of image marker
+            needed = 2 * depth * width * height + 2 * height + 2;
+
+        }else {
+            // In the worst case, we need:
+            // +3 bytes for every 255 bytes of input data, because we can not compress them.
+            // +2 bytes for each scanline for the end of scanline marker
+            // +2 bytes for the end of image marker
+            needed = depth * width * height + 3 * (width / 255 + 1) + 2 * height + 2;
+        }
         if (bbuf == null || bbuf.capacity() < needed) {
             bbuf = ByteBuffer.allocate(needed);
             bbuf.order(ByteOrder.LITTLE_ENDIAN);
@@ -233,13 +241,12 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
     /**
      * Decodes to 8-bit palettised. Returns true if a key-frame was decoded.
      *
-     *
      * @param inDat
      * @param off
      * @param length
      * @param outDat
-     * @param prevDat The pixels decoded in the previous frame. Since no double
-     * buffering is used, this can be the same array than {@code outDat}.
+     * @param prevDat              The pixels decoded in the previous frame. Since no double
+     *                             buffering is used, this can be the same array than {@code outDat}.
      * @param width
      * @param height
      * @param onlyDecodeIfKeyframe
@@ -270,33 +277,33 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                 if (opcode == 0) {
                     opcode = in.readUnsignedByte();
                     switch (opcode) {
-                        case 0x0000: // end of line
-                            y++;
-                            xy = (height - 1 - y) * scanlineStride + offset;
-                            break;
-                        case 0x0001: // end of bitmap
-                            break loop;
-                        case 0x0002: // delta skip
-                            isKeyFrame = false;
-                            int dx = in.readUnsignedByte();
-                            int dy = in.readUnsignedByte();
-                            y += dy;
-                            int end = xy + dx - dy * scanlineStride;
-                            if (prevDat != outDat) {
-                                System.arraycopy(prevDat, xy, outDat, xy, end - xy);
+                    case 0x0000: // end of line
+                        y++;
+                        xy = (height - 1 - y) * scanlineStride + offset;
+                        break;
+                    case 0x0001: // end of bitmap
+                        break loop;
+                    case 0x0002: // delta skip
+                        isKeyFrame = false;
+                        int dx = in.readUnsignedByte();
+                        int dy = in.readUnsignedByte();
+                        y += dy;
+                        int end = xy + dx - dy * scanlineStride;
+                        if (prevDat != outDat) {
+                            System.arraycopy(prevDat, xy, outDat, xy, end - xy);
+                        }
+                        xy = end;
+                        break;
+                    default: // literal run
+                        in.readFully(outDat, xy, opcode);
+                        xy += opcode;
+                        if ((opcode & 1) == 1) {
+                            int pad = in.readByte() & 0xff;
+                            if (pad != 0) {
+                                throw new IOException("Illegal pad byte, pad=0x" + Integer.toHexString(pad));
                             }
-                            xy = end;
-                            break;
-                        default: // literal run
-                            in.readFully(outDat, xy, opcode);
-                            xy += opcode;
-                            if ((opcode & 1) == 1) {
-                                int pad = in.readByte() & 0xff;
-                                if (pad != 0) {
-                                    throw new IOException("Illegal pad byte, pad=0x" + Integer.toHexString(pad));
-                                }
-                            }
-                            break;
+                        }
+                        break;
                     }
                 } else {
                     // repetition
@@ -317,13 +324,12 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
     /**
      * Decodes to 24-bit direct color. Returns true if a key-frame was decoded.
      *
-     *
      * @param inDat
      * @param off
      * @param length
      * @param outDat
-     * @param prevDat The pixels decoded in the previous frame. Since no double
-     * buffering is used, this can be the same array than {@code outDat}.
+     * @param prevDat              The pixels decoded in the previous frame. Since no double
+     *                             buffering is used, this can be the same array than {@code outDat}.
      * @param width
      * @param height
      * @param onlyDecodeIfKeyframe
@@ -358,38 +364,38 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                 if (opcode == 0) {
                     opcode = in.readUnsignedByte();
                     switch (opcode) {
-                        case 0x0000: // end of line
-                            y++;
-                            xy = (height - 1 - y) * scanlineStride + offset;
-                            break;
-                        case 0x0001: // end of bitmap
-                            break loop;
-                        case 0x0002: { // delta skip
-                            isKeyFrame = false;
-                            int dx = in.readUnsignedByte();
-                            int dy = in.readUnsignedByte();
-                            y += dy;
-                            int end = xy + dx - dy * scanlineStride;
-                            if (prevDat != outDat) {
-                                System.arraycopy(prevDat, xy, outDat, xy, end - xy);
-                            }
-                            xy = end;
-                            break;
+                    case 0x0000: // end of line
+                        y++;
+                        xy = (height - 1 - y) * scanlineStride + offset;
+                        break;
+                    case 0x0001: // end of bitmap
+                        break loop;
+                    case 0x0002: { // delta skip
+                        isKeyFrame = false;
+                        int dx = in.readUnsignedByte();
+                        int dy = in.readUnsignedByte();
+                        y += dy;
+                        int end = xy + dx - dy * scanlineStride;
+                        if (prevDat != outDat) {
+                            System.arraycopy(prevDat, xy, outDat, xy, end - xy);
                         }
-                        default: { // literal run
-                            in.readFully(temp2, 0, opcode);
-                            for (int i = 0; i < opcode; i++) {
-                                outDat[xy + i] = palette[temp2[i] & 0xff];
-                            }
-                            xy += opcode;
-                            if ((opcode & 1) == 1) {
-                                int pad = in.readByte() & 0xff;
-                                if (pad != 0) {
-                                    throw new IOException("Illegal pad byte, pad=0x" + Integer.toHexString(pad));
-                                }
-                            }
-                            break;
+                        xy = end;
+                        break;
+                    }
+                    default: { // literal run
+                        in.readFully(temp2, 0, opcode);
+                        for (int i = 0; i < opcode; i++) {
+                            outDat[xy + i] = palette[temp2[i] & 0xff];
                         }
+                        xy += opcode;
+                        if ((opcode & 1) == 1) {
+                            int pad = in.readByte() & 0xff;
+                            if (pad != 0) {
+                                throw new IOException("Illegal pad byte, pad=0x" + Integer.toHexString(pad));
+                            }
+                        }
+                        break;
+                    }
                     }
                 } else {
                     // repetition
@@ -434,29 +440,29 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                 if (opcode == 0) {
                     opcode = in.readUnsignedByte();
                     switch (opcode) {
-                        case 0x0000: // end of line
-                            y++;
-                            xy = (height - 1 - y) * scanlineStride + offset;
-                            break;
-                        case 0x0001: // end of bitmap
-                            break loop;
-                        case 0x0002: {// delta skip
-                            isKeyFrame = false;
-                            int dx = in.readUnsignedByte();
-                            int dy = in.readUnsignedByte();
-                            y += dy;
-                            int end = xy + dx - dy * scanlineStride;
-                            if (prevDat != outDat) {
-                                System.arraycopy(prevDat, xy, outDat, xy, end - xy);
-                            }
-                            xy = end;
-                            break;
+                    case 0x0000: // end of line
+                        y++;
+                        xy = (height - 1 - y) * scanlineStride + offset;
+                        break;
+                    case 0x0001: // end of bitmap
+                        break loop;
+                    case 0x0002: {// delta skip
+                        isKeyFrame = false;
+                        int dx = in.readUnsignedByte();
+                        int dy = in.readUnsignedByte();
+                        y += dy;
+                        int end = xy + dx - dy * scanlineStride;
+                        if (prevDat != outDat) {
+                            System.arraycopy(prevDat, xy, outDat, xy, end - xy);
                         }
-                        default: {// literal run
-                            readInts24LE(in, outDat, xy, opcode);
-                            xy += opcode;
-                            break;
-                        }
+                        xy = end;
+                        break;
+                    }
+                    default: {// literal run
+                        readInts24LE(in, outDat, xy, opcode);
+                        xy += opcode;
+                        break;
+                    }
                     }
                 } else {
                     // repetition
@@ -505,29 +511,29 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                 if (opcode == 0) {
                     opcode = in.readUnsignedByte();
                     switch (opcode) {
-                        case 0x0000: // end of line
-                            y++;
-                            xy = (height - 1 - y) * scanlineStride + offset;
-                            break;
-                        case 0x0001: // end of bitmap
-                            break loop;
-                        case 0x0002: {// delta skip
-                            isKeyFrame = false;
-                            int dx = in.readUnsignedByte();
-                            int dy = in.readUnsignedByte();
-                            y += dy;
-                            int end = xy + dx - dy * scanlineStride;
-                            if (prevDat != outDat) {
-                                System.arraycopy(prevDat, xy, outDat, xy, end - xy);
-                            }
-                            xy = end;
-                            break;
+                    case 0x0000: // end of line
+                        y++;
+                        xy = (height - 1 - y) * scanlineStride + offset;
+                        break;
+                    case 0x0001: // end of bitmap
+                        break loop;
+                    case 0x0002: {// delta skip
+                        isKeyFrame = false;
+                        int dx = in.readUnsignedByte();
+                        int dy = in.readUnsignedByte();
+                        y += dy;
+                        int end = xy + dx - dy * scanlineStride;
+                        if (prevDat != outDat) {
+                            System.arraycopy(prevDat, xy, outDat, xy, end - xy);
                         }
-                        default: {// literal run
-                            readRGBs555to24(in, outDat, xy, opcode);
-                            xy += opcode;
-                            break;
-                        }
+                        xy = end;
+                        break;
+                    }
+                    default: {// literal run
+                        readRGBs555to24(in, outDat, xy, opcode);
+                        xy += opcode;
+                        break;
+                    }
                     }
                 } else {
                     // repetition
@@ -548,13 +554,13 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
     /**
      * Encodes an 8-bit delta frame with indexed colors.
      *
-     * @param out The output stream.
-     * @param data The image data.
-     * @param prev The image data of the previous frame.
-     * @param offset The offset to the first pixel in the data array.
-     * @param width The width of the image in data elements.
+     * @param out            The output stream.
+     * @param data           The image data.
+     * @param prev           The image data of the previous frame.
+     * @param offset         The offset to the first pixel in the data array.
+     * @param width          The width of the image in data elements.
      * @param scanlineStride The number to add to offset to get to the next
-     * scanline.
+     *                       scanline.
      */
     public void encodeDelta8(OutputStream out, byte[] data, byte[] prev, int width, int height, int offset, int scanlineStride)
             throws IOException {
@@ -683,13 +689,13 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
     /**
      * Encodes an 8-bit delta frame with indexed colors to 24-bit.
      *
-     * @param out The output stream.
-     * @param data The image data.
-     * @param prev The image data of the previous frame.
-     * @param offset The offset to the first pixel in the data array.
-     * @param width The width of the image in data elements.
+     * @param out            The output stream.
+     * @param data           The image data.
+     * @param prev           The image data of the previous frame.
+     * @param offset         The offset to the first pixel in the data array.
+     * @param width          The width of the image in data elements.
      * @param scanlineStride The number to add to offset to get to the next
-     * scanline.
+     *                       scanline.
      */
     public void encodeDelta8to24(OutputStream out, byte[] data, byte[] prev, int width, int height, int offset, int scanlineStride)
             throws IOException {
@@ -878,12 +884,12 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
     /**
      * Encodes a 8-bit key frame with indexed colors.
      *
-     * @param out The output stream.
-     * @param data The image data.
-     * @param offset The offset to the first pixel in the data array.
-     * @param width The width of the image in data elements.
+     * @param out            The output stream.
+     * @param data           The image data.
+     * @param offset         The offset to the first pixel in the data array.
+     * @param width          The width of the image in data elements.
      * @param scanlineStride The number to add to offset to get to the next
-     * scanline.
+     *                       scanline.
      */
     public void encodeKey8(OutputStream out, byte[] data, int width, int height, int offset, int scanlineStride)
             throws IOException {
@@ -969,12 +975,12 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
     /**
      * Encodes a 8-bit key frame with indexed colors to 24-bit.
      *
-     * @param out The output stream.
-     * @param data The image data.
-     * @param offset The offset to the first pixel in the data array.
-     * @param width The width of the image in data elements.
+     * @param out            The output stream.
+     * @param data           The image data.
+     * @param offset         The offset to the first pixel in the data array.
+     * @param width          The width of the image in data elements.
      * @param scanlineStride The number to add to offset to get to the next
-     * scanline.
+     *                       scanline.
      */
     public void encodeKey8to24(OutputStream out, byte[] data, int width, int height, int offset, int scanlineStride)
             throws IOException {
@@ -1068,13 +1074,13 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
     /**
      * Encodes a 16-bit delta frame.
      *
-     * @param out The output stream.
-     * @param data The image data.
-     * @param prev The image data of the previous frame.
-     * @param offset The offset to the first pixel in the data array.
-     * @param width The width of the image in data elements.
+     * @param out            The output stream.
+     * @param data           The image data.
+     * @param prev           The image data of the previous frame.
+     * @param offset         The offset to the first pixel in the data array.
+     * @param width          The width of the image in data elements.
      * @param scanlineStride The number to add to offset to get to the next
-     * scanline.
+     *                       scanline.
      */
     public void encodeDelta16(OutputStream out, short[] data, short[] prev, int width, int height, int offset, int scanlineStride)
             throws IOException {
@@ -1198,12 +1204,12 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
     /**
      * Encodes a 24-bit key frame.
      *
-     * @param out The output stream.
-     * @param data The image data.
-     * @param offset The offset to the first pixel in the data array.
-     * @param width The width of the image in data elements.
+     * @param out            The output stream.
+     * @param data           The image data.
+     * @param offset         The offset to the first pixel in the data array.
+     * @param width          The width of the image in data elements.
      * @param scanlineStride The number to add to offset to get to the next
-     * scanline.
+     *                       scanline.
      */
     public void encodeKey24(OutputStream out, int[] data, int width, int height, int offset, int scanlineStride)
             throws IOException {
@@ -1288,13 +1294,13 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
     /**
      * Encodes a 24-bit delta frame.
      *
-     * @param out The output stream.
-     * @param data The image data.
-     * @param prev The image data of the previous frame.
-     * @param offset The offset to the first pixel in the data array.
-     * @param width The width of the image in data elements.
+     * @param out            The output stream.
+     * @param data           The image data.
+     * @param prev           The image data of the previous frame.
+     * @param offset         The offset to the first pixel in the data array.
+     * @param width          The width of the image in data elements.
      * @param scanlineStride The number to add to offset to get to the next
-     * scanline.
+     *                       scanline.
      */
     public void encodeDelta24(OutputStream out, int[] data, int[] prev, int width, int height, int offset, int scanlineStride)
             throws IOException {
@@ -1423,12 +1429,12 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
     /**
      * Encodes a 16-bit key frame.
      *
-     * @param out The output stream.
-     * @param data The image data.
-     * @param offset The offset to the first pixel in the data array.
-     * @param width The width of the image in data elements.
+     * @param out            The output stream.
+     * @param data           The image data.
+     * @param offset         The offset to the first pixel in the data array.
+     * @param width          The width of the image in data elements.
      * @param scanlineStride The number to add to offset to get to the next
-     * scanline.
+     *                       scanline.
      */
     public void encodeKey16(OutputStream out, short[] data, int width, int height, int offset, int scanlineStride)
             throws IOException {

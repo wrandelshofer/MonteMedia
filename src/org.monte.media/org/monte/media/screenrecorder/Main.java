@@ -85,7 +85,6 @@ import org.monte.media.swing.datatransfer.DropFileTransferHandler;
  * ScreenRecorderMain.
  *
  * @author Werner Randelshofer
- * @version $Id$ $
  */
 public class Main extends javax.swing.JFrame {
 
@@ -434,6 +433,7 @@ public class Main extends javax.swing.JFrame {
         videoMenu = new javax.swing.JMenu();
         colorMillionsItem = new javax.swing.JRadioButtonMenuItem();
         colorThousandsItem = new javax.swing.JRadioButtonMenuItem();
+        colorHundredsItem = new javax.swing.JRadioButtonMenuItem();
         jSeparator5 = new javax.swing.JPopupMenu.Separator();
         fps20Item = new javax.swing.JRadioButtonMenuItem();
         fps10Item = new javax.swing.JRadioButtonMenuItem();
@@ -500,6 +500,15 @@ public class Main extends javax.swing.JFrame {
         colorThousandsItem.setText("Thousands of Colors");
         colorThousandsItem.setActionCommand("Thousands");
         videoMenu.add(colorThousandsItem);
+
+        //8-bit color depth currently only works with AVI.
+        /*
+        colorGroup.add(colorHundredsItem);
+        colorHundredsItem.setText("Hundreds of Colors");
+        colorHundredsItem.setActionCommand("Hundreds");
+        videoMenu.add(colorHundredsItem);
+        */
+
         videoMenu.add(jSeparator5);
 
         fpsGroup.add(fps20Item);
@@ -703,7 +712,7 @@ public class Main extends javax.swing.JFrame {
                     bitDepth = 16;
                     break;
                 case 2:
-                    bitDepth = 24;
+                    bitDepth = 8;
                     break;
             }
             switch (format) {
@@ -1083,6 +1092,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.ButtonGroup colorGroup;
     private javax.swing.JRadioButtonMenuItem colorMillionsItem;
     private javax.swing.JRadioButtonMenuItem colorThousandsItem;
+    private javax.swing.JRadioButtonMenuItem colorHundredsItem;
     private javax.swing.JRadioButtonMenuItem cursoYellowItem;
     private javax.swing.JRadioButtonMenuItem cursorBlackItem;
     private javax.swing.ButtonGroup cursorGroup;

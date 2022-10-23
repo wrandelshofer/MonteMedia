@@ -81,7 +81,7 @@ public class Main {
     }
 
     private static void testWriting(File file, Format format) throws IOException {
-        System.out.println("Writing " + file);
+        System.out.println("Writing " + file.getAbsolutePath());
 
         // Make the format more specific
         format = format.prepend(MediaTypeKey, MediaType.VIDEO, //
@@ -144,7 +144,7 @@ public class Main {
     }
 
     private static void testReading(File file) throws IOException {
-        System.out.println("Reading " + file);
+        System.out.println("Reading " + file.getAbsolutePath());
         AVIReader in = null;
 
         try {
