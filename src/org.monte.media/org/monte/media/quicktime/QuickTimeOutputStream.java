@@ -1026,6 +1026,20 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
             /* Track Atom ======== */
             writeTrackAtoms(i, moovAtom, modificationTime);
         }
+
+        // Optional color table atom
+        for (int i = 0, n = tracks.size(); i < n; i++) {
+            Track t = tracks.get(i);
+            if (t instanceof VideoTrack) {
+                VideoTrack vt=(VideoTrack)t;
+                if (vt.videoColorTable!=null) {
+                   vt. writeColorTableAtom(moovAtom);
+                    break;
+                }
+            }
+        }
+
+
         //
         moovAtom.finish();
     }

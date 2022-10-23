@@ -55,8 +55,11 @@ public class Main {
             test(new File("quicktimedemo-raw8.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_RAW, DepthKey, 8));
             test(new File("quicktimedemo-anim8.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 8));
             test(new File("quicktimedemo-tscc8.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8));
+            test(new File("quicktimedemo-tscc16.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 16));
             test(new File("quicktimedemo-tscc24.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 24));
-            //test(new File("quicktimedemo-rle4.mov"), QuickTimeOutputStreamOLD.QuickTimeVideoFormat.RLE, 4, 1f);
+            test(new File("quicktimedemo-rle8.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 8));
+            test(new File("quicktimedemo-rle16.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 16));
+            test(new File("quicktimedemo-rle24.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 24));
 
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -93,6 +96,7 @@ public class Main {
 
             // Add a track to the writer
             out.addTrack(format);
+
             out.setVideoColorTable(0, img.getColorModel());
 
             // initialize the animation

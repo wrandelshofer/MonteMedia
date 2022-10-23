@@ -1081,10 +1081,6 @@ public class AbstractQuickTimeStream {
             // per pixel, this indicates a standard Macintosh color table
             // for the specified depth. Depths of 16, 24, and 32 have no
             // color table.
-
-            if (videoColorTable != null) {
-                writeColorTableAtom(leaf);
-            }
         }
 
         /**
