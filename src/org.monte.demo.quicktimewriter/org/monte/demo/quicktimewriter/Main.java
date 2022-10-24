@@ -3,22 +3,30 @@
  */
 package org.monte.demo.quicktimewriter;
 
+import org.monte.media.av.Format;
+import org.monte.media.av.FormatKeys.MediaType;
+import org.monte.media.av.codec.video.VideoFormatKeys;
+import org.monte.media.color.Colors;
+import org.monte.media.math.Rational;
+import org.monte.media.quicktime.QuickTimeReader;
+import org.monte.media.quicktime.QuickTimeWriter;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.LinearGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
-import org.monte.media.av.Format;
+
 import static org.monte.media.av.FormatKeys.EncodingKey;
 import static org.monte.media.av.FormatKeys.FrameRateKey;
-import org.monte.media.av.FormatKeys.MediaType;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE;
@@ -27,13 +35,9 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_PNG;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_RAW;
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.PixelFormatKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.QualityKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
-
-import org.monte.media.color.Colors;
-import org.monte.media.math.Rational;
-import org.monte.media.quicktime.QuickTimeReader;
-import org.monte.media.quicktime.QuickTimeWriter;
 
 /**
  * Demonstrates the use of {@link QuickTimeReader} and {@link QuickTimeWriter}.
@@ -61,6 +65,7 @@ public class Main {
             test(new File("quicktimedemo-raw8.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_RAW, DepthKey, 8));
             test(new File("quicktimedemo-anim8.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 8));
             test(new File("quicktimedemo-tscc8.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8));
+            test(new File("quicktimedemo-tscc8gray.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8,PixelFormatKey, VideoFormatKeys.PixelFormat.GRAY));
             test(new File("quicktimedemo-tscc16.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 16));
             test(new File("quicktimedemo-tscc24.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 24));
             test(new File("quicktimedemo-rle8.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 8));
@@ -76,7 +81,7 @@ public class Main {
         testWriting(file, format);
         try {
             testReading(file);
-        } catch (UnsupportedOperationException|IOException e) {
+        } catch (UnsupportedOperationException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -102,10 +107,10 @@ public class Main {
 
             // Add a track to the writer
             out.addTrack(format);
-            //out.setVideoColorTable(0, img.getColorModel());
+            out.setVideoColorTable(0, img.getColorModel());
 
             // Draw the animation
-                for (int i = 0, n = 200; i < n; i++) {
+            for (int i = 0, n = 200; i < n; i++) {
                 double t = (double) i / (n - 1);
                 drawAnimationFrame(img, g, t);
 
@@ -123,6 +128,7 @@ public class Main {
             g.dispose();
         }
     }
+
     private static void drawAnimationFrame(BufferedImage img, Graphics2D g, double t) {
         int rhour = Math.min(img.getWidth(), img.getHeight()) / 6;
         int rminute = Math.min(img.getWidth(), img.getHeight()) / 4;
@@ -137,10 +143,24 @@ public class Main {
         g.setBackground(Color.WHITE);
         g.clearRect(0, 0, img.getWidth(), img.getHeight());
 
-        // draw color dot
-        g.setColor(Color.getHSBColor((float)t,0.8f,0.6f));
-        Ellipse2D ellipse=new Ellipse2D.Double(cx-10,cy+rhour-10,20,20);
+        // draw color-changing dot
+        g.setColor(Color.getHSBColor((float) t, 0.8f, 0.6f));
+        Ellipse2D ellipse = new Ellipse2D.Double(cx - 10, cy + rhour - 10, 20, 20);
         g.fill(ellipse);
+
+        // draw color strip
+        float[] fractions = new float[12];
+        Color[] colors = new Color[fractions.length];
+        for (int i=0;i<fractions.length;i++){
+            fractions[i]=(float)i/(fractions.length-1);
+            colors[i]=Color.getHSBColor(fractions[i],0.8f,0.6f);
+        }
+        g.setPaint(new LinearGradientPaint(cx-rhour,cy+rhour,cx+rhour,cy+rhour,
+                fractions,
+                colors));
+        Rectangle2D rectangle = new Rectangle2D.Double(cx - rhour, cy + rhour+10, rhour*2, 20);
+        g.fill(rectangle);
+
 
         // draw clock hour hand
         Line2D.Double lhour = new Line2D.Double(cx, cy, cx + Math.sin(thour * Math.PI * 2) * rhour, cy - Math.cos(thour * Math.PI * 2) * rhour);
@@ -157,7 +177,7 @@ public class Main {
 
     private static void testReading(File file) throws IOException {
         System.out.println("Reading " + file.getAbsolutePath());
-        
+
 
         try (QuickTimeReader in = new QuickTimeReader(file)) {
 
@@ -165,7 +185,7 @@ public class Main {
             int track = 0;
             while (track < in.getTrackCount()
                     && (in.getFormat(track) == null || in.getFormat(track).get(MediaTypeKey) != MediaType.VIDEO)) {
-                System.out.println("Skipping track "+track+" with format "+in.getFormat(track));
+                System.out.println("Skipping track " + track + " with format " + in.getFormat(track));
                 track++;
             }
             if (track >= in.getTrackCount()) {
@@ -189,19 +209,25 @@ public class Main {
         int depth = format.get(DepthKey);
         int width = format.get(WidthKey);
         int height = format.get(HeightKey);
+        VideoFormatKeys.PixelFormat pixelFormat = format.get(PixelFormatKey);
 
         BufferedImage img;
         switch (depth) {
-            case 24:
-            default: {
-                img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        case 24:
+        default: {
+            img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            break;
+        }
+        case 8: {
+            if (pixelFormat == VideoFormatKeys.PixelFormat.GRAY) {
+                img = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
                 break;
-            }
-            case 8: {
+            } else {
                 IndexColorModel palette = Colors.createMacColors();
                 img = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED, palette);
                 break;
             }
+        }
         }
         return img;
     }

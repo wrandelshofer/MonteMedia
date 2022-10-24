@@ -502,12 +502,10 @@ public class Main extends javax.swing.JFrame {
         videoMenu.add(colorThousandsItem);
 
         //8-bit color depth currently only works with AVI.
-        /*
         colorGroup.add(colorHundredsItem);
         colorHundredsItem.setText("Hundreds of Colors");
         colorHundredsItem.setActionCommand("Hundreds");
         videoMenu.add(colorHundredsItem);
-        */
 
         videoMenu.add(jSeparator5);
 

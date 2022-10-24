@@ -3,26 +3,57 @@
  */
 package org.monte.media.avi;
 
-import java.util.EnumSet;
-import org.monte.media.math.Rational;
-import org.monte.media.av.Format;
-import org.monte.media.av.Codec;
 import org.monte.media.av.Buffer;
+import org.monte.media.av.BufferFlag;
+import org.monte.media.av.Codec;
+import org.monte.media.av.Format;
 import org.monte.media.av.MovieWriter;
 import org.monte.media.av.Registry;
 import org.monte.media.io.ByteArrayImageOutputStream;
+import org.monte.media.math.Rational;
 import org.monte.media.riff.RIFFParser;
+
+import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteOrder;
 import java.util.Arrays;
-import javax.imageio.stream.*;
-import org.monte.media.avi.AVIOutputStream;
-import static org.monte.media.av.codec.audio.AudioFormatKeys.*;
-import static org.monte.media.av.codec.video.VideoFormatKeys.*;
-import org.monte.media.av.BufferFlag;
-import static org.monte.media.av.BufferFlag.*;
+import java.util.EnumSet;
+
+import static org.monte.media.av.BufferFlag.DISCARD;
+import static org.monte.media.av.BufferFlag.KEYFRAME;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ChannelsKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ENCODING_ALAW;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ENCODING_MP3;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ENCODING_PCM_SIGNED;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ENCODING_PCM_UNSIGNED;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ENCODING_ULAW;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.EncodingKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.FrameRateKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.FrameSizeKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.KeyFrameIntervalKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.MIME_AVI;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.MediaType;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.MediaTypeKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.MimeTypeKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleRateKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleSizeInBitsKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.COMPRESSOR_NAME_QUICKTIME_RAW;
+import static org.monte.media.av.codec.video.VideoFormatKeys.CompressorNameKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_DIB;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_MJPG;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_PNG;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_RLE8;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
+import static org.monte.media.av.codec.video.VideoFormatKeys.FixedFrameRateKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.QualityKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
 /**
  * Provides high-level support for encoding and writing audio and video samples
@@ -97,12 +128,12 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
     @Override
     public int addTrack(Format format) throws IOException {
         switch (format.get(MediaTypeKey, MediaType.VIDEO)) {
-            case VIDEO:
-                return addVideoTrack(format);
-            case AUDIO:
-                return addAudioTrack(format);
-            default:
-                throw new IllegalArgumentException("VIDEO or AUDIO format expected: " + format);
+        case VIDEO:
+            return addVideoTrack(format);
+        case AUDIO:
+            return addAudioTrack(format);
+        default:
+            throw new IllegalArgumentException("VIDEO or AUDIO format expected: " + format);
 
         }
     }
@@ -110,7 +141,7 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
     /**
      * Adds a video track.
      *
-     * @param format The format of the track.
+     * @param vf The format of the track.
      * @return The track number.
      */
     private int addVideoTrack(Format vf) throws IOException {
@@ -201,10 +232,9 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
      * Encodes the provided image and writes its sample data into the specified
      * track.
      *
-     * @param track The track index.
-     * @param image The image of the video frame.
+     * @param track    The track index.
+     * @param image    The image of the video frame.
      * @param duration Duration given in media time units (=number of frames to be written).
-     *
      * @throws IOException if writing the sample data failed.
      */
     public void write(int track, BufferedImage image, long duration) throws IOException {
@@ -226,40 +256,14 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
                     + ") differs from video format of track: " + fmt);
         }
 
-        // Encode pixel data
-        {
-            if (vt.outputBuffer == null) {
-                vt.outputBuffer = new Buffer();
-            }
-
-            boolean isKeyframe = vt.syncInterval == 0 ? false : vt.samples.size() % vt.syncInterval == 0;
-
-            Buffer inputBuffer = new Buffer();
-            inputBuffer.flags = (isKeyframe) ? EnumSet.of(KEYFRAME) : EnumSet.noneOf(BufferFlag.class);
-            inputBuffer.data = image;
-            vt.codec.process(inputBuffer, vt.outputBuffer);
-            if (vt.outputBuffer.flags.contains(DISCARD)) {
-                return;
-            }
-
-            // Encode palette data
-            isKeyframe = vt.outputBuffer.flags.contains(KEYFRAME);
-            boolean paletteChange = writePalette(track, image, isKeyframe);
-            writeSample(track, (byte[]) vt.outputBuffer.data, vt.outputBuffer.offset, vt.outputBuffer.length, isKeyframe && !paletteChange);
-
-            if (duration > 1) {
-                inputBuffer.flags = EnumSet.noneOf(BufferFlag.class); // not a keyframe
-                for (int i = 1; i < duration; i++) {
-                    vt.codec.process(inputBuffer, vt.outputBuffer);
-                    if (vt.outputBuffer.flags.contains(DISCARD)) {
-                        continue;
-                    }
-                    isKeyframe = vt.outputBuffer.flags.contains(KEYFRAME);
-                    paletteChange = writePalette(track, image, isKeyframe);
-                    writeSample(track, (byte[]) vt.outputBuffer.data, vt.outputBuffer.offset, vt.outputBuffer.length, isKeyframe&&!paletteChange);
-                }
-            }
-        }
+        boolean isKeyframe = vt.syncInterval == 0 ? false : vt.samples.size() % vt.syncInterval == 0;
+        Buffer inputBuffer = new Buffer();
+        inputBuffer.flags = (isKeyframe) ? EnumSet.of(KEYFRAME) : EnumSet.noneOf(BufferFlag.class);
+        inputBuffer.data = image;
+        inputBuffer.header = image.getColorModel();
+        inputBuffer.format = new Format(EncodingKey, ENCODING_BUFFERED_IMAGE);
+        inputBuffer.sampleDuration = new Rational(vt.scale, vt.rate);
+        write(track, inputBuffer);
     }
 
     /**
@@ -269,8 +273,8 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
      * Does nothing if the discard-flag in the buffer is set to true.
      *
      * @param track The track number.
-     * @param buf The buffer containing a data sample. The duration of the buffer must match the
-     * sample rate of the track.
+     * @param buf   The buffer containing a data sample. The duration of the buffer must match the
+     *              sample rate of the track.
      */
     @Override
     public void write(int track, Buffer buf) throws IOException {
@@ -288,11 +292,11 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
             }
         }
         // Encode palette data
-        boolean paletteChange = false;
-        if (buf.data instanceof BufferedImage && tr instanceof VideoTrack) {
-            paletteChange = writePalette(track, (BufferedImage) buf.data, isKeyframe);
-        } else if (buf.header instanceof IndexColorModel) {
+        final boolean paletteChange;
+        if (buf.header instanceof IndexColorModel && tr instanceof VideoTrack) {
             paletteChange = writePalette(track, (IndexColorModel) buf.header, isKeyframe);
+        } else {
+            paletteChange = false;
         }
         // Encode sample data
         {
@@ -344,19 +348,72 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
         int imgDepth = vt.bitCount;
         ByteArrayImageOutputStream tmp = null;
         boolean paletteChange = false;
+        if (vt.samples.isEmpty()) {
+            vt.palette = imgPalette;
+            vt.previousPalette = imgPalette;
+        }
+
         switch (imgDepth) {
-            case 4: {
-                //IndexColorModel imgPalette = (IndexColorModel) image.getColorModel();
-                int[] imgRGBs = new int[16];
-                imgPalette.getRGBs(imgRGBs);
-                int[] previousRGBs = new int[16];
-                if (vt.previousPalette == null) {
-                    vt.previousPalette = vt.palette;
+        case 4: {
+            int[] imgRGBs = new int[16];
+            imgPalette.getRGBs(imgRGBs);
+            int[] previousRGBs = new int[16];
+            vt.previousPalette.getRGBs(previousRGBs);
+            if (isKeyframe || !Arrays.equals(imgRGBs, previousRGBs)) {
+                paletteChange = true;
+                    /*
+                     int first = imgPalette.getMapSize();
+                     int last = -1;
+                     for (int i = 0; i < 16; i++) {
+                     if (previousRGBs[i] != imgRGBs[i] && i < first) {
+                     first = i;
+                     }
+                     if (previousRGBs[i] != imgRGBs[i] && i > last) {
+                     last = i;
+                     }
+                     }*/
+                int first = 0;
+                int last = imgPalette.getMapSize() - 1;
+                    /*
+                     * typedef struct {
+                     BYTE         bFirstEntry;
+                     BYTE         bNumEntries;
+                     WORD         wFlags;
+                     PALETTEENTRY peNew[];
+                     } AVIPALCHANGE;
+                     *
+                     * typedef struct tagPALETTEENTRY {
+                     BYTE peRed;
+                     BYTE peGreen;
+                     BYTE peBlue;
+                     BYTE peFlags;
+                     } PALETTEENTRY;
+                     */
+                tmp = new ByteArrayImageOutputStream(ByteOrder.LITTLE_ENDIAN);
+                tmp.writeByte(first);//bFirstEntry
+                tmp.writeByte(last - first + 1);//bNumEntries
+                tmp.writeShort(0);//wFlags
+
+                for (int i = first; i <= last; i++) {
+                    tmp.writeByte((imgRGBs[i] >>> 16) & 0xff); // red
+                    tmp.writeByte((imgRGBs[i] >>> 8) & 0xff); // green
+                    tmp.writeByte(imgRGBs[i] & 0xff); // blue
+                    tmp.writeByte(0); // reserved*/
                 }
+
+            }
+            break;
+        }
+        case 8: {
+            //IndexColorModel imgPalette = (IndexColorModel) image.getColorModel();
+            int[] imgRGBs = new int[256];
+            imgPalette.getRGBs(imgRGBs);
+            int[] previousRGBs = new int[256];
+            if (vt.previousPalette != null) {
                 vt.previousPalette.getRGBs(previousRGBs);
-                if (isKeyframe || !Arrays.equals(imgRGBs, previousRGBs)) {
-                    paletteChange = true;
-                    vt.previousPalette = imgPalette;
+            }
+            if (isKeyframe || !Arrays.equals(imgRGBs, previousRGBs)) {
+                paletteChange = true;
                     /*
                      int first = imgPalette.getMapSize();
                      int last = -1;
@@ -368,8 +425,8 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
                      last = i;
                      }
                      }*/
-                    int first = 0;
-                    int last = imgPalette.getMapSize() - 1;
+                int first = 0;
+                int last = imgPalette.getMapSize() - 1;
                     /*
                      * typedef struct {
                      BYTE         bFirstEntry;
@@ -385,79 +442,29 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
                      BYTE peFlags;
                      } PALETTEENTRY;
                      */
-                    tmp = new ByteArrayImageOutputStream(ByteOrder.LITTLE_ENDIAN);
-                    tmp.writeByte(first);//bFirstEntry
-                    tmp.writeByte(last - first + 1);//bNumEntries
-                    tmp.writeShort(0);//wFlags
-
-                    for (int i = first; i <= last; i++) {
-                        tmp.writeByte((imgRGBs[i] >>> 16) & 0xff); // red
-                        tmp.writeByte((imgRGBs[i] >>> 8) & 0xff); // green
-                        tmp.writeByte(imgRGBs[i] & 0xff); // blue
-                        tmp.writeByte(0); // reserved*/
-                    }
-
+                tmp = new ByteArrayImageOutputStream(ByteOrder.LITTLE_ENDIAN);
+                tmp.writeByte(first);//bFirstEntry
+                tmp.writeByte(last - first + 1);//bNumEntries
+                tmp.writeShort(0);//wFlags
+                for (int i = first; i <= last; i++) {
+                    tmp.writeByte((imgRGBs[i] >>> 16) & 0xff); // red
+                    tmp.writeByte((imgRGBs[i] >>> 8) & 0xff); // green
+                    tmp.writeByte(imgRGBs[i] & 0xff); // blue
+                    tmp.writeByte(0); // reserved*/
                 }
-                break;
             }
-            case 8: {
-                //IndexColorModel imgPalette = (IndexColorModel) image.getColorModel();
-                int[] imgRGBs = new int[256];
-                imgPalette.getRGBs(imgRGBs);
-                int[] previousRGBs = new int[256];
-                if (vt.previousPalette != null) {
-                    vt.previousPalette.getRGBs(previousRGBs);
-                }
-                if (isKeyframe || !Arrays.equals(imgRGBs, previousRGBs)) {
-                    paletteChange = true;
-                    vt.previousPalette = imgPalette;
-                    /*
-                     int first = imgPalette.getMapSize();
-                     int last = -1;
-                     for (int i = 0; i < 16; i++) {
-                     if (previousRGBs[i] != imgRGBs[i] && i < first) {
-                     first = i;
-                     }
-                     if (previousRGBs[i] != imgRGBs[i] && i > last) {
-                     last = i;
-                     }
-                     }*/
-                    int first = 0;
-                    int last = imgPalette.getMapSize() - 1;
-                    /*
-                     * typedef struct {
-                     BYTE         bFirstEntry;
-                     BYTE         bNumEntries;
-                     WORD         wFlags;
-                     PALETTEENTRY peNew[];
-                     } AVIPALCHANGE;
-                     *
-                     * typedef struct tagPALETTEENTRY {
-                     BYTE peRed;
-                     BYTE peGreen;
-                     BYTE peBlue;
-                     BYTE peFlags;
-                     } PALETTEENTRY;
-                     */
-                    tmp = new ByteArrayImageOutputStream(ByteOrder.LITTLE_ENDIAN);
-                    tmp.writeByte(first);//bFirstEntry
-                    tmp.writeByte(last - first + 1);//bNumEntries
-                    tmp.writeShort(0);//wFlags
-                    for (int i = first; i <= last; i++) {
-                        tmp.writeByte((imgRGBs[i] >>> 16) & 0xff); // red
-                        tmp.writeByte((imgRGBs[i] >>> 8) & 0xff); // green
-                        tmp.writeByte(imgRGBs[i] & 0xff); // blue
-                        tmp.writeByte(0); // reserved*/
-                    }
-                }
-
-                break;
-            }
+            break;
+        }
         }
         if (tmp != null) {
             tmp.close();
             writePalette(track, tmp.toByteArray(), 0, (int) tmp.length(), isKeyframe);
         }
+
+        if (paletteChange) {
+            vt.previousPalette = imgPalette;
+        }
+
         return paletteChange;
     }
 

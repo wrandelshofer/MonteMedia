@@ -480,6 +480,7 @@ public class Main extends javax.swing.JFrame {
     public static void main(String args[]) {
         JFrame f = new Main();
         f.setSize(400, 300);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setVisible(true);
     }
 

@@ -14,10 +14,12 @@ import org.monte.media.math.Rational;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.LinearGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.File;
@@ -69,7 +71,6 @@ public class Main {
             test(new File("avidemo-tscc8gray.avi"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8, PixelFormatKey, PixelFormat.GRAY));
             test(new File("avidemo-tscc24.avi"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 24));
             //test(new File("avidemo-rle4.avi"), AVIOutputStreamOLD.AVIVideoFormat.RLE, 4, 1f);
-
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -105,7 +106,6 @@ public class Main {
 
             // Add a track to the writer
             out.addTrack(format);
-            out.setPalette(0, img.getColorModel());
 
             // Draw the animation
             for (int i = 0, n = 200; i < n; i++) {
@@ -141,10 +141,23 @@ public class Main {
         g.setBackground(Color.WHITE);
         g.clearRect(0, 0, img.getWidth(), img.getHeight());
 
-        // draw color dot
+        // draw color changing dot
         g.setColor(Color.getHSBColor((float)t,0.8f,0.6f));
         Ellipse2D ellipse=new Ellipse2D.Double(cx-10,cy+rhour-10,20,20);
         g.fill(ellipse);
+
+        // draw color strip
+        float[] fractions = new float[12];
+        Color[] colors = new Color[fractions.length];
+        for (int i=0;i<fractions.length;i++){
+            fractions[i]=(float)i/(fractions.length-1);
+            colors[i]=Color.getHSBColor(fractions[i],0.8f,0.6f);
+        }
+        g.setPaint(new LinearGradientPaint(cx-rhour,cy+rhour,cx+rhour,cy+rhour,
+                fractions,
+                colors));
+        Rectangle2D rectangle = new Rectangle2D.Double(cx - rhour, cy + rhour+10, rhour*2, 20);
+        g.fill(rectangle);
 
         // draw clock hour hand
         Line2D.Double lhour = new Line2D.Double(cx, cy, cx + Math.sin(thour * Math.PI * 2) * rhour, cy - Math.cos(thour * Math.PI * 2) * rhour);

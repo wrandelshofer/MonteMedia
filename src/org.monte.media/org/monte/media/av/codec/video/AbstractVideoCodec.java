@@ -47,6 +47,16 @@ public abstract class AbstractVideoCodec extends AbstractCodec {
         }
         return null;
     }
+    protected ColorModel getColorModel(Buffer buf) {
+        if (buf.header instanceof ColorModel) {
+            return (ColorModel) buf.header;
+        }
+        if (buf.data instanceof BufferedImage) {
+            BufferedImage image = (BufferedImage) buf.data;
+            return image.getColorModel();
+        }
+        return null;
+    }
 
     /** Gets 15-bit RGB pixels from a buffer. Returns null if conversion failed. */
     protected short[] getRGB15(Buffer buf) {

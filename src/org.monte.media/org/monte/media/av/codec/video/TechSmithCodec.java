@@ -3,9 +3,17 @@
  */
 package org.monte.media.av.codec.video;
 
+import org.monte.media.av.Buffer;
+import org.monte.media.av.BufferFlag;
+import org.monte.media.av.Format;
+import org.monte.media.av.FormatKeys.MediaType;
+import org.monte.media.image.BufferedImageWithColorModel;
+import org.monte.media.io.SeekableByteArrayOutputStream;
+
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
@@ -15,19 +23,16 @@ import java.awt.image.IndexColorModel;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
-import org.monte.media.av.Buffer;
-import org.monte.media.av.BufferFlag;
+
 import static org.monte.media.av.BufferFlag.DISCARD;
 import static org.monte.media.av.BufferFlag.KEYFRAME;
 import static org.monte.media.av.BufferFlag.SAME_DATA;
-import org.monte.media.av.Format;
 import static org.monte.media.av.FormatKeys.EncodingKey;
 import static org.monte.media.av.FormatKeys.FrameRateKey;
 import static org.monte.media.av.FormatKeys.KeyFrameIntervalKey;
 import static org.monte.media.av.FormatKeys.MIME_AVI;
 import static org.monte.media.av.FormatKeys.MIME_JAVA;
 import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
-import org.monte.media.av.FormatKeys.MediaType;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.FormatKeys.MimeTypeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE;
@@ -39,8 +44,6 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_I
 import static org.monte.media.av.codec.video.VideoFormatKeys.FixedFrameRateKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
-import org.monte.media.image.BufferedImageWithColorModel;
-import org.monte.media.io.SeekableByteArrayOutputStream;
 
 /**
  * {@code TechSmithCodec} (tscc) encodes a BufferedImage as a byte[] array.
@@ -53,11 +56,11 @@ import org.monte.media.io.SeekableByteArrayOutputStream;
  * This codec does not encode the color palette of an image. This must be done
  * separately.
  * <p>
- * Supported input formats: 
+ * Supported input formats:
  * <ul><li> {@code Format} with
  * {@code BufferedImage.class}, any width, any height, depth=8,16 or 24.</li>
  * </ul>
- * Supported output formats: 
+ * Supported output formats:
  * <ul><li> {@code Format} with {@code byte[].class}, same
  * width and height as input format, depth=8,16 or 24. </li>
  * </ul>
@@ -104,11 +107,10 @@ import org.monte.media.io.SeekableByteArrayOutputStream;
  * 09 1E                   1E 1E 1E 1E 1E 1E 1E 1E 1E
  * 00 01                   End of RLE bitmap
  * </pre>
- *
+ * <p>
  * References:<br> <a
  * href="http://wiki.multimedia.cx/index.php?title=TechSmith_Screen_Capture_Codec"
  * >http://wiki.multimedia.cx/index.php?title=TechSmith_Screen_Capture_Codec</a><br>
- *
  *
  * @author Werner Randelshofer
  * @version $Id$
@@ -118,77 +120,77 @@ public class TechSmithCodec extends AbstractVideoCodec {
     private TechSmithCodecCore state;
     private Object previousPixels;
     private int frameCounter;
-    private Object oldPixels;
+    private ColorModel previousColorModel;
     private Object newPixels;
 
     public TechSmithCodec() {
         super(new Format[]{
-            new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
-            EncodingKey, ENCODING_BUFFERED_IMAGE, FixedFrameRateKey, true), //
-            new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-            EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
-            CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE,
-            DataClassKey, byte[].class,
-            FixedFrameRateKey, true, DepthKey, 8), //
-            new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-            EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
-            CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE,
-            DataClassKey, byte[].class,
-            FixedFrameRateKey, true, DepthKey, 16), //
-            new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-            EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
-            CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE,
-            DataClassKey, byte[].class,
-            FixedFrameRateKey, true, DepthKey, 24), //
-            new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
-            EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
-            CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE,
-            DataClassKey, byte[].class,
-            FixedFrameRateKey, true, DepthKey, 8), //
-            new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
-            EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
-            CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE,
-            DataClassKey, byte[].class,
-            FixedFrameRateKey, true, DepthKey, 16), //
-            new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
-            EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
-            CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE,
-            DataClassKey, byte[].class,
-            FixedFrameRateKey, true, DepthKey, 24), //
-        },
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
+                                EncodingKey, ENCODING_BUFFERED_IMAGE, FixedFrameRateKey, true), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+                                EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
+                                CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE,
+                                DataClassKey, byte[].class,
+                                FixedFrameRateKey, true, DepthKey, 8), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+                                EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
+                                CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE,
+                                DataClassKey, byte[].class,
+                                FixedFrameRateKey, true, DepthKey, 16), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+                                EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
+                                CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE,
+                                DataClassKey, byte[].class,
+                                FixedFrameRateKey, true, DepthKey, 24), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                                EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
+                                CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE,
+                                DataClassKey, byte[].class,
+                                FixedFrameRateKey, true, DepthKey, 8), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                                EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
+                                CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE,
+                                DataClassKey, byte[].class,
+                                FixedFrameRateKey, true, DepthKey, 16), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                                EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
+                                CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE,
+                                DataClassKey, byte[].class,
+                                FixedFrameRateKey, true, DepthKey, 24), //
+                },
                 new Format[]{
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
-                            EncodingKey, ENCODING_BUFFERED_IMAGE, FixedFrameRateKey, true), //
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-                            EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
-                            CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE,
-                            DataClassKey, byte[].class,
-                            FixedFrameRateKey, true, DepthKey, 8), //
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-                            EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
-                            CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE,
-                            DataClassKey, byte[].class,
-                            FixedFrameRateKey, true, DepthKey, 16), //
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-                            EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
-                            CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE,
-                            DataClassKey, byte[].class,
-                            FixedFrameRateKey, true, DepthKey, 24), //
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                            EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
-                            CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE,
-                            DataClassKey, byte[].class,
-                            FixedFrameRateKey, true, DepthKey, 8), //
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                            EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
-                            CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE,
-                            DataClassKey, byte[].class,
-                            FixedFrameRateKey, true, DepthKey, 16), //
-                    new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                            EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
-                            CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE,
-                            DataClassKey, byte[].class,
-                            FixedFrameRateKey, true, DepthKey, 24), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
+                                EncodingKey, ENCODING_BUFFERED_IMAGE, FixedFrameRateKey, true), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+                                EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
+                                CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE,
+                                DataClassKey, byte[].class,
+                                FixedFrameRateKey, true, DepthKey, 8), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+                                EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
+                                CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE,
+                                DataClassKey, byte[].class,
+                                FixedFrameRateKey, true, DepthKey, 16), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+                                EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
+                                CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE,
+                                DataClassKey, byte[].class,
+                                FixedFrameRateKey, true, DepthKey, 24), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                                EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
+                                CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE,
+                                DataClassKey, byte[].class,
+                                FixedFrameRateKey, true, DepthKey, 8), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                                EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
+                                CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE,
+                                DataClassKey, byte[].class,
+                                FixedFrameRateKey, true, DepthKey, 16), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                                EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
+                                CompressorNameKey, COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE,
+                                DataClassKey, byte[].class,
+                                FixedFrameRateKey, true, DepthKey, 24), //
                 });
         name = "TechSmith Screen Capture";
     }
@@ -276,73 +278,55 @@ public class TechSmithCodec extends AbstractVideoCodec {
             img = (BufferedImageWithColorModel) out.data;
         }
         switch (outputDepth) {
-            case 8: {
-                int imgType = BufferedImage.TYPE_BYTE_INDEXED; // FIXME - Don't hardcode this value
-                if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
-                    int[] cmap = new int[256];
-                    IndexColorModel icm = new IndexColorModel(8, 256, cmap, 0, false, -1, DataBuffer.TYPE_BYTE);
-                    img = new BufferedImageWithColorModel(width, height, imgType, icm);
-                } else {
-                    BufferedImageWithColorModel oldImg = img;
-                    img = new BufferedImageWithColorModel(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
-                }
-                int[] cmap = new int[256];//state.getPalette();
-                for (int i = 0; i < 256; i++) {
-                    cmap[i] = 255 << 24 | i | i << 8 | i << 16;
-                }
+        case 8: {
+            int imgType = BufferedImage.TYPE_BYTE_INDEXED;
+            if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
+                int[] cmap = new int[256];
                 IndexColorModel icm = new IndexColorModel(8, 256, cmap, 0, false, -1, DataBuffer.TYPE_BYTE);
-                img.setColorModel(icm);
-                byte[] pixels = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
-                System.arraycopy((byte[]) newPixels, 0, pixels, 0, width * height);
+                img = new BufferedImageWithColorModel(width, height, imgType, icm);
+            } else {
+                BufferedImageWithColorModel oldImg = img;
+                img = new BufferedImageWithColorModel(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
             }
-            break;
-            case 15: {
-                int imgType = BufferedImage.TYPE_USHORT_555_RGB;
-                if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
-                    DirectColorModel cm = new DirectColorModel(15, 0x1f << 10, 0x1f << 5, 0x1f << 0);
-                    img = new BufferedImageWithColorModel(cm, Raster.createWritableRaster(cm.createCompatibleSampleModel(width, height), new Point(0, 0)), false);
-                } else {
-                    BufferedImageWithColorModel oldImg = img;
-                    img = new BufferedImageWithColorModel(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
-                }
-                short[] pixels = ((DataBufferUShort) img.getRaster().getDataBuffer()).getData();
-                System.arraycopy((short[]) newPixels, 0, pixels, 0, width * height);
+            int[] cmap = new int[256];//state.getPalette();
+            for (int i = 0; i < 256; i++) {
+                cmap[i] = 255 << 24 | i | i << 8 | i << 16;
             }
-            break;
-            case 16: {
-                //int imgType = BufferedImage.TYPE_USHORT_565_RGB;
-                int imgType = BufferedImage.TYPE_INT_RGB;
-                if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
-                    //DirectColorModel cm = new DirectColorModel(24, 0x1f << 11, 0x3f << 5, 0x1f << 0);
-                    DirectColorModel cm = new DirectColorModel(24, 0xff << 16, 0xff << 8, 0xff << 0);
-                    img = new BufferedImageWithColorModel(cm, Raster.createWritableRaster(cm.createCompatibleSampleModel(width, height), new Point(0, 0)), false);
-                } else {
-                    BufferedImageWithColorModel oldImg = img;
-                    img = new BufferedImageWithColorModel(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
-                }
-                /*
-                 short[] pixels = ((DataBufferUShort) img.getRaster().getDataBuffer()).getData();
-                 System.arraycopy((short[]) newPixels, 0, pixels, 0, width * height);
-                 */
-                int[] pixels = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
-                System.arraycopy((int[]) newPixels, 0, pixels, 0, width * height);
+            IndexColorModel icm = new IndexColorModel(8, 256, cmap, 0, false, -1, DataBuffer.TYPE_BYTE);
+            img.setColorModel(icm);
+            byte[] pixels = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
+            System.arraycopy((byte[]) newPixels, 0, pixels, 0, width * height);
+        }
+        break;
+        case 15: {
+            int imgType = BufferedImage.TYPE_USHORT_555_RGB;
+            if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
+                DirectColorModel cm = new DirectColorModel(15, 0x1f << 10, 0x1f << 5, 0x1f);
+                img = new BufferedImageWithColorModel(cm, Raster.createWritableRaster(cm.createCompatibleSampleModel(width, height), new Point(0, 0)), false);
+            } else {
+                BufferedImageWithColorModel oldImg = img;
+                img = new BufferedImageWithColorModel(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
             }
-            break;
-            case 24: {
-                int imgType = BufferedImage.TYPE_INT_RGB;
-                if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
-                    DirectColorModel cm = new DirectColorModel(24, 0xff << 16, 0xff << 8, 0xff << 0);
-                    img = new BufferedImageWithColorModel(cm, Raster.createWritableRaster(cm.createCompatibleSampleModel(width, height), new Point(0, 0)), false);
-                } else {
-                    BufferedImageWithColorModel oldImg = img;
-                    img = new BufferedImageWithColorModel(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
-                }
-                int[] pixels = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
-                System.arraycopy((int[]) newPixels, 0, pixels, 0, width * height);
+            short[] pixels = ((DataBufferUShort) img.getRaster().getDataBuffer()).getData();
+            System.arraycopy((short[]) newPixels, 0, pixels, 0, width * height);
+        }
+        break;
+        case 16:
+        case 24: {
+            int imgType = BufferedImage.TYPE_INT_RGB;
+            if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
+                DirectColorModel cm = new DirectColorModel(24, 0xff << 16, 0xff << 8, 0xff);
+                img = new BufferedImageWithColorModel(cm, Raster.createWritableRaster(cm.createCompatibleSampleModel(width, height), new Point(0, 0)), false);
+            } else {
+                BufferedImageWithColorModel oldImg = img;
+                img = new BufferedImageWithColorModel(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
             }
-            break;
-            default:
-                throw new UnsupportedOperationException("Unsupported depth:" + outputDepth);
+            int[] pixels = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
+            System.arraycopy((int[]) newPixels, 0, pixels, 0, width * height);
+        }
+        break;
+        default:
+            throw new UnsupportedOperationException("Unsupported depth:" + outputDepth);
         }
 
         out.setFlag(KEYFRAME, isKeyFrame);
@@ -367,7 +351,7 @@ public class TechSmithCodec extends AbstractVideoCodec {
 
         Integer keyFrameInterval = outputFormat.get(KeyFrameIntervalKey, outputFormat.get(FrameRateKey).intValue());
         boolean isKeyframe = frameCounter == 0
-                || keyFrameInterval==0
+                || keyFrameInterval == 0
                 || frameCounter % keyFrameInterval == 0;
         out.setFlag(KEYFRAME, isKeyframe);
         out.clearFlag(SAME_DATA);
@@ -393,82 +377,88 @@ public class TechSmithCodec extends AbstractVideoCodec {
 
         try {
             switch (outputFormat.get(DepthKey)) {
-                case 8: {
-                    byte[] pixels = getIndexed8(in);
-                    if (pixels == null) {
-                        out.setFlag(DISCARD);
-                        return CODEC_OK;
-                    }
-
-                    if (isKeyframe) {
-                        state.encodeKey8(tmp, pixels, outputFormat.get(WidthKey), outputFormat.get(HeightKey), offset, scanlineStride);
-                    } else {
-                        if (in.isFlag(SAME_DATA)) {
-                            state.encodeSameDelta8(tmp, pixels, (byte[]) previousPixels, outputFormat.get(WidthKey), outputFormat.get(HeightKey), offset, scanlineStride);
-                        } else {
-                            state.encodeDelta8(tmp, pixels, (byte[]) previousPixels, outputFormat.get(WidthKey), outputFormat.get(HeightKey), offset, scanlineStride);
-                        }
-                        out.clearFlag(KEYFRAME);
-                    }
-                    if (previousPixels == null) {
-                        previousPixels = pixels.clone();
-                    } else {
-                        System.arraycopy(pixels, 0, (byte[]) previousPixels, 0, pixels.length);
-                    }
-                    break;
-                }
-                case 16: {
-                    short[] pixels = getRGB15(in); // 16-bit TSCC is actually just 15-bit
-                    if (pixels == null) {
-                        out.setFlag(DISCARD);
-                        return CODEC_OK;
-                    }
-
-                    if (isKeyframe) {
-                        state.encodeKey16(tmp, pixels, outputFormat.get(WidthKey), outputFormat.get(HeightKey), offset, scanlineStride);
-                    } else {
-                        if (in.isFlag(SAME_DATA)) {
-                            state.encodeSameDelta16(tmp, pixels, (short[]) previousPixels, outputFormat.get(WidthKey), outputFormat.get(HeightKey), offset, scanlineStride);
-                        } else {
-                            state.encodeDelta16(tmp, pixels, (short[]) previousPixels, outputFormat.get(WidthKey), outputFormat.get(HeightKey), offset, scanlineStride);
-                        }
-                    }
-                    if (previousPixels == null) {
-                        previousPixels = pixels.clone();
-                    } else {
-                        System.arraycopy(pixels, 0, (short[]) previousPixels, 0, pixels.length);
-                    }
-                    break;
-                }
-                case 24: {
-                    int[] pixels = getRGB24(in);
-                    if (pixels == null) {
-                        out.setFlag(DISCARD);
-                        return CODEC_OK;
-                    }
-
-                    if (isKeyframe) {
-                        state.encodeKey24(tmp, pixels, outputFormat.get(WidthKey), outputFormat.get(HeightKey), offset, scanlineStride);
-                        out.setFlag(KEYFRAME);
-                    } else {
-                        if (in.isFlag(SAME_DATA)) {
-                            state.encodeSameDelta24(tmp, pixels, (int[]) previousPixels, outputFormat.get(WidthKey), outputFormat.get(HeightKey), offset, scanlineStride);
-                        } else {
-                            state.encodeDelta24(tmp, pixels, (int[]) previousPixels, outputFormat.get(WidthKey), outputFormat.get(HeightKey), offset, scanlineStride);
-                        }
-                        out.clearFlag(KEYFRAME);
-                    }
-                    if (previousPixels == null) {
-                        previousPixels = pixels.clone();
-                    } else {
-                        System.arraycopy(pixels, 0, (int[]) previousPixels, 0, pixels.length);
-                    }
-                    break;
-                }
-                default: {
+            case 8: {
+                byte[] pixels = getIndexed8(in);
+                if (pixels == null) {
                     out.setFlag(DISCARD);
                     return CODEC_FAILED;
                 }
+
+                ColorModel newColorModel = getColorModel(in);
+                if (previousColorModel ==null||!previousColorModel.equals(newColorModel)){
+                    out.header=newColorModel;
+                    previousColorModel=newColorModel;
+                }
+
+                if (isKeyframe) {
+                    state.encodeKey8(tmp, pixels, outputFormat.get(WidthKey), outputFormat.get(HeightKey), offset, scanlineStride);
+                } else {
+                    if (in.isFlag(SAME_DATA)) {
+                        state.encodeSameDelta8(tmp, pixels, (byte[]) previousPixels, outputFormat.get(WidthKey), outputFormat.get(HeightKey), offset, scanlineStride);
+                    } else {
+                        state.encodeDelta8(tmp, pixels, (byte[]) previousPixels, outputFormat.get(WidthKey), outputFormat.get(HeightKey), offset, scanlineStride);
+                    }
+                    out.clearFlag(KEYFRAME);
+                }
+                if (previousPixels == null) {
+                    previousPixels = pixels.clone();
+                } else {
+                    System.arraycopy(pixels, 0, (byte[]) previousPixels, 0, pixels.length);
+                }
+                break;
+            }
+            case 16: {
+                short[] pixels = getRGB15(in); // 16-bit TSCC is actually just 15-bit
+                if (pixels == null) {
+                    out.setFlag(DISCARD);
+                    return CODEC_FAILED;
+                }
+
+                if (isKeyframe) {
+                    state.encodeKey16(tmp, pixels, outputFormat.get(WidthKey), outputFormat.get(HeightKey), offset, scanlineStride);
+                } else {
+                    if (in.isFlag(SAME_DATA)) {
+                        state.encodeSameDelta16(tmp, pixels, (short[]) previousPixels, outputFormat.get(WidthKey), outputFormat.get(HeightKey), offset, scanlineStride);
+                    } else {
+                        state.encodeDelta16(tmp, pixels, (short[]) previousPixels, outputFormat.get(WidthKey), outputFormat.get(HeightKey), offset, scanlineStride);
+                    }
+                }
+                if (previousPixels == null) {
+                    previousPixels = pixels.clone();
+                } else {
+                    System.arraycopy(pixels, 0, (short[]) previousPixels, 0, pixels.length);
+                }
+                break;
+            }
+            case 24: {
+                int[] pixels = getRGB24(in);
+                if (pixels == null) {
+                    out.setFlag(DISCARD);
+                    return CODEC_FAILED;
+                }
+
+                if (isKeyframe) {
+                    state.encodeKey24(tmp, pixels, outputFormat.get(WidthKey), outputFormat.get(HeightKey), offset, scanlineStride);
+                    out.setFlag(KEYFRAME);
+                } else {
+                    if (in.isFlag(SAME_DATA)) {
+                        state.encodeSameDelta24(tmp, pixels, (int[]) previousPixels, outputFormat.get(WidthKey), outputFormat.get(HeightKey), offset, scanlineStride);
+                    } else {
+                        state.encodeDelta24(tmp, pixels, (int[]) previousPixels, outputFormat.get(WidthKey), outputFormat.get(HeightKey), offset, scanlineStride);
+                    }
+                    out.clearFlag(KEYFRAME);
+                }
+                if (previousPixels == null) {
+                    previousPixels = pixels.clone();
+                } else {
+                    System.arraycopy(pixels, 0, (int[]) previousPixels, 0, pixels.length);
+                }
+                break;
+            }
+            default: {
+                out.setFlag(DISCARD);
+                return CODEC_FAILED;
+            }
             }
 
             out.format = outputFormat;

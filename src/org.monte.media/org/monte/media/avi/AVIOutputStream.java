@@ -3,22 +3,47 @@
  */
 package org.monte.media.avi;
 
-import java.awt.image.ColorModel;
-import org.monte.media.riff.RIFFChunk;
-import org.monte.media.math.Rational;
-import java.util.ArrayList;
 import org.monte.media.av.Format;
-import org.monte.media.riff.RIFFParser;
-import java.awt.Dimension;
-import java.awt.image.IndexColorModel;
-import java.io.*;
-import java.nio.ByteOrder;
-import javax.imageio.stream.*;
-import static java.lang.Math.*;
-import static org.monte.media.av.FormatKeys.*;
-import static org.monte.media.av.codec.audio.AudioFormatKeys.*;
-import static org.monte.media.av.codec.video.VideoFormatKeys.*;
 import org.monte.media.io.IOStreams;
+import org.monte.media.math.Rational;
+import org.monte.media.riff.RIFFChunk;
+import org.monte.media.riff.RIFFParser;
+
+import javax.imageio.stream.FileImageOutputStream;
+import javax.imageio.stream.ImageOutputStream;
+import java.awt.Dimension;
+import java.awt.image.ColorModel;
+import java.awt.image.IndexColorModel;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteOrder;
+import java.util.ArrayList;
+
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static org.monte.media.av.FormatKeys.EncodingKey;
+import static org.monte.media.av.FormatKeys.FrameRateKey;
+import static org.monte.media.av.FormatKeys.KeyFrameIntervalKey;
+import static org.monte.media.av.FormatKeys.MIME_AVI;
+import static org.monte.media.av.FormatKeys.MediaType;
+import static org.monte.media.av.FormatKeys.MediaTypeKey;
+import static org.monte.media.av.FormatKeys.MimeTypeKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ByteOrderKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ChannelsKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.FrameSizeKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleRateKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleSizeInBitsKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_DIB;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_RLE4;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_RLE8;
+import static org.monte.media.av.codec.video.VideoFormatKeys.FixedFrameRateKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
 /**
  * Provides low-level support for writing already encoded audio and video
@@ -45,6 +70,7 @@ public class AVIOutputStream extends AbstractAVIStream {
 
         STARTED, FINISHED, CLOSED;
     }
+
     /**
      * The current state of the movie output stream.
      */
@@ -91,35 +117,33 @@ public class AVIOutputStream extends AbstractAVIStream {
     /**
      * Adds a video track.
      *
-     * @param fccHandler The 4-character code of the format.
-     * @param scale The numerator of the sample rate.
-     * @param rate The denominator of the sample rate.
-     * @param width The width of a video image. Must be greater than 0.
-     * @param height The height of a video image. Must be greater than 0.
-     * @param depth The number of bits per pixel. Must be greater than 0.
+     * @param fccHandler   The 4-character code of the format.
+     * @param scale        The numerator of the sample rate.
+     * @param rate         The denominator of the sample rate.
+     * @param width        The width of a video image. Must be greater than 0.
+     * @param height       The height of a video image. Must be greater than 0.
+     * @param depth        The number of bits per pixel. Must be greater than 0.
      * @param syncInterval Interval for sync-samples. 0=automatic. 1=all frames
-     * are keyframes. Values larger than 1 specify that for every n-th frame is
-     * a keyframe.
-     *
+     *                     are keyframes. Values larger than 1 specify that for every n-th frame is
+     *                     a keyframe.
      * @return Returns the track index.
-     *
      * @throws IllegalArgumentException if the width or the height is smaller
-     * than 1.
+     *                                  than 1.
      */
     public int addVideoTrack(String fccHandler, long scale, long rate, int width, int height, int depth, int syncInterval) throws IOException {
         ensureFinished();
         if (fccHandler == null || fccHandler.length() != 4) {
-            throw new IllegalArgumentException("fccHandler must be 4 characters long. length="+fccHandler.length()+":" + fccHandler);
+            throw new IllegalArgumentException("fccHandler must be 4 characters long. length=" + fccHandler.length() + ":" + fccHandler);
         }
         VideoTrack vt = new VideoTrack(tracks.size(), typeToInt(fccHandler),//
                 new Format(MediaTypeKey, MediaType.VIDEO,
-                MimeTypeKey, MIME_AVI,
-                EncodingKey, fccHandler,
-                DataClassKey, byte[].class,
-                WidthKey, width, HeightKey, height, DepthKey, depth,
-                FixedFrameRateKey, true,
-                FrameRateKey, new Rational(rate, scale),
-                KeyFrameIntervalKey, syncInterval));
+                        MimeTypeKey, MIME_AVI,
+                        EncodingKey, fccHandler,
+                        DataClassKey, byte[].class,
+                        WidthKey, width, HeightKey, height, DepthKey, depth,
+                        FixedFrameRateKey, true,
+                        FrameRateKey, new Rational(rate, scale),
+                        KeyFrameIntervalKey, syncInterval));
         vt.scale = scale;
         vt.rate = rate;
         vt.syncInterval = syncInterval;
@@ -143,6 +167,7 @@ public class AVIOutputStream extends AbstractAVIStream {
             }
             vt.palette = new IndexColorModel(8, 256, gray, gray, gray);
         }
+        vt.previousPalette=vt.palette;
 
         tracks.add(vt);
         return tracks.size() - 1;
@@ -151,31 +176,30 @@ public class AVIOutputStream extends AbstractAVIStream {
     /**
      * Adds an audio track.
      *
-     * @param waveFormatTag The format of the audio stream given in MMREG.H, for
-     * example 0x0001 for WAVE_FORMAT_PCM.
-     * @param scale The numerator of the sample rate.
-     * @param rate The denominator of the sample rate.
+     * @param waveFormatTag    The format of the audio stream given in MMREG.H, for
+     *                         example 0x0001 for WAVE_FORMAT_PCM.
+     * @param scale            The numerator of the sample rate.
+     * @param rate             The denominator of the sample rate.
      * @param numberOfChannels The number of channels: 1 for mono, 2 for stereo.
      * @param sampleSizeInBits The number of bits in a sample: 8 or 16.
-     * @param isCompressed Whether the sound is compressed.
-     * @param frameDuration The frame duration, expressed in the media’s
-     * timescale, where the timescale is equal to the sample rate. For
-     * uncompressed formats, this field is always 1.
-     * @param frameSize For uncompressed audio, the number of bytes in a sample
-     * for a single channel (sampleSize divided by 8). For compressed audio, the
-     * number of bytes in a frame.
-     *
-     * @throws IllegalArgumentException if the format is not 4 characters long,
-     * if the time scale is not between 1 and 2^32, if the integer portion of
-     * the sampleRate is not equal to the scale, if numberOfChannels is not 1 or
-     * 2.
+     * @param isCompressed     Whether the sound is compressed.
+     * @param frameDuration    The frame duration, expressed in the media’s
+     *                         timescale, where the timescale is equal to the sample rate. For
+     *                         uncompressed formats, this field is always 1.
+     * @param frameSize        For uncompressed audio, the number of bytes in a sample
+     *                         for a single channel (sampleSize divided by 8). For compressed audio, the
+     *                         number of bytes in a frame.
      * @return Returns the track index.
+     * @throws IllegalArgumentException if the format is not 4 characters long,
+     *                                  if the time scale is not between 1 and 2^32, if the integer portion of
+     *                                  the sampleRate is not equal to the scale, if numberOfChannels is not 1 or
+     *                                  2.
      */
     public int addAudioTrack(int waveFormatTag, //
-            long scale, long rate, //
-            int numberOfChannels, int sampleSizeInBits, //
-            boolean isCompressed, //
-            int frameDuration, int frameSize) throws IOException {
+                             long scale, long rate, //
+                             int numberOfChannels, int sampleSizeInBits, //
+                             boolean isCompressed, //
+                             int frameDuration, int frameSize) throws IOException {
         ensureFinished();
 
         if (scale < 1 || scale > (2L << 32)) {
@@ -220,7 +244,9 @@ public class AVIOutputStream extends AbstractAVIStream {
      */
     public void setPalette(int track, ColorModel palette) {
         if (palette instanceof IndexColorModel) {
-            ((VideoTrack) tracks.get(track)).palette = (IndexColorModel) palette;
+            VideoTrack vtr = (VideoTrack) tracks.get(track);
+            vtr.palette = (IndexColorModel) palette;
+            vtr.previousPalette=vtr.palette;
         }
     }
 
@@ -245,7 +271,7 @@ public class AVIOutputStream extends AbstractAVIStream {
      *
      * @param track
      * @param fourcc
-     * @param data the extra header as a byte array
+     * @param data   the extra header as a byte array
      * @throws IOException
      */
     public void putExtraHeader(int track, String fourcc, byte[] data) throws IOException {
@@ -300,7 +326,7 @@ public class AVIOutputStream extends AbstractAVIStream {
      */
     public void setCompressionQuality(int track, float newValue) {
         Track t = tracks.get(track);
-        t.quality = (int) (max(min(newValue,1.0f),0.0f)*10000);
+        t.quality = (int) (max(min(newValue, 1.0f), 0.0f) * 10000);
     }
 
     /**
@@ -310,8 +336,10 @@ public class AVIOutputStream extends AbstractAVIStream {
      */
     public float getCompressionQuality(int track) {
         Track t = tracks.get(track);
-        return (max(min(t.quality==-1?9700:t.quality,0),10000)/10000f);
-    }    /**
+        return (max(min(t.quality == -1 ? 9700 : t.quality, 0), 10000) / 10000f);
+    }
+
+    /**
      * Sets the state of the QuickTimeOutpuStream to started. <p> If the state
      * is changed by this method, the prolog is written.
      */
@@ -376,9 +404,8 @@ public class AVIOutputStream extends AbstractAVIStream {
      * before you call finish() or close().
      *
      * @param file The file which holds the sample data.
-     *
      * @throws IllegalStateException if the duration is less than 1.
-     * @throws IOException if writing the sample data failed.
+     * @throws IOException           if writing the sample data failed.
      */
     public void writeSample(int track, File file, boolean isKeyframe) throws IOException {
         FileInputStream in = null;
@@ -400,12 +427,11 @@ public class AVIOutputStream extends AbstractAVIStream {
      * from input streams, then you have to explicitly set the dimension of the
      * video track before you call finish() or close().
      *
-     * @param track The track number.
-     * @param in The input stream which holds the sample data.
+     * @param track      The track number.
+     * @param in         The input stream which holds the sample data.
      * @param isKeyframe True if the sample is a key frame.
-     *
      * @throws IllegalArgumentException if the duration is less than 1.
-     * @throws IOException if writing the sample data failed.
+     * @throws IOException              if writing the sample data failed.
      */
     public void writeSample(int track, InputStream in, boolean isKeyframe) throws IOException {
         ensureStarted();
@@ -455,14 +481,13 @@ public class AVIOutputStream extends AbstractAVIStream {
      * preceeded by a palette change chunk. If a key frame is not preceeded by a
      * palette change chunk, it will be downgraded to a delta frame.
      *
-     * @param track The track index.
-     * @param data The encoded sample data.
-     * @param off The startTime offset in the data.
-     * @param len The number of bytes to write.
+     * @param track      The track index.
+     * @param data       The encoded sample data.
+     * @param off        The startTime offset in the data.
+     * @param len        The number of bytes to write.
      * @param isKeyframe Whether the sample is a sync sample (keyframe).
-     *
      * @throws IllegalArgumentException if the duration is less than 1.
-     * @throws IOException if writing the sample data failed.
+     * @throws IOException              if writing the sample data failed.
      */
     public void writeSample(int track, byte[] data, int off, int len, boolean isKeyframe) throws IOException {
         ensureStarted();
@@ -470,13 +495,13 @@ public class AVIOutputStream extends AbstractAVIStream {
 
         // The first sample in a track is always a key frame
         if (!isKeyframe && tr.samples.isEmpty()) {
-            throw new IllegalStateException("The first sample in a track must be a keyframe.\nTrack="+track+", "+tr.format);
+            throw new IllegalStateException("The first sample in a track must be a keyframe.\nTrack=" + track + ", " + tr.format);
         }
 
         // If a stream has palette changes, then only palette change samples can
         // be marked as keyframe.
         if (isKeyframe && 0 != (tr.flags & STRH_FLAG_VIDEO_PALETTE_CHANGES)) {
-            throw new IllegalStateException("Only palette changes can be marked as keyframe.\nTrack="+track+", "+tr.format);
+            throw new IllegalStateException("Only palette changes can be marked as keyframe.\nTrack=" + track + ", " + tr.format);
         }
 
         DataChunk dc = new DataChunk(tr.getSampleChunkFourCC(isKeyframe), len);
@@ -499,17 +524,16 @@ public class AVIOutputStream extends AbstractAVIStream {
      * <p> This method does not inspect the contents of the data. The contents
      * has to match the format and dimensions of the media in this track.
      *
-     * @param track The track index.
+     * @param track       The track index.
      * @param sampleCount The number of samples.
-     * @param data The encoded sample data.
-     * @param off The startTime offset in the data.
-     * @param len The number of bytes to write. Must be dividable by
-     * sampleCount.
-     * @param isKeyframe Whether the samples are sync samples. All samples must
-     * either be sync samples or non-sync samples.
-     *
+     * @param data        The encoded sample data.
+     * @param off         The startTime offset in the data.
+     * @param len         The number of bytes to write. Must be dividable by
+     *                    sampleCount.
+     * @param isKeyframe  Whether the samples are sync samples. All samples must
+     *                    either be sync samples or non-sync samples.
      * @throws IllegalArgumentException if the duration is less than 1.
-     * @throws IOException if writing the sample data failed.
+     * @throws IOException              if writing the sample data failed.
      */
     public void writeSamples(int track, int sampleCount, byte[] data, int off, int len, boolean isKeyframe) throws IOException {
         ensureStarted();
@@ -539,12 +563,13 @@ public class AVIOutputStream extends AbstractAVIStream {
 
     /**
      * Returns the duration of the track in media time scale units.
+     *
      * @param track track number
      * @return duration in time scale units
      */
     public long getMediaDuration(int track) {
         Track tr = tracks.get(track);
-        
+
         long duration = tr.startTime;
         if (!tr.samples.isEmpty()) {
             Sample s = tr.samples.get(tr.samples.size() - 1);
@@ -556,7 +581,7 @@ public class AVIOutputStream extends AbstractAVIStream {
     /**
      * Closes the stream.
      *
-     * @exception IOException if an I/O error has occurred
+     * @throws IOException if an I/O error has occurred
      */
     public void close() throws IOException {
         if (state == States.STARTED) {
@@ -573,9 +598,9 @@ public class AVIOutputStream extends AbstractAVIStream {
      * the underlying stream. Use this method when applying multiple filters in
      * succession to the same output stream.
      *
-     * @exception IllegalStateException if the dimension of the video track has
-     * not been specified or determined yet.
-     * @exception IOException if an I/O exception has occurred
+     * @throws IllegalStateException if the dimension of the video track has
+     *                               not been specified or determined yet.
+     * @throws IOException           if an I/O exception has occurred
      */
     public void finish() throws IOException {
         ensureOpen();
@@ -782,7 +807,6 @@ public class AVIOutputStream extends AbstractAVIStream {
             }
 
 
-
             // FIXME compute dwMicroSecPerFrame properly!
             Track tt = tracks.get(0);
 
@@ -790,7 +814,7 @@ public class AVIOutputStream extends AbstractAVIStream {
             // Specifies the number of microseconds between frames.
             // This value indicates the overall timing for the file.
 
-            d.writeInt((int)largestBufferSize); // dwMaxBytesPerSec
+            d.writeInt((int) largestBufferSize); // dwMaxBytesPerSec
             // Specifies the approximate maximum data rate of the file.
             // This value indicates the number of bytes per second the system
             // must handle to present an AVI sequence as specified by the other
@@ -800,7 +824,7 @@ public class AVIOutputStream extends AbstractAVIStream {
             // Specifies the alignment for data, in bytes. Pad the data to multiples
             // of this value.
 
-            d.writeInt(0x10|0x100|0x800); // flags 
+            d.writeInt(0x10 | 0x100 | 0x800); // flags
             // Contains a bitwise combination of zero or more of the following
             // flags:
             //
@@ -1020,7 +1044,7 @@ public class AVIOutputStream extends AbstractAVIStream {
                 String enc = vf.get(EncodingKey);
                 if (enc.equals(ENCODING_AVI_DIB)) {
                     d.writeInt(0); // compression - BI_RGB for uncompressed RGB
-                } else if (enc.equals(ENCODING_AVI_RLE4)||enc.equals(ENCODING_AVI_RLE8)) {
+                } else if (enc.equals(ENCODING_AVI_RLE4) || enc.equals(ENCODING_AVI_RLE8)) {
                     if (vf.get(DepthKey) == 8) {
                         d.writeInt(1); // compression - BI_RLE8
                     } else if (vf.get(DepthKey) == 4) {
@@ -1029,9 +1053,9 @@ public class AVIOutputStream extends AbstractAVIStream {
                         throw new UnsupportedOperationException("RLE only supports 4-bit and 8-bit images");
                     }
                 } else {
-            d.setByteOrder(ByteOrder.BIG_ENDIAN);
+                    d.setByteOrder(ByteOrder.BIG_ENDIAN);
                     d.writeInt(typeToInt(vt.format.get(EncodingKey))); // compression
-            d.setByteOrder(ByteOrder.LITTLE_ENDIAN);
+                    d.setByteOrder(ByteOrder.LITTLE_ENDIAN);
                 }
 
                 if (enc.equals(ENCODING_AVI_DIB)) {

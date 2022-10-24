@@ -427,7 +427,8 @@ public class ScreenRecorder extends AbstractStateModel {
                 aviw.setPalette(videoTrack, Colors.createMacColors());
             } else if (w instanceof QuickTimeWriter) {
                 QuickTimeWriter qtw = (QuickTimeWriter) w;
-                qtw.setVideoColorTable(videoTrack, Colors.createMacColors());
+                // do not set palette due to a bug
+                //qtw.setVideoColorTable(videoTrack, Colors.createMacColors());
             }
         }
 
