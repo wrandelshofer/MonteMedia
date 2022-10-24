@@ -93,6 +93,20 @@ public class Colors {
         IndexColorModel icm = new IndexColorModel(8, 256, r, g, b);
         return icm;
     }
+    public static IndexColorModel createGrayColors() {
+        byte[] r = new byte[256];
+        byte[] g = new byte[256];
+        byte[] b = new byte[256];
+
+        // Generate color cube with 216 colors
+        for (int i = 0; i < 256; i++) {
+                    r[i] = (byte)i;
+                    g[i] = (byte)i;
+                    b[i] = (byte)i;
+        }
+        IndexColorModel icm = new IndexColorModel(8, 256, r, g, b);
+        return icm;
+    }
 
     private static void RGBtoYCC(float[] rgb, float[] ycc) {
         float R = rgb[0];

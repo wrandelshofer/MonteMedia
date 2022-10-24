@@ -3,9 +3,13 @@
  */
 package org.monte.demo.quicktimewriter;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.File;
@@ -25,6 +29,8 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.QualityKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
+
+import org.monte.media.color.Colors;
 import org.monte.media.math.Rational;
 import org.monte.media.quicktime.QuickTimeReader;
 import org.monte.media.quicktime.QuickTimeWriter;
@@ -82,7 +88,7 @@ public class Main {
         format = format.prepend(MediaTypeKey, MediaType.VIDEO, //
                 FrameRateKey, new Rational(30, 1),//
                 WidthKey, 320, //
-                HeightKey, 160);
+                HeightKey, 240);
 
         // Create a buffered image for this format
         BufferedImage img = createImage(format);
@@ -96,18 +102,12 @@ public class Main {
 
             // Add a track to the writer
             out.addTrack(format);
+            //out.setVideoColorTable(0, img.getColorModel());
 
-            out.setVideoColorTable(0, img.getColorModel());
-
-            // initialize the animation
-            Random rnd = new Random(0); // use seed 0 to get reproducable output
-            g.setBackground(Color.WHITE);
-            g.clearRect(0, 0, img.getWidth(), img.getHeight());
-
-            for (int i = 0; i < 100; i++) {
-                // Create an animation frame
-                g.setColor(new Color(rnd.nextInt()));
-                g.fillOval(rnd.nextInt(img.getWidth() - 30), rnd.nextInt(img.getHeight() - 30), 30, 30);
+            // Draw the animation
+                for (int i = 0, n = 200; i < n; i++) {
+                double t = (double) i / (n - 1);
+                drawAnimationFrame(img, g, t);
 
                 // write it to the writer
                 out.write(0, img, 1);
@@ -122,6 +122,37 @@ public class Main {
             // Dispose the graphics object
             g.dispose();
         }
+    }
+    private static void drawAnimationFrame(BufferedImage img, Graphics2D g, double t) {
+        int rhour = Math.min(img.getWidth(), img.getHeight()) / 6;
+        int rminute = Math.min(img.getWidth(), img.getHeight()) / 4;
+        int cx = img.getWidth() / 2;
+        int cy = img.getHeight() / 2;
+
+        double tminute = t;
+        double thour = tminute / 60.0;
+        Stroke sfine = new BasicStroke(1.0f);
+        Stroke shour = new BasicStroke(7.0f);
+        Stroke sminute = new BasicStroke(5.0f);
+        g.setBackground(Color.WHITE);
+        g.clearRect(0, 0, img.getWidth(), img.getHeight());
+
+        // draw color dot
+        g.setColor(Color.getHSBColor((float)t,0.8f,0.6f));
+        Ellipse2D ellipse=new Ellipse2D.Double(cx-10,cy+rhour-10,20,20);
+        g.fill(ellipse);
+
+        // draw clock hour hand
+        Line2D.Double lhour = new Line2D.Double(cx, cy, cx + Math.sin(thour * Math.PI * 2) * rhour, cy - Math.cos(thour * Math.PI * 2) * rhour);
+        g.setColor(Color.BLUE);
+        g.setStroke(shour);
+        g.draw(lhour);
+
+        // draw clock minute hand
+        g.setColor(Color.RED);
+        Line2D.Double lminute = new Line2D.Double(cx, cy, cx + Math.sin(tminute * Math.PI * 2) * rminute, cy - Math.cos(tminute * Math.PI * 2) * rminute);
+        g.setStroke(sminute);
+        g.draw(lminute);
     }
 
     private static void testReading(File file) throws IOException {
@@ -152,14 +183,13 @@ public class Main {
     }
 
     /**
-     * Creates a buffered image of the specified depth with a random color palette.
+     * Creates a buffered image of the specified format.
      */
     private static BufferedImage createImage(Format format) {
         int depth = format.get(DepthKey);
         int width = format.get(WidthKey);
         int height = format.get(HeightKey);
 
-        Random rnd = new Random(0); // use seed 0 to get reproducable output
         BufferedImage img;
         switch (depth) {
             case 24:
@@ -168,30 +198,7 @@ public class Main {
                 break;
             }
             case 8: {
-                byte[] red = new byte[256];
-                byte[] green = new byte[256];
-                byte[] blue = new byte[256];
-                for (int i = 0; i < 255; i++) {
-                    red[i] = (byte) rnd.nextInt(256);
-                    green[i] = (byte) rnd.nextInt(256);
-                    blue[i] = (byte) rnd.nextInt(256);
-                }
-                rnd.setSeed(0); // set back to 0 for reproducable output
-                IndexColorModel palette = new IndexColorModel(8, 256, red, green, blue);
-                img = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED, palette);
-                break;
-            }
-            case 4: {
-                byte[] red = new byte[16];
-                byte[] green = new byte[16];
-                byte[] blue = new byte[16];
-                for (int i = 0; i < 15; i++) {
-                    red[i] = (byte) rnd.nextInt(16);
-                    green[i] = (byte) rnd.nextInt(16);
-                    blue[i] = (byte) rnd.nextInt(16);
-                }
-                rnd.setSeed(0); // set back to 0 for reproducable output
-                IndexColorModel palette = new IndexColorModel(4, 16, red, green, blue);
+                IndexColorModel palette = Colors.createMacColors();
                 img = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED, palette);
                 break;
             }
