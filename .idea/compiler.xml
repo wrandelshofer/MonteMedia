@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="org.monte.demo.sift" />
+        <module name="org.monte.demo.jmftsccdemo" />
+        <module name="org.monte.demo.moviemaker" />
+        <module name="org.monte.demo.animmerger" />
+        <module name="org.monte.demo.mpoimagesplitter" />
+        <module name="org.monte.demo.movieconverter" />
+        <module name="org.monte.media.javafx" />
+        <module name="org.monte.demo.jmfavi" />
+        <module name="org.monte.demo.quicktimewriter" />
+        <module name="org.monte.media.jmf" />
+        <module name="org.monte.media.amigaatari" />
+        <module name="org.monte.demo.audiorecorder" />
+        <module name="org.monte.demo.aviwriter" />
+        <module name="org.monte.demo.cleartype" />
+        <module name="org.monte.media.swing" />
+        <module name="org.monte.demo.screenrecorder" />
+        <module name="org.monte.demo.imageioviewer" />
+        <module name="org.monte.demo.rationalnumber" />
+        <module name="org.monte.media.screenrecorder" />
+        <module name="org.monte.media.animconverter" />
+        <module name="org.monte.demo.io" />
+        <module name="org.monte.media" />
+        <module name="org.monte.demo.cmykimageviewer" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="org.monte.demo.jmjavi" target="17" />
+      <module name="org.monte.demo.jmjtsccdemo" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
