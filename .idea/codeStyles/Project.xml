@@ -1,29 +1,14 @@
 <component name="ProjectCodeStyleConfiguration">
   <code_scheme name="Project" version="173">
-    <option name="OTHER_INDENT_OPTIONS">
-      <value>
-        <option name="INDENT_SIZE" value="2" />
-        <option name="TAB_SIZE" value="2" />
-      </value>
-    </option>
     <JavaCodeStyleSettings>
       <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="999" />
       <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" value="999" />
-      <option name="PACKAGES_TO_USE_IMPORT_ON_DEMAND">
-        <value />
-      </option>
     </JavaCodeStyleSettings>
-    <ScalaCodeStyleSettings>
-      <option name="MULTILINE_STRING_CLOSING_QUOTES_ON_NEW_LINE" value="true" />
-    </ScalaCodeStyleSettings>
     <XML>
       <option name="XML_ATTRIBUTE_WRAP" value="0" />
-      <option name="XML_KEEP_LINE_BREAKS" value="false" />
+      <option name="XML_ALIGN_ATTRIBUTES" value="false" />
     </XML>
     <codeStyleSettings language="JAVA">
-      <option name="RIGHT_MARGIN" value="80" />
-      <option name="INDENT_CASE_FROM_SWITCH" value="false" />
-      <option name="IF_BRACE_FORCE" value="3" />
       <arrangement>
         <rules>
           <section>
@@ -36,6 +21,7 @@
                   <STATIC>true</STATIC>
                 </AND>
               </match>
+              <order>BY_NAME</order>
             </rule>
           </section>
           <section>
@@ -48,6 +34,7 @@
                   <STATIC>true</STATIC>
                 </AND>
               </match>
+              <order>BY_NAME</order>
             </rule>
           </section>
           <section>
@@ -60,6 +47,7 @@
                   <STATIC>true</STATIC>
                 </AND>
               </match>
+              <order>BY_NAME</order>
             </rule>
           </section>
           <section>
@@ -72,6 +60,7 @@
                   <STATIC>true</STATIC>
                 </AND>
               </match>
+              <order>BY_NAME</order>
             </rule>
           </section>
           <section>
@@ -83,6 +72,7 @@
                   <STATIC>true</STATIC>
                 </AND>
               </match>
+              <order>BY_NAME</order>
             </rule>
           </section>
           <section>
@@ -94,6 +84,7 @@
                   <STATIC>true</STATIC>
                 </AND>
               </match>
+              <order>BY_NAME</order>
             </rule>
           </section>
           <section>
@@ -105,6 +96,7 @@
                   <STATIC>true</STATIC>
                 </AND>
               </match>
+              <order>BY_NAME</order>
             </rule>
           </section>
           <section>
@@ -116,6 +108,7 @@
                   <STATIC>true</STATIC>
                 </AND>
               </match>
+              <order>BY_NAME</order>
             </rule>
           </section>
           <section>
@@ -137,6 +130,7 @@
                   <PUBLIC>true</PUBLIC>
                 </AND>
               </match>
+              <order>BY_NAME</order>
             </rule>
           </section>
           <section>
@@ -148,6 +142,7 @@
                   <PROTECTED>true</PROTECTED>
                 </AND>
               </match>
+              <order>BY_NAME</order>
             </rule>
           </section>
           <section>
@@ -159,6 +154,7 @@
                   <PACKAGE_PRIVATE>true</PACKAGE_PRIVATE>
                 </AND>
               </match>
+              <order>BY_NAME</order>
             </rule>
           </section>
           <section>
@@ -170,6 +166,7 @@
                   <PRIVATE>true</PRIVATE>
                 </AND>
               </match>
+              <order>BY_NAME</order>
             </rule>
           </section>
           <section>
@@ -180,6 +177,7 @@
                   <PUBLIC>true</PUBLIC>
                 </AND>
               </match>
+              <order>BY_NAME</order>
             </rule>
           </section>
           <section>
@@ -257,7 +255,6 @@
               <match>
                 <ENUM>true</ENUM>
               </match>
-              <order>BY_NAME</order>
             </rule>
           </section>
           <section>
@@ -290,7 +287,8 @@
     <codeStyleSettings language="XML">
       <indentOptions>
         <option name="INDENT_SIZE" value="2" />
-        <option name="TAB_SIZE" value="2" />
+        <option name="CONTINUATION_INDENT_SIZE" value="2" />
+        <option name="TAB_SIZE" value="8" />
       </indentOptions>
     </codeStyleSettings>
   </code_scheme>
