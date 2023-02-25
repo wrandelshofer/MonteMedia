@@ -28,7 +28,8 @@
   </scm>
 
   <packaging>pom</packaging>
-  <name>*Parent Project MonteMedia</name>
+  <name>*Parent Project Monte Media</name>
+  <description>The parent project of the Monte Media library.</description>
 
   <modules>
     <module>org.monte.media.animconverter</module>
