@@ -6,6 +6,7 @@
 <!--
   ~ Usage:
   ~ mvn clean deploy -Drevision=$(git show -s - -format=%cs_%h)
+  ~ mvn clean source:jar package javadoc:jar repository:bundle-create - -batch-mode
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -33,6 +34,11 @@
   <description>The parent project of the Monte Media library.</description>
 
   <modules>
+    <!--
+    -->
+    <module>org.monte.demo.jmfavi</module>
+    <module>org.monte.demo.jmftsccdemo</module>
+    <module>org.monte.media.jmf</module>
     <module>org.monte.media.animconverter</module>
     <module>org.monte.demo.animmerger</module>
     <module>org.monte.demo.audiorecorder</module>
@@ -41,8 +47,6 @@
     <module>org.monte.demo.cmykimageviewer</module>
     <module>org.monte.demo.imageioviewer</module>
     <module>org.monte.demo.io</module>
-    <module>org.monte.demo.jmfavi</module>
-    <module>org.monte.demo.jmftsccdemo</module>
     <module>org.monte.demo.movieconverter</module>
     <module>org.monte.demo.moviemaker</module>
     <module>org.monte.demo.mpoimagesplitter</module>
@@ -53,9 +57,10 @@
     <module>org.monte.media</module>
     <module>org.monte.media.amigaatari</module>
     <module>org.monte.media.javafx</module>
-    <module>org.monte.media.jmf</module>
     <module>org.monte.media.screenrecorder</module>
     <module>org.monte.media.swing</module>
+    <!--
+    -->
   </modules>
 
   <properties>
@@ -88,7 +93,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.4.1</version>
+          <version>3.5.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>

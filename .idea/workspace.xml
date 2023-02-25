@@ -6,11 +6,25 @@
   <component name="ChangeListManager">
     <list default="true" id="c0d0ee14-e922-4c98-b486-4430962ac734" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/org.monte.media/src/main/java/org.monte.media/org/monte/media/concurrent/EventLoop.java" beforeDir="false" afterPath="$PROJECT_DIR$/org.monte.media/src/main/java/org.monte.media/org/monte/media/concurrent/EventLoop.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/org.monte.media/src/main/java/org.monte.media/org/monte/media/io/ByteArrayImageInputStream.java" beforeDir="false" afterPath="$PROJECT_DIR$/org.monte.media/src/main/java/org.monte.media/org/monte/media/io/ByteArrayImageInputStream.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/org.monte.media/src/main/java/org.monte.media/org/monte/media/io/ByteArrayImageOutputStream.java" beforeDir="false" afterPath="$PROJECT_DIR$/org.monte.media/src/main/java/org.monte.media/org/monte/media/io/ByteArrayImageOutputStream.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/org.monte.media/src/main/java/org.monte.media/org/monte/media/io/ImageOutputStreamAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/org.monte.media/src/main/java/org.monte.media/org/monte/media/io/ImageOutputStreamAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/org.monte.media/src/main/java/org.monte.media/org/monte/media/math/IntMath.java" beforeDir="false" afterPath="$PROJECT_DIR$/org.monte.media/src/main/java/org.monte.media/org/monte/media/math/IntMath.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/org.monte.demo.animmerger/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/org.monte.demo.animmerger/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/org.monte.demo.audiorecorder/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/org.monte.demo.audiorecorder/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/org.monte.demo.aviwriter/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/org.monte.demo.aviwriter/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/org.monte.demo.cleartype/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/org.monte.demo.cleartype/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/org.monte.demo.cmykimageviewer/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/org.monte.demo.cmykimageviewer/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/org.monte.demo.imageioviewer/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/org.monte.demo.imageioviewer/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/org.monte.demo.io/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/org.monte.demo.io/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/org.monte.demo.jmfavi/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/org.monte.demo.jmfavi/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/org.monte.demo.jmftsccdemo/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/org.monte.demo.jmftsccdemo/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/org.monte.demo.movieconverter/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/org.monte.demo.movieconverter/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/org.monte.demo.moviemaker/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/org.monte.demo.moviemaker/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/org.monte.demo.mpoimagesplitter/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/org.monte.demo.mpoimagesplitter/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/org.monte.demo.quicktimewriter/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/org.monte.demo.quicktimewriter/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/org.monte.demo.rationalnumber/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/org.monte.demo.rationalnumber/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/org.monte.demo.screenrecorder/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/org.monte.demo.screenrecorder/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/org.monte.demo.sift/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/org.monte.demo.sift/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/org.monte.media.animconverter/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/org.monte.media.animconverter/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/org.monte.media.jmf/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/org.monte.media.jmf/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,6 +48,7 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="SIGN_OFF_COMMIT" value="true" />
     <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -63,6 +78,9 @@
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
     "last_opened_file_path": "/Users/Shared/Developer/Java/MonteMedia/current-github/MonteMedia",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
     "settings.editor.selected.configurable": "copyright"
   }
 }]]></component>
@@ -233,7 +251,14 @@
       <option name="project" value="LOCAL" />
       <updated>1677345519255</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Replace &lt;tt&gt;-tags with {@code } tags.">
+      <created>1677345724454</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1677345724454</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -258,7 +283,8 @@
     <MESSAGE value="Add Maven Central badge." />
     <MESSAGE value="Add description to parent project." />
     <MESSAGE value="Add SCM connection to POM." />
-    <option name="LAST_COMMIT_MESSAGE" value="Add SCM connection to POM." />
+    <MESSAGE value="Replace &lt;tt&gt;-tags with {@code } tags." />
+    <option name="LAST_COMMIT_MESSAGE" value="Replace &lt;tt&gt;-tags with {@code } tags." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
