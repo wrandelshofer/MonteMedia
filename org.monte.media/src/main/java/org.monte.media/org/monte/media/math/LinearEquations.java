@@ -1,5 +1,6 @@
-/* @(#)LinearEquations.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.math;
 
@@ -11,7 +12,6 @@ package org.monte.media.math;
  * http://en.wikipedia.org/wiki/Determinant
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class LinearEquations {
 

@@ -1,5 +1,6 @@
-/* @(#)MPOImageReaderSpi.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.mpo;
 
@@ -16,7 +17,6 @@ import java.util.Locale;
  * See: <a href="http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf">MPO Format Specification</a>.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class MPOImageReaderSpi extends ImageReaderSpi {
 

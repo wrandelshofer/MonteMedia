@@ -1,5 +1,6 @@
-/* @(#)BackdropBorder.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.swing.border;
@@ -13,7 +14,6 @@ import java.awt.*;
  * The background border can be retrieved using getBackgroundBorder().
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class BackdropBorder implements Border {
     private Border foregroundBorder;

@@ -1,5 +1,6 @@
-/* @(#)SEQAudioCommand.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.seq;
@@ -13,7 +14,6 @@ import org.monte.media.eightsvx.LoopableAudioClip;
  * a single frame of a SEQMovieTrack. This class is currently unused.
  *
  * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version $Id$
  */
 public class SEQAudioCommand {
     /**

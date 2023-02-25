@@ -1,5 +1,6 @@
-/* @(#)DropFileTransferHandler.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.swing.datatransfer;
 
@@ -21,7 +22,6 @@ import java.util.List;
  * The filename is passed in the action command.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class DropFileTransferHandler extends TransferHandler {
     private final static long serialVersionUID = 1L;

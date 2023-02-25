@@ -1,5 +1,6 @@
-/* @(#)AmigaBitmapImageFactory.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.amigabitmap;
@@ -34,7 +35,6 @@ import java.util.Hashtable;
  * don't need this functionality.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class AmigaBitmapImageFactory {
 

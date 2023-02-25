@@ -1,5 +1,6 @@
-/* @(#)EnumValueFormatter.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.tiff;
 
@@ -9,7 +10,6 @@ import java.util.HashMap;
  * Formats integer values as an enumeration.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class EnumValueFormatter implements ValueFormatter {
 

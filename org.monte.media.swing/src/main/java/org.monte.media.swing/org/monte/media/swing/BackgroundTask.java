@@ -1,5 +1,6 @@
-/* @(#)BackgroundTask.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.swing;
 
@@ -12,7 +13,6 @@ import javax.swing.*;
  * This class is similar to SwingWorker but less complex.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public abstract class BackgroundTask implements Runnable {
     private Throwable error;  // see getError(), setError()

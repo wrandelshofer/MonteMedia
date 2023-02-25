@@ -1,5 +1,6 @@
- /* @(#)ICCPackedColorModel.java
-  * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+ /*
+  * @(#)Main.java
+  * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
   */
  package org.monte.media.color;
 
@@ -14,7 +15,6 @@
   * {@code ICCPackedColorModel}.
   *
   * @author Werner Randelshofer
-  * @version $Id$
   */
  public class ICCPackedColorModel extends PackedColorModel {
 

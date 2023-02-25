@@ -1,5 +1,6 @@
-/* @(#)MP3ElementaryInputStream.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.mp3;
 
@@ -44,7 +45,6 @@ import java.util.HashMap;
  * <a href="http://www.altera.com/literature/dc/1.4-2005_Taiwan_2nd_SouthernTaiwanU-web.pdf">http://www.altera.com/literature/dc/1.4-2005_Taiwan_2nd_SouthernTaiwanU-web.pdf</a><br>
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class MP3ElementaryInputStream extends FilterInputStream {
 

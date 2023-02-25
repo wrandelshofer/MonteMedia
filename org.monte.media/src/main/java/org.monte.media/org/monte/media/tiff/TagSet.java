@@ -1,5 +1,6 @@
-/* @(#)TagSet.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.tiff;
 
@@ -15,7 +16,6 @@ import java.util.HashMap;
  * all of its data values.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public abstract class TagSet {
 

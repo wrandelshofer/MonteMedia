@@ -3,7 +3,7 @@
  */
 
 /**
- * Converter for ANIM Amiga Cell Animations.
+ * A converter for ANIM Amiga Cell Animation files.
  *
  * @author Werner Randelshofer
  */

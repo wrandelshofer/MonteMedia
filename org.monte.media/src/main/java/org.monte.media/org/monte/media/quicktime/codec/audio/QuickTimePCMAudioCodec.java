@@ -1,5 +1,6 @@
-/* @(#)AbstractPCMAudioCodec.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.quicktime.codec.audio;
 
@@ -34,7 +35,6 @@ import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
  * Does not perform sampling rate conversion or channel conversion.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class QuickTimePCMAudioCodec extends AbstractPCMAudioCodec {
 

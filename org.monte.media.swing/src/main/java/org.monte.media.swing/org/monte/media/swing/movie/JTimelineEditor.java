@@ -1,5 +1,6 @@
-/* @(#)JTimelineEditor.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.swing.movie;
 
@@ -32,7 +33,6 @@ import java.beans.PropertyChangeListener;
  * If a movie has n time steps, then there are n+1 insertion points.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class JTimelineEditor extends javax.swing.JPanel {
     private final static long serialVersionUID = 1L;

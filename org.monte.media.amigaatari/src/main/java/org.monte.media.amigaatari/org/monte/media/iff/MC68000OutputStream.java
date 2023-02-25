@@ -1,5 +1,6 @@
-/* @(#)MC68000OutputStream.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.iff;
 
@@ -12,7 +13,6 @@ import java.io.UnsupportedEncodingException;
  * MC68000OutputStream.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class MC68000OutputStream extends FilterOutputStream {
     /**

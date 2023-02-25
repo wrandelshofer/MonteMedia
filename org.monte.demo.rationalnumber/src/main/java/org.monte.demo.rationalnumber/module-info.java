@@ -3,10 +3,9 @@
  */
 
 /**
- * Rational Number demo.
+ * A program that demonstrates how to work with rational numbers from the Monte Media library.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 module org.monte.demo.rationalnumber {
     requires org.monte.media;

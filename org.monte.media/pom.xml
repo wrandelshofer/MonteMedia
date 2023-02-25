@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!--
-  ~ @(#)pom.xml
-  ~ Copyright © 2022 The authors and contributors of JHotDraw. MIT License.
+  ~ @(#)Main.java
+  ~ Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
@@ -13,8 +13,9 @@
   </parent>
   <artifactId>org.monte.media</artifactId>
   <packaging>jar</packaging>
+  <name>Monte Media Library</name>
+  <description>A library for processing still images, video, audio and meta-data.</description>
 
-  <name>Monte Media Core</name>
 
   <build>
     <sourceDirectory>${basedir}/src/main/java/org.monte.media</sourceDirectory>

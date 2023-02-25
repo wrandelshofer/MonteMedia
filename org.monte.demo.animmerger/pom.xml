@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!--
-  ~ @(#)pom.xml
-  ~ Copyright © 2022 The authors and contributors of JHotDraw. MIT License.
+  ~ @(#)Main.java
+  ~ Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
@@ -13,6 +13,7 @@
   </parent>
   <artifactId>org.monte.demo.animmerger</artifactId>
   <packaging>jar</packaging>
+  <description>A program that demonstrates how to merge Amiga IFF ANIM files with the Monte Media library.</description>
 
   <name>Monte Media Demo ANIM Merger</name>
 

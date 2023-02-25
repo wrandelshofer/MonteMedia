@@ -1,5 +1,6 @@
-/* @(#)ScreenRecorder.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.screenrecorder;
 
@@ -89,7 +90,6 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
  * FIXME - This class is a horrible mess.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class ScreenRecorder extends AbstractStateModel {
 

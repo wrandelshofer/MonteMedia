@@ -1,5 +1,6 @@
-/* @(#)DefaultMovie.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.av;
 
@@ -11,7 +12,6 @@ import java.io.IOException;
  * {@code DefaultMovie}.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class DefaultMovie extends AbstractMovie {
     private final static long serialVersionUID = 1L;

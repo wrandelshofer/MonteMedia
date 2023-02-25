@@ -1,5 +1,6 @@
-/* @(#)AVIPCMAudioCodec.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.avi.codec.audio;
 
@@ -32,7 +33,6 @@ import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
  * FIXME Maybe create separate subclasses for AVI PCM and QuickTime PCM.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class AVIPCMAudioCodec extends AbstractPCMAudioCodec {
 

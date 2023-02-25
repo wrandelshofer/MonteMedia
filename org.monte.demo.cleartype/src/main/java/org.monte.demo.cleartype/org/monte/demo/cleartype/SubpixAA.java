@@ -1,5 +1,6 @@
-/* @(#)SubpixAA.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.demo.cleartype;
 
@@ -13,7 +14,6 @@ import java.awt.image.WritableRaster;
  * Scales an image down and applies Subpixel antialiasing to it.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class SubpixAA {
 

@@ -6,7 +6,6 @@
  * Image IO viewer demo.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 module org.monte.demo.imageioviewer {
     requires java.desktop;

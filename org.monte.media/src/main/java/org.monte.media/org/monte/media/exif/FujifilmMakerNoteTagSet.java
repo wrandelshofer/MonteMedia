@@ -1,5 +1,6 @@
-/* @(#)FujifilmMakerNoteTagSet.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.exif;
 
@@ -27,7 +28,6 @@ import static org.monte.media.tiff.TIFFTag.UNDEFINED_MASK;
  * <a href="http://homepage3.nifty.com/kamisaka/makernote/makernote_fuji.htm">http://homepage3.nifty.com/kamisaka/makernote/makernote_fuji.htm</a>
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class FujifilmMakerNoteTagSet extends TagSet {
 

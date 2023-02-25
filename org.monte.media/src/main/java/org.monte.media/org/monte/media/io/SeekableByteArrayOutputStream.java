@@ -1,5 +1,6 @@
-/* @(#)SeekableByteArrayOutputStream.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.io;
@@ -15,7 +16,6 @@ import static java.lang.Math.max;
  * {@code SeekableByteArrayOutputStream}.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class SeekableByteArrayOutputStream extends ByteArrayOutputStream {
 

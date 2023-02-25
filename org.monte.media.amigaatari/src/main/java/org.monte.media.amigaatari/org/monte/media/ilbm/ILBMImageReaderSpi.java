@@ -1,5 +1,6 @@
-/* @(#)ILBMImageReaderSpi.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.ilbm;
 
@@ -16,7 +17,6 @@ import java.util.Locale;
  * Bitmap image format (ILBM).
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class ILBMImageReaderSpi extends ImageReaderSpi {
     protected final static int FORM_ID = IFFParser.stringToID("FORM");

@@ -1,5 +1,6 @@
-/* @(#)Colors.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.color;
 
@@ -16,7 +17,6 @@ import static java.lang.Math.min;
  * Utility methods for ColorModels.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class ColorModels {
 

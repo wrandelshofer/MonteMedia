@@ -3,7 +3,7 @@
  */
 
 /**
- * A library for processing still images, video, audio and meta-data.
+ * A library for processing Amiga and Atari still images, video, audio and meta-data.
  * <p>
  * Supports the following container formats:
  * <table><caption>Supported container formats.</caption>

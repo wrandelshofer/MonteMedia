@@ -1,5 +1,6 @@
-/* @(#)PassThroughCodec.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.av.codec.time;
 
@@ -11,7 +12,6 @@ import org.monte.media.av.Format;
  * {@code PassThroughCodec} passes through all buffers.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class PassThroughCodec extends AbstractCodec {
 

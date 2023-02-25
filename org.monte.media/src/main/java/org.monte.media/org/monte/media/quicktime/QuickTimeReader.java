@@ -1,5 +1,6 @@
-/* @(#)QuickTimeReader.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.quicktime;
 
@@ -30,7 +31,6 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_I
  * {@code QuickTimeReader}.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class QuickTimeReader extends QuickTimeInputStream implements MovieReader {
 

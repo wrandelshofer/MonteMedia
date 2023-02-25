@@ -1,5 +1,6 @@
-/* @(#)IFFOutputStream.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.iff;
 
@@ -17,7 +18,6 @@ import java.util.Stack;
  * Third Edition. Reading: Addison-Wesley.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class IFFOutputStream extends OutputStream {
 

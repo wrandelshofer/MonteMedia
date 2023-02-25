@@ -1,5 +1,6 @@
-/* @(#)MPOFiles.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.mpo;
@@ -15,7 +16,6 @@ import java.util.ArrayList;
  * Utility methods for {@code MPOFiles}.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class MPOFiles {
 

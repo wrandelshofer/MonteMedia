@@ -1,5 +1,6 @@
-/* @(#)AudioFormatKeys.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.av.codec.audio;
 
@@ -16,7 +17,6 @@ import java.nio.ByteOrder;
  * Defines common format keys for audio media.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class AudioFormatKeys extends FormatKeys {
     // Standard video EncodingKey strings for use onlyWith FormatKey.Encoding. 

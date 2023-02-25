@@ -1,5 +1,6 @@
-/* @(#)Animator.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.player;
@@ -12,7 +13,6 @@ import javax.swing.event.ChangeListener;
  * Animator executes multiple Interpolator's on a worker thread.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public interface Animator extends Runnable {
     /**

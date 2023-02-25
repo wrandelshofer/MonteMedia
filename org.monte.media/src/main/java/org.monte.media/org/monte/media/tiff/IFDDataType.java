@@ -1,5 +1,6 @@
-/* @(#)IFDDataType.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.tiff;
 
@@ -21,7 +22,6 @@ import java.util.HashMap;
  * <a href="http://www.alternatiff.com/resources/TIFFPM6.pdf">http://www.alternatiff.com/resources/TIFFPM6.pdf</a>
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public enum IFDDataType {
     /**

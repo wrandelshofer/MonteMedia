@@ -3,10 +3,9 @@
  */
 
 /**
- * A Screen Recorder in pure Java.
+ * A screen recorder in pure Java.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 module org.monte.media.screenrecorder {
     requires java.desktop;

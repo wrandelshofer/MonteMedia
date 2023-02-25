@@ -3,10 +3,9 @@
  */
 
 /**
- * MPO image splitter demo.
+ * A program that demonstrates how to split a multi-image MPO JPEG file up into single image files with the Monte Media library.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 module org.monte.demo.mpoimagesplitter {
     requires java.desktop;

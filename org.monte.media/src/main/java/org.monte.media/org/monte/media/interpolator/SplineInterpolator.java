@@ -1,5 +1,6 @@
-/* @(#)SplineInterpolator.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.interpolator;
 
@@ -19,7 +20,6 @@ import java.awt.geom.Point2D;
  * >http://www.w3.org/TR/smil/smil-animation.html#animationNS-InterpolationKeysplines</a>
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class SplineInterpolator extends AbstractSplineInterpolator {
 

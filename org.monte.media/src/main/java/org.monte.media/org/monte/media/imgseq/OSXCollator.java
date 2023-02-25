@@ -1,5 +1,6 @@
-/* @(#)OSXCollator.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.imgseq;
@@ -31,7 +32,6 @@ import java.util.Locale;
  * sequences of digits are changed to match the collation rules of Mac OS X.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class OSXCollator extends Collator {
     private Collator collator;

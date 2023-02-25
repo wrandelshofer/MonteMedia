@@ -1,5 +1,6 @@
-/* @(#)ZMBVDecoder.java  1.0  2011-08-27
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.jmf.codec.video;
 
@@ -17,7 +18,6 @@ import java.awt.*;
  * {@code ZMBVDecoder}.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class ZMBVDecoder extends AbstractVideoDecoder {
 

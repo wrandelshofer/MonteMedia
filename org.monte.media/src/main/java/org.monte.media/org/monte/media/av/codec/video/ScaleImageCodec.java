@@ -1,5 +1,6 @@
-/* @(#)ScaleImageCodec.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.av.codec.video;
 
@@ -25,7 +26,6 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
  * Scales a buffered image.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class ScaleImageCodec extends AbstractVideoCodec {
 

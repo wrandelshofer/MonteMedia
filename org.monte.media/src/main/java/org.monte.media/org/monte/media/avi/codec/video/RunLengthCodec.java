@@ -1,5 +1,6 @@
-/* @(#)RunLengthCodec.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.avi.codec.video;
 
@@ -110,7 +111,6 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
  * <a href="http://wiki.multimedia.cx/index.php?title=Microsoft_RLE">http://wiki.multimedia.cx/index.php?title=Microsoft_RLE</a><br>
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class RunLengthCodec extends AbstractVideoCodec {
 

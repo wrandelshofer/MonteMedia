@@ -1,5 +1,6 @@
-/* @(#)ExtendedReal.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.math;
 
@@ -60,7 +61,6 @@ package org.monte.media.math;
  * (2 The fraction for SNaN encodings must be non zero.
  *
  * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland.
- * @version $Id$
  */
 public class ExtendedReal
         extends Number {

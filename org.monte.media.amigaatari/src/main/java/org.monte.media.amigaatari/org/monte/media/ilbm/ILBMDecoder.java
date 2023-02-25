@@ -1,5 +1,6 @@
-/* @(#)ILBMDecoder.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.ilbm;
 
@@ -47,7 +48,6 @@ import java.util.Hashtable;
  * "*" means 0 or more repetitions. A sometimes-needed pad byte is shown as "[0]".
  *
  * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version $Id$
  */
 public class ILBMDecoder
         implements IFFVisitor {

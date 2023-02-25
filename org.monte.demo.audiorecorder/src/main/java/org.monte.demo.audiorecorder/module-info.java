@@ -3,10 +3,9 @@
  */
 
 /**
- * Audio recorder demo.
+ * A program that demonstrates how to record audio with the Monte Media library.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 module org.monte.demo.audiorecorder {
     requires java.desktop;

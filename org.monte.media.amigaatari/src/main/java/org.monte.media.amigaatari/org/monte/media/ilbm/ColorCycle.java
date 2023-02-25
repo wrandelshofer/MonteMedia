@@ -1,5 +1,6 @@
-/* @(#)ColorCycle.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.ilbm;
 
@@ -7,7 +8,6 @@ package org.monte.media.ilbm;
  * Base class for color cycling in an IFF ILBM image.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public abstract class ColorCycle implements Cloneable {
 

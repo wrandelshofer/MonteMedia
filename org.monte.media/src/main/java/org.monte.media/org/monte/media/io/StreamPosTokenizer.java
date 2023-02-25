@@ -1,5 +1,6 @@
-/* @(#)StreamPosTokenizer.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.io;
 
@@ -16,7 +17,6 @@ import java.util.LinkedList;
  * '.' and minus dot '-.' are not treated as numbers.
  *
  * @author Werner Randelshofer, Hausmatt 10, Goldau, CH-6405, Switzerland
- * @version $Id$
  */
 
 

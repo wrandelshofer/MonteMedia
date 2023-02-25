@@ -1,5 +1,6 @@
-/* @(#)IFFParser.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.iff;
 
@@ -160,7 +161,6 @@ import java.util.HashSet;
  * .	}
  * </pre>
  *
- * @version $Id$
  * @see    IFFVisitor
  * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
  */

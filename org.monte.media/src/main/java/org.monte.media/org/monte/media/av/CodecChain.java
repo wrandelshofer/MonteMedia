@@ -1,5 +1,6 @@
-/* @(#)CodecChain.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.av;
 
@@ -11,7 +12,6 @@ import java.util.List;
  * {@code CodecChain}.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class CodecChain implements Codec {
 

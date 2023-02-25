@@ -1,5 +1,6 @@
-/* @(#)ReadAVIDemo.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.demo.io;
 
@@ -27,7 +28,6 @@ import java.util.ArrayList;
  * {@code ReadAVIDemo}.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class ReadAVIDemo {
 

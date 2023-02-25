@@ -1,5 +1,6 @@
-/* @(#)CMYKImages.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.image;
@@ -31,7 +32,6 @@ import static java.lang.Math.min;
  * Provides utility methods for images in the CMYK color space..
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class CMYKImages {
   public static final DirectColorModel RGB = new DirectColorModel(24, 0xff0000, 0xff00, 0xff);

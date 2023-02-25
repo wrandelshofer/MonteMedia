@@ -3,10 +3,9 @@
  */
 
 /**
- * Cleartype demo.
+ * A program that demonstrates how to generate Cleartype antialiasing.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 module org.monte.demo.cleartype {
     requires java.desktop;

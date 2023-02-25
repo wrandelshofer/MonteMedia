@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!--
-  ~ @(#)pom.xml
-  ~ Copyright © 2022 The authors and contributors of JHotDraw. MIT License.
+  ~ @(#)Main.java
+  ~ Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
@@ -15,6 +15,9 @@
   <packaging>jar</packaging>
 
   <name>Monte Media Demo JMF TSCC Demo</name>
+  <description>A program that demonstrates how to integrate the TSCC codec from the Monte Media library into the JMF
+    library.
+  </description>
 
   <build>
     <sourceDirectory>${basedir}/src/main/java/org.monte.demo.jmftsccdemo</sourceDirectory>

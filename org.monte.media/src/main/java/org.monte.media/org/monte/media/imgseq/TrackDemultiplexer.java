@@ -1,5 +1,6 @@
-/* @(#)TrackDemultiplexer.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.imgseq;
 
@@ -12,7 +13,6 @@ import java.io.IOException;
  * Can "demultiplex" an array of already demultiplexed tracks.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class TrackDemultiplexer implements Demultiplexer {
 

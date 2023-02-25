@@ -1,5 +1,6 @@
-/* @(#)IntMath.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.math;
@@ -10,7 +11,6 @@ import java.math.BigInteger;
  * Utility class for integer arithmetic.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class IntMath {
 

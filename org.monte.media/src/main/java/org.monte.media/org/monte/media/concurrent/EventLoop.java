@@ -1,5 +1,6 @@
-/* @(#)EventLoop.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.concurrent;
 
@@ -49,7 +50,6 @@ import java.util.LinkedList;
  * </tt></pre>
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public abstract class EventLoop<E> {
     /**

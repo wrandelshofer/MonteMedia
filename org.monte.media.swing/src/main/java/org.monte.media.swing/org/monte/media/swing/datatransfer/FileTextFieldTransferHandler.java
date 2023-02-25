@@ -1,5 +1,6 @@
-/* @(#)FileTextFieldTransferHandler.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.swing.datatransfer;
 
@@ -23,7 +24,6 @@ import java.util.List;
  * support for JTextFields, which contain the path to a file.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class FileTextFieldTransferHandler extends TransferHandler {
     private final static long serialVersionUID = 1L;

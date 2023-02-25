@@ -1,5 +1,6 @@
-/* @(#)TrimTimeCodec.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.av.codec.time;
 
@@ -14,7 +15,6 @@ import org.monte.media.math.Rational;
  * range.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class TrimTimeCodec extends AbstractCodec {
 

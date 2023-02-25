@@ -1,5 +1,6 @@
-/* @(#)SEQPlayer.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.seq;
 
@@ -40,7 +41,6 @@ import static java.lang.Math.max;
  * >http://www.atari-forum.com/wiki/index.php/ST_Picture_Formats</a>
  *
  * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version $Id$
  */
 public class SEQPlayer
         extends AbstractPlayer

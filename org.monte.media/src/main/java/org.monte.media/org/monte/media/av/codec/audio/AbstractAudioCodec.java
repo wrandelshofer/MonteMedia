@@ -1,5 +1,6 @@
-/* @(#)AbstractAudioCodec.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.av.codec.audio;
@@ -11,7 +12,6 @@ import org.monte.media.av.Format;
  * {@code AbstractAudioCodec}.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public abstract class AbstractAudioCodec extends AbstractCodec {
 

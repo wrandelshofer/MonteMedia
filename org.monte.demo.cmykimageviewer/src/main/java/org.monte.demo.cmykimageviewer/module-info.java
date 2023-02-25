@@ -3,10 +3,9 @@
  */
 
 /**
- * CMYK image viewer demo.
+ * A program that demonstrates how to read CMYK JPEG images with the Monte Media library.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 module org.monte.demo.cmykimageviewer {
     requires java.desktop;

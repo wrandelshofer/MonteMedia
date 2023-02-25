@@ -1,5 +1,6 @@
-/* @(#)ImageBevelBorder.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.swing.border;
@@ -26,7 +27,6 @@ import java.awt.image.BufferedImage;
  * The inner area of the image is used to fill the inner area.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class ImageBevelBorder implements Border {
     private final static boolean VERBOSE = false;

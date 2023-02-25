@@ -1,5 +1,6 @@
-/* @(#)JRecordingAreaFrame.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.screenrecorder;
 
@@ -17,7 +18,6 @@ import static java.lang.Math.min;
  * JRecordingAreaFrame.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class JRecordingAreaFrame extends javax.swing.JFrame {
     private final static long serialVersionUID = 1L;

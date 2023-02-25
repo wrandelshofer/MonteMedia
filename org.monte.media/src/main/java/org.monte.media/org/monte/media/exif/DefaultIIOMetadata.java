@@ -1,5 +1,6 @@
-/* @(#)DefaultIIOMetadata.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.exif;
@@ -14,7 +15,6 @@ import javax.imageio.metadata.IIOMetadataNode;
  * DefaultIIOMetadata.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class DefaultIIOMetadata extends IIOMetadata {
     private final IIOMetadataNode root;

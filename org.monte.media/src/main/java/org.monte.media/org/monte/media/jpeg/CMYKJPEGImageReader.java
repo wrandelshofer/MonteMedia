@@ -1,5 +1,6 @@
-/* @(#)CMYJKJPEGImageReader.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.jpeg;
 
@@ -44,7 +45,6 @@ import static org.monte.media.image.CMYKImages.createImageFromYCCK;
  * </pre>
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class CMYKJPEGImageReader extends ImageReader {
 

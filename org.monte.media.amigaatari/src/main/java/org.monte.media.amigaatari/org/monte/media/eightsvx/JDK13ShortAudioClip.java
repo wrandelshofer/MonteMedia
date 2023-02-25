@@ -1,5 +1,6 @@
-/* @(#)JDK13ShortAudioClip.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.eightsvx;
@@ -16,7 +17,6 @@ import javax.sound.sampled.LineUnavailableException;
  * JDK13ShortAudioClip.
  *
  * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version $Id$
  */
 public class JDK13ShortAudioClip implements LoopableAudioClip {
     private Clip clip;
