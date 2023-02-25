@@ -1,4 +1,4 @@
-# MonteMedia 17.0
+# MonteMedia 17
 
 A Java library for processing still images, video, audio and meta-data.
 
