@@ -1104,7 +1104,7 @@ public class ScreenRecorder extends AbstractStateModel {
             buf.format = fromAudioFormat(lineFormat).append(SilenceBugKey, true);
 
             // For even sample rates, we select a buffer size that can 
-            // hold half a second of audio. This allows audio/video interlave
+            // hold half a second of audio. This allows audio/video interleave
             // twice a second, as recommended for AVI and QuickTime movies.
             // For odd sample rates, we have to select a buffer size that can hold
             // one second of audio. 

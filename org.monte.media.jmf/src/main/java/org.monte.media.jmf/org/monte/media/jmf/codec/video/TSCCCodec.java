@@ -338,6 +338,8 @@ public class TSCCCodec extends AbstractVideoDecoder {
             scanlineStride = width;
             pixelStride = 1;
         } else if (invf instanceof VideoFormat) {
+            // If this is a QuickTime movie, we can not determine the input depth.
+            // So, we fail to decode QuickTime videos that have depth that is different from 24 bits.
             VideoFormat vf = invf;
             inputDepth = 24;
             scanlineStride = pixelStride = vf.getSize().width * 3;

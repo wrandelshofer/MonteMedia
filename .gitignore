@@ -4,3 +4,4 @@
 /out
 **/.flattened-pom.xml
 /*/target/
+/target/

@@ -1526,4 +1526,11 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                     | ((blueValues[i] & 0xff) << 0);
         }
     }
+
+    public void setPalette(int[] rgbValues) {
+        if (palette == null) {
+            palette = new int[256];
+        }
+        System.arraycopy(rgbValues, 0, palette, 0, Math.min(palette.length, rgbValues.length));
+    }
 }

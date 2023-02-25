@@ -3,7 +3,7 @@
  */
 
 /**
- * Screen Recorder.
+ * A Screen Recorder in pure Java.
  *
  * @author Werner Randelshofer
  * @version $Id$

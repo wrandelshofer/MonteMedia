@@ -476,7 +476,6 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
         Track tr = tracks.get(track);
         Format fmt = tr.format;
         tr.codec = createCodec(fmt);
-        String enc = fmt.get(EncodingKey);
         if (tr.codec != null) {
             if (fmt.get(MediaTypeKey) == MediaType.VIDEO) {
                 tr.codec.setInputFormat(fmt.prepend(

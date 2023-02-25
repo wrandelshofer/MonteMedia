@@ -11,6 +11,7 @@ import org.monte.media.math.Rational;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
+import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
 import java.io.File;
@@ -71,6 +72,13 @@ public class Main implements Runnable {
             writer = new AVIWriter(file);
             writer.addTrack(buf.format);
             line.open();
+            // Make sure the volume of the line is bigger than 0.2
+            try {
+                FloatControl ctrl = (FloatControl) line.getControl(FloatControl.Type.VOLUME);
+                ctrl.setValue(Math.max(ctrl.getValue(), 0.2f));
+            } catch (IllegalArgumentException e) {
+                // We can't change the volume from Java
+            }
             line.start();
 
 
@@ -112,7 +120,7 @@ public class Main implements Runnable {
         while (System.in.read() != '\n') ;
         Main r = new Main(file);
         r.start();
-        System.out.println("Press ENTER to stop audio recording.");
+        System.out.println("Recording...\nPress ENTER to stop audio recording.");
         while (System.in.read() != '\n') ;
         r.stop();
 
