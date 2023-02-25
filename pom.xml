@@ -26,6 +26,7 @@
   <url>https://github.com/wrandelshofer/montemedia</url>
   <scm>
     <connection>scm:git:git://github.com/wrandelshofer/montemedia.git</connection>
+    <developerConnection>scm:git:ssh://github.com/wrandelshofer/montemedia.git</developerConnection>
     <url>https://github.com/wrandelshofer/montemedia.git</url>
   </scm>
 
