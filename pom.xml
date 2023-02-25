@@ -6,7 +6,7 @@
 <!--
   ~ Usage:
   ~ mvn clean deploy -Drevision=$(git show -s - -format=%cs_%h)
-  ~ mvn clean source:jar package javadoc:jar repository:bundle-create - -batch-mode
+  ~ mvn clean source:jar package javadoc:jar gpg:sign repository:bundle-create - -batch-mode
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -33,7 +33,16 @@
   <packaging>pom</packaging>
   <name>*Parent Project Monte Media</name>
   <description>The parent project of the Monte Media library.</description>
-
+  <developers>
+    <developer>
+      <id>wrandelshoer</id>
+      <name>Werner Randelshofer</name>
+      <email>werner.randelshofer@bluewin.ch</email>
+      <organization>Werner Randelshofer</organization>
+      <organizationUrl>http://www.randelshofer.ch</organizationUrl>
+      <timezone>Europe/Zurich</timezone>
+    </developer>
+  </developers>
   <modules>
     <!--
     -->
@@ -230,6 +239,28 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.6</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+        <!--
+        <configuration>
+          <gpgArguments>
+            <gpgArgument>- -pinentry-mode</gpgArgument>
+            <gpgArgument>loopback</gpgArgument>
+          </gpgArguments>
+        </configuration>
+        -->
       </plugin>
     </plugins>
   </build>
