@@ -11,12 +11,7 @@ import org.monte.media.math.Rational;
 import org.monte.media.quicktime.QuickTimeReader;
 import org.monte.media.quicktime.QuickTimeWriter;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.LinearGradientPaint;
-import java.awt.RenderingHints;
-import java.awt.Stroke;
+import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
@@ -92,8 +87,8 @@ public class Main {
         // Make the format more specific
         format = format.prepend(MediaTypeKey, MediaType.VIDEO, //
                 FrameRateKey, new Rational(30, 1),//
-                WidthKey, 320, //
-                HeightKey, 240);
+                WidthKey, 640, //
+                HeightKey, 480);
 
         // Create a buffered image for this format
         BufferedImage img = createImage(format);
@@ -111,7 +106,7 @@ public class Main {
 
             // Draw the animation
             for (int i = 0, n = 200; i < n; i++) {
-                double t = (double) i / (n - 1);
+                double t = (double) i / n - 1;
                 drawAnimationFrame(img, g, t);
 
                 // write it to the writer
@@ -155,10 +150,10 @@ public class Main {
             fractions[i]=(float)i/(fractions.length-1);
             colors[i]=Color.getHSBColor(fractions[i],0.8f,0.6f);
         }
-        g.setPaint(new LinearGradientPaint(cx-rhour,cy+rhour,cx+rhour,cy+rhour,
+        g.setPaint(new LinearGradientPaint(cx - rminute, cy + rminute, cx + rminute, cy + rminute,
                 fractions,
                 colors));
-        Rectangle2D rectangle = new Rectangle2D.Double(cx - rhour, cy + rhour+10, rhour*2, 20);
+        Rectangle2D rectangle = new Rectangle2D.Double(cx - rminute, cy + rhour + 10, rminute * 2, 20);
         g.fill(rectangle);
 
 

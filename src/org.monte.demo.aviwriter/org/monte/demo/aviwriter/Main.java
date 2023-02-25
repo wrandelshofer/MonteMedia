@@ -11,12 +11,7 @@ import org.monte.media.avi.AVIWriter;
 import org.monte.media.color.Colors;
 import org.monte.media.math.Rational;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.LinearGradientPaint;
-import java.awt.RenderingHints;
-import java.awt.Stroke;
+import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
@@ -24,7 +19,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
 
 import static org.monte.media.av.FormatKeys.EncodingKey;
 import static org.monte.media.av.FormatKeys.FrameRateKey;
@@ -91,8 +85,8 @@ public class Main {
         // Make the format more specific
         format = format.prepend(MediaTypeKey, MediaType.VIDEO, //
                 FrameRateKey, new Rational(30, 1),//
-                WidthKey, 320, //
-                HeightKey, 240);
+                WidthKey, 640, //
+                HeightKey, 480);
 
         // Create a buffered image for this format
         BufferedImage img = createImage(format);
@@ -108,8 +102,8 @@ public class Main {
             out.addTrack(format);
 
             // Draw the animation
-            for (int i = 0, n = 200; i < n; i++) {
-                double t = (double) i / (n - 1);
+            for (int i = 0, n = 60; i < n; i++) {
+                double t = (double) i / n;
                 drawAnimationFrame(img, g, t);
 
                 // write it to the writer
@@ -135,7 +129,6 @@ public class Main {
 
         double tminute = t;
         double thour = tminute / 60.0;
-        Stroke sfine = new BasicStroke(1.0f);
         Stroke shour = new BasicStroke(7.0f);
         Stroke sminute = new BasicStroke(5.0f);
         g.setBackground(Color.WHITE);
@@ -153,10 +146,10 @@ public class Main {
             fractions[i]=(float)i/(fractions.length-1);
             colors[i]=Color.getHSBColor(fractions[i],0.8f,0.6f);
         }
-        g.setPaint(new LinearGradientPaint(cx-rhour,cy+rhour,cx+rhour,cy+rhour,
+        g.setPaint(new LinearGradientPaint(cx - rminute, cy + rhour, cx + rminute, cy + rhour,
                 fractions,
                 colors));
-        Rectangle2D rectangle = new Rectangle2D.Double(cx - rhour, cy + rhour+10, rhour*2, 20);
+        Rectangle2D rectangle = new Rectangle2D.Double(cx - rminute, cy + rhour + 10, rminute * 2, 20);
         g.fill(rectangle);
 
         // draw clock hour hand
