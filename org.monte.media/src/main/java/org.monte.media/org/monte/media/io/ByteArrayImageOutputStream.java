@@ -189,9 +189,9 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
     }
 
     /**
-     * Closing a <tt>ByteArrayInputStream</tt> has no effect. The methods in
+     * Closing a {@code ByteArrayInputStream} has no effect. The methods in
      * this class can be called after the stream has been closed without
-     * generating an <tt>IOException</tt>.
+     * generating an {@code IOException}.
      * <p>
      */
     @Override

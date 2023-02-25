@@ -31,7 +31,7 @@ import java.util.LinkedList;
  * <p>
  * An EventLoop, which outputs Strings on a background thread
  * could look like this:
- * <pre><tt>
+ * <pre>{@code
  * public class AsyncDisplay
  * extends AbstractEventLoop {
  *     public void display(String string) {
@@ -41,13 +41,13 @@ import java.util.LinkedList;
  *          System.out.println((String) event);
  *    }
  * }
- * </tt></pre>
+ * }</pre>
  * <p>
  * To use the class proceed like this:
- * <pre><tt>
+ * <pre>{@code
  * AsyncDisplay a = new AsyncDisplay();
  *  a.display("Hello World");
- * </tt></pre>
+ * }</pre>
  *
  * @author Werner Randelshofer
  */
