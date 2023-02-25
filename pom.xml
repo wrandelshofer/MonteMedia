@@ -24,6 +24,7 @@
   </licenses>
   <url>https://github.com/wrandelshofer/montemedia</url>
   <scm>
+    <connection>scm:git:git://github.com/wrandelshofer/montemedia.git</connection>
     <url>https://github.com/wrandelshofer/montemedia.git</url>
   </scm>
 
