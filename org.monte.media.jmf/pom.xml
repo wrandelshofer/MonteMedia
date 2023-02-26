@@ -15,7 +15,10 @@
   <packaging>jar</packaging>
 
   <name>Monte Media JMF</name>
-  <description>Provides codecs to the Java Media Framework (JMF).</description>
+
+  <properties>
+    <skipNonModularJavaDoc>true</skipNonModularJavaDoc>
+  </properties>
 
   <build>
     <sourceDirectory>${basedir}/src/main/java/org.monte.media.jmf</sourceDirectory>
@@ -62,7 +65,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
-          <skip>true</skip>
+          <skip>${skipNonModularJavaDoc}</skip>
         </configuration>
       </plugin>
       <plugin>

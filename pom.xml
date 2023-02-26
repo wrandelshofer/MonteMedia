@@ -5,8 +5,13 @@
   -->
 <!--
   ~ Usage:
-  ~ mvn clean deploy -Drevision=$(git show -s - -format=%cs_%h)
+  ~
+  ~ We must build the project in two steps, because we cannot generate JavaDoc for
+  ~ modules with a module descriptor and modules without a module descriptor at the
+  ~ same time.
+  ~
   ~ mvn clean source:jar package javadoc:jar gpg:sign repository:bundle-create - -batch-mode
+  ~ mvn source:jar javadoc:jar package gpg:sign repository:bundle-create -pl org.monte.media.jmf -DskipNonModularJavaDoc=false - -batch-mode
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
