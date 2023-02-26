@@ -1,5 +1,6 @@
-/* @(#)DefaultImageAdjustmentModel.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.av.codec.video;
 
@@ -9,7 +10,6 @@ import org.monte.media.beans.AbstractBean;
  * {@code DefaultImageAdjustmentModel}.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class DefaultColorAdjustModel
         extends AbstractBean implements ColorAdjustModel {

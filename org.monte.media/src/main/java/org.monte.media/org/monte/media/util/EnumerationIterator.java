@@ -1,5 +1,6 @@
-/* @(#)EnumerationIterator.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.util;
@@ -10,7 +11,6 @@ import java.util.Enumeration;
  * Wraps an Enumeration with the Iterator interface.
  *
  * @author Werni Randelshofer
- * @version $Id$
  */
 public class EnumerationIterator<T> implements java.util.Iterator<T> {
     private Enumeration<T> enumer;

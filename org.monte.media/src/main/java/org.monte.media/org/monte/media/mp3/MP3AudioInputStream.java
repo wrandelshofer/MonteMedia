@@ -1,5 +1,6 @@
-/* @(#)MP3AudioInputStream.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.mp3;
 
@@ -21,7 +22,6 @@ import java.io.InputStream;
  * the total number of frames in the stream.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class MP3AudioInputStream extends AudioInputStream {
 

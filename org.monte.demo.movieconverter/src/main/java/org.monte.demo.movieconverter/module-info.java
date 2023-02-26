@@ -3,10 +3,9 @@
  */
 
 /**
- * Movie converter demo.
+ * A program that demonstrates how to convert movies with the Monte Media library.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 module org.monte.demo.movieconverter {
     requires java.desktop;

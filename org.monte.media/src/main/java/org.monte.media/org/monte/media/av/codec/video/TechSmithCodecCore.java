@@ -1,5 +1,6 @@
-/* @(#)TechSmithCodecCore.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.av.codec.video;
 
@@ -155,7 +156,6 @@ import static java.lang.Math.min;
  * </pre>
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class TechSmithCodecCore extends AbstractVideoCodecCore {
 

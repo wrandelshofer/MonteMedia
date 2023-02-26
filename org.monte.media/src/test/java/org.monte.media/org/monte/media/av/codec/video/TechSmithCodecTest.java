@@ -1,3 +1,8 @@
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ */
+
 package org.monte.media.av.codec.video;
 
 import org.junit.jupiter.api.Test;

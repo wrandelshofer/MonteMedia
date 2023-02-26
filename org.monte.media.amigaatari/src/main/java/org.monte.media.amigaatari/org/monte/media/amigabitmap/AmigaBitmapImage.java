@@ -1,5 +1,6 @@
-/* @(#)AmigaBitmapImage.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.amigabitmap;
 
@@ -805,7 +806,6 @@ public class AmigaBitmapImage
      * -
      *
      * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
-     * @version $Id$
      */
     private void indexPlanesToIndexPixels(int top, int left, int bottom, int right) {
 
@@ -2598,7 +2598,6 @@ public class AmigaBitmapImage
      * -
      *
      * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
-     * @version $Id$
      */
     private void ham6PlanesToDirectPixels(int top, int left, int bottom, int right) {
         /* Add one to bottom and right to facilitate computations. */

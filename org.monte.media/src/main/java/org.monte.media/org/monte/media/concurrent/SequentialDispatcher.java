@@ -1,5 +1,6 @@
-/* @(#)SequentialDispatcher.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.concurrent;
 
@@ -12,7 +13,6 @@ package org.monte.media.concurrent;
  * Role in design pattern: EventCollector and EventProcessor
  *
  * @author Werner Randelshofef
- * @version $Id$
  */
 public class SequentialDispatcher extends EventLoop<Runnable> {
     /**

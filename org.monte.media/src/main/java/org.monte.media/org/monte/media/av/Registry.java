@@ -1,5 +1,6 @@
-/* @(#)Registry.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.av;
 
@@ -19,7 +20,6 @@ import static org.monte.media.av.FormatKeys.MimeTypeKey;
  * The {@code Registry} for audio and video codecs.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public abstract class Registry {
 

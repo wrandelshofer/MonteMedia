@@ -1,5 +1,6 @@
-/* @(#)ImageInputStreamImpl2.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.io;
 
@@ -15,7 +16,6 @@ import java.nio.ByteOrder;
  * not fulfill the read operation in a single step.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public abstract class ImageInputStreamImpl2 extends ImageInputStreamImpl {
     // Length of the buffer used for readFully(type[], int, int)

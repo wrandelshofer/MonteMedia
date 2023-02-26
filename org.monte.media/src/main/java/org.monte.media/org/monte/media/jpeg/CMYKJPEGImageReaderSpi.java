@@ -1,5 +1,6 @@
-/* @(#)CMYKJPEGImageReaderSpi.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.jpeg;
 
@@ -15,7 +16,6 @@ import java.util.Locale;
  * A reader for JPEG images in the CMYK color space.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class CMYKJPEGImageReaderSpi extends ImageReaderSpi {
 

@@ -1,5 +1,6 @@
-/* @(#)BaselineTIFFTagSet.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.exif;
 
@@ -21,28 +22,6 @@ import static org.monte.media.tiff.TIFFTag.SHORT_MASK;
 import static org.monte.media.tiff.TIFFTag.SRATIONAL_MASK;
 import static org.monte.media.tiff.TIFFTag.UNDEFINED_MASK;
 
-/**
- * Enumeration of standard EXIF tags.
- * <p>
- * Sources:
- * <p>
- * Exchangeable image file format for digital still cameras: Exif Version 2.2.
- * (April, 2002). Standard of Japan Electronics and Information Technology
- * Industries Association. JEITA CP-3451.
- * <a href="http://www.exif.org/Exif2-2.PDF">http://www.exif.org/Exif2-2.PDF</a>
- * <p>
- * Exiv2 Image metadata library and tools.
- * Copyright © 2004 - 2014 Andreas Huggel
- * <a href="http://www.exiv2.org/tags.html">http://www.exiv2.org/tags.html</a>
- * <p>
- * EXIF Tags
- * <a href="http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/EXIF.html"
- * >http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/EXIF.html</a>
- * <p>
- *
- * @author Werner Randelshofer
- * @version $Id$
- */
 public class EXIFTagSet extends TagSet {
 
     public final static TIFFTag ExifVersion = new TIFFTag("ExifVersion", 0x9000, UNDEFINED_MASK, new ASCIIValueFormatter());

@@ -1,5 +1,6 @@
-/* @(#)VideoFormatKeys.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.av.codec.video;
 
@@ -11,7 +12,6 @@ import org.monte.media.math.Rational;
  * Defines common format keys for video media.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class VideoFormatKeys extends FormatKeys {
     // Standard video ENCODING strings for use with FormatKey.Encoding.

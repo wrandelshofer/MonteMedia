@@ -3,10 +3,9 @@
  */
 
 /**
- * Merging of ANIM files demo.
+ * A program that demonstrates how to merge Amiga IFF ANIM files with the Monte Media library.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 module org.monte.demo.animmerger {
     requires java.desktop;

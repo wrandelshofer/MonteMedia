@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ @(#)pom.xml
-  ~ Copyright © 2022 The authors and contributors of JHotDraw. MIT License.
+  ~ @(#)Main.java
+  ~ Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
   -->
 <!--
   ~ Usage:
   ~ mvn clean deploy -Drevision=$(git show -s - -format=%cs_%h)
+  ~ mvn clean source:jar package javadoc:jar gpg:sign repository:bundle-create - -batch-mode
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -24,13 +25,30 @@
   </licenses>
   <url>https://github.com/wrandelshofer/montemedia</url>
   <scm>
+    <connection>scm:git:git://github.com/wrandelshofer/montemedia.git</connection>
+    <developerConnection>scm:git:ssh://github.com/wrandelshofer/montemedia.git</developerConnection>
     <url>https://github.com/wrandelshofer/montemedia.git</url>
   </scm>
 
   <packaging>pom</packaging>
-  <name>*Parent Project MonteMedia</name>
-
+  <name>*Parent Project Monte Media</name>
+  <description>The parent project of the Monte Media library.</description>
+  <developers>
+    <developer>
+      <id>wrandelshoer</id>
+      <name>Werner Randelshofer</name>
+      <email>werner.randelshofer@bluewin.ch</email>
+      <organization>Werner Randelshofer</organization>
+      <organizationUrl>http://www.randelshofer.ch</organizationUrl>
+      <timezone>Europe/Zurich</timezone>
+    </developer>
+  </developers>
   <modules>
+    <!--
+    -->
+    <module>org.monte.demo.jmfavi</module>
+    <module>org.monte.demo.jmftsccdemo</module>
+    <module>org.monte.media.jmf</module>
     <module>org.monte.media.animconverter</module>
     <module>org.monte.demo.animmerger</module>
     <module>org.monte.demo.audiorecorder</module>
@@ -39,8 +57,6 @@
     <module>org.monte.demo.cmykimageviewer</module>
     <module>org.monte.demo.imageioviewer</module>
     <module>org.monte.demo.io</module>
-    <module>org.monte.demo.jmfavi</module>
-    <module>org.monte.demo.jmftsccdemo</module>
     <module>org.monte.demo.movieconverter</module>
     <module>org.monte.demo.moviemaker</module>
     <module>org.monte.demo.mpoimagesplitter</module>
@@ -51,9 +67,10 @@
     <module>org.monte.media</module>
     <module>org.monte.media.amigaatari</module>
     <module>org.monte.media.javafx</module>
-    <module>org.monte.media.jmf</module>
     <module>org.monte.media.screenrecorder</module>
     <module>org.monte.media.swing</module>
+    <!--
+    -->
   </modules>
 
   <properties>
@@ -62,7 +79,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <project.build.outputTimestamp>${git.commit.time}</project.build.outputTimestamp>
-    <revision>17.0.0</revision>
+    <revision>17</revision>
   </properties>
 
   <build>
@@ -85,8 +102,13 @@
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.4.1</version>
+          <version>3.5.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -217,6 +239,28 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.6</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+        <!--
+        <configuration>
+          <gpgArguments>
+            <gpgArgument>- -pinentry-mode</gpgArgument>
+            <gpgArgument>loopback</gpgArgument>
+          </gpgArguments>
+        </configuration>
+        -->
       </plugin>
     </plugins>
   </build>

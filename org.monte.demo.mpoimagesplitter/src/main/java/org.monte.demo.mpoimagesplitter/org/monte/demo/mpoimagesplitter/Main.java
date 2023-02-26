@@ -1,5 +1,6 @@
-/* @(#)Main.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.demo.mpoimagesplitter;
 
@@ -23,7 +24,6 @@ import java.util.List;
  * Main.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class Main extends javax.swing.JPanel {
     private final static long serialVersionUID = 1L;

@@ -1,5 +1,6 @@
-/* @(#)ByteArrayImageInputStream.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.io;
 
@@ -18,7 +19,6 @@ import java.nio.ByteOrder;
  * generating an {@code IOException}.
  *
  * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau
- * @version $Id$
  */
 public class ByteArrayImageInputStream extends ImageInputStreamImpl2 {
     /**
@@ -172,9 +172,9 @@ public class ByteArrayImageInputStream extends ImageInputStreamImpl2 {
 
 
     /**
-     * Closing a <tt>ByteArrayInputStream</tt> has no effect. The methods in
+     * Closing a {@code ByteArrayInputStream} has no effect. The methods in
      * this class can be called after the stream has been closed without
-     * generating an <tt>IOException</tt>.
+     * generating an {@code IOException}.
      * <p>
      */
     @Override

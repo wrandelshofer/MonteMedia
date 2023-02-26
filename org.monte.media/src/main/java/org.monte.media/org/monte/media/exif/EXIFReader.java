@@ -1,5 +1,6 @@
-/* @(#)EXIFReader.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.exif;
 
@@ -57,7 +58,6 @@ import java.util.TreeSet;
  * http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf</a>
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class EXIFReader {
 

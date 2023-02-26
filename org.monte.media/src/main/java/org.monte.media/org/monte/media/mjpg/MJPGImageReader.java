@@ -1,5 +1,6 @@
-/* @(#)MJPGImageReader.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.mjpg;
 
@@ -31,7 +32,6 @@ import java.util.LinkedList;
  * href="http://www.fileformat.info/format/bmp/spec/b7c72ebab8064da48ae5ed0c053c67a4/BMPDIB.TXT">BMPDIB.txt</a>
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class MJPGImageReader extends ImageReader {
 

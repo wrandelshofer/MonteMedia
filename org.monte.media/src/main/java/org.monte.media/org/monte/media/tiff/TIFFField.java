@@ -1,5 +1,6 @@
-/* @(#)TIFFField.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.tiff;
 
@@ -7,7 +8,6 @@ package org.monte.media.tiff;
  * A field in a {@link TIFFDirectory}.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class TIFFField extends TIFFNode {
 

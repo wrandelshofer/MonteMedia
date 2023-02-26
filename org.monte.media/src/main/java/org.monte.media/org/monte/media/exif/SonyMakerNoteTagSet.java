@@ -1,5 +1,6 @@
-/* @(#)SonyMakerNoteTagSet.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.exif;
 
@@ -12,20 +13,6 @@ import static org.monte.media.tiff.TIFFTag.SHORT_MASK;
 import static org.monte.media.tiff.TIFFTag.SRATIONAL_MASK;
 import static org.monte.media.tiff.TIFFTag.UNDEFINED_MASK;
 
-/**
- * Enumeration of Sony MakerNote tags.
- * <p>
- * Sources:
- * <p>
- * http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/Sony.html
- * <p>
- * Exiv2 Image metadata library and tools.
- * Copyright © 2004 - 2014 Andreas Huggel
- * <a href="http://www.exiv2.org/tags-sony.html">http://www.exiv2.org/tags-sony.html</a>
- *
- * @author Werner Randelshofer
- * @version $Id$
- */
 public class SonyMakerNoteTagSet extends TagSet {
 
     private static SonyMakerNoteTagSet instance;

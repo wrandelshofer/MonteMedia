@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!--
-  ~ @(#)pom.xml
-  ~ Copyright © 2022 The authors and contributors of JHotDraw. MIT License.
+  ~ @(#)Main.java
+  ~ Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
@@ -15,6 +15,9 @@
   <packaging>jar</packaging>
 
   <name>Monte Media Demo JMF TSCC Demo</name>
+  <description>A program that demonstrates how to integrate the TSCC codec from the Monte Media library into the JMF
+    library.
+  </description>
 
   <build>
     <sourceDirectory>${basedir}/src/main/java/org.monte.demo.jmftsccdemo</sourceDirectory>
@@ -38,7 +41,47 @@
 
     </testResources>
 
-    <plugins></plugins>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <addDefaultEntries>false</addDefaultEntries>
+            </manifest>
+            <manifestEntries>
+              <SCM-URL>${project.scm.url}</SCM-URL>
+              <Git-Commit-Time>${git.commit.time}</Git-Commit-Time>
+              <Git-Commit-Id>${git.commit.id.full}</Git-Commit-Id>
+              <Git-Commit-Id>${git.commit.id.full}</Git-Commit-Id>
+              <Automatic-Module-Name>${project.artifactId}</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
   <dependencies>
     <dependency>

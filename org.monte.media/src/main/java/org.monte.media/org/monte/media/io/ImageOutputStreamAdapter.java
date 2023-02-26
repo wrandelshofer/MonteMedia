@@ -1,5 +1,6 @@
-/* @(#)ImageOutputStreamAdapter.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.io;
 
@@ -12,7 +13,6 @@ import java.io.OutputStream;
  * {@code OutputStream}.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class ImageOutputStreamAdapter extends OutputStream {
 
@@ -26,7 +26,7 @@ public class ImageOutputStreamAdapter extends OutputStream {
      * underlying output stream.
      *
      * @param out the underlying output stream to be assigned to
-     *            the field <tt>this.out</tt> for later use, or
+     *            the field {@code this.out} for later use, or
      *            <code>null</code> if this instance is to be
      *            created without an underlying stream.
      */
@@ -39,9 +39,9 @@ public class ImageOutputStreamAdapter extends OutputStream {
      * <p>
      * The <code>write</code> method of <code>FilterOutputStream</code>
      * calls the <code>write</code> method of its underlying output stream,
-     * that is, it performs <tt>out.write(b)</tt>.
+     * that is, it performs {@code out.write(b)}.
      * <p>
-     * Implements the abstract <tt>write</tt> method of <tt>OutputStream</tt>.
+     * Implements the abstract {@code write} method of {@code OutputStream}.
      *
      * @param b the <code>byte</code>.
      * @throws IOException if an I/O error occurs.

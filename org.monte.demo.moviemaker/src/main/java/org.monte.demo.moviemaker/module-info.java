@@ -3,10 +3,9 @@
  */
 
 /**
- * Movie maker demo.
+ * A program that demonstrates how to generate movies with the Monte Media library.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 module org.monte.demo.moviemaker {
     requires java.desktop;

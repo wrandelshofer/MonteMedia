@@ -1,5 +1,6 @@
-/* @(#)QTFFImageInputStream.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.quicktime;
 
@@ -18,7 +19,6 @@ import static java.lang.Math.min;
  * {@code QuickTimeImageInputStream}.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class QTFFImageInputStream extends FilterImageInputStream {
     protected static final long MAC_TIMESTAMP_EPOCH = new GregorianCalendar(1904, GregorianCalendar.JANUARY, 1).getTimeInMillis();

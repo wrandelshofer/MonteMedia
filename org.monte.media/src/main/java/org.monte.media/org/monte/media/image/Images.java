@@ -1,5 +1,6 @@
-/* @(#)Images.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.image;
 
@@ -25,7 +26,6 @@ import java.util.Hashtable;
  * Image processing methods for buffered images.
  *
  * @author Werner Randelshofer, Karl von Randow
- * @version $Id$
  */
 public class Images {
 

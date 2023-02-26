@@ -1,5 +1,6 @@
-/* @(#)TIFFOutputStream.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.tiff;
 
@@ -19,7 +20,6 @@ import java.util.Stack;
  * http://www.exif.org/specifications.html
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class TIFFOutputStream extends OutputStream {
 

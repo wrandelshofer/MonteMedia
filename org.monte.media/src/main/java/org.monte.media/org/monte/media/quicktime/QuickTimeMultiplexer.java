@@ -1,5 +1,6 @@
-/* @(#)QuickTimeMultiplexer.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.quicktime;
@@ -14,7 +15,6 @@ import java.io.IOException;
  * {@code QuickTimeMultiplexer}.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class QuickTimeMultiplexer extends QuickTimeWriter implements Multiplexer {
     public QuickTimeMultiplexer(File file) throws IOException {

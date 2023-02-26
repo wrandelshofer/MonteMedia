@@ -1,5 +1,6 @@
-/* @(#)PBMImageReader.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.pbm;
 
@@ -23,7 +24,6 @@ import java.util.LinkedList;
  * Reads an image in the Amiga IFF Packed Bitmap image format (PBM).
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class PBMImageReader extends ImageReader implements AnimatedImageReader {
 

@@ -1,5 +1,6 @@
-/* @(#)Main.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.demo.audiorecorder;
 
@@ -23,7 +24,6 @@ import java.util.Date;
  * {@code Main} records audio into an AVI file.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class Main implements Runnable {
 

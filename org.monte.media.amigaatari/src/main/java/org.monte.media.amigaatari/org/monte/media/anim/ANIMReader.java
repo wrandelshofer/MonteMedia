@@ -1,5 +1,6 @@
-/* @(#)ANIMReader.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.anim;
 
@@ -16,7 +17,6 @@ import java.io.InputStream;
  * {@code ANIMReader}.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class ANIMReader {
 

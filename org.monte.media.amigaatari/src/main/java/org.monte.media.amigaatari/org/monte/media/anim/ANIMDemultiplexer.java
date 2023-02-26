@@ -1,5 +1,6 @@
-/* @(#)ANIMDemultiplexer.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.anim;
 
@@ -16,7 +17,6 @@ import java.util.List;
  * Demultiplexes an ANIM file into a video track and an audio track.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class ANIMDemultiplexer extends ANIMReader implements Demultiplexer {
 

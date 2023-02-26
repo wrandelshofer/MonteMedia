@@ -3,10 +3,9 @@
  */
 
 /**
- * AVIWriter demo.
+ * A program that demonstrates how to write AVI files with the Monte Media library.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 module org.monte.demo.aviwriter {
     requires java.desktop;

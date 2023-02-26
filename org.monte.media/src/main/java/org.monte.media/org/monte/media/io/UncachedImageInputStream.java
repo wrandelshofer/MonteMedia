@@ -1,5 +1,6 @@
-/* @(#)UncachedImageInputStream.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.io;
 
@@ -14,7 +15,6 @@ import java.nio.ByteOrder;
  * not supported.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class UncachedImageInputStream extends ImageInputStreamImpl2 {
 

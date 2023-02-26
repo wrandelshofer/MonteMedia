@@ -1,5 +1,6 @@
-/* @(#)Interpolator.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.av;
@@ -8,7 +9,6 @@ package org.monte.media.av;
  * A linear interpolator for use in conjunction with an Animator object.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public abstract class Interpolator {
     private float startValue;

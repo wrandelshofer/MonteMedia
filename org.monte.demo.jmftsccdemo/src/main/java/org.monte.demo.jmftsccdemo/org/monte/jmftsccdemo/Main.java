@@ -1,5 +1,6 @@
-/* @(#)Main.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.jmftsccdemo;
 
@@ -47,7 +48,6 @@ import java.util.Random;
  * Main.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class Main extends javax.swing.JFrame {
     private final static long serialVersionUID = 1L;

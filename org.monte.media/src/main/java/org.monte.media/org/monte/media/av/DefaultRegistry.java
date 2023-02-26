@@ -1,5 +1,6 @@
-/* @(#)DefaultRegistry.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.av;
 
@@ -20,7 +21,6 @@ import java.util.Set;
  * FIXME - The registry should be read from a file.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class DefaultRegistry extends Registry {
 

@@ -1,5 +1,6 @@
-/* @(#)AbstractTransferable.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.swing.datatransfer;
@@ -11,7 +12,6 @@ import java.awt.datatransfer.Transferable;
  * Base class for transferable objects.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public abstract class AbstractTransferable implements Transferable {
     private DataFlavor[] flavors;

@@ -1,5 +1,6 @@
-/* @(#)TrimDemoMain.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.demo.io;
 
@@ -32,7 +33,6 @@ import static org.monte.media.av.FormatKeys.MediaTypeKey;
  * non-keyframe.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class TrimDemoMain {
 

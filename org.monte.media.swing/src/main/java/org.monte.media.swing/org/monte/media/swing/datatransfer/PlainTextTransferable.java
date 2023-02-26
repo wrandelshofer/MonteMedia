@@ -1,5 +1,6 @@
-/* @(#)PlainTextTransferable.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.swing.datatransfer;
@@ -19,7 +20,6 @@ import java.io.StringReader;
  * PlainTextTransferable.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class PlainTextTransferable extends AbstractTransferable {
     private String plainText;

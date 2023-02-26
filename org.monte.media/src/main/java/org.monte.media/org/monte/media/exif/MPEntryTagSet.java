@@ -1,5 +1,6 @@
-/* @(#)MPEntryTagSet.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.exif;
 
@@ -27,7 +28,6 @@ import static org.monte.media.tiff.TIFFTag.SRATIONAL_MASK;
  * http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf</a>
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class MPEntryTagSet extends TagSet {
 

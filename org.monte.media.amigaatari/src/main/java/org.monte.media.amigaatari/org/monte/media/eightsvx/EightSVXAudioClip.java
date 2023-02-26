@@ -1,5 +1,6 @@
-/* @(#)EightSVXAudioClip.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.eightsvx;
 
@@ -29,7 +30,6 @@ import java.io.OutputStream;
  * support built in JDK 1.1.
  *
  * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version $Id$
  */
 public class EightSVXAudioClip
         implements LoopableAudioClip {

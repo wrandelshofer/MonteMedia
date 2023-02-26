@@ -1,5 +1,6 @@
-/* @(#)IOStreams.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.io;
 
@@ -15,7 +16,6 @@ import java.nio.file.StandardCopyOption;
  * IOStreams.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class IOStreams {
     /**

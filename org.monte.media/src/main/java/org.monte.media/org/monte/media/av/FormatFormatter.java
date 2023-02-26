@@ -1,5 +1,6 @@
-/* @(#)FormatFormatter.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.av;
 
@@ -28,7 +29,6 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
  * {@code FormatFormatter}.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class FormatFormatter {
 

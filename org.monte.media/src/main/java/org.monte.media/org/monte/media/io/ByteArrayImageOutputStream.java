@@ -1,5 +1,6 @@
-/* @(#)ByteArrayImageOutputStream.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.io;
 
@@ -24,7 +25,6 @@ import static java.lang.Math.max;
  * generating an {@code IOException}.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
 
@@ -189,9 +189,9 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
     }
 
     /**
-     * Closing a <tt>ByteArrayInputStream</tt> has no effect. The methods in
+     * Closing a {@code ByteArrayInputStream} has no effect. The methods in
      * this class can be called after the stream has been closed without
-     * generating an <tt>IOException</tt>.
+     * generating an {@code IOException}.
      * <p>
      */
     @Override

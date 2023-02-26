@@ -1,5 +1,6 @@
-/* @(#)AppendableByteArrayInputStream.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.io;
 
@@ -9,7 +10,6 @@ import java.io.ByteArrayInputStream;
  * A {@code ByteArrayInputStream} which allows to replace the byte buffer underneath.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class AppendableByteArrayInputStream extends ByteArrayInputStream {
 

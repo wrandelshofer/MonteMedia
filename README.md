@@ -1,4 +1,6 @@
-# MonteMedia 17.0
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/ch.randelshofer/org.monte.media/badge.svg)](https://maven-badges.herokuapp.com/maven-central/ch.randelshofer/org.monte.media)
+
+# MonteMedia 17
 
 A Java library for processing still images, video, audio and meta-data.
 
@@ -17,7 +19,7 @@ The library is split up into a main module, additional modules and demo modules.
 * org.monte.media.javafx
   This module provides integration with JavaFX.
 * org.monte.demo.*
- These are demo modules.
+  These are demo modules.
 
 To launch the screen recorder enter:
 java -p modules -m org.monte.media

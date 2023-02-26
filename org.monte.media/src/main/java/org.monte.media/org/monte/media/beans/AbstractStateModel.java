@@ -1,5 +1,6 @@
-/* @(#)AbstractStateModel.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.beans;
@@ -14,7 +15,6 @@ import javax.swing.event.EventListenerList;
  * state changes.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class AbstractStateModel {
     protected EventListenerList listenerList;

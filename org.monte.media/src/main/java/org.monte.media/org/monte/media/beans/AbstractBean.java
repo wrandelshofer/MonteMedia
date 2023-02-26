@@ -1,5 +1,6 @@
-/* @(#)AbstractBean.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.beans;
 
@@ -12,7 +13,6 @@ import java.beans.PropertyChangeSupport;
  * listeners.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class AbstractBean extends Object implements java.io.Serializable {
     private final static long serialVersionUID = 1L;

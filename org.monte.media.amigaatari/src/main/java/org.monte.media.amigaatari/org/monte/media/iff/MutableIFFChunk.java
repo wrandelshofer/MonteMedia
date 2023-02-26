@@ -1,5 +1,6 @@
-/* @(#)MutableIFFChunk.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.iff;
 
@@ -37,7 +38,6 @@ import java.io.IOException;
  * instances. A sometimes-needed pad is shown as "[0]".
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class MutableIFFChunk extends TreeNode<MutableIFFChunk> {
     private final static long serialVersionUID = 1L;

@@ -1,5 +1,6 @@
-/* @(#)ILBMImageReader.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.ilbm;
 
@@ -22,7 +23,6 @@ import java.util.LinkedList;
  * Reads an image in the Amiga IFF Interleaved Bitmap image format (ILBM).
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class ILBMImageReader extends ImageReader implements AnimatedImageReader {
 

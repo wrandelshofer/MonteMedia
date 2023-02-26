@@ -1,5 +1,6 @@
-/* @(#)IFFVisitor.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.iff;
 
@@ -10,7 +11,6 @@ import org.monte.media.exception.ParseException;
  * IFFVisitor is notified each time the IFFParser visits
  * a data chunk and when a group is entered or leaved.
  *
- * @version $Id$
  */
 public interface IFFVisitor {
     public void enterGroup(IFFChunk group)

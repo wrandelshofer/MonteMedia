@@ -1,5 +1,6 @@
-/* @(#)RIFFPrimitivesInputStream.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.riff;
 
@@ -18,7 +19,6 @@ import java.io.InputStream;
  * http://msdn.microsoft.com/archive/default.asp?url=/archive/en-us/directx9_c/directx/htm/avirifffilereference.asp
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class RIFFPrimitivesInputStream extends FilterInputStream {
     private long scan, mark;

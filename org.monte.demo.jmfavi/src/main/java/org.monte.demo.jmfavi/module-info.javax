@@ -3,8 +3,8 @@
  */
 
 /**
- * JMF AVI demo.
- * 
+ * A program that demonstrates how to integrate a codec from the Monte Media library into the JMF library.
+ *
  * @author Werner Randelshofer
  * @version $Id$
  */

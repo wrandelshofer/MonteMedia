@@ -1,5 +1,6 @@
-/* @(#)AbstractVideoDecoder.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.jmf.codec.video;
 
@@ -12,7 +13,6 @@ import javax.media.format.VideoFormat;
  * {@code AbstractVideoDecoder}.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public abstract class AbstractVideoDecoder extends AbstractCodec {
 

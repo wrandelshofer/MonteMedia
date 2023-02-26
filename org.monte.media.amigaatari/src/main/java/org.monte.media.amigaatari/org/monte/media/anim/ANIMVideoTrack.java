@@ -1,5 +1,6 @@
-/* @(#)ANIMVideoTrack.java
- * Copyright © 2021 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.anim;
@@ -29,7 +30,6 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
  * {@code ANIMVideoTrack}.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class ANIMVideoTrack implements Track {
     private ANIMDemultiplexer demux;

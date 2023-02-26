@@ -1,5 +1,6 @@
-/* @(#)Main.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.demo.quicktimewriter;
 
@@ -38,7 +39,6 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
  * Demonstrates the use of {@link QuickTimeReader} and {@link QuickTimeWriter}.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class Main {
 

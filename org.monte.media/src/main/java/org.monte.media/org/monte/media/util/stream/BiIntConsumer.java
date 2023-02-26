@@ -1,5 +1,6 @@
-/* @(#)BiIntConsumer.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.util.stream;
@@ -8,7 +9,6 @@ package org.monte.media.util.stream;
  * BiIntConsumer.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 @FunctionalInterface
 public interface BiIntConsumer {

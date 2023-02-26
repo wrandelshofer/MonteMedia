@@ -1,5 +1,6 @@
-/* @(#)MC68000InputStream.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.iff;
 
@@ -15,7 +16,6 @@ import java.io.InputStream;
  * <p>
  * This stream filter is suitable for IFF-EA85 files.
  *
- * @version $Id$
  * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
  */
 public class MC68000InputStream

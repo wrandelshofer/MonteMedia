@@ -1,5 +1,6 @@
-/* @(#)ImagePanel.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.swing;
 
@@ -13,7 +14,6 @@ import java.beans.PropertyChangeSupport;
  * Displays images on a panel.
  *
  * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland.
- * @version $Id$
  */
 public class ImagePanel
         extends JComponent {

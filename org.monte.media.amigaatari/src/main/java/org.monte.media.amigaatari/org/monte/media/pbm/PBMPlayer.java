@@ -1,5 +1,6 @@
-/* @(#)PBMPlayer.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.pbm;
 
@@ -22,7 +23,6 @@ import java.util.ArrayList;
  * A Player for PBM images with color cycling.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class PBMPlayer extends AbstractPlayer implements ColorCyclePlayer {
 

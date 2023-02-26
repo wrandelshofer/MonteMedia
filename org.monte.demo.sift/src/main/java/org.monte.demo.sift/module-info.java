@@ -3,7 +3,7 @@
  */
 
 /**
- * Takes an IFF file and tells you what's in it.
+ * A program that demonstrates how to analyze Amiga IFF files with the Monte Media library.
  * <p>
  * Inspired by sift.c for Amiga.
  *

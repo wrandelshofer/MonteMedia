@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!--
-  ~ @(#)pom.xml
-  ~ Copyright © 2022 The authors and contributors of JHotDraw. MIT License.
+  ~ @(#)Main.java
+  ~ Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
@@ -15,7 +15,7 @@
   <packaging>jar</packaging>
 
   <name>Monte Media Demo ImageIO Viewer</name>
-
+  <description>A program that demonstrates how to create an image viewer with the Java ImageIO library.</description>
   <build>
     <sourceDirectory>${basedir}/src/main/java/org.monte.demo.imageioviewer</sourceDirectory>
     <testSourceDirectory>${basedir}/src/test/java/org.monte.demo.imageioviewer</testSourceDirectory>
@@ -38,7 +38,22 @@
 
     </testResources>
 
-    <plugins></plugins>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
   <dependencies>
     <dependency>

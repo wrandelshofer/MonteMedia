@@ -1,5 +1,6 @@
-/* @(#)JFIFInputStream.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.jfif;
 
@@ -42,7 +43,6 @@ import java.util.HashSet;
  *   ISBN 0-442-01272-1<br>
  *
  * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau
- * @version $Id$
  */
 public class JFIFInputStream extends FilterInputStream {
 

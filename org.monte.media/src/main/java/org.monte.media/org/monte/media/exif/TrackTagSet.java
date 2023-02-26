@@ -1,5 +1,6 @@
-/* @(#)TrackTagSet.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.exif;
@@ -11,7 +12,6 @@ import org.monte.media.tiff.TagSet;
  * TrackTagSet.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class TrackTagSet extends TagSet {
     private static TrackTagSet instance;

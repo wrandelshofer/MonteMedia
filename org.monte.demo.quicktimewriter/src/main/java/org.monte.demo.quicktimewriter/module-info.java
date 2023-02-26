@@ -3,10 +3,9 @@
  */
 
 /**
- * QuickTimeWriter demo.
+ * A program that demonstrates how to write QuickTime files with the Monte Media library.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 module org.monte.demo.quicktimewriter {
     requires java.desktop;

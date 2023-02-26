@@ -1,5 +1,6 @@
-/* @(#)TSCCCodec.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.jmf.codec.video;
 
@@ -26,7 +27,6 @@ import java.io.IOException;
  * See {@link TechSmithCodecCore} for a description of the format.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class TSCCCodec extends AbstractVideoDecoder {
 

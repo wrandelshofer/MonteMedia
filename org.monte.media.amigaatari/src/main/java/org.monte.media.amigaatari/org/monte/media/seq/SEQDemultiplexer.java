@@ -1,5 +1,6 @@
-/* @(#)SEQDemultiplexer.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.seq;
 
@@ -13,7 +14,6 @@ import java.io.IOException;
  * {@code SEQDemultiplexer}.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class SEQDemultiplexer extends SEQReader implements Demultiplexer {
 

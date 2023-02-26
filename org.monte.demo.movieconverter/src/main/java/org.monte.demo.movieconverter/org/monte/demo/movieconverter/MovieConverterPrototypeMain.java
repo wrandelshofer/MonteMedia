@@ -1,5 +1,6 @@
-/* @(#)MovieConverterPrototypeMain.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.demo.movieconverter;
 
@@ -9,7 +10,6 @@ import org.monte.media.av.Buffer;
  * {@code MovieConverterPrototypeMain}.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class MovieConverterPrototypeMain {
     private static class MovieReader {

@@ -1,5 +1,6 @@
-/* @(#)AmigaBitmapCodec.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.amigabitmap.codec.video;
 
@@ -39,7 +40,6 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
  * Decodes media data into a {@code Bitmap}.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public class AmigaBitmapCodec extends AbstractVideoCodec {
     public AmigaBitmapCodec() {

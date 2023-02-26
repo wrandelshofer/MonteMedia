@@ -1,5 +1,6 @@
-/* @(#)GPSTagSet.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.exif;
 
@@ -13,23 +14,6 @@ import static org.monte.media.tiff.TIFFTag.RATIONAL_MASK;
 import static org.monte.media.tiff.TIFFTag.SHORT_MASK;
 import static org.monte.media.tiff.TIFFTag.UNDEFINED_MASK;
 
-/**
- * Enumeration of GPS EXIF tags.
- * <p>
- * Sources:
- * <p>
- * Exchangeable image file format for digital still cameras: EXIF Version 2.2.
- * (April, 2002). Standard of Japan Electronics and Information Technology
- * Industries Association. JEITA CP-3451.
- * <a href="http://www.exif.org/Exif2-2.PDF">http://www.exif.org/Exif2-2.PDF</a>
- * <p>
- * Exiv2 Image metadata library and tools.
- * Copyright © 2004 - 2014 Andreas Huggel
- * <a href="http://www.exiv2.org/tags.html">http://www.exiv2.org/tags.html</a>
- *
- * @author Werner Randelshofer
- * @version $Id$
- */
 public class GPSTagSet extends TagSet {
 
     private static GPSTagSet instance;

@@ -1,5 +1,6 @@
-/* @(#)ANIMDecoder.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.anim;
 
@@ -29,7 +30,6 @@ import java.util.Arrays;
  * Decodes IFF files and adds the data to an ANIMMovieTrack.
  *
  * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version $Id$
  */
 public class ANIMDecoder
         implements IFFVisitor {

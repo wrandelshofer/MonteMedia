@@ -1,5 +1,6 @@
-/* @(#)EventLoop.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)Main.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.concurrent;
 
@@ -30,7 +31,7 @@ import java.util.LinkedList;
  * <p>
  * An EventLoop, which outputs Strings on a background thread
  * could look like this:
- * <pre><tt>
+ * <pre>{@code
  * public class AsyncDisplay
  * extends AbstractEventLoop {
  *     public void display(String string) {
@@ -40,16 +41,15 @@ import java.util.LinkedList;
  *          System.out.println((String) event);
  *    }
  * }
- * </tt></pre>
+ * }</pre>
  * <p>
  * To use the class proceed like this:
- * <pre><tt>
+ * <pre>{@code
  * AsyncDisplay a = new AsyncDisplay();
  *  a.display("Hello World");
- * </tt></pre>
+ * }</pre>
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 public abstract class EventLoop<E> {
     /**

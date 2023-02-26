@@ -3,10 +3,9 @@
  */
 
 /**
- * Provides utility classes for JavaFX.
+ * Provides JavaFX classes for use with the Monte Media library.
  *
  * @author Werner Randelshofer
- * @version $Id$
  */
 module org.monte.media.javafx {
     requires java.desktop;
