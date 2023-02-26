@@ -5,3 +5,5 @@
 **/.flattened-pom.xml
 /*/target/
 /target/
+/.idea/workspace.xml
+/.idea/shelf/
