@@ -29,10 +29,12 @@
  * Encoding</td><td>Encode</td></tr>
  * <tr><td>ZMBV</td><td>AVI</td><td>DosBox Capture
  * Codec</td><td>Decode</td></tr>
+ * <tr><td>TSCC</td><td>AVI, MOV</td><td>TechSmith Screen Capture
+ * Codec</td><td>Decode, Encode</td></tr>
  * <tr><td>MJPG</td><td>AVI, MOV</td><td>Motion JPEG</td><td>Decode,
  * Encode</td></tr>
- * <tr><td>Animation</td><td>MOV</td><td>QuickTime Animation</td><td>Write</td></tr>
- * <tr><td>Raw</td><td>MOV</td><td>QuickTime RAW</td><td>Write</td></tr>
+ * <tr><td>Animation</td><td>MOV</td><td>QuickTime Animation</td><td>Encode</td></tr>
+ * <tr><td>Raw</td><td>MOV</td><td>QuickTime RAW</td><td>Encode</td></tr>
  * </table>
  * <p>
  * Supports the following audio encodings:
