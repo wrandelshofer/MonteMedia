@@ -4,6 +4,8 @@
  */
 package org.monte.media.avi;
 
+import org.monte.media.io.ByteArray;
+
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -26,7 +28,7 @@ public class DataChunkOutputStream extends FilterOutputStream {
      * Whether flush and close request shall be forwarded to underlying stream.
      */
     private boolean forwardFlushAndClose;
-
+    private byte byteBuffer[] = new byte[8];
     public DataChunkOutputStream(OutputStream out) {
         this(out, true);
     }
@@ -107,7 +109,7 @@ public class DataChunkOutputStream extends FilterOutputStream {
 
     /**
      * Writes an <code>int</code> to the underlying output stream as four
-     * bytes, high byte first. If no exception is thrown, the counter
+     * bytes, low byte first. If no exception is thrown, the counter
      * <code>written</code> is incremented by <code>4</code>.
      *
      * @param v an <code>int</code> to be written.
@@ -115,10 +117,8 @@ public class DataChunkOutputStream extends FilterOutputStream {
      * @see java.io.FilterOutputStream#out
      */
     public void writeInt(int v) throws IOException {
-        out.write((v >>> 0) & 0xff);
-        out.write((v >>> 8) & 0xff);
-        out.write((v >>> 16) & 0xff);
-        out.write((v >>> 24) & 0xff);
+        ByteArray.setIntLE(byteBuffer, 0, v);
+        out.write(byteBuffer, 0, 4);
         incCount(4);
     }
 
@@ -129,10 +129,8 @@ public class DataChunkOutputStream extends FilterOutputStream {
      * @throws java.io.IOException
      */
     public void writeUInt(long v) throws IOException {
-        out.write((int) ((v >>> 0) & 0xff));
-        out.write((int) ((v >>> 8) & 0xff));
-        out.write((int) ((v >>> 16) & 0xff));
-        out.write((int) ((v >>> 24) & 0xff));
+        ByteArray.setIntLE(byteBuffer, 0, (int) v);
+        out.write(byteBuffer, 0, 4);
         incCount(4);
     }
 
@@ -143,8 +141,8 @@ public class DataChunkOutputStream extends FilterOutputStream {
      * @throws java.io.IOException
      */
     public void writeShort(int v) throws IOException {
-        out.write((v >>> 0) & 0xff);
-        out.write((v >> 8) & 0xff);
+        ByteArray.setShortLE(byteBuffer, 0, (short) v);
+        out.write(byteBuffer, 0, 2);
         incCount(2);
     }
 
@@ -178,20 +176,14 @@ public class DataChunkOutputStream extends FilterOutputStream {
     }
 
     public void writeLong(long v) throws IOException {
-        out.write((int) (v >>> 0) & 0xff);
-        out.write((int) (v >>> 8) & 0xff);
-        out.write((int) (v >>> 16) & 0xff);
-        out.write((int) (v >>> 24) & 0xff);
-        out.write((int) (v >>> 32) & 0xff);
-        out.write((int) (v >>> 40) & 0xff);
-        out.write((int) (v >>> 48) & 0xff);
-        out.write((int) (v >>> 56) & 0xff);
+        ByteArray.setLongLE(byteBuffer, 0, v);
+        out.write(byteBuffer, 0, 8);
         incCount(8);
     }
 
     public void writeUShort(int v) throws IOException {
-        out.write((v >>> 0) & 0xff);
-        out.write((v >> 8) & 0xff);
+        ByteArray.setShortLE(byteBuffer, 0, (short) v);
+        out.write(byteBuffer, 0, 2);
         incCount(2);
     }
 
@@ -213,7 +205,6 @@ public class DataChunkOutputStream extends FilterOutputStream {
      * If the counter overflows, it will be wrapped to Integer.MAX_VALUE.
      *
      * @return the value of the <code>written</code> field.
-     * @see java.io.DataOutputStream#written
      */
     public final long size() {
         return written;

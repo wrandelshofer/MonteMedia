@@ -4,6 +4,8 @@
  */
 package org.monte.media.iff;
 
+import org.monte.media.io.ByteArray;
+
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -20,6 +22,7 @@ public class MC68000OutputStream extends FilterOutputStream {
      * If this counter overflows, it will be wrapped to Integer.MAX_VALUE.
      */
     protected long written;
+    private byte byteBuffer[] = new byte[8];
 
     /**
      * Creates a new instance.
@@ -29,35 +32,31 @@ public class MC68000OutputStream extends FilterOutputStream {
     }
 
     public void writeLONG(int v) throws IOException {
-        out.write((v >>> 24) & 0xFF);
-        out.write((v >>> 16) & 0xFF);
-        out.write((v >>> 8) & 0xFF);
-        out.write((v >>> 0) & 0xFF);
+        ByteArray.setIntBE(byteBuffer, 0, v);
+        out.write(byteBuffer, 0, 4);
         incCount(4);
     }
 
     public void writeULONG(long v) throws IOException {
-        out.write((int) ((v >>> 24) & 0xFF));
-        out.write((int) ((v >>> 16) & 0xFF));
-        out.write((int) ((v >>> 8) & 0xFF));
-        out.write((int) ((v >>> 0) & 0xFF));
+        ByteArray.setIntBE(byteBuffer, 0, (int) v);
+        out.write(byteBuffer, 0, 4);
         incCount(4);
     }
 
     public void writeWORD(int v) throws IOException {
-        out.write((v >>> 8) & 0xFF);
-        out.write((v >>> 0) & 0xFF);
+        ByteArray.setShortBE(byteBuffer, 0, (short) v);
+        out.write(byteBuffer, 0, 2);
         incCount(2);
     }
 
     public void writeUWORD(int v) throws IOException {
-        out.write((v >>> 8) & 0xFF);
-        out.write((v >>> 0) & 0xFF);
+        ByteArray.setShortBE(byteBuffer, 0, (short) v);
+        out.write(byteBuffer, 0, 2);
         incCount(2);
     }
 
     public void writeUBYTE(int v) throws IOException {
-        out.write((v >>> 0) & 0xFF);
+        out.write(v & 0xFF);
         incCount(1);
     }
 

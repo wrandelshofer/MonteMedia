@@ -4,6 +4,8 @@
  */
 package org.monte.media.riff;
 
+import org.monte.media.io.ByteArray;
+
 import java.io.EOFException;
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -22,6 +24,7 @@ import java.io.InputStream;
  */
 public class RIFFPrimitivesInputStream extends FilterInputStream {
     private long scan, mark;
+    private byte byteBuffer[] = new byte[8];
 
     /**
      * Creates a new instance.
@@ -54,15 +57,8 @@ public class RIFFPrimitivesInputStream extends FilterInputStream {
      */
     public short readWORD()
             throws IOException {
-        int b0 = in.read();
-        int b1 = in.read();
-
-        if (b1 == -1) {
-            throw new EOFException();
-        }
-        scan += 2;
-
-        return (short) (((b0 & 0xff) << 0) | ((b1 & 0xff) << 8));
+        readFully(byteBuffer, 0, 2);
+        return ByteArray.getShortLE(byteBuffer, 0);
     }
 
     /**
@@ -80,20 +76,8 @@ public class RIFFPrimitivesInputStream extends FilterInputStream {
      */
     public int readLONG()
             throws IOException {
-        int b0 = in.read();
-        int b1 = in.read();
-        int b2 = in.read();
-        int b3 = in.read();
-
-        if (b3 == -1) {
-            throw new EOFException();
-        }
-        scan += 4;
-
-        return ((b0 & 0xff) << 0) +
-                ((b1 & 0xff) << 8) +
-                ((b2 & 0xff) << 16) +
-                ((b3 & 0xff) << 24);
+        readFully(byteBuffer, 0, 4);
+        return ByteArray.getIntLE(byteBuffer, 0);
     }
 
     /**
@@ -110,20 +94,8 @@ public class RIFFPrimitivesInputStream extends FilterInputStream {
      */
     public int readFourCC()
             throws IOException {
-        int b3 = in.read();
-        int b2 = in.read();
-        int b1 = in.read();
-        int b0 = in.read();
-
-        if (b0 == -1) {
-            throw new EOFException();
-        }
-        scan += 4;
-
-        return ((b0 & 0xff) << 0) +
-                ((b1 & 0xff) << 8) +
-                ((b2 & 0xff) << 16) +
-                ((b3 & 0xff) << 24);
+        readFully(byteBuffer, 0, 4);
+        return ByteArray.getIntBE(byteBuffer, 0);
     }
 
     /**
@@ -140,10 +112,8 @@ public class RIFFPrimitivesInputStream extends FilterInputStream {
      */
     public String readFourCCString()
             throws IOException {
-        byte[] buf = new byte[4];
-        readFully(buf, 0, 4);
-        //scan += 4; <- scan is updated by method readFully
-        return new String(buf, "ASCII");
+        readFully(byteBuffer, 0, 4);
+        return new String(byteBuffer, 0, 4, "ASCII");
     }
 
     /**

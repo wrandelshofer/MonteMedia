@@ -4,6 +4,7 @@
  */
 package org.monte.media.quicktime;
 
+import org.monte.media.io.ByteArray;
 import org.monte.media.io.ImageInputStreamAdapter;
 
 import javax.imageio.stream.ImageInputStream;
@@ -23,7 +24,7 @@ import java.util.GregorianCalendar;
 public class DataAtomInputStream extends FilterInputStream {
 
     protected static final long MAC_TIMESTAMP_EPOCH = new GregorianCalendar(1904, GregorianCalendar.JANUARY, 1).getTimeInMillis();
-    private byte readBuffer[] = new byte[8];
+    private byte byteBuffer[] = new byte[8];
 
     public DataAtomInputStream(InputStream in) {
         super(in);
@@ -42,25 +43,18 @@ public class DataAtomInputStream extends FilterInputStream {
     }
 
     public final short readShort() throws IOException {
-        readFully(readBuffer, 0, 2);
-        return (short) ((readBuffer[0] << 8) + (readBuffer[1] << 0));
+        readFully(byteBuffer, 0, 2);
+        return ByteArray.getShortBE(byteBuffer, 0);
     }
 
     public final int readInt() throws IOException {
-        readFully(readBuffer, 0, 4);
-        return ((readBuffer[0] << 24) + (readBuffer[1] << 16) + (readBuffer[2] << 8) + (readBuffer[3] << 0));
+        readFully(byteBuffer, 0, 4);
+        return ByteArray.getIntBE(byteBuffer, 0);
     }
 
     public final long readLong() throws IOException {
-        readFully(readBuffer, 0, 8);
-        return (((long) readBuffer[0] << 56)
-                + ((long) (readBuffer[1] & 255) << 48)
-                + ((long) (readBuffer[2] & 255) << 40)
-                + ((long) (readBuffer[3] & 255) << 32)
-                + ((long) (readBuffer[4] & 255) << 24)
-                + ((readBuffer[5] & 255) << 16)
-                + ((readBuffer[6] & 255) << 8)
-                + ((readBuffer[7] & 255) << 0));
+        readFully(byteBuffer, 0, 8);
+        return ByteArray.getLongBE(byteBuffer, 0);
     }
 
     public final int readUByte() throws IOException {
@@ -122,7 +116,7 @@ public class DataAtomInputStream extends FilterInputStream {
         int wholePart = readUShort();
         int fractionPart = readUShort();
 
-        return new Double(wholePart + fractionPart / 65536.0);
+        return (wholePart + fractionPart) / 65536.0;
     }
 
     /**
@@ -133,7 +127,7 @@ public class DataAtomInputStream extends FilterInputStream {
         int wholePart = fixed >>> 30;
         int fractionPart = fixed & 0x3fffffff;
 
-        return new Double(wholePart + fractionPart / (double) 0x3fffffff);
+        return (wholePart + fractionPart) / (double) 0x3fffffff;
     }
 
     /**
@@ -144,18 +138,13 @@ public class DataAtomInputStream extends FilterInputStream {
         int wholePart = fixed >>> 8;
         int fractionPart = fixed & 0xff;
 
-        return new Double(wholePart + fractionPart / 256f);
+        return (wholePart + fractionPart) / 256.0;
     }
 
     public String readType() throws IOException {
-        int id = readInt();
-        byte[] b = new byte[4];
-        b[0] = (byte) ((id >>> 24) & 0xff);
-        b[1] = (byte) ((id >>> 16) & 0xff);
-        b[2] = (byte) ((id >>> 8) & 0xff);
-        b[3] = (byte) (id & 0xff);
+        readFully(byteBuffer, 0, 4);
         try {
-            return new String(b, "ASCII");
+            return new String(byteBuffer, 0, 4, "ASCII");
         } catch (UnsupportedEncodingException ex) {
             InternalError ie = new InternalError("ASCII not supported");
             ie.initCause(ex);
@@ -172,11 +161,11 @@ public class DataAtomInputStream extends FilterInputStream {
         if (size < 0) {
             return "";
         }
-        byte[] b = new byte[size];
-        readFully(b);
+        byte[] b = size <= byteBuffer.length ? byteBuffer : new byte[size];
+        readFully(b, 0, size);
 
         try {
-            return new String(b, "ASCII");
+            return new String(b, 0, size, "ASCII");
         } catch (UnsupportedEncodingException ex) {
             InternalError ie = new InternalError("ASCII not supported");
             ie.initCause(ex);
@@ -199,11 +188,11 @@ public class DataAtomInputStream extends FilterInputStream {
             skipBytes(fixedSize);
             return "";
         }
-        byte[] b = new byte[fixedSize];
-        readFully(b);
+        byte[] b = fixedSize <= byteBuffer.length ? byteBuffer : new byte[fixedSize];
+        readFully(b, 0, fixedSize);
 
         try {
-            return new String(b, 0, size, "ASCII");
+            return new String(b, 0, fixedSize, "ASCII");
         } catch (UnsupportedEncodingException ex) {
             InternalError ie = new InternalError("ASCII not supported");
             ie.initCause(ex);

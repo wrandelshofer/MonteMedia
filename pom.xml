@@ -112,6 +112,11 @@
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>1.6</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>3.5.0</version>
         </plugin>
@@ -258,14 +263,6 @@
             </goals>
           </execution>
         </executions>
-        <!--
-        <configuration>
-          <gpgArguments>
-            <gpgArgument>- -pinentry-mode</gpgArgument>
-            <gpgArgument>loopback</gpgArgument>
-          </gpgArguments>
-        </configuration>
-        -->
       </plugin>
     </plugins>
   </build>
