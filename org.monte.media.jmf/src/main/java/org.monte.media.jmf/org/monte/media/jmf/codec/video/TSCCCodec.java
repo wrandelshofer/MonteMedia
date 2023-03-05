@@ -171,11 +171,10 @@ public class TSCCCodec extends AbstractVideoDecoder {
     }
 
     protected int encode(Buffer in, Buffer out) {
+        copyMetaTo(in, out);
         if (in.isDiscard()) {
-            out.setDiscard(true);
             return BUFFER_PROCESSED_OK;
         }
-        copyMetaTo(in, out);
         out.setFormat(outputFormat);
 
         SeekableByteArrayOutputStream tmp;

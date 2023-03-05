@@ -4,6 +4,8 @@
  */
 package org.monte.media.iff;
 
+import org.monte.media.io.ByteArray;
+
 import java.io.EOFException;
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -21,7 +23,8 @@ import java.io.InputStream;
 public class MC68000InputStream
         extends FilterInputStream {
 
-    private long scan_, mark_;
+    private long scan, mark;
+    private byte byteBuffer[] = new byte[8];
 
     /**
      * Creates a new instance.
@@ -42,7 +45,7 @@ public class MC68000InputStream
         if (b0 == -1) {
             throw new EOFException();
         }
-        scan_ += 1;
+        scan += 1;
 
         return b0 & 0xff;
     }
@@ -53,14 +56,8 @@ public class MC68000InputStream
      */
     public short readWORD()
             throws IOException {
-        int b0 = in.read();
-        int b1 = in.read();
-        if (b1 == -1) {
-            throw new EOFException();
-        }
-        scan_ += 2;
-
-        return (short) (((b0 & 0xff) << 8) | (b1 & 0xff));
+        readFully(byteBuffer, 0, 2);
+        return ByteArray.getShortBE(byteBuffer, 0);
     }
 
     /**
@@ -78,19 +75,8 @@ public class MC68000InputStream
      */
     public int readLONG()
             throws IOException {
-        int b0 = in.read();
-        int b1 = in.read();
-        int b2 = in.read();
-        int b3 = in.read();
-        if (b3 == -1) {
-            throw new EOFException();
-        }
-        scan_ += 4;
-
-        return ((b0 & 0xff) << 24)
-                | ((b1 & 0xff) << 16)
-                | ((b2 & 0xff) << 8)
-                | (b3 & 0xff);
+        readFully(byteBuffer, 0, 4);
+        return ByteArray.getIntBE(byteBuffer, 0);
     }
 
     /**
@@ -99,27 +85,8 @@ public class MC68000InputStream
      */
     public long readINT64()
             throws IOException {
-        int b0 = in.read();
-        int b1 = in.read();
-        int b2 = in.read();
-        int b3 = in.read();
-        int b4 = in.read();
-        int b5 = in.read();
-        int b6 = in.read();
-        int b7 = in.read();
-        if (b7 == -1) {
-            throw new EOFException();
-        }
-        scan_ += 4;
-
-        return ((b0 & 0xffL) << 56)
-                | ((b1 & 0xffL) << 48)
-                | ((b2 & 0xffL) << 40)
-                | ((b3 & 0xffL) << 32)
-                | ((b4 & 0xffL) << 24)
-                | ((b5 & 0xffL) << 16)
-                | ((b6 & 0xffL) << 8)
-                | (b7 & 0xffL);
+        readFully(byteBuffer, 0, 8);
+        return ByteArray.getLongBE(byteBuffer, 0);
     }
 
     /**
@@ -137,7 +104,7 @@ public class MC68000InputStream
      */
     public void align()
             throws IOException {
-        if (scan_ % 2 == 1) {
+        if (scan % 2 == 1) {
             skipFully(1);
         }
     }
@@ -147,7 +114,7 @@ public class MC68000InputStream
      * stream filter).
      */
     public long getScan() {
-        return scan_;
+        return scan;
     }
 
     /**
@@ -156,7 +123,7 @@ public class MC68000InputStream
     public int read()
             throws IOException {
         int data = in.read();
-        scan_++;
+        scan++;
         return data;
     }
 
@@ -172,7 +139,7 @@ public class MC68000InputStream
                 throw new EOFException();
             }
             count += current;
-            scan_ += current;
+            scan += current;
         }
     }
 
@@ -183,7 +150,7 @@ public class MC68000InputStream
             throws IOException {
         int count = in.read(b, offset, length);
         if (count > 0) {
-            scan_ += count;
+            scan += count;
         }
         return count;
     }
@@ -196,7 +163,7 @@ public class MC68000InputStream
      */
     public void mark(int readlimit) {
         in.mark(readlimit);
-        mark_ = scan_;
+        mark = scan;
     }
 
     /**
@@ -208,7 +175,7 @@ public class MC68000InputStream
     public void reset()
             throws IOException {
         in.reset();
-        scan_ = mark_;
+        scan = mark;
     }
 
     /**
@@ -218,7 +185,7 @@ public class MC68000InputStream
     public long skip(long n)
             throws IOException {
         long skipped = in.skip(n);
-        scan_ += skipped;
+        scan += skipped;
         return skipped;
     }
 
@@ -240,7 +207,7 @@ public class MC68000InputStream
         if (cur == 0) {
             throw new EOFException();
         }
-        scan_ += total;
+        scan += total;
     }
 
     /**

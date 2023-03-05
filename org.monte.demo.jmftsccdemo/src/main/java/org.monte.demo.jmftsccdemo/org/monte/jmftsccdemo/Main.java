@@ -45,7 +45,8 @@ import java.io.IOException;
 import java.util.Random;
 
 /**
- * Main.
+ * Demonstrates how to use the Monte Media {@link TSCCCodec}
+ * with the Java Media Framework (JMF).
  *
  * @author Werner Randelshofer
  */
@@ -213,7 +214,9 @@ public class Main extends javax.swing.JFrame {
     private void generateVideos(String path) {
         try {
             doGenerateVideo(new File(path, "avidemo-tscc8.avi"), new AviVideoFormat("tscc", null, Format.NOT_SPECIFIED, null, 30f, Format.NOT_SPECIFIED, 8, Format.NOT_SPECIFIED, Format.NOT_SPECIFIED, Format.NOT_SPECIFIED, Format.NOT_SPECIFIED, Format.NOT_SPECIFIED, null));
-        } catch (IOException | NoProcessorException | NoDataSinkException e) {
+            //doGenerateVideo(new File(path, "avidemo-tscc16.avi"), new AviVideoFormat("tscc", null, Format.NOT_SPECIFIED, null, 30f, Format.NOT_SPECIFIED, 16, Format.NOT_SPECIFIED, Format.NOT_SPECIFIED, Format.NOT_SPECIFIED, Format.NOT_SPECIFIED, Format.NOT_SPECIFIED, null));
+            doGenerateVideo(new File(path, "avidemo-tscc24.avi"), new AviVideoFormat("tscc", null, Format.NOT_SPECIFIED, null, 30f, Format.NOT_SPECIFIED, 24, Format.NOT_SPECIFIED, Format.NOT_SPECIFIED, Format.NOT_SPECIFIED, Format.NOT_SPECIFIED, Format.NOT_SPECIFIED, null));
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
@@ -270,6 +273,7 @@ public class Main extends javax.swing.JFrame {
             p.close();
             sink.close();
         }
+        System.out.println("* Wrote " + file);
     }
 
     private static class ImageStream implements PullBufferStream {
