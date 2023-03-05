@@ -11,7 +11,7 @@ Container formats:
 | Container | Description                                | Operations  |
 |-----------|--------------------------------------------|-------------|
 | RIFF      | Microsoft Resource Interchange File Format | Read        |
-| AVI       | Microsoft Audio Video Interchange          | Read,Write  |
+| AVI       | Microsoft Audio Video Interchange          | Read, Write |
 | MOV       | Apple QuickTime                            | Write       |
 | JFIF      | JPEG File Interchange Format               | Read, Write |
 | MP3       | MP3 Elementary Stream                      | Read        |
