@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
@@ -308,9 +309,8 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                 } else {
                     // repetition
                     byte v = in.readByte();
-                    for (int end = xy + opcode; xy < end; xy++) {
-                        outDat[xy] = v;
-                    }
+                    Arrays.fill(outDat, xy, xy + opcode, v);
+                    xy += opcode;
                 }
 
             }
@@ -400,9 +400,8 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                 } else {
                     // repetition
                     int v = palette[in.readUnsignedByte()];
-                    for (int end = xy + opcode; xy < end; xy++) {
-                        outDat[xy] = v;
-                    }
+                    Arrays.fill(outDat, xy, xy + opcode, v);
+                    xy += opcode;
                 }
 
             }
@@ -467,9 +466,8 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                 } else {
                     // repetition
                     int v = readInt24LE(in);
-                    for (int end = xy + opcode; xy < end; xy++) {
-                        outDat[xy] = v;
-                    }
+                    Arrays.fill(outDat, xy, xy + opcode, v);
+                    xy += opcode;
                 }
 
             }
@@ -538,9 +536,8 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                 } else {
                     // repetition
                     int v = readRGB555to24(in);
-                    for (int end = xy + opcode; xy < end; xy++) {
-                        outDat[xy] = v;
-                    }
+                    Arrays.fill(outDat, xy, xy + opcode, v);
+                    xy += opcode;
                 }
 
             }
@@ -577,12 +574,9 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
             int xymax = xy + width;
 
             // determine skip count
-            int skipCount = 0;
-            for (; xy < xymax; ++xy, ++skipCount) {
-                if (data[xy] != prev[xy]) {
-                    break;
-                }
-            }
+            int mismatch = Arrays.mismatch(data, xy, xymax, prev, xy, xymax);
+            int skipCount = mismatch < 0 ? xymax - xy : mismatch;
+            xy += skipCount;
             if (skipCount == width) {
                 // => the entire line can be skipped
                 ++verticalOffset;
@@ -602,12 +596,8 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
             int repeatCount = 0;
             for (; xy < xymax; ++xy) {
                 // determine skip count
-                for (skipCount = 0; xy < xymax; ++xy, ++skipCount) {
-                    if (data[xy] != prev[xy]) {
-                        break;
-                    }
-                }
-                xy -= skipCount;
+                mismatch = Arrays.mismatch(data, xy, xymax, prev, xy, xymax);
+                skipCount = mismatch < 0 ? xymax - xy : mismatch;
 
                 // determine repeat count
                 byte v = data[xy];
@@ -1097,12 +1087,9 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
             int xymax = xy + width;
 
             // determine skip count
-            int skipCount = 0;
-            for (; xy < xymax; ++xy, ++skipCount) {
-                if (data[xy] != prev[xy]) {
-                    break;
-                }
-            }
+            int mismatch = Arrays.mismatch(data, xy, xymax, prev, xy, xymax);
+            int skipCount = mismatch < 0 ? xymax - xy : mismatch;
+            xy += skipCount;
             if (skipCount == width) {
                 // => the entire line can be skipped
                 ++verticalOffset;
@@ -1122,12 +1109,8 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
             int repeatCount = 0;
             for (; xy < xymax; ++xy) {
                 // determine skip count
-                for (skipCount = 0; xy < xymax; ++xy, ++skipCount) {
-                    if (data[xy] != prev[xy]) {
-                        break;
-                    }
-                }
-                xy -= skipCount;
+                mismatch = Arrays.mismatch(data, xy, xymax, prev, xy, xymax);
+                skipCount = mismatch < 0 ? xymax - xy : mismatch;
 
                 // determine repeat count
                 short v = data[xy];
@@ -1317,12 +1300,9 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
             int xymax = xy + width;
 
             // determine skip count
-            int skipCount = 0;
-            for (; xy < xymax; ++xy, ++skipCount) {
-                if (data[xy] != prev[xy]) {
-                    break;
-                }
-            }
+            int mismatch = Arrays.mismatch(data, xy, xymax, prev, xy, xymax);
+            int skipCount = mismatch < 0 ? xymax - xy : mismatch;
+            xy += skipCount;
             if (skipCount == width) {
                 // => the entire line can be skipped
                 ++verticalOffset;
@@ -1342,12 +1322,8 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
             int repeatCount = 0;
             for (; xy < xymax; ++xy) {
                 // determine skip count
-                for (skipCount = 0; xy < xymax; ++xy, ++skipCount) {
-                    if (data[xy] != prev[xy]) {
-                        break;
-                    }
-                }
-                xy -= skipCount;
+                mismatch = Arrays.mismatch(data, xy, xymax, prev, xy, xymax);
+                skipCount = mismatch < 0 ? xymax - xy : mismatch;
 
                 // determine repeat count
                 int v = data[xy];
