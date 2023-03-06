@@ -23,6 +23,72 @@ public class Colors {
     }
 
     /**
+     * Convert 15-bit RGB 555 to 24-bit RGB 888.
+     * <pre>
+     * RGB 555 BE:          . . . . . . . . . R₄R₃R₂R₁R₀G₄G₃G₂G₁G₀B₄B₃B₂B₁B₀
+     * Expand to 24 bit:    R₄R₃R₂R₁R₀. . . G₄G₃G₂G₁G₀. . . B₄B₃B₂B₁B₀. . .
+     * Replicate high bits: R₄R₃R₂R₁R₀R₄R₃R₂G₄G₃G₂G₁G₀G₄G₃G₂B₄B₃B₂B₁B₀B₄B₃B₂
+     * </pre>
+     *
+     * @param v a RGB 555 value
+     * @return the value converted to RGB 888
+     */
+    public static int RGB15toRGB24(int v) {
+        return (v & 0b11111_00000_00000) << 9 | (v & 0b11100_00000_00000) << 4 // red
+                | (v & 0b11111_00000) << 6 | (v & 0b11100_00000) << 1 // green
+                | (v & 0b11111) << 3 | (v & 0b11100) >> 2; // blue
+    }
+
+    /**
+     * Convert 16-bit RGB 565 to 24-bit RGB 888.
+     * <pre>
+     * RGB 555 BE:          . . . . . . . . R₄R₃R₂R₁R₀G₅G₄G₃G₂G₁G₀B₄B₃B₂B₁B₀
+     * Expand to 24 bit:    R₄R₃R₂R₁R₀. . . G₅G₄G₃G₂G₁G₀. . B₄B₃B₂B₁B₀. . .
+     * Replicate high bits: R₄R₃R₂R₁R₀R₄R₃R₂G₅G₄G₃G₂G₁G₀G₅G₄B₄B₃B₂B₁B₀B₄B₃B₂
+     * </pre>
+     *
+     * @param v a RGB 555 value
+     * @return the value converted to RGB 888
+     */
+    public static int RGB16toRGB24(int v) {
+        return (v & 0b11111_000000_00000) << 8 | (v & 0b11100_000000_00000) << 3 // red
+                | (v & 0b111111_00000) << 5 | (v & 0b110000_00000) >>> 1 // green
+                | (v & 0b11111) << 3 | (v & 0b11100) >>> 2; // blue
+    }
+
+    /**
+     * Convert 24-bit RGB 888 to 15-bit RGB 555.
+     * <pre>
+     * RGB 888 BE:          R₇R₆R₅R₄R₃R₂R₁R₀G₇G₆G₅G₄G₃G₂G₁G₀B₇B₆B₅B₄B₃B₂B₁B₀
+     * Compress to 15 bit:                  . R₇R₆R₅R₄R₃G₇G₆G₅G₄G₃B₇B₆B₅B₄B₃
+     * </pre>
+     *
+     * @param v a RGB 888 value
+     * @return the value converted to RGB 555
+     */
+    public static int RGB24toRGB15(int v) {
+        return (v & 0b11111000_00000000_00000000) >>> 9 // red
+                | (v & 0b11111000_00000000) >>> 6  // green
+                | (v & 0b11111000) >>> 3; // blue
+    }
+
+    /**
+     * Convert 24-bit RGB 888 to 16-bit RGB 565.
+     * <pre>
+     * RGB 888 BE:          R₇R₆R₅R₄R₃R₂R₁R₀G₇G₆G₅G₄G₃G₂G₁G₀B₇B₆B₅B₄B₃B₂B₁B₀
+     * Compress to 16 bit:                  R₇R₆R₅R₄R₃G₇G₆G₅G₄G₃G₂B₇B₆B₅B₄B₃
+     * </pre>
+     *
+     * @param v a RGB 888 value
+     * @return the value converted to RGB 555
+     */
+    public static int RGB24toRGB16(int v) {
+        return (v & 0b11111000_00000000_00000000) >>> 8 // red
+                | (v & 0b11111100_00000000) >>> 5  // green
+                | (v & 0b11111000) >>> 3; // blue
+    }
+
+    /**
      * The macintosh palette is arranged as follows: there are 256 colours to
      * allocate, an even distribution of colors through the color cube might be
      * desirable but 256 is not the cube of an integer. 6x6x6 is 216 and so the
@@ -143,7 +209,7 @@ public class Colors {
     /**
      * RGB 8-bit per channel to YCC 16-bit per channel.
      */
-    private static void RGB8toYCC16(int[] rgb, int[] ycc) {
+    private static void RGB24toYCC48(int[] rgb, int[] ycc) {
         int R = rgb[0];
         int G = rgb[1];
         int B = rgb[2];
@@ -160,7 +226,7 @@ public class Colors {
     /**
      * RGB 8-bit per channel to YCC 16-bit per channel.
      */
-    private static void RGB8toYCC16(int rgb, int[] ycc) {
+    private static void RGB24toYCC48(int rgb, int[] ycc) {
         int R = (rgb & 0xff0000) >>> 16;
         int G = (rgb & 0xff00) >>> 8;
         int B = rgb & 0xff;
@@ -177,7 +243,7 @@ public class Colors {
     /**
      * YCC 16-bit per channel to RGB 8-bit per channel.
      */
-    private static void YCC16toRGB8(int[] ycc, int[] rgb) {
+    private static void YCC48toRGB24(int[] ycc, int[] rgb) {
         int Y = ycc[0];
         int Cb = ycc[1];
         int Cr = ycc[2];
@@ -194,7 +260,7 @@ public class Colors {
     /**
      * YCC 8-bit per channel to RGB 8-bit per channel.
      */
-    private static void YCC8toRGB8(int[] ycc, int[] rgb) {
+    private static void YCC24toRGB24(int[] ycc, int[] rgb) {
         int Y = ycc[0];
         int Cb = ycc[1];
         int Cr = ycc[2];
@@ -214,7 +280,7 @@ public class Colors {
     /**
      * YCC 8-bit per channel to RGB 8-bit per channel.
      */
-    private static void RGB8toYCC8(int[] rgb, int[] ycc) {
+    private static void RGB24toYCC24(int[] rgb, int[] ycc) {
         int R = rgb[0];
         int G = rgb[1];
         int B = rgb[2];

@@ -4,6 +4,8 @@
  */
 package org.monte.media.av.codec.video;
 
+import org.monte.media.color.Colors;
+
 import javax.imageio.stream.ImageInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -132,15 +134,12 @@ public class AbstractVideoCodecCore {
      */
     protected int readRGB555to24(ImageInputStream in) throws IOException {
         int v = in.readUnsignedShort();
-        return ((v & (0x1f << 10)) << 9) | ((v & (0x1c << 10)) << 4) // red
-                | ((v & (0x1f << 5)) << 6) | ((v & (0x1c << 5)) << 1) // green
-                | ((v & (0x1f << 0)) << 3) | ((v & (0x1c << 0)) >> 2); // blue;
+        return Colors.RGB15toRGB24(v);
     }
 
     protected static int readRGB555to24(ByteBuffer in) throws IOException {
         int v = in.getShort();
-        return ((v & (0x1f << 10)) << 9) | ((v & (0x1c << 10)) << 4) // red
-                | ((v & (0x1f << 5)) << 6) | ((v & (0x1c << 5)) << 1) // green
-                | ((v & (0x1f << 0)) << 3) | ((v & (0x1c << 0)) >> 2); // blue;
+        return Colors.RGB15toRGB24(v);
     }
+
 }
