@@ -1,5 +1,5 @@
 /*
- * @(#)Main.java
+ * @(#)PlayerControl.java
  * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 

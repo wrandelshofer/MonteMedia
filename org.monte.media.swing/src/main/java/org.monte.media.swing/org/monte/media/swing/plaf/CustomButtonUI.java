@@ -1,5 +1,5 @@
 /*
- * @(#)Main.java
+ * @(#)CustomButtonUI.java
  * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 

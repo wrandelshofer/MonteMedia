@@ -1,5 +1,5 @@
 /*
- * @(#)Main.java
+ * @(#)JDK13AppletAudioClip.java
  * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 

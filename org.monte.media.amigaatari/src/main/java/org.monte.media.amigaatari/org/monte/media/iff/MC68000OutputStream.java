@@ -1,5 +1,5 @@
 /*
- * @(#)Main.java
+ * @(#)MC68000OutputStream.java
  * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.iff;

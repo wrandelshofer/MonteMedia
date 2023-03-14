@@ -1,5 +1,5 @@
 /*
- * @(#)Main.java
+ * @(#)QuickTimePCMAudioCodec.java
  * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.quicktime.codec.audio;

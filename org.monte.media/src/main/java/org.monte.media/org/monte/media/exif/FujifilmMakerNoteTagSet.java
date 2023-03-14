@@ -1,5 +1,5 @@
 /*
- * @(#)Main.java
+ * @(#)FujifilmMakerNoteTagSet.java
  * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.exif;

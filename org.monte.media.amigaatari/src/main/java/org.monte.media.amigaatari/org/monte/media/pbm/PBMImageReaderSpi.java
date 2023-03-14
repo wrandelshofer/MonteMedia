@@ -1,5 +1,5 @@
 /*
- * @(#)Main.java
+ * @(#)PBMImageReaderSpi.java
  * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.pbm;

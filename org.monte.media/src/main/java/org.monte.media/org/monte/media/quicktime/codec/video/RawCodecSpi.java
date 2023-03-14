@@ -1,5 +1,5 @@
 /*
- * @(#)Main.java
+ * @(#)RawCodecSpi.java
  * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.quicktime.codec.video;
