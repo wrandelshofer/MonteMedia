@@ -9,12 +9,14 @@ import org.monte.media.io.UncachedImageInputStream;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
+import java.util.zip.ZipException;
 
 import static java.lang.Math.min;
 
@@ -255,13 +257,11 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
      * @throws IOException
      */
     public boolean decode8(byte[] inDat, int off, int length, byte[] outDat, byte[] prevDat, int width, int height, boolean onlyDecodeIfKeyframe) throws IOException {
-        // Handle delta frame with all identical pixels
-        if (length <= 2) {
-            return false;
+        InputStream innerStream = new ByteArrayInputStream(inDat, off, length);
+        if (isCompressed(inDat, off, length)) {
+            innerStream = new InflaterInputStream(innerStream);
         }
-
-        UncachedImageInputStream in = new UncachedImageInputStream(
-                new InflaterInputStream(new ByteArrayInputStream(inDat, off, length)));
+        UncachedImageInputStream in = new UncachedImageInputStream(innerStream, ByteOrder.LITTLE_ENDIAN);
 
         int offset = 0;
         int scanlineStride = width;
@@ -315,7 +315,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
 
             }
         } catch (ArrayIndexOutOfBoundsException t) {
-            t.printStackTrace();
+            throw new IOException("bad video frame");
         }
         in.close();
         return isKeyFrame;
@@ -416,13 +416,11 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
      * Decodes to 24-bit RGB. Returns true if a key-frame was decoded.
      */
     public boolean decode24(byte[] inDat, int off, int length, int[] outDat, int[] prevDat, int width, int height, boolean onlyDecodeIfKeyframe) throws IOException {
-        // Handle delta frame with all identical pixels
-        if (length <= 2) {
-            return false;
+        InputStream innerStream = new ByteArrayInputStream(inDat, off, length);
+        if (isCompressed(inDat, off, length)) {
+            innerStream = new InflaterInputStream(innerStream);
         }
-
-        UncachedImageInputStream in = new UncachedImageInputStream(
-                new InflaterInputStream(new ByteArrayInputStream(inDat, off, length)));
+        UncachedImageInputStream in = new UncachedImageInputStream(innerStream, ByteOrder.LITTLE_ENDIAN);
 
         int offset = 0;
         int scanlineStride = width;
@@ -472,10 +470,40 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
 
             }
         } catch (ArrayIndexOutOfBoundsException t) {
-            t.printStackTrace();
+            throw new IOException("bad video frame", t);
         }
         in.close();
         return isKeyFrame;
+    }
+
+    /**
+     * Returns true if the provided array is probably ZLIB compressed.
+     * <p>
+     * A zlib stream has the following structure:
+     * <pre>
+     *            0   1
+     *          +---+---+
+     *          |CMF|FLG|   (more-->)
+     *          +---+---+
+     * </pre>
+     * 'The FCHECK value must be such that CMF and FLG, when viewed as
+     * a 16-bit unsigned integer stored in MSB order (CMF*256 + FLG),
+     * is a multiple of 31.'
+     * <p>
+     * References:
+     * <dl>
+     *     <dt>RFC 1950, ZLIB Compressed Data Format Specification version 3.3,
+     *         2.2. Data format
+     *         </dt><dd><a href="https://www.rfc-editor.org/rfc/rfc1950">rfc-editor.org</a></dd>
+     * </dl>
+     *
+     * @param inDat  input data
+     * @param off    offset into input data
+     * @param length length of input data
+     * @return true if the data is compressed
+     */
+    private static boolean isCompressed(byte[] inDat, int off, int length) {
+        return length >= 2 && (((inDat[off] & 0xff) << 8) | (inDat[off + 1] & 0xff)) % 31 == 0;
     }
 
     /**
@@ -483,16 +511,11 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
      * decoded.
      */
     public boolean decode16(byte[] inDat, int off, int length, int[] outDat, int[] prevDat, int width, int height, boolean onlyDecodeIfKeyframe) throws IOException {
-        // Handle delta frame with all identical pixels
-        if (length <= 2) {
-            if (outDat != prevDat) {
-                System.arraycopy(prevDat, 0, outDat, 0, width * height);
-            }
-            return false;
+        InputStream innerStream = new ByteArrayInputStream(inDat, off, length);
+        if (isCompressed(inDat, off, length)) {
+            innerStream = new InflaterInputStream(innerStream);
         }
-
-        UncachedImageInputStream in = new UncachedImageInputStream(
-                new InflaterInputStream(new ByteArrayInputStream(inDat, off, length)), ByteOrder.LITTLE_ENDIAN);
+        UncachedImageInputStream in = new UncachedImageInputStream(innerStream, ByteOrder.LITTLE_ENDIAN);
 
         int offset = 0;
         int scanlineStride = width;
@@ -541,8 +564,8 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                 }
 
             }
-        } catch (ArrayIndexOutOfBoundsException t) {
-            t.printStackTrace();
+        } catch (ArrayIndexOutOfBoundsException | ZipException t) {
+            throw new IOException("bad video frame", t);
         }
         bbuf = null;
         return isKeyFrame;
