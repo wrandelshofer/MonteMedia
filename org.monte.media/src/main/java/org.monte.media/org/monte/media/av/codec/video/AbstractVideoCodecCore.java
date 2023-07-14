@@ -4,7 +4,7 @@
  */
 package org.monte.media.av.codec.video;
 
-import org.monte.media.color.Colors;
+import org.monte.media.color.BitDepthConverters;
 
 import javax.imageio.stream.ImageInputStream;
 import java.io.IOException;
@@ -129,17 +129,17 @@ public class AbstractVideoCodecCore {
     }
 
     /**
-     * Reads 16-bit RGB and converts it to 24-bit RGB BE. Endian of input is
+     * Reads 15-bit RGB and converts it to 24-bit RGB BE. Endian of input is
      * defined by byte buffer.
      */
     protected int readRGB555to24(ImageInputStream in) throws IOException {
         int v = in.readUnsignedShort();
-        return Colors.RGB15toRGB24(v);
+        return BitDepthConverters.rgb15to24(v);
     }
 
     protected static int readRGB555to24(ByteBuffer in) throws IOException {
         int v = in.getShort();
-        return Colors.RGB15toRGB24(v);
+        return BitDepthConverters.rgb15to24(v);
     }
 
 }
