@@ -166,18 +166,18 @@ public class QuickTimeInputStream {
      */
     public long getMediaTimeScale(int track) throws IOException {
         ensureRealized();
-        return meta.tracks.get(track).mediaList.get(0).mediaTimeScale;
+        return meta.tracks.get(track).media.mediaTimeScale;
     }
 
     /**
-     * Returns the media duration of a track in the media's time scale.
+     * Returns the media duration of a track in the media's timescale.
      *
      * @param track Track index.
      * @return media duration
      */
     public long getMediaDuration(int track) throws IOException {
         ensureRealized();
-        return meta.tracks.get(track).mediaList.get(0).mediaDuration;
+        return meta.tracks.get(track).media.mediaDuration;
     }
 
     /**

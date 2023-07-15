@@ -22,6 +22,7 @@
         <module name="org.monte.demo.cleartype" />
         <module name="org.monte.media.swing" />
         <module name="org.monte.demo.screenrecorder" />
+        <module name="org.monte.demo.moviereader" />
         <module name="org.monte.demo.imageioviewer" />
         <module name="org.monte.demo.rationalnumber" />
         <module name="org.monte.media.screenrecorder" />

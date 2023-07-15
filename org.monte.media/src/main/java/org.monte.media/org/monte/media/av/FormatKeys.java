@@ -18,7 +18,9 @@ public class FormatKeys {
         MIDI,
         TEXT,
         META,
-        FILE
+        SPRITE,
+        FILE,
+        UNKNOWN
     }
 
     /**

@@ -1809,12 +1809,12 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
              byte version;
              byte[3] flags;
              int numberOfEntries;
-             chunkOffsetTable chunkOffsetTable[numberOfEntries];
+             chunkOffsetEntry[numberOfEntries] chunkOffsetTable;
              } chunkOffsetAtom;
                 
              typedef struct {
-             int offset;
-             } chunkOffsetTable;
+               int offset;
+             } chunkOffsetEntry;
              */
             d = leaf.getOutputStream();
             d.write(0); // version
@@ -1844,12 +1844,12 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
              byte version;
              byte[3] flags;
              int numberOfEntries;
-             chunkOffsetTable chunkOffset64Table[numberOfEntries];
+             chunkOffset64Entry[numberOfEntries] chunkOffset64Table;
              } chunkOffset64Atom;
                 
              typedef struct {
              long offset;
-             } chunkOffset64Table;
+             } chunkOffset64Entry;
              */
             d = leaf.getOutputStream();
             d.write(0); // version

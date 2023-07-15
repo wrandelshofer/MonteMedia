@@ -5,16 +5,19 @@
 package org.monte.media.quicktime;
 
 import org.monte.media.av.FormatKeys.MediaType;
+import org.monte.media.io.UncachedImageInputStream;
 
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.TreeSet;
+import java.util.zip.InflaterInputStream;
 
 import static org.monte.media.math.MathUtils.clamp;
 
@@ -92,6 +95,9 @@ public class QuickTimeDeserializer {
      */
     protected void parse(QTFFImageInputStream in, QuickTimeMeta m) throws IOException {
         parseRecursively(in, in.length(), m);
+        for (QuickTimeMeta.Track track : m.tracks) {
+            track.buildSamplesTable(m.timeScale);
+        }
     }
 
     /**
@@ -136,7 +142,6 @@ public class QuickTimeDeserializer {
                 atom.size = in.readLong();
             }
 
-            long atomSize = atom.size;
             if (atom.size > remainingSize) {
                 //truncate size
                 atom.size = remainingSize;
@@ -149,13 +154,13 @@ public class QuickTimeDeserializer {
                 if ("trak".equals(t)) {
                     m.tracks.add(new QuickTimeMeta.Track());
                 } else if ("mdia".equals(t)) {
-                    m.tracks.get(m.getTrackCount() - 1).mediaList.add(new QuickTimeMeta.Media());
+                    m.tracks.get(m.getTrackCount() - 1).media = new QuickTimeMeta.Media();
                 }
                 // Perform recursion:
                 parseRecursively(in, atom.size - atom.headerSize, m);
             } else {
                 QuickTimeMeta.Track track = (m.tracks.isEmpty()) ? null : m.tracks.get(m.tracks.size() - 1);
-                QuickTimeMeta.Media media = (track == null || track.mediaList.isEmpty()) ? null : track.mediaList.get(track.mediaList.size() - 1);
+                QuickTimeMeta.Media media = (track == null) ? null : track.media;
 
                 if (null != t) {
                     switch (t) {
@@ -164,9 +169,16 @@ public class QuickTimeDeserializer {
                         case "wide":
                             break;
                         case "mdat":
+                            parseMovieData(in, atom.size - atom.headerSize, m);
                             break;
                         case "mvhd":
                             parseMovieHeader(in, atom.size - atom.headerSize, m);
+                            break;
+                        case "dcom":
+                            parseDataCompressionAtom(in, atom.size - atom.headerSize, m);
+                            break;
+                        case "cmvd":
+                            parseCompressedMovieAtom(in, atom.size - atom.headerSize, m);
                             break;
                         case "tkhd":
                             parseTrackHeader(in, atom.size - atom.headerSize, track);
@@ -187,6 +199,9 @@ public class QuickTimeDeserializer {
                             parseDataReference(in, atom.size - atom.headerSize, media);
                             break;
                         case "stsd":
+                            if (track == null || track.mediaType == null) {
+                                break;
+                            }
                             switch (track.mediaType) {
                                 case AUDIO:
                                     parseSoundSampleDescription(in, atom.size - atom.headerSize, media);
@@ -200,15 +215,21 @@ public class QuickTimeDeserializer {
                                 case TEXT:
                                     System.err.println("QuickTimeDeserializer.parseTextSampleDescription not yet implemented.");
                                     break;
+                                case SPRITE:
+                                    System.err.println("QuickTimeDeserializer.parseSpriteSampleDescription not yet implemented.");
+                                    break;
                                 case META:
                                     System.err.println("QuickTimeDeserializer.parseMetaSampleDescription not yet implemented.");
                                     break;
                                 case FILE:
                                     System.err.println("QuickTimeDeserializer.parseFileSampleDescription not yet implemented.");
                                     break;
+                                case UNKNOWN:
                                 default:
-                                    throw new AssertionError(track.mediaType.name());
+                                    System.err.println("QuickTimeDeserializer.parse" + track.mediaType + "SampleDescription not yet implemented.");
+                                    break;
                             }
+                            break;
                         case "vmhd":
                             parseVideoMediaHeader(in, atom.size - atom.headerSize, media);
                             break;
@@ -217,6 +238,12 @@ public class QuickTimeDeserializer {
                             break;
                         case "stsc":
                             parseSampleToChunk(in, atom.size - atom.headerSize, media);
+                            break;
+                        case "stco":
+                            parseChunkOffsets(in, atom.size - atom.headerSize, media);
+                            break;
+                        case "co64":
+                            parseChunkOffsets64(in, atom.size - atom.headerSize, media);
                             break;
                         case "stss":
                             parseSyncSample(in, atom.size - atom.headerSize, media);
@@ -265,6 +292,56 @@ public class QuickTimeDeserializer {
 
     /**
      * <p>
+     * The data compression atom ("dcom"-atom) specifies how the 'cmvd' atom
+     * is compressed.
+     * <pre>
+     * typedef struct {
+     *      type compressionMethod;
+     * } dataCompressionAtom;
+     * </pre>
+     */
+    protected void parseDataCompressionAtom(QTFFImageInputStream in, long remainingSize, QuickTimeMeta m) throws IOException {
+        if (remainingSize != 4) return;
+        m.compressionMethod = in.readType();
+    }
+
+
+    /**
+     * The compressed movie data atom ("cmvd"-atom) contains a compressed
+     * 'moov' atom.
+     * <pre>
+     * typedef struct {
+     *      uint32 sizeOfDecompressedData;
+     *      byte[] compressedData;
+     * } cmvdAtom.
+     * <p>
+     */
+    protected void parseCompressedMovieAtom(QTFFImageInputStream in, long remainingSize, QuickTimeMeta m) throws IOException {
+        int sizeOfDecompressedData = remainingSize > 4 ? in.readInt() : -1;
+        if (sizeOfDecompressedData > 0 && "zlib".equals(m.compressionMethod)) {
+            // decompress the header into a byte array and then parse it
+            byte[] compressed = new byte[(int) remainingSize - 4];
+            in.readFully(compressed);
+            QTFFImageInputStream decompressed = new QTFFImageInputStream(new UncachedImageInputStream(new InflaterInputStream(new ByteArrayInputStream(compressed))));
+            parseRecursively(decompressed, sizeOfDecompressedData, m);
+        }
+    }
+
+    /**
+     * The movie data ("mdat"-atom).
+     * <pre>
+     * typedef struct {
+     *      byte[] data;
+     * } movieDataAtom;
+     * </pre>
+     */
+    protected void parseMovieData(QTFFImageInputStream in, long remainingSize, QuickTimeMeta m) throws IOException {
+        m.movieDataStreamPosition = in.getStreamPosition();
+        m.movieDataSize = remainingSize;
+    }
+
+
+    /**
      * The movie header ("mvhd"-atom).
      * <pre>
      * typedef struct {
@@ -297,7 +374,9 @@ public class QuickTimeDeserializer {
      * </pre>
      */
     protected void parseMovieHeader(QTFFImageInputStream in, long remainingSize, QuickTimeMeta m) throws IOException {
+        if (remainingSize < 100) return;
         int version = in.readUnsignedByte();
+        if (version != 0) return;
         in.skipBytes(3);
         m.creationTime = in.readMacTimestamp();
         m.modificationTime = in.readMacTimestamp();
@@ -322,8 +401,6 @@ public class QuickTimeDeserializer {
         m.selectionDuration = in.readUnsignedInt();
         m.currentTime = in.readUnsignedInt();
         m.nextTrackId = in.readUnsignedInt();
-
-        remainingSize -= 100;
     }
 
     /**
@@ -368,6 +445,7 @@ public class QuickTimeDeserializer {
      */
     protected void parseTrackHeader(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Track t) throws IOException {
         int version = in.readUnsignedByte();
+        if (version != 0) return;
         in.skipBytes(2);
         t.headerFlags = in.readUnsignedByte();
         t.creationTime = in.readMacTimestamp();
@@ -531,8 +609,10 @@ public class QuickTimeDeserializer {
                 t.mediaType = MediaType.TEXT;
             } else if ("meta".equals(componentSubtype)) {
                 t.mediaType = MediaType.META;
+            } else if ("sprt".equals(componentSubtype)) {
+                t.mediaType = MediaType.SPRITE;
             } else {
-                t.mediaType = null;
+                t.mediaType = MediaType.UNKNOWN;
             }
         } else if ("dhlr".equals(componentType)) {
             // FIXME - is "dhlr" useful at all?
@@ -599,12 +679,13 @@ public class QuickTimeDeserializer {
      */
     protected void parseVideoMediaHeader(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
+        if (version != 0 || remainingSize != 12) return;
         in.skipBytes(2);
         int vmhdFlags = in.readUnsignedByte();
 
         m.videoFlagNoLeanAhead = (vmhdFlags & 1) != 0;
 
-        m.graphicsMode = in.getBitOffset();
+        m.graphicsMode = in.readUnsignedShort();
         for (int i = 0; i < 3; i++) {
             m.opcolor[i] = in.readUnsignedShort();
         }
@@ -899,16 +980,16 @@ public class QuickTimeDeserializer {
      */
     protected void parseVideoSampleDescription(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
+        if (version != 0) return;
         in.skipBytes(3);
         int numberOfEntries = in.readInt();
-        remainingSize -= 12;
+        remainingSize -= 8;
         for (int i = 0; i < numberOfEntries; i++) {
             final QuickTimeMeta.SampleDescription d = new QuickTimeMeta.SampleDescription();
             m.addSampleDescription(d);
 
             int size = in.readInt();
             remainingSize -= size;
-            int remainingEntrySize = size;
             d.mediaType = in.readType();
             in.skipBytes(6);
             d.dataReferenceIndex = in.readUnsignedShort();
@@ -916,38 +997,20 @@ public class QuickTimeDeserializer {
             int descriptionVersion = in.readUnsignedShort();
             int revisionLevel = in.readUnsignedShort();
             int vendor = in.readInt();
-            d.videoTemporalQuality = clamp(in.readInt() / 1023f, 0.0f, 1.0f);
+            d.videoTemporalQuality = clamp(in.readInt() / 1024f, 0.0f, 1.0f);
             d.videoSpatialQuality = clamp(in.readInt() / 1024f, 0.0f, 1.0f);
             d.videoWidth = in.readUnsignedShort();
             d.videoHeight = in.readUnsignedShort();
             d.videoHorizontalResolution = in.readFixed16D16();
             d.videoVerticalResolution = in.readFixed16D16();
-            in.readUnsignedInt();
+            long dataSize = in.readUnsignedInt();
             d.videoFrameCount = in.readUnsignedShort();
             d.videoCompressorName = in.readPString(32);
             d.videoDepth = in.readUnsignedShort();
             d.videoColorTableId = in.readShort();
-            remainingEntrySize -= 86;
 
-            while (remainingEntrySize > 0) {
-                long atomSize = in.readUnsignedInt();
-                if (atomSize < 4) {
-                    remainingEntrySize -= 4;
-                    continue;
-                }
-                if (atomSize < 8) {
-                    in.skipBytes(atomSize - 4);
-                    remainingEntrySize -= atomSize;
-                    continue;
-                }
-                String atomType = in.readType();
-                System.out.println("stsd  atom:" + atomType);
-                // FIXME Parse Atom
-                byte[] atomData = new byte[(int) (atomSize - 8)];
-                in.readFully(atomData);
-
-                remainingEntrySize -= atomSize;
-            }
+            d.extendData = new byte[size - 86];
+            in.readFully(d.extendData);
         }
     }
 
@@ -989,8 +1052,8 @@ public class QuickTimeDeserializer {
             int sampleCount = in.readInt();
             int sampleDuration = in.readInt();
             m.sampleCount += sampleCount;
-            QuickTimeMeta.Sample sFirst = new QuickTimeMeta.Sample(sampleDuration, -1, -1);
-            QuickTimeMeta.Sample sLast = sFirst;
+            QuickTimeMeta.MediaSample sFirst = new QuickTimeMeta.MediaSample(sampleDuration, -1, -1);
+            QuickTimeMeta.MediaSample sLast = sFirst;
             QuickTimeMeta.TimeToSampleGroup group = new QuickTimeMeta.TimeToSampleGroup(sFirst, sLast, sampleCount);
             m.timeToSamples.add(group);
         }
@@ -1008,23 +1071,20 @@ public class QuickTimeDeserializer {
      *     byte version;
      *     byte[3] flags;
      *     int numberOfEntries;
-     *     sampleToChunkTable sampleToChunkTable[numberOfEntries];
+     *     sampleToChunkEntry[numberOfEntries] sampleToChunkTable;
      * } sampleToChunkAtom;
      *
      * typedef struct {
      *     int firstChunk;
      *     int samplesPerChunk;
      *     int sampleDescription;
-     * } sampleToChunkTable;
+     * } sampleToChunkEntry;
      * </pre>
-     *
-     * @param in
-     * @param remainingSize
-     * @param m
-     * @throws IOException
      */
     protected void parseSampleToChunk(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
+        if (remainingSize < 20) return;
         int version = in.readUnsignedByte();
+        if (version != 0) return;
         in.skipBytes(3);
         int numberOfEntries = in.readInt();
         m.samplesToChunks.clear();
@@ -1034,6 +1094,60 @@ public class QuickTimeDeserializer {
             stc.samplesPerChunk = in.readInt();
             stc.sampleDescription = in.readInt();
             m.samplesToChunks.add(stc);
+        }
+    }
+
+    /**
+     * The chunk offset atom ("stco"-Atom in a media information section)
+     * identifies the location of each chunk of data in the media’s data stream.
+     * <pre>
+     * typedef struct {
+     *     byte version;
+     *     byte[3] flags;
+     *     int numberOfEntries;
+     *     chunkOffsetEntry[numberOfEntries] chunkOffsetTable;
+     * } chunkOffsetAtom;
+     *
+     * typedef struct {
+     *     int offset;
+     * } chunkOffsetEntry;
+     * </pre>
+     */
+    protected void parseChunkOffsets(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
+        int version = in.readUnsignedByte();
+        if (version != 0) return;
+        in.skipBytes(3);
+        int numberOfEntries = in.readInt();
+        m.chunkOffsets.clear();
+        for (int i = 0; i < numberOfEntries; i++) {
+            m.chunkOffsets.add(in.readUnsignedInt());
+        }
+    }
+
+    /**
+     * The chunk offset 64 atom ("co64"-Atom in a media information section)
+     * identifies the location of each chunk of data in the media’s data stream.
+     * <pre>
+     * typedef struct {
+     *     byte version;
+     *     byte[3] flags;
+     *     int numberOfEntries;
+     *     chunkOffset64Entry[numberOfEntries] chunkOffsetTable;
+     * } chunkOffset64Atom;
+     *
+     * typedef struct {
+     *     long offset;
+     * } chunkOffset64Entry;
+     * </pre>
+     */
+    protected void parseChunkOffsets64(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
+        int version = in.readUnsignedByte();
+        if (version != 0) return;
+        in.skipBytes(3);
+        int numberOfEntries = in.readInt();
+        m.chunkOffsets.clear();
+        for (int i = 0; i < numberOfEntries; i++) {
+            m.chunkOffsets.add(in.readLong());
         }
     }
 
@@ -1057,22 +1171,19 @@ public class QuickTimeDeserializer {
      *     int number;
      * } syncSampleTable;
      * </pre>
-     *
-     * @param in
-     * @param remainingSize
-     * @param m
-     * @throws IOException
      */
     protected void parseSyncSample(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
+        if (version != 0) return;
         in.skipBytes(3);
         int numberOfEntries = in.readInt();
         if (numberOfEntries == 0) {
             m.syncSamples = null;
         } else {
-            m.syncSamples = new ArrayList<Long>(numberOfEntries);
+            m.syncSamples = new TreeSet<Long>();
             for (int i = 0; i < numberOfEntries; i++) {
-                m.syncSamples.add(in.readUnsignedInt());
+                // the sample ids are one-based, but we want zero-based indices
+                m.syncSamples.add(in.readUnsignedInt() - 1);
             }
         }
     }
@@ -1102,20 +1213,22 @@ public class QuickTimeDeserializer {
      */
     protected void parseSampleSize(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
+        if (version != 0) return;
         in.skipBytes(3);
         int sampleSize = in.readInt();
         int numberOfEntries = in.readInt();
         m.sampleSizes.clear();
         if (sampleSize != 0) {
             // all samples have the same size
-            QuickTimeMeta.Sample firstSample = new QuickTimeMeta.Sample(-1, -1, sampleSize);
-            QuickTimeMeta.Sample lastSample = new QuickTimeMeta.Sample(-1, -1, sampleSize);
+            QuickTimeMeta.MediaSample firstSample = new QuickTimeMeta.MediaSample(-1, -1, sampleSize);
+            QuickTimeMeta.MediaSample lastSample = new QuickTimeMeta.MediaSample(-1, -1, sampleSize);
             QuickTimeMeta.SampleSizeGroup ssg = new QuickTimeMeta.SampleSizeGroup(firstSample, lastSample, numberOfEntries);
+            m.sampleSizes.add(ssg);
         } else {
             QuickTimeMeta.SampleSizeGroup ssg = null;
             for (int i = 0; i < numberOfEntries; i++) {
                 int size = in.readInt();
-                QuickTimeMeta.Sample s = new QuickTimeMeta.Sample(-1, -1, size);
+                QuickTimeMeta.MediaSample s = new QuickTimeMeta.MediaSample(-1, -1, size);
                 if (ssg == null || !ssg.maybeAddSample(s)) {
                     ssg = new QuickTimeMeta.SampleSizeGroup(s);
                     m.sampleSizes.add(ssg);

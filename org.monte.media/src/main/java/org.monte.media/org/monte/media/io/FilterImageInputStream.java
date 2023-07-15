@@ -48,8 +48,7 @@ public class FilterImageInputStream extends ImageInputStreamImpl2 {
 
     @Override
     public void close() throws IOException {
-        super.close();
-        in.close();
+        // Do nothing!
     }
 
     @Override

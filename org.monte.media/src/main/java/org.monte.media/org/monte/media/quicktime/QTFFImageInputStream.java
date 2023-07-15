@@ -46,7 +46,7 @@ public class QTFFImageInputStream extends FilterImageInputStream {
         int wholePart = readUnsignedShort();
         int fractionPart = readUnsignedShort();
 
-        return new Double(wholePart + fractionPart / 65536.0);
+        return (wholePart + fractionPart / 65536.0);
     }
 
     /**
@@ -57,7 +57,7 @@ public class QTFFImageInputStream extends FilterImageInputStream {
         int wholePart = fixed >>> 30;
         int fractionPart = fixed & 0x3fffffff;
 
-        return new Double(wholePart + fractionPart / (double) 0x3fffffff);
+        return (wholePart + fractionPart / (double) 0x3fffffff);
     }
 
     /**

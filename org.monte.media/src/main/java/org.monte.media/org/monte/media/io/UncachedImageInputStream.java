@@ -56,7 +56,7 @@ public class UncachedImageInputStream extends ImageInputStreamImpl2 {
             throw new IndexOutOfBoundsException("pos < flushedPos!");
         }
         if (pos < streamPos) {
-            throw new IndexOutOfBoundsException("pos < streamPos!");
+            throw new IndexOutOfBoundsException("pos=" + pos + " < streamPos=" + streamPos);
         }
 
         this.bitOffset = 0;

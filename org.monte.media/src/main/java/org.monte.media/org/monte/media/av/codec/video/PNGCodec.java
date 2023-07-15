@@ -19,20 +19,7 @@ import java.io.IOException;
 
 import static org.monte.media.av.BufferFlag.DISCARD;
 import static org.monte.media.av.BufferFlag.KEYFRAME;
-import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
-import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
-import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_PNG;
-import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
-import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_PNG;
-import static org.monte.media.av.codec.video.VideoFormatKeys.EncodingKey;
-import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
-import static org.monte.media.av.codec.video.VideoFormatKeys.MIME_AVI;
-import static org.monte.media.av.codec.video.VideoFormatKeys.MIME_JAVA;
-import static org.monte.media.av.codec.video.VideoFormatKeys.MIME_QUICKTIME;
-import static org.monte.media.av.codec.video.VideoFormatKeys.MediaType;
-import static org.monte.media.av.codec.video.VideoFormatKeys.MediaTypeKey;
-import static org.monte.media.av.codec.video.VideoFormatKeys.MimeTypeKey;
-import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.*;
 
 /**
  * {@code PNGCodec} encodes a BufferedImage as a byte[] array.
@@ -95,19 +82,7 @@ public class PNGCodec extends AbstractVideoCodec {
 
     @Override
     public Format setOutputFormat(Format f) {
-        String mimeType = f.get(MimeTypeKey, MIME_QUICKTIME);
-        if (mimeType != null && !mimeType.equals(MIME_AVI)) {
-            super.setOutputFormat(
-                    f.append(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                            EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey,
-                            byte[].class, DepthKey, 24));
-        } else {
-            super.setOutputFormat(
-                    f.append(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-                            EncodingKey, ENCODING_AVI_PNG, DataClassKey,
-                            byte[].class, DepthKey, 24));
-        }
-
+        super.setOutputFormat(f);
         // This codec can not scale an image.
         // Enforce these properties
         if (outputFormat != null) {

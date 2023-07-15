@@ -227,6 +227,7 @@ public class AVIInputStream extends AbstractAVIStream {
     protected void readAllMetadata() throws IOException {
         in.seek(streamOffset);
         final RIFFParser p = new RIFFParser();
+        int numberOfRiffStructs = 0;
         //p.declareStopChunkType(MOVI_ID);
         //p.declareStopChunkType(REC_ID);
         try {
@@ -358,16 +359,19 @@ public class AVIInputStream extends AbstractAVIStream {
             };
 
             // Parse all RIFF structures in the file
-            int count = 0;
             while (true) {
                 long offset = p.parse(in, v);
                 p.setStreamOffset(offset);
-                count++;
+                numberOfRiffStructs++;
             }
         } catch (EOFException ex) {
             //ex.printStackTrace();
         } catch (ParseException ex) {
-            throw new IOException("Error Parsing AVI stream", ex);
+            // Only throw an exception, if we haven't parsed at least one
+            // RIFF structure in the file successfully.
+            if (numberOfRiffStructs < 1) {
+                throw new IOException("Error Parsing AVI stream", ex);
+            }
         } catch (AbortException ex) {
             throw new IOException("Parsing aborted", ex);
         }

@@ -5,6 +5,7 @@
 package org.monte.media.quicktime;
 
 import org.monte.media.av.Buffer;
+import org.monte.media.av.BufferFlag;
 import org.monte.media.av.Codec;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
@@ -16,14 +17,17 @@ import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.EnumSet;
 
 import static org.monte.media.av.BufferFlag.DISCARD;
 import static org.monte.media.av.BufferFlag.END_OF_MEDIA;
+import static org.monte.media.av.BufferFlag.KEYFRAME;
 import static org.monte.media.av.FormatKeys.EncodingKey;
 import static org.monte.media.av.FormatKeys.MIME_JAVA;
 import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.FormatKeys.MimeTypeKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.FrameSizeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
 
@@ -82,7 +86,7 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
     @Override
     public long getChunkCount(int track) throws IOException {
         ensureRealized();
-        return meta.tracks.get(track).mediaList.get(0).sampleCount;
+        return meta.tracks.get(track).media.sampleCount;
     }
 
     @Override
@@ -128,7 +132,55 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
     @Override
     public void read(int track, Buffer buffer) throws IOException {
         ensureRealized();
-        throw new UnsupportedOperationException("read() not supported yet.");
+        QuickTimeMeta.Track tr = meta.tracks.get(track);
+        if (tr.readIndex >= tr.trackSamplesList.size()) {
+            buffer.setFlagsTo(END_OF_MEDIA, DISCARD);
+            buffer.length = 0;
+            return;
+        }
+        buffer.sequenceNumber = tr.readIndex;
+        var ts = tr.trackSamplesList.get((int) tr.readIndex);
+        var ms = ts.mediaSample;
+
+        // FIXME - This should be done using AVIInputStream.readSample()
+        in.seek(ms.offset);
+        {
+            byte[] b;
+            if (buffer.data instanceof byte[]) {
+                b = (byte[]) buffer.data;
+                if (b.length < ms.length) {
+                    buffer.data = b = new byte[(((int) ms.length + 1023) / 1024) * 1024];
+                }
+            } else {
+                buffer.data = b = new byte[(((int) ms.length + 1023) / 1024) * 1024];
+            }
+            in.readFully(b, 0, (int) ms.length);
+        }
+        buffer.offset = 0;
+        buffer.length = (int) ms.length;
+
+
+        switch (tr.mediaType) {
+            case AUDIO: {
+                Format af = tr.format;
+                buffer.sampleCount = buffer.length / af.get(FrameSizeKey);
+            }
+            break;
+            case VIDEO: {
+                buffer.sampleCount = 1;
+            }
+            break;
+            case MIDI:
+            case TEXT:
+            default:
+                throw new UnsupportedOperationException("Unsupported media type " + tr.mediaType);
+        }
+        buffer.format = tr.format;
+        buffer.track = track;
+        buffer.sampleDuration = new Rational(ts.duration, meta.timeScale);
+        buffer.timeStamp = new Rational(ts.timeStamp, meta.timeScale);
+        buffer.flags = ms.isKeyframe ? EnumSet.of(KEYFRAME) : EnumSet.noneOf(BufferFlag.class);
+        tr.readIndex++;
     }
 
     @Override
@@ -157,9 +209,7 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
     public Rational getDuration(int track) throws IOException {
         ensureRealized();
         QuickTimeMeta.Track tr = meta.tracks.get(track);
-        // FIXME - This method must take the edit list of the track into account
-        QuickTimeMeta.Media m = tr.mediaList.get(0);
-        Rational trackDuration = new Rational(m.mediaDuration, m.mediaTimeScale);
+        Rational trackDuration = new Rational(tr.duration, meta.timeScale);
         return trackDuration;
     }
 

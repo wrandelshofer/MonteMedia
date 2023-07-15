@@ -181,7 +181,7 @@ public abstract class AbstractAVIStream {
          */
         public long offset;
         /**
-         * Data length of the sample chunk.
+         * Data length of the sample chunk in bytes.
          */
         public long length;
         /**
@@ -192,8 +192,10 @@ public abstract class AbstractAVIStream {
          * Whether the sample is a sync-sample.
          */
         public boolean isKeyframe;
-
-        public long timeStamp;
+        /**
+         * The timestamp of the first sample in the chunk.
+         */
+        public long timeStamp = -1;
         /**
          * Palette change sample.
          */

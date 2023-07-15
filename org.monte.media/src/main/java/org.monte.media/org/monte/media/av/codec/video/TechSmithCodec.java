@@ -35,15 +35,7 @@ import static org.monte.media.av.FormatKeys.MIME_JAVA;
 import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.FormatKeys.MimeTypeKey;
-import static org.monte.media.av.codec.video.VideoFormatKeys.COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE;
-import static org.monte.media.av.codec.video.VideoFormatKeys.CompressorNameKey;
-import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
-import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
-import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE;
-import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
-import static org.monte.media.av.codec.video.VideoFormatKeys.FixedFrameRateKey;
-import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
-import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.*;
 
 /**
  * {@code TechSmithCodec} (tscc) encodes a BufferedImage as a byte[] array.
@@ -197,7 +189,6 @@ public class TechSmithCodec extends AbstractVideoCodec {
     @Override
     public Format setOutputFormat(Format f) {
         super.setOutputFormat(f);
-
         // This codec can not scale an image.
         // Enforce these properties
         if (outputFormat != null) {

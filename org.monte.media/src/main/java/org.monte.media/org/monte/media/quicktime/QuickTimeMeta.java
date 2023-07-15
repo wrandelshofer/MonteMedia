@@ -11,10 +11,15 @@ import org.monte.media.av.MovieReader;
 import org.monte.media.math.Rational;
 
 import java.awt.image.IndexColorModel;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.NavigableSet;
+import java.util.TreeMap;
 
 import static org.monte.media.av.FormatKeys.EncodingKey;
 import static org.monte.media.av.FormatKeys.FrameRateKey;
@@ -122,6 +127,12 @@ public class QuickTimeMeta extends AbstractMovie {
             new Locale("mal"),//83 MalayRoman
     };
     /**
+     * The compression method used for compressing the compressed movie data atom cmvd.
+     */
+    public String compressionMethod;
+    public long movieDataStreamPosition = -1;
+    public long movieDataSize = -1;
+    /**
      * The file format.
      */
     protected Format fileFormat = new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_QUICKTIME);
@@ -216,10 +227,10 @@ public class QuickTimeMeta extends AbstractMovie {
         Track track = tracks.get(trackIndex);
         Format format = new Format(MimeTypeKey, MIME_QUICKTIME,
                 MediaTypeKey, track.mediaType);
-        if (track.mediaList.size() != 1) {
-            throw new UnsupportedOperationException("not implemented for tracks with multiple media. " + trackIndex + " " + track.mediaType + " " + track.mediaList);
+        if (track.media == null) {
+            throw new UnsupportedOperationException("not implemented for tracks without media. " + trackIndex + " " + track.mediaType + " " + track.media);
         }
-        Media m = track.mediaList.get(0);
+        Media m = track.media;
         // FIXME implement me
         switch (track.mediaType) {
             case VIDEO:
@@ -247,8 +258,9 @@ public class QuickTimeMeta extends AbstractMovie {
             case MIDI:
             case FILE:
             case TEXT:
+            case SPRITE:
             default:
-                throw new UnsupportedOperationException("not implemented " + track.mediaType);
+                // we can't say anything more about the format
         }
         track.format = format;
     }
@@ -424,17 +436,17 @@ public class QuickTimeMeta extends AbstractMovie {
      */
     protected abstract static class Group {
 
-        protected Sample firstSample;
-        protected Sample lastSample;
+        protected MediaSample firstSample;
+        protected MediaSample lastSample;
         protected long sampleCount;
         protected final static long maxSampleCount = Integer.MAX_VALUE;
 
-        protected Group(Sample firstSample) {
+        protected Group(MediaSample firstSample) {
             this.firstSample = this.lastSample = firstSample;
             sampleCount = firstSample == null ? 0 : 1;
         }
 
-        protected Group(Sample firstSample, Sample lastSample, long sampleCount) {
+        protected Group(MediaSample firstSample, MediaSample lastSample, long sampleCount) {
             this.firstSample = firstSample;
             this.lastSample = lastSample;
             this.sampleCount = sampleCount;
@@ -456,7 +468,7 @@ public class QuickTimeMeta extends AbstractMovie {
          * A sample can only be added to a group, if the capacity of the group
          * is not exceeded.
          */
-        protected boolean maybeAddSample(Sample sample) {
+        protected boolean maybeAddSample(MediaSample sample) {
             if (sampleCount < maxSampleCount) {
                 lastSample = sample;
                 sampleCount++;
@@ -487,44 +499,103 @@ public class QuickTimeMeta extends AbstractMovie {
     }
 
     /**
-     * QuickTime stores media data in samples. A sample is a single element in a
-     * sequence of time-ordered data. Information about samples is stored in the
-     * mdat atom.
+     * QuickTime stores media data in media samples. A media sample is a single
+     * element in a sequence of time-ordered data. Information about samples is
+     * stored in the mdat atom.
      * <p>
-     * Please note that {@code Sample} objects are created on demand. This helps
+     * Please note that {@code MediaSample} objects are created on demand. This helps
      * to save memory, because a highly multiplexed audio track may consist of
      * many samples per second. As a consequence multiple instances of
-     * {@code Sample} objects may represent the same data sample in the movie.
+     * {@code MediaSample} objects may represent the same data sample in the movie.
      */
-    protected static class Sample {
+    protected static class MediaSample {
 
         /**
-         * Offset of the sample relative to the start of the QuickTime file. The
-         * value -1 is used if the offset is unknown.
+         * Byte offset of the sample relative to the start of the QuickTime file.
+         * The value -1 is used if the offset is unknown.
          */
         long offset;
         /**
-         * Data length of the sample. The value -1 is used if the data length is
+         * Data length of the sample in bytes. The value -1 is used if the data length is
          * unknown.
          */
         long length;
         /**
-         * The duration of the sample in media time scale units. The value -1 is
+         * The duration of the sample in media timescale units. The value -1 is
+         * used if the duration is unknown.
+         */
+        long duration;
+        /**
+         * The timestamp of the first sample in the chunk in media timescale units.
+         * The value -1 is used if the timestamp is unknown.
+         */
+        public long timeStamp = -1;
+        /**
+         * Whether the sample is a sync-sample.
+         */
+        public boolean isKeyframe;
+
+        /**
+         * Creates a new sample.
+         */
+        public MediaSample(long duration, long offset, long length) {
+            this.duration = duration;
+            this.offset = offset;
+            this.length = length;
+        }
+    }
+
+    /**
+     * QuickTime plays media in tracks which reference media samples.
+     * <p>
+     * Please note that {@code TrackSample} objects are created on demand. This helps
+     * to save memory, because a highly multiplexed audio track may consist of
+     * many samples per second. As a consequence multiple instances of
+     * {@code TrackSample} objects may represent the same data sample in the movie.
+     */
+    protected static class TrackSample {
+
+        /**
+         * Byte offset of the sample relative to the start of the QuickTime file.
+         * The value -1 is used if the offset is unknown.
+         */
+        MediaSample mediaSample;
+
+        /**
+         * The timestamp of the sample in movie timescale units.
+         */
+        public long timeStamp;
+        /**
+         * The duration of the sample in movie timescale units. The value -1 is
          * used if the duration is unknown.
          */
         long duration;
 
         /**
-         * Creates a new sample.
-         *
-         * @param duration
-         * @param offset
-         * @param length
+         * The edited start time in the media time sample in media timescale.
+         * <p>
+         * The value is 0 the track sample starts at the beginning of the
+         * media sample.
          */
-        public Sample(long duration, long offset, long length) {
+        long startTimeInMediaSample;
+        /**
+         * The edited end time in the media time sample in media timescale.
+         * <p>
+         * The value is mediaSample.duration if the track sample ends at the
+         * end of the media sample.
+         */
+        long endTimeInMediaSample;
+
+        /**
+         * Creates a new sample.
+         */
+        public TrackSample(MediaSample mediaSample, long timeStamp, long duration,
+                           long startTimeInMediaSample, long endTimeInMediaSample) {
+            this.mediaSample = mediaSample;
+            this.timeStamp = timeStamp;
             this.duration = duration;
-            this.offset = offset;
-            this.length = length;
+            this.startTimeInMediaSample = startTimeInMediaSample;
+            this.endTimeInMediaSample = endTimeInMediaSample;
         }
     }
 
@@ -533,11 +604,11 @@ public class QuickTimeMeta extends AbstractMovie {
      */
     protected static class TimeToSampleGroup extends Group {
 
-        public TimeToSampleGroup(Sample firstSample) {
+        public TimeToSampleGroup(MediaSample firstSample) {
             super(firstSample);
         }
 
-        protected TimeToSampleGroup(Sample firstSample, Sample lastSample, long sampleCount) {
+        protected TimeToSampleGroup(MediaSample firstSample, MediaSample lastSample, long sampleCount) {
             super(firstSample, lastSample, sampleCount);
         }
 
@@ -554,7 +625,7 @@ public class QuickTimeMeta extends AbstractMovie {
          * group is not exceeded.
          */
         @Override
-        public boolean maybeAddSample(Sample sample) {
+        public boolean maybeAddSample(MediaSample sample) {
             if (firstSample.duration == sample.duration) {
                 return super.maybeAddSample(sample);
             }
@@ -593,7 +664,7 @@ public class QuickTimeMeta extends AbstractMovie {
      */
     protected static class SampleSizeGroup extends Group {
 
-        public SampleSizeGroup(Sample firstSample) {
+        public SampleSizeGroup(MediaSample firstSample) {
             super(firstSample);
         }
 
@@ -601,7 +672,7 @@ public class QuickTimeMeta extends AbstractMovie {
             super(group);
         }
 
-        public SampleSizeGroup(Sample firstSample, Sample lastSample, long sampleCount) {
+        public SampleSizeGroup(MediaSample firstSample, MediaSample lastSample, long sampleCount) {
             super(firstSample, lastSample, sampleCount);
         }
 
@@ -614,7 +685,7 @@ public class QuickTimeMeta extends AbstractMovie {
          * not exceeded.
          */
         @Override
-        public boolean maybeAddSample(Sample sample) {
+        public boolean maybeAddSample(MediaSample sample) {
             if (firstSample.length == sample.length) {
                 return super.maybeAddSample(sample);
             }
@@ -649,9 +720,9 @@ public class QuickTimeMeta extends AbstractMovie {
          * Creates a new Chunk.
          *
          * @param firstSample         The first sample contained in this chunk.
-         * @param sampleDescriptionId The description Id of the sample.
+         * @param sampleDescriptionId The description id of the sample.
          */
-        public Chunk(Sample firstSample, int sampleDescriptionId) {
+        public Chunk(MediaSample firstSample, int sampleDescriptionId) {
             super(firstSample);
             this.sampleDescriptionId = sampleDescriptionId;
         }
@@ -662,7 +733,7 @@ public class QuickTimeMeta extends AbstractMovie {
          * @param firstSample         The first sample contained in this chunk.
          * @param sampleDescriptionId The description Id of the sample.
          */
-        public Chunk(Sample firstSample, Sample lastSample, int sampleCount, int sampleDescriptionId) {
+        public Chunk(MediaSample firstSample, MediaSample lastSample, int sampleCount, int sampleDescriptionId) {
             super(firstSample, lastSample, sampleCount);
             this.sampleDescriptionId = sampleDescriptionId;
         }
@@ -676,7 +747,7 @@ public class QuickTimeMeta extends AbstractMovie {
          * chunk is not exceeded and if the sample offset is adjacent to the
          * last sample in this chunk.
          */
-        public boolean maybeAddSample(Sample sample, int sampleDescriptionId) {
+        public boolean maybeAddSample(MediaSample sample, int sampleDescriptionId) {
             if (sampleDescriptionId == this.sampleDescriptionId
                     && lastSample.offset + lastSample.length == sample.offset) {
                 return super.maybeAddSample(sample);
@@ -705,7 +776,21 @@ public class QuickTimeMeta extends AbstractMovie {
      * Represents a track.
      */
     protected static class Track {
-
+        /**
+         * Table of samples in this track.
+         * <p>
+         * This value is derived from the media data in this track,
+         * and from the edit list of this track.
+         * <p>
+         * This value is set to null to indicate that it must be recomputed.
+         * <dl>
+         *     <dt>Map.key</dt><dd>absolute movie time of a track sample</dd>
+         *     <dt>Map.value</dt><dd>track sample</dd>
+         * </dl>
+         */
+        public NavigableMap<Long, ArrayList<TrackSample>> trackSampleMap = null;
+        public ArrayList<TrackSample> trackSamplesList = null;
+        public int readIndex;
         /**
          * The media type of the track.
          */
@@ -787,9 +872,9 @@ public class QuickTimeMeta extends AbstractMovie {
         // END Edit List
         // BEGIN Media List
         /**
-         * The media list of the track.
+         * The media of the track.
          */
-        protected ArrayList<Media> mediaList = new ArrayList<Media>();
+        public Media media = null;
         // END Media List
 
         public void setEnabled(boolean newValue) {
@@ -825,25 +910,180 @@ public class QuickTimeMeta extends AbstractMovie {
         }
 
         /**
-         * Gets the track duration in the movie time scale.
+         * Gets the track duration in the movie timescale.
          *
-         * @param movieTimeScale The time scale of the movie.
+         * @param movieTimeScale The timescale of the movie.
          */
         public long getTrackDuration(long movieTimeScale) {
+            long sum = 0;
             if (editList.isEmpty()) {
-                long sum = 0;
-                for (Media m : mediaList) {
-                    sum += m.mediaDuration * movieTimeScale / m.mediaTimeScale;
-                }
-                return sum;
+                Media m = media;
+                sum += m.mediaDuration * movieTimeScale / m.mediaTimeScale;
             } else {
-                long sum = 0;
                 for (Edit e : editList) {
                     sum += e.trackDuration;
                 }
-                return sum;
+            }
+            return sum;
+        }
+
+        /**
+         * Builds the samples table for this track.
+         */
+        public void buildSamplesTable(long movieTimeScale) throws IOException {
+            buildMediaSamplesTable(movieTimeScale);
+            buildTrackSamplesTable(movieTimeScale);
+        }
+
+        public void buildTrackSamplesTable(long movieTimeScale) throws IOException {
+            trackSampleMap = new TreeMap<>();
+            trackSamplesList = new ArrayList<>();
+            NavigableMap<Long, ArrayList<MediaSample>> mediaSamplesMap = media == null ? null : media.mediaSamples;
+            if (mediaSamplesMap == null) {
+                throw new IOException("track " + trackId + ": 'mdia' atom does not exist or is incomplete");
+            }
+
+            long mediaTimeScale = media.mediaTimeScale;
+            if (editList.isEmpty()) {
+                editList.add(new Edit(duration, 0, 1.0));
+            }
+            long editTrackTime = 0;
+            for (final Edit edit : editList) {
+                if (edit.mediaTime == -1) {
+                    editTrackTime += edit.trackDuration;
+                    continue;
+                }
+                double mediaRate = edit.mediaRate;
+                long editMediaEndTime = (long) (edit.mediaTime + edit.trackDuration * mediaRate * mediaTimeScale / movieTimeScale);
+                long sampleTrackTime = editTrackTime;
+                double invMediaRate = 1.0 / edit.mediaRate;
+                long mediaDuration = (long) (edit.trackDuration * mediaRate * mediaTimeScale / movieTimeScale);
+                Long floorKey = mediaSamplesMap.floorKey(edit.mediaTime);
+                floorKey = media.syncSamples == null ? floorKey : media.syncSamples.floor(floorKey);
+                if (floorKey == null) {
+                    // We do not have a key frame. Skip this edit.
+                    editTrackTime += edit.trackDuration;
+                    continue;
+                }
+
+                for (var entry : mediaSamplesMap.subMap(floorKey, edit.mediaTime + mediaDuration).entrySet()) {
+                    ArrayList<MediaSample> mediaSamples = entry.getValue();
+                    if (mediaSamples.isEmpty()) {
+                        continue;
+                    }
+                    long mediaSampleTime = entry.getKey();
+
+                    // if multiple samples have the same timestamp, then only the last one has a duration >=0
+                    MediaSample lastMediaSample = mediaSamples.get(mediaSamples.size() - 1);
+                    long mediaSampleDuration = lastMediaSample.duration;
+                    // cut duration if the media sample ends after the end time of the edit
+                    long cutStart = Math.max(0, mediaSampleTime + mediaSampleDuration - editMediaEndTime);
+                    // cut duration if the media sample starts before the start time of the edit
+                    long cutEnd = Math.max(0, edit.mediaTime - mediaSampleTime);
+                    mediaSampleDuration = Math.max(0, mediaSampleDuration - cutStart + cutEnd);
+
+                    long trackSampleDuration = Math.max(0, (long) (mediaSampleDuration * invMediaRate * movieTimeScale / mediaTimeScale));
+
+                    for (int i = 0, n = mediaSamples.size(); i < n - 1; i++) {
+                        TrackSample trackSample = new TrackSample(mediaSamples.get(i), sampleTrackTime, 0, 0, 0);
+                        trackSampleMap.computeIfAbsent(sampleTrackTime, k -> new ArrayList<>()).add(trackSample);
+                        trackSamplesList.add(trackSample);
+                    }
+                    TrackSample trackSample = new TrackSample(lastMediaSample, sampleTrackTime, duration, cutStart, mediaSampleDuration);
+                    trackSampleMap.computeIfAbsent(sampleTrackTime, k -> new ArrayList<>()).add(trackSample);
+                    trackSamplesList.add(trackSample);
+
+                    sampleTrackTime += trackSampleDuration;
+                }
+                editTrackTime += edit.trackDuration;
             }
         }
+
+        public void buildMediaSamplesTable(long movieTimeScale) throws IOException {
+            // XXX For PCM audio media, we must create one sample per chunk
+
+
+            Media m = media;
+            m.mediaSamples = new TreeMap<>();
+            if (m.sampleSizes.isEmpty()) {
+                throw new IOException("track " + trackId + ": 'mdia' atom does not contain an 'stsz' atom.");
+            }
+            if (m.samplesToChunks.isEmpty()) {
+                throw new IOException("track " + trackId + ": 'mdia' atom does not contain an 'stsc' atom.");
+            }
+            if (m.timeToSamples.isEmpty()) {
+                throw new IOException("track " + trackId + ": 'mdia' atom does not contain an 'stts' atom.");
+            }
+            if (m.chunkOffsets.isEmpty()) {
+                throw new IOException("track " + trackId + ": 'mdia' atom does neither contain an 'stco' nor an 'co64' atom.");
+            }
+
+            TreeMap<Integer, SampleSizeGroup> sampleSizeMap = new TreeMap<>();
+            int sampleIndex = 0;
+            for (SampleSizeGroup ssg : m.sampleSizes) {
+                sampleSizeMap.put(sampleIndex, ssg);
+                sampleIndex += ssg.sampleCount;
+            }
+            TreeMap<Integer, SampleToChunk> sampleChunkMap = new TreeMap<>();
+            sampleIndex = 0;
+            int prevFirstChunk = 1;
+            int prevSamplesPerChunk = 0;
+            for (SampleToChunk stc : m.samplesToChunks) {
+                sampleIndex += (stc.firstChunk - prevFirstChunk) * prevSamplesPerChunk;
+                sampleChunkMap.put(sampleIndex, stc);
+                prevFirstChunk += stc.firstChunk;
+                prevSamplesPerChunk = stc.samplesPerChunk;
+            }
+
+
+            sampleIndex = 0;
+            long time = 0;
+            int firstChunkId = -1;
+            int chunkId = -1;
+            int samplesInChunk = 0;
+            int remainingSamplesInChunk = 0;
+            long offset = -1;
+            for (TimeToSampleGroup tsg : m.timeToSamples) {
+                long duration = tsg.getSampleDuration();
+                for (int i = 0; i < tsg.sampleCount; i++) {
+                    var sizeEntry = sampleSizeMap.floorEntry(sampleIndex);
+                    long length = sizeEntry == null ? -1 : sizeEntry.getValue().getSampleLength();
+
+                    if (remainingSamplesInChunk == 0) {
+                        Map.Entry<Integer, SampleToChunk> chunkEntry = sampleChunkMap.floorEntry(sampleIndex);
+                        if (chunkEntry == null) {
+                            throw new IOException("track " + trackId + "'stsc' atom does not contain required chunk entry");
+                        }
+                        SampleToChunk stsc = chunkEntry.getValue();
+                        if (stsc.firstChunk != firstChunkId) {
+                            samplesInChunk = stsc.samplesPerChunk;
+                            firstChunkId = stsc.firstChunk;
+                            chunkId = firstChunkId;
+                        } else {
+                            chunkId++;
+                            remainingSamplesInChunk = samplesInChunk;
+                        }
+                        if (chunkId < 0 || chunkId > m.chunkOffsets.size()) {
+                            throw new IOException("track " + trackId + "'stco' or 'co64' atom does not contain an entry for chunkId=" + chunkId);
+                        }
+                        offset = m.chunkOffsets.get(chunkId - 1);
+                    }
+
+                    // We can have samples with zero duration.
+                    MediaSample sample = new MediaSample(duration, offset, length);
+                    sample.timeStamp = time;
+                    sample.isKeyframe = m.syncSamples == null || m.syncSamples.contains((long) (sampleIndex + 1));
+                    m.mediaSamples.computeIfAbsent(time, k -> new ArrayList<>(1)).add(sample);
+
+                    time += duration;
+                    remainingSamplesInChunk--;
+                    offset += length;
+                    sampleIndex++;
+                }
+                time += duration;
+            }
+        }
+
 
         @Override
         public String toString() {
@@ -863,7 +1103,7 @@ public class QuickTimeMeta extends AbstractMovie {
                     + "\nelst:"//
                     + " editList=" + editList //
                     + "\nmdia:"//
-                    + " mediaList=" + mediaList //
+                    + " media=" + media //
                     + '}';
         }
     }
@@ -877,8 +1117,8 @@ public class QuickTimeMeta extends AbstractMovie {
         protected Date mediaCreationTime;
         protected Date mediaModificationTime;
         /**
-         * The timeScale of the media in the track. A time value that indicates
-         * the time scale for this media. That is, the number of time units that
+         * The timescale of the media in the track. A time value that indicates
+         * the timescale for this media. That is, the number of time units that
          * pass per second in its time coordinate system.
          */
         protected long mediaTimeScale = 600;
@@ -902,9 +1142,9 @@ public class QuickTimeMeta extends AbstractMovie {
         protected ArrayList<DataReference> dataReferenceList = new ArrayList<DataReference>();
         // END Data Reference List
         /**
-         * List of chunks.
+         * List of chunk offsets.
          */
-        protected ArrayList<Chunk> chunks = new ArrayList<Chunk>();
+        protected ArrayList<Long> chunkOffsets = new ArrayList<Long>();
         /**
          * List of TimeToSample entries.
          */
@@ -918,10 +1158,9 @@ public class QuickTimeMeta extends AbstractMovie {
          */
         protected ArrayList<SampleSizeGroup> sampleSizes = new ArrayList<SampleSizeGroup>();
         /**
-         * List of sync samples. This list is null as long as all samples in
-         * this track are sync samples.
+         * List of sync samples. This list is null if all samples are sync samples.
          */
-        protected ArrayList<Long> syncSamples = null;
+        protected NavigableSet<Long> syncSamples = null;
         /**
          * The number of samples in this track.
          */
@@ -949,81 +1188,96 @@ public class QuickTimeMeta extends AbstractMovie {
         // END Video Media Header
 
         private ArrayList<SampleDescription> sampleDescriptions = new ArrayList<>();
+        /**
+         * Table of samples in the media of this track.
+         * <p>
+         * This value is derived from the media data in this track.
+         * <p>
+         * This value is set to null to indicate that it must be recomputed.
+         * <dl>
+         *     <dt>Map.key</dt><dd>absolute media time of a media sample</dd>
+         *     <dt>Map.value</dt><dd>media samples, may contain multiple
+         *     entries, if there are samples with duration=0. In this
+         *     case, only the last sample has a duration &gt;= 0.</dd>
+         * </dl>
+         */
+        public NavigableMap<Long, ArrayList<MediaSample>> mediaSamples = null;
 
         public void addSampleDescription(SampleDescription d) {
             sampleDescriptions.add(d);
         }
 
-        public void addSample(Sample sample, int sampleDescriptionId, boolean isSyncSample) {
-            mediaDuration += sample.duration;
-            sampleCount++;
+        /*
+                public void addSample(Sample sample, int sampleDescriptionId, boolean isSyncSample) {
+                    mediaDuration += sample.duration;
+                    sampleCount++;
 
-            // Keep track of sync samples. If all samples in a track are sync
-            // samples, we do not need to create a syncSample list.
-            if (isSyncSample) {
-                if (syncSamples != null) {
-                    syncSamples.add(sampleCount);
-                }
-            } else {
-                if (syncSamples == null) {
-                    syncSamples = new ArrayList<Long>();
-                    for (long i = 1; i < sampleCount; i++) {
-                        syncSamples.add(i);
+                    // Keep track of sync samples. If all samples in a track are sync
+                    // samples, we do not need to create a syncSample list.
+                    if (isSyncSample) {
+                        if (syncSamples != null) {
+                            syncSamples.add(sampleCount);
+                        }
+                    } else {
+                        if (syncSamples == null) {
+                            syncSamples = new ArrayList<Long>();
+                            for (long i = 1; i < sampleCount; i++) {
+                                syncSamples.add(i);
+                            }
+                        }
+                    }
+
+                    //
+                    if (timeToSamples.isEmpty()//
+                            || !timeToSamples.get(timeToSamples.size() - 1).maybeAddSample(sample)) {
+                        timeToSamples.add(new TimeToSampleGroup(sample));
+                    }
+                    if (sampleSizes.isEmpty()//
+                            || !sampleSizes.get(sampleSizes.size() - 1).maybeAddSample(sample)) {
+                        sampleSizes.add(new SampleSizeGroup(sample));
+                    }
+                    if (chunks.isEmpty()//
+                            || !chunks.get(chunks.size() - 1).maybeAddSample(sample, sampleDescriptionId)) {
+                        chunks.add(new Chunk(sample, sampleDescriptionId));
                     }
                 }
-            }
 
-            //
-            if (timeToSamples.isEmpty()//
-                    || !timeToSamples.get(timeToSamples.size() - 1).maybeAddSample(sample)) {
-                timeToSamples.add(new TimeToSampleGroup(sample));
-            }
-            if (sampleSizes.isEmpty()//
-                    || !sampleSizes.get(sampleSizes.size() - 1).maybeAddSample(sample)) {
-                sampleSizes.add(new SampleSizeGroup(sample));
-            }
-            if (chunks.isEmpty()//
-                    || !chunks.get(chunks.size() - 1).maybeAddSample(sample, sampleDescriptionId)) {
-                chunks.add(new Chunk(sample, sampleDescriptionId));
-            }
-        }
+                public void addChunk(Chunk chunk, boolean isSyncSample) {
+                    mediaDuration += chunk.firstSample.duration * chunk.sampleCount;
+                    sampleCount += chunk.sampleCount;
 
-        public void addChunk(Chunk chunk, boolean isSyncSample) {
-            mediaDuration += chunk.firstSample.duration * chunk.sampleCount;
-            sampleCount += chunk.sampleCount;
+                    // Keep track of sync samples. If all samples in a track are sync
+                    // samples, we do not need to create a syncSample list.
+                    if (isSyncSample) {
+                        if (syncSamples != null) {
+                            for (long i = sampleCount - chunk.sampleCount; i < sampleCount; i++) {
+                                syncSamples.add(i);
+                            }
+                        }
+                    } else {
+                        if (syncSamples == null) {
+                            syncSamples = new ArrayList<Long>();
+                            for (long i = 1; i < sampleCount; i++) {
+                                syncSamples.add(i);
+                            }
+                        }
+                    }
 
-            // Keep track of sync samples. If all samples in a track are sync
-            // samples, we do not need to create a syncSample list.
-            if (isSyncSample) {
-                if (syncSamples != null) {
-                    for (long i = sampleCount - chunk.sampleCount; i < sampleCount; i++) {
-                        syncSamples.add(i);
+                    //
+                    if (timeToSamples.isEmpty()//
+                            || !timeToSamples.get(timeToSamples.size() - 1).maybeAddChunk(chunk)) {
+                        timeToSamples.add(new TimeToSampleGroup(chunk));
+                    }
+                    if (sampleSizes.isEmpty()//
+                            || !sampleSizes.get(sampleSizes.size() - 1).maybeAddChunk(chunk)) {
+                        sampleSizes.add(new SampleSizeGroup(chunk));
+                    }
+                    if (chunks.isEmpty()//
+                            || !chunks.get(chunks.size() - 1).maybeAddChunk(chunk)) {
+                        chunks.add(chunk);
                     }
                 }
-            } else {
-                if (syncSamples == null) {
-                    syncSamples = new ArrayList<Long>();
-                    for (long i = 1; i < sampleCount; i++) {
-                        syncSamples.add(i);
-                    }
-                }
-            }
-
-            //
-            if (timeToSamples.isEmpty()//
-                    || !timeToSamples.get(timeToSamples.size() - 1).maybeAddChunk(chunk)) {
-                timeToSamples.add(new TimeToSampleGroup(chunk));
-            }
-            if (sampleSizes.isEmpty()//
-                    || !sampleSizes.get(sampleSizes.size() - 1).maybeAddChunk(chunk)) {
-                sampleSizes.add(new SampleSizeGroup(chunk));
-            }
-            if (chunks.isEmpty()//
-                    || !chunks.get(chunks.size() - 1).maybeAddChunk(chunk)) {
-                chunks.add(chunk);
-            }
-        }
-
+        */
         public boolean isEmpty() {
             return sampleCount == 0;
         }
@@ -1044,7 +1298,7 @@ public class QuickTimeMeta extends AbstractMovie {
                     + ", videoColorTable=" + videoColorTable//
                     + ", soundBalance=" + soundBalance//
                     + ", dataReferenceList=" + dataReferenceList //
-                    + ", chunks=" + chunks//
+                    + ", chunks=" + chunkOffsets//
                     + ", timeToSamples=" + timeToSamples //
                     + ", sampleSizes=" + sampleSizes
                     + ", syncSamples=" + syncSamples
@@ -1085,6 +1339,7 @@ public class QuickTimeMeta extends AbstractMovie {
          */
         protected int videoDepth = -1;
         protected int videoColorTableId = -1;
+        protected byte[] extendData;
         // END Video Sample Description
         // BEGIN Sound Sample Description
         /**
@@ -1174,7 +1429,7 @@ public class QuickTimeMeta extends AbstractMovie {
          * A 32-bit integer that specifies the duration of this edit segment in
          * units of the movie's time scale.
          */
-        public int trackDuration;
+        public long trackDuration;
         /**
          * A 32-bit integer containing the start time within the media of this
          * edit segment (in media time scale units). If this field is set to -1,
@@ -1182,52 +1437,24 @@ public class QuickTimeMeta extends AbstractMovie {
          * empty edit. Any differece between the movie's duration and the
          * track's duration is expressed as an implicit empty edit.
          */
-        public int mediaTime;
+        public long mediaTime;
         /**
          * A 32-bit fixed-point number (16.16) that specifies the relative rate
          * at which to play the media corresponding to this edit segment. This
          * rate value cannot be 0 or negative.
          */
-        public int mediaRate;
+        public double mediaRate;
 
         /**
          * Creates an edit.
          *
-         * @param trackDuration Duration of this edit in the movie's time scale.
-         * @param mediaTime     Start time of this edit in the media's time scale.
+         * @param trackDuration Duration of this edit in the movie's timescale.
+         * @param mediaTime     Start time of this edit in the media's timescale.
          *                      Specify -1 for an empty edit. The last edit in a track should never
          *                      be an empty edit.
          * @param mediaRate     The relative rate at which to play this edit.
          */
-        public Edit(int trackDuration, int mediaTime, double mediaRate) {
-            if (trackDuration < 0) {
-                throw new IllegalArgumentException("trackDuration must not be < 0:" + trackDuration);
-            }
-            if (mediaTime < -1) {
-                throw new IllegalArgumentException("mediaTime must not be < -1:" + mediaTime);
-            }
-            if (mediaRate <= 0) {
-                throw new IllegalArgumentException("mediaRate must not be <= 0:" + mediaRate);
-            }
-            this.trackDuration = trackDuration;
-            this.mediaTime = mediaTime;
-            this.mediaRate = (int) (mediaRate * (1 << 16));
-        }
-
-        /**
-         * Creates an edit.
-         * <p>
-         * Use this constructor only if you want to compute the fixed point
-         * media rate by yourself.
-         *
-         * @param trackDuration Duration of this edit in the movie's time scale.
-         * @param mediaTime     Start time of this edit in the media's time scale.
-         *                      Specify -1 for an empty edit. The last edit in a track should never
-         *                      be an empty edit.
-         * @param mediaRate     The relative rate at which to play this edit given
-         *                      as a 16.16 fixed point value.
-         */
-        public Edit(int trackDuration, int mediaTime, int mediaRate) {
+        public Edit(long trackDuration, int mediaTime, double mediaRate) {
             if (trackDuration < 0) {
                 throw new IllegalArgumentException("trackDuration must not be < 0:" + trackDuration);
             }
@@ -1241,6 +1468,7 @@ public class QuickTimeMeta extends AbstractMovie {
             this.mediaTime = mediaTime;
             this.mediaRate = mediaRate;
         }
+
 
         @Override
         public String toString() {
