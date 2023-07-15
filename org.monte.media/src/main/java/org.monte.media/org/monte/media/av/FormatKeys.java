@@ -17,6 +17,7 @@ public class FormatKeys {
         VIDEO,
         MIDI,
         TEXT,
+        CAPTION,
         META,
         SPRITE,
         FILE,
@@ -25,6 +26,8 @@ public class FormatKeys {
 
     /**
      * The media MediaTypeKey.
+     * <p>
+     * This key is useful for well known media types.
      */
     public final static FormatKey<MediaType> MediaTypeKey = new FormatKey<MediaType>("mediaType", MediaType.class);
     /**

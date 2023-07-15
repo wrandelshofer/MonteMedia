@@ -226,12 +226,12 @@ public class QuickTimeMeta extends AbstractMovie {
     private void deriveTrackFormat(int trackIndex) {
         Track track = tracks.get(trackIndex);
         Format format = new Format(MimeTypeKey, MIME_QUICKTIME,
-                MediaTypeKey, track.mediaType);
+                MediaTypeKey, track.mediaType,
+                EncodingKey, track.encoding);
         if (track.media == null) {
             throw new UnsupportedOperationException("not implemented for tracks without media. " + trackIndex + " " + track.mediaType + " " + track.media);
         }
         Media m = track.media;
-        // FIXME implement me
         switch (track.mediaType) {
             case VIDEO:
                 if (m.sampleDescriptions.size() != 1) {
@@ -796,6 +796,10 @@ public class QuickTimeMeta extends AbstractMovie {
          */
         protected FormatKeys.MediaType mediaType;
         /**
+         * The fourcc type of the track.
+         */
+        protected String encoding;
+        /**
          * The format of the media in the track.
          */
         protected Format format;
@@ -1031,7 +1035,7 @@ public class QuickTimeMeta extends AbstractMovie {
             for (SampleToChunk stc : m.samplesToChunks) {
                 sampleIndex += (stc.firstChunk - prevFirstChunk) * prevSamplesPerChunk;
                 sampleChunkMap.put(sampleIndex, stc);
-                prevFirstChunk += stc.firstChunk;
+                prevFirstChunk = stc.firstChunk;
                 prevSamplesPerChunk = stc.samplesPerChunk;
             }
 
@@ -1040,7 +1044,6 @@ public class QuickTimeMeta extends AbstractMovie {
             long time = 0;
             int firstChunkId = -1;
             int chunkId = -1;
-            int samplesInChunk = 0;
             int remainingSamplesInChunk = 0;
             long offset = -1;
             for (TimeToSampleGroup tsg : m.timeToSamples) {
@@ -1052,19 +1055,18 @@ public class QuickTimeMeta extends AbstractMovie {
                     if (remainingSamplesInChunk == 0) {
                         Map.Entry<Integer, SampleToChunk> chunkEntry = sampleChunkMap.floorEntry(sampleIndex);
                         if (chunkEntry == null) {
-                            throw new IOException("track " + trackId + "'stsc' atom does not contain required chunk entry");
+                            throw new IOException("track " + trackId + ": 'stsc' atom does not contain required chunk entry");
                         }
                         SampleToChunk stsc = chunkEntry.getValue();
                         if (stsc.firstChunk != firstChunkId) {
-                            samplesInChunk = stsc.samplesPerChunk;
                             firstChunkId = stsc.firstChunk;
-                            chunkId = firstChunkId;
+                            chunkId = stsc.firstChunk;
                         } else {
                             chunkId++;
-                            remainingSamplesInChunk = samplesInChunk;
                         }
+                        remainingSamplesInChunk = stsc.samplesPerChunk;
                         if (chunkId < 0 || chunkId > m.chunkOffsets.size()) {
-                            throw new IOException("track " + trackId + "'stco' or 'co64' atom does not contain an entry for chunkId=" + chunkId);
+                            throw new IOException("track " + trackId + ": 'stco' or 'co64' atom does not contain an entry for chunkId=" + chunkId);
                         }
                         offset = m.chunkOffsets.get(chunkId - 1);
                     }

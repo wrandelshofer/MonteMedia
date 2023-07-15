@@ -38,7 +38,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
  *
  * @author Werner Randelshofer
  */
-public class Main {
+public class ReadImagesFromAMovieMain {
     /**
      * Main method.
      *
@@ -56,7 +56,7 @@ public class Main {
                     """);
         }
         File file = new File(args[0]);
-        Main main = new Main();
+        ReadImagesFromAMovieMain main = new ReadImagesFromAMovieMain();
         SwingUtilities.invokeLater(() -> {
             main.createFrame();
             main.loadImages(file);

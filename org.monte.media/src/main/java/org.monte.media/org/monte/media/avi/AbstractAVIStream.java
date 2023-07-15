@@ -373,7 +373,6 @@ public abstract class AbstractAVIStream {
          * stream 'vids'	Video stream
          */
         public final AVIMediaType mediaType;
-        //protected String fccType;
         /**
          * Optionally, contains a FOURCC that identifies a specific data
          * handler. The data handler is the preferred handler for the stream.

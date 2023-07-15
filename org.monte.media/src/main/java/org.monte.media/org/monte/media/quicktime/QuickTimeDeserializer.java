@@ -599,20 +599,16 @@ public class QuickTimeDeserializer {
         String componentName = in.readPString();
 
         if ("mhlr".equals(componentType)) {
-            if ("vide".equals(componentSubtype)) {
-                t.mediaType = MediaType.VIDEO;
-            } else if ("soun".equals(componentSubtype)) {
-                t.mediaType = MediaType.AUDIO;
-            } else if ("midi".equals(componentSubtype)) {
-                t.mediaType = MediaType.MIDI;
-            } else if ("text".equals(componentSubtype)) {
-                t.mediaType = MediaType.TEXT;
-            } else if ("meta".equals(componentSubtype)) {
-                t.mediaType = MediaType.META;
-            } else if ("sprt".equals(componentSubtype)) {
-                t.mediaType = MediaType.SPRITE;
-            } else {
-                t.mediaType = MediaType.UNKNOWN;
+            t.encoding = componentSubtype;
+            switch (componentSubtype) {
+                case "vide" -> t.mediaType = MediaType.VIDEO;
+                case "soun" -> t.mediaType = MediaType.AUDIO;
+                case "midi" -> t.mediaType = MediaType.MIDI;
+                case "text" -> t.mediaType = MediaType.TEXT;
+                case "meta" -> t.mediaType = MediaType.META;
+                case "sprt" -> t.mediaType = MediaType.SPRITE;
+                case "clcp" -> t.mediaType = MediaType.CAPTION;
+                default -> t.mediaType = MediaType.UNKNOWN;
             }
         } else if ("dhlr".equals(componentType)) {
             // FIXME - is "dhlr" useful at all?

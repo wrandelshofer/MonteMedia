@@ -161,19 +161,11 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
 
 
         switch (tr.mediaType) {
-            case AUDIO: {
+            case AUDIO -> {
                 Format af = tr.format;
                 buffer.sampleCount = buffer.length / af.get(FrameSizeKey);
             }
-            break;
-            case VIDEO: {
-                buffer.sampleCount = 1;
-            }
-            break;
-            case MIDI:
-            case TEXT:
-            default:
-                throw new UnsupportedOperationException("Unsupported media type " + tr.mediaType);
+            default -> buffer.sampleCount = 1;
         }
         buffer.format = tr.format;
         buffer.track = track;
