@@ -209,24 +209,8 @@ public class QuickTimeDeserializer {
                                 case VIDEO:
                                     parseVideoSampleDescription(in, atom.size - atom.headerSize, media);
                                     break;
-                                case MIDI:
-                                    System.err.println("QuickTimeDeserializer.parseMIDISampleDescription not yet implemented.");
-                                    break;
-                                case TEXT:
-                                    System.err.println("QuickTimeDeserializer.parseTextSampleDescription not yet implemented.");
-                                    break;
-                                case SPRITE:
-                                    System.err.println("QuickTimeDeserializer.parseSpriteSampleDescription not yet implemented.");
-                                    break;
-                                case META:
-                                    System.err.println("QuickTimeDeserializer.parseMetaSampleDescription not yet implemented.");
-                                    break;
-                                case FILE:
-                                    System.err.println("QuickTimeDeserializer.parseFileSampleDescription not yet implemented.");
-                                    break;
-                                case UNKNOWN:
                                 default:
-                                    System.err.println("QuickTimeDeserializer.parse" + track.mediaType + "SampleDescription not yet implemented.");
+                                    parseGenericSampleDescription(in, atom.size - atom.headerSize, media);
                                     break;
                             }
                             break;
@@ -604,10 +588,9 @@ public class QuickTimeDeserializer {
                 case "vide" -> t.mediaType = MediaType.VIDEO;
                 case "soun" -> t.mediaType = MediaType.AUDIO;
                 case "midi" -> t.mediaType = MediaType.MIDI;
-                case "text" -> t.mediaType = MediaType.TEXT;
+                case "text", "clcp" -> t.mediaType = MediaType.TEXT;
                 case "meta" -> t.mediaType = MediaType.META;
                 case "sprt" -> t.mediaType = MediaType.SPRITE;
-                case "clcp" -> t.mediaType = MediaType.CAPTION;
                 default -> t.mediaType = MediaType.UNKNOWN;
             }
         } else if ("dhlr".equals(componentType)) {
@@ -835,6 +818,7 @@ public class QuickTimeDeserializer {
      */
     protected void parseSoundSampleDescription(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
+        if (version != 0) throw new IOException("unsupported stsd version=" + version);
         in.skipBytes(3);
         int numberOfEntries = in.readInt();
         remainingSize -= 12;
@@ -846,7 +830,7 @@ public class QuickTimeDeserializer {
             int size = in.readInt();
             remainingSize -= size;
             int remainingEntrySize = size;
-            d.mediaType = in.readType();
+            d.dataFormat = in.readType();
             in.skipBytes(6);
             d.dataReferenceIndex = in.readUnsignedShort();
 
@@ -889,6 +873,47 @@ public class QuickTimeDeserializer {
             }
         }
     }
+
+    /**
+     * The sample description ("stsd"-Atom in generic tracks).
+     *
+     * <pre>
+     * typedef struct {
+     *  byte version;
+     *  byte[3] flags;
+     *  int numberOfEntries;
+     *  sampleDescriptionEntry sampleDescriptionTable[numberOfEntries];
+     * } videoSampleDescriptionAtom;
+     *
+     * typedef struct {
+     *  int size;
+     *  magic dataFormat; // A 32-bit integer indicating the format of the stored data. This depends on the media type, but is usually either the compression format or the media type.
+     *  byte[6] reserved; // six bytes that must be zero
+     *  short dataReferenceIndex; // A 16-bit integer that contains the index of the data reference to use to retrieve data associated with samples that use this sample description. Data references are stored in data reference atoms.
+     *  byte[size-16] data;
+     * } sampleDescriptionEntry;
+     * </pre>
+     */
+    protected void parseGenericSampleDescription(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
+        int version = in.readUnsignedByte();
+        if (version != 0) throw new IOException("unsupported stsd version=" + version);
+        in.skipBytes(3);
+        int numberOfEntries = in.readInt();
+        remainingSize -= 8;
+        for (int i = 0; i < numberOfEntries; i++) {
+            final QuickTimeMeta.SampleDescription d = new QuickTimeMeta.SampleDescription();
+            m.addSampleDescription(d);
+
+            int size = in.readInt();
+            remainingSize -= size;
+            d.dataFormat = in.readType();
+            in.skipBytes(6);
+            d.dataReferenceIndex = in.readUnsignedShort();
+            d.extendData = new byte[size - 16];
+            in.readFully(d.extendData);
+        }
+    }
+
 
     /**
      * The video sample description ("stsd"-Atom in a video track).
@@ -976,7 +1001,7 @@ public class QuickTimeDeserializer {
      */
     protected void parseVideoSampleDescription(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
-        if (version != 0) return;
+        if (version != 0) throw new IOException("unsupported stsd version=" + version);
         in.skipBytes(3);
         int numberOfEntries = in.readInt();
         remainingSize -= 8;
@@ -986,7 +1011,7 @@ public class QuickTimeDeserializer {
 
             int size = in.readInt();
             remainingSize -= size;
-            d.mediaType = in.readType();
+            d.dataFormat = in.readType();
             in.skipBytes(6);
             d.dataReferenceIndex = in.readUnsignedShort();
 

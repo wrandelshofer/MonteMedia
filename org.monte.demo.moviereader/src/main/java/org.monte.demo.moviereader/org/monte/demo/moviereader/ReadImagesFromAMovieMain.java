@@ -5,13 +5,7 @@
 package org.monte.demo.moviereader;
 
 
-import org.monte.media.av.Buffer;
-import org.monte.media.av.BufferFlag;
-import org.monte.media.av.Codec;
-import org.monte.media.av.Format;
-import org.monte.media.av.FormatKeys;
-import org.monte.media.av.MovieReader;
-import org.monte.media.av.Registry;
+import org.monte.media.av.*;
 import org.monte.media.image.Images;
 
 import javax.swing.*;
@@ -84,7 +78,7 @@ public class ReadImagesFromAMovieMain {
         };
         slider.getModel().addChangeListener(changeListener);
         changeListener.stateChanged(new ChangeEvent(slider.getModel()));
-        panel.setDropTarget(new DropTarget() {
+        DropTarget dt = new DropTarget() {
             @Override
             public synchronized void dragOver(DropTargetDragEvent evt) {
                 if (evt.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
@@ -106,7 +100,8 @@ public class ReadImagesFromAMovieMain {
                     ex.printStackTrace();
                 }
             }
-        });
+        };
+        panel.setDropTarget(dt);
 
         frame.pack();
         frame.setVisible(true);

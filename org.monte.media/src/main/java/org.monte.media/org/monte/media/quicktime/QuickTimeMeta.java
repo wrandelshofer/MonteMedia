@@ -12,25 +12,10 @@ import org.monte.media.math.Rational;
 
 import java.awt.image.IndexColorModel;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.NavigableSet;
-import java.util.TreeMap;
+import java.util.*;
 
-import static org.monte.media.av.FormatKeys.EncodingKey;
-import static org.monte.media.av.FormatKeys.FrameRateKey;
-import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
-import static org.monte.media.av.FormatKeys.MediaType;
-import static org.monte.media.av.FormatKeys.MediaTypeKey;
-import static org.monte.media.av.FormatKeys.MimeTypeKey;
-import static org.monte.media.av.codec.video.VideoFormatKeys.CompressorNameKey;
-import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
-import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
-import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
+import static org.monte.media.av.FormatKeys.*;
+import static org.monte.media.av.codec.video.VideoFormatKeys.*;
 
 /**
  * {@code QuickTimeMeta} holds the meta-data contained in a QuickTime movie.
@@ -233,14 +218,14 @@ public class QuickTimeMeta extends AbstractMovie {
         }
         Media m = track.media;
         switch (track.mediaType) {
-            case VIDEO:
+            case VIDEO: {
                 if (m.sampleDescriptions.size() != 1) {
                     throw new UnsupportedOperationException("not implemented for media with multiple sample descriptions.. " + trackIndex + " " + track.mediaType + " " + m + " " + m.sampleDescriptions);
                 }
 
                 SampleDescription desc = m.sampleDescriptions.get(0);
                 format = format.append(
-                        EncodingKey, desc.mediaType,
+                        SampleFormatKey, desc.dataFormat,
                         CompressorNameKey, desc.videoCompressorName,
                         HeightKey, desc.videoHeight,
                         WidthKey, desc.videoWidth,
@@ -253,14 +238,18 @@ public class QuickTimeMeta extends AbstractMovie {
                     format = format.append(FrameRateKey, new Rational(1, m.mediaTimeScale));
                 }
                 break;
-            case AUDIO:
-            case META:
-            case MIDI:
-            case FILE:
-            case TEXT:
-            case SPRITE:
-            default:
-                // we can't say anything more about the format
+            }
+            default: {
+                if (m.sampleDescriptions.size() != 1) {
+                    throw new UnsupportedOperationException("not implemented for media with multiple sample descriptions.. " + trackIndex + " " + track.mediaType + " " + m + " " + m.sampleDescriptions);
+                }
+
+                SampleDescription desc = m.sampleDescriptions.get(0);
+                format = format.append(
+                        SampleFormatKey, desc.dataFormat
+                );
+                break;
+            }
         }
         track.format = format;
     }
@@ -1320,7 +1309,7 @@ public class QuickTimeMeta extends AbstractMovie {
         /**
          * The media type.
          */
-        protected String mediaType;
+        protected String dataFormat;
         /**
          * The data reference index.
          */

@@ -104,6 +104,7 @@ module org.monte.media {
             org.monte.media.av.codec.video.PNGCodecSpi,
             org.monte.media.av.codec.video.TechSmithCodecSpi,
             org.monte.media.quicktime.codec.audio.QuickTimePCMAudioCodecSpi,
+            org.monte.media.quicktime.codec.text.AppleClosedCaptionCodecSpi,
             org.monte.media.quicktime.codec.video.AnimationCodecSpi,
             org.monte.media.quicktime.codec.video.RawCodecSpi,
             org.monte.media.avi.codec.audio.AVIPCMAudioCodecSpi,

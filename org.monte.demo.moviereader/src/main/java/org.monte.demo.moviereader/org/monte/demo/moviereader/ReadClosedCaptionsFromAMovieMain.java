@@ -5,11 +5,7 @@
 package org.monte.demo.moviereader;
 
 
-import org.monte.media.av.Buffer;
-import org.monte.media.av.BufferFlag;
-import org.monte.media.av.Format;
-import org.monte.media.av.MovieReader;
-import org.monte.media.av.Registry;
+import org.monte.media.av.*;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -27,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import static org.monte.media.av.FormatKeys.EncodingKey;
+import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
 
 /**
@@ -81,7 +77,7 @@ public class ReadClosedCaptionsFromAMovieMain {
         };
         slider.getModel().addChangeListener(changeListener);
         changeListener.stateChanged(new ChangeEvent(slider.getModel()));
-        panel.setDropTarget(new DropTarget() {
+        DropTarget dt = new DropTarget() {
             @Override
             public synchronized void dragOver(DropTargetDragEvent evt) {
                 if (evt.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
@@ -103,7 +99,8 @@ public class ReadClosedCaptionsFromAMovieMain {
                     ex.printStackTrace();
                 }
             }
-        });
+        };
+        panel.setDropTarget(dt);
 
         frame.pack();
         frame.setVisible(true);
@@ -129,6 +126,7 @@ public class ReadClosedCaptionsFromAMovieMain {
                 } catch (InterruptedException | ExecutionException e) {
                     frame.setTitle("Couldn't load " + file.getName());
                     images = List.of();
+                    frame.getRootPane().putClientProperty("Window.documentFile", null);
                     e.printStackTrace();
                 }
                 slider.setMaximum(images.size() - 1);
@@ -136,6 +134,7 @@ public class ReadClosedCaptionsFromAMovieMain {
                 updateImage();
                 frame.pack();
                 frame.setTitle(file.getName());
+                frame.getRootPane().putClientProperty("Window.documentFile", file);
             }
         }.execute();
     }
@@ -145,31 +144,41 @@ public class ReadClosedCaptionsFromAMovieMain {
         MovieReader in = Registry.getInstance().getReader(file);
         if (in == null)
             throw new IOException("could not find a reader for file " + file);
-        Format format = new Format(DataClassKey, BufferedImage.class);
+        Format outFormat = new Format(DataClassKey, String.class);
 
-        int track = in.findTrack(0, new Format(EncodingKey, "clcp"));
+        printVideoInfo(file, in);
+
+        int track = in.findTrack(0, new Format(MediaTypeKey, FormatKeys.MediaType.TEXT));
         if (track < 0) {
             for (int i = 0; i < in.getTrackCount(); i++) {
                 System.out.println("track " + i + " " + in.getFormat(i));
             }
             throw new IOException("could not find a closed caption track in file " + file);
         }
+        Codec codec = Registry.getInstance().getCodec(in.getFormat(track), outFormat);
+        if (codec == null)
+            throw new IOException("could not find a codec for " + in.getFormat(track) + " in file " + file);
         try {
             Buffer inbuf = new Buffer();
             Buffer codecbuf = new Buffer();
             do {
                 in.read(track, inbuf);
+                codec.process(inbuf, codecbuf);
                 if (!codecbuf.isFlag(BufferFlag.DISCARD)) {
-                    byte[] data = (byte[]) inbuf.data;
-                    for (int i = 0; i < data.length; i++) {
-                        data[i] = (byte) (data[i] & 0x7f);
-                    }
-                    System.out.println(inbuf.timeStamp + " " + inbuf.sampleDuration + " " + inbuf.flags + " " + new String((byte[]) data, inbuf.offset, inbuf.length));
+                    String text = (String) codecbuf.data;
+                    System.out.println(inbuf.timeStamp + " " + inbuf.sampleDuration + " " + inbuf.flags + " " + text);
                 }
             } while (!inbuf.isFlag(BufferFlag.END_OF_MEDIA));
         } finally {
             in.close();
         }
         return frames;
+    }
+
+    private static void printVideoInfo(File file, MovieReader in) throws IOException {
+        System.out.println(file);
+        for (int i = 0, n = in.getTrackCount(); i < n; i++) {
+            System.out.println("  track " + i + ": " + in.getFormat(i));
+        }
     }
 }

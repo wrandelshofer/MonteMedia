@@ -17,7 +17,6 @@ public class FormatKeys {
         VIDEO,
         MIDI,
         TEXT,
-        CAPTION,
         META,
         SPRITE,
         FILE,
@@ -25,15 +24,17 @@ public class FormatKeys {
     }
 
     /**
-     * The media MediaTypeKey.
-     * <p>
-     * This key is useful for well known media types.
+     * The type of the media.
      */
     public final static FormatKey<MediaType> MediaTypeKey = new FormatKey<MediaType>("mediaType", MediaType.class);
     /**
-     * The EncodingKey.
+     * The encoding of the media.
      */
     public final static FormatKey<String> EncodingKey = new FormatKey<String>("encoding", String.class);
+    /**
+     * The format of the samples of the media.
+     */
+    public final static FormatKey<String> SampleFormatKey = new FormatKey<String>("sampleFormat", String.class);
 
     //
     public final static String MIME_AVI = "video/avi";
