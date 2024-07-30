@@ -26,23 +26,24 @@ public class AudioGrabber implements Runnable, AutoCloseable {
 	
 	private final TargetDataLine line;
 	private final BlockingQueue<Buffer> queue;
-	private final int audioTrack;
-	private final long startTime;
-	private final AtomicLong stopTime = new AtomicLong(Long.MAX_VALUE);
-	private long totalSampleCount;
+	private final Integer audioTrack;
+	private final Long startTime;
+	private Long totalSampleCount;
 	private ScheduledFuture<?> future;
-	private long sequenceNumber;
-	private float audioLevelLeft = AudioSystem.NOT_SPECIFIED;
-	private float audioLevelRight = AudioSystem.NOT_SPECIFIED;
+	private Long sequenceNumber;
+	
+	private float audioLevelLeft      = AudioSystem.NOT_SPECIFIED;
+	private float audioLevelRight     = AudioSystem.NOT_SPECIFIED;
+	private final AtomicLong stopTime = new AtomicLong(Long.MAX_VALUE);
 	
 	public AudioGrabber(final Mixer mixer, final Format audioFormat, final int audioTrack, long startTime, BlockingQueue<Buffer> queue)
 			throws LineUnavailableException {
-		this.audioTrack = audioTrack;
-		this.queue = queue;
-		this.startTime = startTime;
+		this.audioTrack        = audioTrack;
+		this.queue             = queue;
+		this.startTime         = startTime;
 		
 		DataLine.Info lineInfo = new DataLine.Info(TargetDataLine.class, AudioFormatKeys.toAudioFormat(audioFormat));
-		this.line = initializeAudioLine(mixer, lineInfo);
+		this.line              = initializeAudioLine(mixer, lineInfo);
 		
 		configureAudioLine();
 	}
@@ -99,13 +100,13 @@ public class AudioGrabber implements Runnable, AutoCloseable {
 	
 	@Override
 	public void run() {
-		Buffer buf = new Buffer();
+		Buffer buf             = new Buffer();
 		AudioFormat lineFormat = line.getFormat();
-		buf.format = fromAudioFormat(lineFormat).append(SilenceBugKey, true);
+		buf.format             = fromAudioFormat(lineFormat).append(SilenceBugKey, true);
 		
-		int bufferSize = calculateBufferSize(lineFormat);
-		byte[] bdat = new byte[bufferSize];
-		buf.data = bdat;
+		int bufferSize         = calculateBufferSize(lineFormat);
+		byte[] bdat            = new byte[bufferSize];
+		buf.data               = bdat;
 		
 		int count = line.read(bdat, 0, bdat.length);
 		if (count > 0) {
@@ -126,7 +127,7 @@ public class AudioGrabber implements Runnable, AutoCloseable {
 		return bufferSize;
 	}
 	
-	private void processAudioData(Buffer buf, AudioFormat lineFormat, byte[] bdat, int count) {
+	private void processAudioData(Buffer buf, AudioFormat lineFormat, byte[] bdat, Integer count) {
 		computeAudioLevel(bdat, count, lineFormat);
 		setBufferProperties(buf, lineFormat, count);
 		
@@ -144,15 +145,15 @@ public class AudioGrabber implements Runnable, AutoCloseable {
 	
 	private void setBufferProperties(Buffer buf, AudioFormat lineFormat, int count) {
 		Rational sampleRate = Rational.valueOf(lineFormat.getSampleRate());
-		Rational frameRate = Rational.valueOf(lineFormat.getFrameRate());
+		Rational frameRate  = Rational.valueOf(lineFormat.getFrameRate());
 		
-		buf.sampleCount = count / (lineFormat.getSampleSizeInBits() / 8 * lineFormat.getChannels());
-		buf.sampleDuration = sampleRate.inverse();
-		buf.offset = 0;
-		buf.sequenceNumber = sequenceNumber++;
-		buf.length = count;
-		buf.track = audioTrack;
-		buf.timeStamp = new Rational(totalSampleCount, 1).divide(frameRate);
+		buf.sampleCount     = count / (lineFormat.getSampleSizeInBits() / 8 * lineFormat.getChannels());
+		buf.sampleDuration  = sampleRate.inverse();
+		buf.offset          = 0;
+		buf.sequenceNumber  = sequenceNumber++;
+		buf.length          = count;
+		buf.track           = audioTrack;
+		buf.timeStamp       = new Rational(totalSampleCount , 1).divide(frameRate);
 	}
 	
 	private boolean isRecordingComplete(Buffer buf) {
@@ -186,7 +187,7 @@ public class AudioGrabber implements Runnable, AutoCloseable {
 	 * @param length
 	 * @param format
 	 */
-	private void computeAudioLevel(byte[] data, int length, AudioFormat format) {
+	private void computeAudioLevel(byte[] data, Integer length, AudioFormat format) {
 		audioLevelLeft = audioLevelRight = AudioSystem.NOT_SPECIFIED;
 		if (format.getEncoding().equals(AudioFormat.Encoding.PCM_SIGNED)) {
 			switch (format.getSampleSizeInBits()) {
@@ -200,7 +201,7 @@ public class AudioGrabber implements Runnable, AutoCloseable {
 		}
 	}
 	
-	private void computeAudioLevel8Bit(byte[] data, int length, AudioFormat format) {
+	private void computeAudioLevel8Bit(byte[] data, Integer length, AudioFormat format) {
 		switch (format.getChannels()) {
 			case 1:
 				audioLevelLeft = computeAudioLevelSigned8(data, 0, length, format.getFrameSize());
@@ -212,7 +213,7 @@ public class AudioGrabber implements Runnable, AutoCloseable {
 		}
 	}
 	
-	private void computeAudioLevel16Bit(byte[] data, int length, AudioFormat format) {
+	private void computeAudioLevel16Bit(byte[] data, Integer length, AudioFormat format) {
 		if (format.isBigEndian()) {
 			switch (format.getChannels()) {
 				case 1:
@@ -266,7 +267,7 @@ public class AudioGrabber implements Runnable, AutoCloseable {
 				sum += value * value;
 			}
 		}
-		double rms = Math.sqrt(sum / ((length) / stride));
+		double rms = Math.sqrt(sum / ((double) length / stride));
 		return (float) (rms / 128);
 	}
 	
