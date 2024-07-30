@@ -21,42 +21,67 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_I
 
 public class ScreenGrabber implements Runnable, AutoCloseable {
 	
-	private final Point prevDrawnMouseLocation = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
-	private boolean prevMousePressed = false;
-	private BufferedImage screenCapture;
-	private final ScreenRecorder recorder;
-	private final Robot robot;
-	private final Rectangle captureArea;
-	private final BufferedImage videoImg;
-	private final Graphics2D videoGraphics;
-	private final Format mouseFormat;
+	private final Point      prevDrawnMouseLocation = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
+	private final AtomicLong stopTime               = new AtomicLong(Long.MAX_VALUE);
+	private       Boolean    prevMousePressed       = Boolean.FALSE;
+	/**
+	 * Holds the screen capture made with AWT Robot.
+	 */
+	private       BufferedImage              screenCapture;
+	private final ScreenRecorder             recorder;
+	/**
+	 * The AWT Robot which we use for capturing the screen.
+	 */
+	private final Robot                      robot;
+	private final Rectangle                  captureArea;
+	/**
+	 * Holds the composed image (screen capture and super-imposed mouse
+	 * cursor). This is the image that is written into the video track of
+	 * the file.
+	 */
+	private final BufferedImage              videoImg;
+	/**
+	 * Graphics object for drawing into {@code videoImg}.
+	 */
+	private final Graphics2D                 videoGraphics;
+	private final Format                     mouseFormat;
+	/**
+	 * Holds the mouse captures made with {@code MouseInfo}.
+	 */
 	private final ArrayBlockingQueue<Buffer> mouseCaptures;
-	private Rational prevScreenCaptureTime;
-	private final BufferedImage cursorImg;
-	private final BufferedImage cursorImgPressed;
-	private final Point cursorOffset;
-	private final int videoTrack;
-	private final long startTime;
-	private final AtomicLong stopTime = new AtomicLong(Long.MAX_VALUE);
-	private ScheduledFuture<?> future;
-	private long sequenceNumber;
+	/**
+	 * The time the previous screen frame was captured.
+	 */
+	private       Rational                   prevScreenCaptureTime;
+	private final BufferedImage              cursorImg;
+	private final BufferedImage              cursorImgPressed;
+	/**
+	 * Previously draw mouse location. This is used to have the last mouse
+	 * location at hand, when a new screen capture has been created, but the
+	 * mouse has not been moved.
+	 */
+	private final Point                      cursorOffset;
+	private final int                        videoTrack;
+	private final long                       startTime;
+	private       ScheduledFuture<?>         future;
+	private       long                       sequenceNumber;
 	
 	public ScreenGrabber(ScreenRecorder recorder, long startTime) throws AWTException, IOException {
-		this.recorder = recorder;
-		this.captureArea = recorder.getCaptureArea();
-		this.robot = new Robot(recorder.getCaptureDevice());
-		this.mouseFormat = recorder.mouseFormat;
-		this.mouseCaptures = recorder.getMouseCaptures();
-		this.cursorImg = recorder.getCursorImg();
-		this.cursorImgPressed = recorder.getCursorImgPressed();
-		this.cursorOffset = recorder.getCursorOffset();
-		this.videoTrack = recorder.videoTrackId;
+		this.recorder              = recorder;
+		this.captureArea           = recorder.getCaptureArea();
+		this.robot                 = new Robot(recorder.getCaptureDevice());
+		this.mouseFormat           = recorder.mouseFormat;
+		this.mouseCaptures         = recorder.getMouseCaptures();
+		this.cursorImg             = recorder.getCursorImg();
+		this.cursorImgPressed      = recorder.getCursorImgPressed();
+		this.cursorOffset          = recorder.getCursorOffset();
+		this.videoTrack            = recorder.videoTrackId;
 		this.prevScreenCaptureTime = new Rational(startTime, 1000);
-		this.startTime = startTime;
+		this.startTime             = startTime;
 		
 		Format screenFormat = recorder.getScreenFormat();
-		this.videoImg = createVideoImage(screenFormat);
-		this.videoGraphics = initializeVideoGraphics();
+		this.videoImg       = createVideoImage(screenFormat);
+		this.videoGraphics  = initializeVideoGraphics();
 	}
 	
 	private BufferedImage createVideoImage(Format screenFormat) throws IOException {
@@ -98,7 +123,10 @@ public class ScreenGrabber implements Runnable, AutoCloseable {
 			recorder.recordingFailed(ex);
 		}
 	}
-	
+	/**
+	 * Grabs a screen, generates video images with pending mouse captures
+	 * and writes them into the movie file.
+	 */
 	private void grabScreen() throws IOException, InterruptedException {
 		BufferedImage previousScreenCapture = screenCapture;
 		long timeBeforeCapture = System.currentTimeMillis();
@@ -122,7 +150,7 @@ public class ScreenGrabber implements Runnable, AutoCloseable {
 		}
 	}
 	
-	private void processMouseCaptures(long timeBeforeCapture, long timeAfterCapture, BufferedImage previousScreenCapture) throws IOException, InterruptedException {
+	private void processMouseCaptures(Long timeBeforeCapture, Long timeAfterCapture, BufferedImage previousScreenCapture) throws IOException, InterruptedException {
 		Buffer buf = new Buffer();
 		buf.format = new Format(MediaTypeKey, FormatKeys.MediaType.VIDEO, EncodingKey, ENCODING_BUFFERED_IMAGE);
 		
@@ -133,25 +161,25 @@ public class ScreenGrabber implements Runnable, AutoCloseable {
 		}
 	}
 	
-	private boolean processMouseCapturesWithCursor(long timeBeforeCapture, long timeAfterCapture, BufferedImage previousScreenCapture, Buffer buf) throws IOException, InterruptedException {
+	private boolean processMouseCapturesWithCursor(Long timeBeforeCapture, Long timeAfterCapture, BufferedImage previousScreenCapture, Buffer buf) throws IOException, InterruptedException {
 		boolean hasMouseCapture = false;
 		if (mouseFormat != null && mouseFormat.get(FrameRateKey).intValue() > 0) {
 			while (!mouseCaptures.isEmpty() && shouldProcessMouseCapture(timeAfterCapture)) {
 				Buffer mouseCapture = mouseCaptures.poll();
 				if (isValidMouseCapture(mouseCapture, timeBeforeCapture)) {
 					hasMouseCapture = true;
-					processMouseCapture(mouseCapture, previousScreenCapture, buf);
+					processMouseCapture(Objects.requireNonNull(mouseCapture), previousScreenCapture, buf);
 				}
 			}
 		}
 		return hasMouseCapture;
 	}
 	
-	private boolean shouldProcessMouseCapture(long timeAfterCapture) {
-		return mouseCaptures.peek().timeStamp.compareTo(new Rational(timeAfterCapture, 1000)) < 0;
+	private boolean shouldProcessMouseCapture(Long timeAfterCapture) {
+		return Objects.requireNonNull(mouseCaptures.peek()).timeStamp.compareTo(new Rational(timeAfterCapture, 1000)) < 0;
 	}
 	
-	private boolean isValidMouseCapture(Buffer mouseCapture, long timeBeforeCapture) {
+	private boolean isValidMouseCapture(Buffer mouseCapture, Long timeBeforeCapture) {
 		return Objects.requireNonNull(mouseCapture).timeStamp.compareTo(prevScreenCaptureTime) > 0
 		       && mouseCapture.timeStamp.compareTo(new Rational(timeBeforeCapture, 1000)) < 0
 		       && mouseCapture.timeStamp.compareTo(new Rational(getStopTime(), 1000)) <= 0;
@@ -175,12 +203,12 @@ public class ScreenGrabber implements Runnable, AutoCloseable {
 	
 	private void writeBuffer(Buffer buf, Rational timestamp, Point p) throws IOException, InterruptedException {
 		buf.clearFlags();
-		buf.data = videoImg;
+		buf.data           = videoImg;
 		buf.sampleDuration = timestamp.subtract(prevScreenCaptureTime);
-		buf.timeStamp = prevScreenCaptureTime.subtract(new Rational(startTime, 1000));
-		buf.track = videoTrack;
+		buf.timeStamp      = prevScreenCaptureTime.subtract(new Rational(startTime, 1000));
+		buf.track          = videoTrack;
 		buf.sequenceNumber = sequenceNumber++;
-		buf.header = p.x == Integer.MAX_VALUE ? null : p;
+		buf.header         = p.x == Integer.MAX_VALUE ? null: p;
 		recorder.write(buf);
 		prevScreenCaptureTime = timestamp;
 	}
@@ -200,22 +228,18 @@ public class ScreenGrabber implements Runnable, AutoCloseable {
 	
 	private void captureFrameWithoutMouseMovement(long timeAfterCapture, Buffer buf) throws IOException, InterruptedException {
 		Point p = prevDrawnMouseLocation;
-		if (p != null) {
-			drawCursor(p);
-		}
+		drawCursor(p);
 		
-		buf.data = videoImg;
-		buf.sampleDuration = new Rational(timeAfterCapture, 1000).subtract(prevScreenCaptureTime);
-		buf.timeStamp = prevScreenCaptureTime.subtract(new Rational(startTime, 1000));
-		buf.track = videoTrack;
+		buf.data           = videoImg;
+		buf.sampleDuration = new Rational(timeAfterCapture , 1000).subtract(prevScreenCaptureTime);
+		buf.timeStamp      = prevScreenCaptureTime.subtract(new Rational(startTime, 1000));
+		buf.track          = videoTrack;
 		buf.sequenceNumber = sequenceNumber++;
-		buf.header = p.x == Integer.MAX_VALUE ? null : p;
+		buf.header         = p.x == Integer.MAX_VALUE ? null : p;
 		recorder.write(buf);
 		prevScreenCaptureTime = new Rational(timeAfterCapture, 1000);
 		
-		if (p != null) {
-			eraseCursor(p, screenCapture);
-		}
+		eraseCursor(p, screenCapture);
 	}
 	
 	@Override
