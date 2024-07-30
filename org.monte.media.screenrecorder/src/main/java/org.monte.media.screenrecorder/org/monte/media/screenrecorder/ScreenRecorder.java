@@ -115,27 +115,27 @@ public class ScreenRecorder extends AbstractStateModel {
     /**
      * The file format. "AVI" or "QuickTime"
      */
-    private Format fileFormat;
+    private final       Format fileFormat;
     /**
      * The input video format for cursor capture. "black" or "white".
      */
-    protected Format mouseFormat;
+    protected           Format mouseFormat;
     /**
      * The input video format for screen capture.
      */
-    private Format screenFormat;
+    private final Format    screenFormat;
     /**
      * The input and output format for audio capture.
      */
-    private Format audioFormat;
+    private final Format      audioFormat;
     /**
      * The bounds of the graphics device that we capture with AWT Robot.
      */
-    private Rectangle captureArea;
+    private final Rectangle   captureArea;
     /**
      * The writer for the movie file.
      */
-    private MovieWriter w;
+    private       MovieWriter w;
     /**
      * The start time of the recording.
      */
@@ -194,19 +194,15 @@ public class ScreenRecorder extends AbstractStateModel {
     private Rational outputTime;
     private Rational ffrDuration;
     private ArrayList<File> recordedFiles;
-    /**
-     * Id of the video track.
-     */
-    protected int videoTrack = 0;
-    /**
-     * Id of the audio track.
-     */
-    protected int audioTrack = 1;
+    
+    protected int          videoTrackId = 0;
+    
+    protected     int            audioTrackId = 1;
     /**
      * The device from which screen captures are generated.
      */
-    private GraphicsDevice captureDevice;
-    private AudioGrabber audioGrabber;
+    private final GraphicsDevice captureDevice;
+    private       AudioGrabber   audioGrabber;
     private ScreenGrabber screenGrabber;
     protected MouseGrabber mouseGrabber;
     private ScheduledFuture<?> audioFuture;
@@ -385,14 +381,14 @@ public class ScreenRecorder extends AbstractStateModel {
                         WidthKey, captureArea.width,
                         HeightKey, captureArea.height);
 
-        videoTrack = w.addTrack(videoOutputFormat);
+        videoTrackId = w.addTrack(videoOutputFormat);
         if (audioFormat != null) {
-            audioTrack = w.addTrack(audioFormat);
+            audioTrackId = w.addTrack(audioFormat);
         }
 
-        Codec encoder = Registry.getInstance().getEncoder(w.getFormat(videoTrack));
+        Codec encoder = Registry.getInstance().getEncoder(w.getFormat(videoTrackId));
         if (encoder == null) {
-            throw new IOException("No encoder for format " + w.getFormat(videoTrack));
+            throw new IOException("No encoder for format " + w.getFormat(videoTrackId));
         }
         frameEncoder = encoder;
         frameEncoder.setInputFormat(videoInputFormat);
@@ -416,7 +412,7 @@ public class ScreenRecorder extends AbstractStateModel {
         if (screenFormat.get(DepthKey) == 8) {
             if (w instanceof AVIWriter) {
                 AVIWriter aviw = (AVIWriter) w;
-                aviw.setPalette(videoTrack, Colors.createMacColors());
+                aviw.setPalette(videoTrackId, Colors.createMacColors());
             } else if (w instanceof QuickTimeWriter) {
                 QuickTimeWriter qtw = (QuickTimeWriter) w;
                 // do not set palette due to a bug
@@ -638,7 +634,7 @@ public class ScreenRecorder extends AbstractStateModel {
             this.cursorImg = recorder.cursorImg;
             this.cursorImgPressed = recorder.cursorImgPressed;
             this.cursorOffset = recorder.cursorOffset;
-            this.videoTrack = recorder.videoTrack;
+            this.videoTrack = recorder.videoTrackId;
             this.prevScreenCaptureTime = new Rational(startTime, 1000);
             this.startTime = startTime;
 
@@ -977,7 +973,7 @@ public class ScreenRecorder extends AbstractStateModel {
     private void startAudioCapture() throws LineUnavailableException {
         audioCaptureTimer = new ScheduledThreadPoolExecutor(1);
         int delay = 500;
-        audioGrabber = new AudioGrabber(mixer, audioFormat, audioTrack, recordingStartTime, writerQueue);
+        audioGrabber = new AudioGrabber(mixer, audioFormat, audioTrackId, recordingStartTime, writerQueue);
         audioFuture = audioCaptureTimer.scheduleWithFixedDelay(audioGrabber, 0, 10, TimeUnit.MILLISECONDS);
         audioGrabber.setFuture(audioFuture);
     }
@@ -1392,8 +1388,8 @@ public class ScreenRecorder extends AbstractStateModel {
         if (writer == null) {
             return;
         }
-        if (buf.track == videoTrack) {
-            if (writer.getFormat(videoTrack).get(FixedFrameRateKey, false) == false) {
+        if (buf.track == videoTrackId) {
+            if (writer.getFormat(videoTrackId).get(FixedFrameRateKey, false) == false) {
                 // variable frame rate is supported => easy
                 Buffer wbuf = new Buffer();
                 frameEncoder.process(buf, wbuf);
@@ -1448,8 +1444,8 @@ public class ScreenRecorder extends AbstractStateModel {
         // FIXME - this does not guarantee that audio and video track have
         //         the same duration
         long now = System.currentTimeMillis();
-        if (buf.track == videoTrack && buf.isFlag(BufferFlag.KEYFRAME)
-                && (mw.isDataLimitReached() || now - fileStartTime > maxRecordingTime)) {
+        if (buf.track == videoTrackId && buf.isFlag(BufferFlag.KEYFRAME)
+            && (mw.isDataLimitReached() || now - fileStartTime > maxRecordingTime)) {
             final MovieWriter closingWriter = mw;
             new Thread() {
                 @Override
