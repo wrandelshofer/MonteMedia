@@ -8,7 +8,9 @@ import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.math.Rational;
 import org.monte.media.screenrecorder.JRecordingAreaFrame;
+import org.monte.media.screenrecorder.MouseConfigs;
 import org.monte.media.screenrecorder.ScreenRecorder;
+import org.monte.media.screenrecorder.State;
 import org.monte.media.swing.BackgroundTask;
 import org.monte.media.swing.JLabelHyperlinkHandler;
 import org.monte.media.swing.datatransfer.DropFileTransferHandler;
@@ -77,7 +79,7 @@ public class Main extends javax.swing.JFrame {
         @Override
         public void stateChanged(ChangeEvent e) {
             ScreenRecorder r = screenRecorder;
-            if (r != null && r.getState() == ScreenRecorder.State.FAILED) {
+            if (r != null && r.getState() == State.FAILED) {
                 recordingFailed();
             }
         }
@@ -713,10 +715,10 @@ public class Main extends javax.swing.JFrame {
                     crsr = null;
                     break;
                 case 1:
-                    crsr = ScreenRecorder.ENCODING_BLACK_CURSOR;
+                    crsr = MouseConfigs.ENCODING_BLACK_CURSOR;
                     break;
                 case 2:
-                    crsr = ScreenRecorder.ENCODING_WHITE_CURSOR;
+                    crsr = MouseConfigs.ENCODING_WHITE_CURSOR;
                     break;
             }
             GraphicsConfiguration cfg = getGraphicsConfiguration();
@@ -790,7 +792,7 @@ public class Main extends javax.swing.JFrame {
 
                 @Override
                 protected void finished() {
-                    ScreenRecorder.State state = r.getState();
+                    State state = r.getState();
                     setSettingsEnabled(true);
                     startStopButton.setEnabled(true);
                     startStopButton.setText("Start");

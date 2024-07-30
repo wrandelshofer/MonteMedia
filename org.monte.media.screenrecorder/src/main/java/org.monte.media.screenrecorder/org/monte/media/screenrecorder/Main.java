@@ -127,7 +127,7 @@ public class Main extends javax.swing.JFrame {
         @Override
         public void stateChanged(ChangeEvent e) {
             ScreenRecorder r = screenRecorder;
-            if (r != null && r.getState() == ScreenRecorder.State.FAILED) {
+            if (r != null && r.getState() == State.FAILED) {
                 recordingFailed(r.getStateMessage());
             }
         }
@@ -744,15 +744,15 @@ public class Main extends javax.swing.JFrame {
                     mouseRate = 0;
                     break;
                 case 0:
-                    crsr = ScreenRecorder.ENCODING_BLACK_CURSOR;
+                    crsr = MouseConfigs.ENCODING_BLACK_CURSOR;
                     mouseRate = 30;
                     break;
                 case 1:
-                    crsr = ScreenRecorder.ENCODING_WHITE_CURSOR;
+                    crsr = MouseConfigs.ENCODING_WHITE_CURSOR;
                     mouseRate = 30;
                     break;
                 case 2:
-                    crsr = ScreenRecorder.ENCODING_YELLOW_CURSOR;
+                    crsr = MouseConfigs.ENCODING_YELLOW_CURSOR;
                     mouseRate = 30;
                     break;
             }
@@ -872,7 +872,7 @@ public class Main extends javax.swing.JFrame {
 
                 @Override
                 protected void finished() {
-                    ScreenRecorder.State state = r.getState();
+                    State state = r.getState();
                     setSettingsEnabled(true);
                     startStopButton.setEnabled(true);
                     //startStopButton.setText("Start");
