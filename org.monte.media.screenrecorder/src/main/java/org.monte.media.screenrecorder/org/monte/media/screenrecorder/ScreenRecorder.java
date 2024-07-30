@@ -12,7 +12,6 @@ import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.av.MovieWriter;
 import org.monte.media.av.Registry;
-import org.monte.media.av.codec.audio.AudioFormatKeys;
 import org.monte.media.av.codec.video.ScaleImageCodec;
 import org.monte.media.avi.AVIWriter;
 import org.monte.media.beans.AbstractStateModel;
@@ -21,14 +20,9 @@ import org.monte.media.image.Images;
 import org.monte.media.math.Rational;
 import org.monte.media.quicktime.QuickTimeWriter;
 
-import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.BooleanControl;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.Mixer;
-import javax.sound.sampled.TargetDataLine;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.AWTEventListener;
@@ -63,8 +57,6 @@ import static org.monte.media.av.codec.audio.AudioFormatKeys.ENCODING_QUICKTIME_
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleRateKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleSizeInBitsKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
-import static org.monte.media.av.codec.audio.AudioFormatKeys.SilenceBugKey;
-import static org.monte.media.av.codec.audio.AudioFormatKeys.fromAudioFormat;
 import static org.monte.media.av.codec.video.VideoFormatKeys.COMPRESSOR_NAME_QUICKTIME_ANIMATION;
 import static org.monte.media.av.codec.video.VideoFormatKeys.CompressorNameKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
@@ -600,11 +592,9 @@ public class ScreenRecorder extends AbstractStateModel {
         if (mouseCaptureTimer != null) {
             try {
                 mouseFuture.get();
-            } catch (InterruptedException ex) {
-            } catch (CancellationException ex) {
-            } catch (ExecutionException ex) {
+            } catch (InterruptedException | CancellationException | ExecutionException ignored) {
             }
-            mouseCaptureTimer.shutdown();
+	        mouseCaptureTimer.shutdown();
             mouseCaptureTimer.awaitTermination(5000, TimeUnit.MILLISECONDS);
             mouseCaptureTimer = null;
             mouseGrabber.close();
@@ -612,109 +602,7 @@ public class ScreenRecorder extends AbstractStateModel {
         }
     }
 
-    protected static class MouseGrabber implements Runnable {
-
-        /**
-         * Previously captured mouse location. This is used to coalesce mouse
-         * captures if the mouse has not been moved.
-         */
-        private Point prevCapturedMouseLocation = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        private ScheduledThreadPoolExecutor timer;
-        private ScreenRecorder recorder;
-        private GraphicsDevice captureDevice;
-        private Rectangle captureArea;
-        private BlockingQueue<Buffer> mouseCaptures;
-        private volatile long stopTime = Long.MAX_VALUE;
-        private long startTime;
-        private Format format;
-        private ScheduledFuture<?> future;
-        private volatile boolean mousePressed;
-        private volatile boolean mouseWasPressed;
-        private volatile boolean mousePressedRecorded;
-        private Rectangle cursorImageArea;
-        private Point cursorOffset;
-
-        public MouseGrabber(ScreenRecorder recorder, long startTime, ScheduledThreadPoolExecutor timer) {
-            this.timer = timer;
-            this.format = recorder.mouseFormat;
-            this.captureDevice = recorder.captureDevice;
-            this.captureArea = recorder.captureArea;
-            this.mouseCaptures = recorder.mouseCaptures;
-            this.startTime = startTime;
-            this.cursorImageArea = new Rectangle(0, 0, recorder.cursorImg.getWidth(), recorder.cursorImg.getHeight());
-            this.cursorOffset = recorder.cursorOffset;
-        }
-
-        public void setFuture(ScheduledFuture<?> future) {
-            this.future = future;
-        }
-
-        public void setMousePressed(boolean newValue) {
-            if (newValue) {
-                mouseWasPressed = true;
-            }
-            mousePressed = newValue;
-        }
-
-        @Override
-        public void run() {
-            try {
-                grabMouse();
-            } catch (Throwable ex) {
-                //ex.printStackTrace();
-                timer.shutdown();
-                recorder.recordingFailed(ex);
-            }
-        }
-
-        public synchronized void setStopTime(long newValue) {
-            this.stopTime = newValue;
-        }
-
-        public synchronized long getStopTime() {
-            return this.stopTime;
-        }
-
-        /**
-         * Captures the mouse cursor.
-         */
-        private void grabMouse() throws InterruptedException {
-            long now = System.currentTimeMillis();
-            if (now > getStopTime()) {
-                future.cancel(false);
-                return;
-            }
-            PointerInfo info = MouseInfo.getPointerInfo();
-            Point p = info.getLocation();
-            cursorImageArea.x = p.x + cursorOffset.x;
-            cursorImageArea.y = p.y + cursorOffset.y;
-            if (!info.getDevice().equals(captureDevice)
-                    || !captureArea.intersects(cursorImageArea)) {
-                // If the cursor is outside the capture region, we
-                // assign Integer.MAX_VALUE to its location.
-                // This ensures that all mouse movements outside of the
-                // capture region get coallesced. 
-                p.setLocation(Integer.MAX_VALUE, Integer.MAX_VALUE);
-            }
-
-            // Only create a new capture event if the location has changed
-            // or the mouse state has changed.
-            if (!p.equals(prevCapturedMouseLocation) || mouseWasPressed != mousePressedRecorded) {
-                Buffer buf = new Buffer();
-                buf.format = format;
-                buf.timeStamp = new Rational(now, 1000);
-                buf.data = p;
-                buf.header = mouseWasPressed;
-                mousePressedRecorded = mouseWasPressed;
-                mouseCaptures.put(buf);
-                prevCapturedMouseLocation.setLocation(p);
-            }
-            mouseWasPressed = mousePressed;
-        }
-
-        public void close() {
-        }
-    }
+   
 
     /**
      * Starts audio capture.
