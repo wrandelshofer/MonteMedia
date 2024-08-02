@@ -307,13 +307,14 @@ public class JFIFOutputStream extends OutputStream {
          */
         protected long offset;
         protected boolean finished;
-
+        
         /**
-         * Creates a new Chunk at the current position of the ImageOutputStream.
+         * Creates a new Segment at the current position of the ImageOutputStream.
          *
-         * @param chunkType The chunkType of the chunk. A string with a length of 4 characters.
+         * @param marker The marker of the segment.
+         * @throws IOException if an I/O error occurs.
          */
-        public Segment(int marker) throws IOException {
+        public Segment( int marker ) throws IOException {
             this.marker = marker;
             if (marker != 0) {
                 out.writeShort(marker);

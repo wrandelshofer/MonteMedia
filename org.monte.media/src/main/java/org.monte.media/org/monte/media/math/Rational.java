@@ -143,11 +143,10 @@ public class Rational extends Number implements Comparable<Rational> {
 
         // FIXME - handle overflow
         long s = scm(this.den, thatDen);
-        Rational result = new Rational(
-                this.num * (s / this.den) + thatNum * (s / thatDen),
+	    
+	    return new Rational(
+		        this.num * (s / this.den) + thatNum * (s / thatDen),
                 s, reduceFraction);
-
-        return result;
     }
 
     public Rational subtract(Rational that) {
