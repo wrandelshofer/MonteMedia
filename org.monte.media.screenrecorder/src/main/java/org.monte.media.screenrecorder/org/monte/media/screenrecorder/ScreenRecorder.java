@@ -37,7 +37,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
@@ -91,7 +90,7 @@ public class ScreenRecorder extends AbstractStateModel {
     /**
      * The file format. "AVI" or "QuickTime"
      */
-    private final       Format fileFormat;
+    private final       Format fileCodecFormat;
     /**
      * The input video format for cursor capture. "black" or "white".
      */
@@ -217,14 +216,14 @@ public class ScreenRecorder extends AbstractStateModel {
      * Creates a screen recorder with custom formats.
      *
      * @param cfg Graphics configuration of the capture screen.
-     * @param fileFormat The file format "AVI" or "QuickTime".
+     * @param fileCodecFormat The file format "AVI" or "QuickTime".
      * @param screenFormat The video format for screen capture.
      * @param mouseFormat The video format for mouse capture.
      * @param audioFormat The audio format for audio capture.
      */
-    public ScreenRecorder(GraphicsConfiguration cfg, Format fileFormat, Format screenFormat,
-                          Format mouseFormat, Format audioFormat) throws IOException, AWTException {
-        this(cfg, null, fileFormat, screenFormat, mouseFormat, audioFormat);
+    public ScreenRecorder( GraphicsConfiguration cfg, Format fileCodecFormat, Format screenFormat,
+                           Format mouseFormat, Format audioFormat) throws IOException, AWTException {
+        this(cfg, null, fileCodecFormat, screenFormat, mouseFormat, audioFormat);
     }
     
     /**
@@ -232,15 +231,15 @@ public class ScreenRecorder extends AbstractStateModel {
      *
      * @param cfg Graphics configuration of the capture screen.
      * @param captureArea Defines the area of the screen that shall be captured.
-     * @param fileFormat The file format "AVI" or "QuickTime".
+     * @param fileCodecFormat The file format "AVI" or "QuickTime".
      * @param screenFormat The video format for screen capture.
      * @param mouseFormat The video format for mouse capture.
      * @param audioFormat The audio format for audio capture.
      */
-    public ScreenRecorder(GraphicsConfiguration cfg, Rectangle captureArea, Format fileFormat,
+    public ScreenRecorder(GraphicsConfiguration cfg, Rectangle captureArea, Format fileCodecFormat,
                           Format screenFormat, Format mouseFormat, Format audioFormat)
             throws IOException, AWTException {
-        this(cfg, captureArea, fileFormat, screenFormat, mouseFormat, audioFormat, null);
+        this(cfg, captureArea, fileCodecFormat, screenFormat, mouseFormat, audioFormat, null);
     }
     
     /**
@@ -248,17 +247,17 @@ public class ScreenRecorder extends AbstractStateModel {
      *
      * @param cfg Graphics configuration of the capture screen.
      * @param captureArea Defines the area of the screen that shall be captured.
-     * @param fileFormat The file format "AVI" or "QuickTime".
+     * @param fileCodecFormat The file format "AVI" or "QuickTime".
      * @param screenFormat The video format for screen capture.
      * @param mouseFormat The video format for mouse capture.
      * @param audioFormat The audio format for audio capture.
      * @param movieFolder Where to store the movie.
      */
-    public ScreenRecorder(GraphicsConfiguration cfg, Rectangle captureArea, Format fileFormat,
+    public ScreenRecorder(GraphicsConfiguration cfg, Rectangle captureArea, Format fileCodecFormat,
                           Format screenFormat, Format mouseFormat, Format audioFormat,
                           File movieFolder) throws IOException, AWTException {
         
-        this.fileFormat = fileFormat;
+        this.fileCodecFormat = fileCodecFormat;
         this.screenFormat = screenFormat;
         this.mouseFormat = mouseFormat != null ? mouseFormat : new Format(FrameRateKey, new Rational(0, 0), EncodingKey,  MouseConfigs.ENCODING_BLACK_CURSOR);
         this.audioFormat = audioFormat;
@@ -336,12 +335,12 @@ public class ScreenRecorder extends AbstractStateModel {
     }
 
     protected MovieWriter createMovieWriter() throws IOException {
-        File f = createMovieFile(fileFormat);
+        File f = createMovieFile(fileCodecFormat);
         recordedFiles.add(f);
 
-        MovieWriter mw = w = Registry.getInstance().getWriter(fileFormat, f);
+        MovieWriter mw = w = Registry.getInstance().getWriter(fileCodecFormat, f);
         if (w == null) {
-            throw new IOException("Error no writer found for file format: " + fileFormat + ".");
+            throw new IOException("Error no writer found for file format: " + fileCodecFormat + ".");
         }
 
         // Create the video encoder
@@ -350,7 +349,7 @@ public class ScreenRecorder extends AbstractStateModel {
         Format videoInputFormat = screenFormat
                 .prepend(MediaTypeKey, MediaType.VIDEO, EncodingKey, ENCODING_BUFFERED_IMAGE, WidthKey, captureArea.width, HeightKey, captureArea.height,FrameRateKey, videoRate);
         Format videoOutputFormat = screenFormat
-                                    .prepend( FrameRateKey, videoRate, MimeTypeKey, fileFormat.get(MimeTypeKey))
+                                    .prepend( FrameRateKey, videoRate, MimeTypeKey, fileCodecFormat.get(MimeTypeKey))
                                     .append( WidthKey, captureArea.width, HeightKey, captureArea.height);
 
         videoTrackId = w.addTrack(videoOutputFormat);
