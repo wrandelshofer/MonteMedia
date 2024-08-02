@@ -488,7 +488,7 @@ public class QuickTimeDeserializer {
             t.editList.add(edit);
         }
 
-        remainingSize -= 8 + numberOfEntries * 12;
+        remainingSize -= 8 + numberOfEntries * 12L;
     }
 
     /**

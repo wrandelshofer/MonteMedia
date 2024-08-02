@@ -40,19 +40,12 @@ public class MPOFiles {
         JFIFInputStream in = new JFIFInputStream(f);
         for (JFIFInputStream.Segment seg = in.getNextSegment(); seg != null; seg = in.getNextSegment()) {
             if (seg.marker == JFIFInputStream.SOI_MARKER) {
-                String ext;
-                switch (imgCount++) {
-                    case 0:
-                        ext = "_l.JPG";
-                        break;
-                    case 1:
-                        ext = "_r.JPG";
-                        break;
-                    default:
-                        ext = "_" + imgCount + ".JPG";
-                        break;
-                }
-                String name = f.getName();
+                String ext  = switch (imgCount++) {
+	                case 0 -> "_l.JPG";
+	                case 1 -> "_r.JPG";
+	                default -> "_" + imgCount + ".JPG";
+                };
+	            String name = f.getName();
                 int p = name.lastIndexOf('.');
                 if (p == -1) {
                     p = name.length();

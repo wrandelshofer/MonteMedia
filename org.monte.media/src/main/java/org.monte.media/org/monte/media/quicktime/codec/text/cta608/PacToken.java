@@ -107,8 +107,7 @@ public non-sealed class PacToken implements Token {
     }
 
     public int getChannel() {
-        int channel = ((code & 0b0000_1000_0000_0000) >> 11) + 1;
-        return channel;
+	    return ((code & 0b0000_1000_0000_0000) >> 11) + 1;
     }
 
     public Attributes getTextAttributes() {

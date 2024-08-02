@@ -28,8 +28,8 @@ public class DataAtomOutputStream extends FilterOutputStream {
      * The number of bytes written to the data output stream so far.
      * If this counter overflows, it will be wrapped to Integer.MAX_VALUE.
      */
-    protected long written;
-    private byte byteBuffer[] = new byte[8];
+    protected     long   written;
+    private final byte[] byteBuffer = new byte[8];
 
     public DataAtomOutputStream(OutputStream out) {
         super(out);
@@ -117,25 +117,25 @@ public class DataAtomOutputStream extends FilterOutputStream {
         ByteArray.setIntBE(byteBuffer, 0, v);
         write(byteBuffer, 0, 4);
     }
-
+    
     /**
-     * Writes an unsigned 32 bit integer value.
+     * Writes an unsigned 32-bit integer value.
      *
-     * @param v The value
-     * @throws IOException
+     * @param v The value to be written.
+     * @throws IOException if an I/O error occurs.
      */
-    public void writeUInt(long v) throws IOException {
+    public void writeUInt( long v ) throws IOException {
         ByteArray.setIntBE(byteBuffer, 0, (int) v);
         write(byteBuffer, 0, 4);
     }
-
+    
     /**
-     * Writes a signed 16 bit integer value.
+     * Writes a signed 16-bit integer value.
      *
-     * @param v The value
-     * @throws IOException
+     * @param v The value to be written.
+     * @throws IOException if an I/O error occurs.
      */
-    public void writeShort(int v) throws IOException {
+    public void writeShort( int v ) throws IOException {
         ByteArray.setShortBE(byteBuffer, 0, (short) v);
         write(byteBuffer, 0, 2);
     }
@@ -164,20 +164,19 @@ public class DataAtomOutputStream extends FilterOutputStream {
         out.write(((v % 100 / 10) << 4) | (v % 10));
         incCount(2);
     }
-
+    
     /**
      * Writes a 32-bit Mac timestamp (seconds since 1902).
      *
-     * @param date
-     * @throws IOException
+     * @param date the date to be converted to a Mac timestamp
+     * @throws IOException if an I/O error occurs
      */
-    public void writeMacTimestamp(Date date) throws IOException {
-        long millis = date.getTime();
-        long qtMillis = millis - MAC_TIMESTAMP_EPOCH;
+    public void writeMacTimestamp( Date date ) throws IOException {
+        long millis    = date.getTime();
+        long qtMillis  = millis - MAC_TIMESTAMP_EPOCH;
         long qtSeconds = qtMillis / 1000;
         writeUInt(qtSeconds);
     }
-
     /**
      * Writes 32-bit fixed-point number divided as 16.16.
      *
@@ -237,14 +236,14 @@ public class DataAtomOutputStream extends FilterOutputStream {
         }
         writeUShort(t);
     }
-
+    
     /**
      * Writes a Pascal String.
      *
-     * @param s
-     * @throws IOException
+     * @param s the string to be written
+     * @throws IOException if an I/O error occurs
      */
-    public void writePString(String s) throws IOException {
+    public void writePString( String s ) throws IOException {
         if (s.length() > 0xffff) {
             throw new IllegalArgumentException("String too long for PString");
         }
@@ -259,15 +258,15 @@ public class DataAtomOutputStream extends FilterOutputStream {
         }
         incCount(1 + s.length());
     }
-
+    
     /**
-     * Writes a Pascal String padded to the specified fixed size in bytes
+     * Writes a Pascal String padded to the specified fixed size in bytes.
      *
-     * @param s
+     * @param s      the string to be written
      * @param length the fixed size in bytes
-     * @throws IOException
+     * @throws IOException if an I/O error occurs
      */
-    public void writePString(String s, int length) throws IOException {
+    public void writePString( String s, int length ) throws IOException {
         if (s.length() > length) {
             throw new IllegalArgumentException("String too long for PString of length " + length);
         }
@@ -280,12 +279,12 @@ public class DataAtomOutputStream extends FilterOutputStream {
         for (int i = 0; i < s.length(); i++) {
             out.write(s.charAt(i));
         }
-
+        
         // write pad bytes
         for (int i = 1 + s.length(); i < length; i++) {
             out.write(0);
         }
-
+        
         incCount(length);
     }
 
