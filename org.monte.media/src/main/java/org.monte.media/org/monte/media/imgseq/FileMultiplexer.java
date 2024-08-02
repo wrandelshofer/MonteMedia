@@ -21,10 +21,10 @@ import static org.monte.media.av.BufferFlag.DISCARD;
  */
 public class FileMultiplexer implements Multiplexer {
 
-    private File dir;
-    private String baseName;
-    private String extension;
-    private long position = 0;
+    private       File   dir;
+    private final String baseName;
+    private final String extension;
+    private       long   position = 0;
     private int minDigits = 4;
 
     public FileMultiplexer(File dir, String baseName, String extension) {
