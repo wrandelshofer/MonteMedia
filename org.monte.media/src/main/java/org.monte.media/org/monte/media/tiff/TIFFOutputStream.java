@@ -23,9 +23,9 @@ import java.util.Stack;
  */
 public class TIFFOutputStream extends OutputStream {
 
-    private ImageOutputStream out;
-    private long offset;
-    private Stack<IFD> ifdStack = new Stack<IFD>();
+    private final ImageOutputStream out;
+    private final long              offset;
+    private       Stack<IFD>        ifdStack = new Stack<IFD>();
 
     private enum State {
 

@@ -20,12 +20,12 @@ public abstract class TIFFNode {
     /**
      * The tag which identifies this node.
      */
-    protected TIFFTag tag;
+    protected     TIFFTag             tag;
     /**
      * The children.
      */
-    private ArrayList<TIFFNode> children = new ArrayList<TIFFNode>();
-    private TIFFNode parent;
+    private final ArrayList<TIFFNode> children = new ArrayList<TIFFNode>();
+    private       TIFFNode            parent;
     /**
      * The IFDEntry from which this node was read.
      * IFDEntry is null, if this node has not been read from a TIFF file.
@@ -93,8 +93,8 @@ public abstract class TIFFNode {
 
     private static class PreorderIterator implements Iterator<TIFFNode> {
 
-        private Stack<Iterator<TIFFNode>> stack = new Stack<Iterator<TIFFNode>>();
-        private TIFFNode current;
+        private final Stack<Iterator<TIFFNode>> stack = new Stack<Iterator<TIFFNode>>();
+        private       TIFFNode                  current;
 
         private PreorderIterator(TIFFNode root) {
             LinkedList<TIFFNode> ll = new LinkedList<TIFFNode>();

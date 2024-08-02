@@ -23,15 +23,15 @@ import java.util.List;
 public class IFD {
 
     /**
-     * The offset of this IFD inside of the TIFF input stream when it was
+     * The offset of this IFD inside the TIFF input stream when it was
      * read from the input stream.
      */
-    private long offset;
+    private final long offset;
 
     /**
      * Whether this IFD has a nextOffset field.
      */
-    private boolean hasNextOffset;
+    private final boolean hasNextOffset;
 
     /**
      * The offset of the next IFD.
@@ -42,7 +42,7 @@ public class IFD {
     /**
      * The entries of this IFD.
      */
-    private ArrayList<IFDEntry> entries;
+    private final ArrayList<IFDEntry> entries;
 
     public IFD(long offset, boolean hasNextOffset) {
         this.offset = offset;

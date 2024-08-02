@@ -24,18 +24,18 @@ import static org.monte.media.tiff.TIFFTag.UNDEFINED_MASK;
 public class BaselineTagSet extends TagSet {
 
     private static BaselineTagSet instance;
-    public final static int TAG_EXIF = 0x8769;
-    public final static int TAG_GPS = 0x8825;
-    public final static int TAG_Interoperability = 0xa005;
-    public final static int TAG_JPEGInterchangeFormat = 0x201;
+    public final static int TAG_EXIF                        = 0x8769;
+    public final static int TAG_GPS                         = 0x8825;
+    public final static int TAG_Interoperability            = 0xa005;
+    public final static int TAG_JPEGInterchangeFormat       = 0x201;
     public final static int TAG_JPEGInterchangeFormatLength = 0x202;
-    public final static TIFFTag ImageWidth = new TIFFTag("ImageWidth", 0x0100, SHORT_MASK | LONG_MASK);
-    public final static TIFFTag ImageHeight = new TIFFTag("ImageLength", 0x0101, SHORT_MASK | LONG_MASK);
-    public final static TIFFTag Make = new TIFFTag("Make", 0x010f, ASCII_MASK);
-    public final static TIFFTag Model = new TIFFTag("Model", 0x0110, ASCII_MASK);
-    public final static TIFFTag DateTime = new TIFFTag("DateTime", 0x0132, ASCII_MASK, new DateValueFormatter());
-    public final static TIFFTag BitsPerSample = new TIFFTag("BitsPerSample", 0x0102, SHORT_MASK);
-    public final static TIFFTag SamplesPerPixel = new TIFFTag("SamplesPerPixel", 0x0115, SHORT_MASK);
+    public final static TIFFTag ImageWidth                  = new TIFFTag("ImageWidth"     , 0x0100, SHORT_MASK | LONG_MASK);
+    public final static TIFFTag ImageHeight                 = new TIFFTag("ImageLength"    , 0x0101, SHORT_MASK | LONG_MASK);
+    public final static TIFFTag Make                        = new TIFFTag("Make"           , 0x010f, ASCII_MASK);
+    public final static TIFFTag Model                       = new TIFFTag("Model"          , 0x0110, ASCII_MASK);
+    public final static TIFFTag DateTime                    = new TIFFTag("DateTime"       , 0x0132, ASCII_MASK              , new DateValueFormatter());
+    public final static TIFFTag BitsPerSample               = new TIFFTag("BitsPerSample"  , 0x0102, SHORT_MASK);
+    public final static TIFFTag SamplesPerPixel             = new TIFFTag("SamplesPerPixel", 0x0115, SHORT_MASK);
     /* Same as PrintIM */
     public final static TIFFTag PrintImageMatching = new TIFFTag("PrintImageMatching", 0xc4a5/*=50341*/, UNDEFINED_MASK);
     /**
