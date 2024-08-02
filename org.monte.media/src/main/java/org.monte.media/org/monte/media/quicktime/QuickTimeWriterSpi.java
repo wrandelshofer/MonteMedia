@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class QuickTimeWriterSpi implements MovieWriterSpi {
 
-    private final static List<String> extensions = Collections.unmodifiableList(Arrays.asList(new String[]{"mov"}));
+    private final static List<String> extensions = List.of(new String[]{ "mov" });
 
     @Override
     public MovieWriter create(File file) throws IOException {
