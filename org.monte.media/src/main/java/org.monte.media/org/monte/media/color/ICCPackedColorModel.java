@@ -114,25 +114,23 @@
      @Override
      final public int[] getComponents(Object pixel, int[] components,
                                       int offset) {
-         int intpixel = 0;
-         switch (transferType) {
-             case DataBuffer.TYPE_BYTE:
-                 byte bdata[] = (byte[]) pixel;
-                 intpixel = bdata[0] & 0xff;
-                 break;
-             case DataBuffer.TYPE_USHORT:
-                 short sdata[] = (short[]) pixel;
-                 intpixel = sdata[0] & 0xffff;
-                 break;
-             case DataBuffer.TYPE_INT:
-                 int idata[] = (int[]) pixel;
-                 intpixel = idata[0];
-                 break;
-             default:
-                 throw new UnsupportedOperationException("This method has not been " +
-                         "implemented for transferType " + transferType);
-         }
-         return getComponents(intpixel, components, offset);
+         int intpixel = switch (transferType) {
+	         case DataBuffer.TYPE_BYTE -> {
+		         byte[] bdata = (byte[]) pixel;
+		         yield bdata[0] & 0xff;
+	         }
+	         case DataBuffer.TYPE_USHORT -> {
+		         short[] sdata = (short[]) pixel;
+		         yield sdata[0] & 0xffff;
+	         }
+	         case DataBuffer.TYPE_INT -> {
+		         int[] idata = (int[]) pixel;
+		         yield idata[0];
+	         }
+	         default -> throw new UnsupportedOperationException("This method has not been " +
+	                                                            "implemented for transferType " + transferType);
+         };
+	     return getComponents(intpixel, components, offset);
      }
 
      @Override

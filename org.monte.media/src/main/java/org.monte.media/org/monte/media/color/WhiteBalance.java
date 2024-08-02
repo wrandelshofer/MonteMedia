@@ -90,22 +90,21 @@ public class WhiteBalance {
         int NGray = 0, NColor = 0;
         double cbGraySum = 0, cbColorSum = 0;
         double crGraySum = 0, crColorSum = 0;
-        for (int i = 0; i < p.length; i++) {
-            int px = p[i];
-            rgb[0] = ((px & 0xff0000) >> 16) / 255f;
-            rgb[1] = ((px & 0xff00) >> 8) / 255f;
-            rgb[2] = ((px & 0xff) >> 0) / 255f;
-            ColorModels.RGBtoYCC(rgb, ycc);
-            if ((abs(ycc[1]) + abs(ycc[2])) / ycc[0] > T) {
-                NColor++;
-                cbColorSum += ycc[1];
-                crColorSum += ycc[2];
-            } else {
-                NGray++;
-                cbGraySum += ycc[1];
-                crGraySum += ycc[2];
-            }
-        }
+	    for (int px : p) {
+		    rgb[0] = ((px & 0xff0000) >> 16) / 255f;
+		    rgb[1] = ((px & 0xff00) >> 8) / 255f;
+		    rgb[2] = ((px & 0xff) >> 0) / 255f;
+		    ColorModels.RGBtoYCC(rgb, ycc);
+		    if ((abs(ycc[1]) + abs(ycc[2])) / ycc[0] > T) {
+			    NColor++;
+			    cbColorSum += ycc[1];
+			    crColorSum += ycc[2];
+		    } else {
+			    NGray++;
+			    cbGraySum += ycc[1];
+			    crGraySum += ycc[2];
+		    }
+	    }
 
         float cbGrayAdj = -(float) (cbGraySum / NGray);
         float crGrayAdj = -(float) (crGraySum / NGray);
@@ -166,22 +165,21 @@ public class WhiteBalance {
         int NGray = 0, NColor = 0;
         double UGraySum = 0, UColorSum = 0;
         double VGraySum = 0, VColorSum = 0;
-        for (int i = 0; i < p.length; i++) {
-            int px = p[i];
-            rgb[0] = ((px & 0xff0000) >> 16) / 255f;
-            rgb[1] = ((px & 0xff00) >> 8) / 255f;
-            rgb[2] = ((px & 0xff) >> 0) / 255f;
-            ColorModels.RGBtoYUV(rgb, yuv);
-            if ((abs(yuv[1]) + abs(yuv[2])) / yuv[0] > T) {
-                NColor++;
-                UColorSum += yuv[1];
-                VColorSum += yuv[2];
-            } else {
-                NGray++;
-                UGraySum += yuv[1];
-                VGraySum += yuv[2];
-            }
-        }
+	    for (int px : p) {
+		    rgb[0] = ((px & 0xff0000) >> 16) / 255f;
+		    rgb[1] = ((px & 0xff00) >> 8) / 255f;
+		    rgb[2] = ((px & 0xff) >> 0) / 255f;
+		    ColorModels.RGBtoYUV(rgb, yuv);
+		    if ((abs(yuv[1]) + abs(yuv[2])) / yuv[0] > T) {
+			    NColor++;
+			    UColorSum += yuv[1];
+			    VColorSum += yuv[2];
+		    } else {
+			    NGray++;
+			    UGraySum += yuv[1];
+			    VGraySum += yuv[2];
+		    }
+	    }
 
         float UGrayAdj = -(float) (UGraySum / NGray);
         float VGrayAdj = -(float) (VGraySum / NGray);
