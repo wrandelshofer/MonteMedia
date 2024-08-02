@@ -321,12 +321,14 @@ public class WhiteBalance {
         if (Double.isNaN(fb)) {
             fb = 1;
         }
-
-        double[] matrix = {//
+	    
+	    //
+	    //
+	    //
+	    return new double[]{//
                 fr, 0, 0,//
                 0, fg, 0,//
                 0, 0, fb};
-        return matrix;
     }
 
     /**
@@ -367,12 +369,14 @@ public class WhiteBalance {
         if (Double.isNaN(Bgain)) {
             Bgain = 1;
         }
-
-        double[] matrix = {//
+	    
+	    //
+	    //
+	    //
+	    return new double[]{//
                 Rgain, 0, 0,//
                 0, 1, 0,//
                 0, 0, Bgain};
-        return matrix;
 
     }
 
@@ -436,11 +440,11 @@ public class WhiteBalance {
 
         double[] Rmunu = LinearEquations.solve(R2sum, Rsum, R2max, Rmax, Gsum, Gmax);
         double[] Bmunu = LinearEquations.solve(B2sum, Bsum, B2max, Bmax, Gsum, Gmax);
-
-        double[] vector = {
+	    
+	    //
+	    return new double[]{
                 Rmunu[0], Rmunu[1], Bmunu[0], Bmunu[1]//
         };
-        return vector;
     }
 
     public static double[] whiteBalanceQM(long[][] rgbBins) {
@@ -483,10 +487,10 @@ public class WhiteBalance {
 
         double[] Rmunu = LinearEquations.solve(R2sum, Rsum, R2max, Rmax, Gsum, Gmax);
         double[] Bmunu = LinearEquations.solve(B2sum, Bsum, B2max, Bmax, Gsum, Gmax);
-
-        double[] vector = {
+	    
+	    //
+	    return new double[]{
                 Rmunu[0], Rmunu[1], Bmunu[0], Bmunu[1]//
         };
-        return vector;
     }
 }
