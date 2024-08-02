@@ -68,7 +68,7 @@ public class ImageOutputStreamAdapter extends OutputStream {
      * @see java.io.FilterOutputStream#write(byte[], int, int)
      */
     @Override
-    public void write(byte b[]) throws IOException {
+    public void write( byte[] b ) throws IOException {
         write(b, 0, b.length);
     }
 

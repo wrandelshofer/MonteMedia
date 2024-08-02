@@ -37,7 +37,7 @@ public class StreamPosTokenizer
     private int startpos = -1, endpos = -1;
     private LinkedList<Integer> unread = new LinkedList<Integer>();
 
-    private char buf[] = new char[20];
+    private char[] buf = new char[20];
 
     /**
      * The next character to be considered by the nextToken method.  May also
@@ -67,8 +67,8 @@ public class StreamPosTokenizer
     private char[] slashStar = new char[]{'/', '*'};
     private char[] starSlash = new char[]{'*', '/'};
 
-    private byte ctype[] = new byte[256];
-    private static final byte CT_WHITESPACE = 1;
+    private final        byte[] ctype         = new byte[256];
+    private static final byte   CT_WHITESPACE = 1;
     private static final byte CT_DIGIT = 2;
     private static final byte CT_ALPHA = 4;
     private static final byte CT_QUOTE = 8;

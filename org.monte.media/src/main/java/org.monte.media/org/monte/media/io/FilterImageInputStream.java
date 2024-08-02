@@ -29,7 +29,7 @@ public class FilterImageInputStream extends ImageInputStreamImpl2 {
     }
 
     @Override
-    public int read(byte b[], int off, int len) throws IOException {
+    public int read( byte[] b, int off, int len) throws IOException {
         flushBits();
         return in.read(b, off, len);
     }

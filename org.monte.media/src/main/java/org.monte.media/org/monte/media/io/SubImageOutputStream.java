@@ -16,14 +16,14 @@ import java.nio.ByteOrder;
  */
 public class SubImageOutputStream extends ImageOutputStreamImpl {
 
-    private ImageOutputStream out;
-    private long offset;
-    private long length;
+    private       ImageOutputStream out;
+    private final long              offset;
+    private       long              length;
 
     /**
      * Whether flush and close request shall be forwarded to underlying stream.
      */
-    private boolean forwardFlushAndClose;
+    private final boolean forwardFlushAndClose;
 
     public SubImageOutputStream(ImageOutputStream out, ByteOrder bo, boolean forwardFlushAndClose) throws IOException {
         this(out, out.getStreamPosition(), bo, forwardFlushAndClose);
@@ -62,8 +62,7 @@ public class SubImageOutputStream extends ImageOutputStreamImpl {
         if (av <= 0) {
             return -1;
         } else {
-            int result = out.read(b, off, (int) Math.min(len, av));
-            return result;
+	        return out.read(b, off, (int) Math.min(len, av));
         }
     }
 

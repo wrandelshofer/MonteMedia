@@ -14,9 +14,9 @@ import java.io.IOException;
  */
 public class SubImageInputStream extends ImageInputStreamImpl2 {
 
-    private ImageInputStream in;
-    private long offset;
-    private long length;
+    private final ImageInputStream in;
+    private final long offset;
+    private final long length;
 
     public SubImageInputStream(ImageInputStream in, long offset, long length) throws IOException {
         this.in = in;
@@ -54,8 +54,7 @@ public class SubImageInputStream extends ImageInputStreamImpl2 {
         if (av <= 0) {
             return -1;
         } else {
-            int result = in.read(b, off, (int) Math.min(len, av));
-            return result;
+	        return in.read(b, off, (int) Math.min(len, av));
         }
     }
 
