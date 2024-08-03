@@ -148,93 +148,7 @@ public class Main extends javax.swing.JFrame {
     private Rectangle customAreaRect;
     private Timer timer;
     private String infoLabelText;
-
-    private static class AudioItem {
-
-        private String title;
-        private int sampleRate;
-        private int bitsPerSample;
-
-        public AudioItem(String title, int sampleRate, int bitsPerSample) {
-            this.title = title;
-            this.sampleRate = sampleRate;
-            this.bitsPerSample = bitsPerSample;
-        }
-
-        @Override
-        public String toString() {
-            return title;
-        }
-    }
-
-    private static class AreaItem {
-
-        private String title;
-        /**
-         * Area or null for entire screen.
-         */
-        private Dimension inputDimension;
-        /**
-         * null if same value as input dimension.
-         */
-        private Dimension outputDimension;
-        /**
-         * SwingConstants.CENTER, .NORTH_WEST, SOUTH_WEST.
-         */
-        private int alignment;
-        private Point location;
-
-        public AreaItem(String title, Dimension dim, int alignment) {
-            this(title, dim, null, alignment, new Point(0, 0));
-        }
-
-        public AreaItem(String title, Dimension inputDim, Dimension outputDim, int alignment, Point location) {
-            this.title = title;
-            this.inputDimension = inputDim;
-            this.outputDimension = outputDim;
-            this.alignment = alignment;
-            this.location = location;
-        }
-
-        @Override
-        public String toString() {
-            return title;
-        }
-
-        public Rectangle getBounds(GraphicsConfiguration cfg) {
-            Rectangle areaRect = null;
-            if (inputDimension != null) {
-                areaRect = new Rectangle(0, 0, inputDimension.width, inputDimension.height);
-            }
-            outputDimension = outputDimension;
-            Rectangle screenBounds = cfg.getBounds();
-            if (areaRect == null) {
-                areaRect = (Rectangle) screenBounds.clone();
-            }
-            switch (alignment) {
-                case SwingConstants.CENTER:
-                    areaRect.x = screenBounds.x + (screenBounds.width - areaRect.width) / 2;
-                    areaRect.y = screenBounds.y + (screenBounds.height - areaRect.height) / 2;
-                    break;
-                case SwingConstants.NORTH_WEST:
-                    areaRect.x = screenBounds.x;
-                    areaRect.y = screenBounds.y;
-                    break;
-                case SwingConstants.SOUTH_WEST:
-                    areaRect.x = screenBounds.x;
-                    areaRect.y = screenBounds.y + screenBounds.height - areaRect.height;
-                    break;
-                default:
-                    break;
-            }
-            areaRect.translate(location.x, location.y);
-
-            areaRect = areaRect.intersection(screenBounds);
-            return areaRect;
-
-        }
-    }
-
+    
     private static class AudioSourceItem {
 
         private String title;
@@ -642,10 +556,12 @@ public class Main extends javax.swing.JFrame {
     private void updateValues() {
         Preferences prefs = Preferences.userNodeForPackage(Main.class);
         format = getSelectedIndex(formatGroup);
+        System.out.println("format " + format);
         prefs.putInt("ScreenRecording.format", format);
         //encoding = encodingChoice.getSelectedIndex();
         //prefs.putInt("ScreenRecording.encoding", encoding);
         depth = getSelectedIndex(colorGroup);
+        System.out.println("depth " + depth);
         prefs.putInt("ScreenRecording.colorDepth", depth);
         cursor = getSelectedIndex(cursorGroup);
         prefs.putInt("ScreenRecording.cursor", cursor);
