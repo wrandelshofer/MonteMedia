@@ -68,31 +68,31 @@ public class AudioFormatKeys extends FormatKeys {
     /**
      * The sample size in bits.
      */
-    public final static FormatKey<Integer> SampleSizeInBitsKey = new FormatKey<Integer>("sampleSizeInBits", Integer.class);
+    public final static FormatKey<Integer> SampleSizeInBitsKey = new FormatKey<>("sampleSizeInBits", Integer.class);
     /**
      * The number of ChannelsKey.
      */
-    public final static FormatKey<Integer> ChannelsKey = new FormatKey<Integer>("channels", Integer.class);
+    public final static FormatKey<Integer> ChannelsKey = new FormatKey<>("channels", Integer.class);
     /**
      * The size of a frame.
      */
-    public final static FormatKey<Integer> FrameSizeKey = new FormatKey<Integer>("frameSize", Integer.class);
+    public final static FormatKey<Integer> FrameSizeKey = new FormatKey<>("frameSize", Integer.class);
     /**
      * The compressor name.
      */
-    public final static FormatKey<ByteOrder> ByteOrderKey = new FormatKey<ByteOrder>("byteOrder", ByteOrder.class);
+    public final static FormatKey<ByteOrder> ByteOrderKey = new FormatKey<>("byteOrder", ByteOrder.class);
     /**
      * The number of frames per second.
      */
-    public final static FormatKey<Rational> SampleRateKey = new FormatKey<Rational>("sampleRate", Rational.class);
+    public final static FormatKey<Rational> SampleRateKey = new FormatKey<>("sampleRate", Rational.class);
     /**
      * Whether values are signed.
      */
-    public final static FormatKey<Boolean> SignedKey = new FormatKey<Boolean>("signed", Boolean.class);
+    public final static FormatKey<Boolean> SignedKey = new FormatKey<>("signed", Boolean.class);
     /**
      * Whether silence is encoded as -128 instead of 0.
      */
-    public final static FormatKey<Boolean> SilenceBugKey = new FormatKey<Boolean>("silenceBug", Boolean.class);
+    public final static FormatKey<Boolean> SilenceBugKey = new FormatKey<>("silenceBug", Boolean.class);
 
     public static Format fromAudioFormat(javax.sound.sampled.AudioFormat fmt) {
         return new Format(

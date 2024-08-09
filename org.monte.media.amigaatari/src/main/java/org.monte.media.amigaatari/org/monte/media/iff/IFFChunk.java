@@ -83,7 +83,7 @@ public class IFFChunk {
 
     public void putPropertyChunk(IFFChunk chunk) {
         if (propertyChunks == null) {
-            propertyChunks = new HashMap<IFFChunk, IFFChunk>();
+            propertyChunks = new HashMap<>();
         }
         propertyChunks.put(chunk, chunk);
     }
@@ -98,14 +98,14 @@ public class IFFChunk {
 
     public Iterable<IFFChunk> propertyChunks() {
         if (propertyChunks == null) {
-            propertyChunks = new HashMap<IFFChunk, IFFChunk>();
+            propertyChunks = new HashMap<>();
         }
         return propertyChunks.keySet();
     }
 
     public void addCollectionChunk(IFFChunk chunk) {
         if (collectionChunks == null) {
-            collectionChunks = new ArrayList<IFFChunk>();
+            collectionChunks = new ArrayList<>();
         }
         collectionChunks.add(chunk);
     }
@@ -132,7 +132,7 @@ public class IFFChunk {
 
     public Iterable<IFFChunk> collectionChunks() {
         if (collectionChunks == null) {
-            collectionChunks = new ArrayList<IFFChunk>();
+            collectionChunks = new ArrayList<>();
         }
         return collectionChunks;
     }

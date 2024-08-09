@@ -60,7 +60,7 @@ public class FrameRateConverter extends AbstractVideoCodec {
         Format forceVFR = new Format(MediaTypeKey, MediaType.VIDEO, ENCODING_BUFFERED_IMAGE,
                 DataClassKey, BufferedImage.class, FixedFrameRateKey, false);
 
-        ArrayList<Format> of = new ArrayList<Format>(outputFormats.length);
+        ArrayList<Format> of = new ArrayList<>(outputFormats.length);
         for (Format f : outputFormats) {
             of.add(forceVFR.append(f.append(input)));
         }

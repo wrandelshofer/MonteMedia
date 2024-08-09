@@ -35,7 +35,7 @@ public class CodecChain implements Codec {
 
     public static Codec createCodecChain(Codec... codecs) {
         // get rid of all null values
-        ArrayList<Codec> clist = new ArrayList<Codec>();
+        ArrayList<Codec> clist = new ArrayList<>();
         for (Codec c : codecs) {
             if (c != null) {
                 clist.add(c);
@@ -62,7 +62,7 @@ public class CodecChain implements Codec {
 
     @Override
     public Format[] getOutputFormats(Format input) {
-        ArrayList<Format> secondOuts = new ArrayList<Format>();
+        ArrayList<Format> secondOuts = new ArrayList<>();
         for (Format firstOut : first.getOutputFormats(input)) {
             secondOuts.addAll(Arrays.asList(second.getOutputFormats(firstOut)));
         }

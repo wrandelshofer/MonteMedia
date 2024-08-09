@@ -635,7 +635,7 @@ public class RIFFParser extends Object {
     public void declareDataChunk(int type, int id) {
         RIFFChunk chunk = new RIFFChunk(type, id);
         if (dataChunks == null) {
-            dataChunks = new HashSet<RIFFChunk>();
+            dataChunks = new HashSet<>();
         }
         dataChunks.add(chunk);
     }
@@ -661,7 +661,7 @@ public class RIFFParser extends Object {
     public void declareGroupChunk(int type, int id) {
         RIFFChunk chunk = new RIFFChunk(type, id);
         if (groupChunks == null) {
-            groupChunks = new HashSet<RIFFChunk>();
+            groupChunks = new HashSet<>();
         }
         groupChunks.add(chunk);
     }
@@ -687,7 +687,7 @@ public class RIFFParser extends Object {
     public void declarePropertyChunk(int type, int id) {
         RIFFChunk chunk = new RIFFChunk(type, id);
         if (propertyChunks == null) {
-            propertyChunks = new HashSet<RIFFChunk>();
+            propertyChunks = new HashSet<>();
         }
         propertyChunks.add(chunk);
     }
@@ -713,7 +713,7 @@ public class RIFFParser extends Object {
     public void declareCollectionChunk(int type, int id) {
         RIFFChunk chunk = new RIFFChunk(type, id);
         if (collectionChunks == null) {
-            collectionChunks = new HashSet<RIFFChunk>();
+            collectionChunks = new HashSet<>();
         }
         collectionChunks.add(chunk);
     }
@@ -736,7 +736,7 @@ public class RIFFParser extends Object {
      */
     public void declareStopChunkType(int type) {
         if (stopChunkTypes == null) {
-            stopChunkTypes = new HashSet<Integer>();
+            stopChunkTypes = new HashSet<>();
         }
         stopChunkTypes.add(type);
     }

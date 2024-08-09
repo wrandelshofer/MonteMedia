@@ -34,7 +34,7 @@ public class MPOFiles {
      */
     public static ArrayList<File> splitMPOFile(File f) throws IOException {
         int imgCount = 0;
-        ArrayList<File> splittedFiles = new ArrayList<File>();
+        ArrayList<File> splittedFiles = new ArrayList<>();
         JFIFOutputStream out = null;
         byte[] buf = new byte[2048];
         JFIFInputStream in = new JFIFInputStream(f);

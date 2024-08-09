@@ -47,7 +47,7 @@ public class IFD {
     public IFD(long offset, boolean hasNextOffset) {
         this.offset = offset;
         this.hasNextOffset = hasNextOffset;
-        this.entries = new ArrayList<IFDEntry>();
+        this.entries = new ArrayList<>();
     }
 
     /**

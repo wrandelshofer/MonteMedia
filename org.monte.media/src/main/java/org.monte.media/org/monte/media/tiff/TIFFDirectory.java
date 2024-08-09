@@ -69,7 +69,7 @@ public class TIFFDirectory extends TIFFNode {
         this(tagSet, tag, index);
         this.ifd = ifd;
         this.ifdEntry = parentEntry;
-        this.fileSegments = new ArrayList<FileSegment>();
+        this.fileSegments = new ArrayList<>();
         fileSegments.add(fileSegment);
     }
 
@@ -77,7 +77,7 @@ public class TIFFDirectory extends TIFFNode {
         this(tagSet, tag, index);
         this.offset = offset;
         this.length = length;
-        this.fileSegments = new ArrayList<FileSegment>();
+        this.fileSegments = new ArrayList<>();
         fileSegments.add(fileSegment);
     }
 

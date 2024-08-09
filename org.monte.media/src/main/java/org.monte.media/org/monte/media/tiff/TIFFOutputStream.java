@@ -25,7 +25,7 @@ public class TIFFOutputStream extends OutputStream {
 
     private final ImageOutputStream out;
     private final long offset;
-    private Stack<IFD> ifdStack = new Stack<IFD>();
+    private Stack<IFD> ifdStack = new Stack<>();
 
     private enum State {
 

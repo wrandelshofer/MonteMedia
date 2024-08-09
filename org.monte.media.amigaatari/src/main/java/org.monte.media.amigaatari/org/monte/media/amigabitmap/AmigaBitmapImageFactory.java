@@ -9,7 +9,9 @@ import org.monte.media.iff.MC68000OutputStream;
 import org.monte.media.iff.MutableIFFChunk;
 import org.monte.media.ilbm.ColorCyclingMemoryImageSource;
 
-import java.awt.*;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
@@ -51,7 +53,7 @@ public class AmigaBitmapImageFactory {
      */
     public static BufferedImage toBufferedImage(AmigaBitmapImage bm) {
         BufferedImage image = null;
-        Hashtable<?, ?> properties = new Hashtable<Object, Object>();
+        Hashtable<?, ?> properties = new Hashtable<>();
         //properties.put("comment","AmigaBitmapImage");
 
         bm.convertToChunky();

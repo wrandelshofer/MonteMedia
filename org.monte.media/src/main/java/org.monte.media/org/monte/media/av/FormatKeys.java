@@ -26,15 +26,15 @@ public class FormatKeys {
     /**
      * The type of the media.
      */
-    public final static FormatKey<MediaType> MediaTypeKey = new FormatKey<MediaType>("mediaType", MediaType.class);
+    public final static FormatKey<MediaType> MediaTypeKey = new FormatKey<>("mediaType", MediaType.class);
     /**
      * The encoding of the media.
      */
-    public final static FormatKey<String> EncodingKey = new FormatKey<String>("encoding", String.class);
+    public final static FormatKey<String> EncodingKey = new FormatKey<>("encoding", String.class);
     /**
      * The format of the samples of the media.
      */
-    public final static FormatKey<String> SampleFormatKey = new FormatKey<String>("sampleFormat", String.class);
+    public final static FormatKey<String> SampleFormatKey = new FormatKey<>("sampleFormat", String.class);
 
     //
     public final static String MIME_AVI = "video/avi";
@@ -46,16 +46,16 @@ public class FormatKeys {
     /**
      * The mime type.
      */
-    public final static FormatKey<String> MimeTypeKey = new FormatKey<String>("mimeType", String.class);
+    public final static FormatKey<String> MimeTypeKey = new FormatKey<>("mimeType", String.class);
     /**
      * The number of frames per second.
      */
-    public final static FormatKey<Rational> FrameRateKey = new FormatKey<Rational>("frameRate", Rational.class);
+    public final static FormatKey<Rational> FrameRateKey = new FormatKey<>("frameRate", Rational.class);
 
     /**
      * The interval between key frames.
      * If this value is not specified, most codecs will use {@code FrameRateKey}
      * as a hint and try to produce one key frame per second.
      */
-    public final static FormatKey<Integer> KeyFrameIntervalKey = new FormatKey<Integer>("keyFrameInterval", Integer.class);
+    public final static FormatKey<Integer> KeyFrameIntervalKey = new FormatKey<>("keyFrameInterval", Integer.class);
 }

@@ -496,7 +496,7 @@ public class MP3ElementaryInputStream extends FilterInputStream {
         if (frame == null) {
             return null;
         } else {
-            HashMap<String, Object> properties = new HashMap<String, Object>();
+            HashMap<String, Object> properties = new HashMap<>();
             properties.put("vbr", true);
             return new AudioFormat(MP3, //
                     frame.getSampleRate(), frame.getSampleSize(), frame.getChannelCount(),//

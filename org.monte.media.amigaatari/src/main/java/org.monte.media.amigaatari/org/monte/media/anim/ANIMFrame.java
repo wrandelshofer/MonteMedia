@@ -71,7 +71,7 @@ public abstract class ANIMFrame {
     public void cleanUpAudioCommands() {
         if (audioCommands != null && audioCommands.length > 1) {
             int i, j;
-            ArrayList<ANIMAudioCommand> v = new ArrayList<ANIMAudioCommand>();
+            ArrayList<ANIMAudioCommand> v = new ArrayList<>();
             v.add(audioCommands[0]);
             for (i = 1; i < audioCommands.length; i++) {
                 for (j = 0; j < i; j++) {

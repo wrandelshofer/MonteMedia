@@ -55,8 +55,8 @@ public class DefaultAnimator implements Animator {
      * Creates a new instance.
      */
     public DefaultAnimator() {
-        activeInterpolators = new ArrayList<Interpolator>();
-        newInterpolators = new ArrayList<Interpolator>();
+        activeInterpolators = new ArrayList<>();
+        newInterpolators = new ArrayList<>();
     }
 
     /**

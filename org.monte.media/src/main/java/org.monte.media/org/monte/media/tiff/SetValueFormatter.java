@@ -64,7 +64,7 @@ public class SetValueFormatter implements ValueFormatter {
      * </ul>
      */
     public SetValueFormatter(Object... set) {
-        setDefinition = new LinkedList<Entry>();
+        setDefinition = new LinkedList<>();
         for (int i = 0; i < set.length; ) {
             if (i < set.length - 2 && (set[i + 1] instanceof Integer) && (set[i + 2] instanceof Integer)) {
                 setDefinition.add(new Entry((String) set[i], (Integer) set[i + 1], (Integer) set[i + 2]));
@@ -84,7 +84,7 @@ public class SetValueFormatter implements ValueFormatter {
     @Override
     public Object format(Object value) {
         if (value instanceof Number) {
-            HashSet<String> setValue = new HashSet<String>();
+            HashSet<String> setValue = new HashSet<>();
             int intValue = ((Number) value).intValue();
             for (Entry elem : setDefinition) {
                 if ((elem.mask & intValue) == elem.bits) {
@@ -93,7 +93,7 @@ public class SetValueFormatter implements ValueFormatter {
             }
             return setValue;
         } else if (value instanceof String) {
-            HashSet<String> setValue = new HashSet<String>();
+            HashSet<String> setValue = new HashSet<>();
             for (Entry elem : setDefinition) {
                 if (value.equals(elem.stringValue)) {
                     setValue.add(elem.name);

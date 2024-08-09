@@ -21,7 +21,7 @@ public class BufferedImageWithColorModel extends BufferedImage {
     private ColorModel colorModel;
 
     public BufferedImageWithColorModel(ColorModel cm, WritableRaster raster, boolean isRasterPremultiplied) {
-        this(cm, raster, isRasterPremultiplied, new Hashtable<Object, Object>());
+        this(cm, raster, isRasterPremultiplied, new Hashtable<>());
     }
 
     public BufferedImageWithColorModel(ColorModel cm, WritableRaster raster, boolean isRasterPremultiplied, Hashtable<?, ?> properties) {

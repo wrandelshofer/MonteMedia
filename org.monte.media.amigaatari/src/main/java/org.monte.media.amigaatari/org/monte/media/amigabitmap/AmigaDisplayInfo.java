@@ -4,7 +4,7 @@
  */
 package org.monte.media.amigabitmap;
 
-import java.awt.*;
+import java.awt.Dimension;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
@@ -83,7 +83,7 @@ public class AmigaDisplayInfo {
 
     public static Map<Integer, AmigaDisplayInfo> getAllInfos() {
         if (infos == null) {
-            infos = new TreeMap<Integer, AmigaDisplayInfo>();
+            infos = new TreeMap<>();
             for (Object[] e : infoTable) {
                 int i = 0;
                 int camg = (Integer) e[i++];
@@ -223,7 +223,7 @@ public class AmigaDisplayInfo {
     private final static TreeMap<Integer, MonitorItem> monitorToFPSMap;
 
     static {
-        monitorToFPSMap = new TreeMap<Integer, MonitorItem>();
+        monitorToFPSMap = new TreeMap<>();
         monitorToFPSMap.put(DEFAULT_MONITOR_ID, new MonitorItem("NTSC OCS", 60));
         monitorToFPSMap.put(NTSC_MONITOR_ID, new MonitorItem("NTSC", 60));
         monitorToFPSMap.put(PAL_MONITOR_ID, new MonitorItem("PAL", 50));

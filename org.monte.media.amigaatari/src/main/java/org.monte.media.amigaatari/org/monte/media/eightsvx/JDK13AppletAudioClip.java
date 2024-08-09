@@ -44,7 +44,7 @@ public class JDK13AppletAudioClip implements LoopableAudioClip, Runnable {
      * This vector is used to improve the audio playback performance
      * because opening a SourceDataLine may take a long time.
      */
-    private static LinkedList<SourceDataLine> lines = new LinkedList<SourceDataLine>();
+    private static LinkedList<SourceDataLine> lines = new LinkedList<>();
 
     /**
      * The only place where the workerThread variable is changed is in the loop(int)

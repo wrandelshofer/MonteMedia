@@ -108,7 +108,7 @@ public enum IFDDataType {
     //
     private final int typeNumber;
     private final Class<?>[] componentClasses;
-    private final static HashMap<Integer, IFDDataType> valueToFieldType = new HashMap<Integer, IFDDataType>();
+    private final static HashMap<Integer, IFDDataType> valueToFieldType = new HashMap<>();
 
     static {
         for (IFDDataType t : IFDDataType.values()) {

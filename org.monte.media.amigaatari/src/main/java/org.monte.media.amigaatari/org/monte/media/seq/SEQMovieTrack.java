@@ -105,21 +105,21 @@ public class SEQMovieTrack {
     /**
      * User defined properties.
      */
-    private HashMap<String, Object> properties = new HashMap<String, Object>();
+    private HashMap<String, Object> properties = new HashMap<>();
     /**
      * Anim frames.
      */
-    private ArrayList<SEQFrame> frames = new ArrayList<SEQFrame>();
+    private ArrayList<SEQFrame> frames = new ArrayList<>();
     /**
      * Sound clips.
      */
-    private ArrayList<AudioClip> audioClips = new ArrayList<AudioClip>();
+    private ArrayList<AudioClip> audioClips = new ArrayList<>();
     /**
      * Property Change support.
      */
     private PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 
-    private ArrayList<ColorCycle> colorCycles = new ArrayList<ColorCycle>();
+    private ArrayList<ColorCycle> colorCycles = new ArrayList<>();
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         listeners.addPropertyChangeListener(listener);

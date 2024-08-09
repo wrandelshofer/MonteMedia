@@ -16,7 +16,7 @@ import org.monte.media.riff.RIFFVisitor;
 
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
-import java.awt.*;
+import java.awt.Dimension;
 import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
@@ -80,7 +80,7 @@ public class AVIInputStream extends AbstractAVIStream {
      */
     private boolean isRealized = false;
     protected MainHeader mainHeader;
-    protected ArrayList<Sample> idx1 = new ArrayList<Sample>();
+    protected ArrayList<Sample> idx1 = new ArrayList<>();
     private long moviOffset = 0;
 
     /**
@@ -209,7 +209,7 @@ public class AVIInputStream extends AbstractAVIStream {
     /**
      * Returns the fourcc's of all extra stream headers.
      *
-     * @param track
+     * @param track the track index
      * @return An array of fourcc's of all extra stream headers.
      * @throws IOException
      */

@@ -252,7 +252,7 @@ public class EXIFTagSet extends TagSet {
     public static EXIFTagSet getInstance() {
         if (instance == null) {
             Field[] fields = EXIFTagSet.class.getDeclaredFields();
-            ArrayList<TIFFTag> tags = new ArrayList<TIFFTag>(fields.length);
+            ArrayList<TIFFTag> tags = new ArrayList<>(fields.length);
             try {
                 for (Field f : fields) {
                     Object value = f.get(null);

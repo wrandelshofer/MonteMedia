@@ -79,7 +79,7 @@ public class AVIBMPDIB {
 
         // FIXME - Only add DHT Segment if none is present
 
-        Vector<InputStream> v = new Vector<InputStream>();
+        Vector<InputStream> v = new Vector<>();
         v.add(new ByteArrayInputStream(JFIFSOISeg));
         v.add(new ByteArrayInputStream(MJPGDHTSeg));
         v.add(new ByteArrayInputStream(jpgWithoutDHT, offset + JFIFSOISeg.length, length - JFIFSOISeg.length));
@@ -87,7 +87,7 @@ public class AVIBMPDIB {
     }
 
     public static ImageInputStream prependDHTSeg(ImageInputStream iisWithoutDHT) throws IOException {
-        Vector<InputStream> v = new Vector<InputStream>();
+        Vector<InputStream> v = new Vector<>();
         v.add(new ByteArrayInputStream(JFIFSOISeg));
         v.add(new ByteArrayInputStream(MJPGDHTSeg));
         iisWithoutDHT.seek(2);// skip JFIF SOI 
@@ -96,7 +96,7 @@ public class AVIBMPDIB {
     }
 
     public static ImageInputStream prependDHTSeg(InputStream inWithoutDHT) throws IOException {
-        Vector<InputStream> v = new Vector<InputStream>();
+        Vector<InputStream> v = new Vector<>();
         v.add(new ByteArrayInputStream(JFIFSOISeg));
         v.add(new ByteArrayInputStream(MJPGDHTSeg));
         inWithoutDHT.skip(2);// skip JFIF SOI

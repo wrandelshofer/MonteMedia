@@ -48,10 +48,10 @@ public class RIFFChunk {
         this.scan = scan;
         if (propGroup != null) {
             if (propGroup.propertyChunks != null) {
-                propertyChunks = new HashMap<RIFFChunk, RIFFChunk>(propGroup.propertyChunks);
+                propertyChunks = new HashMap<>(propGroup.propertyChunks);
             }
             if (propGroup.collectionChunks != null) {
-                collectionChunks = new ArrayList<RIFFChunk>(propGroup.collectionChunks);
+                collectionChunks = new ArrayList<>(propGroup.collectionChunks);
             }
         }
     }
@@ -86,7 +86,7 @@ public class RIFFChunk {
 
     public void putPropertyChunk(RIFFChunk chunk) {
         if (propertyChunks == null) {
-            propertyChunks = new HashMap<RIFFChunk, RIFFChunk>();
+            propertyChunks = new HashMap<>();
         }
         propertyChunks.put(chunk, chunk);
     }
@@ -101,14 +101,14 @@ public class RIFFChunk {
 
     public Iterable<RIFFChunk> propertyChunks() {
         if (propertyChunks == null) {
-            propertyChunks = new HashMap<RIFFChunk, RIFFChunk>();
+            propertyChunks = new HashMap<>();
         }
         return propertyChunks.keySet();
     }
 
     public void addCollectionChunk(RIFFChunk chunk) {
         if (collectionChunks == null) {
-            collectionChunks = new ArrayList<RIFFChunk>();
+            collectionChunks = new ArrayList<>();
         }
         collectionChunks.add(chunk);
     }
@@ -139,7 +139,7 @@ public class RIFFChunk {
 
     public Iterable<RIFFChunk> collectionChunks() {
         if (collectionChunks == null) {
-            collectionChunks = new ArrayList<RIFFChunk>();
+            collectionChunks = new ArrayList<>();
         }
         return collectionChunks;
     }

@@ -102,7 +102,7 @@ public class AbstractQuickTimeStream {
     /**
      * The list of tracks in the movie.
      */
-    protected ArrayList<Track> tracks = new ArrayList<Track>();
+    protected ArrayList<Track> tracks = new ArrayList<>();
     /**
      * The transformation matrix for the entire movie.
      */
@@ -247,7 +247,7 @@ public class AbstractQuickTimeStream {
          */
         public CompositeAtom(String type) throws IOException {
             super(type);
-            children = new LinkedList<Atom>();
+            children = new LinkedList<>();
         }
 
         public void add(Atom child) throws IOException {
@@ -710,15 +710,15 @@ public class AbstractQuickTimeStream {
         /**
          * List of chunks.
          */
-        protected ArrayList<Chunk> chunks = new ArrayList<Chunk>();
+        protected ArrayList<Chunk> chunks = new ArrayList<>();
         /**
          * List of TimeToSample entries.
          */
-        protected ArrayList<TimeToSampleGroup> timeToSamples = new ArrayList<TimeToSampleGroup>();
+        protected ArrayList<TimeToSampleGroup> timeToSamples = new ArrayList<>();
         /**
          * List of SampleSize entries.
          */
-        protected ArrayList<SampleSizeGroup> sampleSizes = new ArrayList<SampleSizeGroup>();
+        protected ArrayList<SampleSizeGroup> sampleSizes = new ArrayList<>();
         /**
          * List of sync samples. This list is null as long as all samples in
          * this track are sync samples.
@@ -831,7 +831,7 @@ public class AbstractQuickTimeStream {
                 }
             } else {
                 if (syncSamples == null) {
-                    syncSamples = new ArrayList<Long>();
+                    syncSamples = new ArrayList<>();
                     for (long i = 1; i < sampleCount; i++) {
                         syncSamples.add(i);
                     }
@@ -867,7 +867,7 @@ public class AbstractQuickTimeStream {
                 }
             } else {
                 if (syncSamples == null) {
-                    syncSamples = new ArrayList<Long>();
+                    syncSamples = new ArrayList<>();
                     for (long i = 1; i < sampleCount; i++) {
                         syncSamples.add(i);
                     }

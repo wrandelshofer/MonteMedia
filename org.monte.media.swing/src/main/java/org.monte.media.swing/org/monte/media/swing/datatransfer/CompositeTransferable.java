@@ -16,8 +16,8 @@ import java.util.LinkedList;
  * @author Werner Randelshofer
  */
 public class CompositeTransferable implements java.awt.datatransfer.Transferable {
-    private HashMap<DataFlavor, Transferable> transferables = new HashMap<DataFlavor, Transferable>();
-    private LinkedList<DataFlavor> flavors = new LinkedList<DataFlavor>();
+    private HashMap<DataFlavor, Transferable> transferables = new HashMap<>();
+    private LinkedList<DataFlavor> flavors = new LinkedList<>();
 
     /**
      * Creates a new instance of CompositeTransferable

@@ -36,19 +36,19 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_I
  *
  * @author Werner Randelshofer
  */
-public class QuickTimeReader extends QuickTimeInputStream implements MovieReader {
+public class QuickTimeReader implements MovieReader {
 
     private Buffer[] inputBuffers = null;
     private Codec[] codecs = null;
     public final static Format QUICKTIME = new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_QUICKTIME);
-
+    private final QuickTimeInputStream in;
     /**
      * Creates a new instance.
      *
      * @param file the input file
      */
     public QuickTimeReader(File file) throws IOException {
-        super(file);
+        this.in = new QuickTimeInputStream(file);
     }
 
     /**
@@ -57,7 +57,7 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
      * @param in the input stream.
      */
     public QuickTimeReader(ImageInputStream in) throws IOException {
-        super(in);
+        this.in = new QuickTimeInputStream(in);
     }
 
     @Override
@@ -80,20 +80,19 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
     @Override
     public Format getFormat(int track) throws IOException {
         ensureRealized();
-        return meta.getFormat(track);
+        return in.meta.getFormat(track);
     }
 
     @Override
     public long getChunkCount(int track) throws IOException {
         ensureRealized();
-        return meta.tracks.get(track).media.sampleCount;
+        return in.meta.tracks.get(track).media.sampleCount;
     }
 
-    @Override
     protected void ensureRealized() throws IOException {
-        super.ensureRealized();
-        inputBuffers = new Buffer[meta.getTrackCount()];
-        codecs = new Codec[meta.getTrackCount()];
+        in.ensureRealized();
+        inputBuffers = new Buffer[in.meta.getTrackCount()];
+        codecs = new Codec[in.meta.getTrackCount()];
         for (int i = 0; i < inputBuffers.length; i++) {
             inputBuffers[i] = new Buffer();
         }
@@ -110,7 +109,7 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
      */
     public BufferedImage read(int track, BufferedImage img) throws IOException {
         ensureRealized();
-        QuickTimeMeta.Track tr = meta.tracks.get(track);
+        QuickTimeMeta.Track tr = in.meta.tracks.get(track);
         if (codecs[track] == null) {
             createCodec(track);
         }
@@ -132,7 +131,7 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
     @Override
     public void read(int track, Buffer buffer) throws IOException {
         ensureRealized();
-        QuickTimeMeta.Track tr = meta.tracks.get(track);
+        QuickTimeMeta.Track tr = in.meta.tracks.get(track);
         if (tr.readIndex >= tr.trackSamplesList.size()) {
             buffer.setFlagsTo(END_OF_MEDIA, DISCARD);
             buffer.length = 0;
@@ -143,7 +142,7 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
         var ms = ts.mediaSample;
 
         // FIXME - This should be done using AVIInputStream.readSample()
-        in.seek(ms.offset);
+        in.in.seek(ms.offset);
         {
             byte[] b;
             if (buffer.data instanceof byte[]) {
@@ -154,7 +153,7 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
             } else {
                 buffer.data = b = new byte[(((int) ms.length + 1023) / 1024) * 1024];
             }
-            in.readFully(b, 0, (int) ms.length);
+            in.in.readFully(b, 0, (int) ms.length);
         }
         buffer.offset = 0;
         buffer.length = (int) ms.length;
@@ -169,8 +168,8 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
         }
         buffer.format = tr.format;
         buffer.track = track;
-        buffer.sampleDuration = new Rational(ts.duration, meta.timeScale);
-        buffer.timeStamp = new Rational(ts.timeStamp, meta.timeScale);
+        buffer.sampleDuration = new Rational(ts.duration, in.meta.timeScale);
+        buffer.timeStamp = new Rational(ts.timeStamp, in.meta.timeScale);
         buffer.flags = ms.isKeyframe ? EnumSet.of(KEYFRAME) : EnumSet.noneOf(BufferFlag.class);
         tr.readIndex++;
     }
@@ -179,6 +178,11 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
     public int nextTrack() throws IOException {
         ensureRealized();
         throw new UnsupportedOperationException("nextTrack() not supported yet.");
+    }
+
+    @Override
+    public void close() throws IOException {
+        in.close();
     }
 
     @Override
@@ -194,14 +198,19 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
 
     @Override
     public Rational getDuration() throws IOException {
-        return new Rational(getMovieDuration(), getMovieTimeScale());
+        return new Rational(in.getMovieDuration(), in.getMovieTimeScale());
     }
 
     @Override
     public Rational getDuration(int track) throws IOException {
         ensureRealized();
-        QuickTimeMeta.Track tr = meta.tracks.get(track);
-        return new Rational(tr.duration, meta.timeScale);
+        QuickTimeMeta.Track tr = in.meta.tracks.get(track);
+        return new Rational(tr.duration, in.meta.timeScale);
+    }
+
+    @Override
+    public int getTrackCount() throws IOException {
+        return in.getTrackCount();
     }
 
     @Override
@@ -215,8 +224,8 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
     }
 
     private void createCodec(int track) throws IOException {
-        QuickTimeMeta.Track tr = meta.tracks.get(track);
-        Format fmt = meta.getFormat(track);
+        QuickTimeMeta.Track tr = in.meta.tracks.get(track);
+        Format fmt = in.meta.getFormat(track);
         Codec codec = createCodec(fmt);
         String enc = fmt.get(EncodingKey);
         if (codec == null) {

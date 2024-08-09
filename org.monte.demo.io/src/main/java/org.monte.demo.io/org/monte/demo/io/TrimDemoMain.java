@@ -60,7 +60,7 @@ public class TrimDemoMain {
 
         // Parse arguments
         File outfile = null;
-        ArrayList<File> infiles = new ArrayList<File>();
+        ArrayList<File> infiles = new ArrayList<>();
         Rational start = null;
         Rational end = null;
         String startString = null, durationString = null;

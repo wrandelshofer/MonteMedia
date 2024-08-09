@@ -38,11 +38,11 @@ import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
  */
 public class QuickTimePCMAudioCodec extends AbstractPCMAudioCodec {
 
-    private final static HashSet<String> signedEncodings = new HashSet<String>(
+    private final static HashSet<String> signedEncodings = new HashSet<>(
             Arrays.asList(new String[]{
                     ENCODING_PCM_SIGNED, ENCODING_QUICKTIME_TWOS_PCM, ENCODING_QUICKTIME_SOWT_PCM,
                     ENCODING_QUICKTIME_IN24_PCM, ENCODING_QUICKTIME_IN32_PCM,}));
-    private final static HashSet<String> unsignedEncodings = new HashSet<String>(
+    private final static HashSet<String> unsignedEncodings = new HashSet<>(
             Arrays.asList(new String[]{
                     ENCODING_PCM_UNSIGNED, ENCODING_QUICKTIME_RAW_PCM}));
 

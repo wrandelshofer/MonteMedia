@@ -20,7 +20,7 @@ public class EnumValueFormatter implements ValueFormatter {
      * The enumeration consists of a list of String=Integer pairs.
      */
     public EnumValueFormatter(Object... enumeration) {
-        enumMap = new HashMap<Integer, String>();
+        enumMap = new HashMap<>();
         for (int i = 0; i < enumeration.length; i += 2) {
             String value = (String) enumeration[i];
             Integer key = (Integer) enumeration[i + 1];

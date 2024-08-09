@@ -46,7 +46,7 @@ public class ConcatDemoMain {
 
         // Parse arguments
         File outfile = null;
-        ArrayList<File> infiles = new ArrayList<File>();
+        ArrayList<File> infiles = new ArrayList<>();
 
         try {
             char arg = ' ';

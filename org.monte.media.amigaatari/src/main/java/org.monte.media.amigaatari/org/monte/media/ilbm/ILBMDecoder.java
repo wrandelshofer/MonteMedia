@@ -184,7 +184,7 @@ public class ILBMDecoder
     public ArrayList<ColorCyclingMemoryImageSource> produce()
             throws IOException {
         InputStream in = null;
-        sources = new ArrayList<ColorCyclingMemoryImageSource>();
+        sources = new ArrayList<>();
         bitmapSources = null;
         boolean mustCloseStream;
         if (inputStream != null) {
@@ -221,7 +221,7 @@ public class ILBMDecoder
             throws IOException {
         InputStream in = null;
         sources = null;
-        bitmapSources = new ArrayList<AmigaBitmapImage>();
+        bitmapSources = new ArrayList<>();
         boolean mustCloseStream;
         if (inputStream != null) {
             in = inputStream;
@@ -278,7 +278,7 @@ public class ILBMDecoder
         decodeCMAP(group.getPropertyChunk(CMAP_ID), is4BitsPerChannel);
         decodeBODY(chunk);
 
-        Hashtable<String, Object> props = new Hashtable<String, Object>();
+        Hashtable<String, Object> props = new Hashtable<>();
         double aspect = (double) bmhdXAspect / (double) bmhdYAspect;
         if (bmhdXAspect == 0 || bmhdYAspect == 0) {
             aspect = 1d;

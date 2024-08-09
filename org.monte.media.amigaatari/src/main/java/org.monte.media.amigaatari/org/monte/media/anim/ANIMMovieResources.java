@@ -103,21 +103,21 @@ public class ANIMMovieResources {
     /**
      * User defined properties.
      */
-    private HashMap<String, Object> properties = new HashMap<String, Object>();
+    private HashMap<String, Object> properties = new HashMap<>();
     /**
      * Anim frames.
      */
-    private ArrayList<ANIMFrame> frames = new ArrayList<ANIMFrame>();
+    private ArrayList<ANIMFrame> frames = new ArrayList<>();
     /**
      * Sound clips.
      */
-    private ArrayList<AudioClip> audioClips = new ArrayList<AudioClip>();
+    private ArrayList<AudioClip> audioClips = new ArrayList<>();
     /**
      * Property Change support.
      */
     private PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 
-    private ArrayList<ColorCycle> colorCycles = new ArrayList<ColorCycle>();
+    private ArrayList<ColorCycle> colorCycles = new ArrayList<>();
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         listeners.addPropertyChangeListener(listener);

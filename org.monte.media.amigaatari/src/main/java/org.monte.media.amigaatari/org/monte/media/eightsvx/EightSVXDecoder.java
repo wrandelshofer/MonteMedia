@@ -127,7 +127,7 @@ public class EightSVXDecoder
     public final static int BODY_ID = IFFParser.stringToID("BODY");
 
     /* Instance variables */
-    private ArrayList<AudioClip> samples = new ArrayList<AudioClip>();
+    private ArrayList<AudioClip> samples = new ArrayList<>();
     private boolean within8SVXGroup = false;
 
     /* Constructors  */

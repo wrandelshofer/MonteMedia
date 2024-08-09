@@ -36,7 +36,7 @@ import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
  */
 public class AVIPCMAudioCodec extends AbstractPCMAudioCodec {
 
-    private final static HashSet<String> supportedEncodings = new HashSet<String>(
+    private final static HashSet<String> supportedEncodings = new HashSet<>(
             Arrays.asList(new String[]{
                     ENCODING_PCM_SIGNED,
                     ENCODING_PCM_UNSIGNED, ENCODING_AVI_PCM,}));

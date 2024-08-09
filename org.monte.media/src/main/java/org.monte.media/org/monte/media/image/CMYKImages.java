@@ -118,7 +118,7 @@ public class CMYKImages {
                   | (255 - min(255, Y[i] + k));
         }
       });
-      Hashtable<Object, Object> properties = new Hashtable<Object, Object>();
+      Hashtable<Object, Object> properties = new Hashtable<>();
       Raster rgbRaster = Raster.createPackedRaster(
               new DataBufferInt(rgb, rgb.length),
               w, h, w, new int[]{0xff0000, 0xff00, 0xff}, null);
@@ -200,7 +200,7 @@ public class CMYKImages {
                 w, h, w, new int[]{0xff0000, 0xff00, 0xff, 0xff000000}, null);
         ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_sRGB);
         ColorModel cm = ColorModel.getRGBdefault();//new DirectColorModel(cs, 32, 0xff0000, 0xff00, 0xff, 0x0ff000000, false, DataBuffer.TYPE_INT);
-        Hashtable<Object, Object> properties = new Hashtable<Object, Object>();
+        Hashtable<Object, Object> properties = new Hashtable<>();
         return new BufferedImage(cm, packedRaster, cm.isAlphaPremultiplied(), properties);
       } catch (ExecutionException | InterruptedException e) {
         throw new InternalError(e);

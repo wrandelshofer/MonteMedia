@@ -9,7 +9,8 @@ import javax.imageio.ImageReader;
 import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.stream.ImageInputStream;
-import java.awt.*;
+import java.awt.Point;
+import java.awt.Transparency;
 import java.awt.color.ColorSpace;
 import java.awt.color.ICC_ColorSpace;
 import java.awt.color.ICC_Profile;
@@ -90,7 +91,7 @@ public class PGMImageReader extends ImageReader {
     @Override
     public Iterator<ImageTypeSpecifier> getImageTypes(int imageIndex) throws IOException {
         readHeader();
-        LinkedList<ImageTypeSpecifier> l = new LinkedList<ImageTypeSpecifier>();
+        LinkedList<ImageTypeSpecifier> l = new LinkedList<>();
         ComponentColorModel ccm = new ComponentColorModel(//
                 new ICC_ColorSpace(ICC_Profile.getInstance(ColorSpace.CS_GRAY)),
                 new int[]{maxGray > 255 ? 16 : 8},//
@@ -133,11 +134,11 @@ public class PGMImageReader extends ImageReader {
         if (maxGray > 255) {
             DataBufferShort db = new DataBufferShort(width * height);
             in.readFully(db.getData(), 0, width * height);
-            img = new BufferedImage(ccm, Raster.createWritableRaster(sm, db, new Point(0, 0)), false, new Hashtable<Object, Object>());
+            img = new BufferedImage(ccm, Raster.createWritableRaster(sm, db, new Point(0, 0)), false, new Hashtable<>());
         } else {
             DataBufferByte db = new DataBufferByte(width * height);
             in.readFully(db.getData(), 0, width * height);
-            img = new BufferedImage(ccm, Raster.createWritableRaster(sm, db, new Point(0, 0)), false, new Hashtable<Object, Object>());
+            img = new BufferedImage(ccm, Raster.createWritableRaster(sm, db, new Point(0, 0)), false, new Hashtable<>());
         }
 
         return img;

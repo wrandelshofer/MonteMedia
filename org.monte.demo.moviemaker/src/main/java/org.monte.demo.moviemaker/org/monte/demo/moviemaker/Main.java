@@ -17,10 +17,16 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.*;
+import javax.swing.AbstractButton;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.ProgressMonitor;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileSystemView;
-import java.awt.*;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.File;
@@ -845,7 +851,7 @@ public class Main extends javax.swing.JFrame {
                         }
                     }
                     if (longerTrack != -1) {
-                        LinkedList<QuickTimeWriter.Edit> l = new LinkedList<QuickTimeWriter.Edit>();
+                        LinkedList<QuickTimeWriter.Edit> l = new LinkedList<>();
                         l.add(new QuickTimeWriter.Edit(shorterDuration, 0, 1.0));       // sampleDuration, media time, media rate
                         qtOut.setEditList(longerTrack, l.toArray(new QuickTimeWriter.Edit[l.size()]));
                     }
@@ -874,7 +880,7 @@ public class Main extends javax.swing.JFrame {
                         }
                     }
                     if (longerTrack != -1) {
-                        LinkedList<QuickTimeWriter.Edit> l = new LinkedList<QuickTimeWriter.Edit>();
+                        LinkedList<QuickTimeWriter.Edit> l = new LinkedList<>();
                         for (; longerDuration > 0; longerDuration -= shorterDuration) {
                             l.add(new QuickTimeWriter.Edit(min(shorterDuration, longerDuration), 0, 1.0));       // sampleDuration, media time, media rate
                         }
@@ -886,7 +892,7 @@ public class Main extends javax.swing.JFrame {
                     long d0 = qtOut.getTrackDuration(at);
                     long d1 = qtOut.getTrackDuration(vt);
                     if (d0 != d1 && d0 != 0 && d1 != 0) {
-                        LinkedList<QuickTimeWriter.Edit> l = new LinkedList<QuickTimeWriter.Edit>();
+                        LinkedList<QuickTimeWriter.Edit> l = new LinkedList<>();
                         l.add(new QuickTimeWriter.Edit((int) d0, 0, d1 / (float) d0));       // sampleDuration, media time, media rate
                         qtOut.setEditList(1, l.toArray(new QuickTimeWriter.Edit[l.size()]));
                     }

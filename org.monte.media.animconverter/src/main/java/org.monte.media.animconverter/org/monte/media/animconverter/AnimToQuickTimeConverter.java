@@ -94,9 +94,10 @@ public class AnimToQuickTimeConverter {
                                 Path quickTimePath2 = f.getParent().resolve(fNameWithoutExtension + ".mov");
                                 Path mp4Path = f.getParent().resolve(fNameWithoutExtension + ".mp4");
                                 if (!Files.exists(quickTimePath2)) {
-                                    QuickTimeMultiplexer mux = new QuickTimeMultiplexer(quickTimePath2.toFile());
-                                    mux.setMovieTimeScale(demux.getTimeBase());
-                                    convertToQuickTime(demux, mux, fName);
+                                    try (QuickTimeMultiplexer mux = new QuickTimeMultiplexer(quickTimePath2.toFile())) {
+                                        mux.setMovieTimeScale(demux.getTimeBase());
+                                        convertToQuickTime(demux, mux, fName);
+                                    }
                                 }
                                 if (!Files.exists(mp4Path)) {
                                     convertToMP4(demux, quickTimePath2, mp4Path);
@@ -185,9 +186,10 @@ public class AnimToQuickTimeConverter {
                             }
 
                             if (!Files.exists(quickTimeFile)) {
-                                QuickTimeMultiplexer mux = new QuickTimeMultiplexer(quickTimeFile.toFile());
-                                convertToQuickTime(demux, mux, zipFile + "!" + name
-                                );
+                                try (QuickTimeMultiplexer mux = new QuickTimeMultiplexer(quickTimeFile.toFile())) {
+                                    convertToQuickTime(demux, mux, zipFile + "!" + name
+                                    );
+                                }
                             }
                             if (!Files.exists(mp4File)) {
                                 convertToMP4(demux, quickTimeFile, mp4File);
@@ -306,7 +308,6 @@ public class AnimToQuickTimeConverter {
                 mux.write(audioTrackId, audioBuf);
             }
         }
-        mux.finish();
     }
 
     private void convertToMP4(ANIMDemultiplexer demux, Path quickTimeFile, Path mp4File) throws IOException {

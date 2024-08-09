@@ -56,7 +56,7 @@ public class FFRtoVFRConverter extends AbstractVideoCodec {
     public Format[] getOutputFormats(Format input) {
         Format forceVFR = new Format(FixedFrameRateKey, false);
 
-        ArrayList<Format> of = new ArrayList<Format>(outputFormats.length);
+        ArrayList<Format> of = new ArrayList<>(outputFormats.length);
         for (Format f : outputFormats) {
             of.add(forceVFR.append(f.append(input)));
         }

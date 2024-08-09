@@ -5,13 +5,25 @@
 package org.monte.demo.moviereader;
 
 
-import org.monte.media.av.*;
+import org.monte.media.av.Buffer;
+import org.monte.media.av.BufferFlag;
+import org.monte.media.av.Codec;
+import org.monte.media.av.Format;
+import org.monte.media.av.FormatKeys;
+import org.monte.media.av.MovieReader;
+import org.monte.media.av.Registry;
 import org.monte.media.image.Images;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.*;
+import java.awt.BorderLayout;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
@@ -38,22 +50,24 @@ public class ReadImagesFromAMovieMain {
      *
      * @param args the command line arguments
      */
-    public static void main(String args[]) throws IOException {
+    public static void main(String args[]) throws Exception {
         if (args.length != 1) {
             System.err.println("""
-                    Usage:
-                        Main <inputfile>
-                                        
-                    Where arguments are:  
-                        inputfile
-                            the path to a movie file (AVI)
-                    """);
+                               Usage:
+                                   Main <inputfile>
+                                                   
+                               Where arguments are:  
+                                   inputfile
+                                       the path to a movie file (AVI)
+                               """);
         }
-        File file = new File(args[0]);
         ReadImagesFromAMovieMain main = new ReadImagesFromAMovieMain();
-        SwingUtilities.invokeLater(() -> {
+        SwingUtilities.invokeAndWait(() -> {
             main.createFrame();
-            main.loadImages(file);
+            if (args.length == 1) {
+                File file = new File(args[0]);
+                main.loadImages(file);
+            }
         });
     }
 
@@ -139,7 +153,7 @@ public class ReadImagesFromAMovieMain {
     }
 
     private List<BufferedImage> readImages(File file) throws IOException {
-        List<BufferedImage> frames = new ArrayList<BufferedImage>();
+        List<BufferedImage> frames = new ArrayList<>();
         MovieReader in = Registry.getInstance().getReader(file);
         if (in == null)
             throw new IOException("could not find a reader for file " + file);

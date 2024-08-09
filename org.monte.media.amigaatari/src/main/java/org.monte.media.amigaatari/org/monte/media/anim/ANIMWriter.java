@@ -47,7 +47,7 @@ public class ANIMWriter extends ANIMMultiplexer implements MovieWriter {
         Format format;
     }
 
-    private ArrayList<Track> tracks = new ArrayList<Track>();
+    private ArrayList<Track> tracks = new ArrayList<>();
 
     public ANIMWriter(File file) throws IOException {
         super(file);

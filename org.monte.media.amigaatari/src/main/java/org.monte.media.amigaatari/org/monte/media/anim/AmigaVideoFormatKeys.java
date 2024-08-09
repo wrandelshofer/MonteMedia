@@ -23,7 +23,7 @@ public class AmigaVideoFormatKeys extends VideoFormatKeys {
     /**
      * The Amiga monitor id.
      */
-    public final static FormatKey<Integer> MonitorIdKey = new FormatKey<Integer>("monitorId", Integer.class);
+    public final static FormatKey<Integer> MonitorIdKey = new FormatKey<>("monitorId", Integer.class);
     /**
      * Anim Op5 .
      */
@@ -34,7 +34,7 @@ public class AmigaVideoFormatKeys extends VideoFormatKeys {
         HAM, EHB, NORMAL
     }
 
-    public final static FormatKey<ColorMode> ColorModeKey = new FormatKey<ColorMode>("colorMode", ColorMode.class);
+    public final static FormatKey<ColorMode> ColorModeKey = new FormatKey<>("colorMode", ColorMode.class);
 
     public static Format fromCAMG(int camg) {
         AmigaDisplayInfo i = AmigaDisplayInfo.getInfo(camg);
@@ -59,7 +59,7 @@ public class AmigaVideoFormatKeys extends VideoFormatKeys {
         if (fmt.containsKey(MonitorIdKey)) {
             monitorId = fmt.get(MonitorIdKey);
         } else {
-            ArrayList<AmigaDisplayInfo> infs = new ArrayList<AmigaDisplayInfo>(AmigaDisplayInfo.getAllInfos().values());
+            ArrayList<AmigaDisplayInfo> infs = new ArrayList<>(AmigaDisplayInfo.getAllInfos().values());
             if (fmt.containsKey(InterlaceKey)) {
                 boolean value = fmt.get(InterlaceKey);
                 reduceListBoolean(value, AmigaDisplayInfo::isInterlace, infs);
@@ -72,7 +72,7 @@ public class AmigaVideoFormatKeys extends VideoFormatKeys {
                 Rational value = fmt.get(PixelAspectRatioKey);
                 reduceListRational(value, inf -> new Rational(inf.resolutionX, inf.resolutionY), infs);
             }
-            ArrayList<AmigaDisplayInfo> bestInfs = new ArrayList<AmigaDisplayInfo>(infs);
+            ArrayList<AmigaDisplayInfo> bestInfs = new ArrayList<>(infs);
             if (fmt.containsKey(WidthKey)) {
                 int value = fmt.get(WidthKey);
                 reduceListIntegerOnlyTakeIfSmaller(value, inf -> inf.textOverscanWidth, infs);
@@ -82,7 +82,7 @@ public class AmigaVideoFormatKeys extends VideoFormatKeys {
                 reduceListIntegerOnlyTakeIfSmaller(value, inf -> inf.textOverscanHeight, infs);
             }
             if (infs.isEmpty()) {
-                infs = new ArrayList<AmigaDisplayInfo>(bestInfs);
+                infs = new ArrayList<>(bestInfs);
                 if (fmt.containsKey(WidthKey)) {
                     Integer value = fmt.get(WidthKey);
                     reduceListIntegerOnlyTakeIfSmaller(value, inf -> inf.maxOverscanWidth, infs);
@@ -93,7 +93,7 @@ public class AmigaVideoFormatKeys extends VideoFormatKeys {
                 }
             }
             if (infs.isEmpty()) {
-                infs = new ArrayList<AmigaDisplayInfo>(bestInfs);
+                infs = new ArrayList<>(bestInfs);
                 if (fmt.containsKey(WidthKey)) {
                     Integer value = fmt.get(WidthKey);
                     reduceListInteger(value, inf -> inf.maxOverscanWidth, infs);
@@ -130,7 +130,7 @@ public class AmigaVideoFormatKeys extends VideoFormatKeys {
     }
 
     private static void reduceListRational(Rational value, InfGetter<Rational> g, ArrayList<AmigaDisplayInfo> infs) {
-        ArrayList<AmigaDisplayInfo> bestInfs = new ArrayList<AmigaDisplayInfo>();
+        ArrayList<AmigaDisplayInfo> bestInfs = new ArrayList<>();
         bestInfs.add(infs.get(0));
         float bestCost = g.get(infs.get(0)).subtract(value).floatValue();
         bestCost *= bestCost;
@@ -155,7 +155,7 @@ public class AmigaVideoFormatKeys extends VideoFormatKeys {
     }
 
     private static void reduceListInteger(int value, InfGetter<Integer> g, ArrayList<AmigaDisplayInfo> infs) {
-        ArrayList<AmigaDisplayInfo> bestInfs = new ArrayList<AmigaDisplayInfo>();
+        ArrayList<AmigaDisplayInfo> bestInfs = new ArrayList<>();
         bestInfs.add(infs.get(0));
         float bestCost = g.get(infs.get(0)) - value;
         bestCost *= bestCost;

@@ -67,7 +67,7 @@ public abstract class SEQFrame {
     public void cleanUpAudioCommands() {
         if (audioCommands != null && audioCommands.length > 1) {
             int i, j;
-            ArrayList<SEQAudioCommand> v = new ArrayList<SEQAudioCommand>();
+            ArrayList<SEQAudioCommand> v = new ArrayList<>();
             v.add(audioCommands[0]);
             for (i = 1; i < audioCommands.length; i++) {
                 for (j = 0; j < i; j++) {

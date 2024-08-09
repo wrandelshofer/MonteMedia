@@ -23,7 +23,7 @@ import java.util.Stack;
 public class IFFOutputStream extends OutputStream {
 
     private byte[] writeBuffer = new byte[4];
-    private Stack<Chunk> stack = new Stack<Chunk>();
+    private Stack<Chunk> stack = new Stack<>();
     private ImageOutputStream out;
     private long streamOffset;
 

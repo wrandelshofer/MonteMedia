@@ -438,7 +438,7 @@ public class IFFParser
             visitor.enterGroup(chunk);
         }
 
-        props = new HashMap<Integer, IFFChunk>();
+        props = new HashMap<>();
         long finish = scan + size;
         while (in.getScan() < finish) {
             int id = in.readLONG();
@@ -676,7 +676,7 @@ public class IFFParser
     public void declareDataChunk(int type, int id) {
         IFFChunk chunk = new IFFChunk(type, id);
         if (dataChunks == null) {
-            dataChunks = new HashMap<IFFChunk, IFFChunk>();
+            dataChunks = new HashMap<>();
         }
         dataChunks.put(chunk, chunk);
     }
@@ -716,7 +716,7 @@ public class IFFParser
     public void declareGroupChunk(int type, int id) {
         //IFFChunk chunk = new IFFChunk(type, id);
         if (groupChunks == null) {
-            groupChunks = new HashSet<Integer>();
+            groupChunks = new HashSet<>();
         }
         groupChunks.add(id);
     }
@@ -754,7 +754,7 @@ public class IFFParser
     public void declarePropertyChunk(int type, int id) {
         IFFChunk chunk = new IFFChunk(type, id);
         if (propertyChunks == null) {
-            propertyChunks = new HashMap<IFFChunk, IFFChunk>();
+            propertyChunks = new HashMap<>();
         }
         propertyChunks.put(chunk, chunk);
     }
@@ -793,7 +793,7 @@ public class IFFParser
     public void declareCollectionChunk(int type, int id) {
         IFFChunk chunk = new IFFChunk(type, id);
         if (collectionChunks == null) {
-            collectionChunks = new HashMap<IFFChunk, IFFChunk>();
+            collectionChunks = new HashMap<>();
         }
         collectionChunks.put(chunk, chunk);
     }

@@ -24,7 +24,7 @@ public abstract class TIFFNode {
     /**
      * The children.
      */
-    private final ArrayList<TIFFNode> children = new ArrayList<TIFFNode>();
+    private final ArrayList<TIFFNode> children = new ArrayList<>();
     private TIFFNode parent;
     /**
      * The IFDEntry from which this node was read.
@@ -93,11 +93,11 @@ public abstract class TIFFNode {
 
     private static class PreorderIterator implements Iterator<TIFFNode> {
 
-        private final Stack<Iterator<TIFFNode>> stack = new Stack<Iterator<TIFFNode>>();
+        private final Stack<Iterator<TIFFNode>> stack = new Stack<>();
         private TIFFNode current;
 
         private PreorderIterator(TIFFNode root) {
-            LinkedList<TIFFNode> ll = new LinkedList<TIFFNode>();
+            LinkedList<TIFFNode> ll = new LinkedList<>();
             ll.add(root);
             stack.push(ll.iterator());
         }
@@ -138,7 +138,7 @@ public abstract class TIFFNode {
 
         private PostorderIterator(TIFFNode rootNode) {
             root = rootNode;
-            children = new ArrayList<TIFFNode>(root.children).iterator();
+            children = new ArrayList<>(root.children).iterator();
             subtree = EMPTY_ITERATOR;
         }
 
@@ -169,7 +169,7 @@ public abstract class TIFFNode {
         }
     }  // End of class PostorderEnumeration
 
-    static private final Iterator<TIFFNode> EMPTY_ITERATOR = new Iterator<TIFFNode>() {
+    static private final Iterator<TIFFNode> EMPTY_ITERATOR = new Iterator<>() {
 
         @Override
         public boolean hasNext() {

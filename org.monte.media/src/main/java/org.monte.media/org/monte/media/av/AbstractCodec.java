@@ -36,7 +36,7 @@ public abstract class AbstractCodec implements Codec {
 
     @Override
     public Format[] getOutputFormats(Format input) {
-        ArrayList<Format> of = new ArrayList<Format>(outputFormats.length);
+        ArrayList<Format> of = new ArrayList<>(outputFormats.length);
         for (Format f : outputFormats) {
             of.add(input == null ? f : f.append(input));
         }

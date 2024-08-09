@@ -15,10 +15,14 @@ import org.monte.media.av.Registry;
 import org.monte.media.av.codec.video.VideoFormatKeys;
 import org.monte.media.image.Images;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JSlider;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.*;
+import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +39,7 @@ public class ReadAVIDemo {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-        final ArrayList<BufferedImage> frames = new ArrayList<BufferedImage>();
+        final ArrayList<BufferedImage> frames = new ArrayList<>();
         final File f = new File("/Users/Shared/Developer/Java/MonteMedia/current/trunk/MonteMedia/avidemo-tscc8.avi");
         MovieReader in = Registry.getInstance().getReader(f);
         try {

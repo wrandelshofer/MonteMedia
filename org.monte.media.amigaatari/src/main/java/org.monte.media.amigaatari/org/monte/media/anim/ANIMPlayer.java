@@ -14,10 +14,11 @@ import org.monte.media.player.PlayerControl;
 import org.monte.media.swing.ImagePanel;
 import org.monte.media.swing.player.JPlayerControlAqua;
 
-import javax.swing.*;
+import javax.swing.BoundedRangeModel;
+import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.*;
+import java.awt.Component;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -519,7 +520,7 @@ public class ANIMPlayer
         }
 
         /*Hashtable*/
-        properties = new Hashtable<String, Object>();
+        properties = new Hashtable<>();
         properties.put(
                 "aspect",
                 new Double((double) track.getXAspect() / (double) track.getYAspect()));

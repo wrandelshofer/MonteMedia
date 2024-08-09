@@ -4,8 +4,8 @@
  */
 package org.monte.media.ilbm;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.Timer;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -39,9 +39,9 @@ public class ColorCyclingMemoryImageSource extends MemoryImageSource {
     private int pixeloffset;
     private int pixelscan;
     private Hashtable<?, ?> properties;
-    private ArrayList<ColorCycle> colorCycles = new ArrayList<ColorCycle>();
+    private ArrayList<ColorCycle> colorCycles = new ArrayList<>();
     private Timer timer;
-    private HashSet<ImageConsumer> consumers = new HashSet<ImageConsumer>();
+    private HashSet<ImageConsumer> consumers = new HashSet<>();
     /**
      * Whether color cycling is available.
      */
@@ -71,7 +71,7 @@ public class ColorCyclingMemoryImageSource extends MemoryImageSource {
     public ColorCyclingMemoryImageSource(int w, int h, ColorModel cm,
                                          byte[] pix, int off, int scan) {
         super(w, h, cm, pix, off, scan);
-        initialize(w, h, cm, (Object) pix, off, scan, new Hashtable<Object, Object>());
+        initialize(w, h, cm, (Object) pix, off, scan, new Hashtable<>());
     }
 
     /**
@@ -142,7 +142,7 @@ public class ColorCyclingMemoryImageSource extends MemoryImageSource {
         pixels = pix;
         pixeloffset = off;
         pixelscan = scan;
-        properties = (props == null) ? new Hashtable<Object, Object>() : props;
+        properties = (props == null) ? new Hashtable<>() : props;
     }
 
     public int getWidth() {

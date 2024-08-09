@@ -12,10 +12,26 @@ import org.monte.media.math.Rational;
 
 import java.awt.image.IndexColorModel;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.NavigableSet;
+import java.util.TreeMap;
 
-import static org.monte.media.av.FormatKeys.*;
-import static org.monte.media.av.codec.video.VideoFormatKeys.*;
+import static org.monte.media.av.FormatKeys.EncodingKey;
+import static org.monte.media.av.FormatKeys.FrameRateKey;
+import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
+import static org.monte.media.av.FormatKeys.MediaType;
+import static org.monte.media.av.FormatKeys.MediaTypeKey;
+import static org.monte.media.av.FormatKeys.MimeTypeKey;
+import static org.monte.media.av.FormatKeys.SampleFormatKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.CompressorNameKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
 /**
  * {@code QuickTimeMeta} holds the meta-data contained in a QuickTime movie.
@@ -126,7 +142,7 @@ public class QuickTimeMeta extends AbstractMovie {
     protected int versionYear;
     protected int versionMonth;
     protected int versionMinor;
-    protected ArrayList<String> compatibleBrands = new ArrayList<String>();
+    protected ArrayList<String> compatibleBrands = new ArrayList<>();
     // END File Type
     // BEGIN Movie Header
     /**
@@ -202,7 +218,7 @@ public class QuickTimeMeta extends AbstractMovie {
     /**
      * The list of tracks in the movie.
      */
-    protected ArrayList<Track> tracks = new ArrayList<Track>();
+    protected ArrayList<Track> tracks = new ArrayList<>();
 
     public QuickTimeMeta() {
         clear();
@@ -861,7 +877,7 @@ public class QuickTimeMeta extends AbstractMovie {
         /**
          * The edit list of the track.
          */
-        protected ArrayList<Edit> editList = new ArrayList<Edit>();
+        protected ArrayList<Edit> editList = new ArrayList<>();
         // END Edit List
         // BEGIN Media List
         /**
@@ -1130,24 +1146,24 @@ public class QuickTimeMeta extends AbstractMovie {
         /**
          * The data reference list of the track.
          */
-        protected ArrayList<DataReference> dataReferenceList = new ArrayList<DataReference>();
+        protected ArrayList<DataReference> dataReferenceList = new ArrayList<>();
         // END Data Reference List
         /**
          * List of chunk offsets.
          */
-        protected ArrayList<Long> chunkOffsets = new ArrayList<Long>();
+        protected ArrayList<Long> chunkOffsets = new ArrayList<>();
         /**
          * List of TimeToSample entries.
          */
-        protected ArrayList<TimeToSampleGroup> timeToSamples = new ArrayList<TimeToSampleGroup>();
+        protected ArrayList<TimeToSampleGroup> timeToSamples = new ArrayList<>();
         /**
          * List of SampleToChunk entries.
          */
-        protected ArrayList<SampleToChunk> samplesToChunks = new ArrayList<SampleToChunk>();
+        protected ArrayList<SampleToChunk> samplesToChunks = new ArrayList<>();
         /**
          * List of SampleSize entries.
          */
-        protected ArrayList<SampleSizeGroup> sampleSizes = new ArrayList<SampleSizeGroup>();
+        protected ArrayList<SampleSizeGroup> sampleSizes = new ArrayList<>();
         /**
          * List of sync samples. This list is null if all samples are sync samples.
          */

@@ -69,7 +69,7 @@ public class MJPGImageReader extends ImageReader {
     @Override
     public Iterator<ImageTypeSpecifier> getImageTypes(int imageIndex) throws IOException {
         readHeader();
-        LinkedList<ImageTypeSpecifier> l = new LinkedList<ImageTypeSpecifier>();
+        LinkedList<ImageTypeSpecifier> l = new LinkedList<>();
         l.add(new ImageTypeSpecifier(RGB, RGB.createCompatibleSampleModel(image.getWidth(), image.getHeight())));
         return l.iterator();
     }

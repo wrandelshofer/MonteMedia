@@ -5,11 +5,12 @@
 package org.monte.media.swing;
 
 import javax.accessibility.AccessibleText;
-import javax.swing.*;
+import javax.swing.JLabel;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.html.HTML;
-import java.awt.*;
+import java.awt.Cursor;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -103,7 +104,7 @@ public class JLabelHyperlinkHandler {
 
     private JLabel label;
     private Handler handler = new Handler();
-    private ArrayList<ActionListener> actionListeners = new ArrayList<ActionListener>();
+    private ArrayList<ActionListener> actionListeners = new ArrayList<>();
 
     public JLabelHyperlinkHandler() {
         this(null, null);

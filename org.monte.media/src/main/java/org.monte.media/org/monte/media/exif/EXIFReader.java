@@ -81,7 +81,7 @@ public class EXIFReader {
     /**
      * Contains offsets to additional images.
      */
-    private TreeSet<Long> imageOffsets = new TreeSet<Long>();
+    private TreeSet<Long> imageOffsets = new TreeSet<>();
 
     public EXIFReader(File f) {
         this.file = f;
@@ -204,10 +204,10 @@ public class EXIFReader {
                     imageNode = new TIFFDirectory(ImageTagSet.getInstance(), null, imageCount++, 0, in.getStreamPosition(), new FileSegment(seg.offset, seg.length));
                     root.add(imageNode);
                     exifStream = new ByteArrayOutputStream();
-                    exifSeg = new ArrayList<FileSegment>();
+                    exifSeg = new ArrayList<>();
 
                     mpStream = new ByteArrayOutputStream();
-                    mpSeg = new ArrayList<FileSegment>();
+                    mpSeg = new ArrayList<>();
 
                     break;
                 case JFIFInputStream.APP1_MARKER:
@@ -331,7 +331,7 @@ public class EXIFReader {
                         root.add(trackNode);
                         try (ByteArrayImageInputStream in = new ByteArrayImageInputStream(chunk.getData(), 8, (int) chunk.getSize() - 8, ByteOrder.LITTLE_ENDIAN)) {
                             TIFFInputStream tin = new TIFFInputStream(in, ByteOrder.LITTLE_ENDIAN, 0);
-                            ArrayList<FileSegment> tiffSeg = new ArrayList<FileSegment>();
+                            ArrayList<FileSegment> tiffSeg = new ArrayList<>();
                             tiffSeg.add(new FileSegment(chunk.getScan() + 8, chunk.getSize() - 8));
                             readTIFFIFD(tin, trackNode, tiffSeg);
 
@@ -372,7 +372,7 @@ public class EXIFReader {
         root.add(trackNode);
         ByteArrayImageInputStream in = new ByteArrayImageInputStream(data, 8, data.length - 8, ByteOrder.LITTLE_ENDIAN);
         TIFFInputStream tin = new TIFFInputStream(in, ByteOrder.LITTLE_ENDIAN, 0);
-        ArrayList<FileSegment> tiffSeg = new ArrayList<FileSegment>();
+        ArrayList<FileSegment> tiffSeg = new ArrayList<>();
         tiffSeg.add(new FileSegment(scan + 8, data.length - 8));
         readTIFFIFD(tin, trackNode, tiffSeg);
     }
@@ -628,8 +628,8 @@ public class EXIFReader {
      * Returns all IFDDirectories of the specified tag set for the given image.
      */
     public ArrayList<TIFFDirectory> getDirectories(int image, TagSet tagSet) {
-        ArrayList<TIFFDirectory> dirs = new ArrayList<TIFFDirectory>();
-        Stack<TIFFDirectory> stack = new Stack<TIFFDirectory>();
+        ArrayList<TIFFDirectory> dirs = new ArrayList<>();
+        Stack<TIFFDirectory> stack = new Stack<>();
         stack.push((TIFFDirectory) getMetaDataTree().getChildAt(image));
         while (!stack.isEmpty()) {
             TIFFDirectory dir = stack.pop();
@@ -652,8 +652,8 @@ public class EXIFReader {
      * Returns all thumbnails.
      */
     public ArrayList<BufferedImage> getThumbnails(boolean suppressException) throws IOException {
-        ArrayList<BufferedImage> thumbnails = new ArrayList<BufferedImage>();
-        Stack<TIFFDirectory> stack = new Stack<TIFFDirectory>();
+        ArrayList<BufferedImage> thumbnails = new ArrayList<>();
+        Stack<TIFFDirectory> stack = new Stack<>();
         stack.push((TIFFDirectory) getMetaDataTree());
         if (stack.peek() == null) {
             return thumbnails;
@@ -686,7 +686,7 @@ public class EXIFReader {
      * Returns a flat hash map of the metadata.
      */
     public HashMap<TIFFTag, TIFFField> getMetaDataMap() {
-        HashMap<TIFFTag, TIFFField> m = new HashMap<TIFFTag, TIFFField>();
+        HashMap<TIFFTag, TIFFField> m = new HashMap<>();
 
         for (Iterator<TIFFNode> i = root.preorderIterator(); i.hasNext(); ) {
             TIFFNode node = i.next();

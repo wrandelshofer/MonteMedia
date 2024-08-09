@@ -87,7 +87,7 @@ public class ImageSequenceWriter implements MovieWriter {
         }
     }
 
-    private final ArrayList<VideoTrack> tracks = new ArrayList<VideoTrack>();
+    private final ArrayList<VideoTrack> tracks = new ArrayList<>();
 
     /**
      * Adds a video track.

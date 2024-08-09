@@ -94,7 +94,7 @@ public abstract class Registry {
     public abstract Format getFileFormat(File file);
 
     public List<Format> getFileFormats() {
-        Set<Format> formats = new LinkedHashSet<Format>();
+        Set<Format> formats = new LinkedHashSet<>();
         formats.addAll(getReaderFormats());
         formats.addAll(getWriterFormats());
         return Collections.unmodifiableList(new ArrayList<>(formats));
@@ -141,7 +141,7 @@ public abstract class Registry {
      * @return List of output media formats.
      */
     public ArrayList<Format> suggestOutputFormats(Format inputMediaFormat, Format outputFileFormat) {
-        ArrayList<Format> formats = new ArrayList<Format>();
+        ArrayList<Format> formats = new ArrayList<>();
         Format matchFormat = new Format(//
                 MimeTypeKey, outputFileFormat.get(MimeTypeKey),//
                 MediaTypeKey, inputMediaFormat.get(MediaTypeKey));

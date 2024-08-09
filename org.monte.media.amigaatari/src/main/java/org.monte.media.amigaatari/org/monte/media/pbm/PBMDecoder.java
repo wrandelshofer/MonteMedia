@@ -150,7 +150,7 @@ public class PBMDecoder implements IFFVisitor {
     public ArrayList<ColorCyclingMemoryImageSource> produce()
             throws IOException {
         InputStream in = null;
-        sources = new ArrayList<ColorCyclingMemoryImageSource>();
+        sources = new ArrayList<>();
         boolean mustCloseStream;
         if (inputStream != null) {
             in = inputStream;
@@ -507,7 +507,7 @@ public class PBMDecoder implements IFFVisitor {
                 throw new ParseException("unknown compression method: " + bmhdCompression);
         }
 
-        Hashtable<?, ?> props = new Hashtable<Object, Object>();
+        Hashtable<?, ?> props = new Hashtable<>();
         if ((bmhdMasking & MSK_HAS_MASK) != 0) {
             // XXX - Handle image creation with mask
             System.out.println("PBMDecoder Images with Mask not supported");

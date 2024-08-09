@@ -10,7 +10,7 @@ import org.monte.media.av.Format;
 import org.monte.media.riff.RIFFChunk;
 
 import javax.imageio.stream.ImageOutputStream;
-import java.awt.*;
+import java.awt.Dimension;
 import java.awt.image.IndexColorModel;
 import java.io.IOException;
 import java.nio.ByteOrder;
@@ -144,7 +144,7 @@ public abstract class AbstractAVIStream {
     /**
      * The list of tracks in the file.
      */
-    protected ArrayList<Track> tracks = new ArrayList<Track>();
+    protected ArrayList<Track> tracks = new ArrayList<>();
 
     /**
      * Gets the position relative to the beginning of the QuickTime stream. <p>
@@ -520,8 +520,8 @@ public abstract class AbstractAVIStream {
             twoCC = (('0' + trackIndex / 10) << 24) | (('0' + trackIndex % 10) << 16);
 
             this.fccHandler = fourCC;
-            this.samples = new ArrayList<Sample>();
-            this.extraHeaders = new ArrayList<RIFFChunk>();
+            this.samples = new ArrayList<>();
+            this.extraHeaders = new ArrayList<>();
         }
 
         public abstract long getSTRFChunkSize();
@@ -1396,7 +1396,7 @@ public abstract class AbstractAVIStream {
             //out.write
             out.writeLong(0); // make room for the chunk header
             out.writeInt(0); // make room for the chunk header
-            children = new LinkedList<Chunk>();
+            children = new LinkedList<>();
         }
 
         public void add(Chunk child) throws IOException {

@@ -19,7 +19,7 @@ import java.util.HashMap;
  */
 public abstract class TagSet {
 
-    private final HashMap<Integer, TIFFTag> tagsByNumber = new HashMap<Integer, TIFFTag>();
+    private final HashMap<Integer, TIFFTag> tagsByNumber = new HashMap<>();
     private final String name;
 
     public TagSet(String name, TIFFTag[] tags) {

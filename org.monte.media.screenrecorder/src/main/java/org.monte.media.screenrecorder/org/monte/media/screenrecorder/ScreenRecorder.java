@@ -23,8 +23,14 @@ import org.monte.media.quicktime.QuickTimeWriter;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.Mixer;
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.SwingUtilities;
+import java.awt.AWTEvent;
+import java.awt.AWTException;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.AWTEventListener;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -654,7 +660,7 @@ public class ScreenRecorder extends AbstractStateModel {
      * Starts file writing.
      */
     private void startWriter() {
-        writerQueue = new ArrayBlockingQueue<Buffer>(
+        writerQueue = new ArrayBlockingQueue<>(
                 max(screenFormat.get(FrameRateKey).intValue(), mouseFormat.get(FrameRateKey).intValue()) + 1);
         writerThread = new Thread() {
             @Override

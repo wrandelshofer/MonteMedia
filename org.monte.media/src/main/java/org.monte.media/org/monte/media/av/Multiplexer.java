@@ -5,6 +5,7 @@
 
 package org.monte.media.av;
 
+import java.io.Closeable;
 import java.io.IOException;
 
 /**
@@ -13,7 +14,15 @@ import java.io.IOException;
  *
  * @author Werner Randelshofer
  */
-public interface Multiplexer {
+public interface Multiplexer extends Closeable {
+    /**
+     * Adds a track.
+     *
+     * @param fmt The format of the track.
+     * @return The track number.
+     */
+    int addTrack(Format fmt) throws IOException;
+
     /**
      * Writes a sample.
      * Does nothing if the discard-flag or the prefetch-flag in the buffer is set to true.
@@ -22,12 +31,12 @@ public interface Multiplexer {
      * @param buf   The buffer containing the sample data.
      * @throws java.io.IOException if the write fails
      */
-    public void write(int track, Buffer buf) throws IOException;
+    void write(int track, Buffer buf) throws IOException;
 
     /**
      * Closes the Multiplexer.
      *
      * @throws java.io.IOException if close fails
      */
-    public void close() throws IOException;
+    void close() throws IOException;
 }

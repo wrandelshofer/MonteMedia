@@ -12,7 +12,7 @@ import org.monte.media.riff.RIFFParser;
 
 import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
-import java.awt.*;
+import java.awt.Dimension;
 import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
 import java.io.File;
@@ -67,9 +67,9 @@ public class AVIOutputStream extends AbstractAVIStream {
     /**
      * The states of the movie output stream.
      */
-    protected static enum States {
+    protected enum States {
 
-        STARTED, FINISHED, CLOSED;
+        STARTED, FINISHED, CLOSED
     }
 
     /**
@@ -88,7 +88,7 @@ public class AVIOutputStream extends AbstractAVIStream {
      * This chunk holds the AVI Main Header.
      */
     protected FixedSizeDataChunk avihChunk;
-    ArrayList<Sample> idx1 = new ArrayList<Sample>();
+    ArrayList<Sample> idx1 = new ArrayList<>();
 
     /**
      * Creates a new instance.
@@ -479,7 +479,7 @@ public class AVIOutputStream extends AbstractAVIStream {
      * method does not inspect the contents of the samples. The content has to
      * match the format and dimensions of the media in this track. <p> If a
      * track contains palette changes, then all key frames must be immediately
-     * preceeded by a palette change chunk. If a key frame is not preceeded by a
+     * preceded by a palette change chunk. If a key frame is not preceded by a
      * palette change chunk, it will be downgraded to a delta frame.
      *
      * @param track      The track index.
@@ -723,10 +723,6 @@ public class AVIOutputStream extends AbstractAVIStream {
             long moviListOffset = moviChunk.offset + 8 + 8;
 
             {
-                double movieTime = 0;
-                int nTracks = tracks.size();
-                int[] trackSampleIndex = new int[nTracks];
-                long[] trackSampleCount = new long[nTracks];
                 for (Sample s : idx1) {
                     d.setByteOrder(ByteOrder.BIG_ENDIAN);
                     d.writeInt(s.chunkType); // dwChunkId
@@ -881,7 +877,6 @@ public class AVIOutputStream extends AbstractAVIStream {
             // performance. For an interleaved file, the buffer size should be large
             // enough to read an entire record, and not just a chunk.
             {
-                VideoTrack vt = null;
                 int width = 0, height = 0;
                 // FIXME - Maybe we should support a global video dimension property
                 for (Track tr : tracks) {
@@ -1013,8 +1008,7 @@ public class AVIOutputStream extends AbstractAVIStream {
             // corner of the destination rectangle is relative to the upper-left
             // corner of the movie rectangle.
 
-            if (tr instanceof VideoTrack) {
-                VideoTrack vt = (VideoTrack) tr;
+            if (tr instanceof VideoTrack vt) {
                 Format vf = tr.format;
 
                 /* Write BITMAPINFOHEADR Data into AVI Stream Format Chunk
@@ -1093,8 +1087,7 @@ public class AVIOutputStream extends AbstractAVIStream {
                         d.write(0);
                     }
                 }
-            } else if (tr instanceof AudioTrack) {
-                AudioTrack at = (AudioTrack) tr;
+            } else if (tr instanceof AudioTrack at) {
 
                 /* Write WAVEFORMATEX Data into AVI Stream Format Chunk
                  /* -------------

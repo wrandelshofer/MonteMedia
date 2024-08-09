@@ -15,7 +15,9 @@ import org.monte.media.av.Registry;
 import org.monte.media.image.Images;
 import org.monte.media.math.Rational;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.File;
@@ -52,7 +54,7 @@ public class ReadWriteDemoMain {
      */
     public static void main(String[] args) {
         try {
-            HashSet<String> usedFilenames = new HashSet<String>();
+            HashSet<String> usedFilenames = new HashSet<>();
 
             // Test all available AVI video formats
             for (Codec c : Registry.getInstance().getEncoders(new Format(MimeTypeKey, MIME_AVI, MediaTypeKey, MediaType.VIDEO))) {
@@ -160,7 +162,7 @@ public class ReadWriteDemoMain {
     }
 
     private static BufferedImage[] readMovie(File file) throws IOException {
-        ArrayList<BufferedImage> frames = new ArrayList<BufferedImage>();
+        ArrayList<BufferedImage> frames = new ArrayList<>();
 
         MovieReader in = Registry.getInstance().getReader(file);
         try {

@@ -13,7 +13,8 @@ import javax.imageio.ImageReader;
 import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.stream.ImageInputStream;
-import java.awt.*;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public class PBMImageReader extends ImageReader implements AnimatedImageReader {
         readImages();
         ColorCyclingMemoryImageSource iip = images.get(imageIndex);
 
-        LinkedList<ImageTypeSpecifier> l = new LinkedList<ImageTypeSpecifier>();
+        LinkedList<ImageTypeSpecifier> l = new LinkedList<>();
         l.add(new ImageTypeSpecifier(iip.getColorModel(), //
                 iip.getColorModel().createCompatibleSampleModel(iip.getWidth(), iip.getHeight())));
         return l.iterator();

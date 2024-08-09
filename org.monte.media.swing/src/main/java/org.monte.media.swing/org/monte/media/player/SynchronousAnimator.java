@@ -28,7 +28,7 @@ public class SynchronousAnimator implements Animator {
      * List of active interpolators.
      * Implementation note: This vector is only accessed by the animationThread.
      */
-    private ArrayList<Interpolator> activeInterpolators = new ArrayList<Interpolator>();
+    private ArrayList<Interpolator> activeInterpolators = new ArrayList<>();
     /**
      * List of new interpolators.
      * Implementation note: The dispatcher thread adds items to this list, the
@@ -38,7 +38,7 @@ public class SynchronousAnimator implements Animator {
      * Note: the dispatcher thread is not necesseraly the  Event Dispatcher
      * thread. The dispatcher thread is any thread which dispatches interpolators.
      */
-    private ArrayList<Interpolator> newInterpolators = new ArrayList<Interpolator>();
+    private ArrayList<Interpolator> newInterpolators = new ArrayList<>();
 
     public void setLock(Object lock) {
         this.lock = lock;

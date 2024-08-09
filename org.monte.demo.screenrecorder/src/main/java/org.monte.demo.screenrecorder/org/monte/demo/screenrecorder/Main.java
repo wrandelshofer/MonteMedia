@@ -19,11 +19,27 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.Mixer;
 import javax.sound.sampled.TargetDataLine;
-import javax.swing.*;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.*;
+import java.awt.AWTException;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.GraphicsConfiguration;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -272,7 +288,7 @@ public class Main extends javax.swing.JFrame {
         mouseRateField.setModel(mouseRateModel);
 
         // FIXME - 8-bit recording is currently broken
-        audioRateChoice.setModel(new DefaultComboBoxModel<AudioRateItem>(new AudioRateItem[]{
+        audioRateChoice.setModel(new DefaultComboBoxModel<>(new AudioRateItem[]{
                 //new AudioItem("No Audio", 0, 0),
                 //new AudioItem("8.000 Hz, 8-bit",8000,8),
                 new AudioRateItem("8.000 Hz", 8000, 16),
@@ -284,7 +300,7 @@ public class Main extends javax.swing.JFrame {
                 new AudioRateItem("44.100 Hz", 44100, 16),}));
         audioRate = prefs.getInt("ScreenRecording.audioRate", 0);
         audioRateChoice.setSelectedIndex(audioRate);
-        audioSourceChoice.setModel(new DefaultComboBoxModel<AudioSourceItem>(getAudioSources()));
+        audioSourceChoice.setModel(new DefaultComboBoxModel<>(getAudioSources()));
         audioSource = prefs.getInt("ScreenRecording.audioSource", 0);
         audioSourceChoice.setSelectedIndex(audioSource);
 
@@ -293,7 +309,7 @@ public class Main extends javax.swing.JFrame {
         Point customLoc = new Point(
                 prefs.getInt("ScreenRecording.customAreaX", 100),
                 prefs.getInt("ScreenRecording.customAreaY", 100));
-        areaChoice.setModel(new DefaultComboBoxModel<AreaItem>(new AreaItem[]{
+        areaChoice.setModel(new DefaultComboBoxModel<>(new AreaItem[]{
                 new AreaItem("Entire Screen", null, SwingConstants.NORTH_WEST),
                 new AreaItem("Center 1280 x 720", new Dimension(1280, 720), SwingConstants.CENTER),
                 new AreaItem("Center 1024 x 768", new Dimension(1024, 768), SwingConstants.CENTER),
@@ -548,7 +564,7 @@ public class Main extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private static Vector<AudioSourceItem> getAudioSources() {
-        Vector<AudioSourceItem> l = new Vector<AudioSourceItem>();
+        Vector<AudioSourceItem> l = new Vector<>();
 
         l.add(new AudioSourceItem("None", null, false));
         l.add(new AudioSourceItem("Default Input", null, true));
@@ -819,11 +835,11 @@ public class Main extends javax.swing.JFrame {
         switch (formatChoice.getSelectedIndex()) {
             case 0: // AVI
                 encodingChoice.setModel(
-                        new javax.swing.DefaultComboBoxModel<String>(new String[]{"Screen Capture", "Run Length", "None", "PNG", "JPEG 100 %", "JPEG  50 %"}));
+                        new javax.swing.DefaultComboBoxModel<>(new String[]{"Screen Capture", "Run Length", "None", "PNG", "JPEG 100 %", "JPEG  50 %"}));
                 break;
             case 1: // QuickTime
                 encodingChoice.setModel(
-                        new javax.swing.DefaultComboBoxModel<String>(new String[]{"Screen Capture", "Animation", "None", "PNG", "JPEG 100 %", "JPEG  50 %"}));
+                        new javax.swing.DefaultComboBoxModel<>(new String[]{"Screen Capture", "Animation", "None", "PNG", "JPEG 100 %", "JPEG  50 %"}));
                 break;
         }
         encodingChoice.setSelectedIndex(index);

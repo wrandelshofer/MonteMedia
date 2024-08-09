@@ -5,12 +5,24 @@
 package org.monte.demo.moviereader;
 
 
-import org.monte.media.av.*;
+import org.monte.media.av.Buffer;
+import org.monte.media.av.BufferFlag;
+import org.monte.media.av.Codec;
+import org.monte.media.av.Format;
+import org.monte.media.av.FormatKeys;
+import org.monte.media.av.MovieReader;
+import org.monte.media.av.Registry;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.*;
+import java.awt.BorderLayout;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
@@ -140,7 +152,7 @@ public class ReadClosedCaptionsFromAMovieMain {
     }
 
     private List<BufferedImage> readCaptions(File file) throws IOException {
-        List<BufferedImage> frames = new ArrayList<BufferedImage>();
+        List<BufferedImage> frames = new ArrayList<>();
         MovieReader in = Registry.getInstance().getReader(file);
         if (in == null)
             throw new IOException("could not find a reader for file " + file);

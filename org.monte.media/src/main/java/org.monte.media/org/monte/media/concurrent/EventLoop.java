@@ -66,7 +66,7 @@ public abstract class EventLoop<E> {
      * The queue stores the events until they
      * can be processed by a processor thread.
      */
-    private final LinkedList<E> queue = new LinkedList<E>();
+    private final LinkedList<E> queue = new LinkedList<>();
 
     /**
      * Indicates whether multiple events will be coalesced

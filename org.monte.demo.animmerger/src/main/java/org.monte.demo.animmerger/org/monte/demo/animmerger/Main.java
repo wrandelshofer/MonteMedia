@@ -12,7 +12,9 @@ import org.monte.media.iff.IFFVisitor;
 import org.monte.media.swing.BackgroundTask;
 import org.monte.media.tree.TreeNode;
 
-import javax.swing.*;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -63,7 +65,7 @@ public class Main extends javax.swing.JFrame {
             IFFParser.stringToID("DLTA"),
             IFFParser.stringToID("BODY"),};
 
-    private static Comparator<IFFChunkNode> nodeComparator = new Comparator<IFFChunkNode>() {
+    private static Comparator<IFFChunkNode> nodeComparator = new Comparator<>() {
         /*
         public int compare(Object o1, Object o2) {
             return compare((IFFChunkNode) o1, (IFFChunkNode) o2);
@@ -114,7 +116,7 @@ public class Main extends javax.swing.JFrame {
             } else {
 
                 if (this.isSameAs(that)) {
-                    final ArrayList<IFFChunkNode> mergedChildren = new ArrayList<IFFChunkNode>(Math.max(this.getChildCount(), that.getChildCount()));
+                    final ArrayList<IFFChunkNode> mergedChildren = new ArrayList<>(Math.max(this.getChildCount(), that.getChildCount()));
                     this.sortChildren(nodeComparator);
                     that.sortChildren(nodeComparator);
 

@@ -32,7 +32,7 @@ public class QuickTimeDeserializer {
     static final HashSet<String> compositeAtoms;
 
     static {
-        compositeAtoms = new HashSet<String>();
+        compositeAtoms = new HashSet<>();
         compositeAtoms.add("moov");
         compositeAtoms.add("cmov");
         compositeAtoms.add("gmhd");
@@ -61,7 +61,7 @@ public class QuickTimeDeserializer {
         public String type;
         public long headerSize;
         public byte[] data;
-        public HashMap<String, Atom> children = new HashMap<String, Atom>();
+        public HashMap<String, Atom> children = new HashMap<>();
 
         @Override
         public String toString() {
@@ -1202,7 +1202,7 @@ public class QuickTimeDeserializer {
         if (numberOfEntries == 0) {
             m.syncSamples = null;
         } else {
-            m.syncSamples = new TreeSet<Long>();
+            m.syncSamples = new TreeSet<>();
             for (int i = 0; i < numberOfEntries; i++) {
                 // the sample ids are one-based, but we want zero-based indices
                 m.syncSamples.add(in.readUnsignedInt() - 1);
