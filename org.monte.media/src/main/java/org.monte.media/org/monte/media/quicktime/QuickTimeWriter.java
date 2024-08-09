@@ -675,4 +675,126 @@ public class QuickTimeWriter implements MovieWriter {
     public void finish() throws IOException {
         out.finish();
     }
+
+
+    /**
+     * Sets the sync interval for the specified video track.
+     *
+     * @param track The track number.
+     * @param i     Interval between sync samples (keyframes). 0 = automatic. 1 =
+     *              write all samples as sync samples. n = sync every n-th sample.
+     */
+    public void setSyncInterval(int track, int i) {
+        out.setSyncInterval(track, i);
+    }
+
+    /**
+     * Writes an already encoded sample from a file into a track. <p> This
+     * method does not inspect the contents of the samples. The contents has to
+     * match the format and dimensions of the media in this track.
+     *
+     * @param track    The track index.
+     * @param file     The file which holds the encoded data sample.
+     * @param duration The duration of the sample in media time scale units.
+     * @param isSync   whether the sample is a sync sample (key frame).
+     * @throws IOException if writing the sample data failed.
+     */
+    public void writeSample(int track, File file, long duration, boolean isSync) throws IOException {
+        out.writeSample(track, file, duration, isSync);
+    }
+
+    /**
+     * Writes multiple sync samples from a byte array into a track. <p> This
+     * method does not inspect the contents of the samples. The contents has to
+     * match the format and dimensions of the media in this track.
+     *
+     * @param track          The track index.
+     * @param sampleCount    The number of samples.
+     * @param data           The encoded sample data.
+     * @param off            The start offset in the data.
+     * @param len            The number of bytes to write. Must be dividable by
+     *                       sampleCount.
+     * @param sampleDuration The duration of a sample. All samples must have the
+     *                       same duration.
+     * @throws IllegalArgumentException if the duration is less than 1.
+     * @throws IOException              if writing the sample data failed.
+     */
+    public void writeSamples(int track, int sampleCount, byte[] data, int off, int len, long sampleDuration) throws IOException {
+        out.writeSamples(track, sampleCount, data, off, len, sampleDuration);
+    }
+
+    /**
+     * Writes a version of the movie which is optimized for the web into the
+     * specified output file. <p> This method finishes the movie and then copies
+     * its content into the specified file. The web-optimized file starts with
+     * the movie header.
+     *
+     * @param outputFile     The output file
+     * @param compressHeader Whether the movie header shall be compressed.
+     */
+    public void toWebOptimizedMovie(File outputFile, boolean compressHeader) throws IOException {
+        out.toWebOptimizedMovie(outputFile, compressHeader);
+    }
+
+    /**
+     * Returns the time scale of the media in a track.
+     *
+     * @param track Track index.
+     * @return time scale
+     * @see #setMovieTimeScale(long)
+     */
+    public long getMediaTimeScale(int track) {
+        return out.getMediaTimeScale(track);
+    }
+
+    /**
+     * Sets the compression quality of a track. <p> A value of 0 stands for
+     * "high compression is important" a value of 1 for "high image quality is
+     * important". <p> Changing this value affects the encoding of video frames
+     * which are subsequently written into the track. Frames which have already
+     * been written are not changed. <p> This value has no effect on videos
+     * encoded with lossless encoders such as the PNG format. <p> The default
+     * value is 0.97.
+     *
+     * @param newValue
+     */
+    public void setCompressionQuality(int track, float newValue) {
+        out.setCompressionQuality(track, newValue);
+    }
+
+    /**
+     * Returns the time scale of the movie.
+     *
+     * @return time scale
+     * @see #setMovieTimeScale(long)
+     */
+    public long getMovieTimeScale() {
+        return out.getMovieTimeScale();
+    }
+
+    /**
+     * Returns the track duration in the movie's time scale. <p> If the track
+     * has an edit-list, the track duration is the sum of all edit durations.
+     * <p> If the track does not have an edit-list, then this method returns the
+     * media duration of the track in the movie's time scale.
+     *
+     * @param track Track index.
+     * @return track duration
+     */
+    public long getTrackDuration(int track) {
+        return out.getTrackDuration(track);
+    }
+
+
+    /**
+     * Sets the edit list for the specified track. <p> In the absence of an edit
+     * list, the presentation of the track starts immediately. An empty edit is
+     * used to offset the start time of a track. <p>
+     *
+     * @throws IllegalArgumentException If the edit list ends with an empty
+     *                                  edit.
+     */
+    public void setEditList(int track, AbstractQuickTimeStream.Edit[] editList) {
+        out.setEditList(track, editList);
+    }
 }

@@ -19,8 +19,6 @@ import java.util.Locale;
 import java.util.TreeSet;
 import java.util.zip.InflaterInputStream;
 
-import static org.monte.media.math.MathUtils.clamp;
-
 /**
  * {@code QuickTimeDeserializer}. This is an internal class of
  * QuickTimeInputStream.
@@ -1019,8 +1017,12 @@ public class QuickTimeDeserializer {
             int descriptionVersion = in.readUnsignedShort();
             int revisionLevel = in.readUnsignedShort();
             int vendor = in.readInt();
-            d.videoTemporalQuality = clamp(in.readInt() / 1024f, 0.0f, 1.0f);
-            d.videoSpatialQuality = clamp(in.readInt() / 1024f, 0.0f, 1.0f);
+            float value1 = in.readInt() / 1024f;
+
+            d.videoTemporalQuality = Math.clamp(value1, 0.0f, 1.0f);
+            float value = in.readInt() / 1024f;
+
+            d.videoSpatialQuality = Math.clamp(value, 0.0f, 1.0f);
             d.videoWidth = in.readUnsignedShort();
             d.videoHeight = in.readUnsignedShort();
             d.videoHorizontalResolution = in.readFixed16D16();

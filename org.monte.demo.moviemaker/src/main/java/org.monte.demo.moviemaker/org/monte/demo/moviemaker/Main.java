@@ -8,6 +8,7 @@ import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
 import org.monte.media.math.Rational;
 import org.monte.media.mp3.MP3AudioInputStream;
+import org.monte.media.quicktime.QuickTimeOutputStream;
 import org.monte.media.quicktime.QuickTimeWriter;
 import org.monte.media.swing.BackgroundTask;
 import org.monte.media.swing.datatransfer.FileTextFieldTransferHandler;
@@ -851,9 +852,9 @@ public class Main extends javax.swing.JFrame {
                         }
                     }
                     if (longerTrack != -1) {
-                        LinkedList<QuickTimeWriter.Edit> l = new LinkedList<>();
-                        l.add(new QuickTimeWriter.Edit(shorterDuration, 0, 1.0));       // sampleDuration, media time, media rate
-                        qtOut.setEditList(longerTrack, l.toArray(new QuickTimeWriter.Edit[l.size()]));
+                        LinkedList<QuickTimeOutputStream.Edit> l = new LinkedList<>();
+                        l.add(new QuickTimeOutputStream.Edit(shorterDuration, 0, 1.0));       // sampleDuration, media time, media rate
+                        qtOut.setEditList(longerTrack, l.toArray(new QuickTimeOutputStream.Edit[l.size()]));
                     }
                 }
                 break;
@@ -880,11 +881,11 @@ public class Main extends javax.swing.JFrame {
                         }
                     }
                     if (longerTrack != -1) {
-                        LinkedList<QuickTimeWriter.Edit> l = new LinkedList<>();
+                        LinkedList<QuickTimeOutputStream.Edit> l = new LinkedList<>();
                         for (; longerDuration > 0; longerDuration -= shorterDuration) {
-                            l.add(new QuickTimeWriter.Edit(min(shorterDuration, longerDuration), 0, 1.0));       // sampleDuration, media time, media rate
+                            l.add(new QuickTimeOutputStream.Edit(min(shorterDuration, longerDuration), 0, 1.0));       // sampleDuration, media time, media rate
                         }
-                        qtOut.setEditList(shorterTrack, l.toArray(new QuickTimeWriter.Edit[l.size()]));
+                        qtOut.setEditList(shorterTrack, l.toArray(new QuickTimeOutputStream.Edit[l.size()]));
                     }
                 }
                 break;
@@ -892,9 +893,9 @@ public class Main extends javax.swing.JFrame {
                     long d0 = qtOut.getTrackDuration(at);
                     long d1 = qtOut.getTrackDuration(vt);
                     if (d0 != d1 && d0 != 0 && d1 != 0) {
-                        LinkedList<QuickTimeWriter.Edit> l = new LinkedList<>();
-                        l.add(new QuickTimeWriter.Edit((int) d0, 0, d1 / (float) d0));       // sampleDuration, media time, media rate
-                        qtOut.setEditList(1, l.toArray(new QuickTimeWriter.Edit[l.size()]));
+                        LinkedList<QuickTimeOutputStream.Edit> l = new LinkedList<>();
+                        l.add(new QuickTimeOutputStream.Edit((int) d0, 0, d1 / (float) d0));       // sampleDuration, media time, media rate
+                        qtOut.setEditList(1, l.toArray(new QuickTimeOutputStream.Edit[l.size()]));
                     }
 
                 }

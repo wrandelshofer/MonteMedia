@@ -81,6 +81,7 @@ public class ReadImagesFromAMovieMain {
         JPanel panel = new JPanel(new BorderLayout());
         imageLabel = new JLabel();
         slider = new JSlider();
+        slider.setMinimum(0);
         panel.add(imageLabel, BorderLayout.CENTER);
         panel.add(slider, BorderLayout.SOUTH);
         frame.getContentPane().add(panel);
