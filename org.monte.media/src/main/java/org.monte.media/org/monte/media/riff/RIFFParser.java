@@ -12,7 +12,7 @@ import javax.imageio.stream.ImageInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -852,11 +852,7 @@ public class RIFFParser extends Object {
         bytes[2] = (byte) (anInt >>> 8);
         bytes[3] = (byte) (anInt >>> 0);
 
-        try {
-            return new String(bytes, "ASCII");
-        } catch (UnsupportedEncodingException e) {
-            throw new InternalError(e.getMessage());
-        }
+        return new String(bytes, StandardCharsets.US_ASCII);
     }
 
     /**

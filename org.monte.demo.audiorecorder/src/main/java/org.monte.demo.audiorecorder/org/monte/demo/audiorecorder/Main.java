@@ -28,7 +28,7 @@ import java.util.Date;
 public class Main implements Runnable {
 
     private volatile Thread worker;
-    private File file;
+    private final File file;
 
     public Main(File file) {
         this.file = file;
@@ -45,7 +45,9 @@ public class Main implements Runnable {
             Thread stopMe = worker;
             worker = null;
             try {
-                stopMe.join();
+                if (stopMe != null) {
+                    stopMe.join();
+                }
             } catch (InterruptedException ex) {
                 //ignore
             }
@@ -87,9 +89,7 @@ public class Main implements Runnable {
                 buf.sampleCount = buf.length / lineFormat.getFrameSize();
                 writer.write(0, buf);
             }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (LineUnavailableException ex) {
+        } catch (IOException | LineUnavailableException ex) {
             ex.printStackTrace();
         } finally {
             if (line != null) {

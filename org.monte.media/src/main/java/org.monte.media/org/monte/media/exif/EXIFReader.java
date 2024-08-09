@@ -37,6 +37,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -213,7 +214,7 @@ public class EXIFReader {
                     // Test whether segment starts with Exif identifier.
                     try {
                         in.read(buf, 0, 6);
-                        if (!new String(buf, 0, 6, "ASCII").equals("Exif\u0000\u0000")) {
+                        if (!new String(buf, 0, 6, StandardCharsets.US_ASCII).equals("Exif\u0000\u0000")) {
                             // the segment does not start with the double 
                             // zero-terminated string Exif. skip it.
                             continue;
@@ -232,7 +233,7 @@ public class EXIFReader {
                     // Test whether segment starts with MPF identifier.
                     try {
                         in.read(buf, 0, 4);
-                        if (!new String(buf, 0, 4, "ASCII").equals("MPF\u0000")) {
+                        if (!new String(buf, 0, 4, StandardCharsets.US_ASCII).equals("MPF\u0000")) {
                             // the segment does not start with the
                             // zero-terminated string MPF. skip it
                             continue;

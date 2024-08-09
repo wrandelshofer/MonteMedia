@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import static java.lang.Math.max;
@@ -475,7 +476,7 @@ public class AVIOutputStream extends AbstractAVIStream {
 
     /**
      * Writes an already encoded sample from a byte array into a track. <p> This
-     * method does not inspect the contents of the samples. The contents has to
+     * method does not inspect the contents of the samples. The content has to
      * match the format and dimensions of the media in this track. <p> If a
      * track contains palette changes, then all key frames must be immediately
      * preceeded by a palette change chunk. If a key frame is not preceeded by a
@@ -682,7 +683,7 @@ public class AVIOutputStream extends AbstractAVIStream {
             }
 
             if (tr.name != null) {
-                byte[] data = (tr.name + "\u0000").getBytes("ASCII");
+                byte[] data = (tr.name + "\u0000").getBytes(StandardCharsets.US_ASCII);
                 DataChunk d = new DataChunk(STRN_ID,
                         data.length);
                 ImageOutputStream dout = d.getOutputStream();

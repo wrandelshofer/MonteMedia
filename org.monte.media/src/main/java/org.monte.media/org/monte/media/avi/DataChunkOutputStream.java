@@ -10,6 +10,7 @@ import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * This output stream filter supports common data types used inside
@@ -49,7 +50,7 @@ public class DataChunkOutputStream extends FilterOutputStream {
         }
 
         try {
-            out.write(s.getBytes("ASCII"), 0, 4);
+            out.write(s.getBytes(StandardCharsets.US_ASCII), 0, 4);
             incCount(4);
         } catch (UnsupportedEncodingException e) {
             throw new InternalError(e.toString());

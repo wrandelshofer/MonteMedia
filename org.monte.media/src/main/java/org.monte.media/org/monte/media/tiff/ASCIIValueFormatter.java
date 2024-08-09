@@ -4,7 +4,7 @@
  */
 package org.monte.media.tiff;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Formats byte arrays as string.
@@ -23,11 +23,7 @@ public class ASCIIValueFormatter implements ValueFormatter {
     @Override
     public Object format(Object value) {
         if (value instanceof byte[]) {
-            try {
-                return new String((byte[]) value, "ASCII");
-            } catch (UnsupportedEncodingException ex) {
-                throw new InternalError("ASCII not supported");
-            }
+            return new String((byte[]) value, StandardCharsets.US_ASCII);
         }
         return value;
     }

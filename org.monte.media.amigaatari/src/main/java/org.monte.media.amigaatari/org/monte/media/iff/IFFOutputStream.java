@@ -8,6 +8,7 @@ import javax.imageio.stream.ImageOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Stack;
 
 /**
@@ -280,7 +281,7 @@ public class IFFOutputStream extends OutputStream {
         }
 
         try {
-            out.write(s.getBytes("ASCII"), 0, 4);
+            out.write(s.getBytes(StandardCharsets.US_ASCII), 0, 4);
         } catch (UnsupportedEncodingException e) {
             throw new InternalError(e.toString());
         }

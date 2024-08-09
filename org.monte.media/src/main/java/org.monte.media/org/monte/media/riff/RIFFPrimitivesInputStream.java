@@ -10,6 +10,7 @@ import java.io.EOFException;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * A RIFF primitives input stream lets an application read primitive data
@@ -113,7 +114,7 @@ public class RIFFPrimitivesInputStream extends FilterInputStream {
     public String readFourCCString()
             throws IOException {
         readFully(byteBuffer, 0, 4);
-        return new String(byteBuffer, 0, 4, "ASCII");
+        return new String(byteBuffer, 0, 4, StandardCharsets.US_ASCII);
     }
 
     /**

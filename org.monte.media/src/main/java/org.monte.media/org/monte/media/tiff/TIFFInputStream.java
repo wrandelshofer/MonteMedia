@@ -11,6 +11,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Reads a TIFF file.
@@ -154,7 +155,7 @@ public class TIFFInputStream extends InputStream {
         if (buf[(int) length - 1] != 0) {
             throw new IOException("String does not end with NUL byte.");
         }
-        return new String(buf, 0, (int) length - 1, "ASCII");
+        return new String(buf, 0, (int) length - 1, StandardCharsets.US_ASCII);
     }
 
     private void readFully(byte b[]) throws IOException {

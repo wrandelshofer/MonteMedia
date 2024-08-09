@@ -21,6 +21,7 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import static org.monte.media.av.FormatKeys.EncodingKey;
@@ -474,7 +475,7 @@ public class AVIInputStream extends AbstractAVIStream {
      * @throws IOException
      */
     private void readSTRN(Track tr, byte[] data) throws IOException {
-        tr.name = new String(data, 0, data.length - 1, "ASCII");
+        tr.name = new String(data, 0, data.length - 1, StandardCharsets.US_ASCII);
     }
 
     /**
