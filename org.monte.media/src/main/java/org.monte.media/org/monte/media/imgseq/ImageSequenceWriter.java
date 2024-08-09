@@ -43,7 +43,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
  */
 public class ImageSequenceWriter implements MovieWriter {
 
-    private Format fileFormat = new Format(MediaTypeKey, MediaType.FILE);
+    private final Format fileFormat = new Format(MediaTypeKey, MediaType.FILE);
 
     @Override
     public int addTrack(Format format) throws IOException {
@@ -65,7 +65,7 @@ public class ImageSequenceWriter implements MovieWriter {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    private class VideoTrack {
+    private static class VideoTrack {
 
         Format videoFormat;
         File dir;
@@ -87,7 +87,7 @@ public class ImageSequenceWriter implements MovieWriter {
         }
     }
 
-    private ArrayList<VideoTrack> tracks = new ArrayList<VideoTrack>();
+    private final ArrayList<VideoTrack> tracks = new ArrayList<VideoTrack>();
 
     /**
      * Adds a video track.
@@ -151,7 +151,7 @@ public class ImageSequenceWriter implements MovieWriter {
     public void write(int track, Buffer buf) throws IOException {
         VideoTrack t = tracks.get(track);
 
-        // FIXME - Meybe we should not have built-in support for some data types?
+        // FIXME - Maybe we should not have built-in support for some data types?
         if (buf.data instanceof BufferedImage) {
             if (t.outputBuffer == null) {
                 t.outputBuffer = new Buffer();
@@ -166,11 +166,8 @@ public class ImageSequenceWriter implements MovieWriter {
         File file = new File(t.dir, String.format(t.nameFormat, t.count + 1));
 
         if (buf.data instanceof byte[]) {
-            FileOutputStream out = new FileOutputStream(file);
-            try {
+            try (FileOutputStream out = new FileOutputStream(file)) {
                 out.write((byte[]) buf.data, buf.offset, buf.length);
-            } finally {
-                out.close();
             }
         } else if (buf.data instanceof File) {
             IOStreams.copy((File) buf.data, file);
@@ -187,11 +184,8 @@ public class ImageSequenceWriter implements MovieWriter {
 
         File file = new File(t.dir, String.format(t.nameFormat, t.count + 1));
 
-        FileOutputStream out = new FileOutputStream(file);
-        try {
+        try (FileOutputStream out = new FileOutputStream(file)) {
             out.write(data, off, len);
-        } finally {
-            out.close();
         }
 
 

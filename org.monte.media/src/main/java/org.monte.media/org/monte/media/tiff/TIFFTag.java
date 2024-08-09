@@ -39,11 +39,11 @@ public class TIFFTag {
     public final static int SRATIONAL_MASK = 1 << IFDDataType.SRATIONAL.getTypeNumber();
     public final static int UNDEFINED_MASK = 1 << IFDDataType.UNDEFINED.getTypeNumber();
     public final static int ALL_MASK = -1;
-    private String name;
-    private int number;
+    private final String name;
+    private final int number;
     private int dataTypes;
     private TagSet tagSet;
-    private ValueFormatter formatter;
+    private final ValueFormatter formatter;
 
     /**
      * Constructs a TIFFTag with a given name, tag number, set of legal data types,

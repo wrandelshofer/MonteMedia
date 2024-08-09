@@ -33,7 +33,7 @@ import java.io.InputStream;
  * </dl>
  */
 public class CCDataInputStream extends InputStream {
-    private InputStream in;
+    private final InputStream in;
     /**
      * Number of remaining triplets times 2.
      * <p>

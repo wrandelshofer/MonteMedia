@@ -15,11 +15,11 @@ public class TIFFDirectory extends TIFFNode {
     /**
      * The tag set of this directory.
      */
-    private TagSet tagSet;
+    private final TagSet tagSet;
     /**
      * The index of this directory.
      */
-    private int index;
+    private final int index;
 
 
     /**
@@ -136,10 +136,11 @@ public class TIFFDirectory extends TIFFNode {
     }
 
     /**
-     * Returns a TIFFField with the specified tag. If a child node with
+     * Returns a TIFFField with the specified tag if a child node with
      * this tag exists.
      *
-     * @param tag
+     * @param tag The tag to search for.
+     * @return The TIFFField with the specified tag, or null if no such field exists.
      */
     public TIFFField getField(TIFFTag tag) {
         for (TIFFNode node : getChildren()) {
@@ -153,10 +154,11 @@ public class TIFFDirectory extends TIFFNode {
     }
 
     /**
-     * Returns the value of the TIFFField with the specified tag. If a child node with
+     * Returns the value of the TIFFField with the specified tag if a child node with
      * this tag exists.
      *
-     * @param tag
+     * @param tag The tag to search for.
+     * @return The value of the TIFFField with the specified tag, or null if no such field exists.
      */
     public Object getData(TIFFTag tag) {
         TIFFField field = getField(tag);

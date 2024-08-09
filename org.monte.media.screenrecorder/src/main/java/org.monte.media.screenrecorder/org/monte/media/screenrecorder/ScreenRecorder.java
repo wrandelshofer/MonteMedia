@@ -12,7 +12,6 @@ import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.av.MovieWriter;
 import org.monte.media.av.Registry;
-import org.monte.media.av.codec.audio.AudioFormatKeys;
 import org.monte.media.av.codec.video.ScaleImageCodec;
 import org.monte.media.avi.AVIWriter;
 import org.monte.media.beans.AbstractStateModel;
@@ -21,14 +20,9 @@ import org.monte.media.image.Images;
 import org.monte.media.math.Rational;
 import org.monte.media.quicktime.QuickTimeWriter;
 
-import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.BooleanControl;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.Mixer;
-import javax.sound.sampled.TargetDataLine;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.AWTEventListener;
@@ -43,7 +37,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
@@ -63,8 +56,6 @@ import static org.monte.media.av.codec.audio.AudioFormatKeys.ENCODING_QUICKTIME_
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleRateKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleSizeInBitsKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
-import static org.monte.media.av.codec.audio.AudioFormatKeys.SilenceBugKey;
-import static org.monte.media.av.codec.audio.AudioFormatKeys.fromAudioFormat;
 import static org.monte.media.av.codec.video.VideoFormatKeys.COMPRESSOR_NAME_QUICKTIME_ANIMATION;
 import static org.monte.media.av.codec.video.VideoFormatKeys.CompressorNameKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
@@ -86,36 +77,18 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
  * <p>
  * This recorder uses four threads. Three capture threads for screen, mouse
  * cursor and audio, and one output thread for the movie writer.
- * <p>
- * FIXME - This class is a horrible mess.
  *
  * @author Werner Randelshofer
  */
 public class ScreenRecorder extends AbstractStateModel {
 
-    public enum State {
-
-        DONE, FAILED, RECORDING, FAILING
-    }
-
     private State state = State.DONE;
     private Throwable stateMessage = null;
-    /**
-     * "Encoding" for black mouse cursor.
-     */
-    public final static String ENCODING_BLACK_CURSOR = "black";
-    /**
-     * "Encoding" for white mouse cursor.
-     */
-    public final static String ENCODING_WHITE_CURSOR = "white";
-    /**
-     * "Encoding" for yellow mouse cursor.
-     */
-    public final static String ENCODING_YELLOW_CURSOR = "yellow";
+
     /**
      * The file format. "AVI" or "QuickTime"
      */
-    private Format fileFormat;
+    private final Format fileCodecFormat;
     /**
      * The input video format for cursor capture. "black" or "white".
      */
@@ -123,15 +96,15 @@ public class ScreenRecorder extends AbstractStateModel {
     /**
      * The input video format for screen capture.
      */
-    private Format screenFormat;
+    private final Format screenFormat;
     /**
      * The input and output format for audio capture.
      */
-    private Format audioFormat;
+    private final Format audioFormat;
     /**
      * The bounds of the graphics device that we capture with AWT Robot.
      */
-    private Rectangle captureArea;
+    private final Rectangle captureArea;
     /**
      * The writer for the movie file.
      */
@@ -177,10 +150,7 @@ public class ScreenRecorder extends AbstractStateModel {
      * Hot spot of the mouse cursor in cursorImg.
      */
     private Point cursorOffset;
-    /**
-     * Object for thread synchronization.
-     */
-    private final Object sync = new Object();
+
     private ArrayBlockingQueue<Buffer> writerQueue;
     /**
      * This codec encodes a video frame.
@@ -193,19 +163,15 @@ public class ScreenRecorder extends AbstractStateModel {
      */
     private Rational outputTime;
     private Rational ffrDuration;
-    private ArrayList<File> recordedFiles;
-    /**
-     * Id of the video track.
-     */
-    protected int videoTrack = 0;
-    /**
-     * Id of the audio track.
-     */
-    protected int audioTrack = 1;
+    private final ArrayList<File> recordedFiles = new ArrayList<>();
+
+    protected int videoTrackId = 0;
+
+    protected int audioTrackId = 1;
     /**
      * The device from which screen captures are generated.
      */
-    private GraphicsDevice captureDevice;
+    private final GraphicsDevice captureDevice;
     private AudioGrabber audioGrabber;
     private ScreenGrabber screenGrabber;
     protected MouseGrabber mouseGrabber;
@@ -231,168 +197,162 @@ public class ScreenRecorder extends AbstractStateModel {
      */
     public ScreenRecorder(GraphicsConfiguration cfg) throws IOException, AWTException {
         this(cfg, null,
-                // the file format
-                new Format(MediaTypeKey, MediaType.FILE,
-                        MimeTypeKey, MIME_QUICKTIME),
-                //
-                // the output format for screen capture
-                new Format(MediaTypeKey, MediaType.VIDEO,
-                        EncodingKey, ENCODING_QUICKTIME_ANIMATION,
-                        CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_ANIMATION,
-                        DepthKey, 24, FrameRateKey, new Rational(15, 1)),
-                //
-                // the output format for mouse capture 
-                new Format(MediaTypeKey, MediaType.VIDEO,
-                        EncodingKey, ENCODING_BLACK_CURSOR,
+                new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_QUICKTIME),
+                new Format(MediaTypeKey, MediaType.VIDEO, EncodingKey, ENCODING_QUICKTIME_ANIMATION, CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_ANIMATION, DepthKey, 24,
+                        FrameRateKey, new Rational(15, 1)),
+                new Format(MediaTypeKey, MediaType.VIDEO, EncodingKey, MouseConfigs.ENCODING_BLACK_CURSOR,
                         FrameRateKey, new Rational(30, 1)),
-                //
-                // the output format for audio capture 
-                new Format(MediaTypeKey, MediaType.AUDIO,
-                        EncodingKey, ENCODING_QUICKTIME_TWOS_PCM,
-                        FrameRateKey, new Rational(48000, 1),
-                        SampleSizeInBitsKey, 16,
-                        ChannelsKey, 2, SampleRateKey, new Rational(48000, 1),
-                        SignedKey, true, ByteOrderKey, ByteOrder.BIG_ENDIAN));
+                new Format(MediaTypeKey, MediaType.AUDIO, EncodingKey, ENCODING_QUICKTIME_TWOS_PCM,
+                        FrameRateKey, new Rational(48000, 1), SampleSizeInBitsKey, 16, ChannelsKey, 2,
+                        SampleRateKey, new Rational(48000, 1), SignedKey, true, ByteOrderKey, ByteOrder.BIG_ENDIAN));
     }
 
     /**
-     * Creates a screen recorder.
+     * Creates a screen recorder with custom formats.
      *
-     * @param cfg          Graphics configuration of the capture screen.
-     * @param fileFormat   The file format "AVI" or "QuickTime".
-     * @param screenFormat The video format for screen capture.
-     * @param mouseFormat  The video format for mouse capture. The
-     *                     {@code EncodingKey} must be ENCODING_BLACK_CURSOR or
-     *                     ENCODING_WHITE_CURSOR. The {@code SampleRateKey} can be independent from
-     *                     the {@code screenFormat}. Specify null if you don't want to capture the
-     *                     mouse cursor.
-     * @param audioFormat  The audio format for audio capture. Specify null if
-     *                     you don't want audio capture.
+     * @param cfg             Graphics configuration of the capture screen.
+     * @param fileCodecFormat The file format "AVI" or "QuickTime".
+     * @param screenFormat    The video format for screen capture.
+     * @param mouseFormat     The video format for mouse capture.
+     * @param audioFormat     The audio format for audio capture.
      */
-    public ScreenRecorder(GraphicsConfiguration cfg,
-                          Format fileFormat,
-                          Format screenFormat,
-                          Format mouseFormat,
-                          Format audioFormat) throws IOException, AWTException {
-        this(cfg, null, fileFormat, screenFormat, mouseFormat, audioFormat);
+    public ScreenRecorder(GraphicsConfiguration cfg, Format fileCodecFormat, Format screenFormat,
+                          Format mouseFormat, Format audioFormat) throws IOException, AWTException {
+        this(cfg, null, fileCodecFormat, screenFormat, mouseFormat, audioFormat);
     }
 
     /**
-     * Creates a screen recorder.
+     * Creates a screen recorder with a defined capture area.
      *
-     * @param cfg          Graphics configuration of the capture screen.
-     * @param captureArea  Defines the area of the screen that shall be captured.
-     * @param fileFormat   The file format "AVI" or "QuickTime".
-     * @param screenFormat The video format for screen capture.
-     * @param mouseFormat  The video format for mouse capture. The
-     *                     {@code EncodingKey} must be ENCODING_BLACK_CURSOR or
-     *                     ENCODING_WHITE_CURSOR. The {@code SampleRateKey} can be independent from
-     *                     the {@code screenFormat}. Specify null if you don't want to capture the
-     *                     mouse cursor.
-     * @param audioFormat  The audio format for audio capture. Specify null if
-     *                     you don't want audio capture.
+     * @param cfg             Graphics configuration of the capture screen.
+     * @param captureArea     Defines the area of the screen that shall be captured.
+     * @param fileCodecFormat The file format "AVI" or "QuickTime".
+     * @param screenFormat    The video format for screen capture.
+     * @param mouseFormat     The video format for mouse capture.
+     * @param audioFormat     The audio format for audio capture.
      */
-    public ScreenRecorder(GraphicsConfiguration cfg,
-                          Rectangle captureArea,
-                          Format fileFormat,
-                          Format screenFormat,
-                          Format mouseFormat,
-                          Format audioFormat) throws IOException, AWTException {
-        this(cfg, null, fileFormat, screenFormat, mouseFormat, audioFormat, null);
+    public ScreenRecorder(GraphicsConfiguration cfg, Rectangle captureArea, Format fileCodecFormat,
+                          Format screenFormat, Format mouseFormat, Format audioFormat)
+            throws IOException, AWTException {
+        this(cfg, captureArea, fileCodecFormat, screenFormat, mouseFormat, audioFormat, null);
     }
 
     /**
-     * Creates a screen recorder.
+     * Creates a screen recorder with a defined capture area and movie folder.
      *
-     * @param cfg          Graphics configuration of the capture screen.
-     * @param captureArea  Defines the area of the screen that shall be captured.
-     * @param fileFormat   The file format "AVI" or "QuickTime".
-     * @param screenFormat The video format for screen capture.
-     * @param mouseFormat  The video format for mouse capture. The
-     *                     {@code EncodingKey} must be ENCODING_BLACK_CURSOR or
-     *                     ENCODING_WHITE_CURSOR. The {@code SampleRateKey} can be independent from
-     *                     the {@code screenFormat}. Specify null if you don't want to capture the
-     *                     mouse cursor.
-     * @param audioFormat  The audio format for audio capture. Specify null if
-     *                     you don't want audio capture.
-     * @param movieFolder  Where to store the movie
+     * @param cfg             Graphics configuration of the capture screen.
+     * @param captureArea     Defines the area of the screen that shall be captured.
+     * @param fileCodecFormat The file format "AVI" or "QuickTime".
+     * @param screenFormat    The video format for screen capture.
+     * @param mouseFormat     The video format for mouse capture.
+     * @param audioFormat     The audio format for audio capture.
+     * @param movieFolder     Where to store the movie.
      */
-    public ScreenRecorder(GraphicsConfiguration cfg,
-                          Rectangle captureArea,
-                          Format fileFormat,
-                          Format screenFormat,
-                          Format mouseFormat,
-                          Format audioFormat,
+    public ScreenRecorder(GraphicsConfiguration cfg, Rectangle captureArea, Format fileCodecFormat,
+                          Format screenFormat, Format mouseFormat, Format audioFormat,
                           File movieFolder) throws IOException, AWTException {
 
-        this.fileFormat = fileFormat;
+        this.fileCodecFormat = fileCodecFormat;
         this.screenFormat = screenFormat;
-        this.mouseFormat = mouseFormat;
-        if (this.mouseFormat == null) {
-            this.mouseFormat = new Format(FrameRateKey, new Rational(0, 0), EncodingKey, ENCODING_BLACK_CURSOR);
-        }
+        this.mouseFormat = mouseFormat != null ? mouseFormat : new Format(FrameRateKey, new Rational(0, 0), EncodingKey, MouseConfigs.ENCODING_BLACK_CURSOR);
         this.audioFormat = audioFormat;
-        this.recordedFiles = new ArrayList<File>();
+
         this.captureDevice = cfg.getDevice();
-        this.captureArea = (captureArea == null) ? cfg.getBounds() : captureArea;
+        this.captureArea = captureArea != null ? captureArea : cfg.getBounds();
+        initializeMouseCapture(mouseFormat);
+        this.movieFolder = initializeMovieFolder(movieFolder);
+    }
+
+    private void initializeMouseCapture(Format mouseFormat) throws IOException {
         if (mouseFormat != null && mouseFormat.get(FrameRateKey).intValue() > 0) {
-            mouseCaptures = new ArrayBlockingQueue<Buffer>(mouseFormat.get(FrameRateKey).intValue() * 2);
-            if (this.mouseFormat.get(EncodingKey).equals(ENCODING_BLACK_CURSOR)) {
-                cursorImg = Images.toBufferedImage(Images.createImage(ScreenRecorder.class, "images/Cursor.black.png"));
-                cursorImgPressed = Images.toBufferedImage(Images.createImage(ScreenRecorder.class, "images/Cursor.black.pressed.png"));
-            } else if (this.mouseFormat.get(EncodingKey).equals(ENCODING_YELLOW_CURSOR)) {
-                cursorImg = Images.toBufferedImage(Images.createImage(ScreenRecorder.class, "images/Cursor.yellow.png"));
-                cursorImgPressed = Images.toBufferedImage(Images.createImage(ScreenRecorder.class, "images/Cursor.yellow.pressed.png"));
-            } else {
-                cursorImg = Images.toBufferedImage(Images.createImage(ScreenRecorder.class, "images/Cursor.white.png"));
-                cursorImgPressed = Images.toBufferedImage(Images.createImage(ScreenRecorder.class, "images/Cursor.white.pressed.png"));
+            mouseCaptures = new ArrayBlockingQueue<>(mouseFormat.get(FrameRateKey).intValue() * 2);
+            switch (mouseFormat.get(EncodingKey)) {
+                case MouseConfigs.ENCODING_BLACK_CURSOR:
+                    cursorImg = loadCursorImage("Cursor.black.png");
+                    cursorImgPressed = loadCursorImage("Cursor.black.pressed.png");
+                    break;
+                case MouseConfigs.ENCODING_YELLOW_CURSOR:
+                    cursorImg = loadCursorImage("Cursor.yellow.png");
+                    cursorImgPressed = loadCursorImage("Cursor.yellow.pressed.png");
+                    break;
+                default:
+                    cursorImg = loadCursorImage("Cursor.white.png");
+                    cursorImgPressed = loadCursorImage("Cursor.white.pressed.png");
+                    break;
             }
             cursorOffset = new Point(cursorImg.getWidth() / -2, cursorImg.getHeight() / -2);
         }
-        this.movieFolder = movieFolder;
-        if (this.movieFolder == null) {
-            if (System.getProperty("os.name").toLowerCase().startsWith("windows")) {
-                this.movieFolder = new File(System.getProperty("user.home") + File.separator + "Videos");
-            } else {
-                this.movieFolder = new File(System.getProperty("user.home") + File.separator + "Movies");
-            }
-        }
+    }
 
+    public Format getScreenFormat() {
+        return screenFormat;
+    }
+
+    public Point getCursorOffset() {
+        return cursorOffset;
+    }
+
+    public BufferedImage getCursorImgPressed() {
+        return cursorImgPressed;
+    }
+
+    public BufferedImage getCursorImg() {
+        return cursorImg;
+    }
+
+    public ArrayBlockingQueue<Buffer> getMouseCaptures() {
+        return mouseCaptures;
+    }
+
+    public GraphicsDevice getCaptureDevice() {
+        return captureDevice;
+    }
+
+    public Rectangle getCaptureArea() {
+        return captureArea;
+    }
+
+
+    private BufferedImage loadCursorImage(String imagePath) throws IOException {
+        return Images.toBufferedImage(Images.createImage(ScreenRecorder.class, "images/" + imagePath));
+    }
+
+    private File initializeMovieFolder(File movieFolder) {
+        if (movieFolder != null) {
+            return movieFolder;
+        }
+        String userHome = System.getProperty("user.home");
+        String osName = System.getProperty("os.name").toLowerCase();
+        String folderName = osName.startsWith("windows") ? "Videos" : "Movies";
+        return new File(userHome + File.separator + folderName);
     }
 
     protected MovieWriter createMovieWriter() throws IOException {
-        File f = createMovieFile(fileFormat);
+        File f = createMovieFile(fileCodecFormat);
         recordedFiles.add(f);
 
-        MovieWriter mw = w = Registry.getInstance().getWriter(fileFormat, f);
+        MovieWriter mw = w = Registry.getInstance().getWriter(fileCodecFormat, f);
         if (w == null) {
-            throw new IOException("Error no writer found for file format: " + fileFormat + ".");
+            throw new IOException("Error no writer found for file format: " + fileCodecFormat + ".");
         }
 
         // Create the video encoder
         Rational videoRate = Rational.max(screenFormat.get(FrameRateKey), mouseFormat.get(FrameRateKey));
         ffrDuration = videoRate.inverse();
-        Format videoInputFormat = screenFormat.prepend(MediaTypeKey, MediaType.VIDEO,
-                EncodingKey, ENCODING_BUFFERED_IMAGE,
-                WidthKey, captureArea.width,
-                HeightKey, captureArea.height,
-                FrameRateKey, videoRate);
-        Format videoOutputFormat = screenFormat.prepend(
-                        FrameRateKey, videoRate,
-                        MimeTypeKey, fileFormat.get(MimeTypeKey))//
-                //
-                .append(//
-                        WidthKey, captureArea.width,
-                        HeightKey, captureArea.height);
+        Format videoInputFormat = screenFormat
+                .prepend(MediaTypeKey, MediaType.VIDEO, EncodingKey, ENCODING_BUFFERED_IMAGE, WidthKey, captureArea.width, HeightKey, captureArea.height, FrameRateKey, videoRate);
+        Format videoOutputFormat = screenFormat
+                .prepend(FrameRateKey, videoRate, MimeTypeKey, fileCodecFormat.get(MimeTypeKey))
+                .append(WidthKey, captureArea.width, HeightKey, captureArea.height);
 
-        videoTrack = w.addTrack(videoOutputFormat);
+        videoTrackId = w.addTrack(videoOutputFormat);
         if (audioFormat != null) {
-            audioTrack = w.addTrack(audioFormat);
+            audioTrackId = w.addTrack(audioFormat);
         }
 
-        Codec encoder = Registry.getInstance().getEncoder(w.getFormat(videoTrack));
+        Codec encoder = Registry.getInstance().getEncoder(w.getFormat(videoTrackId));
         if (encoder == null) {
-            throw new IOException("No encoder for format " + w.getFormat(videoTrack));
+            throw new IOException("No encoder for format " + w.getFormat(videoTrackId));
         }
         frameEncoder = encoder;
         frameEncoder.setInputFormat(videoInputFormat);
@@ -404,8 +364,7 @@ public class ScreenRecorder extends AbstractStateModel {
         // If the capture area does not have the same dimensions as the
         // video format, create a codec chain which scales the image before
         // performing the frame encoding.
-        if (!videoInputFormat.intersectKeys(WidthKey, HeightKey).matches(
-                videoOutputFormat.intersectKeys(WidthKey, HeightKey))) {
+        if (!videoInputFormat.intersectKeys(WidthKey, HeightKey).matches(videoOutputFormat.intersectKeys(WidthKey, HeightKey))) {
             ScaleImageCodec sic = new ScaleImageCodec();
             sic.setInputFormat(videoInputFormat);
             sic.setOutputFormat(videoOutputFormat.intersectKeys(WidthKey, HeightKey).append(videoInputFormat));
@@ -416,7 +375,7 @@ public class ScreenRecorder extends AbstractStateModel {
         if (screenFormat.get(DepthKey) == 8) {
             if (w instanceof AVIWriter) {
                 AVIWriter aviw = (AVIWriter) w;
-                aviw.setPalette(videoTrack, Colors.createMacColors());
+                aviw.setPalette(videoTrackId, Colors.createMacColors());
             } else if (w instanceof QuickTimeWriter) {
                 QuickTimeWriter qtw = (QuickTimeWriter) w;
                 // do not set palette due to a bug
@@ -444,9 +403,7 @@ public class ScreenRecorder extends AbstractStateModel {
      * You can override this method, if you would like to create a movie file at
      * a different location.
      *
-     * @param fileFormat
      * @return the file
-     * @throws IOException
      */
     protected File createMovieFile(Format fileFormat) throws IOException {
         if (!movieFolder.exists()) {
@@ -457,9 +414,7 @@ public class ScreenRecorder extends AbstractStateModel {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd 'at' HH.mm.ss");
 
-        File f = new File(movieFolder,//
-                "ScreenRecording " + dateFormat.format(new Date()) + "." + Registry.getInstance().getExtension(fileFormat));
-        return f;
+        return new File(movieFolder, "ScreenRecording " + dateFormat.format(new Date()) + "." + Registry.getInstance().getExtension(fileFormat));
     }
 
     /**
@@ -568,233 +523,6 @@ public class ScreenRecorder extends AbstractStateModel {
         }
     }
 
-    private static class ScreenGrabber implements Runnable {
-
-        /**
-         * Previously draw mouse location. This is used to have the last mouse
-         * location at hand, when a new screen capture has been created, but the
-         * mouse has not been moved.
-         */
-        private Point prevDrawnMouseLocation = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        private boolean prevMousePressed = false;
-        /**
-         * Holds the screen capture made with AWT Robot.
-         */
-        private BufferedImage screenCapture;
-        private ScreenRecorder recorder;
-        private ScheduledThreadPoolExecutor screenTimer;
-        /**
-         * The AWT Robot which we use for capturing the screen.
-         */
-        private Robot robot;
-        private Rectangle captureArea;
-        /**
-         * Holds the composed image (screen capture and super-imposed mouse
-         * cursor). This is the image that is written into the video track of
-         * the file.
-         */
-        private BufferedImage videoImg;
-        /**
-         * Graphics object for drawing into {@code videoImg}.
-         */
-        private Graphics2D videoGraphics;
-        private final Format mouseFormat;
-        /**
-         * Holds the mouse captures made with {@code MouseInfo}.
-         */
-        private ArrayBlockingQueue<Buffer> mouseCaptures;
-        /**
-         * The time the previous screen frame was captured.
-         */
-        private Rational prevScreenCaptureTime;
-        private final Object sync;
-        private BufferedImage cursorImg, cursorImgPressed;
-        private Point cursorOffset;
-        private int videoTrack;
-        private long startTime;
-        private volatile long stopTime = Long.MAX_VALUE;
-        private ScheduledFuture<?> future;
-        private long sequenceNumber;
-
-        public void setFuture(ScheduledFuture<?> future) {
-            this.future = future;
-        }
-
-        public synchronized void setStopTime(long newValue) {
-            this.stopTime = newValue;
-        }
-
-        public synchronized long getStopTime() {
-            return this.stopTime;
-        }
-
-        public ScreenGrabber(ScreenRecorder recorder, long startTime) throws AWTException, IOException {
-            this.recorder = recorder;
-            this.captureArea = recorder.captureArea;
-            this.robot = new Robot(recorder.captureDevice);
-            this.mouseFormat = recorder.mouseFormat;
-            this.mouseCaptures = recorder.mouseCaptures;
-            this.sync = recorder.sync;
-            this.cursorImg = recorder.cursorImg;
-            this.cursorImgPressed = recorder.cursorImgPressed;
-            this.cursorOffset = recorder.cursorOffset;
-            this.videoTrack = recorder.videoTrack;
-            this.prevScreenCaptureTime = new Rational(startTime, 1000);
-            this.startTime = startTime;
-
-            Format screenFormat = recorder.screenFormat;
-            if (screenFormat.get(DepthKey, 24) == 24) {
-                videoImg = new BufferedImage(this.captureArea.width, this.captureArea.height, BufferedImage.TYPE_INT_RGB);
-            } else if (screenFormat.get(DepthKey) == 16) {
-                videoImg = new BufferedImage(this.captureArea.width, this.captureArea.height, BufferedImage.TYPE_USHORT_555_RGB);
-            } else if (screenFormat.get(DepthKey) == 8) {
-                videoImg = new BufferedImage(this.captureArea.width, this.captureArea.height, BufferedImage.TYPE_BYTE_INDEXED, Colors.createMacColors());
-            } else {
-                throw new IOException("Unsupported color depth " + screenFormat.get(DepthKey));
-            }
-            videoGraphics = videoImg.createGraphics();
-            videoGraphics.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_DISABLE);
-            videoGraphics.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_SPEED);
-            videoGraphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
-        }
-
-        @Override
-        public void run() {
-            try {
-                grabScreen();
-            } catch (Throwable ex) {
-                ex.printStackTrace();
-                screenTimer.shutdown();
-                recorder.recordingFailed(ex);
-            }
-        }
-
-        /**
-         * Grabs a screen, generates video images with pending mouse captures
-         * and writes them into the movie file.
-         */
-        private void grabScreen() throws IOException, InterruptedException {
-            // Capture the screen
-            BufferedImage previousScreenCapture = screenCapture;
-            long timeBeforeCapture = System.currentTimeMillis();
-            try {
-                screenCapture = robot.createScreenCapture(captureArea);
-            } catch (IllegalMonitorStateException e) {
-                //IOException ioe= new IOException("Could not grab screen");
-                //ioe.initCause(e);
-                //throw ioe;
-                // Screen capture failed due to a synchronization error
-                return;
-            }
-            long timeAfterCapture = System.currentTimeMillis();
-            if (previousScreenCapture == null) {
-                previousScreenCapture = screenCapture;
-            }
-            videoGraphics.drawImage(previousScreenCapture, 0, 0, null);
-
-            Buffer buf = new Buffer();
-            buf.format = new Format(MediaTypeKey, MediaType.VIDEO, EncodingKey, ENCODING_BUFFERED_IMAGE);
-            // Generate video frames with mouse cursor painted on them
-            boolean hasMouseCapture = false;
-            if (mouseFormat != null && mouseFormat.get(FrameRateKey).intValue() > 0) {
-                while (!mouseCaptures.isEmpty() && mouseCaptures.peek().timeStamp.compareTo(new Rational(timeAfterCapture, 1000)) < 0) {
-                    Buffer mouseCapture = mouseCaptures.poll();
-                    if (mouseCapture.timeStamp.compareTo(prevScreenCaptureTime) > 0) {
-                        if (mouseCapture.timeStamp.compareTo(new Rational(timeBeforeCapture, 1000)) < 0) {
-                            previousScreenCapture = screenCapture;
-                            videoGraphics.drawImage(previousScreenCapture, 0, 0, null);
-                        }
-
-                        Point mcp = (Point) mouseCapture.data;
-                        prevMousePressed = (Boolean) mouseCapture.header;
-                        prevDrawnMouseLocation.setLocation(mcp.x - captureArea.x, mcp.y - captureArea.y);
-                        Point p = prevDrawnMouseLocation;
-
-                        long localStopTime = getStopTime();
-                        if (mouseCapture.timeStamp.compareTo(new Rational(localStopTime, 1000)) > 0) {
-                            break;
-                        }
-                        {
-                            hasMouseCapture = true;
-
-                            // draw cursor
-                            if (prevMousePressed) {
-                                videoGraphics.drawImage(cursorImgPressed, p.x + cursorOffset.x, p.y + cursorOffset.y, null);
-                            } else {
-                                videoGraphics.drawImage(cursorImg, p.x + cursorOffset.x, p.y + cursorOffset.y, null);
-                            }
-                            buf.clearFlags();
-                            buf.data = videoImg;
-                            buf.sampleDuration = mouseCapture.timeStamp.subtract(prevScreenCaptureTime);
-                            buf.timeStamp = prevScreenCaptureTime.subtract(new Rational(startTime, 1000));
-                            buf.track = videoTrack;
-                            buf.sequenceNumber = sequenceNumber++;
-
-                            // Fudge mouse position into the header
-                            buf.header = p.x == Integer.MAX_VALUE ? null : p;
-                            recorder.write(buf);
-                            prevScreenCaptureTime = mouseCapture.timeStamp;
-
-                            // erase cursor
-                            videoGraphics.drawImage(previousScreenCapture, //
-                                    p.x + cursorOffset.x, p.y + cursorOffset.y,//
-                                    p.x + cursorOffset.x + cursorImg.getWidth() - 1, p.y + cursorOffset.y + cursorImg.getHeight() - 1,//
-                                    p.x + cursorOffset.x, p.y + cursorOffset.y,//
-                                    p.x + cursorOffset.x + cursorImg.getWidth() - 1, p.y + cursorOffset.y + cursorImg.getHeight() - 1,//
-                                    null);
-                        }
-
-                    }
-                }
-
-                if (!hasMouseCapture && prevScreenCaptureTime.compareTo(new Rational(getStopTime(), 1000)) < 0) {
-                    Point p = prevDrawnMouseLocation;
-                    if (p != null) {
-                        if (prevMousePressed) {
-                            videoGraphics.drawImage(cursorImgPressed, p.x + cursorOffset.x, p.y + cursorOffset.y, null);
-                        } else {
-                            videoGraphics.drawImage(cursorImg, p.x + cursorOffset.x, p.y + cursorOffset.y, null);
-                        }
-                    }
-
-                    buf.data = videoImg;
-                    buf.sampleDuration = new Rational(timeAfterCapture, 1000).subtract(prevScreenCaptureTime);
-                    buf.timeStamp = prevScreenCaptureTime.subtract(new Rational(startTime, 1000));
-                    buf.track = videoTrack;
-                    buf.sequenceNumber = sequenceNumber++;
-                    buf.header = p.x == Integer.MAX_VALUE ? null : p;
-                    recorder.write(buf);
-                    prevScreenCaptureTime = new Rational(timeAfterCapture, 1000);
-                    if (p != null) {//erase cursor
-                        videoGraphics.drawImage(previousScreenCapture, //
-                                p.x + cursorOffset.x, p.y + cursorOffset.y,//
-                                p.x + cursorOffset.x + cursorImg.getWidth() - 1, p.y + cursorOffset.y + cursorImg.getHeight() - 1,//
-                                p.x + cursorOffset.x, p.y + cursorOffset.y,//
-                                p.x + cursorOffset.x + cursorImg.getWidth() - 1, p.y + cursorOffset.y + cursorImg.getHeight() - 1,//
-                                null);
-                    }
-                }
-            } else if (prevScreenCaptureTime.compareTo(new Rational(getStopTime(), 1000)) < 0) {
-                buf.data = videoImg;
-                buf.sampleDuration = new Rational(timeAfterCapture, 1000).subtract(prevScreenCaptureTime);
-                buf.timeStamp = prevScreenCaptureTime.subtract(new Rational(startTime, 1000));
-                buf.track = videoTrack;
-                buf.sequenceNumber = sequenceNumber++;
-                buf.header = null; // no mouse position has been recorded for this frame
-                recorder.write(buf);
-                prevScreenCaptureTime = new Rational(timeAfterCapture, 1000);
-            }
-
-            if (timeBeforeCapture > getStopTime()) {
-                future.cancel(false);
-            }
-        }
-
-        public void close() {
-            videoGraphics.dispose();
-            videoImg.flush();
-        }
-    }
 
     /**
      * Starts mouse capture.
@@ -855,9 +583,7 @@ public class ScreenRecorder extends AbstractStateModel {
         if (mouseCaptureTimer != null) {
             try {
                 mouseFuture.get();
-            } catch (InterruptedException ex) {
-            } catch (CancellationException ex) {
-            } catch (ExecutionException ex) {
+            } catch (InterruptedException | CancellationException | ExecutionException ignored) {
             }
             mouseCaptureTimer.shutdown();
             mouseCaptureTimer.awaitTermination(5000, TimeUnit.MILLISECONDS);
@@ -867,109 +593,6 @@ public class ScreenRecorder extends AbstractStateModel {
         }
     }
 
-    protected static class MouseGrabber implements Runnable {
-
-        /**
-         * Previously captured mouse location. This is used to coalesce mouse
-         * captures if the mouse has not been moved.
-         */
-        private Point prevCapturedMouseLocation = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        private ScheduledThreadPoolExecutor timer;
-        private ScreenRecorder recorder;
-        private GraphicsDevice captureDevice;
-        private Rectangle captureArea;
-        private BlockingQueue<Buffer> mouseCaptures;
-        private volatile long stopTime = Long.MAX_VALUE;
-        private long startTime;
-        private Format format;
-        private ScheduledFuture<?> future;
-        private volatile boolean mousePressed;
-        private volatile boolean mouseWasPressed;
-        private volatile boolean mousePressedRecorded;
-        private Rectangle cursorImageArea;
-        private Point cursorOffset;
-
-        public MouseGrabber(ScreenRecorder recorder, long startTime, ScheduledThreadPoolExecutor timer) {
-            this.timer = timer;
-            this.format = recorder.mouseFormat;
-            this.captureDevice = recorder.captureDevice;
-            this.captureArea = recorder.captureArea;
-            this.mouseCaptures = recorder.mouseCaptures;
-            this.startTime = startTime;
-            this.cursorImageArea = new Rectangle(0, 0, recorder.cursorImg.getWidth(), recorder.cursorImg.getHeight());
-            this.cursorOffset = recorder.cursorOffset;
-        }
-
-        public void setFuture(ScheduledFuture<?> future) {
-            this.future = future;
-        }
-
-        public void setMousePressed(boolean newValue) {
-            if (newValue) {
-                mouseWasPressed = true;
-            }
-            mousePressed = newValue;
-        }
-
-        @Override
-        public void run() {
-            try {
-                grabMouse();
-            } catch (Throwable ex) {
-                //ex.printStackTrace();
-                timer.shutdown();
-                recorder.recordingFailed(ex);
-            }
-        }
-
-        public synchronized void setStopTime(long newValue) {
-            this.stopTime = newValue;
-        }
-
-        public synchronized long getStopTime() {
-            return this.stopTime;
-        }
-
-        /**
-         * Captures the mouse cursor.
-         */
-        private void grabMouse() throws InterruptedException {
-            long now = System.currentTimeMillis();
-            if (now > getStopTime()) {
-                future.cancel(false);
-                return;
-            }
-            PointerInfo info = MouseInfo.getPointerInfo();
-            Point p = info.getLocation();
-            cursorImageArea.x = p.x + cursorOffset.x;
-            cursorImageArea.y = p.y + cursorOffset.y;
-            if (!info.getDevice().equals(captureDevice)
-                    || !captureArea.intersects(cursorImageArea)) {
-                // If the cursor is outside the capture region, we
-                // assign Integer.MAX_VALUE to its location.
-                // This ensures that all mouse movements outside of the
-                // capture region get coallesced. 
-                p.setLocation(Integer.MAX_VALUE, Integer.MAX_VALUE);
-            }
-
-            // Only create a new capture event if the location has changed
-            // or the mouse state has changed.
-            if (!p.equals(prevCapturedMouseLocation) || mouseWasPressed != mousePressedRecorded) {
-                Buffer buf = new Buffer();
-                buf.format = format;
-                buf.timeStamp = new Rational(now, 1000);
-                buf.data = p;
-                buf.header = mouseWasPressed;
-                mousePressedRecorded = mouseWasPressed;
-                mouseCaptures.put(buf);
-                prevCapturedMouseLocation.setLocation(p);
-            }
-            mouseWasPressed = mousePressed;
-        }
-
-        public void close() {
-        }
-    }
 
     /**
      * Starts audio capture.
@@ -977,7 +600,7 @@ public class ScreenRecorder extends AbstractStateModel {
     private void startAudioCapture() throws LineUnavailableException {
         audioCaptureTimer = new ScheduledThreadPoolExecutor(1);
         int delay = 500;
-        audioGrabber = new AudioGrabber(mixer, audioFormat, audioTrack, recordingStartTime, writerQueue);
+        audioGrabber = new AudioGrabber(mixer, audioFormat, audioTrackId, recordingStartTime, writerQueue);
         audioFuture = audioCaptureTimer.scheduleWithFixedDelay(audioGrabber, 0, 10, TimeUnit.MILLISECONDS);
         audioGrabber.setFuture(audioFuture);
     }
@@ -1028,211 +651,6 @@ public class ScreenRecorder extends AbstractStateModel {
     }
 
     /**
-     * This runnable grabs audio samples and enqueues them into the specified
-     * BlockingQueue. This runnable must be called twice a second.
-     */
-    private static class AudioGrabber implements Runnable {
-
-        final private TargetDataLine line;
-        final private BlockingQueue<Buffer> queue;
-        final private Format audioFormat;
-        final private int audioTrack;
-        final private long startTime;
-        private volatile long stopTime = Long.MAX_VALUE;
-        private long totalSampleCount;
-        private ScheduledFuture<?> future;
-        private long sequenceNumber;
-        private float audioLevelLeft = AudioSystem.NOT_SPECIFIED;
-        private float audioLevelRight = AudioSystem.NOT_SPECIFIED;
-        private Mixer mixer;
-
-        public AudioGrabber(Mixer mixer, Format audioFormat, int audioTrack, long startTime, BlockingQueue<Buffer> queue)
-                throws LineUnavailableException {
-            this.mixer = mixer;
-            this.audioFormat = audioFormat;
-            this.audioTrack = audioTrack;
-            this.queue = queue;
-            this.startTime = startTime;
-            DataLine.Info lineInfo = new DataLine.Info(
-                    TargetDataLine.class, AudioFormatKeys.toAudioFormat(audioFormat));
-
-            if (mixer != null) {
-                line = (TargetDataLine) mixer.getLine(lineInfo);
-            } else {
-
-                line = (TargetDataLine) AudioSystem.getLine(lineInfo);
-            }
-
-            // Make sure the line is not muted
-            try {
-                BooleanControl ctrl = (BooleanControl) line.getControl(BooleanControl.Type.MUTE);
-                ctrl.setValue(false);
-            } catch (IllegalArgumentException e) {
-                // We can't unmute the line from Java
-            }
-            // Make sure the volume of the line is bigger than 0.2
-            try {
-                FloatControl ctrl = (FloatControl) line.getControl(FloatControl.Type.VOLUME);
-                ctrl.setValue(Math.max(ctrl.getValue(), 0.2f));
-            } catch (IllegalArgumentException e) {
-                // We can't change the volume from Java
-            }
-            line.open();
-            line.start();
-        }
-
-        public void setFuture(ScheduledFuture<?> future) {
-            this.future = future;
-        }
-
-        public void close() {
-            line.close();
-        }
-
-        public synchronized void setStopTime(long newValue) {
-            this.stopTime = newValue;
-        }
-
-        public synchronized long getStopTime() {
-            return this.stopTime;
-        }
-
-        @Override
-        public void run() {
-            Buffer buf = new Buffer();
-            AudioFormat lineFormat = line.getFormat();
-            buf.format = fromAudioFormat(lineFormat).append(SilenceBugKey, true);
-
-            // For even sample rates, we select a buffer size that can 
-            // hold half a second of audio. This allows audio/video interleave
-            // twice a second, as recommended for AVI and QuickTime movies.
-            // For odd sample rates, we have to select a buffer size that can hold
-            // one second of audio. 
-            int bufferSize = lineFormat.getFrameSize() * (int) lineFormat.getSampleRate();
-            if (((int) lineFormat.getSampleRate() & 1) == 0) {
-                bufferSize /= 2;
-            }
-
-            byte bdat[] = new byte[bufferSize];
-            buf.data = bdat;
-            Rational sampleRate = Rational.valueOf(lineFormat.getSampleRate());
-            Rational frameRate = Rational.valueOf(lineFormat.getFrameRate());
-            int count = line.read(bdat, 0, bdat.length);
-            if (count > 0) {
-                computeAudioLevel(bdat, count, lineFormat);
-                buf.sampleCount = count / (lineFormat.getSampleSizeInBits() / 8 * lineFormat.getChannels());
-                buf.sampleDuration = sampleRate.inverse();
-                buf.offset = 0;
-                buf.sequenceNumber = sequenceNumber++;
-                buf.length = count;
-                buf.track = audioTrack;
-                buf.timeStamp = new Rational(totalSampleCount, 1).divide(frameRate);
-
-                // Check if recording should be stopped
-                Rational stopTS = new Rational(getStopTime() - startTime, 1000);
-                if (buf.timeStamp.add(buf.sampleDuration.multiply(buf.sampleCount)).compareTo(stopTS) > 0) {
-                    // we recorded too much => truncate the buffer 
-                    buf.sampleCount = Math.max(0, (int) Math.ceil(stopTS.subtract(buf.timeStamp).divide(buf.sampleDuration).floatValue()));
-                    buf.length = buf.sampleCount * (lineFormat.getSampleSizeInBits() / 8 * lineFormat.getChannels());
-
-                    future.cancel(false);
-                }
-                if (buf.sampleCount > 0) {
-                    try {
-                        queue.put(buf);
-                    } catch (InterruptedException ex) {
-                        // nothing to do
-                    }
-                }
-                totalSampleCount += buf.sampleCount;
-            }
-        }
-
-        /**
-         * Calculates the root-mean-square average of continuous samples. For
-         * four samples, the formula looks like this:
-         * <pre>
-         * rms = sqrt( (x0^2 + x1^2 + x2^2 + x3^2) / 4)
-         * </pre> Resources:
-         * http://www.jsresources.org/faq_audio.html#calculate_power
-         *
-         * @param data
-         * @param length
-         * @param format
-         */
-        private void computeAudioLevel(byte[] data, int length, AudioFormat format) {
-            audioLevelLeft = audioLevelRight = AudioSystem.NOT_SPECIFIED;
-            if (format.getEncoding().equals(AudioFormat.Encoding.PCM_SIGNED)) {
-                switch (format.getSampleSizeInBits()) {
-                    case 8:
-                        switch (format.getChannels()) {
-                            case 1:
-                                audioLevelLeft = computeAudioLevelSigned8(data, 0, length, format.getFrameSize());
-                                break;
-                            case 2:
-                                audioLevelLeft = computeAudioLevelSigned8(data, 0, length, format.getFrameSize());
-                                audioLevelRight = computeAudioLevelSigned8(data, 1, length, format.getFrameSize());
-                                break;
-                        }
-                        break;
-                    case 16:
-                        if (format.isBigEndian()) {
-                            switch (format.getChannels()) {
-                                case 1:
-                                    audioLevelLeft = computeAudioLevelSigned16BE(data, 0, length, format.getFrameSize());
-                                    break;
-                                case 2:
-                                    audioLevelLeft = computeAudioLevelSigned16BE(data, 0, length, format.getFrameSize());
-                                    audioLevelRight = computeAudioLevelSigned16BE(data, 2, length, format.getFrameSize());
-                                    break;
-                            }
-                        } else {
-                            switch (format.getChannels()) {
-                                case 1:
-                                    break;
-                                case 2:
-                                    break;
-                            }
-                        }
-                        break;
-                }
-            }
-        }
-
-        private float computeAudioLevelSigned16BE(byte[] data, int offset, int length, int stride) {
-            double sum = 0;
-            for (int i = offset; i < length; i += stride) {
-                int value = ((data[i]) << 8) | (data[i + 1] & 0xff);
-                sum += value * value;
-            }
-            double rms = Math.sqrt(sum / ((length - offset) / stride));
-            return (float) (rms / 32768);
-        }
-
-        private float computeAudioLevelSigned8(byte[] data, int offset, int length, int stride) {
-            double sum = 0;
-            for (int i = offset; i < length; i += stride) {
-                int value = data[i];
-
-                // FIXME - The java audio system records silence as -128 instead of 0.
-                if (value != -128) {
-                    sum += value * value;
-                }
-            }
-            double rms = Math.sqrt(sum / ((length) / stride));
-            return (float) (rms / 128);
-        }
-
-        public float getAudioLevelLeft() {
-            return audioLevelLeft;
-        }
-
-        public float getAudioLevelRight() {
-            return audioLevelRight;
-        }
-    }
-
-    /**
      * Starts file writing.
      */
     private void startWriter() {
@@ -1260,16 +678,13 @@ public class ScreenRecorder extends AbstractStateModel {
         writerThread.start();
     }
 
-    private void recordingFailed(final Throwable msg) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    stop();
-                    setState(State.FAILED, msg);
-                } catch (IOException ex2) {
-                    ex2.printStackTrace();
-                }
+    public void recordingFailed(final Throwable msg) {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                stop();
+                setState(State.FAILED, msg);
+            } catch (IOException ex2) {
+                ex2.printStackTrace();
             }
         });
     }
@@ -1392,8 +807,8 @@ public class ScreenRecorder extends AbstractStateModel {
         if (writer == null) {
             return;
         }
-        if (buf.track == videoTrack) {
-            if (writer.getFormat(videoTrack).get(FixedFrameRateKey, false) == false) {
+        if (buf.track == videoTrackId) {
+            if (writer.getFormat(videoTrackId).get(FixedFrameRateKey, false) == false) {
                 // variable frame rate is supported => easy
                 Buffer wbuf = new Buffer();
                 frameEncoder.process(buf, wbuf);
@@ -1448,7 +863,7 @@ public class ScreenRecorder extends AbstractStateModel {
         // FIXME - this does not guarantee that audio and video track have
         //         the same duration
         long now = System.currentTimeMillis();
-        if (buf.track == videoTrack && buf.isFlag(BufferFlag.KEYFRAME)
+        if (buf.track == videoTrackId && buf.isFlag(BufferFlag.KEYFRAME)
                 && (mw.isDataLimitReached() || now - fileStartTime > maxRecordingTime)) {
             final MovieWriter closingWriter = mw;
             new Thread() {

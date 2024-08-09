@@ -106,7 +106,7 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
      * @param img   An image that can be reused if it fits the media format of the
      *              track. Pass null to create a new image on each read.
      * @return An image or null if the end of the media has been reached.
-     * @throws IOException
+     * @throws IOException if an I/O error occurs
      */
     public BufferedImage read(int track, BufferedImage img) throws IOException {
         ensureRealized();
@@ -201,8 +201,7 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
     public Rational getDuration(int track) throws IOException {
         ensureRealized();
         QuickTimeMeta.Track tr = meta.tracks.get(track);
-        Rational trackDuration = new Rational(tr.duration, meta.timeScale);
-        return trackDuration;
+        return new Rational(tr.duration, meta.timeScale);
     }
 
     @Override

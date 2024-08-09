@@ -24,7 +24,7 @@ public abstract class TIFFNode {
     /**
      * The children.
      */
-    private ArrayList<TIFFNode> children = new ArrayList<TIFFNode>();
+    private final ArrayList<TIFFNode> children = new ArrayList<TIFFNode>();
     private TIFFNode parent;
     /**
      * The IFDEntry from which this node was read.
@@ -93,7 +93,7 @@ public abstract class TIFFNode {
 
     private static class PreorderIterator implements Iterator<TIFFNode> {
 
-        private Stack<Iterator<TIFFNode>> stack = new Stack<Iterator<TIFFNode>>();
+        private final Stack<Iterator<TIFFNode>> stack = new Stack<Iterator<TIFFNode>>();
         private TIFFNode current;
 
         private PreorderIterator(TIFFNode root) {

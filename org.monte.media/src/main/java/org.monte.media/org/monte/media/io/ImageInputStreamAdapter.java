@@ -15,7 +15,7 @@ import java.io.InputStream;
  * @author Werner Randelshofer
  */
 public class ImageInputStreamAdapter extends InputStream {
-    private ImageInputStream iis;
+    private final ImageInputStream iis;
 
     public ImageInputStreamAdapter(ImageInputStream iis) {
         this.iis = iis;
@@ -36,7 +36,6 @@ public class ImageInputStreamAdapter extends InputStream {
      * @return the next byte of data, or <code>-1</code> if the end of the
      * stream is reached.
      * @throws IOException if an I/O error occurs.
-     * @see java.io.FilterInputStream#in
      */
     @Override
     public int read() throws IOException {
@@ -63,10 +62,10 @@ public class ImageInputStreamAdapter extends InputStream {
      *                                   <code>len</code> is negative, or <code>len</code> is greater than
      *                                   <code>b.length - off</code>
      * @throws IOException               if an I/O error occurs.
-     * @see java.io.FilterInputStream#in
+     * @see java.io.FilterInputStream
      */
     @Override
-    public int read(byte b[], int off, int len) throws IOException {
+    public int read(byte[] b, int off, int len) throws IOException {
         return iis.read(b, off, len);
     }
 
@@ -105,7 +104,7 @@ public class ImageInputStreamAdapter extends InputStream {
      * method simply performs <code>in.close()</code>.
      *
      * @throws IOException if an I/O error occurs.
-     * @see java.io.FilterInputStream#in
+     * @see java.io.FilterInputStream
      */
     @Override
     public void close() throws IOException {
@@ -125,7 +124,6 @@ public class ImageInputStreamAdapter extends InputStream {
      *
      * @param readlimit the maximum limit of bytes that can be read before
      *                  the mark position becomes invalid.
-     * @see java.io.FilterInputStream#in
      * @see java.io.FilterInputStream#reset()
      */
     @Override
@@ -151,7 +149,6 @@ public class ImageInputStreamAdapter extends InputStream {
      *
      * @throws IOException if the stream has not been marked or if the
      *                     mark has been invalidated.
-     * @see java.io.FilterInputStream#in
      * @see java.io.FilterInputStream#mark(int)
      */
     @Override
@@ -168,7 +165,6 @@ public class ImageInputStreamAdapter extends InputStream {
      * @return <code>true</code> if this stream type supports the
      * <code>mark</code> and <code>reset</code> method;
      * <code>false</code> otherwise.
-     * @see java.io.FilterInputStream#in
      * @see java.io.InputStream#mark(int)
      * @see java.io.InputStream#reset()
      */

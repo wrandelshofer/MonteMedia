@@ -8,8 +8,8 @@ import org.monte.media.io.FilterImageInputStream;
 
 import javax.imageio.stream.ImageInputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -31,8 +31,8 @@ public class QTFFImageInputStream extends FilterImageInputStream {
     /**
      * Reads a 32-bit Mac timestamp (seconds since 1902).
      *
-     * @return date
-     * @throws java.io.IOException
+     * @return the date corresponding to the Mac timestamp
+     * @throws IOException if an I/O error occurs
      */
     public Date readMacTimestamp() throws IOException {
         long timestamp = ((long) readInt()) & 0xffffffffL;
@@ -68,18 +68,12 @@ public class QTFFImageInputStream extends FilterImageInputStream {
         int wholePart = fixed >>> 8;
         int fractionPart = fixed & 0xff;
 
-        return new Double(wholePart + fractionPart / 256f);
+        return (wholePart + fractionPart / 256d);
     }
 
     public String readType() throws IOException {
         readFully(byteBuf, 0, 4);
-        try {
-            return new String(byteBuf, 0, 4, "ASCII");
-        } catch (UnsupportedEncodingException ex) {
-            InternalError ie = new InternalError("ASCII not supported");
-            ie.initCause(ex);
-            throw ie;
-        }
+        return new String(byteBuf, 0, 4, StandardCharsets.US_ASCII);
     }
 
     public String readPString() throws IOException {
@@ -94,13 +88,7 @@ public class QTFFImageInputStream extends FilterImageInputStream {
         byte[] b = (size <= byteBuf.length) ? byteBuf : new byte[size];
         readFully(b, 0, size);
 
-        try {
-            return new String(b, 0, size, "ASCII");
-        } catch (UnsupportedEncodingException ex) {
-            InternalError ie = new InternalError("ASCII not supported");
-            ie.initCause(ex);
-            throw ie;
-        }
+        return new String(b, 0, size, StandardCharsets.US_ASCII);
     }
 
     /**
@@ -120,28 +108,22 @@ public class QTFFImageInputStream extends FilterImageInputStream {
             skipBytes(remaining - size);
         }
 
-        try {
-            return new String(b, 0, size, "ASCII");
-        } catch (UnsupportedEncodingException ex) {
-            InternalError ie = new InternalError("ASCII not supported");
-            ie.initCause(ex);
-            throw ie;
-        }
+        return new String(b, 0, size, StandardCharsets.US_ASCII);
     }
 
     public int readUnsignedBCD4() throws IOException {
         readFully(byteBuf, 0, 2);
         int value = min(9, (byteBuf[0] >>> 4) & 0x0f) * 1000//
-                + min(9, (byteBuf[1] >>> 0) & 0x0f) * 100//
-                + min(9, (byteBuf[2] >>> 0) & 0x0f) * 10//
-                + min(9, (byteBuf[2] >>> 0) & 0x0f) * 1;
+                + min(9, byteBuf[0] & 0x0f) * 100//
+                + min(9, (byteBuf[1] >>> 4) & 0x0f) * 10//
+                + min(9, byteBuf[1] & 0x0f);
         return value;
     }
 
     public int readUnsignedBCD2() throws IOException {
         readFully(byteBuf, 0, 1);
-        int value = min(9, (byteBuf[2] >>> 0) & 0x0f) * 10//
-                + min(9, (byteBuf[2] >>> 0) & 0x0f) * 1;
-        return value;
+        //
+        return min(9, (byteBuf[2] >>> 4) & 0x0f) * 10//
+                + min(9, (byteBuf[2]) & 0x0f);
     }
 }

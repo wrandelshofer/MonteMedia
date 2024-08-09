@@ -99,7 +99,6 @@ public class AppleClosedCaptionCodec extends AbstractTextCodec {
                     break;
                 }
                 case "ccdp": {// CTA-708
-
                     String text = new Cta708Parser().parseToStringWithOpCodes(iis);
                     out.data = text;
                     break;

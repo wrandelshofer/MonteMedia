@@ -36,7 +36,6 @@ public class PassThroughCodec extends AbstractCodec {
     @Override
     public int process(Buffer in, Buffer out) {
         out.setMetaTo(in);
-        out.setDataTo(in);
-        return CODEC_OK;
+        return out.setDataTo(in);
     }
 }

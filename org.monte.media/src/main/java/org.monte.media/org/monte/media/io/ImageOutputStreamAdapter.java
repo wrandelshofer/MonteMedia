@@ -68,7 +68,7 @@ public class ImageOutputStreamAdapter extends OutputStream {
      * @see java.io.FilterOutputStream#write(byte[], int, int)
      */
     @Override
-    public void write(byte b[]) throws IOException {
+    public void write(byte[] b) throws IOException {
         write(b, 0, b.length);
     }
 
@@ -105,7 +105,6 @@ public class ImageOutputStreamAdapter extends OutputStream {
      * calls the <code>flush</code> method of its underlying output stream.
      *
      * @throws IOException if an I/O error occurs.
-     * @see java.io.FilterOutputStream#out
      */
     @Override
     public void flush() throws IOException {
@@ -122,7 +121,6 @@ public class ImageOutputStreamAdapter extends OutputStream {
      *
      * @throws IOException if an I/O error occurs.
      * @see java.io.FilterOutputStream#flush()
-     * @see java.io.FilterOutputStream#out
      */
     @Override
     public void close() throws IOException {

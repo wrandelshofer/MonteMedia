@@ -126,14 +126,11 @@ public class FrameRateConverter extends AbstractVideoCodec {
 
         // Produce time converted frame.
         out.format = outputFormat;
-        out.setDataTo(in);
+        int flags = out.setDataTo(in);
         out.timeStamp = outputTime;
         out.sampleDuration = outputDuration;
         outputTime = outputTime.add(outputDuration);
 
-        // System.out.println("FrameRateConverter inTS=" + in.timeStamp + " outTS=" + out.timeStamp + " inDur=" + in.sampleDuration + " outDur=" + out.sampleDuration.toDescriptiveString());
-
-
-        return CODEC_OK;
+        return flags;
     }
 }

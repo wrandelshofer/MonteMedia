@@ -103,11 +103,11 @@ public class Main {
             out.addTrack(format);
 
             // Draw the animation
-            for (int i = 0, n = 60; i < n; i++) {
+            for (int i = 0, n = 61; i < n; i++) {
                 double t = (double) i / n;
                 drawAnimationFrame(img, g, t);
 
-                // write it to the writer
+                // write image to the writer
                 out.write(0, img, 1);
             }
 

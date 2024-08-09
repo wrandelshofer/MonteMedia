@@ -25,7 +25,7 @@ import java.io.InputStream;
  */
 public class MP3AudioInputStream extends AudioInputStream {
 
-    private MP3ElementaryInputStream in;
+    private final MP3ElementaryInputStream in;
 
     /**
      * Creates an MP3AudioInputStream and reads the stream until the first

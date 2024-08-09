@@ -180,8 +180,7 @@ public class MPOImageReader extends ImageReader {
                     TIFFNode imageNode = metaDataTree.getChildAt(i);
                     for (Iterator<TIFFNode> e = imageNode.preorderIterator(); e.hasNext(); ) {
                         TIFFNode node = e.next();
-                        if (node instanceof TIFFDirectory) {
-                            TIFFDirectory dir = (TIFFDirectory) node;
+                        if (node instanceof TIFFDirectory dir) {
                             if ((mde = dir.getField(BaselineTagSet.ImageWidth)) != null) {
                                 width[i] = ((Number) mde.getData()).intValue();
                             }
@@ -210,10 +209,9 @@ public class MPOImageReader extends ImageReader {
             int index = 0;
             for (Iterator<TIFFNode> e = er.getMetaDataTree().preorderIterator(); e.hasNext(); ) {
                 TIFFNode n = e.next();
-                if (n instanceof TIFFDirectory) {
-                    TIFFDirectory dir = (TIFFDirectory) n;
+                if (n instanceof TIFFDirectory dir) {
                     if (dir.getName() != null && dir.getName().equals("MPEntry")) {
-                        long dirOffset = dir.getFileSegments().get(0).getOffset();
+                        long dirOffset = dir.getFileSegments().get(0).offset();
                         TIFFField offsetField = dir.getField(MPEntryTagSet.IndividualImageDataOffset);
                         TIFFField lengthField = dir.getField(MPEntryTagSet.IndividualImageSize);
                         if (offsetField != null && lengthField != null) {

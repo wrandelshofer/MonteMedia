@@ -33,15 +33,15 @@ import java.util.Stack;
 public class JFIFOutputStream extends OutputStream {
 
     /**
-     * This hash set holds the Id's of markers which stand alone,
-     * respectively do no have a data segment.
+     * This hash set holds the ids of markers which stand alone,
+     * respectively do not have a data segment.
      */
-    private final HashSet<Integer> standaloneMarkers = new HashSet<Integer>();
+    private final HashSet<Integer> standaloneMarkers = new HashSet<>();
     /**
-     * This hash set holds the Id's of markers which have a data
-     * segment followed by a entropy-coded data segment.
+     * This hash set holds the ids of markers which have a data
+     * segment followed by an entropy-coded data segment.
      */
-    private final HashSet<Integer> doubleSegMarkers = new HashSet<Integer>();
+    private final HashSet<Integer> doubleSegMarkers = new HashSet<>();
     /**
      * Start of image
      */
@@ -113,7 +113,7 @@ public class JFIFOutputStream extends OutputStream {
     public final static int RST7_MARKER = 0xffd7;
     private ImageOutputStream out;
     private long streamOffset;
-    private Stack<Segment> stack = new Stack<Segment>();
+    private Stack<Segment> stack = new Stack<>();
 
     public JFIFOutputStream(ImageOutputStream out) throws IOException {
         this.out = out;
@@ -229,7 +229,7 @@ public class JFIFOutputStream extends OutputStream {
      */
     @Override
     public void write(byte[] b, int off, int len) throws IOException {
-        if (stack.size() == 0 || standaloneMarkers.contains(stack.peek().marker)) {
+        if (stack.isEmpty() || standaloneMarkers.contains(stack.peek().marker)) {
             writeStuffed(b, off, len);
         } else {
             writeNonstuffed(b, off, len);
@@ -242,7 +242,7 @@ public class JFIFOutputStream extends OutputStream {
      */
     @Override
     public void write(int b) throws IOException {
-        if (stack.size() == 0 || standaloneMarkers.contains(stack.peek().marker)) {
+        if (stack.isEmpty() || standaloneMarkers.contains(stack.peek().marker)) {
             writeStuffed(b);
         } else {
             writeNonstuffed(b);
@@ -309,9 +309,10 @@ public class JFIFOutputStream extends OutputStream {
         protected boolean finished;
 
         /**
-         * Creates a new Chunk at the current position of the ImageOutputStream.
+         * Creates a new Segment at the current position of the ImageOutputStream.
          *
-         * @param chunkType The chunkType of the chunk. A string with a length of 4 characters.
+         * @param marker The marker of the segment.
+         * @throws IOException if an I/O error occurs.
          */
         public Segment(int marker) throws IOException {
             this.marker = marker;

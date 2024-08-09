@@ -13,7 +13,7 @@ import java.awt.image.WritableRaster;
  */
 public class Histogram {
 
-    private int[][] bins = new int[3][256];
+    private final int[][] bins = new int[3][256];
 
     public void countPixels(WritableRaster raster) {
         int n = raster.getNumBands();
