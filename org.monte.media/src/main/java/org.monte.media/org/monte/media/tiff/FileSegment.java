@@ -12,21 +12,6 @@ package org.monte.media.tiff;
  *
  * @author Werner Randelshofer
  */
-public class FileSegment {
+public record FileSegment(long offset, long length) {
 
-    private long offset;
-    private long length;
-
-    public FileSegment(long offset, long length) {
-        this.offset = offset;
-        this.length = length;
-    }
-
-    public long getLength() {
-        return length;
-    }
-
-    public long getOffset() {
-        return offset;
-    }
 }

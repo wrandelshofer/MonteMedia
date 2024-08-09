@@ -107,10 +107,11 @@ public class TrimTimeCodec extends AbstractCodec {
                 // Buffer is fully inside time range
             }
         }
+        int flags = CODEC_OK;
         if (!out.isFlag(BufferFlag.DISCARD)) {
-            out.setDataTo(in);
+            flags = out.setDataTo(in);
         }
 
-        return CODEC_OK;
+        return flags;
     }
 }

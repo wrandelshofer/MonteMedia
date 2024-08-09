@@ -35,7 +35,7 @@ import java.util.LinkedList;
  */
 public class MJPGImageReader extends ImageReader {
 
-    private static DirectColorModel RGB = new DirectColorModel(24, 0xff0000, 0xff00, 0xff, 0x0);
+    private static final DirectColorModel RGB = new DirectColorModel(24, 0xff0000, 0xff00, 0xff, 0x0);
     /**
      * When we read the header, we read the whole image.
      */

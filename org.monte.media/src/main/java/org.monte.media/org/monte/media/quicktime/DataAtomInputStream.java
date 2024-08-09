@@ -12,7 +12,7 @@ import java.io.EOFException;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -24,7 +24,7 @@ import java.util.GregorianCalendar;
 public class DataAtomInputStream extends FilterInputStream {
 
     protected static final long MAC_TIMESTAMP_EPOCH = new GregorianCalendar(1904, GregorianCalendar.JANUARY, 1).getTimeInMillis();
-    private byte byteBuffer[] = new byte[8];
+    private final byte[] byteBuffer = new byte[8];
 
     public DataAtomInputStream(InputStream in) {
         super(in);
@@ -102,7 +102,7 @@ public class DataAtomInputStream extends FilterInputStream {
      * Reads a 32-bit Mac timestamp (seconds since 1902).
      *
      * @return date
-     * @throws java.io.IOException
+     * @throws java.io.IOException if an I/O error occurs
      */
     public Date readMacTimestamp() throws IOException {
         long timestamp = ((long) readInt()) & 0xffffffffL;
@@ -143,13 +143,7 @@ public class DataAtomInputStream extends FilterInputStream {
 
     public String readType() throws IOException {
         readFully(byteBuffer, 0, 4);
-        try {
-            return new String(byteBuffer, 0, 4, "ASCII");
-        } catch (UnsupportedEncodingException ex) {
-            InternalError ie = new InternalError("ASCII not supported");
-            ie.initCause(ex);
-            throw ie;
-        }
+        return new String(byteBuffer, 0, 4, StandardCharsets.US_ASCII);
     }
 
     public String readPString() throws IOException {
@@ -164,13 +158,7 @@ public class DataAtomInputStream extends FilterInputStream {
         byte[] b = size <= byteBuffer.length ? byteBuffer : new byte[size];
         readFully(b, 0, size);
 
-        try {
-            return new String(b, 0, size, "ASCII");
-        } catch (UnsupportedEncodingException ex) {
-            InternalError ie = new InternalError("ASCII not supported");
-            ie.initCause(ex);
-            throw ie;
-        }
+        return new String(b, 0, size, StandardCharsets.US_ASCII);
     }
 
     /**
@@ -191,12 +179,6 @@ public class DataAtomInputStream extends FilterInputStream {
         byte[] b = fixedSize <= byteBuffer.length ? byteBuffer : new byte[fixedSize];
         readFully(b, 0, fixedSize);
 
-        try {
-            return new String(b, 0, fixedSize, "ASCII");
-        } catch (UnsupportedEncodingException ex) {
-            InternalError ie = new InternalError("ASCII not supported");
-            ie.initCause(ex);
-            throw ie;
-        }
+        return new String(b, 0, fixedSize, StandardCharsets.US_ASCII);
     }
 }

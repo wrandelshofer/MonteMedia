@@ -165,6 +165,7 @@ public class QuickTimeDeserializer {
                 if (null != t) {
                     switch (t) {
                         case "ftyp":
+                            parseFileType(in, atom.size - atom.headerSize, m);
                             break;
                         case "wide":
                             break;
@@ -488,7 +489,7 @@ public class QuickTimeDeserializer {
             t.editList.add(edit);
         }
 
-        remainingSize -= 8 + numberOfEntries * 12;
+        remainingSize -= 8 + numberOfEntries * 12L;
     }
 
     /**

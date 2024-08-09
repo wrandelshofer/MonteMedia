@@ -19,9 +19,9 @@ import static java.lang.Math.min;
  * <p>
  * References:<br>
  * [Ken09] Kenfack, Pierre Marie (2009). Implementierung und Vergleich
- * verschiedener Algorithmen 	zur Bildsensorkalibrierung. Fraunhofer ITWM.
- * http://www.itwm.fraunhofer.de/fileadmin/ITWM-Media/Abteilungen/BV/Pdf/
- * Diplomarbeit_Kenfack.pdf
+ * verschiedener Algorithmen zur Bildsensorkalibrierung. Fraunhofer ITWM.
+ * <a href="http://www.itwm.fraunhofer.de/fileadmin/ITWM-Media/Abteilungen/BV/Pdf/Diplomarbeit_Kenfack.pdf">Diplomarbeit_Kenfack.pdf</a>
+ *
  * <p>
  * [Lam05] Edmund Lam, Combining gray world and retinex theory for automatic
  * white balance in	digital photography, Consumer Electronics, 2005.
@@ -90,11 +90,10 @@ public class WhiteBalance {
         int NGray = 0, NColor = 0;
         double cbGraySum = 0, cbColorSum = 0;
         double crGraySum = 0, crColorSum = 0;
-        for (int i = 0; i < p.length; i++) {
-            int px = p[i];
+        for (int px : p) {
             rgb[0] = ((px & 0xff0000) >> 16) / 255f;
             rgb[1] = ((px & 0xff00) >> 8) / 255f;
-            rgb[2] = ((px & 0xff) >> 0) / 255f;
+            rgb[2] = ((px & 0xff)) / 255f;
             ColorModels.RGBtoYCC(rgb, ycc);
             if ((abs(ycc[1]) + abs(ycc[2])) / ycc[0] > T) {
                 NColor++;
@@ -166,11 +165,10 @@ public class WhiteBalance {
         int NGray = 0, NColor = 0;
         double UGraySum = 0, UColorSum = 0;
         double VGraySum = 0, VColorSum = 0;
-        for (int i = 0; i < p.length; i++) {
-            int px = p[i];
+        for (int px : p) {
             rgb[0] = ((px & 0xff0000) >> 16) / 255f;
             rgb[1] = ((px & 0xff00) >> 8) / 255f;
-            rgb[2] = ((px & 0xff) >> 0) / 255f;
+            rgb[2] = ((px & 0xff)) / 255f;
             ColorModels.RGBtoYUV(rgb, yuv);
             if ((abs(yuv[1]) + abs(yuv[2])) / yuv[0] > T) {
                 NColor++;
@@ -324,11 +322,10 @@ public class WhiteBalance {
             fb = 1;
         }
 
-        double[] matrix = {//
+        return new double[]{//
                 fr, 0, 0,//
                 0, fg, 0,//
                 0, 0, fb};
-        return matrix;
     }
 
     /**
@@ -370,11 +367,10 @@ public class WhiteBalance {
             Bgain = 1;
         }
 
-        double[] matrix = {//
+        return new double[]{//
                 Rgain, 0, 0,//
                 0, 1, 0,//
                 0, 0, Bgain};
-        return matrix;
 
     }
 
@@ -439,10 +435,10 @@ public class WhiteBalance {
         double[] Rmunu = LinearEquations.solve(R2sum, Rsum, R2max, Rmax, Gsum, Gmax);
         double[] Bmunu = LinearEquations.solve(B2sum, Bsum, B2max, Bmax, Gsum, Gmax);
 
-        double[] vector = {
+        //
+        return new double[]{
                 Rmunu[0], Rmunu[1], Bmunu[0], Bmunu[1]//
         };
-        return vector;
     }
 
     public static double[] whiteBalanceQM(long[][] rgbBins) {
@@ -486,9 +482,8 @@ public class WhiteBalance {
         double[] Rmunu = LinearEquations.solve(R2sum, Rsum, R2max, Rmax, Gsum, Gmax);
         double[] Bmunu = LinearEquations.solve(B2sum, Bsum, B2max, Bmax, Gsum, Gmax);
 
-        double[] vector = {
+        return new double[]{
                 Rmunu[0], Rmunu[1], Bmunu[0], Bmunu[1]//
         };
-        return vector;
     }
 }

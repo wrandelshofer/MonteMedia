@@ -46,13 +46,13 @@ public class AdjustTimeCodec extends AbstractCodec {
     @Override
     public int process(Buffer in, Buffer out) {
         out.setMetaTo(in);
-        out.setDataTo(in);
+        int flags = out.setDataTo(in);
 
         if (mediaTime != null) {
             out.timeStamp = mediaTime;
             mediaTime = mediaTime.add(out.sampleDuration.multiply(out.sampleCount));
         }
 
-        return CODEC_OK;
+        return flags;
     }
 }

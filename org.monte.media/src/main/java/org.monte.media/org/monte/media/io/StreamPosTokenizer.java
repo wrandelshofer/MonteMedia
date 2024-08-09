@@ -35,9 +35,9 @@ public class StreamPosTokenizer
      * rlw
      */
     private int startpos = -1, endpos = -1;
-    private LinkedList<Integer> unread = new LinkedList<Integer>();
+    private final LinkedList<Integer> unread = new LinkedList<>();
 
-    private char buf[] = new char[20];
+    private char[] buf = new char[20];
 
     /**
      * The next character to be considered by the nextToken method.  May also
@@ -67,7 +67,7 @@ public class StreamPosTokenizer
     private char[] slashStar = new char[]{'/', '*'};
     private char[] starSlash = new char[]{'*', '/'};
 
-    private byte ctype[] = new byte[256];
+    private final byte[] ctype = new byte[256];
     private static final byte CT_WHITESPACE = 1;
     private static final byte CT_DIGIT = 2;
     private static final byte CT_ALPHA = 4;
@@ -188,7 +188,7 @@ public class StreamPosTokenizer
     /**
      * Sets the reader for the tokenizer.
      *
-     * @param r
+     * @param r the reader
      */
     public void setReader(Reader r) {
         this.reader = r;
@@ -506,7 +506,7 @@ public class StreamPosTokenizer
             pushedBack = false;
             return ttype;
         }
-        byte ct[] = ctype;
+        byte[] ct = ctype;
         sval = null;
 
         int c = peekc;
@@ -569,11 +569,9 @@ public class StreamPosTokenizer
             ctype = c < 256 ? ct[c] : CT_ALPHA;
         }
 
-        // rlw
         startpos = readpos - 1;
 
-        // rlw hexadecimal
-        hex:
+        // parse hexadecimal
         if (((ctype & CT_DIGIT) != 0) &&
                 c == '0' && isParseHexNumbers) {
             c = read();
@@ -619,32 +617,18 @@ public class StreamPosTokenizer
                 c = read();
                 if (c != '.' && (c < '0' || c > '9')) {
                     peekc = c;
-                    // rlw
-                    if (('-' & CT_ALPHA) != 0) {
-                        unread(c);
-                        c = '-';
-                        break digit;
-                    } else {
-                        endpos = readpos - 1;
-                        return ttype = '-';
-                    }
+                    unread(c);
+                    c = '-';
+                    break digit;
                 }
                 neg = true;
             } else if (c == '+') {
                 c = read();
                 if (c != '.' && (c < '0' || c > '9')) {
                     peekc = c;
-                    // rlw
-                    if (('+' & CT_ALPHA) != 0) {
-                        unread(c);
-                        c = '+';
-                        break digit;
-                    } else {
-                        endpos = readpos - 1;
-                        return ttype = '-';
-                    }
+                    endpos = readpos - 1;
+                    return ttype = '-';
                 }
-                neg = false;
             }
 
             double v = 0;
@@ -673,21 +657,15 @@ public class StreamPosTokenizer
                 v = v / denom;
             }
             nval = neg ? -v : v;
-            // rlw
             endpos = (c == -1) ? readpos - 1 : readpos - 2;
             if (digits == 0) {
-                if (('.' & CT_ALPHA) != 0) {
-                    unread(c);
-                    if (neg) {
-                        unread('.');
-                        c = '-';
-                    } else {
-                        read(); // consume full stop
-                        c = '.';
-                    }
-                    break digit;
+                unread(c);
+                if (neg) {
+                    unread('.');
+                    c = '-';
                 } else {
-                    return ttype = '.';
+                    read(); // consume full stop
+                    c = '.';
                 }
             } else {
                 if (isParseExponents) {
@@ -706,7 +684,6 @@ public class StreamPosTokenizer
                             neg = true;
                         }
                         v = 0;
-                        decexp = 0;
                         while (true) {
                             if ('0' <= c && c <= '9') {
                                 digits++;
@@ -728,7 +705,7 @@ public class StreamPosTokenizer
             int i = 0;
             do {
                 if (i >= buf.length) {
-                    char nb[] = new char[buf.length * 2];
+                    char[] nb = new char[buf.length * 2];
                     System.arraycopy(buf, 0, nb, 0, buf.length);
                     buf = nb;
                 }
@@ -740,7 +717,7 @@ public class StreamPosTokenizer
             sval = String.copyValueOf(buf, 0, i);
             if (forceLower)
                 sval = sval.toLowerCase();
-            // rlw EOF must be treated specially
+            // EOF must be treated specially
             endpos = (c == -1) ? readpos - 1 : readpos - 2;
             return ttype = TT_WORD;
         }
@@ -771,29 +748,16 @@ public class StreamPosTokenizer
                         } else
                             d = c2;
                     } else {
-                        switch (c) {
-                            case 'a':
-                                c = 0x7;
-                                break;
-                            case 'b':
-                                c = '\b';
-                                break;
-                            case 'f':
-                                c = 0xC;
-                                break;
-                            case 'n':
-                                c = '\n';
-                                break;
-                            case 'r':
-                                c = '\r';
-                                break;
-                            case 't':
-                                c = '\t';
-                                break;
-                            case 'v':
-                                c = 0xB;
-                                break;
-                        }
+                        c = switch (c) {
+                            case 'a' -> 0x7;
+                            case 'b' -> '\b';
+                            case 'f' -> 0xC;
+                            case 'n' -> '\n';
+                            case 'r' -> '\r';
+                            case 't' -> '\t';
+                            case 'v' -> 0xB;
+                            default -> c;
+                        };
                         d = read();
                     }
                 } else {
@@ -801,7 +765,7 @@ public class StreamPosTokenizer
                     d = read();
                 }
                 if (i >= buf.length) {
-                    char nb[] = new char[buf.length * 2];
+                    char[] nb = new char[buf.length * 2];
                     System.arraycopy(buf, 0, nb, 0, buf.length);
                     buf = nb;
                 }
@@ -1111,7 +1075,7 @@ public class StreamPosTokenizer
                 ret = "NOTHING";
                 break;
             default: {
-                char s[] = new char[3];
+                char[] s = new char[3];
                 s[0] = s[2] = '\'';
                 s[1] = (char) ttype;
                 ret = new String(s);

@@ -28,24 +28,24 @@ public class IFDEntry {
     /**
      * The Tag number that identifies the field.
      */
-    private int tagNumber;
+    private final int tagNumber;
     /**
      * The field Type.
      */
-    private int typeNumber;
+    private final int typeNumber;
     /**
      * The number of values, Count of the indicated Type.
      */
-    private long count;
+    private final long count;
     /**
      * The Value Offset stores the value or the offset of the value depending
      * on typeNumber and on count.
      */
-    private long valueOffset;
+    private final long valueOffset;
     /**
      * The Entry Offset stores the location of the entry in the file.
      */
-    private long entryOffset;
+    private final long entryOffset;
     /**
      * The IFD Offset stores the location of the IFD in the file.
      */
@@ -103,66 +103,64 @@ public class IFDEntry {
     }
 
     public boolean isDataInValueOffset() {
-        switch (IFDDataType.valueOf(typeNumber)) {
-            case ASCII://8-bit byte that contains a 7-bit ASCII code; the last byte
+        return switch (IFDDataType.valueOf(typeNumber)) {
+            case ASCII ->//8-bit byte that contains a 7-bit ASCII code; the last byte
                 //must be NUL (binary zero).
-                return false;
-            case BYTE://8-bit unsigned integer.
-                return count <= 4;
-            case SHORT://16-bit (2-byte) unsigned integer.
-                return count <= 2;
-            case LONG://32-bit (4-byte) unsigned integer.
-                return count <= 1;
-            case RATIONAL://Two LONGs: the first represents the numerator of a fraction; the second, the denominator.
-                return false;
-            case SBYTE: //An 8-bit signed (twos-complement) integer.
-                return count <= 4;
-            case UNDEFINED://An 8-bit byte that may contain anything, depending on the definition of the field.
-                return count <= 4;
-            case SSHORT://A 16-bit (2-byte) signed (twos-complement) integer.
-                return count <= 2;
-            case SLONG://A 32-bit (4-byte) signed (twos-complement) integer.
-                return count <= 1;
-            case SRATIONAL://Two SLONG’s: the first represents the numerator of a fraction, the second the denominator.
-                return false;
-            case FLOAT://Single precision (4-byte) IEEE prettyFormat.
-                return count <= 1;
-            case DOUBLE:// Double precision (8-byte) IEEE prettyFormat.
-                return false;
-            default:
-                return true;
-        }
+                    false;
+            case BYTE ->//8-bit unsigned integer.
+                    count <= 4;
+            case SHORT ->//16-bit (2-byte) unsigned integer.
+                    count <= 2;
+            case LONG ->//32-bit (4-byte) unsigned integer.
+                    count <= 1;
+            case RATIONAL ->//Two LONGs: the first represents the numerator of a fraction; the second, the denominator.
+                    false;
+            case SBYTE -> //An 8-bit signed (twos-complement) integer.
+                    count <= 4;
+            case UNDEFINED ->//An 8-bit byte that may contain anything, depending on the definition of the field.
+                    count <= 4;
+            case SSHORT ->//A 16-bit (2-byte) signed (twos-complement) integer.
+                    count <= 2;
+            case SLONG ->//A 32-bit (4-byte) signed (twos-complement) integer.
+                    count <= 1;
+            case SRATIONAL ->//Two SLONG’s: the first represents the numerator of a fraction, the second the denominator.
+                    false;
+            case FLOAT ->//Single precision (4-byte) IEEE prettyFormat.
+                    count <= 1;
+            case DOUBLE ->// Double precision (8-byte) IEEE prettyFormat.
+                    false;
+            default -> true;
+        };
     }
 
     public long getLength() {
-        switch (IFDDataType.valueOf(typeNumber)) {
-            case ASCII://8-bit byte that contains a 7-bit ASCII code; the last byte
-                return count;
-            case BYTE://8-bit unsigned integer.
-                return count;
-            case SHORT://16-bit (2-byte) unsigned integer.
-                return count * 2;
-            case LONG://32-bit (4-byte) unsigned integer.
-                return count * 4;
-            case RATIONAL://Two LONGs: the first represents the numerator of a fraction; the second, the denominator.
-                return count * 8;
-            case SBYTE: //An 8-bit signed (twos-complement) integer.
-                return count;
-            case UNDEFINED://An 8-bit byte that may contain anything, depending on the definition of the field.
-                return count;
-            case SSHORT://A 16-bit (2-byte) signed (twos-complement) integer.
-                return count * 2;
-            case SLONG://A 32-bit (4-byte) signed (twos-complement) integer.
-                return count * 4;
-            case SRATIONAL://Two SLONG’s: the first represents the numerator of a fraction, the second the denominator.
-                return count * 8;
-            case FLOAT://Single precision (4-byte) IEEE prettyFormat.
-                return count * 4;
-            case DOUBLE:// Double precision (8-byte) IEEE prettyFormat.
-                return count * 8;
-            default:
-                return 0;
-        }
+        return switch (IFDDataType.valueOf(typeNumber)) {
+            case ASCII ->//8-bit byte that contains a 7-bit ASCII code; the last byte
+                    count;
+            case BYTE ->//8-bit unsigned integer.
+                    count;
+            case SHORT ->//16-bit (2-byte) unsigned integer.
+                    count * 2;
+            case LONG ->//32-bit (4-byte) unsigned integer.
+                    count * 4;
+            case RATIONAL ->//Two LONGs: the first represents the numerator of a fraction; the second, the denominator.
+                    count * 8;
+            case SBYTE -> //An 8-bit signed (twos-complement) integer.
+                    count;
+            case UNDEFINED ->//An 8-bit byte that may contain anything, depending on the definition of the field.
+                    count;
+            case SSHORT ->//A 16-bit (2-byte) signed (twos-complement) integer.
+                    count * 2;
+            case SLONG ->//A 32-bit (4-byte) signed (twos-complement) integer.
+                    count * 4;
+            case SRATIONAL ->//Two SLONG’s: the first represents the numerator of a fraction, the second the denominator.
+                    count * 8;
+            case FLOAT ->//Single precision (4-byte) IEEE prettyFormat.
+                    count * 4;
+            case DOUBLE ->// Double precision (8-byte) IEEE prettyFormat.
+                    count * 8;
+            default -> 0;
+        };
     }
 
     /**
@@ -352,8 +350,7 @@ public class IFDEntry {
                     }
                     buf.append(d[i]);
                 }
-            } else if (data instanceof Object[]) {
-                Object[] d = (Object[]) data;
+            } else if (data instanceof Object[] d) {
                 for (int i = 0; i < d.length; i++) {
                     if (i != 0) {
                         buf.append(',');

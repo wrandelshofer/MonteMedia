@@ -107,23 +107,27 @@ public class Buffer {
      * {@code data} and {@code header}, so that these fields in that buffer can
      * be discarded without affecting the contents of this buffer.
      * <p>
-     * FIXME - This method does not always create a copy!!
+     * Returns {@link Codec#CODEC_FAILED} or {@link Codec#CODEC_OK}
      */
-    public void setDataTo(Buffer that) {
+    public int setDataTo(Buffer that) {
         this.offset = that.offset;
         this.length = that.length;
-        this.data = copy(that.data, this.data);
-        this.header = copy(that.header, this.header);
-
+        try {
+            this.data = copy(that.data, this.data);
+            this.header = copy(that.header, this.header);
+        } catch (UnsupportedOperationException e) {
+            return Codec.CODEC_FAILED;
+        }
+        return Codec.CODEC_OK;
     }
 
-    private Object copy(Object from, Object into) {
+    private Object copy(Object from, Object into) throws UnsupportedOperationException {
         if (from instanceof byte[]) {
             byte[] b = (byte[]) from;
             if (!(into instanceof byte[]) || ((byte[]) into).length < b.length) {
                 into = new byte[b.length];
             }
-            System.arraycopy(b, 0, (byte[]) into, 0, b.length);
+            System.arraycopy(b, 0, into, 0, b.length);
         } else if (from instanceof BufferedImage) {
             // FIXME - Try to reuse BufferedImage in output!
             BufferedImage img = (BufferedImage) from;
@@ -138,9 +142,7 @@ public class Buffer {
                 into = from;
             }
         } else {
-            // FIXME - This is very fragile, since we do not know, if the
-            //         input data stays valid until the output data is processed!
-            into = from;
+            throw new UnsupportedOperationException();
         }
 
         return into;

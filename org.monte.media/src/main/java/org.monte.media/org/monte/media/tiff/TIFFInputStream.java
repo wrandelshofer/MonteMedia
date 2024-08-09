@@ -36,7 +36,7 @@ public class TIFFInputStream extends InputStream {
     /**
      * The underlying input stream.
      */
-    private ImageInputStream in;
+    private final ImageInputStream in;
 
     public TIFFInputStream(ImageInputStream in) throws IOException {
         this.in = in;
@@ -162,7 +162,7 @@ public class TIFFInputStream extends InputStream {
 
     }
 
-    private void readFully(byte b[], int off, int len) throws IOException {
+    private void readFully(byte[] b, int off, int len) throws IOException {
         if (len < 0) {
             throw new IndexOutOfBoundsException();
         }

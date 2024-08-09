@@ -16,7 +16,7 @@ import java.io.IOException;
  */
 public class TrackDemultiplexer implements Demultiplexer {
 
-    private Track[] tracks;
+    private final Track[] tracks;
 
     public TrackDemultiplexer(Track[] tracks) {
         this.tracks = tracks.clone();

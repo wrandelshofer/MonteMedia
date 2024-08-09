@@ -44,11 +44,11 @@ import java.util.Stack;
 import java.util.TreeSet;
 
 /**
- * Reads EXIF and MP meta data from a JPEG, MPO or AVI file. <p> Creates a tree
+ * Reads EXIF and MP metadata from a JPEG, MPO or AVI file. <p> Creates a tree
  * structure of {@code DefaultMutableTreeNode}s. Nodes with a String user object
- * describe the hierarchy of the meta data. Nodes with an MetaDataEntry as user
- * object hold the actual meta data. <p> Sources: <p> Exchangeable image file
- * format for digital still cameras: EXIF Version 2.2. (April, 2002). Standard
+ * describe the hierarchy of the metadata. Nodes with an MetaDataEntry as user
+ * object hold the actual metadata. <p> Sources: <p> Exchangeable image file
+ * format for digital still cameras: EXIF Version 2.2. (April 2002). Standard
  * of Japan Electronics and Information Technology Industries Association. JEITA
  * CP-3451. <a
  * href="http://www.exif.org/Exif2-2.PDF">http://www.exif.org/Exif2-2.PDF</a>
@@ -328,8 +328,7 @@ public class EXIFReader {
                     } else if (chunk.getID() == strd_ID) {
                         trackNode = new TIFFDirectory(TrackTagSet.getInstance(), null, trackCount - 1, null, null, new FileSegment(chunk.getScan(), chunk.getSize()));
                         root.add(trackNode);
-                        ByteArrayImageInputStream in = new ByteArrayImageInputStream(chunk.getData(), 8, (int) chunk.getSize() - 8, ByteOrder.LITTLE_ENDIAN);
-                        try {
+                        try (ByteArrayImageInputStream in = new ByteArrayImageInputStream(chunk.getData(), 8, (int) chunk.getSize() - 8, ByteOrder.LITTLE_ENDIAN)) {
                             TIFFInputStream tin = new TIFFInputStream(in, ByteOrder.LITTLE_ENDIAN, 0);
                             ArrayList<FileSegment> tiffSeg = new ArrayList<FileSegment>();
                             tiffSeg.add(new FileSegment(chunk.getScan() + 8, chunk.getSize() - 8));
@@ -338,11 +337,8 @@ public class EXIFReader {
                             //}
                             //System.out.println("EXIFReader.readRIFF magic:" + RIFFParser.idToString(magic));
                         } catch (IOException ex) {
-                            ParseException e = new ParseException("Error parsing AVI strd chunk.");
-                            e.initCause(ex);
+                            ParseException e = new ParseException("Error parsing AVI strd chunk.", ex);
                             throw e;
-                        } finally {
-                            in.close();
                         }
                         if (isFirstImageOnly()) {
                             throw new AbortException();

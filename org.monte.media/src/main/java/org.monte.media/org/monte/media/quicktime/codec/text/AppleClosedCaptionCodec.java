@@ -18,7 +18,11 @@ import java.io.IOException;
 import java.nio.ByteOrder;
 
 import static org.monte.media.av.BufferFlag.DISCARD;
-import static org.monte.media.av.FormatKeys.*;
+import static org.monte.media.av.FormatKeys.EncodingKey;
+import static org.monte.media.av.FormatKeys.MIME_JAVA;
+import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
+import static org.monte.media.av.FormatKeys.MediaTypeKey;
+import static org.monte.media.av.FormatKeys.MimeTypeKey;
 import static org.monte.media.av.codec.text.TextFormatKeys.ENCODING_CLOSED_CAPTION;
 import static org.monte.media.av.codec.text.TextFormatKeys.ENCODING_STRING;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
@@ -99,7 +103,6 @@ public class AppleClosedCaptionCodec extends AbstractTextCodec {
                     break;
                 }
                 case "ccdp": {// CTA-708
-
                     String text = new Cta708Parser().parseToStringWithOpCodes(iis);
                     out.data = text;
                     break;

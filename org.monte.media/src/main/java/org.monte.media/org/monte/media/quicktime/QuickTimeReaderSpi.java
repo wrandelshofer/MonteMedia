@@ -10,8 +10,6 @@ import org.monte.media.av.MovieReaderSpi;
 import javax.imageio.stream.ImageInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,7 +19,7 @@ import java.util.List;
  */
 public class QuickTimeReaderSpi implements MovieReaderSpi {
 
-    private final static List<String> extensions = Collections.unmodifiableList(Arrays.asList(new String[]{"mov"}));
+    private final static List<String> extensions = List.of(new String[]{"mov"});
 
     @Override
     public QuickTimeReader create(ImageInputStream in) throws IOException {

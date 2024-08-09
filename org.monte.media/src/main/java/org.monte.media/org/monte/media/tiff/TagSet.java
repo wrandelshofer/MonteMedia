@@ -19,8 +19,8 @@ import java.util.HashMap;
  */
 public abstract class TagSet {
 
-    private HashMap<Integer, TIFFTag> tagsByNumber = new HashMap<Integer, TIFFTag>();
-    private String name;
+    private final HashMap<Integer, TIFFTag> tagsByNumber = new HashMap<Integer, TIFFTag>();
+    private final String name;
 
     public TagSet(String name, TIFFTag[] tags) {
         this.name = name;
@@ -38,16 +38,7 @@ public abstract class TagSet {
      */
     public TIFFTag getTag(int tagNumber) {
         TIFFTag tag = tagsByNumber.get(tagNumber);
-        if (tag == null) {
-            synchronized (this) {
-                tag = tagsByNumber.get(tagNumber);
-                if (tag == null) {
-                    tag = new TIFFTag("unknown", tagNumber, TIFFTag.ALL_MASK, null);
-                    tagsByNumber.put(tagNumber, tag);
-                }
-            }
-        }
-        return tag;
+        return (tag == null) ? new TIFFTag("unknown", tagNumber, TIFFTag.ALL_MASK, null) : tag;
     }
 
     /**

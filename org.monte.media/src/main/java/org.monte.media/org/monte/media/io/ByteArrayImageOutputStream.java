@@ -37,7 +37,7 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
      * stream;  element <code>buf[streamPos]</code> is
      * the next byte to be read.
      */
-    protected byte buf[];
+    protected byte[] buf;
     /**
      * The index one greater than the last valid character in the input
      * stream buffer.

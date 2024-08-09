@@ -63,25 +63,30 @@ To read video frames from a movie file, you have to perform the following steps:
    movie file.
 
 ```java
-    BufferedImage[]readMovie(File file)throws IOException{
-        ArrayList<BufferedImage> frames=new ArrayList<BufferedImage> ();
-        MovieReader in=Registry.getInstance().getReader(file);
-        Format format=new Format(DataClassKey,BufferedImage.class);
-        int track=in.findTrack(0,new Format(MediaTypeKey,MediaType.VIDEO));
-        Codec codec=Registry.getInstance().getCodec(in.getFormat(track),format);
-        try{
-        Buffer inbuf=new Buffer();Buffer codecbuf=new Buffer();
-        do{
-        in.read(track,inbuf);
-        codec.process(inbuf,codecbuf);
-        if(!codecbuf.isFlag(BufferFlag.DISCARD)){
-        frames.add(Images.cloneImage((BufferedImage)codecbuf.data));
+class HowToReadVideoFramesFromAMovieFile {
+
+    BufferedImage[] readMovie(File file) throws IOException {
+        ArrayList<BufferedImage> frames = new ArrayList<BufferedImage>();
+        MovieReader in = Registry.getInstance().getReader(file);
+        Format format = new Format(DataClassKey, BufferedImage.class);
+        int track = in.findTrack(0, new Format(MediaTypeKey, MediaType.VIDEO));
+        Codec codec = Registry.getInstance().getCodec(in.getFormat(track), format);
+        try {
+            Buffer inbuf = new Buffer();
+            Buffer codecbuf = new Buffer();
+            do {
+                in.read(track, inbuf);
+                codec.process(inbuf, codecbuf);
+                if (!codecbuf.isFlag(BufferFlag.DISCARD)) {
+                    frames.add(Images.cloneImage((BufferedImage) codecbuf.data));
+                }
+            } while (!inbuf.isFlag(BufferFlag.END_OF_MEDIA));
+        } finally {
+            in.close();
         }
-        }while(!inbuf.isFlag(BufferFlag.END_OF_MEDIA));
-        }finally{
-        in.close();
-        }
-        return frames.toArray(new BufferedImage[frames.size()]);}
+        return frames.toArray(new BufferedImage[frames.size()]);
+    }
+}
 ```
 
 ### Writing video frames into a movie file
@@ -96,23 +101,27 @@ To write video frames from into movie file, you have to perform the following st
 The example code below shows how to write an array of BufferedImages into a movie file.
 
 ```java
-void writeMovie(File file,BufferedImage[]frames)throws IOException{
-        MovieWriter out=Registry.getInstance().getWriter(file);
-        Format format=new Format(MediaTypeKey,MediaType.VIDEO, // EncodingKey, ENCODING_AVI_MJPG,
-        FrameRateKey,new Rational(30,1),//
-        WidthKey,frames[0].getWidth(), //
-        HeightKey,frames[0].getHeight(),// DepthKey, 24
+class HowToWriteVideoFramesIntoAMovieFile {
+    
+    void writeMovie(File file, BufferedImage[] frames) throws IOException {
+        MovieWriter out = Registry.getInstance().getWriter(file);
+        Format format = new Format(MediaTypeKey, MediaType.VIDEO, // EncodingKey, ENCODING_AVI_MJPG,
+                FrameRateKey, new Rational(30, 1),//
+                WidthKey, frames[0].getWidth(), //
+                HeightKey, frames[0].getHeight()
         );
-        int track=out.addTrack(format);
-        try{
-        Buffer buf=new Buffer();
-        buf.format=new Format(DataClassKey,BufferedImage.class);buf.sampleDuration=format.get(FrameRateKey).inverse();
-        for(int i=0;i<frames.length;i++){
-        buf.data=frames[i];
-        out.write(track,buf);
+        int track = out.addTrack(format);
+        try {
+            Buffer buf = new Buffer();
+            buf.format = new Format(DataClassKey, BufferedImage.class);
+            buf.sampleDuration = format.get(FrameRateKey).inverse();
+            for (int i = 0; i < frames.length; i++) {
+                buf.data = frames[i];
+                out.write(track, buf);
+            }
+        } finally {
+            out.close();
         }
-        }finally{
-        out.close();
-        }
-        }
+    }
+}
 ```

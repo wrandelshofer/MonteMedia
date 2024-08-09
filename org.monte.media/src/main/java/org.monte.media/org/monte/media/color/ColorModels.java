@@ -30,9 +30,8 @@ public class ColorModels {
      * Returns a descriptive string for the provided color model.
      */
     public static String toString(ColorModel cm) {
-        StringBuffer buf = new StringBuffer();
-        if (cm instanceof DirectColorModel) {
-            DirectColorModel dcm = (DirectColorModel) cm;
+        StringBuilder buf = new StringBuilder();
+        if (cm instanceof DirectColorModel dcm) {
             buf.append("Direct Color Model ");
 
             int[] masks = dcm.getMasks();
@@ -58,12 +57,11 @@ public class ColorModels {
             buf.append(totalBits);
             buf.append(" Bit ");
             Arrays.sort(entries);
-            for (int i = 0; i < entries.length; i++) {
-                buf.append(entries[i]);
+            for (MaskEntry entry : entries) {
+                buf.append(entry);
             }
-        } else if (cm instanceof IndexColorModel) {
+        } else if (cm instanceof IndexColorModel icm) {
             buf.append("Index Color Model ");
-            IndexColorModel icm = (IndexColorModel) cm;
             int mapSize = icm.getMapSize();
             buf.append(icm.getMapSize());
             buf.append(" Colors");

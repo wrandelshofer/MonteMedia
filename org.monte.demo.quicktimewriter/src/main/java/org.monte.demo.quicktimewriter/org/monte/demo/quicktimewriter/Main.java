@@ -105,11 +105,11 @@ public class Main {
             out.setVideoColorTable(0, img.getColorModel());
 
             // Draw the animation
-            for (int i = 0, n = 200; i < n; i++) {
+            for (int i = 0, n = 61; i < n; i++) {
                 double t = (double) i / n - 1;
                 drawAnimationFrame(img, g, t);
 
-                // write it to the writer
+                // write image to the writer
                 out.write(0, img, 1);
             }
 

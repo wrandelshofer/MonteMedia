@@ -24,7 +24,7 @@ import java.io.InputStream;
  */
 public class RIFFPrimitivesInputStream extends FilterInputStream {
     private long scan, mark;
-    private byte byteBuffer[] = new byte[8];
+    private final byte[] byteBuffer = new byte[8];
 
     /**
      * Creates a new instance.
