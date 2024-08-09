@@ -6,7 +6,6 @@ package org.monte.media.jpeg;
 
 import org.monte.media.image.CMYKImages;
 import org.monte.media.io.ByteArrayImageInputStream;
-import org.monte.media.io.IOStreams;
 import org.monte.media.io.ImageInputStreamAdapter;
 import org.monte.media.jfif.JFIFInputStream;
 
@@ -225,7 +224,7 @@ public class CMYKJPEGImageReader extends ImageReader {
 
             // Read Adobe ICC_PROFILE int buffer. The profile is split up over
             // multiple APP2 marker segments.
-            IOStreams.copy(dis, app2ICCProfile);
+            dis.transferTo(app2ICCProfile);
           }
         }
       } else if (seg.marker == 0xffee) {

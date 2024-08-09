@@ -264,7 +264,6 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
      * @throws IllegalArgumentException if the width or the height is smaller
      *                                  than 1.
      */
-    @Deprecated
     public int addVideoTrack(Format format, long timeScale, int width, int height) throws IOException {
         return addVideoTrack(format.get(EncodingKey), format.get(CompressorNameKey), timeScale, width, height, 24, 30);
     }
@@ -279,7 +278,6 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
      * @throws IllegalArgumentException if the width or the height is smaller
      *                                  than 1.
      */
-    @Deprecated
     public int addVideoTrack(Format format, int width, int height, int depth, int syncInterval) throws IOException {
         return addVideoTrack(format.get(EncodingKey), format.get(CompressorNameKey), format.get(FrameRateKey).getDenominator() * format.get(FrameRateKey).getNumerator(), width, height, depth, syncInterval);
     }
@@ -294,7 +292,6 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
      * @param format The javax.sound audio format.
      * @return Returns the track index.
      */
-    @Deprecated
     public int addAudioTrack(javax.sound.sampled.AudioFormat format) throws IOException {
         ensureStarted();
         String qtAudioFormat;
@@ -314,45 +311,33 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
                 throw new IllegalArgumentException("Sample size of 8 for ALAW required:" + sampleSizeInBits);
             }
         } else if (javax.sound.sampled.AudioFormat.Encoding.PCM_SIGNED.equals(enc)) {
-            switch (sampleSizeInBits) {
-                case 8:// Requires conversion to PCM_UNSIGNED!
-                    qtAudioFormat = "raw ";
-                    break;
-                case 16:
-                    qtAudioFormat = (byteOrder == ByteOrder.BIG_ENDIAN) ? "twos" : "sowt";
-                    break;
-                case 24:
-                    qtAudioFormat = "in24";
-                    break;
-                case 32:
-                    qtAudioFormat = "in32";
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unsupported sample size for PCM_SIGNED:" + sampleSizeInBits);
-            }
+            qtAudioFormat = switch (sampleSizeInBits) {
+                case 8 ->// Requires conversion to PCM_UNSIGNED!
+                        "raw ";
+                case 16 -> (byteOrder == ByteOrder.BIG_ENDIAN) ? "twos" : "sowt";
+                case 24 -> "in24";
+                case 32 -> "in32";
+                default ->
+                        throw new IllegalArgumentException("Unsupported sample size for PCM_SIGNED:" + sampleSizeInBits);
+            };
         } else if (javax.sound.sampled.AudioFormat.Encoding.PCM_UNSIGNED.equals(enc)) {
-            switch (sampleSizeInBits) {
-                case 8:
-                    qtAudioFormat = "raw ";
-                    break;
-                case 16:// Requires conversion to PCM_SIGNED!
-                    qtAudioFormat = (byteOrder == ByteOrder.BIG_ENDIAN) ? "twos" : "sowt";
-                    break;
-                case 24:// Requires conversion to PCM_SIGNED!
-                    qtAudioFormat = "in24";
-                    break;
-                case 32:// Requires conversion to PCM_SIGNED!
-                    qtAudioFormat = "in32";
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unsupported sample size for PCM_UNSIGNED:" + sampleSizeInBits);
-            }
+            qtAudioFormat = switch (sampleSizeInBits) {
+                case 8 -> "raw ";
+                case 16 ->// Requires conversion to PCM_SIGNED!
+                        (byteOrder == ByteOrder.BIG_ENDIAN) ? "twos" : "sowt";
+                case 24 ->// Requires conversion to PCM_SIGNED!
+                        "in24";
+                case 32 ->// Requires conversion to PCM_SIGNED!
+                        "in32";
+                default ->
+                        throw new IllegalArgumentException("Unsupported sample size for PCM_UNSIGNED:" + sampleSizeInBits);
+            };
         } else if (javax.sound.sampled.AudioFormat.Encoding.ULAW.equals(enc)) {
             if (sampleSizeInBits != 8) {
                 throw new IllegalArgumentException("Sample size of 8 for ULAW required:" + sampleSizeInBits);
             }
             qtAudioFormat = "ulaw";
-        } else if ("MP3".equals(enc == null ? null : enc.toString())) {
+        } else if ("MP3".equals(enc.toString())) {
             qtAudioFormat = ".mp3";
         } else {
             qtAudioFormat = format.getEncoding().toString();

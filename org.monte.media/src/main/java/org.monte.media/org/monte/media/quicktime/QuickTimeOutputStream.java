@@ -5,8 +5,6 @@
 package org.monte.media.quicktime;
 
 import org.monte.media.av.Format;
-import org.monte.media.av.FormatKeys.MediaType;
-import org.monte.media.io.IOStreams;
 import org.monte.media.io.ImageOutputStreamAdapter;
 import org.monte.media.math.Rational;
 
@@ -29,6 +27,7 @@ import static java.lang.Math.max;
 import static org.monte.media.av.FormatKeys.EncodingKey;
 import static org.monte.media.av.FormatKeys.FrameRateKey;
 import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
+import static org.monte.media.av.FormatKeys.MediaType;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.FormatKeys.MimeTypeKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.ByteOrderKey;
@@ -350,7 +349,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
      * encoded with lossless encoders such as the PNG format. <p> The default
      * value is 0.97.
      *
-     * @param newValue
+     * @param newValue the new value
      */
     public void setCompressionQuality(int track, float newValue) {
         VideoTrack vt = (VideoTrack) tracks.get(track);
@@ -374,14 +373,14 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
      *              write all samples as sync samples. n = sync every n-th sample.
      */
     public void setSyncInterval(int track, int i) {
-        ((VideoTrack) tracks.get(track)).syncInterval = i;
+        tracks.get(track).syncInterval = i;
     }
 
     /**
      * Gets the sync interval from the specified video track.
      */
     public int getSyncInterval(int track) {
-        return ((VideoTrack) tracks.get(track)).syncInterval;
+        return tracks.get(track).syncInterval;
     }
 
     /**
@@ -653,7 +652,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         ensureStarted();
         long offset = getRelativeStreamPosition();
         OutputStream mdatOut = mdatAtom.getOutputStream();
-        IOStreams.copy(in, mdatOut);
+        in.transferTo(mdatOut);
         long length = getRelativeStreamPosition() - offset;
         t.addSample(new Sample(duration, offset, length), 1, isSync);
     }
@@ -1018,10 +1017,8 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         }
 
         // Optional color table atom
-        for (int i = 0, n = tracks.size(); i < n; i++) {
-            Track t = tracks.get(i);
-            if (t instanceof VideoTrack) {
-                VideoTrack vt = (VideoTrack) t;
+        for (Track t : tracks) {
+            if (t instanceof VideoTrack vt) {
                 if (vt.videoColorTable != null) {
                     vt.writeColorTableAtom(moovAtom);
                     break;
@@ -1158,10 +1155,10 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         // See Figure 2-8 for an illustration of a matrix structure:
         // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap2/chapter_3_section_3.html#//apple_ref/doc/uid/TP40000939-CH204-32967
 
-        d.writeFixed16D16(t.mediaType == MediaType.VIDEO ? ((VideoTrack) t).width : 0); // width
+        d.writeFixed16D16(t.mediaType == MediaType.VIDEO ? t.width : 0); // width
         // A 32-bit fixed-point number that specifies the width of this track in pixels.
 
-        d.writeFixed16D16(t.mediaType == MediaType.VIDEO ? ((VideoTrack) t).height : 0); // height
+        d.writeFixed16D16(t.mediaType == MediaType.VIDEO ? t.height : 0); // height
         // A 32-bit fixed-point number that indicates the height of this track in pixels.
 
         /* Edit Atom ========= */
@@ -1202,10 +1199,10 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
             d.writeFixed16D16(1); // mediaRate
         } else {
             d.writeUInt(elist.length); // numberOfEntries
-            for (int i = 0; i < elist.length; ++i) {
-                d.writeUInt(elist[i].trackDuration); // trackDuration
-                d.writeUInt(elist[i].mediaTime); // mediaTime
-                d.writeUInt(elist[i].mediaRate); // mediaRate
+            for (Edit edit : elist) {
+                d.writeUInt(edit.trackDuration); // trackDuration
+                d.writeUInt(edit.mediaTime); // mediaTime
+                d.writeUInt(edit.mediaRate); // mediaRate
             }
         }
 
@@ -1265,7 +1262,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         // A 16-bit integer that specifies the media’s playback quality—that is,
         // its suitability for playback in a given environment.
 
-        /**
+        /*
          * Media Handler Reference Atom -------
          */
         leaf = new DataAtom("hdlr");
@@ -1336,14 +1333,9 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
         /* Video or Audio media information atom -------- */
         switch (t.mediaType) {
-            case VIDEO:
-                writeVideoMediaInformationHeaderAtom(trackIndex, minfAtom);
-                break;
-            case AUDIO:
-                writeSoundMediaInformationHeaderAtom(trackIndex, minfAtom);
-                break;
-            default:
-                throw new UnsupportedOperationException("Media type " + t.mediaType + " not supported yet.");
+            case VIDEO -> writeVideoMediaInformationHeaderAtom(trackIndex, minfAtom);
+            case AUDIO -> writeSoundMediaInformationHeaderAtom(trackIndex, minfAtom);
+            default -> throw new UnsupportedOperationException("Media type " + t.mediaType + " not supported yet.");
         }
 
 
@@ -1920,7 +1912,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
                     }
                 }
 
-                if (maxIteration < 0 || buf.size() == 0) {
+                if (buf.size() == 0) {
                     compressHeader = false;
                     System.err.println("WARNING QuickTimeWriter failed to compress header.");
                 } else {
@@ -1952,7 +1944,6 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
                         daos.write(0);
                     }
                 }
-
             }
             if (!compressHeader) {
                 out = new FileImageOutputStream(outputFile);

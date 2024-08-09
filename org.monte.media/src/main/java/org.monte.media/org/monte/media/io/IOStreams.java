@@ -8,7 +8,6 @@ import javax.imageio.stream.ImageOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
@@ -27,25 +26,6 @@ public class IOStreams {
      */
     public static void copy(File source, File target) throws IOException {
         Files.copy(source.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
-    }
-
-    /**
-     * Copies the remainder of the source stream into the provided target
-     * stream.
-     *
-     * @param source the source stream
-     * @param target the target stream
-     * @return number of copied bytes
-     * @throws IOException if an I/O error occurs
-     */
-    public static long copy(InputStream source, OutputStream target) throws IOException {
-        long n = 0L;
-        byte[] b = new byte[8192];
-        for (int count = source.read(b); count != -1; count = source.read(b)) {
-            target.write(b, 0, count);
-            n += count;
-        }
-        return n;
     }
 
     /**
