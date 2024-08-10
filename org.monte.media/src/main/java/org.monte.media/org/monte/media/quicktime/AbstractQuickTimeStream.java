@@ -840,15 +840,15 @@ public class AbstractQuickTimeStream {
 
             //
             if (timeToSamples.isEmpty()//
-                    || !timeToSamples.get(timeToSamples.size() - 1).maybeAddSample(sample)) {
+                    || !timeToSamples.getLast().maybeAddSample(sample)) {
                 timeToSamples.add(new TimeToSampleGroup(sample));
             }
             if (sampleSizes.isEmpty()//
-                    || !sampleSizes.get(sampleSizes.size() - 1).maybeAddSample(sample)) {
+                    || !sampleSizes.getLast().maybeAddSample(sample)) {
                 sampleSizes.add(new SampleSizeGroup(sample));
             }
             if (chunks.isEmpty()//
-                    || !chunks.get(chunks.size() - 1).maybeAddSample(sample, sampleDescriptionId)) {
+                    || !chunks.getLast().maybeAddSample(sample, sampleDescriptionId)) {
                 chunks.add(new Chunk(sample, sampleDescriptionId));
             }
         }
@@ -876,15 +876,15 @@ public class AbstractQuickTimeStream {
 
             //
             if (timeToSamples.isEmpty()//
-                    || !timeToSamples.get(timeToSamples.size() - 1).maybeAddChunk(chunk)) {
+                    || !timeToSamples.getLast().maybeAddChunk(chunk)) {
                 timeToSamples.add(new TimeToSampleGroup(chunk));
             }
             if (sampleSizes.isEmpty()//
-                    || !sampleSizes.get(sampleSizes.size() - 1).maybeAddChunk(chunk)) {
+                    || !sampleSizes.getLast().maybeAddChunk(chunk)) {
                 sampleSizes.add(new SampleSizeGroup(chunk));
             }
             if (chunks.isEmpty()//
-                    || !chunks.get(chunks.size() - 1).maybeAddChunk(chunk)) {
+                    || !chunks.getLast().maybeAddChunk(chunk)) {
                 chunks.add(chunk);
             }
         }

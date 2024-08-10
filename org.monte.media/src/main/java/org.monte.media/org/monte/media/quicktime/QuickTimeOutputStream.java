@@ -1748,13 +1748,13 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
                 ? ((AudioTrack) t).soundSampleSize / 8 * ((AudioTrack) t).soundNumberOfChannels//
                 : 1;
         if (t.sampleSizes.size() == 1) {
-            d.writeUInt(t.sampleSizes.get(0).getSampleLength() / sampleUnit); // sample size
+            d.writeUInt(t.sampleSizes.getFirst().getSampleLength() / sampleUnit); // sample size
             // A 32-bit integer specifying the sample size. If all the samples are
             // the same size, this field contains that size value. If this field is
             // set to 0, then the samples have different sizes, and those sizes are
             // stored in the sample size table.
 
-            d.writeUInt(t.sampleSizes.get(0).getSampleCount()); // number of entries
+            d.writeUInt(t.sampleSizes.getFirst().getSampleCount()); // number of entries
             // A 32-bit integer containing the count of entries in the sample size
             // table.
 
@@ -1792,7 +1792,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         // 32-bit or 64-bit offsets. The latter is useful when managing very
         // large movies. Only one of these variants occurs in any single
         // instance of a sample table atom.
-        if (t.chunks.isEmpty() || t.chunks.get(t.chunks.size() - 1).getChunkOffset() <= 0xffffffffL) {
+        if (t.chunks.isEmpty() || t.chunks.getLast().getChunkOffset() <= 0xffffffffL) {
             /* 32-bit chunk offset atom -------- */
             leaf = new DataAtom("stco");
             stblAtom.add(leaf);

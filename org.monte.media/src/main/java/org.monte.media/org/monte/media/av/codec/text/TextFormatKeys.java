@@ -14,6 +14,7 @@ import org.monte.media.av.FormatKeys;
 public class TextFormatKeys extends FormatKeys {
     // Standard text ENCODING strings for use with FormatKey.Encoding.
     public static final String ENCODING_STRING = "String";
+    public static final String ENCODING_HTML = "HTML";
     /**
      * Apple Closed Caption format.
      */

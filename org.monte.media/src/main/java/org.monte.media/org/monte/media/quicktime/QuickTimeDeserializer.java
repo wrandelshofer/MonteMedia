@@ -157,7 +157,7 @@ public class QuickTimeDeserializer {
                 // Perform recursion:
                 parseRecursively(in, atom.size - atom.headerSize, m);
             } else {
-                QuickTimeMeta.Track track = (m.tracks.isEmpty()) ? null : m.tracks.get(m.tracks.size() - 1);
+                QuickTimeMeta.Track track = (m.tracks.isEmpty()) ? null : m.tracks.getLast();
                 QuickTimeMeta.Media media = (track == null) ? null : track.media;
 
                 if (null != t) {

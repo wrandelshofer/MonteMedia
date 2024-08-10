@@ -35,7 +35,7 @@ public abstract class Registry {
      */
     public final Codec getCodec(Format inputFormat, Format outputFormat) {
         List<Codec> codecs = getCodecs(inputFormat, outputFormat);
-        return codecs.isEmpty() ? null : codecs.get(0);
+        return codecs.isEmpty() ? null : codecs.getFirst();
     }
 
     /**
@@ -105,13 +105,17 @@ public abstract class Registry {
      *
      * @param fileFormat the desired file format.
      * @param file       the desired file
-     * @return a reader or null
+     * @return a reader
+     * @throws IOException if no reader could be found
      */
     public abstract MovieReader getReader(Format fileFormat, File file) throws IOException;
 
     public MovieReader getReader(File file) throws IOException {
         Format format = getFileFormat(file);
-        return format == null ? null : getReader(format, file);
+        if (format == null) {
+            throw new IOException("Could not identify the file format of file " + file + ".");
+        }
+        return getReader(format, file);
     }
 
     public abstract List<Format> getReaderFormats();
@@ -152,7 +156,7 @@ public abstract class Registry {
                 if (mf.matches(matchFormat)) {
                     if (inputMediaFormat.matchesWithout(mf, MimeTypeKey)) {
                         // add matching formats first
-                        formats.add(0, mf.append(inputMediaFormat));
+                        formats.addFirst(mf.append(inputMediaFormat));
                         matchingCount++;
                     } else if (inputMediaFormat.matchesWithout(mf, MimeTypeKey, EncodingKey)) {
                         // add formats which match everything but the encoding second
@@ -180,11 +184,27 @@ public abstract class Registry {
         return formats;
     }
 
+    /**
+     * Gets the registry instance.
+     * <p>
+     * Will create and return a {@link DefaultRegistry} if no instance has been set.
+     *
+     * @return the instance
+     */
     public static Registry getInstance() {
         if (instance == null) {
             instance = new DefaultRegistry();
         }
         return instance;
+    }
+
+    /**
+     * Sets the registry instance.
+     *
+     * @param instanceNullable a new instance or null
+     */
+    public void setInstance(Registry instanceNullable) {
+        instance = instanceNullable;
     }
 
 }

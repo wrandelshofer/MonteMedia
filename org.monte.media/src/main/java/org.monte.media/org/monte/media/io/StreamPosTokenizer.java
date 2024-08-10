@@ -1082,6 +1082,6 @@ public class StreamPosTokenizer
                 break;
             }
         }
-        return "Token[" + ret + "], line " + lineno;
+        return "Cta608Token[" + ret + "], line " + lineno;
     }
 }

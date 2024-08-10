@@ -143,7 +143,7 @@ public class MJPGImageReader extends ImageReader {
                 image.flush();
             }
         } catch (Throwable ex) {
-            // we don't care about exceptions here, because we don't need
+            // we don't care about exceptions here, because we don't need the
             // image anymore
         } finally {
             image = null;

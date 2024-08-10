@@ -16,9 +16,8 @@ import java.util.ServiceLoader;
 import java.util.Set;
 
 /**
- * {@code DefaultRegistry}.
- * <p>
- * FIXME - The registry should be read from a file.
+ * This default {@link Registry} uses {@link ServiceLoader} to discover
+ * {@link CodecSpi}s, {@link MovieReaderSpi}s, and {@link MovieWriterSpi}s.
  *
  * @author Werner Randelshofer
  */
@@ -44,10 +43,10 @@ public class DefaultRegistry extends Registry {
         if (mimeTypeToExtensionMap == null) {
             mimeTypeToExtensionMap = new LinkedHashMap<>();
             for (MovieReaderSpi spi : getReaderSpis()) {
-                mimeTypeToExtensionMap.put(spi.getFileFormat().get(FormatKeys.MimeTypeKey), spi.getExtensions().isEmpty() ? "" : spi.getExtensions().get(0));
+                mimeTypeToExtensionMap.put(spi.getFileFormat().get(FormatKeys.MimeTypeKey), spi.getExtensions().isEmpty() ? "" : spi.getExtensions().getFirst());
             }
             for (MovieWriterSpi spi : getWriterSpis()) {
-                mimeTypeToExtensionMap.put(spi.getFileFormat().get(FormatKeys.MimeTypeKey), spi.getExtensions().isEmpty() ? "" : spi.getExtensions().get(0));
+                mimeTypeToExtensionMap.put(spi.getFileFormat().get(FormatKeys.MimeTypeKey), spi.getExtensions().isEmpty() ? "" : spi.getExtensions().getFirst());
             }
         }
         return mimeTypeToExtensionMap;
@@ -148,7 +147,7 @@ public class DefaultRegistry extends Registry {
                 return spi.create(file);
             }
         }
-        return null;
+        throw new IOException("Could not find a reader with format " + fileFormat + " for file " + file + ".");
     }
 
     @Override

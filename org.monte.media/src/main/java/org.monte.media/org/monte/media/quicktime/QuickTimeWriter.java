@@ -49,6 +49,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_PNG;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_RAW;
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.PaletteKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.QualityKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
@@ -266,7 +267,9 @@ public class QuickTimeWriter implements MovieWriter {
      *                                  than 1.
      */
     public int addVideoTrack(Format format, long timeScale, int width, int height) throws IOException {
-        return out.addVideoTrack(format.get(EncodingKey), format.get(CompressorNameKey), timeScale, width, height, 24, 30);
+        int tr = out.addVideoTrack(format.get(EncodingKey), format.get(CompressorNameKey), timeScale, width, height, 24, 30);
+        out.setVideoColorTable(tr, format.get(PaletteKey));
+        return tr;
     }
 
     /**
@@ -280,7 +283,9 @@ public class QuickTimeWriter implements MovieWriter {
      *                                  than 1.
      */
     public int addVideoTrack(Format format, int width, int height, int depth, int syncInterval) throws IOException {
-        return out.addVideoTrack(format.get(EncodingKey), format.get(CompressorNameKey), format.get(FrameRateKey).getDenominator() * format.get(FrameRateKey).getNumerator(), width, height, depth, syncInterval);
+        int tr = out.addVideoTrack(format.get(EncodingKey), format.get(CompressorNameKey), format.get(FrameRateKey).getDenominator() * format.get(FrameRateKey).getNumerator(), width, height, depth, syncInterval);
+        out.setVideoColorTable(tr, format.get(PaletteKey));
+        return tr;
     }
 
     /**

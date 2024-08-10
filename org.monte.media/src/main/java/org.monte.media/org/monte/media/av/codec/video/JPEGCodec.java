@@ -11,6 +11,7 @@ import org.monte.media.io.ByteArrayImageInputStream;
 import org.monte.media.io.ByteArrayImageOutputStream;
 import org.monte.media.mjpg.MJPGImageReader;
 import org.monte.media.mjpg.MJPGImageReaderSpi;
+import org.monte.media.util.ArrayUtil;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -28,7 +29,16 @@ import static org.monte.media.av.FormatKeys.MIME_JAVA;
 import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.FormatKeys.MimeTypeKey;
-import static org.monte.media.av.codec.video.VideoFormatKeys.*;
+import static org.monte.media.av.codec.video.VideoFormatKeys.COMPRESSOR_NAME_QUICKTIME_JPEG;
+import static org.monte.media.av.codec.video.VideoFormatKeys.CompressorNameKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_MJPG;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_JPEG;
+import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.QualityKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
 /**
  * {@code JPEGCodec} encodes a BufferedImage as a byte[] array.
@@ -110,12 +120,7 @@ public class JPEGCodec extends AbstractVideoCodec {
             out.setFlag(DISCARD);
             return CODEC_FAILED;
         }
-        ByteArrayImageOutputStream tmp;
-        if (out.data instanceof byte[]) {
-            tmp = new ByteArrayImageOutputStream((byte[]) out.data);
-        } else {
-            tmp = new ByteArrayImageOutputStream();
-        }
+        ByteArrayImageOutputStream tmp = new ByteArrayImageOutputStream(ArrayUtil.reuseByteArray(out.data, 32));
 
         try {
             ImageWriter iw = ImageIO.getImageWritersByMIMEType("image/jpeg").next();

@@ -100,7 +100,7 @@ public class AmigaBitmapCodec extends AbstractVideoCodec {
                     try {
                         ILBMDecoder d = new ILBMDecoder(ins);
                         ArrayList<AmigaBitmapImage> imgs = d.produceBitmaps();
-                        AmigaBitmapImage img = imgs.get(0);
+                        AmigaBitmapImage img = imgs.getFirst();
                         out.data = img;
                         success = true;
                     } catch (IOException e) {
@@ -114,7 +114,7 @@ public class AmigaBitmapCodec extends AbstractVideoCodec {
                     try {
                         PBMDecoder d = new PBMDecoder(ins);
                         ArrayList<ColorCyclingMemoryImageSource> imgs = d.produce();
-                        ColorCyclingMemoryImageSource mis = imgs.get(0);
+                        ColorCyclingMemoryImageSource mis = imgs.getFirst();
 
                         out.data = AmigaBitmapImageFactory.toBitmapImage(mis);
                         success = true;
@@ -159,7 +159,7 @@ public class AmigaBitmapCodec extends AbstractVideoCodec {
                     try {
                         ILBMDecoder d = new ILBMDecoder(ins);
                         ArrayList<AmigaBitmapImage> imgs = d.produceBitmaps();
-                        AmigaBitmapImage img = imgs.get(0);
+                        AmigaBitmapImage img = imgs.getFirst();
                         out.data = AmigaBitmapImageFactory.toBufferedImage(img);
                         success = true;
                     } catch (IOException e) {
@@ -173,7 +173,7 @@ public class AmigaBitmapCodec extends AbstractVideoCodec {
                     try {
                         PBMDecoder d = new PBMDecoder(ins);
                         ArrayList<ColorCyclingMemoryImageSource> imgs = d.produce();
-                        ColorCyclingMemoryImageSource mis = imgs.get(0);
+                        ColorCyclingMemoryImageSource mis = imgs.getFirst();
                         out.data = AmigaBitmapImageFactory.toBufferedImage(
                                 AmigaBitmapImageFactory.toBitmapImage(mis));
                         success = true;

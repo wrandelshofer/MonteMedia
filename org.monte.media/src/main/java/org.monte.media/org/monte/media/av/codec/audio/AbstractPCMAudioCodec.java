@@ -9,12 +9,14 @@ import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.io.ByteArrayImageInputStream;
 import org.monte.media.io.ByteArrayImageOutputStream;
+import org.monte.media.util.ArrayUtil;
 
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.nio.ByteOrder;
+import java.util.Objects;
 
 import static org.monte.media.av.BufferFlag.DISCARD;
 import static org.monte.media.av.BufferFlag.KEYFRAME;
@@ -35,8 +37,9 @@ import static org.monte.media.av.codec.audio.AudioFormatKeys.toAudioFormat;
 
 /**
  * {@code AbstractPCMAudioCodec} performs sign conversion, endian conversion and
- * quantization conversion of PCM audio data. <p> Does not perform sampling rate
- * conversion or channel conversion.
+ * quantization conversion of PCM audio data.
+ * <p>
+ * Does not perform sampling rate conversion or channel conversion.
  *
  * @author Werner Randelshofer
  */
@@ -80,36 +83,27 @@ public abstract class AbstractPCMAudioCodec extends AbstractAudioCodec {
             return CODEC_FAILED;
             //throw new UnsupportedOperationException("Sample Rate conversion not supported. in:" + inFormat + ", out:" + outFormat);
         }
-        if (inFormat.get(ChannelsKey) != outFormat.get(ChannelsKey)) {
+        if (!Objects.equals(inFormat.get(ChannelsKey), outFormat.get(ChannelsKey))) {
             out.setFlag(DISCARD);
             return CODEC_FAILED;
             //throw new UnsupportedOperationException("Channel conversion not supported. in:" + inFormat + ", out:" + outFormat);
         }
-        String inEnc = inFormat.get(EncodingKey);
-        String outEnc = outFormat.get(EncodingKey);
 
         boolean fixSilenceBug = inFormat.get(SilenceBugKey, false);
         
-        /*
-         if (!supportedEncodings.contains(inEnc)
-         || !supportedEncodings.contains(outEnc)) {
-         throw new UnsupportedOperationException("Unsupported encoding. in:" + inFormat + ", out:" + outFormat);
-         }*/
-
-
         byte[] inData = (byte[]) in.data;
-        byte[] outData = (out.data instanceof byte[]) ? (byte[]) out.data : new byte[inData.length];
+        byte[] outData = ArrayUtil.reuseByteArray(out.data, inData.length);
         if (outData.length < inData.length * outFormat.get(FrameSizeKey) / inFormat.get(FrameSizeKey)) {
             outData = new byte[inData.length * outFormat.get(FrameSizeKey) / inFormat.get(FrameSizeKey)];
         }
 
         // Fast array copy if formats are identical 
-        // or if 8 bit data with endian differences
+        // or if 8-bit data with endian differences
         if (toAudioFormat(inFormat).matches(toAudioFormat(outFormat))) {
             System.arraycopy(inData, in.offset, outData, 0, in.length);
         } else {
 
-            // Byte order conversion is done by ImageInputStream/ImageOutputStream.
+            // Byte order conversion is done using ImageInputStream/ImageOutputStream.
             ByteOrder inOrder = inFormat.get(ByteOrderKey);
             boolean inSigned = inFormat.get(SignedKey);
             ByteArrayImageInputStream inStream = new ByteArrayImageInputStream(inData, in.offset, in.length, inOrder);

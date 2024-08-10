@@ -449,7 +449,7 @@ public class AVIOutputStream extends AbstractAVIStream {
             // If a keyframe sample is immediately preceeded by a palette change
             // we can raise the palette change to a keyframe.
             if (tr.samples.size() > 0) {
-                Sample s = tr.samples.get(tr.samples.size() - 1);
+                Sample s = tr.samples.getLast();
                 if ((s.chunkType & 0xffff) == PC_ID) {
                     s.isKeyframe = true;
                 }
@@ -573,7 +573,7 @@ public class AVIOutputStream extends AbstractAVIStream {
 
         long duration = tr.startTime;
         if (!tr.samples.isEmpty()) {
-            Sample s = tr.samples.get(tr.samples.size() - 1);
+            Sample s = tr.samples.getLast();
             duration += s.timeStamp + s.duration;
         }
         return duration;
@@ -805,7 +805,7 @@ public class AVIOutputStream extends AbstractAVIStream {
 
 
             // FIXME compute dwMicroSecPerFrame properly!
-            Track tt = tracks.get(0);
+            Track tt = tracks.getFirst();
 
             d.writeInt((int) ((1000000L * tt.scale) / tt.rate)); // dwMicroSecPerFrame
             // Specifies the number of microseconds between frames.

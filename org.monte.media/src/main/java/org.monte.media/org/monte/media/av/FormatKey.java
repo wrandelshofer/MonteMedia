@@ -4,8 +4,6 @@
  */
 package org.monte.media.av;
 
-import java.io.Serializable;
-
 /**
  * A <em>FormatKey</em> provides type-safe access to an attribute of
  * a {@link Format}.
@@ -14,27 +12,32 @@ import java.io.Serializable;
  *
  * @author Werner Randelshofer
  */
-public class FormatKey<T> implements Serializable, Comparable<FormatKey<T>> {
+public class FormatKey<T> {
 
     public static final long serialVersionUID = 1L;
     /**
      * Holds a String representation of the attribute key.
      */
-    private String key;
+    private final String key;
     /**
      * Holds a pretty name. This can be null, if the value is self-explaining.
      */
-    private String name;
+    private final String name;
     /**
      * This variable is used as a "type token" so that we can check for
      * assignability of attribute values at runtime.
      */
-    private Class<T> clazz;
+    private final Class<T> clazz;
 
     /**
      * Comment keys are ignored when matching two media formats with each other.
      */
-    private boolean comment;
+    private final boolean comment;
+
+    /**
+     * True if this key allows null values.
+     */
+    private final boolean nullable;
 
     /**
      * Creates a new instance with the specified attribute key, type token class,
@@ -49,18 +52,19 @@ public class FormatKey<T> implements Serializable, Comparable<FormatKey<T>> {
      * default value null, and allowing null values.
      */
     public FormatKey(String key, String name, Class<T> clazz) {
-        this(key, name, clazz, false);
+        this(key, name, clazz, false, false);
     }
 
     /**
      * Creates a new instance with the specified attribute key, type token class,
      * default value null, and whether the key is just a comment.
      */
-    public FormatKey(String key, String name, Class<T> clazz, boolean comment) {
+    public FormatKey(String key, String name, Class<T> clazz, boolean comment, boolean nullable) {
         this.key = key;
         this.name = name;
         this.clazz = clazz;
         this.comment = comment;
+        this.nullable = nullable;
     }
 
     /**
@@ -96,7 +100,7 @@ public class FormatKey<T> implements Serializable, Comparable<FormatKey<T>> {
      * @return True if assignable.
      */
     public boolean isAssignable(Object value) {
-        return clazz.isInstance(value);
+        return value == null && nullable || clazz.isInstance(value);
     }
 
     public boolean isComment() {
@@ -106,10 +110,5 @@ public class FormatKey<T> implements Serializable, Comparable<FormatKey<T>> {
 
     public Class<T> getValueClass() {
         return clazz;
-    }
-
-    @Override
-    public int compareTo(FormatKey<T> that) {
-        return this.key.compareTo(that.key);
     }
 }

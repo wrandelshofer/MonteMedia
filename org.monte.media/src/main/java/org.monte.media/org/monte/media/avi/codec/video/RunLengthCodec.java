@@ -9,9 +9,10 @@ import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.av.codec.video.AbstractVideoCodec;
 import org.monte.media.io.ByteArrayImageOutputStream;
+import org.monte.media.util.ArrayUtil;
 
 import javax.imageio.stream.ImageOutputStream;
-import java.awt.*;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
@@ -169,12 +170,7 @@ public class RunLengthCodec extends AbstractVideoCodec {
             return CODEC_OK;
         }
 
-        ByteArrayImageOutputStream tmp;
-        if (out.data instanceof byte[]) {
-            tmp = new ByteArrayImageOutputStream((byte[]) out.data);
-        } else {
-            tmp = new ByteArrayImageOutputStream();
-        }
+        ByteArrayImageOutputStream tmp = new ByteArrayImageOutputStream(ArrayUtil.reuseByteArray(out.data, 32));
 
         // Handle sub-image
         Rectangle r;

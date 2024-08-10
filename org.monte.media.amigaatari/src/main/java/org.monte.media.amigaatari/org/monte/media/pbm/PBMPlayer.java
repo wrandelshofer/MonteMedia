@@ -12,8 +12,9 @@ import org.monte.media.player.PlayerControl;
 import org.monte.media.swing.ImagePanel;
 import org.monte.media.swing.player.JPlayerControlAqua;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.BoundedRangeModel;
+import javax.swing.DefaultBoundedRangeModel;
+import java.awt.Component;
 import java.awt.image.ImageProducer;
 import java.io.IOException;
 import java.io.InputStream;
@@ -110,7 +111,7 @@ public class PBMPlayer extends AbstractPlayer implements ColorCyclePlayer {
             if (track.size() == 0) {
                 setTargetState(CLOSED);
             } else {
-                memoryImage = track.get(0);
+                memoryImage = track.getFirst();
                 memoryImage.setAnimated(true);
                 if (memoryImage.isColorCyclingAvailable()) {
                     propertyChangeSupport.firePropertyChange("colorCyclingAvailable", false, true);

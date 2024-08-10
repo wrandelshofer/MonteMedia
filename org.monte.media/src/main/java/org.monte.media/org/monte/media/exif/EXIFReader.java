@@ -637,7 +637,7 @@ public class EXIFReader {
                 if (node instanceof TIFFDirectory) {
                     TIFFDirectory dirNode = (TIFFDirectory) node;
                     if (dirNode.getTagSet() == tagSet) {
-                        dirs.add(0, dirNode); // must insert first because we traverse in post-order
+                        dirs.addFirst(dirNode); // must insert first because we traverse in post-order
                     } else {
                         stack.push(dirNode);
                     }
@@ -668,7 +668,7 @@ public class EXIFReader {
                     TIFFField field = (TIFFField) node;
                     if (field.getTag() == BaselineTagSet.JPEGThumbnailImage) {
                         try {
-                            thumbnails.add(0, ImageIO.read(new ByteArrayImageInputStream((byte[]) field.getData())));
+                            thumbnails.addFirst(ImageIO.read(new ByteArrayImageInputStream((byte[]) field.getData())));
                             // must insert first because we traverse in post-order
                         } catch (IOException e) {
                             if (!suppressException) {

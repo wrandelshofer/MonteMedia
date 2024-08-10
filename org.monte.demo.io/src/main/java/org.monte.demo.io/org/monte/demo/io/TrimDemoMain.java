@@ -349,7 +349,7 @@ public class TrimDemoMain {
                 return Rational.valueOf(str);
             } catch (NumberFormatException e) {
                 if (r[0] == null && !infiles.isEmpty()) {
-                    r[0] = Registry.getInstance().getReader(infiles.get(0));
+                    r[0] = Registry.getInstance().getReader(infiles.getFirst());
                 }
                 if (r[0] != null) {
                     int t = r[0].findTrack(0, new Format(MediaTypeKey, MediaType.VIDEO));

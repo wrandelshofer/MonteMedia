@@ -19,7 +19,7 @@ public class Format {
     /**
      * Holds the properties of the format.
      */
-    private HashMap<FormatKey<?>, Object> properties;
+    private Map<FormatKey<?>, Object> properties;
 
     /**
      * Creates a new format onlyWith the specified properties.
@@ -32,7 +32,7 @@ public class Format {
      * Creates a new format with the specified properties.
      */
     private Format(Map<FormatKey<?>, Object> properties, boolean copy) {
-        if (copy || !(properties instanceof HashMap)) {
+        if (copy) {
             for (Map.Entry<FormatKey<?>, Object> e : properties.entrySet()) {
                 if (!e.getKey().isAssignable(e.getValue())) {
                     throw new ClassCastException(e.getValue() + " must be of type " + e.getKey().getValueClass());
@@ -40,7 +40,7 @@ public class Format {
             }
             this.properties = new HashMap<>(properties);
         } else {
-            this.properties = (HashMap<FormatKey<?>, Object>) properties;
+            this.properties = (Map<FormatKey<?>, Object>) properties;
         }
     }
 
@@ -145,7 +145,7 @@ public class Format {
      * @return That format with properties overwritten by this format.
      */
     public Format append(Format that) {
-        HashMap<FormatKey<?>, Object> m = new HashMap<>(this.properties);
+        Map<FormatKey<?>, Object> m = new HashMap<>(this.properties);
         for (Map.Entry<FormatKey<?>, Object> e : that.properties.entrySet()) {
             m.putIfAbsent(e.getKey(), e.getValue());
         }
@@ -163,7 +163,7 @@ public class Format {
      * @return That format with properties overwritten by this format.
      */
     public Format append(Object... p) {
-        HashMap<FormatKey<?>, Object> m = new HashMap<>(this.properties);
+        Map<FormatKey<?>, Object> m = new HashMap<>(this.properties);
         for (int i = 0; i < p.length; i += 2) {
             FormatKey<?> key = (FormatKey<?>) p[i];
             if (!key.isAssignable(p[i + 1])) {
@@ -186,7 +186,7 @@ public class Format {
      * @return That format with properties overwritten by this format.
      */
     public Format prepend(Format that) {
-        HashMap<FormatKey<?>, Object> m = new HashMap<>(that.properties);
+        Map<FormatKey<?>, Object> m = new HashMap<>(that.properties);
         for (Map.Entry<FormatKey<?>, Object> e : this.properties.entrySet()) {
             m.putIfAbsent(e.getKey(), e.getValue());
         }
@@ -205,7 +205,7 @@ public class Format {
      * @return That format with properties overwritten by this format.
      */
     public Format prepend(Object... p) {
-        HashMap<FormatKey<?>, Object> m = new HashMap<>(this.properties);
+        Map<FormatKey<?>, Object> m = new HashMap<>(this.properties);
         for (int i = 0; i < p.length; i += 2) {
             FormatKey<?> key = (FormatKey<?>) p[i];
             if (!key.isAssignable(p[i + 1])) {
@@ -222,7 +222,7 @@ public class Format {
      * format.
      */
     public Format intersectKeys(FormatKey<?>... keys) {
-        HashMap<FormatKey<?>, Object> m = new HashMap<>();
+        Map<FormatKey<?>, Object> m = new HashMap<>();
         for (FormatKey<?> k : keys) {
             if (properties.containsKey(k)) {
                 m.put(k, properties.get(k));
@@ -247,7 +247,7 @@ public class Format {
             return this;
         }
 
-        HashMap<FormatKey<?>, Object> m = new HashMap<>(properties);
+        Map<FormatKey<?>, Object> m = new HashMap<>(properties);
         for (FormatKey<?> k : keys) {
             m.remove(k);
         }
@@ -258,7 +258,7 @@ public class Format {
      * Returns true if the format has the specified keys.
      */
     public Format containsKeys(FormatKey<?>... keys) {
-        HashMap<FormatKey<?>, Object> m = new HashMap<>(properties);
+        Map<FormatKey<?>, Object> m = new HashMap<>(properties);
         for (FormatKey<?> k : keys) {
             m.remove(k);
         }

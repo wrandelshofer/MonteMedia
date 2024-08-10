@@ -20,7 +20,7 @@ public interface MovieReader extends AutoCloseable {
     /**
      * Returns the number of tracks.
      */
-    public int getTrackCount() throws IOException;
+    int getTrackCount() throws IOException;
 
     /**
      * Finds a track with the specified format.
@@ -29,32 +29,32 @@ public interface MovieReader extends AutoCloseable {
      * @param format    A format specification.
      * @return The track number &gt;= fromTrack or -1 if no track has been found.
      */
-    public int findTrack(int fromTrack, Format format) throws IOException;
+    int findTrack(int fromTrack, Format format) throws IOException;
 
     /**
      * Returns the total duration of the movie .
      */
-    public Rational getDuration() throws IOException;
+    Rational getDuration() throws IOException;
 
     /**
      * Returns the duration of the specified track.
      */
-    public Rational getDuration(int track) throws IOException;
+    Rational getDuration(int track) throws IOException;
 
     /**
      * Returns the sample number for the specified time.
      */
-    public long timeToSample(int track, Rational seconds) throws IOException;
+    long timeToSample(int track, Rational seconds) throws IOException;
 
     /**
      * Returns the time for the specified sample number.
      */
-    public Rational sampleToTime(int track, long sample) throws IOException;
+    Rational sampleToTime(int track, long sample) throws IOException;
 
     /**
      * Returns the file format.
      */
-    public Format getFileFormat() throws IOException;
+    Format getFileFormat() throws IOException;
 
     /**
      * Returns the media format of the specified track.
@@ -62,13 +62,13 @@ public interface MovieReader extends AutoCloseable {
      * @param track Track number.
      * @return The media format of the track.
      */
-    public Format getFormat(int track) throws IOException;
+    Format getFormat(int track) throws IOException;
 
     /**
      * Returns the number of media data chunks in the specified track.
      * A chunk contains one or more samples.
      */
-    public long getChunkCount(int track) throws IOException;
+    long getChunkCount(int track) throws IOException;
 
     /**
      * Reads the next sample chunk from the specified track.
@@ -76,22 +76,16 @@ public interface MovieReader extends AutoCloseable {
      * @param track  Track number.
      * @param buffer The buffer into which to store the sample data.
      */
-    public void read(int track, Buffer buffer) throws IOException;
-    /** Reads the next sample chunk from the next track in playback sequence.
-     * The variable buffer.track contains the track number.
-     *
-     * @param buf The buffer into which to store the sample data.
-     */
-    //public void read(Buffer buffer) throws IOException;
+    void read(int track, Buffer buffer) throws IOException;
 
     /**
      * Returns the index of the next track in playback sequence.
      *
      * @return Index of next track or -1 if end of media reached.
      */
-    public int nextTrack() throws IOException;
+    int nextTrack() throws IOException;
 
-    public void close() throws IOException;
+    void close() throws IOException;
 
     /**
      * Sets the read time of all tracks to the closest sync sample before or
@@ -99,11 +93,11 @@ public interface MovieReader extends AutoCloseable {
      *
      * @param newValue Time in seconds.
      */
-    public void setMovieReadTime(Rational newValue) throws IOException;
+    void setMovieReadTime(Rational newValue) throws IOException;
 
     /**
      * Returns the current time of the track.
      */
-    public Rational getReadTime(int track) throws IOException;
+    Rational getReadTime(int track) throws IOException;
 
 }

@@ -54,6 +54,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_TECHSM
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
 import static org.monte.media.av.codec.video.VideoFormatKeys.FixedFrameRateKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.PaletteKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.QualityKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
@@ -165,6 +166,7 @@ public class AVIWriter implements MovieWriter {
                 vf.get(FrameRateKey).getDenominator(), vf.get(FrameRateKey).getNumerator(),
                 vf.get(WidthKey), vf.get(HeightKey), vf.get(DepthKey),
                 vf.get(KeyFrameIntervalKey, vf.get(FrameRateKey).floor(1).intValue()));
+        out.setPalette(tr, vf.get(PaletteKey));
         out.setCompressionQuality(tr, vf.get(QualityKey, 1.0f));
         return tr;
     }
@@ -311,7 +313,7 @@ public class AVIWriter implements MovieWriter {
             }
 
             // We got here, because the buffer format does not match the track 
-            // format. Lets see if we can create a codec which can perform the
+            // format. Let's see if we can create a codec which can perform the
             // encoding for us.
             if (tr.codec == null) {
                 createCodec(track);

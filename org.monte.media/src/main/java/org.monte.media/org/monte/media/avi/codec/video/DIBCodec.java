@@ -9,9 +9,11 @@ import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.av.codec.video.AbstractVideoCodec;
 import org.monte.media.io.SeekableByteArrayOutputStream;
+import org.monte.media.util.ArrayUtil;
 
-import java.awt.*;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
 import java.awt.image.WritableRaster;
@@ -31,6 +33,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_DIB;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
 import static org.monte.media.av.codec.video.VideoFormatKeys.FixedFrameRateKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.PaletteKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
 /**
@@ -97,7 +100,7 @@ public class DIBCodec extends AbstractVideoCodec {
     public Format setOutputFormat(Format f) {
         super.setOutputFormat(f);
 
-        // This codec can not scale an image.
+        // This codec can not scale an image, and can not change its depth.
         // Enforce these properties
         if (outputFormat != null) {
             if (inputFormat != null) {
@@ -127,36 +130,41 @@ public class DIBCodec extends AbstractVideoCodec {
         BufferedImage img = null;
 
         int imgType;
-        switch (outputFormat.get(DepthKey)) {
-            case 4:
+        ColorModel cm;
+        switch (inputFormat.get(DepthKey)) {
+            case 4, 8 -> {
+                cm = inputFormat.get(PaletteKey);
                 imgType = BufferedImage.TYPE_BYTE_INDEXED;
-                break;
-            case 8:
-                imgType = BufferedImage.TYPE_BYTE_INDEXED;
-                break;
-            case 24:
+            }
+            default -> {
+                cm = null;
                 imgType = BufferedImage.TYPE_INT_RGB;
-                break;
-            default:
-                imgType = BufferedImage.TYPE_INT_RGB;
-                break;
+            }
         }
+        ;
 
+        int width = inputFormat.get(WidthKey);
+        int height = inputFormat.get(HeightKey);
         if (out.data instanceof BufferedImage) {
             img = (BufferedImage) out.data;
-            // Fixme: Handle sub-image
-            if (img.getWidth() != outputFormat.get(WidthKey)
-                    || img.getHeight() != outputFormat.get(HeightKey)
+            if (img != null && img.getWidth() != width
+                    || img.getHeight() != height
                     || img.getType() != imgType) {
                 img = null;
             }
         }
         if (img == null) {
-            img = new BufferedImage(outputFormat.get(WidthKey), outputFormat.get(HeightKey), imgType);
+            if (cm != null) {
+                img = new BufferedImage(
+                        cm,
+                        cm.createCompatibleWritableRaster(width, height), false, null);
+            } else {
+                img = new BufferedImage(width, height, imgType);
+            }
         }
         out.data = img;
 
-        switch (outputFormat.get(DepthKey)) {
+        switch (inputFormat.get(DepthKey)) {
             case 4:
                 readKey4((byte[]) in.data, in.offset, in.length, img);
                 break;
@@ -180,12 +188,7 @@ public class DIBCodec extends AbstractVideoCodec {
             return CODEC_OK;
         }
 
-        SeekableByteArrayOutputStream tmp;
-        if (out.data instanceof byte[]) {
-            tmp = new SeekableByteArrayOutputStream((byte[]) out.data);
-        } else {
-            tmp = new SeekableByteArrayOutputStream();
-        }
+        SeekableByteArrayOutputStream tmp = new SeekableByteArrayOutputStream(ArrayUtil.reuseByteArray(out.data, 32));
 
         // Handle sub-image
         // FIXME - Scanline stride must be a multiple of four.
@@ -297,14 +300,13 @@ public class DIBCodec extends AbstractVideoCodec {
         int j = r.x + r.y * scanlineStride + (h - 1) * scanlineStride;
         int[] out = buf.getData();
         for (int y = 0; y < h; y++) {
-//            System.arraycopy(in,i,out,j,w);
-            for (int k = 0; k < w; k++) {
-                out[j + k] = 0xff000000//alpha
-                        | ((in[i + k * 3 + 1] & 0xff) << 0)//blue
-                        | ((in[i + k * 3 + 2] & 0xff) << 8)//green
-                        | ((in[i + k + 3] & 0xff) << 16);//red
+            for (int k = 0, k3 = 0; k < w; k++, k3 += 3) {
+                out[j + k] = 0xff000000//Alpha
+                        | ((in[i + k3 + 2] & 0xff))//Red
+                        | ((in[i + k3 + 1] & 0xff) << 8)//Green
+                        | ((in[i + k3] & 0xff) << 16);//Blue
             }
-            i += w;
+            i += w * 3;
             j -= scanlineStride;
         }
     }

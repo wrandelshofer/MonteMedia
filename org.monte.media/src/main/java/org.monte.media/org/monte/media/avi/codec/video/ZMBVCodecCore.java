@@ -7,6 +7,7 @@ package org.monte.media.avi.codec.video;
 import org.monte.media.io.AppendableByteArrayInputStream;
 import org.monte.media.io.ByteArrayImageInputStream;
 import org.monte.media.io.UncachedImageInputStream;
+import org.monte.media.util.ArrayUtil;
 
 import javax.imageio.stream.ImageInputStream;
 import java.io.IOException;
@@ -408,43 +409,27 @@ public class ZMBVCodecCore {
             switch (videoFormat) {
                 case VIDEOMODE_8_BIT_PALETTIZED:
                     depth = 8;
-                    if (!(outDatHolder[0] instanceof byte[])) {
-                        outDatHolder[0] = new byte[width * height];
-                    }
-                    if (!(prevDatHolder[0] instanceof byte[])) {
-                        prevDatHolder[0] = new byte[width * height];
-                    }
+                    outDatHolder[0] = ArrayUtil.reuseByteArray(outDatHolder[0], width * height);
+                    prevDatHolder[0] = ArrayUtil.reuseByteArray(prevDatHolder[0], width * height);
                     decode8to8(in, (byte[]) outDatHolder[0], (byte[]) prevDatHolder[0], flags, width, height);
                     break;
 
                 case VIDEOMODE_15_BIT_BGR:
                     depth = 15;
-                    if (!(outDatHolder[0] instanceof short[])) {
-                        outDatHolder[0] = new short[width * height];
-                    }
-                    if (!(prevDatHolder[0] instanceof short[])) {
-                        prevDatHolder[0] = new short[width * height];
-                    }
+                    outDatHolder[0] = ArrayUtil.reuseShortArray(outDatHolder[0], width * height);
+                    prevDatHolder[0] = ArrayUtil.reuseShortArray(prevDatHolder[0], width * height);
                     decode15to15(in, (short[]) outDatHolder[0], (short[]) prevDatHolder[0], flags, width, height);
                     break;
                 case VIDEOMODE_16_BIT_BGR:
                     depth = 16;
-                    if (!(outDatHolder[0] instanceof short[])) {
-                        outDatHolder[0] = new short[width * height];
-                    }
-                    if (!(prevDatHolder[0] instanceof short[])) {
-                        prevDatHolder[0] = new short[width * height];
-                    }
+                    outDatHolder[0] = ArrayUtil.reuseShortArray(outDatHolder[0], width * height);
+                    prevDatHolder[0] = ArrayUtil.reuseShortArray(prevDatHolder[0], width * height);
                     decode16to16(in, (short[]) outDatHolder[0], (short[]) prevDatHolder[0], flags, width, height);
                     break;
                 case VIDEOMODE_32_BIT_BGR:
                     depth = 32;
-                    if (!(outDatHolder[0] instanceof int[])) {
-                        outDatHolder[0] = new short[width * height];
-                    }
-                    if (!(prevDatHolder[0] instanceof int[])) {
-                        prevDatHolder[0] = new short[width * height];
-                    }
+                    outDatHolder[0] = ArrayUtil.reuseIntArray(outDatHolder[0], width * height);
+                    prevDatHolder[0] = ArrayUtil.reuseIntArray(prevDatHolder[0], width * height);
                     decode32to32(in, (int[]) outDatHolder[0], (int[]) prevDatHolder[0], flags, width, height);
                     break;
 
@@ -463,7 +448,7 @@ public class ZMBVCodecCore {
         boolean isKeyframe = (flags & 1) != 0;
         boolean isPaletteChange = (flags & 2) != 0;
 
-        // palette each entry contains a 32-bit entry constisting of: 
+        // palette each entry contains a 32-bit entry consisting of:
         // {palette index, red, green, blue}.
         if (palette == null) {
             palette = new int[256];

@@ -10,7 +10,7 @@ import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.av.codec.video.AbstractVideoCodec;
 import org.monte.media.image.BufferedImageWithColorModel;
 
-import java.awt.*;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
@@ -115,7 +115,7 @@ public class ZMBVCodec extends AbstractVideoCodec {
         }
         switch (depth) {
             case 8: {
-                int imgType = BufferedImage.TYPE_BYTE_INDEXED; // FIXME - Don't hardcode this value
+                int imgType = BufferedImage.TYPE_BYTE_INDEXED;
                 if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
                     int[] cmap = new int[256];
                     IndexColorModel icm = new IndexColorModel(8, 256, cmap, 0, false, -1, DataBuffer.TYPE_BYTE);
@@ -132,7 +132,7 @@ public class ZMBVCodec extends AbstractVideoCodec {
             }
             break;
             case 15: {
-                int imgType = BufferedImage.TYPE_USHORT_555_RGB; // FIXME - Don't hardcode this value
+                int imgType = BufferedImage.TYPE_USHORT_555_RGB;
                 if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
                     DirectColorModel cm = new DirectColorModel(15, 0x1f << 10, 0x1f << 5, 0x1f << 0);
                     img = new BufferedImageWithColorModel(cm, Raster.createWritableRaster(cm.createCompatibleSampleModel(width, height), new Point(0, 0)), false);
@@ -145,7 +145,7 @@ public class ZMBVCodec extends AbstractVideoCodec {
             }
             break;
             case 16: {
-                int imgType = BufferedImage.TYPE_USHORT_565_RGB; // FIXME - Don't hardcode this value
+                int imgType = BufferedImage.TYPE_USHORT_565_RGB;
                 if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
                     DirectColorModel cm = new DirectColorModel(15, 0x1f << 11, 0x3f << 5, 0x1f << 0);
                     img = new BufferedImageWithColorModel(cm, Raster.createWritableRaster(cm.createCompatibleSampleModel(width, height), new Point(0, 0)), false);

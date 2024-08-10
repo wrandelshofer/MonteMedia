@@ -6,7 +6,7 @@
 package org.monte.media.quicktime.codec.text.cta608;
 
 /**
- * CTA-608 Token.
+ * CTA-608 Cta608Token.
  * <p>
  * References:
  * <dl>
@@ -14,7 +14,7 @@ package org.monte.media.quicktime.codec.text.cta608;
  *     <dd><a href="https://shop.cta.tech/products/line-21-data-services">ANSI-CTA-608-E-S-2019-Final.pdf</a></dd>
  * </dl>
  */
-public sealed interface Token permits CmdToken, PacToken, TextToken {
+public sealed interface Cta608Token permits CmdToken, PacToken, TextToken {
     static short fixParityBits(short opCode) {
         int low = opCode & 0x7f;
         int high = opCode & 0x7f00;

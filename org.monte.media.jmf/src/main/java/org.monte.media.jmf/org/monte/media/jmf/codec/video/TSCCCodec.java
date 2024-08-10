@@ -7,6 +7,7 @@ package org.monte.media.jmf.codec.video;
 import com.sun.media.format.AviVideoFormat;
 import org.monte.media.av.codec.video.TechSmithCodecCore;
 import org.monte.media.io.SeekableByteArrayOutputStream;
+import org.monte.media.util.ArrayUtil;
 
 import javax.media.Buffer;
 import javax.media.Format;
@@ -15,7 +16,7 @@ import javax.media.ResourceUnavailableException;
 import javax.media.format.IndexedColorFormat;
 import javax.media.format.RGBFormat;
 import javax.media.format.VideoFormat;
-import java.awt.*;
+import java.awt.Dimension;
 import java.io.IOException;
 
 /**
@@ -177,12 +178,7 @@ public class TSCCCodec extends AbstractVideoDecoder {
         }
         out.setFormat(outputFormat);
 
-        SeekableByteArrayOutputStream tmp;
-        if (out.getData() instanceof byte[]) {
-            tmp = new SeekableByteArrayOutputStream((byte[]) out.getData());
-        } else {
-            tmp = new SeekableByteArrayOutputStream();
-        }
+        SeekableByteArrayOutputStream tmp = new SeekableByteArrayOutputStream(ArrayUtil.reuseByteArray(out.getData(), 32));
 
         VideoFormat outvf = outputFormat;
         boolean isKeyframe = isSet(in, Buffer.FLAG_KEY_FRAME) || frameCounter % (int) outvf.getFrameRate() == 0;
@@ -374,20 +370,12 @@ public class TSCCCodec extends AbstractVideoDecoder {
             }
 
         }
-
-
         if (inputDepth == 8 && outputDepth == 8) {
-            if (!(pixels instanceof byte[]) || ((byte[]) pixels).length < width * height) {
-                pixels = new byte[width * height];
-            }
+            pixels = ArrayUtil.reuseByteArray(pixels, width * height);
         } else if (inputDepth == 16 && outputDepth == 16) {
-            if (!(pixels instanceof short[]) || ((short[]) pixels).length < width * height) {
-                pixels = new int[width * height];
-            }
+            pixels = ArrayUtil.reuseShortArray(pixels, width * height);
         } else {
-            if (!(pixels instanceof int[]) || ((int[]) pixels).length < width * height) {
-                pixels = new int[width * height];
-            }
+            pixels = ArrayUtil.reuseIntArray(pixels, width * height);
         }
 
         out.setData(pixels);
@@ -418,7 +406,7 @@ public class TSCCCodec extends AbstractVideoDecoder {
                 return BUFFER_PROCESSED_FAILED;
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+            //ex.printStackTrace();
             out.setDiscard(true);
             return BUFFER_PROCESSED_FAILED;
         }

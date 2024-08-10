@@ -34,7 +34,7 @@ import java.util.Map;
  *     <dd><a href="https://shop.cta.tech/products/line-21-data-services">ANSI-CTA-608-E-S-2019-Final.pdf</a></dd>
  * </dl>
  */
-public final class CmdToken implements Token {
+public final class CmdToken implements Cta608Token {
     private final short code;
 
     /**
@@ -46,7 +46,7 @@ public final class CmdToken implements Token {
         if ((code & 0b0111_0000_0100_0000) != 0b0001_0000_0000_0000)
             throw new IllegalArgumentException("code=" + Integer.toHexString(code));
         // clear parity bits
-        this.code = Token.fixParityBits(code);
+        this.code = Cta608Token.fixParityBits(code);
     }
 
     /**
@@ -61,7 +61,7 @@ public final class CmdToken implements Token {
         int opCode = command.code;
         int low = opCode & 0b11_1111;
         int high = 0b0001_0000 | ((channel - 1) << 3) | ((opCode & 0b111_00_0000) >>> 6);
-        this.code = Token.fixParityBits((short) ((high << 8) | low));
+        this.code = Cta608Token.fixParityBits((short) ((high << 8) | low));
     }
 
     public int getChannel() {

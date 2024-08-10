@@ -39,7 +39,7 @@ import java.util.Objects;
  *     <dd><a href="https://shop.cta.tech/products/line-21-data-services">ANSI-CTA-608-E-S-2019-Final.pdf</a></dd>
  * </dl>
  */
-public non-sealed class PacToken implements Token {
+public non-sealed class PacToken implements Cta608Token {
 
     /**
      * Text attribute.
@@ -76,7 +76,7 @@ public non-sealed class PacToken implements Token {
         if ((code & 0b0111_0000_0100_0000) != 0b0001_0000_0100_0000)
             throw new IllegalArgumentException("code=" + Integer.toHexString(code));
         // clear parity bits
-        this.code = Token.fixParityBits(code);
+        this.code = Cta608Token.fixParityBits(code);
     }
 
     /**
@@ -96,7 +96,7 @@ public non-sealed class PacToken implements Token {
         int rrrr = rowEncode[row];
         int low = 0b0100_0000 | ((rrrr & 0b0001) << 5) | (attrs << 1) | u;
         int high = 0b0001_0000 | ((channel - 1) << 3) | ((rrrr & 0b1110) >>> 1);
-        this.code = Token.fixParityBits((short) ((high << 8) | low));
+        this.code = Cta608Token.fixParityBits((short) ((high << 8) | low));
     }
 
     public int getRow() {

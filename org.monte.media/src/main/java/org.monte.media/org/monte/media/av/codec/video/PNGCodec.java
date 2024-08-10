@@ -8,6 +8,7 @@ import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
 import org.monte.media.io.ByteArrayImageInputStream;
 import org.monte.media.io.ByteArrayImageOutputStream;
+import org.monte.media.util.ArrayUtil;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -19,7 +20,20 @@ import java.io.IOException;
 
 import static org.monte.media.av.BufferFlag.DISCARD;
 import static org.monte.media.av.BufferFlag.KEYFRAME;
-import static org.monte.media.av.codec.video.VideoFormatKeys.*;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_PNG;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_PNG;
+import static org.monte.media.av.codec.video.VideoFormatKeys.EncodingKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.MIME_AVI;
+import static org.monte.media.av.codec.video.VideoFormatKeys.MIME_JAVA;
+import static org.monte.media.av.codec.video.VideoFormatKeys.MIME_QUICKTIME;
+import static org.monte.media.av.codec.video.VideoFormatKeys.MediaType;
+import static org.monte.media.av.codec.video.VideoFormatKeys.MediaTypeKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.MimeTypeKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
 /**
  * {@code PNGCodec} encodes a BufferedImage as a byte[] array.
@@ -115,12 +129,7 @@ public class PNGCodec extends AbstractVideoCodec {
             return CODEC_FAILED;
         }
 
-        ByteArrayImageOutputStream tmp;
-        if (out.data instanceof byte[]) {
-            tmp = new ByteArrayImageOutputStream((byte[]) out.data);
-        } else {
-            tmp = new ByteArrayImageOutputStream();
-        }
+        ByteArrayImageOutputStream tmp = new ByteArrayImageOutputStream(ArrayUtil.reuseByteArray(out.data, 32));
 
         try {
             ImageWriter iw = ImageIO.getImageWritersByMIMEType("image/png").next();

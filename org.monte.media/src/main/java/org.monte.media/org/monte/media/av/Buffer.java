@@ -26,12 +26,7 @@ public class Buffer {
      */
     public EnumSet<BufferFlag> flags = EnumSet.noneOf(BufferFlag.class);
     /**
-     * Values which are not specified must have this value.
-     */
-    public static final int NOT_SPECIFIED = -1;
-    /**
-     * The track number. This can be set to NOT_SPECIFIED or to a number &gt;=
-     * 0.
+     * The track number. This can be set to NOT_SPECIFIED or to a number &gt;= 0.
      */
     public int track;
     /**
@@ -83,8 +78,18 @@ public class Buffer {
     public long sequenceNumber;
 
     /**
-     * Sets all variables of this buffer to that buffer except for {@code data},
-     * {@code offset}, {@code length} and {@code header}.
+     * An exception that explains why this buffer must be discarded.
+     */
+    public Throwable exception;
+
+    /**
+     * Sets all variables of this buffer to that buffer except for
+     * <ul>
+     *     <li>{@code data}</li>
+     *     <li>{@code offset}</li>
+     *     <li>{@code length}</li>
+     *     <li>{@code header}</li>
+     * </ul>
      */
     public void setMetaTo(Buffer that) {
         this.flags = EnumSet.copyOf(that.flags);
@@ -97,8 +102,8 @@ public class Buffer {
         this.timeStamp = that.timeStamp;
         this.format = that.format;
         this.sampleCount = that.sampleCount;
-        this.format = that.format;
         this.sequenceNumber = that.sequenceNumber;
+        this.exception = that.exception;
     }
 
     /**

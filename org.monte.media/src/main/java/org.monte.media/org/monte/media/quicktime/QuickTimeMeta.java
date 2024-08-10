@@ -239,7 +239,7 @@ public class QuickTimeMeta extends AbstractMovie {
                     throw new UnsupportedOperationException("not implemented for media with multiple sample descriptions.. " + trackIndex + " " + track.mediaType + " " + m + " " + m.sampleDescriptions);
                 }
 
-                SampleDescription desc = m.sampleDescriptions.get(0);
+                SampleDescription desc = m.sampleDescriptions.getFirst();
                 format = format.append(
                         SampleFormatKey, desc.dataFormat,
                         CompressorNameKey, desc.videoCompressorName,
@@ -248,7 +248,7 @@ public class QuickTimeMeta extends AbstractMovie {
                         DepthKey, desc.videoDepth
                 );
                 if (m.timeToSamples.size() == 1) {
-                    TimeToSampleGroup ttsg = m.timeToSamples.get(0);
+                    TimeToSampleGroup ttsg = m.timeToSamples.getFirst();
                     format = format.append(FrameRateKey, new Rational(ttsg.getSampleDuration(), m.mediaTimeScale));
                 } else {
                     format = format.append(FrameRateKey, new Rational(1, m.mediaTimeScale));
@@ -260,7 +260,7 @@ public class QuickTimeMeta extends AbstractMovie {
                     throw new UnsupportedOperationException("not implemented for media with multiple sample descriptions.. " + trackIndex + " " + track.mediaType + " " + m + " " + m.sampleDescriptions);
                 }
 
-                SampleDescription desc = m.sampleDescriptions.get(0);
+                SampleDescription desc = m.sampleDescriptions.getFirst();
                 format = format.append(
                         SampleFormatKey, desc.dataFormat
                 );
@@ -966,7 +966,8 @@ public class QuickTimeMeta extends AbstractMovie {
                 long editMediaEndTime = (long) (edit.mediaTime + edit.trackDuration * mediaRate * mediaTimeScale / movieTimeScale);
                 long sampleTrackTime = editTrackTime;
                 double invMediaRate = 1.0 / edit.mediaRate;
-                long mediaDuration = (long) (edit.trackDuration * mediaRate * mediaTimeScale / movieTimeScale);
+                long mediaDuration = (long) (edit.trackDuration * mediaRate * mediaTimeScale);
+                //long mediaDurationInMovieTimeScale = (long) (edit.trackDuration * mediaRate * mediaTimeScale / movieTimeScale);
                 Long floorKey = mediaSamplesMap.floorKey(edit.mediaTime);
                 floorKey = media.syncSamples == null ? floorKey : media.syncSamples.floor(floorKey);
                 if (floorKey == null) {
@@ -983,7 +984,7 @@ public class QuickTimeMeta extends AbstractMovie {
                     long mediaSampleTime = entry.getKey();
 
                     // if multiple samples have the same timestamp, then only the last one has a duration >=0
-                    MediaSample lastMediaSample = mediaSamples.get(mediaSamples.size() - 1);
+                    MediaSample lastMediaSample = mediaSamples.getLast();
                     long mediaSampleDuration = lastMediaSample.duration;
                     // cut duration if the media sample ends after the end time of the edit
                     long cutStart = Math.max(0, mediaSampleTime + mediaSampleDuration - editMediaEndTime);
@@ -994,7 +995,8 @@ public class QuickTimeMeta extends AbstractMovie {
                     long trackSampleDuration = Math.max(0, (long) (mediaSampleDuration * invMediaRate * movieTimeScale / mediaTimeScale));
 
                     for (int i = 0, n = mediaSamples.size(); i < n - 1; i++) {
-                        TrackSample trackSample = new TrackSample(mediaSamples.get(i), sampleTrackTime, 0, 0, 0);
+                        MediaSample mediaSample = mediaSamples.get(i);
+                        TrackSample trackSample = new TrackSample(mediaSample, sampleTrackTime, 0, 0, 0);
                         trackSampleMap.computeIfAbsent(sampleTrackTime, k -> new ArrayList<>()).add(trackSample);
                         trackSamplesList.add(trackSample);
                     }

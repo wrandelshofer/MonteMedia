@@ -170,7 +170,7 @@ public class SEQMovieTrack {
      * double buffering.
      */
     public int getInterleave() {
-        return frames.size() > 0 && frames.get(frames.size() - 1).getInterleave() == 1 ? 1 : 2;
+        return frames.size() > 0 && frames.getLast().getInterleave() == 1 ? 1 : 2;
     }
 
 

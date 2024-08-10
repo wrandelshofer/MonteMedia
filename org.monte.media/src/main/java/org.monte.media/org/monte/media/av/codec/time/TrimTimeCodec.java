@@ -11,8 +11,7 @@ import org.monte.media.av.Format;
 import org.monte.media.math.Rational;
 
 /**
- * {@code PassThroughCodec} passes through all buffers in the specified time
- * range.
+ * {@code PassThroughCodec} passes through all buffers in the specified time range.
  *
  * @author Werner Randelshofer
  */
@@ -67,32 +66,29 @@ public class TrimTimeCodec extends AbstractCodec {
     @Override
     public int process(Buffer in, Buffer out) {
         out.setMetaTo(in);
+        if (in.isFlag(BufferFlag.DISCARD)) {
+            return CODEC_OK;
+        }
+        int flags = out.setDataTo(in);
 
         Rational bufStartTS = out.timeStamp;
         Rational bufEndTS = out.timeStamp.add(out.sampleDuration.multiply(out.sampleCount));
-
-        if (!out.isFlag(BufferFlag.DISCARD)
-                && startTime != null) {
+        if (startTime != null) {
             if (bufEndTS.compareTo(startTime) <= 0) {
                 // Buffer is fully outside time range
                 out.setFlag(BufferFlag.DISCARD);
             } else if (bufStartTS.compareTo(startTime) < 0) {
                 // Buffer is partially outside time range
-                if (out.data instanceof byte[]) {
-                    int removeCount = (startTime.subtract(bufStartTS)).divide(out.sampleDuration).intValue();
-                    removeCount = Math.max(0, Math.min(removeCount, out.sampleCount - 1));
-                    int sampleSize = (out.length - out.offset) / out.sampleCount;
-                    out.offset += removeCount * sampleSize;
-                    out.length -= removeCount * sampleSize;
-                    out.timeStamp = out.timeStamp.add(out.sampleDuration.multiply(removeCount));
-                    out.sampleCount = out.sampleCount - removeCount;
-                }
-            } else {
-                // Buffer is fully inside time range
+                int removeCount = (startTime.subtract(bufStartTS)).divide(out.sampleDuration).intValue();
+                removeCount = Math.max(0, Math.min(removeCount, out.sampleCount - 1));
+                int sampleSize = (out.length - out.offset) / out.sampleCount;
+                out.offset += removeCount * sampleSize;
+                out.length -= removeCount * sampleSize;
+                out.timeStamp = out.timeStamp.add(out.sampleDuration.multiply(removeCount));
+                out.sampleCount = out.sampleCount - removeCount;
             }
         }
-        if (!out.isFlag(BufferFlag.DISCARD)
-                && endTime != null) {
+        if (endTime != null) {
             if (bufStartTS.compareTo(endTime) >= 0) {
                 // Buffer is fully outside time range
                 out.setFlag(BufferFlag.DISCARD);
@@ -103,13 +99,7 @@ public class TrimTimeCodec extends AbstractCodec {
                 int sampleSize = (out.length - out.offset) / out.sampleCount;
                 out.length -= removeCount * sampleSize;
                 out.sampleCount = out.sampleCount - removeCount;
-            } else {
-                // Buffer is fully inside time range
             }
-        }
-        int flags = CODEC_OK;
-        if (!out.isFlag(BufferFlag.DISCARD)) {
-            flags = out.setDataTo(in);
         }
 
         return flags;

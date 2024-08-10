@@ -12,6 +12,7 @@ import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.av.MovieReader;
 import org.monte.media.av.Registry;
 import org.monte.media.math.Rational;
+import org.monte.media.util.ArrayUtil;
 
 import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
@@ -141,20 +142,11 @@ public class QuickTimeReader implements MovieReader {
         var ts = tr.trackSamplesList.get((int) tr.readIndex);
         var ms = ts.mediaSample;
 
-        // FIXME - This should be done using AVIInputStream.readSample()
+        // FIXME - This should be done using QuickTimeInputStream.readSample()
         in.in.seek(ms.offset);
-        {
             byte[] b;
-            if (buffer.data instanceof byte[]) {
-                b = (byte[]) buffer.data;
-                if (b.length < ms.length) {
-                    buffer.data = b = new byte[(((int) ms.length + 1023) / 1024) * 1024];
-                }
-            } else {
-                buffer.data = b = new byte[(((int) ms.length + 1023) / 1024) * 1024];
-            }
+        buffer.data = b = ArrayUtil.reuseByteArray(buffer.data, (int) ms.length);
             in.in.readFully(b, 0, (int) ms.length);
-        }
         buffer.offset = 0;
         buffer.length = (int) ms.length;
 

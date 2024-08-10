@@ -530,7 +530,7 @@ public abstract class AbstractAVIStream {
 
         public void addSample(Sample s) {
             if (!samples.isEmpty()) {
-                s.timeStamp = samples.get(samples.size() - 1).timeStamp + samples.get(samples.size() - 1).duration;
+                s.timeStamp = samples.getLast().timeStamp + samples.getLast().duration;
             }
             samples.add(s);
             length++;

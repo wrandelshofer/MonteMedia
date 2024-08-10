@@ -5,7 +5,7 @@
 
 package org.monte.media.quicktime.codec.text.cta608;
 
-public final class TextToken implements Token {
+public final class TextToken implements Cta608Token {
     private final String text;
 
     public TextToken(String text) {

@@ -8,10 +8,10 @@ import org.monte.media.av.Buffer;
 import org.monte.media.av.BufferFlag;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
-import org.monte.media.image.BufferedImageWithColorModel;
 import org.monte.media.io.SeekableByteArrayOutputStream;
+import org.monte.media.util.ArrayUtil;
 
-import java.awt.*;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
@@ -20,7 +20,6 @@ import java.awt.image.DataBufferInt;
 import java.awt.image.DataBufferUShort;
 import java.awt.image.DirectColorModel;
 import java.awt.image.IndexColorModel;
-import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
 
@@ -35,7 +34,15 @@ import static org.monte.media.av.FormatKeys.MIME_JAVA;
 import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.FormatKeys.MimeTypeKey;
-import static org.monte.media.av.codec.video.VideoFormatKeys.*;
+import static org.monte.media.av.codec.video.VideoFormatKeys.COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE;
+import static org.monte.media.av.codec.video.VideoFormatKeys.CompressorNameKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
+import static org.monte.media.av.codec.video.VideoFormatKeys.FixedFrameRateKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
 /**
  * {@code TechSmithCodec} (tscc) encodes a BufferedImage as a byte[] array.
@@ -240,15 +247,11 @@ public class TechSmithCodec extends AbstractVideoCodec {
         boolean isKeyFrame;
         try {
             if (outputDepth == 8) {
-                if (!(newPixels instanceof byte[]) || ((byte[]) newPixels).length != width * height) {
-                    newPixels = new byte[width * height];
-                }
+                newPixels = ArrayUtil.reuseByteArray(newPixels, width * height);
 
                 isKeyFrame = state.decode8((byte[]) in.data, in.offset, in.length, (byte[]) newPixels, (byte[]) newPixels, width, height, false);
             } else {
-                if (!(newPixels instanceof int[]) || ((int[]) newPixels).length != width * height) {
-                    newPixels = new int[width * height];
-                }
+                newPixels = ArrayUtil.reuseIntArray(newPixels, width * height);
                 if (inputDepth == 8) {
                     isKeyFrame = state.decode8((byte[]) in.data, in.offset, in.length, (int[]) newPixels, (int[]) newPixels, width, height, false);
                 } else if (inputDepth == 16) {
@@ -258,32 +261,28 @@ public class TechSmithCodec extends AbstractVideoCodec {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            out.exception = e;
             out.setFlag(DISCARD);
             return CODEC_FAILED;
         }
 
-        BufferedImageWithColorModel img = null;
-        if (out.data instanceof BufferedImageWithColorModel) {
-            img = (BufferedImageWithColorModel) out.data;
+        BufferedImage img = null;
+        if (out.data instanceof BufferedImage) {
+            img = (BufferedImage) out.data;
         }
         switch (outputDepth) {
             case 8: {
                 int imgType = BufferedImage.TYPE_BYTE_INDEXED;
                 if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
-                    int[] cmap = new int[256];
-                    IndexColorModel icm = new IndexColorModel(8, 256, cmap, 0, false, -1, DataBuffer.TYPE_BYTE);
-                    img = new BufferedImageWithColorModel(width, height, imgType, icm);
+                    ColorModel cm = getColorModel(in);
+                    if (cm == null) {
+                        cm = new IndexColorModel(8, 256, new int[256], 0, false, -1, DataBuffer.TYPE_BYTE);
+                    }
+                    img = new BufferedImage(cm, cm.createCompatibleWritableRaster(width, height), false, null);
                 } else {
-                    BufferedImageWithColorModel oldImg = img;
-                    img = new BufferedImageWithColorModel(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
+                    BufferedImage oldImg = img;
+                    img = new BufferedImage(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
                 }
-                int[] cmap = new int[256];//state.getPalette();
-                for (int i = 0; i < 256; i++) {
-                    cmap[i] = 255 << 24 | i | i << 8 | i << 16;
-                }
-                IndexColorModel icm = new IndexColorModel(8, 256, cmap, 0, false, -1, DataBuffer.TYPE_BYTE);
-                img.setColorModel(icm);
                 byte[] pixels = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
                 System.arraycopy((byte[]) newPixels, 0, pixels, 0, width * height);
             }
@@ -292,10 +291,10 @@ public class TechSmithCodec extends AbstractVideoCodec {
                 int imgType = BufferedImage.TYPE_USHORT_555_RGB;
                 if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
                     DirectColorModel cm = new DirectColorModel(15, 0x1f << 10, 0x1f << 5, 0x1f);
-                    img = new BufferedImageWithColorModel(cm, Raster.createWritableRaster(cm.createCompatibleSampleModel(width, height), new Point(0, 0)), false);
+                    img = new BufferedImage(cm, cm.createCompatibleWritableRaster(width, height), false, null);
                 } else {
-                    BufferedImageWithColorModel oldImg = img;
-                    img = new BufferedImageWithColorModel(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
+                    BufferedImage oldImg = img;
+                    img = new BufferedImage(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
                 }
                 short[] pixels = ((DataBufferUShort) img.getRaster().getDataBuffer()).getData();
                 System.arraycopy((short[]) newPixels, 0, pixels, 0, width * height);
@@ -306,10 +305,10 @@ public class TechSmithCodec extends AbstractVideoCodec {
                 int imgType = BufferedImage.TYPE_INT_RGB;
                 if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
                     DirectColorModel cm = new DirectColorModel(24, 0xff << 16, 0xff << 8, 0xff);
-                    img = new BufferedImageWithColorModel(cm, Raster.createWritableRaster(cm.createCompatibleSampleModel(width, height), new Point(0, 0)), false);
+                    img = new BufferedImage(cm, cm.createCompatibleWritableRaster(width, height), false, null);
                 } else {
-                    BufferedImageWithColorModel oldImg = img;
-                    img = new BufferedImageWithColorModel(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
+                    BufferedImage oldImg = img;
+                    img = new BufferedImage(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
                 }
                 int[] pixels = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
                 System.arraycopy((int[]) newPixels, 0, pixels, 0, width * height);
@@ -332,12 +331,7 @@ public class TechSmithCodec extends AbstractVideoCodec {
             return CODEC_OK;
         }
 
-        SeekableByteArrayOutputStream tmp;
-        if (out.data instanceof byte[]) {
-            tmp = new SeekableByteArrayOutputStream((byte[]) out.data);
-        } else {
-            tmp = new SeekableByteArrayOutputStream();
-        }
+        SeekableByteArrayOutputStream tmp = new SeekableByteArrayOutputStream(ArrayUtil.reuseByteArray(out.data, 32));
 
         Integer keyFrameInterval = outputFormat.get(KeyFrameIntervalKey, outputFormat.get(FrameRateKey).intValue());
         boolean isKeyframe = frameCounter == 0

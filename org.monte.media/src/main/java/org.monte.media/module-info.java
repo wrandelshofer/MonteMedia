@@ -94,6 +94,7 @@ module org.monte.media {
     exports org.monte.media.tiff;
     exports org.monte.media.util;
     exports org.monte.media.util.stream;
+    exports org.monte.media.av.codec.text;
 
     uses org.monte.media.av.CodecSpi;
     uses org.monte.media.av.MovieWriterSpi;

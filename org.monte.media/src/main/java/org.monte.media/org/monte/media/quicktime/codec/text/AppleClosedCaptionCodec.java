@@ -12,10 +12,12 @@ import org.monte.media.av.codec.text.AbstractTextCodec;
 import org.monte.media.io.ByteArrayImageInputStream;
 import org.monte.media.quicktime.QTFFImageInputStream;
 import org.monte.media.quicktime.codec.text.cta608.Cta608Parser;
+import org.monte.media.quicktime.codec.text.cta608.Cta608Token;
 import org.monte.media.quicktime.codec.text.cta708.Cta708Parser;
 
 import java.io.IOException;
 import java.nio.ByteOrder;
+import java.util.List;
 
 import static org.monte.media.av.BufferFlag.DISCARD;
 import static org.monte.media.av.FormatKeys.EncodingKey;
@@ -24,6 +26,7 @@ import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.FormatKeys.MimeTypeKey;
 import static org.monte.media.av.codec.text.TextFormatKeys.ENCODING_CLOSED_CAPTION;
+import static org.monte.media.av.codec.text.TextFormatKeys.ENCODING_HTML;
 import static org.monte.media.av.codec.text.TextFormatKeys.ENCODING_STRING;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
 
@@ -59,12 +62,15 @@ public class AppleClosedCaptionCodec extends AbstractTextCodec {
                 new Format[]{
                         new Format(MediaTypeKey, FormatKeys.MediaType.TEXT, MimeTypeKey, MIME_JAVA,
                                 EncodingKey, ENCODING_STRING, DataClassKey, String.class), //
+                        new Format(MediaTypeKey, FormatKeys.MediaType.TEXT, MimeTypeKey, MIME_JAVA,
+                                EncodingKey, ENCODING_HTML, DataClassKey, String.class), //
                 });
     }
 
     @Override
     public int process(Buffer in, Buffer out) {
-        if (ENCODING_STRING.equals(outputFormat.get(EncodingKey))) {
+        String encoding = outputFormat.get(EncodingKey);
+        if (ENCODING_STRING.equals(encoding) || ENCODING_HTML.equals(encoding)) {
             return decode(in, out);
         } else {
             return encode(in, out);
@@ -72,7 +78,7 @@ public class AppleClosedCaptionCodec extends AbstractTextCodec {
     }
 
     /**
-     * Decodes a byte array to a String.
+     * Decodes a byte array to a HTML String.
      */
     public int decode(Buffer in, Buffer out) {
         out.setMetaTo(in);
@@ -80,6 +86,7 @@ public class AppleClosedCaptionCodec extends AbstractTextCodec {
         if (in.isFlag(DISCARD)) {
             return CODEC_OK;
         }
+        boolean isHtml = ENCODING_HTML.equals(outputFormat.get(EncodingKey));
         byte[] data = in.data instanceof byte[] ? (byte[]) in.data : null;
         if (data == null) {
             out.setFlag(DISCARD);
@@ -98,7 +105,9 @@ public class AppleClosedCaptionCodec extends AbstractTextCodec {
 
             switch (type) {
                 case "cdat": {// CTA-608
-                    String text = new Cta608Parser().parseToStringWithOpCodes(iis);
+                    Cta608Parser parser = new Cta608Parser();
+                    List<Cta608Token> tokens = parser.parse(iis);
+                    String text = isHtml ? parser.toHtml(tokens) : parser.toString(tokens);
                     out.data = text;
                     break;
                 }
@@ -112,6 +121,7 @@ public class AppleClosedCaptionCodec extends AbstractTextCodec {
             }
         } catch (IOException e) {
             out.setFlag(DISCARD);
+            out.exception = e;
             return CODEC_FAILED;
         }
 

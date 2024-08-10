@@ -12,6 +12,7 @@ import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.av.MovieReader;
 import org.monte.media.av.Registry;
 import org.monte.media.math.Rational;
+import org.monte.media.util.ArrayUtil;
 
 import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
@@ -94,34 +95,19 @@ public class AVIReader implements MovieReader {
         // FIXME - This should be done using AVIInputStream.readPalette()
         if (s.header != null) {
             byte[] b;
-            if (buffer.data instanceof byte[]) {
-                b = (byte[]) buffer.data;
-                if (b.length < s.header.length) {
-                    buffer.data = b = new byte[(((int) s.header.length + 1023) / 1024) * 1024];
-                }
-            } else {
-                buffer.data = b = new byte[(((int) s.header.length + 1023) / 1024) * 1024];
-            }
+            buffer.header = b = ArrayUtil.reuseByteArray(buffer.header, (int) s.header.length);
+            buffer.headerLength = (int) s.header.length;
             in.in.seek(s.header.offset);
             in.in.readFully(b, 0, (int) s.header.length);
         } else {
-            buffer.header = null;
+            buffer.headerLength = 0;
         }
 
         // FIXME - This should be done using AVIInputStream.readSample()
         in.in.seek(s.offset);
-        {
-            byte[] b;
-            if (buffer.data instanceof byte[]) {
-                b = (byte[]) buffer.data;
-                if (b.length < s.length) {
-                    buffer.data = b = new byte[(((int) s.length + 1023) / 1024) * 1024];
-                }
-            } else {
-                buffer.data = b = new byte[(((int) s.length + 1023) / 1024) * 1024];
-            }
-            in.in.readFully(b, 0, (int) s.length);
-        }
+        byte[] b;
+        buffer.data = b = ArrayUtil.reuseByteArray(buffer.data, (int) s.length);
+        in.in.readFully(b, 0, (int) s.length);
         buffer.offset = 0;
         buffer.length = (int) s.length;
 
@@ -265,7 +251,7 @@ public class AVIReader implements MovieReader {
                 continue;
             }
 
-            AbstractAVIStream.Sample currentSample = tr.readIndex < tr.samples.size() ? tr.samples.get((int) tr.readIndex) : tr.samples.get(tr.samples.size() - 1);
+            AbstractAVIStream.Sample currentSample = tr.readIndex < tr.samples.size() ? tr.samples.get((int) tr.readIndex) : tr.samples.getLast();
 
             long readTimeStamp = currentSample.timeStamp;
             if (tr.readIndex >= tr.samples.size()) {

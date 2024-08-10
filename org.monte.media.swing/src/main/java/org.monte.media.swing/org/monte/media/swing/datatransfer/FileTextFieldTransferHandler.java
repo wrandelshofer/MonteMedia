@@ -4,7 +4,10 @@
  */
 package org.monte.media.swing.datatransfer;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JPasswordField;
+import javax.swing.TransferHandler;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.EditorKit;
@@ -90,7 +93,7 @@ public class FileTextFieldTransferHandler extends TransferHandler {
                 @SuppressWarnings("unchecked")
                 List<File> list = (List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
                 if (!list.isEmpty()) {
-                    File file = list.get(0);
+                    File file = list.getFirst();
 
                     switch (fileSelectionMode) {
                         case JFileChooser.FILES_AND_DIRECTORIES:

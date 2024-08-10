@@ -8,6 +8,8 @@ import org.monte.media.av.FormatKey;
 import org.monte.media.av.FormatKeys;
 import org.monte.media.math.Rational;
 
+import java.awt.image.ColorModel;
+
 /**
  * Defines common format keys for video media.
  *
@@ -111,7 +113,7 @@ public class VideoFormatKeys extends FormatKeys {
     /**
      * The compressor name.
      */
-    public final static FormatKey<String> CompressorNameKey = new FormatKey<>("compressorName", "compressorName", String.class, true);
+    public final static FormatKey<String> CompressorNameKey = new FormatKey<>("compressorName", "compressorName", String.class, true, false);
     /**
      * The pixel aspect ratio WidthKey : HeightKey;
      */
@@ -128,4 +130,8 @@ public class VideoFormatKeys extends FormatKeys {
      * Encoding quality. Value between 0 and 1.
      */
     public final static FormatKey<Float> QualityKey = new FormatKey<>("quality", Float.class);
+    /**
+     * Color palette.
+     */
+    public final static FormatKey<ColorModel> PaletteKey = new FormatKey<>("palette", ColorModel.class);
 }

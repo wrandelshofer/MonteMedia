@@ -17,6 +17,8 @@ import org.monte.media.riff.RIFFVisitor;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
 import java.awt.Dimension;
+import java.awt.image.DataBuffer;
+import java.awt.image.IndexColorModel;
 import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +41,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.FixedFrameRateKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.PaletteKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.PixelAspectRatioKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
@@ -339,7 +342,7 @@ public class AVIInputStream extends AbstractAVIStream {
                                     // The first chunk and all uncompressed chunks are keyframes
                                     s.isKeyframe = tr.samples.isEmpty() || (id & 0xffff) == WB_ID || (id & 0xffff) == DB_ID;
                                     if (tr.samples.size() > 0) {
-                                        Sample lastSample = tr.samples.get(tr.samples.size() - 1);
+                                        Sample lastSample = tr.samples.getLast();
                                         s.timeStamp = lastSample.timeStamp + lastSample.duration;
                                     }
                                     tr.length = s.timeStamp + s.duration;
@@ -479,23 +482,49 @@ public class AVIInputStream extends AbstractAVIStream {
     }
 
     /**
-     * </pre> //---------------------- // AVI Bitmap Info Header //
-     * ---------------------- typedef struct { BYTE blue; BYTE green; BYTE red;
-     * BYTE reserved; } RGBQUAD;
-     * <p>
+     * Reads an AVI bitmap info header for a video track.
+     * </pre>
+     * // ----------------------
+     * // AVI Bitmap Info Header
+     * // ----------------------
+     * typedef struct {
+     * BYTE blue;
+     * BYTE green;
+     * BYTE red;
+     * BYTE reserved;
+     * } RGBQUAD;
+     * .
      * // Values for this enum taken from: //
-     * http://www.fourcc.org/index.php?http%3A//www.fourcc.org/rgb.php enum {
-     * BI_RGB = 0x00000000, RGB = 0x32424752, // Alias for BI_RGB BI_RLE8 =
-     * 0x01000000, RLE8 = 0x38454C52, // Alias for BI_RLE8 BI_RLE4 = 0x00000002,
-     * RLE4 = 0x34454C52, // Alias for BI_RLE4 BI_BITFIELDS = 0x00000003, raw =
-     * 0x32776173, RGBA = 0x41424752, RGBT = 0x54424752, cvid = "cvid" }
-     * bitmapCompression;
+     * http://www.fourcc.org/index.php?http%3A//www.fourcc.org/rgb.php
      * <p>
-     * typedef struct { DWORD structSize; DWORD width; DWORD height; WORD
-     * planes; WORD bitCount; FOURCC enum bitmapCompression compression; DWORD
-     * imageSizeInBytes; DWORD xPelsPerMeter; DWORD yPelsPerMeter; DWORD
-     * numberOfColorsUsed; DWORD numberOfColorsImportant; RGBQUAD colors[]; }
-     * BITMAPINFOHEADER;
+     * enum {
+     * BI_RGB = 0x00000000,
+     * RGB = 0x32424752, // Alias for BI_RGB
+     * BI_RLE8 = 0x01000000,
+     * RLE8 = 0x38454C52, // Alias for BI_RLE8
+     * BI_RLE4 = 0x00000002,
+     * RLE4 = 0x34454C52, // Alias for BI_RLE4
+     * BI_BITFIELDS = 0x00000003,
+     * raw = 0x32776173,
+     * RGBA = 0x41424752,
+     * RGBT = 0x54424752,
+     * cvid = "cvid"
+     * } bitmapCompression;
+     * <p>
+     * typedef struct {
+     * DWORD structSize;
+     * DWORD width;
+     * DWORD height;
+     * WORD planes;
+     * WORD bitCount;
+     * FOURCC enum bitmapCompression compression;
+     * DWORD imageSizeInBytes;
+     * DWORD xPelsPerMeter;
+     * DWORD yPelsPerMeter;
+     * DWORD numberOfColorsUsed;
+     * DWORD numberOfColorsImportant;
+     * RGBQUAD colors[numberOfColorsUsed];
+     * } BITMAPINFOHEADER;
      * </pre>
      *
      * @param tr
@@ -522,6 +551,14 @@ public class AVIInputStream extends AbstractAVIStream {
         if (tr.bitCount == 0) {
             tr.bitCount = (int) (imageSizeInBytes / tr.width / tr.height * 8);
         }
+        if (1 <= tr.bitCount && tr.bitCount <= 16
+                && 1 <= tr.clrUsed && tr.clrUsed <= 256) {
+            int[] cmap = new int[(int) tr.clrUsed];
+            for (int i = 0; i < cmap.length; i++) {
+                cmap[i] = in.readInt();
+            }
+            tr.palette = new IndexColorModel(tr.bitCount, (int) tr.clrUsed, cmap, 0, false, -1, DataBuffer.TYPE_BYTE);
+        }
 
         tr.format = new Format(MimeTypeKey, MIME_AVI,
                 MediaTypeKey, MediaType.VIDEO,
@@ -533,6 +570,9 @@ public class AVIInputStream extends AbstractAVIStream {
                 PixelAspectRatioKey, new Rational(1, 1),
                 FrameRateKey, new Rational(tr.rate, tr.scale),
                 FixedFrameRateKey, true);
+        if (tr.palette != null) {
+            tr.format = tr.format.append(PaletteKey, tr.palette);
+        }
     }
 
     /**

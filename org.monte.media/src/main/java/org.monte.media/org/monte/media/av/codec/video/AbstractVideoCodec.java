@@ -9,7 +9,7 @@ import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
 
 import javax.imageio.stream.ImageOutputStream;
-import java.awt.*;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.DataBufferByte;
@@ -21,6 +21,7 @@ import java.awt.image.WritableRaster;
 import java.io.IOException;
 
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.PaletteKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
 /**
@@ -60,7 +61,7 @@ public abstract class AbstractVideoCodec extends AbstractCodec {
             BufferedImage image = (BufferedImage) buf.data;
             return image.getColorModel();
         }
-        return null;
+        return buf.format.get(PaletteKey);
     }
 
     /**

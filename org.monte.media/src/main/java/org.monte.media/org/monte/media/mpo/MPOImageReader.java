@@ -211,7 +211,7 @@ public class MPOImageReader extends ImageReader {
                 TIFFNode n = e.next();
                 if (n instanceof TIFFDirectory dir) {
                     if (dir.getName() != null && dir.getName().equals("MPEntry")) {
-                        long dirOffset = dir.getFileSegments().get(0).offset();
+                        long dirOffset = dir.getFileSegments().getFirst().offset();
                         TIFFField offsetField = dir.getField(MPEntryTagSet.IndividualImageDataOffset);
                         TIFFField lengthField = dir.getField(MPEntryTagSet.IndividualImageSize);
                         if (offsetField != null && lengthField != null) {

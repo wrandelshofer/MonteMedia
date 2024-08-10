@@ -4,7 +4,9 @@
  */
 package org.monte.media.swing.datatransfer;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.TransferHandler;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -92,7 +94,7 @@ public class DropFileTransferHandler extends TransferHandler {
                 @SuppressWarnings("unchecked")
                 List<File> list = (List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
                 if (!list.isEmpty()) {
-                    File file = list.get(0);
+                    File file = list.getFirst();
 
                     switch (fileSelectionMode) {
                         case JFileChooser.FILES_AND_DIRECTORIES:

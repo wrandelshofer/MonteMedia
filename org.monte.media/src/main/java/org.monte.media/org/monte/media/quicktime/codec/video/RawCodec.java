@@ -9,8 +9,9 @@ import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.av.codec.video.AbstractVideoCodec;
 import org.monte.media.io.SeekableByteArrayOutputStream;
+import org.monte.media.util.ArrayUtil;
 
-import java.awt.*;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
@@ -215,12 +216,7 @@ public class RawCodec extends AbstractVideoCodec {
         }
         out.format = outputFormat;
 
-        SeekableByteArrayOutputStream tmp;
-        if (out.data instanceof byte[]) {
-            tmp = new SeekableByteArrayOutputStream((byte[]) out.data);
-        } else {
-            tmp = new SeekableByteArrayOutputStream();
-        }
+        SeekableByteArrayOutputStream tmp = new SeekableByteArrayOutputStream(ArrayUtil.reuseByteArray(out.data, 32));
         Format vf = outputFormat;
 
         // Handle sub-image
