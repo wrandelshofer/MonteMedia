@@ -33,8 +33,16 @@ import javax.media.protocol.DataSource;
 import javax.media.protocol.FileTypeDescriptor;
 import javax.media.protocol.PullBufferDataSource;
 import javax.media.protocol.PullBufferStream;
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
@@ -86,7 +94,7 @@ public class Main extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("TSCC Codec for JMF - Demo");
 
-        infoLabel.setText("<html><b>This is a demo for the TSCCCodec class.</b><br>\nThis class supports encoding and decoding of the Techsmith Screen Capture format with the Java Media Framework ( JMF).<br>\nCopyright © 2011 Werner Randelshofer.<br>\nThis software can be licensed under Creative Commons Attribution 3.0<br>");
+        infoLabel.setText("<html><b>This is a demo for the TSCCCodec class.</b><br>\nThis class supports encoding and decoding of the Techsmith Cta608Screen Capture format with the Java Media Framework ( JMF).<br>\nCopyright © 2011 Werner Randelshofer.<br>\nThis software can be licensed under Creative Commons Attribution 3.0<br>");
         infoLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 12, 12, 12));
         getContentPane().add(infoLabel, java.awt.BorderLayout.PAGE_START);
 

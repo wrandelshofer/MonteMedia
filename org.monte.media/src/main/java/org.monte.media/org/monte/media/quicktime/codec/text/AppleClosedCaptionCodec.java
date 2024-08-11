@@ -11,6 +11,7 @@ import org.monte.media.av.FormatKeys;
 import org.monte.media.av.codec.text.AbstractTextCodec;
 import org.monte.media.io.ByteArrayImageInputStream;
 import org.monte.media.quicktime.QTFFImageInputStream;
+import org.monte.media.quicktime.codec.text.cta608.Cta608Memory;
 import org.monte.media.quicktime.codec.text.cta608.Cta608Parser;
 import org.monte.media.quicktime.codec.text.cta608.Cta608Token;
 import org.monte.media.quicktime.codec.text.cta708.Cta708Parser;
@@ -54,6 +55,10 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
  * </dl>
  */
 public class AppleClosedCaptionCodec extends AbstractTextCodec {
+
+    private Cta608Memory cta608Memory = new Cta608Memory();
+
+
     public AppleClosedCaptionCodec() {
         super(new Format[]{
                         new Format(MediaTypeKey, FormatKeys.MediaType.TEXT, MimeTypeKey, MIME_QUICKTIME,
@@ -78,7 +83,7 @@ public class AppleClosedCaptionCodec extends AbstractTextCodec {
     }
 
     /**
-     * Decodes a byte array to a HTML String.
+     * Decodes a byte array to an HTML String.
      */
     public int decode(Buffer in, Buffer out) {
         out.setMetaTo(in);
@@ -107,7 +112,8 @@ public class AppleClosedCaptionCodec extends AbstractTextCodec {
                 case "cdat": {// CTA-608
                     Cta608Parser parser = new Cta608Parser();
                     List<Cta608Token> tokens = parser.parse(iis);
-                    String text = isHtml ? parser.toHtml(tokens) : parser.toString(tokens);
+                    parser.updateMemory(tokens, cta608Memory);
+                    String text = isHtml ? parser.toHtml(cta608Memory) : parser.toString(cta608Memory);
                     out.data = text;
                     break;
                 }
@@ -131,6 +137,8 @@ public class AppleClosedCaptionCodec extends AbstractTextCodec {
 
     /**
      * Encodes a String to a byte array.
+     * <p>
+     * FIXME The encoder is currently not implemented!
      */
     public int encode(Buffer in, Buffer out) {
         out.setMetaTo(in);

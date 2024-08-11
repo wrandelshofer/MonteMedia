@@ -394,8 +394,8 @@ public class Main extends javax.swing.JFrame {
 
         areaGroup.add(areaScreenItem);
         areaScreenItem.setSelected(true);
-        areaScreenItem.setText("Entire Screen");
-        areaScreenItem.setActionCommand("Screen");
+        areaScreenItem.setText("Entire Cta608Screen");
+        areaScreenItem.setActionCommand("Cta608Screen");
         optionsMenu.add(areaScreenItem);
 
         areaGroup.add(areaCustomItem);
@@ -826,8 +826,8 @@ public class Main extends javax.swing.JFrame {
             timeLabel.setText("Failed");
             setExtendedState(Frame.NORMAL);
             JOptionPane.showMessageDialog(Main.this,
-                    "<html><b>Sorry. Screen Recording failed.</b><br>" + msg.getMessage().replace("\n", "<br>"),
-                    "Screen Recorder", JOptionPane.ERROR_MESSAGE);
+                    "<html><b>Sorry. Cta608Screen Recording failed.</b><br>" + msg.getMessage().replace("\n", "<br>"),
+                    "Cta608Screen Recorder", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -883,8 +883,8 @@ public class Main extends javax.swing.JFrame {
                         t.printStackTrace();
                         setExtendedState(Frame.NORMAL);
                         JOptionPane.showMessageDialog(Main.this,
-                                "<html><b>Sorry. Screen Recording failed.</b><br>" + t.getMessage(),
-                                "Screen Recorder", JOptionPane.ERROR_MESSAGE);
+                                "<html><b>Sorry. Cta608Screen Recording failed.</b><br>" + t.getMessage(),
+                                "Cta608Screen Recorder", JOptionPane.ERROR_MESSAGE);
                         stop();
                     }
                 }
@@ -973,7 +973,7 @@ public class Main extends javax.swing.JFrame {
                     String msg = ex.getMessage();
                     JOptionPane.showMessageDialog(null,
                             "<html><b>Sorry. Could not load required audio/video services.</b><br>" + msg.replace("\n", "<br>"),
-                            "Screen Recorder", JOptionPane.ERROR_MESSAGE);
+                            "Cta608Screen Recorder", JOptionPane.ERROR_MESSAGE);
                     System.exit(10);
                 }
             });

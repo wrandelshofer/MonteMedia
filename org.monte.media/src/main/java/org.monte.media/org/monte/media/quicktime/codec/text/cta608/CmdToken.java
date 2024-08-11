@@ -94,6 +94,9 @@ public final class CmdToken implements Cta608Token {
      */
     public enum Command {
         // Table 3 Background and Foreground Attribute Codes
+        // Each Background Attribute Code appears in the display as if a standard space had been received. Such
+        // a code sets the current background color (and opacity-opaque or semi-transparent if supported) to the
+        // specified value; the displayed space character shall be entirely in the new color and opacity.
         // Each Background Attribute Code incorporates an automatic backspace (BS) for backward compatibility with
         // standard decoders. The captioning service provider is expected to precede each Background Attribute Code
         // with a standard space.
@@ -252,11 +255,14 @@ public final class CmdToken implements Cta608Token {
 
         // Table 52 Miscellaneous Control Codes
         /**
-         * Resume caption loading.
+         * Resume caption loading. (To select pop-on style).
          */
         RCL(0x120),
         /**
-         * Backspace
+         * Backspace.
+         * <p>
+         * Receipt of a BS shall move the cursor one column to the left, erasing the character or Mid-Row Code
+         * occupying that location.
          */
         BS(0x121),
         /**
@@ -288,7 +294,7 @@ public final class CmdToken implements Cta608Token {
          */
         FON(0x128),
         /**
-         * Resume Direct Captioning
+         * Resume Direct Captioning. (To select paint-on style).
          */
         RDC(0x129),
         /**

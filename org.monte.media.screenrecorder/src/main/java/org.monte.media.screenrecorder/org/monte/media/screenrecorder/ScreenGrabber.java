@@ -11,7 +11,12 @@ import org.monte.media.av.FormatKeys;
 import org.monte.media.color.Colors;
 import org.monte.media.math.Rational;
 
-import java.awt.*;
+import java.awt.AWTException;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Robot;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
@@ -146,7 +151,7 @@ class ScreenGrabber implements Runnable, AutoCloseable {
             screenCapture = robot.createScreenCapture(captureArea);
         } catch (IllegalMonitorStateException e) {
             // Log the error and return instead of throwing an exception
-            System.err.println("Screen capture failed: " + e.getMessage());
+            System.err.println("Cta608Screen capture failed: " + e.getMessage());
             return;
         }
 

@@ -29,7 +29,7 @@
  * Encoding</td><td>Encode</td></tr>
  * <tr><td>ZMBV</td><td>AVI</td><td>DosBox Capture
  * Codec</td><td>Decode</td></tr>
- * <tr><td>TSCC</td><td>AVI, MOV</td><td>TechSmith Screen Capture
+ * <tr><td>TSCC</td><td>AVI, MOV</td><td>TechSmith Cta608Screen Capture
  * Codec</td><td>Decode, Encode</td></tr>
  * <tr><td>MJPG</td><td>AVI, MOV</td><td>Motion JPEG</td><td>Decode,
  * Encode</td></tr>

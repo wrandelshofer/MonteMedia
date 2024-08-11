@@ -15,7 +15,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -79,9 +78,9 @@ public class ReadClosedCaptionsFromAMovieMain {
         frame = new JFrame("please drop a file in this window");
         JPanel panel = new JPanel(new BorderLayout());
         ccLabel = new JLabel();
-        ccLabel.setBackground(Color.BLUE);
+        //ccLabel.setBackground(Color.BLUE);
         ccLabel.setBorder(new EmptyBorder(4, 4, 4, 4));
-        ccLabel.setOpaque(true);
+        //ccLabel.setOpaque(true);
         slider = new JSlider();
         ccNbLabel = new JLabel();
         JPanel controls = new JPanel(new GridBagLayout());
@@ -131,7 +130,11 @@ public class ReadClosedCaptionsFromAMovieMain {
 
     private void updateImage() {
         int value = slider.getValue();
-        ccLabel.setText((value >= 0 && value < closedCaptions.size()) ? closedCaptions.get(value) : null);
+        // We use U+200D ZERO WIDTH JOINER to trigger complex text rendering in Swing
+        //ccLabel.setText((value >= 0 && value < closedCaptions.size()) ?
+        //        '\u200d'+closedCaptions.get(value) : null);
+        ccLabel.setText((value >= 0 && value < closedCaptions.size()) ?
+                closedCaptions.get(value) : null);
         ccNbLabel.setText(Integer.toString(value));
     }
 

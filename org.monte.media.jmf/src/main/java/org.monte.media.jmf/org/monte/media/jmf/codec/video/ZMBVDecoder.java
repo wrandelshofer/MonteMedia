@@ -12,7 +12,7 @@ import javax.media.PlugInManager;
 import javax.media.ResourceUnavailableException;
 import javax.media.format.RGBFormat;
 import javax.media.format.VideoFormat;
-import java.awt.*;
+import java.awt.Dimension;
 
 /**
  * {@code ZMBVDecoder}.
@@ -44,7 +44,7 @@ public class ZMBVDecoder extends AbstractVideoDecoder {
                 Format.FALSE, // flipped
                 Format.NOT_SPECIFIED // endian
         )};
-        pluginName = "DosBox Screen Capture \"ZMBV\"";
+        pluginName = "DosBox Cta608Screen Capture \"ZMBV\"";
     }
 
     @Override

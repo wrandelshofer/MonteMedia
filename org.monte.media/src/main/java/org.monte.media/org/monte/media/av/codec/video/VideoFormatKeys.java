@@ -57,12 +57,12 @@ public class VideoFormatKeys extends FormatKeys {
      */
     public static final String ENCODING_AVI_RLE8 = "\u0002\u0000\u0000\u0000";
     /**
-     * Techsmith Screen Capture format.
+     * Techsmith Cta608Screen Capture format.
      */
     public static final String ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE = "tscc";
-    public static final String COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE = "Techsmith Screen Capture";
+    public static final String COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE = "Techsmith Cta608Screen Capture";
     /**
-     * DosBox Screen Capture format.
+     * DosBox Cta608Screen Capture format.
      */
     public static final String ENCODING_AVI_DOSBOX_SCREEN_CAPTURE = "ZMBV";
     /**

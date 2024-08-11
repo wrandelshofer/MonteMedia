@@ -8,10 +8,14 @@ package org.monte.media.quicktime.codec.text.cta608;
 import org.monte.media.io.UncachedImageInputStream;
 
 import javax.imageio.stream.ImageInputStream;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Parses a CTA-608 stream containing closed captions.
@@ -120,12 +124,12 @@ public class Cta608Parser {
         StringBuilder buf = new StringBuilder();
         for (Cta608Token token : tokens) {
             if (!buf.isEmpty()) buf.append(' ');
-            if (token instanceof TextToken) {
+            if (token instanceof TextToken tx) {
                 buf.append('"');
-                buf.append(((TextToken) token).getText().replaceAll("\"", "\\\""));
+                buf.append(tx.getText().replaceAll("\"", "\\\""));
                 buf.append('"');
             } else if (token instanceof CmdToken ct) {
-                buf.append('{');
+                buf.append("{Cmd:C");
                 buf.append(ct.getChannel());
                 buf.append(':');
                 if (ct.getOperation() == null) {
@@ -135,7 +139,7 @@ public class Cta608Parser {
                 }
                 buf.append('}');
             } else if (token instanceof PacToken ct) {
-                buf.append('{');
+                buf.append("{Pac:C");
                 buf.append(ct.getChannel());
                 buf.append(":R");
                 buf.append(ct.getRow());
@@ -150,285 +154,303 @@ public class Cta608Parser {
         return buf.toString();
     }
 
+    private static final Map<Cta608Color, String> colorHtmldMap = Map.ofEntries(
+            Map.entry(Cta608Color.WHITE, "white"),
+            Map.entry(Cta608Color.WHITE_SEMI, "rgba(255,255,255, 0.5)"),
+            Map.entry(Cta608Color.GREEN, "green"),
+            Map.entry(Cta608Color.GREEN_SEMI, "rgba(0,255,0, 0.5)"),
+            Map.entry(Cta608Color.BLUE, "blue"),
+            Map.entry(Cta608Color.BLUE_SEMI, "rgba(0,0,255, 0.5)"),
+            Map.entry(Cta608Color.CYAN, "cyan"),
+            Map.entry(Cta608Color.CYAN_SEMI, "rgba(0,255,255, 0.5)"),
+            Map.entry(Cta608Color.RED, "red"),
+            Map.entry(Cta608Color.RED_SEMI, "rgba(255,0,0, 0.5)"),
+            Map.entry(Cta608Color.YELLOW, "yellow"),
+            Map.entry(Cta608Color.YELLOW_SEMI, "rgba(255,255,0, 0.5)"),
+            Map.entry(Cta608Color.MAGENTA, "magenta"),
+            Map.entry(Cta608Color.MAGENTA_SEMI, "rgba(255,0,255, 0.5)"),
+            Map.entry(Cta608Color.BLACK, "black"),
+            Map.entry(Cta608Color.BLACK_SEMI, "rgba(0,0,0, 0.5)"),
+            Map.entry(Cta608Color.TRANSPARENT, "rgba(0,0,0, 0.0)")
+    );
+
+    private static final Map<CmdToken.Command, Cta608Color> bgCommandMap = Map.ofEntries(
+            Map.entry(CmdToken.Command.BWO, Cta608Color.WHITE),
+            Map.entry(CmdToken.Command.BWS, Cta608Color.WHITE_SEMI),
+            Map.entry(CmdToken.Command.BGO, Cta608Color.GREEN),
+            Map.entry(CmdToken.Command.BGS, Cta608Color.GREEN_SEMI),
+            Map.entry(CmdToken.Command.BBO, Cta608Color.BLUE),
+            Map.entry(CmdToken.Command.BBS, Cta608Color.BLUE_SEMI),
+            Map.entry(CmdToken.Command.BCO, Cta608Color.CYAN),
+            Map.entry(CmdToken.Command.BCS, Cta608Color.CYAN_SEMI),
+            Map.entry(CmdToken.Command.BRO, Cta608Color.RED),
+            Map.entry(CmdToken.Command.BRS, Cta608Color.RED_SEMI),
+            Map.entry(CmdToken.Command.BYO, Cta608Color.YELLOW),
+            Map.entry(CmdToken.Command.BYS, Cta608Color.YELLOW_SEMI),
+            Map.entry(CmdToken.Command.BMO, Cta608Color.MAGENTA),
+            Map.entry(CmdToken.Command.BMS, Cta608Color.MAGENTA_SEMI),
+            Map.entry(CmdToken.Command.BAO, Cta608Color.BLACK),
+            Map.entry(CmdToken.Command.BAS, Cta608Color.BLACK_SEMI),
+            Map.entry(CmdToken.Command.BT, Cta608Color.TRANSPARENT)
+    );
+    private static final Map<CmdToken.Command, Cta608Color> fgCommandMap = Map.ofEntries(
+            Map.entry(CmdToken.Command.WHITE, Cta608Color.WHITE),
+            Map.entry(CmdToken.Command.GREEN, Cta608Color.GREEN),
+            Map.entry(CmdToken.Command.BLUE, Cta608Color.BLUE),
+            Map.entry(CmdToken.Command.CYAN, Cta608Color.CYAN),
+            Map.entry(CmdToken.Command.RED, Cta608Color.RED),
+            Map.entry(CmdToken.Command.YELLOW, Cta608Color.YELLOW),
+            Map.entry(CmdToken.Command.MAGENTA, Cta608Color.MAGENTA),
+            Map.entry(CmdToken.Command.WHITE_UNDERLINE, Cta608Color.WHITE),
+            Map.entry(CmdToken.Command.GREEN_UNDERLINE, Cta608Color.GREEN),
+            Map.entry(CmdToken.Command.BLUE_UNDERLINE, Cta608Color.BLUE),
+            Map.entry(CmdToken.Command.CYAN_UNDERLINE, Cta608Color.CYAN),
+            Map.entry(CmdToken.Command.RED_UNDERLINE, Cta608Color.RED),
+            Map.entry(CmdToken.Command.YELLOW_UNDERLINE, Cta608Color.YELLOW),
+            Map.entry(CmdToken.Command.MAGENTA_UNDERLINE, Cta608Color.MAGENTA),
+            Map.entry(CmdToken.Command.FA, Cta608Color.BLACK),
+            Map.entry(CmdToken.Command.FAU, Cta608Color.BLACK)
+    );
+    private static final Map<PacToken.Attributes, Cta608Color> pacFgCommandMap = Map.ofEntries(
+            Map.entry(PacToken.Attributes.WHITE, Cta608Color.WHITE),
+            Map.entry(PacToken.Attributes.GREEN, Cta608Color.GREEN),
+            Map.entry(PacToken.Attributes.BLUE, Cta608Color.BLUE),
+            Map.entry(PacToken.Attributes.CYAN, Cta608Color.CYAN),
+            Map.entry(PacToken.Attributes.RED, Cta608Color.RED),
+            Map.entry(PacToken.Attributes.YELLOW, Cta608Color.YELLOW),
+            Map.entry(PacToken.Attributes.MAGENTA, Cta608Color.MAGENTA),
+            Map.entry(PacToken.Attributes.WHITE_ITALICS, Cta608Color.WHITE),
+            Map.entry(PacToken.Attributes.INDENT_0, Cta608Color.WHITE),
+            Map.entry(PacToken.Attributes.INDENT_8, Cta608Color.WHITE),
+            Map.entry(PacToken.Attributes.INDENT_12, Cta608Color.WHITE),
+            Map.entry(PacToken.Attributes.INDENT_16, Cta608Color.WHITE),
+            Map.entry(PacToken.Attributes.INDENT_20, Cta608Color.WHITE),
+            Map.entry(PacToken.Attributes.INDENT_24, Cta608Color.WHITE),
+            Map.entry(PacToken.Attributes.INDENT_28, Cta608Color.WHITE)
+    );
+    private static final Map<PacToken.Attributes, Integer> pacIndentCommandMap = Map.ofEntries(
+            Map.entry(PacToken.Attributes.INDENT_0, 0),
+            Map.entry(PacToken.Attributes.INDENT_8, 8),
+            Map.entry(PacToken.Attributes.INDENT_12, 12),
+            Map.entry(PacToken.Attributes.INDENT_16, 16),
+            Map.entry(PacToken.Attributes.INDENT_20, 20),
+            Map.entry(PacToken.Attributes.INDENT_24, 24),
+            Map.entry(PacToken.Attributes.INDENT_28, 28)
+    );
+    private static final Map<PacToken.Attributes, Boolean> pacItalicsCommandMap = Map.ofEntries(
+            Map.entry(PacToken.Attributes.WHITE_ITALICS, true)
+    );
+    private static final Map<CmdToken.Command, Boolean> underlineCommandMap = Map.ofEntries(
+            Map.entry(CmdToken.Command.WHITE, false),
+            Map.entry(CmdToken.Command.GREEN, false),
+            Map.entry(CmdToken.Command.BLUE, false),
+            Map.entry(CmdToken.Command.CYAN, false),
+            Map.entry(CmdToken.Command.RED, false),
+            Map.entry(CmdToken.Command.YELLOW, false),
+            Map.entry(CmdToken.Command.MAGENTA, false),
+            Map.entry(CmdToken.Command.WHITE_UNDERLINE, true),
+            Map.entry(CmdToken.Command.GREEN_UNDERLINE, true),
+            Map.entry(CmdToken.Command.BLUE_UNDERLINE, true),
+            Map.entry(CmdToken.Command.CYAN_UNDERLINE, true),
+            Map.entry(CmdToken.Command.RED_UNDERLINE, true),
+            Map.entry(CmdToken.Command.YELLOW_UNDERLINE, true),
+            Map.entry(CmdToken.Command.MAGENTA_UNDERLINE, true),
+            Map.entry(CmdToken.Command.FA, false),
+            Map.entry(CmdToken.Command.FAU, true),
+            Map.entry(CmdToken.Command.ITALICS, false),
+            Map.entry(CmdToken.Command.ITALICS_UNDERLINE, true)
+    );
+    private static final Map<CmdToken.Command, Boolean> italicsCommandMap = Map.ofEntries(
+            Map.entry(CmdToken.Command.WHITE, false),
+            Map.entry(CmdToken.Command.GREEN, false),
+            Map.entry(CmdToken.Command.BLUE, false),
+            Map.entry(CmdToken.Command.CYAN, false),
+            Map.entry(CmdToken.Command.RED, false),
+            Map.entry(CmdToken.Command.YELLOW, false),
+            Map.entry(CmdToken.Command.MAGENTA, false),
+            Map.entry(CmdToken.Command.WHITE_UNDERLINE, false),
+            Map.entry(CmdToken.Command.GREEN_UNDERLINE, false),
+            Map.entry(CmdToken.Command.BLUE_UNDERLINE, false),
+            Map.entry(CmdToken.Command.CYAN_UNDERLINE, false),
+            Map.entry(CmdToken.Command.RED_UNDERLINE, false),
+            Map.entry(CmdToken.Command.YELLOW_UNDERLINE, false),
+            Map.entry(CmdToken.Command.MAGENTA_UNDERLINE, false),
+            Map.entry(CmdToken.Command.FA, false),
+            Map.entry(CmdToken.Command.FAU, false),
+            Map.entry(CmdToken.Command.ITALICS, true),
+            Map.entry(CmdToken.Command.ITALICS_UNDERLINE, true)
+    );
+
+
     /**
      * Parses to HTML that can be used in a Swing {@code JLabel}.
      *
      * @param tokens the tokens
+     * @param memory
      * @return the HTML String
      * @throws IOException on IO failure
      */
-    public String toHtml(List<Cta608Token> tokens) throws IOException {
-        StringBuilder buf = new StringBuilder("<html><font color=white>");
-        int row = 0;
-        String closingTag = "</font>";
+    public void updateMemory(List<Cta608Token> tokens, Cta608Memory memory) throws IOException {
+        Point pos = new Point(0, 0);
+        Cta608CharAttr attr = Cta608Screen.DEFAULT_ATTR;
         for (Cta608Token token : tokens) {
-            if (token instanceof TextToken) {
-                buf.append(
-                        ((TextToken) token).getText()
-                                .replaceAll("&", "&amp;")
-                                .replaceAll("<", "&lt;")
-                                .replaceAll(">", "&gt;")
-                );
-            } else if (token instanceof CmdToken ct) {
-                switch (ct.getOperation()) {
-                    case BWO -> {
-                    }
-                    case BWS -> {
-                    }
-                    case BGO -> {
-                    }
-                    case BGS -> {
-                    }
-                    case BBO -> {
-                    }
-                    case BBS -> {
-                    }
-                    case BCO -> {
-                    }
-                    case BCS -> {
-                    }
-                    case BRO -> {
-                    }
-                    case BRS -> {
-                    }
-                    case BYO -> {
-                    }
-                    case BYS -> {
-                    }
-                    case BMO -> {
-                    }
-                    case BMS -> {
-                    }
-                    case BAO -> {
-                    }
-                    case BAS -> {
-                    }
-                    case BT -> {
-                    }
-                    case FA -> {
-                    }
-                    case FAU -> {
-                    }
-                    case CHARSET_STANDARD -> {
-                    }
-                    case CHARSET_STANDARD_DOUBLE_SIZE -> {
-                    }
-                    case CHARSET_PRIVATE_1 -> {
-                    }
-                    case CHARSET_PRIVATE_2 -> {
-                    }
-                    case CHARSET_CHINESE -> {
-                    }
-                    case CHARSET_KOREAN -> {
-                    }
-                    case CHARSET_REGISTERED_1 -> {
-                    }
-                    case WHITE -> {
-                        buf.append(closingTag);
-                        buf.append("<font color=white>");
-                        closingTag = "</font>";
-                    }
-                    case WHITE_UNDERLINE -> {
-                        buf.append(closingTag);
-                        buf.append("<font color=white><ul>");
-                        closingTag = "<ul></font>";
-                    }
-                    case GREEN -> {
-                        buf.append(closingTag);
-                        buf.append("<font color=green>");
-                        closingTag = "</font>";
-                    }
-                    case GREEN_UNDERLINE -> {
-                    }
-                    case BLUE -> {
-                        buf.append(closingTag);
-                        buf.append("<font color=blue>");
-                        closingTag = "</font>";
-                    }
-                    case BLUE_UNDERLINE -> {
-                    }
-                    case CYAN -> {
-                        buf.append(closingTag);
-                        buf.append("<font color=cyan>");
-                        closingTag = "</font>";
-                    }
-                    case CYAN_UNDERLINE -> {
-                    }
-                    case RED -> {
-                        buf.append(closingTag);
-                        buf.append("<font color=red>");
-                        closingTag = "</font>";
-                    }
-                    case RED_UNDERLINE -> {
-                    }
-                    case YELLOW -> {
-                        buf.append(closingTag);
-                        buf.append("<font color=yellow>");
-                        closingTag = "</font>";
-                    }
-                    case YELLOW_UNDERLINE -> {
-                    }
-                    case MAGENTA -> {
-                        buf.append(closingTag);
-                        buf.append("<font color=magenta>");
-                        closingTag = "</font>";
-                    }
-                    case MAGENTA_UNDERLINE -> {
-                    }
-                    case ITALICS -> {
-                        buf.append("<i>");
-                        closingTag = "</i>" + closingTag;
-                    }
-                    case ITALICS_UNDERLINE -> {
-                        buf.append("<i><u>");
-                        closingTag = "</i></u>" + closingTag;
-                    }
-                    case RCL -> {
-                        buf.setLength(0);
-                        buf.append("<html>");
-                        row = 0;
-                        closingTag = "";
-                    }
-                    case BS -> {
-                    }
-                    case AOF -> {
-                    }
-                    case AON -> {
-                    }
-                    case DER -> {
-                    }
-                    case RU2 -> {
-                    }
-                    case RU3 -> {
-                    }
-                    case RU4 -> {
-                    }
-                    case FON -> {
-                    }
-                    case RDC -> {
-                    }
-                    case TR -> {
-                    }
-                    case RTD -> {
-                    }
-                    case EDM -> {
-                    }
-                    case CR -> {
-                    }
-                    case ENM -> {
-                    }
-                    case EOC -> {
-                    }
-                    case TO1 -> {
-                    }
-                    case TO2 -> {
-                    }
-                    case TO3 -> {
+            switch (token) {
+                case TextToken tx -> {
+                    pos = memory.nonDisplayed.write(pos, attr, tx.getText());
+                }
+                case CmdToken cmd -> {
+                    CmdToken.Command op = cmd.getOperation();
+                    attr = attr.withBackground(bgCommandMap.get(op));
+                    attr = attr.withForeground(fgCommandMap.get(op));
+                    attr = attr.withUnderline(underlineCommandMap.get(op));
+                    attr = attr.withItalics(italicsCommandMap.get(op));
+
+                    switch (op) {
+                        case RCL -> {
+                            memory.nonDisplayed.style = Cta608Style.POP_ON;
+                        }
+                        case BS -> {
+                            pos.x = Math.max(pos.x - 1, 0);
+                            memory.nonDisplayed.write(pos, attr, "\0");
+                        }
+                        case DER -> {
+                            memory.nonDisplayed.deleteToEndOfRow(pos);
+                        }
+                        case RU2 -> {
+                            memory.nonDisplayed.rollUp(2);
+                        }
+                        case RU3 -> {
+                            memory.nonDisplayed.rollUp(3);
+                        }
+                        case RU4 -> {
+                            memory.nonDisplayed.rollUp(4);
+                        }
+                        case RDC -> {
+                            memory.nonDisplayed.style = Cta608Style.PAINT_ON;
+                        }
+                        case TR -> {
+                            memory.nonDisplayed.textRestart();
+                        }
+                        case RTD -> {
+                            pos.x = 0;
+                            pos.y = 0;
+                        }
+                        case EDM -> {
+                            memory.displayed.erase();
+                        }
+                        case CR -> {
+                            pos.x = 0;
+                            if (pos.y == Cta608Screen.HEIGHT - 1) {
+                                memory.nonDisplayed.rollUp(1);
+                            } else {
+                                pos.y = pos.y + 1;
+                            }
+                        }
+                        case ENM -> {
+                            memory.nonDisplayed.erase();
+                        }
+                        case EOC -> {
+                            memory.flipMemories();
+                        }
+                        case TO1 -> {
+                            pos.x = Math.min(Cta608Screen.WIDTH - 1, pos.x + 1);
+                        }
+                        case TO2 -> {
+                            pos.x = Math.min(Cta608Screen.WIDTH - 1, pos.x + 2);
+                        }
+                        case TO3 -> {
+                            pos.x = Math.min(Cta608Screen.WIDTH - 1, pos.x + 3);
+                        }
                     }
                 }
-            } else if (token instanceof PacToken ct) {
-                int targetRow = ct.getRow();
-                buf.append(closingTag);
-                closingTag = "";
-                while (row < targetRow) {
-                    buf.append("<br>");
-                    row++;
-                }
-                switch (ct.getTextAttributes()) {
-                    case WHITE -> {
-                        buf.append("<font color=white>");
-                        closingTag = "</font>";
+                case PacToken pac -> {
+                    pos.y = pac.getRow() - 1;
+                    PacToken.Attributes ta = pac.getTextAttributes();
+                    attr = attr.withForeground(pacFgCommandMap.get(ta));
+                    attr = attr.withItalics(pacItalicsCommandMap.get(ta));
+                    Integer indent = pacIndentCommandMap.get(ta);
+                    if (indent != null) {
+                        pos.x = indent;
                     }
-                    case GREEN -> {
-                        buf.append("<font color=green>");
-                        closingTag = "</font>";
-                    }
-                    case BLUE -> {
-                        buf.append("<font color=blue>");
-                        closingTag = "</font>";
-                    }
-                    case CYAN -> {
-                        buf.append("<font color=cyan>");
-                        closingTag = "</font>";
-                    }
-                    case RED -> {
-                        buf.append("<font color=red>");
-                        closingTag = "</font>";
-                    }
-                    case YELLOW -> {
-                        buf.append("<font color=yellow>");
-                        closingTag = "</font>";
-                    }
-                    case MAGENTA -> {
-                        buf.append("<font color=magenta>");
-                        closingTag = "</font>";
-                    }
-                    case WHITE_ITALICS -> {
-                        buf.append("<font color=white><i>");
-                        closingTag = "</i></font>";
-                    }
-                    case INDENT_0 -> {
-                        buf.append("<font color=white>");
-                        closingTag = "</font>";
-                    }
-                    case INDENT_4 -> {
-                        buf.append("<font color=white>");
-                        for (int i = 0; i < 4; i++) {
-                            buf.append("&nbsp;");
-                        }
-                        closingTag = "</font>";
-                    }
-                    case INDENT_8 -> {
-                        buf.append("<font color=white>");
-                        for (int i = 0; i < 8; i++) {
-                            buf.append("&nbsp;");
-                        }
-                        closingTag = "</font>";
-                    }
-                    case INDENT_12 -> {
-                        buf.append("<font color=white>");
-                        for (int i = 0; i < 12; i++) {
-                            buf.append("&nbsp;");
-                        }
-                        closingTag = "</font>";
-                    }
-                    case INDENT_16 -> {
-                        buf.append("<font color=white>");
-                        for (int i = 0; i < 16; i++) {
-                            buf.append("&nbsp;");
-                        }
-                        closingTag = "</font>";
-                    }
-                    case INDENT_20 -> {
-                        buf.append("<font color=white>");
-                        for (int i = 0; i < 20; i++) {
-                            buf.append("&nbsp;");
-                        }
-                        closingTag = "</font>";
-                    }
-                    case INDENT_24 -> {
-                        buf.append("<font color=white>");
-                        for (int i = 0; i < 24; i++) {
-                            buf.append("&nbsp;");
-                        }
-                        closingTag = "</font>";
-                    }
-                    case INDENT_28 -> {
-                        buf.append("<font color=white>");
-                        for (int i = 0; i < 28; i++) {
-                            buf.append("&nbsp;");
-                        }
-                        closingTag = "</font>";
-                    }
-                }
-                if (ct.isUnderline()) {
-                    buf.append("<ul>");
-                    closingTag = "</ul>" + closingTag;
                 }
             }
         }
-        buf.append(closingTag);
+    }
+
+    /**
+     * Parses to HTML that can be used in a Swing {@code JLabel}.
+     *
+     * @param memory the memory
+     * @return the HTML String
+     * @throws IOException on IO failure
+     */
+    public String toHtml(Cta608Memory memory) throws IOException {
+        StringBuilder buf = new StringBuilder("<html>");
+        Cta608Screen screen = memory.displayed;
+        boolean isPopOn = screen.style == Cta608Style.POP_ON;
+        Rectangle textBox = isPopOn ? screen.getTextBox() : null;
+        for (int y = 0; y < Cta608Screen.HEIGHT; y++) {
+            int minX = screen.getMinX(y);
+            int indent;
+            if (textBox != null && y == textBox.y) {
+                buf.repeat("&nbsp", textBox.x);
+                buf.append("<div style=\"");
+                attrToCssStyle(buf, screen.attrAt(textBox.x, textBox.y), false);
+                buf.append("padding:4 8 4 8;");
+                buf.append("\">");
+                indent = minX - textBox.x;
+            } else {
+                indent = minX;
+            }
+            if (minX < Cta608Screen.WIDTH) {
+                buf.repeat("&nbsp", indent);
+                int maxX = screen.getMaxX(y);
+                Cta608CharAttr prevAttr = null;
+                for (int x = minX; x <= maxX; x++) {
+                    Cta608CharAttr attr = screen.attrAt(x, y);
+                    if (!Objects.equals(prevAttr, attr)) {
+                        if (prevAttr != null) {
+                            buf.append("</span>");
+                        }
+                        buf.append("<span style=\"");
+                        attrToCssStyle(buf, attr, isPopOn);
+                        buf.append("\">");
+                    }
+                    char c = screen.charAt(x, y);
+                    switch (c) {
+                        case ' ', '0' -> buf.append("&nbsp;");
+                        case '<' -> buf.append("&lt;");
+                        case '>' -> buf.append("&gt;");
+                        case '&' -> buf.append("&amp;");
+                        default -> buf.append(c);
+
+                    }
+                    prevAttr = attr;
+                }
+                if (prevAttr != null) {
+                    buf.append("</span>");
+                }
+            }
+            if (textBox != null && y == textBox.y + textBox.height - 1) {
+                buf.append("</div>");
+            }
+            buf.append("<br>");
+        }
         return buf.toString();
+    }
+
+    private static void attrToCssStyle(StringBuilder buf, Cta608CharAttr attr, boolean ignoreBackground) {
+        if (!ignoreBackground) {
+            buf.append("background-color:");
+            buf.append(colorHtmldMap.get(attr.background()));
+            buf.append(';');
+        }
+        buf.append("color:");
+        buf.append(colorHtmldMap.get(attr.foreground()));
+        buf.append(";font-style:");
+        buf.append(attr.italic() ? "italic;" : "normal;");
+        buf.append("text-decoration:");
+        buf.append(attr.underlined() ? "underline;" : "none;");
     }
 
     /**
@@ -436,153 +458,27 @@ public class Cta608Parser {
      * <p>
      * This format will lose most of the formatting.
      *
-     * @param tokens the tokens
+     * @param memory the memory
      * @return the String
      * @throws IOException on IO failure
      */
-    public String toString(List<Cta608Token> tokens) throws IOException {
-        StringBuilder buf = new StringBuilder();
-        for (Cta608Token token : tokens) {
-            if (token instanceof TextToken) {
-                buf.append(((TextToken) token).getText());
-            } else if (token instanceof CmdToken ct) {
-                switch (ct.getOperation()) {
-                    case BWO -> {
-                    }
-                    case BWS -> {
-                    }
-                    case BGO -> {
-                    }
-                    case BGS -> {
-                    }
-                    case BBO -> {
-                    }
-                    case BBS -> {
-                    }
-                    case BCO -> {
-                    }
-                    case BCS -> {
-                    }
-                    case BRO -> {
-                    }
-                    case BRS -> {
-                    }
-                    case BYO -> {
-                    }
-                    case BYS -> {
-                    }
-                    case BMO -> {
-                    }
-                    case BMS -> {
-                    }
-                    case BAO -> {
-                    }
-                    case BAS -> {
-                    }
-                    case BT -> {
-                    }
-                    case FA -> {
-                    }
-                    case FAU -> {
-                    }
-                    case CHARSET_STANDARD -> {
-                    }
-                    case CHARSET_STANDARD_DOUBLE_SIZE -> {
-                    }
-                    case CHARSET_PRIVATE_1 -> {
-                    }
-                    case CHARSET_PRIVATE_2 -> {
-                    }
-                    case CHARSET_CHINESE -> {
-                    }
-                    case CHARSET_KOREAN -> {
-                    }
-                    case CHARSET_REGISTERED_1 -> {
-                    }
-                    case WHITE -> {
-                    }
-                    case WHITE_UNDERLINE -> {
-                    }
-                    case GREEN -> {
-                    }
-                    case GREEN_UNDERLINE -> {
-                    }
-                    case BLUE -> {
-                    }
-                    case BLUE_UNDERLINE -> {
-                    }
-                    case CYAN -> {
-                    }
-                    case CYAN_UNDERLINE -> {
-                    }
-                    case RED -> {
-                    }
-                    case RED_UNDERLINE -> {
-                    }
-                    case YELLOW -> {
-                    }
-                    case YELLOW_UNDERLINE -> {
-                    }
-                    case MAGENTA -> {
-                    }
-                    case MAGENTA_UNDERLINE -> {
-                    }
-                    case ITALICS -> {
-                    }
-                    case ITALICS_UNDERLINE -> {
-                    }
-                    case RCL -> {
-                        buf.setLength(0);
-                    }
-                    case BS -> {
-                    }
-                    case AOF -> {
-                    }
-                    case AON -> {
-                    }
-                    case DER -> {
-                    }
-                    case RU2 -> {
-                    }
-                    case RU3 -> {
-                    }
-                    case RU4 -> {
-                    }
-                    case FON -> {
-                    }
-                    case RDC -> {
-                    }
-                    case TR -> {
-                    }
-                    case RTD -> {
-                    }
-                    case EDM -> {
-                    }
-                    case CR -> {
-                    }
-                    case ENM -> {
-                    }
-                    case EOC -> {
-                    }
-                    case TO1 -> {
-                    }
-                    case TO2 -> {
-                    }
-                    case TO3 -> {
+    public String toString(Cta608Memory memory) throws IOException {
+        StringBuilder buf = new StringBuilder("");
+        Cta608Screen screen = memory.displayed;
+        for (int y = 0; y < Cta608Screen.HEIGHT; y++) {
+            int minX = screen.getMinX(y);
+            if (minX < Cta608Screen.WIDTH) {
+                buf.repeat(' ', minX);
+                int maxX = screen.getMaxX(y);
+                for (int x = minX; x <= maxX; x++) {
+                    char c = screen.charAt(x, y);
+                    switch (c) {
+                        case '0' -> buf.append(' ');
+                        default -> buf.append(c);
                     }
                 }
-            } else if (token instanceof PacToken ct) {
-                buf.append('{');
-                buf.append(ct.getChannel());
-                buf.append(":R");
-                buf.append(ct.getRow());
-                buf.append(":");
-                buf.append(ct.getTextAttributes());
-                if (ct.isUnderline()) {
-                    buf.append(":UL");
-                }
-                buf.append('}');
             }
+            buf.append("\n");
         }
         return buf.toString();
     }

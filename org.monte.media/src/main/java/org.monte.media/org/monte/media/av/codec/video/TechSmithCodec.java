@@ -190,7 +190,7 @@ public class TechSmithCodec extends AbstractVideoCodec {
                                 DataClassKey, byte[].class,
                                 FixedFrameRateKey, true, DepthKey, 24), //
                 });
-        name = "TechSmith Screen Capture";
+        name = "TechSmith Cta608Screen Capture";
     }
 
     @Override
