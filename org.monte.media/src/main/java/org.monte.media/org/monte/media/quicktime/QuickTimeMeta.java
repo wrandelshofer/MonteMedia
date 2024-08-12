@@ -8,6 +8,7 @@ import org.monte.media.av.AbstractMovie;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys;
 import org.monte.media.av.MovieReader;
+import org.monte.media.color.Colors;
 import org.monte.media.math.Rational;
 
 import java.awt.image.IndexColorModel;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -31,6 +33,7 @@ import static org.monte.media.av.FormatKeys.SampleFormatKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.CompressorNameKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.PaletteKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
 /**
@@ -127,6 +130,7 @@ public class QuickTimeMeta extends AbstractMovie {
             new Locale("tgl"),//82 Tagalog
             new Locale("mal"),//83 MalayRoman
     };
+    public List<IndexColorModel> colorTables = new ArrayList<>();
     /**
      * The compression method used for compressing the compressed movie data atom cmvd.
      */
@@ -227,8 +231,14 @@ public class QuickTimeMeta extends AbstractMovie {
     private void deriveTrackFormat(int trackIndex) {
         Track track = tracks.get(trackIndex);
         Format format = new Format(MimeTypeKey, MIME_QUICKTIME,
-                MediaTypeKey, track.mediaType,
-                EncodingKey, track.encoding);
+                MediaTypeKey, track.mediaType
+        );
+        String dataFormat = (track.media != null
+                && !track.media.sampleDescriptions.isEmpty())
+                ? track.media.sampleDescriptions.getFirst().dataFormat : null;
+        if (dataFormat != null) {
+            format = format.append(EncodingKey, dataFormat);
+        }
         if (track.media == null) {
             throw new UnsupportedOperationException("not implemented for tracks without media. " + trackIndex + " " + track.mediaType + " " + track.media);
         }
@@ -238,8 +248,16 @@ public class QuickTimeMeta extends AbstractMovie {
                 if (m.sampleDescriptions.size() != 1) {
                     throw new UnsupportedOperationException("not implemented for media with multiple sample descriptions.. " + trackIndex + " " + track.mediaType + " " + m + " " + m.sampleDescriptions);
                 }
-
                 SampleDescription desc = m.sampleDescriptions.getFirst();
+
+                if (desc.videoDepth == 8) {
+                    if (0 <= desc.videoColorTableId && desc.videoColorTableId < this.colorTables.size()) {
+                        format = format.append(PaletteKey, this.colorTables.get(desc.videoColorTableId));
+                    } else {
+                        format = format.append(PaletteKey, Colors.createMacColors());
+                    }
+                }
+
                 format = format.append(
                         SampleFormatKey, desc.dataFormat,
                         CompressorNameKey, desc.videoCompressorName,
@@ -1184,11 +1202,6 @@ public class QuickTimeMeta extends AbstractMovie {
          * The video compression quality.
          */
         protected float videoQuality = 0.97f;
-        /**
-         * The color table used for rendering the video. This variable is only
-         * used when the video uses an index color model.
-         */
-        protected IndexColorModel videoColorTable;
         // END Video Header
         // BEGIN Video Media Header
         boolean videoFlagNoLeanAhead;
@@ -1304,7 +1317,6 @@ public class QuickTimeMeta extends AbstractMovie {
                     + ", mediaDuration=" + mediaDuration //
                     + ", mediaLanguage=" + mediaLanguage//
                     + ", mediaQuality=" + mediaQuality //
-                    + ", videoColorTable=" + videoColorTable//
                     + ", soundBalance=" + soundBalance//
                     + ", dataReferenceList=" + dataReferenceList //
                     + ", chunks=" + chunkOffsets//
@@ -1314,7 +1326,6 @@ public class QuickTimeMeta extends AbstractMovie {
                     + ", sampleCount=" + sampleCount
                     + ", syncInterval=" + syncInterval
                     + ", videoQuality=" + videoQuality
-                    + ", videoColorTable=" + videoColorTable
                     + '}';
         }
     }

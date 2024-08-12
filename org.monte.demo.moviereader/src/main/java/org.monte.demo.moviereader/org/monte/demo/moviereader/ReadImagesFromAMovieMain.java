@@ -117,10 +117,7 @@ public class ReadImagesFromAMovieMain {
                 }
             }
         };
-        panel.setDropTarget(dt);
-        imageLabel.setDropTarget(dt);
-        imageNbLabel.setDropTarget(dt);
-        slider.setDropTarget(dt);
+        frame.setDropTarget(dt);
 
         frame.pack();
         frame.setVisible(true);

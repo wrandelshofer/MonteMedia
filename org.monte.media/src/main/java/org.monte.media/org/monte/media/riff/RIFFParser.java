@@ -373,7 +373,7 @@ public class RIFFParser extends Object {
                 in.align();
             }
         } catch (EOFException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             chunk.setParserMessage(
                     "Unexpected EOF after "
                             + NumberFormat.getInstance().format(getScan(in) - offset)

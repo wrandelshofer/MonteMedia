@@ -4,7 +4,6 @@
  */
 package org.monte.media.io;
 
-import java.io.IOException;
 import java.nio.ByteOrder;
 
 /**
@@ -32,20 +31,16 @@ public class ByteArrayImageInputStream extends ImageInputStreamImpl2 {
     protected byte[] buf;
 
     /**
-     * The index one greater than the last valid character in the input
-     * stream buffer.
-     * This value should always be nonnegative
-     * and not larger than the length of <code>buf</code>.
-     * It  is one greater than the position of
-     * the last byte within <code>buf</code> that
-     * can ever be read  from the input stream buffer.
+     * The length of the buffer.
      */
-    protected int count;
+    protected int length;
+
+
 
     /**
-     * The offset to the start of the array.
+     * The offset to the start index of the buffer.
      */
-    private final int arrayOffset;
+    private final int offset;
 
     public ByteArrayImageInputStream(byte[] buf) {
         this(buf, ByteOrder.BIG_ENDIAN);
@@ -57,9 +52,8 @@ public class ByteArrayImageInputStream extends ImageInputStreamImpl2 {
 
     public ByteArrayImageInputStream(byte[] buf, int offset, int length, ByteOrder byteOrder) {
         this.buf = buf;
-        this.streamPos = offset;
-        this.count = Math.min(offset + length, buf.length);
-        this.arrayOffset = offset;
+        this.length = Math.min(length, buf.length - offset);
+        this.offset = offset;
         this.byteOrder = byteOrder;
     }
 
@@ -79,7 +73,7 @@ public class ByteArrayImageInputStream extends ImageInputStreamImpl2 {
     @Override
     public int read() {
         flushBits();
-        return (streamPos < count) ? (buf[(int) (streamPos++)] & 0xff) : -1;
+        return (streamPos < length) ? (buf[offset + (int) (streamPos++)] & 0xff) : -1;
     }
 
     /**
@@ -119,16 +113,16 @@ public class ByteArrayImageInputStream extends ImageInputStreamImpl2 {
         } else if (off < 0 || len < 0 || len > b.length - off) {
             throw new IndexOutOfBoundsException();
         }
-        if (streamPos >= count) {
+        if (streamPos >= length) {
             return -1;
         }
-        if (streamPos + len > count) {
-            len = (int) (count - streamPos);
+        if (streamPos + len > length) {
+            len = (int) (length - streamPos);
         }
         if (len <= 0) {
             return 0;
         }
-        System.arraycopy(buf, (int) streamPos, b, off, len);
+        System.arraycopy(buf, offset + (int) streamPos, b, off, len);
         streamPos += len;
         return len;
     }
@@ -146,8 +140,8 @@ public class ByteArrayImageInputStream extends ImageInputStreamImpl2 {
      * @return the actual number of bytes skipped.
      */
     public long skip(long n) {
-        if (streamPos + n > count) {
-            n = count - streamPos;
+        if (streamPos + n > length) {
+            n = length - streamPos;
         }
         if (n < 0) {
             return 0;
@@ -167,7 +161,7 @@ public class ByteArrayImageInputStream extends ImageInputStreamImpl2 {
      * over) from this input stream without blocking.
      */
     public int available() {
-        return (int) (count - streamPos);
+        return (int) (length - streamPos);
     }
 
 
@@ -182,24 +176,7 @@ public class ByteArrayImageInputStream extends ImageInputStreamImpl2 {
         // does nothing!!
     }
 
-    @Override
-    public long getStreamPosition() throws IOException {
-        checkClosed();
-        return streamPos - arrayOffset;
-    }
 
-    @Override
-    public void seek(long pos) throws IOException {
-        checkClosed();
-        flushBits();
-
-        // This test also covers pos < 0
-        if (pos < flushedPos) {
-            throw new IndexOutOfBoundsException("pos < flushedPos!");
-        }
-
-        this.streamPos = pos + arrayOffset;
-    }
 
     private void flushBits() {
         bitOffset = 0;
@@ -207,6 +184,6 @@ public class ByteArrayImageInputStream extends ImageInputStreamImpl2 {
 
     @Override
     public long length() {
-        return count - arrayOffset;
+        return length;
     }
 }

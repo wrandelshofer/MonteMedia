@@ -509,7 +509,7 @@ public abstract class AbstractAVIStream {
         /**
          * The current chunk index of the reader.
          */
-        public long readIndex = 0;
+        public int readIndex = 0;
         /**
          * List of additional header chunks.
          */

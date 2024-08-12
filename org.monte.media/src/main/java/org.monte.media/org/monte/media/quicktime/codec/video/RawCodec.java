@@ -266,7 +266,7 @@ public class RawCodec extends AbstractVideoCodec {
             out.length = (int) tmp.getStreamPosition();
             return CODEC_OK;
         } catch (IOException ex) {
-            ex.printStackTrace();
+            out.exception = ex;
             out.setFlag(DISCARD);
             return CODEC_FAILED;
         }

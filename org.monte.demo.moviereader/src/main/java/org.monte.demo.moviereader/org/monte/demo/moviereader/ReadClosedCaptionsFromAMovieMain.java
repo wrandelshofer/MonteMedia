@@ -119,10 +119,7 @@ public class ReadClosedCaptionsFromAMovieMain {
                 }
             }
         };
-        panel.setDropTarget(dt);
-        ccLabel.setDropTarget(dt);
-        ccNbLabel.setDropTarget(dt);
-        slider.setDropTarget(dt);
+        frame.setDropTarget(dt);
 
         frame.pack();
         frame.setVisible(true);

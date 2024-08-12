@@ -44,7 +44,7 @@ public class ZMBVDecoder extends AbstractVideoDecoder {
                 Format.FALSE, // flipped
                 Format.NOT_SPECIFIED // endian
         )};
-        pluginName = "DosBox Cta608Screen Capture \"ZMBV\"";
+        pluginName = "DosBox Screen Capture \"ZMBV\"";
     }
 
     @Override

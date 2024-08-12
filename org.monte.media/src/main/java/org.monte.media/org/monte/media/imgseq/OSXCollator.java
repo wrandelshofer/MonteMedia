@@ -82,7 +82,7 @@ public class OSXCollator extends Collator {
             try {
                 collator = new RuleBasedCollator(rules);
             } catch (ParseException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }
     }

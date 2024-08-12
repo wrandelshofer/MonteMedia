@@ -20,7 +20,7 @@ import java.awt.Dimension;
 import java.io.IOException;
 
 /**
- * JMF Codec for the TechSmith Cta608Screen-Capture format.
+ * JMF Codec for the TechSmith Screen-Capture format.
  * <p>
  * This codec can decode24 and encode the format to/from a JMF {@code RGBFormat}
  * or a {@code IndexedColorFormat}.
@@ -96,7 +96,7 @@ public class TSCCCodec extends AbstractVideoDecoder {
                         null, null, null// r,g,b map
                 )
         };
-        pluginName = "TechSmith Cta608Screen-Capture Codec";
+        pluginName = "TechSmith Screen-Capture Codec";
     }
 
     @Override

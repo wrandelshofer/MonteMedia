@@ -219,7 +219,7 @@ public class RunLengthCodec extends AbstractVideoCodec {
             }
             return CODEC_OK;
         } catch (IOException ex) {
-            ex.printStackTrace();
+            out.exception = ex;
             out.setFlag(DISCARD);
             return CODEC_FAILED;
         }

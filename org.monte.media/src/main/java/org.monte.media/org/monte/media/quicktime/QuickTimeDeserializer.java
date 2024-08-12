@@ -9,13 +9,15 @@ import org.monte.media.io.UncachedImageInputStream;
 
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
+import java.awt.image.DataBuffer;
+import java.awt.image.IndexColorModel;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.zip.InflaterInputStream;
 
@@ -27,30 +29,27 @@ import java.util.zip.InflaterInputStream;
  */
 public class QuickTimeDeserializer {
 
-    static final HashSet<String> compositeAtoms;
-
-    static {
-        compositeAtoms = new HashSet<>();
-        compositeAtoms.add("moov");
-        compositeAtoms.add("cmov");
-        compositeAtoms.add("gmhd");
-        compositeAtoms.add("trak");
-        compositeAtoms.add("tref");
-        compositeAtoms.add("meta"); // sometimes has a special 4 byte header before its contents
-        compositeAtoms.add("ilst");
-        compositeAtoms.add("mdia");
-        compositeAtoms.add("minf");
-        compositeAtoms.add("udta");
-        compositeAtoms.add("stbl");
-        compositeAtoms.add("dinf");
-        compositeAtoms.add("edts");
-        compositeAtoms.add("clip");
-        compositeAtoms.add("matt");
-        compositeAtoms.add("rmra");
-        compositeAtoms.add("rmda");
-        compositeAtoms.add("tapt");
-        compositeAtoms.add("mvex");
-    }
+    static final Set<String> compositeAtoms = Set.of(
+            "moov",
+            "cmov",
+            "gmhd",
+            "trak",
+            "tref",
+            "meta",// sometimes has a special 4 byte header before its contents
+            "ilst",
+            "mdia",
+            "minf",
+            "udta",
+            "stbl",
+            "dinf",
+            "edts",
+            "clip",
+            "matt",
+            "rmra",
+            "rmda",
+            "tapt",
+            "mvex"
+    );
 
     private static class Atom {
 
@@ -233,6 +232,9 @@ public class QuickTimeDeserializer {
                             break;
                         case "stsz":
                             parseSampleSize(in, atom.size - atom.headerSize, media);
+                            break;
+                        case "ctab":
+                            parseColorTable(in, atom.size - atom.headerSize, m);
                             break;
                         default:
                             atom.data = new byte[(int) (atom.size - atom.headerSize)];
@@ -582,7 +584,6 @@ public class QuickTimeDeserializer {
         String componentName = in.readPString();
 
         if ("mhlr".equals(componentType)) {
-            t.encoding = componentSubtype;
             switch (componentSubtype) {
                 case "vide" -> t.mediaType = MediaType.VIDEO;
                 case "soun" -> t.mediaType = MediaType.AUDIO;
@@ -1229,11 +1230,6 @@ public class QuickTimeDeserializer {
      *    int size;
      * } sampleSizeTable;
      * </pre>
-     *
-     * @param in
-     * @param remainingSize
-     * @param m
-     * @throws IOException
      */
     protected void parseSampleSize(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
@@ -1259,5 +1255,55 @@ public class QuickTimeDeserializer {
                 }
             }
         }
+    }
+
+    /**
+     * Color table atoms define a list of preferred colors for displaying
+     * the movie on devices that support only 256 colors.
+     * The list may contain up to 256 colors. These optional atoms have a type value of 'ctab'.
+     * The color table atom contains a Macintosh color table data structure.
+     *
+     * <pre>
+     * magic colorTableAtom "ctab";
+     *
+     * typedef struct {
+     *     int colorTableSeed;      // A 32-bit integer that must be set to 0.
+     *     ushort colorTableFlags;   // A 16-bit integer that must be set to 0x8000.
+     *     ushort colorTableSize;    //A 16-bit integer that indicates the number
+     *                              // of colors in the following color array.
+     *                              // This is a zero-relative value; setting this field
+     *                              // to 0 means that there is one color in the array.
+     *     colorArrayEntry[] colorArray;
+     *                              // An array of colors. Each color is made of four
+     *                              // unsigned 16-bit integers. The first integer
+     *                              // must be set to 0, the second is the red value,
+     *                              // the third is the green value, and the fourth
+     *                              // is the blue value.
+     * } colorTableAtom;
+     *
+     * typedef struct {
+     *     ushort unused; // Must be set to 0
+     *     ushort red;
+     *     ushort green;
+     *     ushort blue;
+     * } colorArrayEntry;
+     * </pre>
+     */
+    protected void parseColorTable(QTFFImageInputStream in, long remainingSize, QuickTimeMeta meta) throws IOException {
+        int colorTableSeed = in.readInt();
+        assert colorTableSeed == 0;
+        int colorTableFlags = in.readUnsignedShort();
+        assert colorTableFlags == 0x8000;
+        int colorTableSize = in.readUnsignedShort() + 1;
+        int[] cmap = new int[colorTableSize];
+        for (int i = 0; i < colorTableSize; i++) {
+            int unused = in.readUnsignedShort();
+            assert unused == 0;
+            int red = in.readUnsignedShort();
+            int green = in.readUnsignedShort();
+            int blue = in.readUnsignedShort();
+            cmap[i] = ((red & 0xff00) << 8) | (green & 0xff00) | ((blue & 0xff00) >>> 8);
+        }
+        meta.colorTables.add(new IndexColorModel(8, colorTableSize, cmap, 0, false, -1, DataBuffer.TYPE_BYTE));
     }
 }

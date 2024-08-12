@@ -11,8 +11,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.clamp;
 import static java.lang.Math.max;
-import static java.lang.Math.min;
 
 /**
  * {@code WhiteBalance}.
@@ -62,9 +62,9 @@ public class WhiteBalance {
             double Rq = m[0] * R + m[1] * B + m[2] * G;
             double Gq = m[3] * R + m[4] * B + m[5] * G;
             double Bq = m[6] * R + m[7] * B + m[8] * G;
-            q[i] = ((min(255, max(0, (int) Rq))) & 0xff) << 16
-                    | ((min(255, max(0, (int) Gq))) & 0xff) << 8
-                    | ((min(255, max(0, (int) Bq))) & 0xff) << 0;
+            q[i] = (clamp((int) Rq, 0, 255) & 0xff) << 16
+                    | (clamp((int) Gq, 0, 255) & 0xff) << 8
+                    | (clamp((int) Bq, 0, 255) & 0xff);
         }
 
         return out;
@@ -192,8 +192,8 @@ public class WhiteBalance {
             VAdj = VAllAdj;
         }
 
-        System.out.println("WhiteBalance.YUV GRAY cb=" + UGrayAdj + " cr=" + VGrayAdj + " N=" + NGray);
-        System.out.println("WhiteBalance.YUV ALL cb=" + UAllAdj + " cr=" + VAllAdj + " N=" + NColor);
+        //System.out.println("WhiteBalance.YUV GRAY cb=" + UGrayAdj + " cr=" + VGrayAdj + " N=" + NGray);
+        //System.out.println("WhiteBalance.YUV ALL cb=" + UAllAdj + " cr=" + VAllAdj + " N=" + NColor);
         if (uvAdjust != null) {
             uvAdjust[0] = UAdj;
             uvAdjust[1] = VAdj;
@@ -205,7 +205,7 @@ public class WhiteBalance {
                 int px = p[i];
                 rgb[0] = ((px & 0xff0000) >> 16) / 255f;
                 rgb[1] = ((px & 0xff00) >> 8) / 255f;
-                rgb[2] = ((px & 0xff) >> 0) / 255f;
+                rgb[2] = ((px & 0xff)) / 255f;
                 ColorModels.RGBtoYUV(rgb, yuv);
                 yuv[1] += UAdj;
                 yuv[2] += VAdj;
@@ -261,16 +261,16 @@ public class WhiteBalance {
         float mub = (float) m[2];
         float nub = (float) m[3];
 
-        System.out.println("WhiteBalance QM mur=" + mur + " nur=" + nur + " mub=" + mub + " nub=" + nub);
+        //System.out.println("WhiteBalance QM mur=" + mur + " nur=" + nur + " mub=" + mub + " nub=" + nub);
         for (int i = 0; i < p.length; i++) {
             int px = p[i];
             double R = (px & 0xff0000) >> 16;
-            double B = (px & 0xff) >> 0;
+            double B = (px & 0xff);
             double Rq = mur * R * R + nur * R;
             double Bq = mub * B * B + nub * B;
-            q[i] = ((min(255, max(0, (int) Rq)))) << 16
+            q[i] = clamp((int) Rq, 0, 255) << 16
                     | (px & 0xff00)
-                    | ((min(255, max(0, (int) Bq)))) << 0;
+                    | clamp((int) Bq, 0, 255);
         }
 
         return out;

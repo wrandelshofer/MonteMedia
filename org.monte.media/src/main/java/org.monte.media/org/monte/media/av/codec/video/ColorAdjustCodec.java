@@ -14,6 +14,7 @@ import org.monte.media.interpolator.SplineInterpolator;
 
 import java.awt.image.BufferedImage;
 
+import static java.lang.Math.clamp;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.Math.sqrt;
@@ -182,9 +183,9 @@ public class ColorAdjustCodec extends AbstractVideoCodec {
             }
 
             if (becAdjust) {
-                rgb[0] = max(0, min(1, ((rgb[0] - 0.5f) * contrast + 0.5f) * exposure + brightness));
-                rgb[1] = max(0, min(1, ((rgb[1] - 0.5f) * contrast + 0.5f) * exposure + brightness));
-                rgb[2] = max(0, min(1, ((rgb[2] - 0.5f) * contrast + 0.5f) * exposure + brightness));
+                rgb[0] = clamp(((rgb[0] - 0.5f) * contrast + 0.5f) * exposure + brightness, 0, 1);
+                rgb[1] = clamp(((rgb[1] - 0.5f) * contrast + 0.5f) * exposure + brightness, 0, 1);
+                rgb[2] = clamp(((rgb[2] - 0.5f) * contrast + 0.5f) * exposure + brightness, 0, 1);
             }
             if (invLevelsExtent != -1) {
                 rgb[0] = (max(min(rgb[0], whitePoint), blackPoint) - blackPoint) * invLevelsExtent;

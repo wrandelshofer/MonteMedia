@@ -444,7 +444,7 @@ public class Methods {
             invoke(obj, methodName, enumClass, enumValue);
         } catch (ClassNotFoundException | NoSuchMethodException e) {
             // ignore
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 }

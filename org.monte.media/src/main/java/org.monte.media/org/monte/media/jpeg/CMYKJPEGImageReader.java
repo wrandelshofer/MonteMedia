@@ -249,7 +249,7 @@ public class CMYKJPEGImageReader extends ImageReader {
         profile = ICC_Profile.getInstance(new ByteArrayInputStream(app2ICCProfile.toByteArray()));
       } catch (Throwable ex) {
         // icc profile is corrupt
-        ex.printStackTrace();
+        throw new IOException("icc profile is corrupt", ex);
       }
     }
 
@@ -461,7 +461,7 @@ public class CMYKJPEGImageReader extends ImageReader {
       }
     } catch (Throwable ex) {
       // consume the exception
-      ex.printStackTrace();
+      //ex.printStackTrace();
     } finally {
       image = null;
     }

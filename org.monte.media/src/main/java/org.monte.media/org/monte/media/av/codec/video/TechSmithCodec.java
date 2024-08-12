@@ -190,7 +190,7 @@ public class TechSmithCodec extends AbstractVideoCodec {
                                 DataClassKey, byte[].class,
                                 FixedFrameRateKey, true, DepthKey, 24), //
                 });
-        name = "TechSmith Cta608Screen Capture";
+        name = "TechSmith Screen Capture";
     }
 
     @Override
@@ -248,7 +248,6 @@ public class TechSmithCodec extends AbstractVideoCodec {
         try {
             if (outputDepth == 8) {
                 newPixels = ArrayUtil.reuseByteArray(newPixels, width * height);
-
                 isKeyFrame = state.decode8((byte[]) in.data, in.offset, in.length, (byte[]) newPixels, (byte[]) newPixels, width, height, false);
             } else {
                 newPixels = ArrayUtil.reuseIntArray(newPixels, width * height);
@@ -266,10 +265,8 @@ public class TechSmithCodec extends AbstractVideoCodec {
             return CODEC_FAILED;
         }
 
-        BufferedImage img = null;
-        if (out.data instanceof BufferedImage) {
-            img = (BufferedImage) out.data;
-        }
+        BufferedImage img = (out.data instanceof BufferedImage bimg) ? bimg : null;
+
         switch (outputDepth) {
             case 8: {
                 int imgType = BufferedImage.TYPE_BYTE_INDEXED;
@@ -452,7 +449,7 @@ public class TechSmithCodec extends AbstractVideoCodec {
             out.length = tmp.size();
             return CODEC_OK;
         } catch (IOException ex) {
-            ex.printStackTrace();
+            out.exception = ex;
             out.setFlag(DISCARD);
             return CODEC_OK;
         }

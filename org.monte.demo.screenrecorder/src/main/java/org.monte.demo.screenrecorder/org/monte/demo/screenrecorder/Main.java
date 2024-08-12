@@ -310,7 +310,7 @@ public class Main extends javax.swing.JFrame {
                 prefs.getInt("ScreenRecording.customAreaX", 100),
                 prefs.getInt("ScreenRecording.customAreaY", 100));
         areaChoice.setModel(new DefaultComboBoxModel<>(new AreaItem[]{
-                new AreaItem("Entire Cta608Screen", null, SwingConstants.NORTH_WEST),
+                new AreaItem("Entire Screen", null, SwingConstants.NORTH_WEST),
                 new AreaItem("Center 1280 x 720", new Dimension(1280, 720), SwingConstants.CENTER),
                 new AreaItem("Center 1024 x 768", new Dimension(1024, 768), SwingConstants.CENTER),
                 new AreaItem("Center   800 x 600", new Dimension(800, 600), SwingConstants.CENTER),
@@ -368,7 +368,7 @@ public class Main extends javax.swing.JFrame {
         FormListener formListener = new FormListener();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle("Monte Cta608Screen Recorder");
+        setTitle("Monte Screen Recorder");
         setResizable(false);
         addWindowListener(formListener);
 
@@ -395,17 +395,17 @@ public class Main extends javax.swing.JFrame {
 
         audioRateChoice.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"44.100 kHz"}));
 
-        screenRateLabel.setText("Cta608Screen Rate:");
+        screenRateLabel.setText("Screen Rate:");
 
         mouseRateLabel.setText("Mouse Rate:");
 
         encodingLabel.setText("Encoding:");
 
-        encodingChoice.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Cta608Screen Capture", "Run Length", "None", "PNG", "JPEG 100 %", "JPEG   50 %"}));
+        encodingChoice.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Screen Capture", "Run Length", "None", "PNG", "JPEG 100 %", "JPEG   50 %"}));
 
         areaLabel.setText("Area:");
 
-        areaChoice.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Entire Cta608Screen", "0 0,  1024 x 768", " "}));
+        areaChoice.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Entire Screen", "0 0,  1024 x 768", " "}));
 
         selectAreaButton.setText("Custom Area...");
         selectAreaButton.addActionListener(formListener);
@@ -677,7 +677,7 @@ public class Main extends javax.swing.JFrame {
                         case 0:
                         default:
                             if (bitDepth == 8) {
-                                // FIXME - 8-bit Techsmith Cta608Screen Capture is broken
+                                // FIXME - 8-bit Techsmith Screen Capture is broken
                                 videoFormatName = ENCODING_QUICKTIME_ANIMATION;
                                 compressorName = COMPRESSOR_NAME_QUICKTIME_ANIMATION;
                             } else {
@@ -825,8 +825,8 @@ public class Main extends javax.swing.JFrame {
             startStopButton.setText("Start");
             setExtendedState(Frame.NORMAL);
             JOptionPane.showMessageDialog(Main.this,
-                    "<html><b>Sorry. Cta608Screen Recording failed.</b>",
-                    "Cta608Screen Recorder", JOptionPane.ERROR_MESSAGE);
+                    "<html><b>Sorry. Screen Recording failed.</b>",
+                    "Screen Recorder", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -835,11 +835,11 @@ public class Main extends javax.swing.JFrame {
         switch (formatChoice.getSelectedIndex()) {
             case 0: // AVI
                 encodingChoice.setModel(
-                        new javax.swing.DefaultComboBoxModel<>(new String[]{"Cta608Screen Capture", "Run Length", "None", "PNG", "JPEG 100 %", "JPEG  50 %"}));
+                        new javax.swing.DefaultComboBoxModel<>(new String[]{"Screen Capture", "Run Length", "None", "PNG", "JPEG 100 %", "JPEG  50 %"}));
                 break;
             case 1: // QuickTime
                 encodingChoice.setModel(
-                        new javax.swing.DefaultComboBoxModel<>(new String[]{"Cta608Screen Capture", "Animation", "None", "PNG", "JPEG 100 %", "JPEG  50 %"}));
+                        new javax.swing.DefaultComboBoxModel<>(new String[]{"Screen Capture", "Animation", "None", "PNG", "JPEG 100 %", "JPEG  50 %"}));
                 break;
         }
         encodingChoice.setSelectedIndex(index);
@@ -857,8 +857,8 @@ public class Main extends javax.swing.JFrame {
                         t.printStackTrace();
                         setExtendedState(Frame.NORMAL);
                         JOptionPane.showMessageDialog(Main.this,
-                                "<html><b>Sorry. Cta608Screen Recording failed.</b><br>" + t.getMessage(),
-                                "Cta608Screen Recorder", JOptionPane.ERROR_MESSAGE);
+                                "<html><b>Sorry. Screen Recording failed.</b><br>" + t.getMessage(),
+                                "Screen Recorder", JOptionPane.ERROR_MESSAGE);
                         stop();
                     }
                 }

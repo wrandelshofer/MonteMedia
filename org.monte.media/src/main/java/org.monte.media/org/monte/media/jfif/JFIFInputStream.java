@@ -158,7 +158,7 @@ public class JFIFInputStream extends FilterInputStream {
     public final static int SOF2_MARKER = 0xffc2;//nondifferential Huffman-coding frames with progressive DCT.
     public final static int SOF3_MARKER = 0xffc3;//nondifferential Huffman-coding frames with lossless (sequential) data.
 
-    //public final static int SOF4_MARKER = 0xffc4;//
+    public final static int DHT_MARKER = 0xffc4;//DHT Define Huffman table(s)
     public final static int SOF5_MARKER = 0xffc5;//differential Huffman-coding frames with differential sequential DCT.
     public final static int SOF6_MARKER = 0xffc6;//differential Huffman-coding frames with differential progressive DCT.
     public final static int SOF7_MARKER = 0xffc7;//differential Huffman-coding frames with differential lossless data.

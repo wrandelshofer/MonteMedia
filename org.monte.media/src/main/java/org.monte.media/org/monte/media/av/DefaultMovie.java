@@ -61,7 +61,6 @@ public class DefaultMovie extends AbstractMovie {
         try {
             return reader.getTrackCount();
         } catch (IOException e) {
-            e.printStackTrace();
             return 0;
         }
     }

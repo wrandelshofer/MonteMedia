@@ -140,7 +140,7 @@ public class JPEGCodec extends AbstractVideoCodec {
             out.length = (int) tmp.getStreamPosition();
             return CODEC_OK;
         } catch (IOException ex) {
-            ex.printStackTrace();
+            out.exception = ex;
             out.setFlag(DISCARD);
             return CODEC_FAILED;
         }
@@ -160,8 +160,12 @@ public class JPEGCodec extends AbstractVideoCodec {
         ByteArrayImageInputStream tmp = new ByteArrayImageInputStream(data);
 
         try {
-            // ImageReader ir = (ImageReader) ImageIO.getImageReadersByMIMEType("image/jpeg").next();
-            ImageReader ir = new MJPGImageReader(new MJPGImageReaderSpi());
+            ImageReader ir;
+            if (ENCODING_AVI_MJPG.equals(in.format.get(EncodingKey))) {
+                ir = new MJPGImageReader(new MJPGImageReaderSpi());
+            } else {
+                ir = ImageIO.getImageReadersByMIMEType("image/jpeg").next();
+            }
             ir.setInput(tmp);
             out.data = ir.read(0);
             ir.dispose();
@@ -171,7 +175,7 @@ public class JPEGCodec extends AbstractVideoCodec {
             out.length = (int) tmp.getStreamPosition();
             return CODEC_OK;
         } catch (IOException ex) {
-            ex.printStackTrace();
+            out.exception = ex;
             out.setFlag(DISCARD);
             return CODEC_FAILED;
         }

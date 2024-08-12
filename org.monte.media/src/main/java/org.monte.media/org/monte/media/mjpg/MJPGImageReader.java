@@ -13,7 +13,6 @@ import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.spi.ImageReaderSpi;
 import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.MemoryCacheImageInputStream;
 import java.awt.image.BufferedImage;
 import java.awt.image.DirectColorModel;
 import java.io.IOException;
@@ -103,12 +102,8 @@ public class MJPGImageReader extends ImageReader {
 
             ImageReader r = getBasicJPEGImageReader();
             Object in = getInput();
-            /*if (in instanceof Buffer) {
-             Buffer buffer = (Buffer) in;
-             in=buffer.getData();
-             }*/
             if (in instanceof byte[]) {
-                r.setInput(new MemoryCacheImageInputStream(AVIBMPDIB.prependDHTSeg((byte[]) in)));
+                r.setInput(AVIBMPDIB.prependDHTSeg((byte[]) in));
             } else if (in instanceof ImageInputStream) {
                 r.setInput(AVIBMPDIB.prependDHTSeg((ImageInputStream) in));
             } else {

@@ -254,7 +254,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
      * @param height
      * @param onlyDecodeIfKeyframe
      * @return True if a key-frame was decoded.
-     * @throws IOException
+     * @throws IOException on IO failure
      */
     public boolean decode8(byte[] inDat, int off, int length, byte[] outDat, byte[] prevDat, int width, int height, boolean onlyDecodeIfKeyframe) throws IOException {
         InputStream innerStream = new ByteArrayInputStream(inDat, off, length);
@@ -406,7 +406,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
 
             }
         } catch (ArrayIndexOutOfBoundsException t) {
-            t.printStackTrace();
+            throw new IOException(t);
         }
         in.close();
         return isKeyFrame;

@@ -136,7 +136,7 @@ public class AmigaBitmapCodec extends AbstractVideoCodec {
             }
             return CODEC_OK;
         } catch (IOException e) {
-            e.printStackTrace();
+            out.exception = e;
             out.setFlag(DISCARD);
             return CODEC_FAILED;
         }
@@ -196,7 +196,7 @@ public class AmigaBitmapCodec extends AbstractVideoCodec {
             }
             return CODEC_OK;
         } catch (IOException e) {
-            e.printStackTrace();
+            out.exception = e;
             out.setFlag(DISCARD);
             return CODEC_FAILED;
         }

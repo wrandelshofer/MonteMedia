@@ -4,8 +4,9 @@
  */
 package org.monte.media.seq;
 
+import org.monte.media.io.UncachedImageInputStream;
+
 import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.MemoryCacheImageInputStream;
 import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
 import java.io.IOException;
@@ -59,7 +60,7 @@ public class SEQDecoder {
      * Creates a decoder for the specified input stream.
      */
     public SEQDecoder(InputStream in) {
-        this.in = new MemoryCacheImageInputStream(in);
+        this.in = new UncachedImageInputStream(in);
         this.in.setByteOrder(ByteOrder.BIG_ENDIAN);
     }
 

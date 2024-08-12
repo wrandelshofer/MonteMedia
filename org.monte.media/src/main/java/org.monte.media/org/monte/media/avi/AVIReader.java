@@ -47,11 +47,15 @@ public class AVIReader implements MovieReader {
     private final AVIInputStream in;
 
     public AVIReader(ImageInputStream in) throws IOException {
-        this.in = new AVIInputStream(in);
+        this(new AVIInputStream(in));
     }
 
     public AVIReader(File file) throws IOException {
-        this.in = new AVIInputStream(file);
+        this(new AVIInputStream(file));
+    }
+
+    public AVIReader(AVIInputStream in) throws IOException {
+        this.in = in;
     }
 
     @Override
@@ -83,7 +87,8 @@ public class AVIReader implements MovieReader {
     public void read(int track, Buffer buffer) throws IOException {
         in.ensureRealized();
         AbstractAVIStream.Track tr = in.tracks.get(track);
-        if (tr.readIndex >= tr.samples.size()) {
+        int sampleIndex = tr.readIndex;
+        if (sampleIndex >= tr.samples.size()) {
             buffer.setFlagsTo(END_OF_MEDIA, DISCARD);
             buffer.length = 0;
             return;
@@ -103,14 +108,10 @@ public class AVIReader implements MovieReader {
             buffer.headerLength = 0;
         }
 
-        // FIXME - This should be done using AVIInputStream.readSample()
-        in.in.seek(s.offset);
-        byte[] b;
-        buffer.data = b = ArrayUtil.reuseByteArray(buffer.data, (int) s.length);
-        in.in.readFully(b, 0, (int) s.length);
         buffer.offset = 0;
-        buffer.length = (int) s.length;
-
+        buffer.length = in.getSampleSize(track, sampleIndex);
+        buffer.data = ArrayUtil.reuseByteArray(buffer.data, buffer.length);
+        in.readSample(track, sampleIndex, (byte[]) buffer.data, 0, buffer.length);
 
         switch (tr.mediaType) {
             case AUDIO: {
@@ -273,13 +274,8 @@ public class AVIReader implements MovieReader {
     }
 
     @Override
-    public Rational getDuration() {
-        try {
+    public Rational getDuration() throws IOException {
             in.ensureRealized();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return new Rational(0, 1);
-        }
         if (movieDuration == null) {
             Rational maxDuration = new Rational(0, 1);
             for (AbstractAVIStream.Track tr : in.tracks) {

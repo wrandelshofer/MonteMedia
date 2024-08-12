@@ -151,7 +151,7 @@ class ScreenGrabber implements Runnable, AutoCloseable {
             screenCapture = robot.createScreenCapture(captureArea);
         } catch (IllegalMonitorStateException e) {
             // Log the error and return instead of throwing an exception
-            System.err.println("Cta608Screen capture failed: " + e.getMessage());
+            System.err.println("Screen capture failed: " + e.getMessage());
             return;
         }
 

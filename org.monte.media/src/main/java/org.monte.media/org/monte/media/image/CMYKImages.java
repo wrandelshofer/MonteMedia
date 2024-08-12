@@ -25,7 +25,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.IntStream;
 
-import static java.lang.Math.max;
+import static java.lang.Math.clamp;
 import static java.lang.Math.min;
 
 /**
@@ -243,9 +243,9 @@ public class CMYKImages {
             G = (100000 * Yi - 34414 * (Cbi - 128) - 71414 * (Cri - 128)) / 100000;
             B = (1000 * Yi + 1772 * (Cbi - 128)) / 1000;
 
-            R = min(255, max(0, R));
-            G = min(255, max(0, G));
-            B = min(255, max(0, B));
+            R = clamp(R, 0, 255);
+            G = clamp(G, 0, 255);
+            B = clamp(B, 0, 255);
 
             rgb[i] = 0xff << 24 | R << 16 | G << 8 | B;
           }

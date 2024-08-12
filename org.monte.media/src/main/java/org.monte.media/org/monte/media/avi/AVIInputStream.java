@@ -401,6 +401,54 @@ public class AVIInputStream extends AbstractAVIStream {
     }
 
     /**
+     * Gets the size of a sample in bytes.
+     *
+     * @param track  The track index.
+     * @param sample The sample index.
+     * @return the size of the sample
+     * @throws IOException if reading the sample data failed.
+     */
+    public int getSampleSize(int track, int sample) throws IOException {
+        AbstractAVIStream.Track tr = tracks.get(track);
+        AbstractAVIStream.Sample s = tr.samples.get(sample);
+        return (int) s.length;
+    }
+
+    /**
+     * Gets the number of a samples of the specified track.
+     *
+     * @param track The track index.
+     * @return the number of samples in the track
+     * @throws IOException if reading the sample data failed.
+     */
+    public int getSampleCount(int track) throws IOException {
+        AbstractAVIStream.Track tr = tracks.get(track);
+        return tr.samples.size();
+    }
+
+
+    /**
+     * Reads a sample from a track into a byte array.
+     *
+     * @param track  The track index.
+     * @param sample The sample index.
+     * @param data   The encoded sample data.
+     * @param off    The startTime offset in the data.
+     * @param len    The maximal number of bytes to read
+     * @return the actual number of samples read
+     * @throws IOException if reading the sample data failed.
+     */
+    public int readSample(int track, int sample, byte[] data, int off, int len) throws IOException {
+        AbstractAVIStream.Track tr = tracks.get(track);
+        AbstractAVIStream.Sample s = tr.samples.get(sample);
+        in.seek(s.offset);
+        if (len < s.length) throw new IOException("len=" + len + " is too small. Should be at least len=" + s.length);
+        int bytesRead = Math.min((int) s.length, len);
+        in.readFully(data, off, bytesRead);
+        return bytesRead;
+    }
+
+    /**
      * Reads an AVI Stream Header and returns a Track object.
      */
     /*typedef struct {

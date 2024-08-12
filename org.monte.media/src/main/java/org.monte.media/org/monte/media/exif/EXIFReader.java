@@ -32,7 +32,6 @@ import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -153,7 +152,7 @@ public class EXIFReader {
         ArrayList<FileSegment> mpSeg = null;
 
         byte[] buf = new byte[512];
-        JFIFInputStream in = new JFIFInputStream(new BufferedInputStream(new ImageInputStreamAdapter(iin)));
+        JFIFInputStream in = new JFIFInputStream(new ImageInputStreamAdapter(iin));
 
         int imageCount = 0;
         TIFFDirectory imageNode = null;
@@ -353,7 +352,7 @@ public class EXIFReader {
                 }
             });
         } catch (ParseException ex) {
-            ex.printStackTrace();
+            throw new IOException(ex);
         } catch (AbortException ex) {
             // aborts are explicitly done by the visitor
         }
@@ -543,8 +542,6 @@ public class EXIFReader {
                 dependentImageEntryNumber = in.readUnsignedShort();
                 ifdNode.add(new TIFFField(tagSet.getTag(MPEntryTagSet.TAG_DependentImage2EntryNumber), dependentImageEntryNumber, IFDDataType.SHORT));
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         } finally {
             in.close();
         }

@@ -5,8 +5,7 @@
 
 package org.monte.media.color;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
+import static java.lang.Math.clamp;
 
 public class YccConverters {
     /**
@@ -30,9 +29,9 @@ public class YccConverters {
         int Y = (299 * R + 587 * G + 114 * B) / 1000;
         int Cb = (-1687 * R - 3313 * G + 5000 * B) / 10000 + 128;
         int Cr = (5000 * R - 4187 * G - 813 * B) / 10000 + 128;
-        ycc[0] = min(255, max(0, Y));
-        ycc[1] = min(255, max(0, Cb));
-        ycc[2] = min(255, max(0, Cr));
+        ycc[0] = clamp(Y, 0, 255);
+        ycc[1] = clamp(Cb, 0, 255);
+        ycc[2] = clamp(Cr, 0, 255);
     }
 
     /**
@@ -98,9 +97,9 @@ public class YccConverters {
         int R = (1000 * Y + 1402 * (Cr - 128)) / 1000;
         int G = (100000 * Y - 34414 * (Cb - 128) - 71414 * (Cr - 128)) / 100000;
         int B = (1000 * Y + 1772 * (Cb - 128)) / 1000;
-        rgb[0] = min(255, max(0, R));
-        rgb[1] = min(255, max(0, G));
-        rgb[2] = min(255, max(0, B));
+        rgb[0] = clamp(R, 0, 255);
+        rgb[1] = clamp(G, 0, 255);
+        rgb[2] = clamp(B, 0, 255);
     }
 
     /**
@@ -112,9 +111,9 @@ public class YccConverters {
         int Cr = ycc[2];
         int U = (Cb - 128 * 256) * 2;
         int V = (Cr - 128 * 256) * 8 / 5;
-        int R = min(255, max(0, (V + Y) / 256));
-        int B = min(255, max(0, (U + Y) / 256));
-        int G = min(255, max(0, (Y - 77 * R - 26 * B) / 153));
+        int R = clamp((V + Y) / 256, 0, 255);
+        int B = clamp((U + Y) / 256, 0, 255);
+        int G = clamp((Y - 77 * R - 26 * B) / 153, 0, 255);
         rgb[0] = R;
         rgb[1] = G;
         rgb[2] = B;

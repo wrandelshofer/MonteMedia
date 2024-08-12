@@ -48,15 +48,18 @@ public class UncachedImageInputStream extends ImageInputStreamImpl2 {
     }
 
     @Override
+    public long getFlushedPosition() {
+        return streamPos;
+    }
+
+
+    @Override
     public void seek(long pos) throws IOException {
         checkClosed();
 
         // This test also covers pos < 0
-        if (pos < flushedPos) {
-            throw new IndexOutOfBoundsException("pos < flushedPos!");
-        }
         if (pos < streamPos) {
-            throw new IndexOutOfBoundsException("pos=" + pos + " < streamPos=" + streamPos);
+            throw new IOException("pos=" + pos + " < streamPos=" + streamPos);
         }
 
         this.bitOffset = 0;

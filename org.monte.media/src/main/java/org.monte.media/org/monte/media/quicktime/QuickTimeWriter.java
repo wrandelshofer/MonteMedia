@@ -179,7 +179,7 @@ public class QuickTimeWriter implements MovieWriter {
      * @param file the output file
      */
     public QuickTimeWriter(File file) throws IOException {
-        out = new QuickTimeOutputStream(file);
+        this(new QuickTimeOutputStream(file));
     }
 
     /**
@@ -188,7 +188,16 @@ public class QuickTimeWriter implements MovieWriter {
      * @param out the output stream.
      */
     public QuickTimeWriter(ImageOutputStream out) throws IOException {
-        this.out = new QuickTimeOutputStream(out);
+        this(new QuickTimeOutputStream(out));
+    }
+
+    /**
+     * Creates a new QuickTime writer.
+     *
+     * @param out the output stream.
+     */
+    public QuickTimeWriter(QuickTimeOutputStream out) throws IOException {
+        this.out = out;
     }
 
     @Override

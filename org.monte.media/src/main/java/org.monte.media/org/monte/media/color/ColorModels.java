@@ -4,14 +4,13 @@
  */
 package org.monte.media.color;
 
-import java.awt.*;
+import java.awt.Transparency;
 import java.awt.image.ColorModel;
 import java.awt.image.DirectColorModel;
 import java.awt.image.IndexColorModel;
 import java.util.Arrays;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
+import static java.lang.Math.clamp;
 
 /**
  * Utility methods for ColorModels.
@@ -119,9 +118,9 @@ public class ColorModels {
      * Cr=[-0.5,0.5]
      */
     public static void RGBtoYCC(float[] rgb, float[] ycc) {
-        float R = max(0f, min(1f, rgb[0]));
-        float G = max(0f, min(1f, rgb[1]));
-        float B = max(0f, min(1f, rgb[2]));
+        float R = clamp(rgb[0], 0f, 1f);
+        float G = clamp(rgb[1], 0f, 1f);
+        float B = clamp(rgb[2], 0f, 1f);
         float Y = 0.3f * R + 0.6f * G + 0.1f * B;
         float V = R - Y;
         float U = B - Y;
@@ -137,17 +136,17 @@ public class ColorModels {
      * to RGB in the range [0,1]
      */
     public static void YCCtoRGB(float[] ycc, float[] rgb) {
-        float Y = max(0f, min(1f, ycc[0]));
-        float Cb = max(-0.5f, min(0.5f, ycc[1]));
-        float Cr = max(-0.5f, min(0.5f, ycc[2]));
+        float Y = clamp(ycc[0], 0f, 1f);
+        float Cb = clamp(ycc[1], -0.5f, 0.5f);
+        float Cr = clamp(ycc[2], -0.5f, 0.5f);
         float U = (Cb /*- 0.5f*/) * 2f;
         float V = (Cr /*- 0.5f*/) * 1.6f;
         float R = V + Y;
         float B = U + Y;
         float G = (Y - 0.3f * R - 0.1f * B) / 0.6f;
-        rgb[0] = max(0f, min(1f, R));
-        rgb[1] = max(0f, min(1f, G));
-        rgb[2] = max(0f, min(1f, B));
+        rgb[0] = clamp(R, 0f, 1f);
+        rgb[1] = clamp(G, 0f, 1f);
+        rgb[2] = clamp(B, 0f, 1f);
     }
 
     /**
@@ -189,9 +188,9 @@ public class ColorModels {
      * V=[-0.5,0.5]
      */
     public static void RGBtoYUV(float[] rgb, float[] yuv) {
-        float R = max(0f, min(1f, rgb[0]));
-        float G = max(0f, min(1f, rgb[1]));
-        float B = max(0f, min(1f, rgb[2]));
+        float R = clamp(rgb[0], 0f, 1f);
+        float G = clamp(rgb[1], 0f, 1f);
+        float B = clamp(rgb[2], 0f, 1f);
         float Y = 0.3f * R + 0.6f * G + 0.1f * B;
         yuv[0] = 0.299f * R + 0.587f * G + 0.114f * B;
         yuv[1] = -0.14713f * R - 0.28886f * G + 0.436f * B;
@@ -203,15 +202,15 @@ public class ColorModels {
      * to RGB in the range [0,1]
      */
     public static void YUVtoRGB(float[] yuv, float[] rgb) {
-        float Y = max(0f, min(1f, yuv[0]));
-        float U = max(-0.5f, min(0.5f, yuv[1]));
-        float V = max(-0.5f, min(0.5f, yuv[2]));
+        float Y = clamp(yuv[0], 0f, 1f);
+        float U = clamp(yuv[1], -0.5f, 0.5f);
+        float V = clamp(yuv[2], -0.5f, 0.5f);
         float R = 1 * Y + 0 * U + 1.13983f * V;
         float G = 1 * Y - 0.39465f * U - 0.58060f * V;
         float B = 1 * Y + 2.03211f * U + 0 * V;
-        rgb[0] = min(1, max(0, R));
-        rgb[1] = min(1, max(0, G));
-        rgb[2] = min(1, max(0, B));
+        rgb[0] = clamp(R, 0, 1);
+        rgb[1] = clamp(G, 0, 1);
+        rgb[2] = clamp(B, 0, 1);
     }
 
     /**
@@ -223,9 +222,9 @@ public class ColorModels {
         int Cr = ycc[2];
         int U = (Cb - 128 * 256) * 2;
         int V = (Cr - 128 * 256) * 8 / 5;
-        int R = min(255, max(0, (V + Y) / 256));
-        int B = min(255, max(0, (U + Y) / 256));
-        int G = min(255, max(0, (Y - 77 * R - 26 * B) / 153));
+        int R = clamp((V + Y) / 256, 0, 255);
+        int B = clamp((U + Y) / 256, 0, 255);
+        int G = clamp((Y - 77 * R - 26 * B) / 153, 0, 255);
         rgb[0] = R;
         rgb[1] = G;
         rgb[2] = B;
@@ -240,9 +239,9 @@ public class ColorModels {
         int Cr = ycc[2];
         int U = (Cb - 128 * 256) * 2;
         int V = (Cr - 128 * 256) * 8 / 5;
-        int R = min(255, max(0, (V + Y) / 256));
-        int B = min(255, max(0, (U + Y) / 256));
-        int G = min(255, max(0, (Y - 77 * R - 26 * B) / 153));
+        int R = clamp((V + Y) / 256, 0, 255);
+        int B = clamp((U + Y) / 256, 0, 255);
+        int G = clamp((Y - 77 * R - 26 * B) / 153, 0, 255);
         return R << 16 | G << 8 | B;
     }
 
@@ -253,9 +252,9 @@ public class ColorModels {
      * http://en.wikipedia.org/wiki/YIQ
      */
     public static void RGBtoYIQ(float[] rgb, float[] yiq) {
-        float R = max(0f, min(1f, rgb[0]));
-        float G = max(0f, min(1f, rgb[1]));
-        float B = max(0f, min(1f, rgb[2]));
+        float R = clamp(rgb[0], 0f, 1f);
+        float G = clamp(rgb[1], 0f, 1f);
+        float B = clamp(rgb[2], 0f, 1f);
         float Y = 0.299f * R + 0.587f * G + 0.114f * B;
         float I = 0.595716f * R + -0.274453f * G + -0.321263f * B;
         float Q = 0.211456f * R + -0.522591f * G + 0.311135f * B;
@@ -271,14 +270,14 @@ public class ColorModels {
      * http://en.wikipedia.org/wiki/YIQ
      */
     public static void YIQtoRGB(float[] yiq, float[] rgb) {
-        float Y = max(0f, min(1f, yiq[0]));
-        float I = max(-0.5957f, min(0.5957f, yiq[1]));
-        float Q = max(-0.5226f, min(0.5226f, yiq[2]));
+        float Y = clamp(yiq[0], 0f, 1f);
+        float I = clamp(yiq[1], -0.5957f, 0.5957f);
+        float Q = clamp(yiq[2], -0.5226f, 0.5226f);
         float R = Y + 0.9563f * I + 0.6210f * Q;
         float G = Y + -0.2721f * I + -0.6474f * Q;
         float B = Y + -1.1070f * I + 1.7046f * Q;
-        rgb[0] = max(0f, min(1f, R));
-        rgb[1] = max(0f, min(1f, G));
-        rgb[2] = max(0f, min(1f, B));
+        rgb[0] = clamp(R, 0f, 1f);
+        rgb[1] = clamp(G, 0f, 1f);
+        rgb[2] = clamp(B, 0f, 1f);
     }
 }

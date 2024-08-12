@@ -169,7 +169,7 @@ public class ZMBVCodecCore {
             isKeyframe = (flags & 1) != 0;
 
             if (onlyDecodeIfKeyframe && !isKeyframe) {
-                System.out.println("ZMBVCodec cannot decode delta without preceeding keyframe.");
+                //System.out.println("ZMBVCodec cannot decode delta without preceeding keyframe.");
                 return false;
             }
 
@@ -240,9 +240,7 @@ public class ZMBVCodecCore {
                     throw new UnsupportedOperationException("Unsupported video format " + videoFormat);
             }
         } catch (IOException ex) {
-            //System.out.println("ZMBVCodecCore "+ex);
-            System.err.println("ZMBVCodecCore decoding, isKeyframe=" + isKeyframe);
-            ex.printStackTrace();
+            return false;
         }
         return isKeyframe;
     }
@@ -331,9 +329,7 @@ public class ZMBVCodecCore {
                     throw new UnsupportedOperationException("Unsupported video format " + videoFormat);
             }
         } catch (IOException ex) {
-            //System.out.println("ZMBVCodecCore "+ex);
-            System.err.println("ZMBVCodecCore decoding, isKeyframe=" + isKeyframe);
-            ex.printStackTrace();
+            return false;
         }
         return isKeyframe;
     }
@@ -437,9 +433,7 @@ public class ZMBVCodecCore {
                     throw new UnsupportedOperationException("Unsupported video format " + videoFormat);
             }
         } catch (IOException ex) {
-            //System.out.println("ZMBVCodecCore "+ex);
-            System.err.println("ZMBVCodecCore decoding, isKeyframe=" + isKeyframe);
-            ex.printStackTrace();
+            return 0;
         }
         return isKeyframe ? -depth : depth;
     }

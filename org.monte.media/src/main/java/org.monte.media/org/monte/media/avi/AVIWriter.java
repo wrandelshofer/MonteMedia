@@ -89,7 +89,7 @@ public class AVIWriter implements MovieWriter {
      * @param file the output file
      */
     public AVIWriter(File file) throws IOException {
-        this.out = new AVIOutputStream(file);
+        this(new AVIOutputStream(file));
     }
 
     /**
@@ -98,7 +98,16 @@ public class AVIWriter implements MovieWriter {
      * @param out the output stream.
      */
     public AVIWriter(ImageOutputStream out) throws IOException {
-        this.out = new AVIOutputStream(out);
+        this(new AVIOutputStream(out));
+    }
+
+    /**
+     * Creates a new AVI writer.
+     *
+     * @param out the output stream.
+     */
+    public AVIWriter(AVIOutputStream out) throws IOException {
+        this.out = out;
     }
 
     @Override

@@ -475,10 +475,12 @@ public class AVIOutputStream extends AbstractAVIStream {
     }
 
     /**
-     * Writes an already encoded sample from a byte array into a track. <p> This
-     * method does not inspect the contents of the samples. The content has to
-     * match the format and dimensions of the media in this track. <p> If a
-     * track contains palette changes, then all key frames must be immediately
+     * Writes an already encoded sample from a byte array into a track.
+     * <p>
+     * This method does not inspect the contents of the samples. The content has to
+     * match the format and dimensions of the media in this track.
+     * <p>
+     * If a track contains palette changes, then all key frames must be immediately
      * preceded by a palette change chunk. If a key frame is not preceded by a
      * palette change chunk, it will be downgraded to a delta frame.
      *

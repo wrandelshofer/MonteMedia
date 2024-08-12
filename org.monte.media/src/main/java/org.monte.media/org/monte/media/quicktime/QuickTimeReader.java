@@ -49,7 +49,7 @@ public class QuickTimeReader implements MovieReader {
      * @param file the input file
      */
     public QuickTimeReader(File file) throws IOException {
-        this.in = new QuickTimeInputStream(file);
+        this(new QuickTimeInputStream(file));
     }
 
     /**
@@ -58,7 +58,16 @@ public class QuickTimeReader implements MovieReader {
      * @param in the input stream.
      */
     public QuickTimeReader(ImageInputStream in) throws IOException {
-        this.in = new QuickTimeInputStream(in);
+        this(new QuickTimeInputStream(in));
+    }
+
+    /**
+     * Creates a new instance.
+     *
+     * @param in the input stream.
+     */
+    public QuickTimeReader(QuickTimeInputStream in) throws IOException {
+        this.in = in;
     }
 
     @Override
@@ -91,11 +100,13 @@ public class QuickTimeReader implements MovieReader {
     }
 
     protected void ensureRealized() throws IOException {
-        in.ensureRealized();
-        inputBuffers = new Buffer[in.meta.getTrackCount()];
-        codecs = new Codec[in.meta.getTrackCount()];
-        for (int i = 0; i < inputBuffers.length; i++) {
-            inputBuffers[i] = new Buffer();
+        if (inputBuffers == null) {
+            in.ensureRealized();
+            inputBuffers = new Buffer[in.meta.getTrackCount()];
+            codecs = new Codec[in.meta.getTrackCount()];
+            for (int i = 0; i < inputBuffers.length; i++) {
+                inputBuffers[i] = new Buffer();
+            }
         }
     }
 
@@ -219,7 +230,6 @@ public class QuickTimeReader implements MovieReader {
         QuickTimeMeta.Track tr = in.meta.tracks.get(track);
         Format fmt = in.meta.getFormat(track);
         Codec codec = createCodec(fmt);
-        String enc = fmt.get(EncodingKey);
         if (codec == null) {
             throw new IOException("Track " + tr + " no codec found for format " + fmt);
         } else {

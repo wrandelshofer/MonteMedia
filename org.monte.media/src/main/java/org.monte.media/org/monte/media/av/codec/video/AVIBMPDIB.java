@@ -5,6 +5,7 @@
 package org.monte.media.av.codec.video;
 
 import org.monte.media.io.ImageInputStreamAdapter;
+import org.monte.media.jfif.JFIFInputStream;
 
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.MemoryCacheImageInputStream;
@@ -12,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.SequenceInputStream;
+import java.io.UncheckedIOException;
 import java.util.Vector;
 
 /**
@@ -71,31 +73,69 @@ public class AVIBMPDIB {
             (byte) 0xd8
     };
 
-    public static InputStream prependDHTSeg(byte[] jpgWithoutDHT) {
+    public static ImageInputStream prependDHTSeg(byte[] jpgWithoutDHT) {
         return prependDHTSeg(jpgWithoutDHT, 0, jpgWithoutDHT.length);
     }
 
-    public static InputStream prependDHTSeg(byte[] jpgWithoutDHT, int offset, int length) {
+    public static ImageInputStream prependDHTSeg(byte[] jpgWithoutDHT, int offset, int length) {
+        return prependDHTSeg(new ByteArrayInputStream(jpgWithoutDHT, offset, length));
 
-        // FIXME - Only add DHT Segment if none is present
+    }
 
+    public static ImageInputStream prependDHTSeg(ByteArrayInputStream inWithoutDHT) {
+        // Return the original stream if it contains a DHT segment
+        try (var r = new JFIFInputStream(inWithoutDHT)) {
+            for (JFIFInputStream.Segment seg = r.getNextSegment(); seg != null; seg = r.getNextSegment()) {
+                if (seg.marker == JFIFInputStream.DHT_MARKER) {
+                    inWithoutDHT.reset();
+                    return new MemoryCacheImageInputStream(inWithoutDHT);
+                }
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+
+        // Prepend a SOI segment and a DHT segment
         Vector<InputStream> v = new Vector<>();
         v.add(new ByteArrayInputStream(JFIFSOISeg));
         v.add(new ByteArrayInputStream(MJPGDHTSeg));
-        v.add(new ByteArrayInputStream(jpgWithoutDHT, offset + JFIFSOISeg.length, length - JFIFSOISeg.length));
-        return new SequenceInputStream(v.elements());
+
+        // Skip the JFIF SOI
+        inWithoutDHT.reset();
+        inWithoutDHT.skip(JFIFSOISeg.length);
+        v.add(inWithoutDHT);
+
+        return new MemoryCacheImageInputStream(new SequenceInputStream(v.elements()));
     }
 
     public static ImageInputStream prependDHTSeg(ImageInputStream iisWithoutDHT) throws IOException {
+        // Return the original stream if it contains a DHT segment
+        try (var r = new JFIFInputStream(new ImageInputStreamAdapter(iisWithoutDHT))) {
+            for (JFIFInputStream.Segment seg = r.getNextSegment(); seg != null; seg = r.getNextSegment()) {
+                if (seg.marker == JFIFInputStream.DHT_MARKER) {
+                    iisWithoutDHT.seek(0);
+                    return iisWithoutDHT;
+                }
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+
+        // Prepend a SOI segment and a DHT segment
         Vector<InputStream> v = new Vector<>();
         v.add(new ByteArrayInputStream(JFIFSOISeg));
         v.add(new ByteArrayInputStream(MJPGDHTSeg));
-        iisWithoutDHT.seek(2);// skip JFIF SOI 
+        // skip JFIF SOI
+        iisWithoutDHT.seek(JFIFSOISeg.length);
         v.add(new ImageInputStreamAdapter(iisWithoutDHT));
         return new MemoryCacheImageInputStream(new SequenceInputStream(v.elements()));
     }
 
     public static ImageInputStream prependDHTSeg(InputStream inWithoutDHT) throws IOException {
+        if (inWithoutDHT instanceof ByteArrayInputStream b) {
+            return prependDHTSeg(b);
+        }
+
         Vector<InputStream> v = new Vector<>();
         v.add(new ByteArrayInputStream(JFIFSOISeg));
         v.add(new ByteArrayInputStream(MJPGDHTSeg));
