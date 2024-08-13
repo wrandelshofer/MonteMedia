@@ -11,7 +11,7 @@ import org.monte.media.av.Registry;
 import org.monte.media.swing.Worker;
 import org.monte.media.swing.datatransfer.DropFileTransferHandler;
 
-import javax.swing.*;
+import javax.swing.JFileChooser;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -19,6 +19,31 @@ import java.io.IOException;
 
 /**
  * Main.
+ * <p>
+ * Symbols:
+ * <dl>
+ *     <dt>􀍉</dt><dd>video</dd>
+ *     <dt>􀊃</dt><dd>play</dd>
+ *     <dt>􀊄</dt><dd>play.fill</dd>
+ *     <dt>􀊅</dt><dd>pause</dd>
+ *     <dt>􀊆</dt><dd>pause.fill</dd>
+ *     <dt>􀛶</dt><dd>stop</dd>
+ *     <dt>􀛷</dt><dd>stop.fill</dd>
+ *     <dt>􀢙</dt><dd>record.circle</dd>
+ *     <dt>􀢚</dt><dd>record.circle.fill</dd>
+ *     <dt>􀜪</dt><dd>stop.circle</dd>
+ *     <dt>􀜫</dt><dd>stop.circle.fill</dd>
+ *     <dt>􀊋</dt><dd>forward</dd>
+ *     <dt>􀊌</dt><dd>forward.fill</dd>
+ *     <dt>􀊏</dt><dd>forward.end</dd>
+ *     <dt>􀊐</dt><dd>forward.end.fill</dd>
+ *     <dt>􀊍</dt><dd>backward.end</dd>
+ *     <dt>􀊎</dt><dd>backward.end.fill</dd>
+ *     <dt>􀩪</dt><dd>forward.frame</dd>
+ *     <dt>􀩫</dt><dd>forward.frame.fill</dd>
+ *     <dt>􀩨</dt><dd>backward.frame</dd>
+ *     <dt>􀩩</dt><dd>backward.frame.fill</dd>
+ * </dl>
  *
  * @author Werner Randelshofer
  */

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.text.Font?>
+<HBox fx:id="root" alignment="TOP_CENTER" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.monte.demo.movieplayer.PlayerControlsController">
+  <children>
+    <HBox alignment="CENTER_LEFT" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" styleClass="player-controls"
+          HBox.hgrow="NEVER">
+      <children>
+        <ToggleButton fx:id="playButton" mnemonicParsing="false" onAction="#togglePlay" prefHeight="28.0"
+                      prefWidth="28.0" styleClass="play-button">
+          <graphic>
+            <Group>
+              <children>
+                <SVGPath
+                  content="M222,32v-480h180v480h-180zm-300,0v-480h180v480h-180zm340,-40h100v-400h-100v400zm-300,0h100v-400h-100v400zm0,-400v400v-400zm300,0v400v-400z"
+                  scaleX="0.025" scaleY="0.025" styleClass="selected-graphics"/>
+                <SVGPath
+                  content="M0,0v-415.38l326.15,207.69l-326.15,207.69zm40,-207.69zm0,134l211.54,-134l-211.54,-134v268z"
+                  scaleX="0.025" scaleY="0.025" styleClass="unselected-graphics"/>
+              </children>
+            </Group>
+          </graphic>
+        </ToggleButton>
+        <Button mnemonicParsing="false" onAction="#backwardEnd" prefHeight="28.0" prefWidth="28.0"
+                styleClass="backward-end-button">
+          <graphic>
+            <Group>
+              <children>
+                <SVGPath
+                  content="M269.23-295.38v-369.24h40v369.24h-40Zm421.54 0L413.85-480l276.92-184.62v369.24Zm-40-184.62Zm0 110v-220L485.54-480l165.23 110Z"
+                  scaleX="0.025" scaleY="0.025"/>
+              </children>
+            </Group>
+          </graphic>
+        </Button>
+        <Button mnemonicParsing="false" onAction="#forwardEnd" prefHeight="28.0" prefWidth="28.0"
+                styleClass="forward-end-button">
+          <graphic>
+            <Group>
+              <children>
+                <SVGPath
+                  content="M650.77-295.38v-369.24h40v369.24h-40Zm-381.54 0v-369.24L546.15-480 269.23-295.38Zm40-184.62Zm0 110 165.23-110-165.23-110v220Z"
+                  scaleX="0.025" scaleY="0.025"/>
+              </children>
+            </Group>
+          </graphic>
+        </Button>
+        <Label fx:id="currentTimeLabel" text="--:--">
+          <font>
+            <Font name="Monospaced Regular" size="13.0"/>
+          </font>
+        </Label>
+        <Slider fx:id="timeSlider" prefWidth="200.0"/>
+        <Label fx:id="totalDurationLabel" text="--:--">
+          <font>
+            <Font name="Monospaced Regular" size="13.0"/>
+          </font>
+        </Label>
+      </children>
+      <HBox.margin>
+        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+      </HBox.margin>
+    </HBox>
+  </children>
+</HBox>

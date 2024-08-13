@@ -1,3 +1,11 @@
 <component name="CopyrightManager">
-  <settings default="MIT License" />
+  <settings default="MIT License">
+    <LanguageOptions name="SVG">
+      <option name="fileTypeOverride" value="1" />
+    </LanguageOptions>
+    <LanguageOptions name="XML">
+      <option name="fileTypeOverride" value="1" />
+      <option name="prefixLines" value="false" />
+    </LanguageOptions>
+  </settings>
 </component>

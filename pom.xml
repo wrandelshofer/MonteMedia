@@ -64,6 +64,7 @@
     <module>org.monte.demo.imageioviewer</module>
     <module>org.monte.demo.io</module>
     <module>org.monte.demo.movieconverter</module>
+    <module>org.monte.demo.movieplayer</module>
     <module>org.monte.demo.moviemaker</module>
     <module>org.monte.demo.mpoimagesplitter</module>
     <module>org.monte.demo.quicktimewriter</module>
@@ -366,6 +367,11 @@
       </dependency>
       <dependency>
         <groupId>ch.randelshofer</groupId>
+        <artifactId>org.monte.demo.movieplayer</artifactId>
+        <version>${revision}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.randelshofer</groupId>
         <artifactId>org.monte.demo.moviemaker</artifactId>
         <version>${revision}</version>
       </dependency>
@@ -455,6 +461,11 @@
       <dependency>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-graphics</artifactId>
+        <version>22.0.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-media</artifactId>
         <version>22.0.2</version>
       </dependency>
       <dependency>
