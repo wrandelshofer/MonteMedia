@@ -108,6 +108,14 @@ public class MainWindowController {
 
     private void statusBarVisibilityChanged(Object o, Boolean oldv, Boolean newv) {
         rootPane.setBottom(newv ? statusBar : null);
+        sizeStageToScene();
+    }
+
+    private void sizeStageToScene() {
+        Stage stage = getStage();
+        if (stage != null) {
+            stage.sizeToScene();
+        }
     }
 
     private final ObjectProperty<File> file = new SimpleObjectProperty<>();
@@ -153,35 +161,37 @@ public class MainWindowController {
             media = new Media(string);
             mediaPlayer = new MediaPlayer(media);
 
-            if (mediaPlayer.getError() == null) {
-                PlayerControlsController playerController = createPlayerController();
-                MediaPlayerAdapter p = new MediaPlayerAdapter(mediaPlayer);
-                player.set(p);
-                playerController.setPlayer(p);
-                mediaPlayer.setAutoPlay(true);
-                mediaView = new MediaView(mediaPlayer);
-                ScrollPane scrollPane = new ScrollPane(mediaView);
-                mediaPlayer.setOnReady(() -> {
-                    Insets insets = scrollPane.getInsets();
-                    scrollPane.setPrefHeight(media.getHeight() + insets.getTop() + insets.getBottom());
-                    scrollPane.setPrefWidth(media.getWidth() + insets.getLeft() + insets.getRight());
-                    getStage().sizeToScene();
-                });
-                VBox.setVgrow(scrollPane, Priority.ALWAYS);
-                VBox.setVgrow(playerController.getRoot(), Priority.NEVER);
-                VBox view = new VBox();
-                VBox.setVgrow(view, Priority.ALWAYS);
-                view.getChildren().addAll(scrollPane, playerController.getRoot());
-                centerPane.getChildren().add(view);
-                mediaView.setOnError(new EventHandler<MediaErrorEvent>() {
-                    public void handle(MediaErrorEvent t) {
-                        leftStatusLabel.setText(resources.getString("error") + t.toString());
-                    }
-                });
-            } else {
+            if (mediaPlayer.getError() != null) {
                 // Handle synchronous error creating MediaPlayer.
                 leftStatusLabel.setText(resources.getString("error") + mediaPlayer.getError().getMessage());
+                mediaPlayer.dispose();
+                return;
             }
+            PlayerControlsController playerController = createPlayerController();
+            MediaPlayerAdapter p = new MediaPlayerAdapter(mediaPlayer);
+            player.set(p);
+            playerController.setPlayer(p);
+            mediaPlayer.setAutoPlay(true);
+            mediaView = new MediaView(mediaPlayer);
+            ScrollPane scrollPane = new ScrollPane(mediaView);
+            mediaPlayer.setOnReady(() -> {
+                Insets insets = scrollPane.getInsets();
+                scrollPane.setPrefHeight(media.getHeight() + insets.getTop() + insets.getBottom());
+                scrollPane.setPrefWidth(media.getWidth() + insets.getLeft() + insets.getRight());
+                sizeStageToScene();
+            });
+            VBox.setVgrow(scrollPane, Priority.ALWAYS);
+            VBox.setVgrow(playerController.getRoot(), Priority.NEVER);
+            VBox view = new VBox();
+            VBox.setVgrow(view, Priority.ALWAYS);
+            view.getChildren().addAll(scrollPane, playerController.getRoot());
+            centerPane.getChildren().add(view);
+            mediaView.setOnError(new EventHandler<MediaErrorEvent>() {
+                public void handle(MediaErrorEvent t) {
+                    leftStatusLabel.setText(resources.getString("error") + t.toString());
+                }
+            });
+
 
         } catch (Exception mediaException) {
             // Handle exception in Media constructor.
