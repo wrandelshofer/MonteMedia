@@ -1,0 +1,5 @@
+Third party licenses.
+
+Image https://commons.wikimedia.org/wiki/File:Cleartype_SubSampleCenter.png
+
+Copyright Frank Klemm, Creative Commons Attribution-Share Alike 4.0 International license.
