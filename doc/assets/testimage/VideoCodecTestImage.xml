@@ -104,9 +104,9 @@
     <Rectangle bounds="624 440 8 8"
                fill="linear-gradient(from 0 0 to 0 4, repeat, #ff0000 25%, #00ff00 25%, #00ff00 50%, #0000ff 50%, #0000ff 75%, #000000 75%)"
                id="rectangle5" stroke="none"/>
-    <TextArea bounds="520 251 120 53" fill="none" font="8 Pixel Operator \38 " id="textarea6" lineSpacing="2"
+    <TextArea bounds="520 251 120 109" fill="none" font="8 Pixel Operator \38 " id="textarea6" lineSpacing="2"
               stroke="none"
-              text="The Quick Brown Fox Jumps Over the Lazy Dog. THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG."
+              text="The Quick Brown Fox Jumps Over the Lazy Dog. THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG. The Quick Brown Fox Jumps Over the Lazy Dog. THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG."
               textFill="#000000"/>
     <TextArea bounds="472 251 32 8" fill="none" font="8 Pixel Operator \38 " id="textarea1" lineSpacing="1"
               stroke="none" text="red" textFill="#ff0000"/>
@@ -137,11 +137,12 @@
     <Rectangle bounds="472 120 168 10" fill="#000000" id="rectangle14" stroke="none"/>
     <TextArea bounds="472 120 72 8" fill="none" font="8 Pixel Operator \38 " id="textarea13" lineSpacing="1"
               stroke="none" text="Photo" textFill="#ffffff"/>
-    <TextArea bounds="520 303 120 57" fill="none" font="13 Arial" id="textarea14" lineSpacing="2" padding="2 0"
-              stroke="none" text="the quick brown fox jumps over the lazy dog THE QUICK" textFill="#000000"/>
-    <Image bounds="519 306 120 56" id="image2" src="SubpixelAntialiasing.png"/>
     <Rectangle bounds="472 360 168 10" fill="#000000" id="rectangle15" stroke="none"/>
     <TextArea bounds="472 360 168 8" fill="none" font="8 Pixel Operator \38 " id="textarea12" lineSpacing="1"
               stroke="none" text="Colors" textFill="#ffffff"/>
+    <Rectangle bounds="472 0 168 120" id="rectangle19" stroke="none"/>
+    <Rectangle bounds="472 0 168 10" fill="#000000" id="rectangle20" stroke="none"/>
+    <TextArea bounds="472 0 112 8" fill="none" font="8 Pixel Operator \38 " id="textarea14" lineSpacing="1"
+              stroke="none" text="Video Frame" textFill="#ffffff"/>
   </Layer>
 </Drawing>

@@ -75,8 +75,13 @@ public class Main {
         return img;
     }
 
-    private static void drawAnimationFrame(BufferedImage img, Graphics2D g, double second) {
+    private static void drawAnimationFrame(BufferedImage img, Graphics2D g, double second, int frameIndex, int frameCount) {
         drawClock(g, 232, 240, 150, second);
+
+        g.setPaint(Color.WHITE);
+        g.fillRect(472, 10, 168, 110);
+        g.setPaint(Color.BLACK);
+        g.drawString("Frame " + (frameIndex + 1) + " of " + frameCount, 473, 24);
     }
 
     private static void drawClock(Graphics2D g, int cx, int cy, int radius, double seconds) {
@@ -211,7 +216,7 @@ public class Main {
             // Draw the animation
             for (int i = 0, n = frameRate.multiply(60).intValue(); i < n; i++) {
                 double t = frameRate.divide(i).doubleValue() + 8 * 3600 + 25 * 60;
-                drawAnimationFrame(img, g, t);
+                drawAnimationFrame(img, g, t, i, n);
 
                 // write image to the writer
                 out.write(0, img, 1);
