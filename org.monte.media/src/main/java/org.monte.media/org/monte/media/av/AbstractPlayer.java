@@ -118,6 +118,26 @@ public abstract class AbstractPlayer implements Player {
         return targetState;
     }
 
+    private static class Worker implements Runnable {
+        private final AbstractPlayer player;
+        private final int targetState;
+
+        private Worker(AbstractPlayer player, int targetState) {
+            this.player = player;
+            this.targetState = targetState;
+        }
+
+        @Override
+        public void run() {
+            if (player.currentWorker != this) {
+                return;
+            }
+            player.performRequestedState(targetState);
+        }
+    }
+
+    private volatile Worker currentWorker;
+
     @Override
     public void setTargetState(int state) {
         lock.lock();
@@ -125,7 +145,8 @@ public abstract class AbstractPlayer implements Player {
             if (targetState != Player.CLOSED) {
                 targetState = state;
                 lockCondition.signalAll();
-                dispatcher.execute(() -> performRequestedState(targetState));
+                currentWorker = new Worker(this, targetState);
+                dispatcher.execute(currentWorker);
             }
         } finally {
             lock.unlock();

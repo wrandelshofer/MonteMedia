@@ -23,8 +23,8 @@ class Cta608ControlCodeTest {
     public void shouldEncodeControlCode(ControlCodeData data) throws Exception {
         short code = data.opCode;
         CmdToken encoded = new CmdToken(data.channel, data.cc);
-        System.out.println("expected: " + Integer.toHexString(code & 0x7f7f));
-        System.out.println("actual  : " + Integer.toHexString(encoded.getCodeWithoutParity()));
+        //System.out.println("expected: " + Integer.toHexString(code & 0x7f7f));
+        //System.out.println("actual  : " + Integer.toHexString(encoded.getCodeWithoutParity()));
 
         assertEquals(Integer.toHexString(0x7f7f & code), Integer.toHexString(0x7f7f & encoded.getCodeWithoutParity()), "opCode");
         assertEquals(data.channel(), encoded.getChannel(), "channel");
@@ -37,8 +37,8 @@ class Cta608ControlCodeTest {
     public void shouldDecodeControlCode(ControlCodeData data) throws Exception {
         short code = data.opCode;
         CmdToken decoded = new CmdToken(code);
-        System.out.println("expected: " + Integer.toHexString(code & 0x7f7f));
-        System.out.println("actual  : " + Integer.toHexString(decoded.getCodeWithoutParity()));
+        //System.out.println("expected: " + Integer.toHexString(code & 0x7f7f));
+        //System.out.println("actual  : " + Integer.toHexString(decoded.getCodeWithoutParity()));
 
         assertEquals(Integer.toHexString(0x7f7f & code), Integer.toHexString(0x7f7f & decoded.getCodeWithoutParity()), "opCode");
         assertEquals(data.cc(), decoded.getOperation(), "control opCode");
@@ -75,7 +75,7 @@ class Cta608ControlCodeTest {
     @ValueSource(ints = {1, 2})
     public void shouldEncodeChannel(int channel) throws Exception {
         CmdToken actual = new CmdToken(channel, CmdToken.Command.BS);
-        System.out.println(channel + " " + Integer.toHexString(actual.getCodeWithoutParity()));
+        //System.out.println(channel + " " + Integer.toHexString(actual.getCodeWithoutParity()));
         assertEquals(channel, actual.getChannel());
     }
 

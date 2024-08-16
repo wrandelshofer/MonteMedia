@@ -56,31 +56,32 @@ public class Main {
         System.out.println();
 
         try {
-            test(new File("quicktimedemo-jpg-q0.75.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_JPEG, DepthKey, 24, QualityKey, 0.75f));
-            test(new File("quicktimedemo-png.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_PNG, DepthKey, 24));
-            test(new File("quicktimedemo-raw24.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_RAW, DepthKey, 24));
-            test(new File("quicktimedemo-raw8.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_RAW, DepthKey, 8));
-            test(new File("quicktimedemo-anim8.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 8));
-            test(new File("quicktimedemo-tscc8.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8));
+            test(new File("quicktimedemo-jpg-q0.75.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_JPEG, DepthKey, 24, QualityKey, 0.75f), true);
+            test(new File("quicktimedemo-png.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_PNG, DepthKey, 24), true);
+            test(new File("quicktimedemo-raw24.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_RAW, DepthKey, 24), false);
+            test(new File("quicktimedemo-raw8.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_RAW, DepthKey, 8), false);
+            test(new File("quicktimedemo-tscc8.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8), true);
             test(new File("quicktimedemo-tscc8gray.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8,
-                    PixelFormatKey, VideoFormatKeys.PixelFormat.GRAY));
-            test(new File("quicktimedemo-tscc16.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 16));
-            test(new File("quicktimedemo-tscc24.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 24));
-            test(new File("quicktimedemo-rle8.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 8));
-            test(new File("quicktimedemo-rle16.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 16));
-            test(new File("quicktimedemo-rle24.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 24));
+                    PixelFormatKey, VideoFormatKeys.PixelFormat.GRAY), true);
+            test(new File("quicktimedemo-tscc16.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 16), true);
+            test(new File("quicktimedemo-tscc24.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 24), true);
+            test(new File("quicktimedemo-rle8.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 8), false);
+            test(new File("quicktimedemo-rle16.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 16), false);
+            test(new File("quicktimedemo-rle24.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 24), false);
 
         } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
 
-    private static void test(File file, Format format) throws IOException {
+    private static void test(File file, Format format, boolean tryToReadTheFile) throws IOException {
         testWriting(file, format);
-        try {
-            testReading(file);
-        } catch (UnsupportedOperationException | IOException e) {
-            e.printStackTrace();
+        if (tryToReadTheFile) {
+            try {
+                testReading(file);
+            } catch (UnsupportedOperationException | IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

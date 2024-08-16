@@ -669,6 +669,13 @@ public class QuickTimeMeta extends AbstractMovie {
         public long getSampleDuration() {
             return firstSample.duration;
         }
+
+        @Override
+        public String toString() {
+            return "TimeToSampleGroup{" +
+                    "sampleCount=" + sampleCount +
+                    '}';
+        }
     }
 
     /**
@@ -728,6 +735,13 @@ public class QuickTimeMeta extends AbstractMovie {
          */
         public long getSampleLength() {
             return firstSample.length;
+        }
+
+        @Override
+        public String toString() {
+            return "SampleSizeGroup{" +
+                    "sampleCount=" + sampleCount +
+                    '}';
         }
     }
 

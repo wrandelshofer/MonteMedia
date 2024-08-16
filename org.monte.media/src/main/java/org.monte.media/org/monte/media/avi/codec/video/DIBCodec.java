@@ -323,7 +323,7 @@ public class DIBCodec extends AbstractVideoCodec {
     public void writeKey4(OutputStream out, byte[] pixels, int width, int height, int offset, int scanlineStride)
             throws IOException {
 
-        byte[] bytes = new byte[width];
+        byte[] bytes = new byte[width / 2 + width % 2];
         for (int y = (height - 1) * scanlineStride; y >= 0; y -= scanlineStride) { // Upside down
             for (int x = offset, xx = 0, n = offset + width; x < n; x += 2, ++xx) {
                 bytes[xx] = (byte) (((pixels[y + x] & 0xf) << 4) | (pixels[y + x + 1] & 0xf));
