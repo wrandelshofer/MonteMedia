@@ -45,9 +45,11 @@ public abstract class AbstractMediaPlayer implements MediaPlayerInterface {
     protected final ReadOnlyObjectWrapper<Throwable> error = new ReadOnlyObjectWrapper<>() {
         @Override
         protected void invalidated() {
+            if (get() != null) {
             Runnable r = getOnError();
             if (r != null) {
                 Platform.runLater(r);
+            }
             }
         }
     };

@@ -31,7 +31,7 @@ public class Main extends Application {
                 labels.getString("application.name") + (f == null ? "" : ": " + f.getName())
         ));
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("style.css").toString());
+        scene.getStylesheets().add(getClass().getResource("controls.css").toString());
         stage.setScene(scene);
         stage.setWidth(400);
         stage.setHeight(300);

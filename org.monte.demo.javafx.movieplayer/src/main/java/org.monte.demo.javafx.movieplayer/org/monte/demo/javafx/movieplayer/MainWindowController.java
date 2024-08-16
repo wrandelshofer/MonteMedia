@@ -7,6 +7,7 @@ package org.monte.demo.javafx.movieplayer;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,13 +15,10 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -51,15 +49,9 @@ public class MainWindowController {
     @FXML // URL location of the FXML file that was given to the FXMLLoader
     private URL location;
 
-    @FXML // fx:id="centerPane"
-    private VBox centerPane; // Value injected by FXMLLoader
+    @FXML
+    private StackPane stackPane; // Value injected by FXMLLoader
 
-    @FXML // fx:id="leftStatusLabel"
-    private Label leftStatusLabel; // Value injected by FXMLLoader
-
-
-    @FXML // fx:id="rightStatusLabel"
-    private Label rightStatusLabel; // Value injected by FXMLLoader
 
     @FXML // fx:id="rootPane"
     private BorderPane rootPane; // Value injected by FXMLLoader
@@ -73,8 +65,6 @@ public class MainWindowController {
         ).show();
     }
 
-    @FXML // fx:id="showStatusBarCheckMenuItem"
-    private CheckMenuItem showStatusBarCheckMenuItem; // Value injected by FXMLLoader
 
     @FXML // fx:id="statusBar"
     private HBox statusBar; // Value injected by FXMLLoader
@@ -100,24 +90,15 @@ public class MainWindowController {
     @FXML
         // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
-        assert centerPane != null : "fx:id=\"centerPane\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert leftStatusLabel != null : "fx:id=\"leftStatusLabel\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert rightStatusLabel != null : "fx:id=\"rightStatusLabel\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert stackPane != null : "fx:id=\"stackPane\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert rootPane != null : "fx:id=\"rootPane\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert showStatusBarCheckMenuItem != null : "fx:id=\"showStatusBarCheckMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert statusBar != null : "fx:id=\"statusBar\" was not injected: check your FXML file 'MainWindow.fxml'.";
 
-        new DropFileHandler(centerPane, this::setFile);
+        new DropFileHandler(stackPane, this::setFile);
 
         fileProperty().addListener(o -> this.createMoviePlayer());
-        showStatusBarCheckMenuItem.selectedProperty().addListener(this::statusBarVisibilityChanged);
-        showStatusBarCheckMenuItem.setSelected(false);
     }
 
-    private void statusBarVisibilityChanged(Object o, Boolean oldv, Boolean newv) {
-        rootPane.setBottom(newv ? statusBar : null);
-        sizeStageToScene();
-    }
 
     private void sizeStageToScene() {
         Stage stage = getStage();
@@ -149,42 +130,63 @@ public class MainWindowController {
     }
 
     private void createMoviePlayer() {
-        centerPane.getChildren().clear();
-        leftStatusLabel.setText(null);
+        createMoviePlayer(0);
+    }
+
+    private void createMoviePlayer(int retries) {
+        stackPane.getChildren().clear();
         var oldPlayer = player.get();
         if (oldPlayer != null) {
             oldPlayer.dispose();
             player.set(null);
         }
-        switch (mode.get()) {
-            case JavaFX -> {
-                createFXMoviePlayer();
-            }
-            case MonteMedia -> {
-                createMonteMediaPlayer();
-            }
+        MediaPlayerInterface player = switch (mode.get()) {
+            case JavaFX -> createFXMoviePlayer();
+
+            case MonteMedia -> createMonteMediaPlayer();
+
+        };
+
+        if (player == null || player.getError() != null) {
+            retryCreateMoviePlayer(retries);
+        } else {
+            player.setOnError(() -> retryCreateMoviePlayer(retries));
         }
     }
 
-    private void createMonteMediaPlayer() {
+    private void retryCreateMoviePlayer(int retries) {
+        Mode[] values = Mode.values();
+        if (retries < values.length) {
+            mode.set(values[(mode.get().ordinal() + 1) % values.length]);
+            createMoviePlayer(retries + 1);
+        } else {
+            ObservableList<Node> c = stackPane.getChildren();
+            c.clear();
+            c.add(new Label(resources.getString("error.creatingPlayer")));
+        }
+    }
+
+
+    private MediaPlayerInterface createMonteMediaPlayer() {
         File mediaFile = file.get();
         if (mediaFile == null) {
-            return;
+            return null;
         }
         MonteMedia movie = new MonteMedia(mediaFile);
         MonteMediaPlayer player = new MonteMediaPlayer(movie);
         MonteMediaView monteMediaView = MonteMediaView.newVideoView();
         monteMediaView.setMedia(movie);
-        PlayerControlsController playerController = createPlayerController();
+        ControlsController playerController = createPlayerController();
         playerController.setPlayer(player);
         showPlayer(monteMediaView.getRoot(), player, movie, playerController);
-        movie.errorProperty().addListener((o, oldv, newv) -> leftStatusLabel.setText(resources.getString("error") + newv.toString()));
+        return player;
     }
 
-    private void createFXMoviePlayer() {
+
+    private MediaPlayerInterface createFXMoviePlayer() {
         File mediaFile = file.get();
         if (mediaFile == null) {
-            return;
+            return null;
         }
         Media media;
         MediaPlayer mediaPlayer;
@@ -196,11 +198,10 @@ public class MainWindowController {
 
             if (mediaPlayer.getError() != null) {
                 // Handle synchronous error creating Player.
-                leftStatusLabel.setText(resources.getString("error") + mediaPlayer.getError().getMessage());
                 mediaPlayer.dispose();
-                return;
+                return null;
             }
-            PlayerControlsController playerController = createPlayerController();
+            ControlsController playerController = createPlayerController();
             FXMediaPlayer p = new FXMediaPlayer(mediaPlayer);
             player.set(p);
             playerController.setPlayer(p);
@@ -208,31 +209,27 @@ public class MainWindowController {
             mediaView = new MediaView(mediaPlayer);
 
             showPlayer(mediaView, p, new FXMedia(media), playerController);
-            mediaView.setOnError(t -> leftStatusLabel.setText(resources.getString("error") + t.toString()));
+            //mediaView.setOnError(t -> leftStatusLabel.setText(resources.getString("error") + t.toString()));
 
-
+            return p;
         } catch (Exception mediaException) {
             // Handle exception in Media constructor.
-            leftStatusLabel.setText(resources.getString("error") + mediaException.getMessage());
         }
+        return null;
     }
 
-    private void showPlayer(Node mediaView, MediaPlayerInterface mediaPlayer, MediaInterface media, PlayerControlsController playerController) {
-        ScrollPane scrollPane = new ScrollPane(mediaView);
+
+    private void showPlayer(Node mediaView, MediaPlayerInterface mediaPlayer, MediaInterface media, ControlsController playerController) {
         mediaPlayer.setOnReady(() -> {
             sizeStageToScene();
         });
-        VBox.setVgrow(scrollPane, Priority.ALWAYS);
-        VBox.setVgrow(playerController.getRoot(), Priority.NEVER);
-        VBox view = new VBox();
-        VBox.setVgrow(view, Priority.ALWAYS);
-        view.getChildren().addAll(scrollPane, playerController.getRoot());
-        centerPane.getChildren().add(view);
+
+        stackPane.getChildren().addAll(mediaView, playerController.getRoot());
     }
 
-    private PlayerControlsController createPlayerController() {
+    private ControlsController createPlayerController() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("PlayerControls.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Controls.fxml"));
             ResourceBundle labels = ResourceBundle.getBundle("org.monte.demo.javafx.movieplayer.Labels");
             loader.setResources(labels);
             loader.load();

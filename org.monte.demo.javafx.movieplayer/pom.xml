@@ -12,7 +12,7 @@
     <artifactId>org.monte.media.parent</artifactId>
     <version>${revision}</version>
   </parent>
-  <artifactId>movieplayer</artifactId>
+  <artifactId>org.monte.demo.javafx.movieplayer</artifactId>
   <packaging>jar</packaging>
 
   <name>Monte Media Demo JavaFX Movie Player</name>
@@ -61,6 +61,10 @@
     <dependency>
       <groupId>ch.randelshofer</groupId>
       <artifactId>org.monte.media</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>ch.randelshofer</groupId>
+      <artifactId>org.monte.media.javafx</artifactId>
     </dependency>
     <dependency>
       <groupId>ch.randelshofer</groupId>
