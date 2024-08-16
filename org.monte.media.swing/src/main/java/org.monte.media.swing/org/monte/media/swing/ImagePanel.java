@@ -4,8 +4,16 @@
  */
 package org.monte.media.swing;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JComponent;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.MediaTracker;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -13,7 +21,7 @@ import java.beans.PropertyChangeSupport;
 /**
  * Displays images on a panel.
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland.
+ * @author Werner Randelshofer.
  */
 public class ImagePanel
         extends JComponent {
@@ -220,7 +228,7 @@ public class ImagePanel
             }
 
             pixelAspectPolicy = policy;
-            propertyChangeSupport.firePropertyChange("pixelAspectPolicy", new Integer(old), new Integer(policy));
+            propertyChangeSupport.firePropertyChange("pixelAspectPolicy", old, policy);
 
             invalidate();
             Component parent = getParent();
@@ -250,7 +258,7 @@ public class ImagePanel
                 throw new IllegalArgumentException("Invalid policy:" + policy);
             }
             imageScalePolicy = policy;
-            propertyChangeSupport.firePropertyChange("imageScalePolicy", new Integer(old), new Integer(policy));
+            propertyChangeSupport.firePropertyChange("imageScalePolicy", old, policy);
             invalidate();
             Component parent = getParent();
             if (parent != null) {
@@ -428,7 +436,7 @@ public class ImagePanel
         double old = this.scaleFactor;
         this.scaleFactor = scaleFactor;
         if (scaleFactor != old) {
-            propertyChangeSupport.firePropertyChange("scaleFactor", new Double(old), new Double(scaleFactor));
+            propertyChangeSupport.firePropertyChange("scaleFactor", old, scaleFactor);
             if (repaint) {
                 Component parent = getParent();
                 if (parent != null) {
@@ -507,8 +515,8 @@ public class ImagePanel
         double oldY = aspectRatioY;
         aspectRatioX = ratioX;
         aspectRatioY = ratioY;
-        propertyChangeSupport.firePropertyChange("aspectRatioX", new Double(oldX), new Double(ratioX));
-        propertyChangeSupport.firePropertyChange("aspectRatioY", new Double(oldY), new Double(ratioY));
+        propertyChangeSupport.firePropertyChange("aspectRatioX", oldX, ratioX);
+        propertyChangeSupport.firePropertyChange("aspectRatioY", oldY, ratioY);
     }
 
     /**

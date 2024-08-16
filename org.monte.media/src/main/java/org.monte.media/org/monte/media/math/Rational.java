@@ -250,6 +250,25 @@ public class Rational extends Number implements Comparable<Rational> {
         }
     }
 
+    public Rational divide(long integer) {
+        if (integer == 0) {
+            return ZERO;
+        } else if (this.num % integer == 0) {
+            return valueOf(
+                    this.den,
+                    this.num / integer);
+        } else if (abs(this.den) < Integer.MAX_VALUE
+                && abs(integer) < Integer.MAX_VALUE) {
+            return valueOf(
+                    this.den * integer,
+                    this.num);
+        } else {
+            return new Rational(
+                    BigInteger.valueOf(this.den).multiply(BigInteger.valueOf(integer)),
+                    BigInteger.valueOf(this.num), true);
+        }
+    }
+
     public Rational divide(Rational that) {
         if (abs(this.num) < Integer.MAX_VALUE
                 && abs(this.den) < Integer.MAX_VALUE
@@ -434,7 +453,9 @@ public class Rational extends Number implements Comparable<Rational> {
     }
 
     /**
-     * Iteratively computes rational from double. <p>Reference:<br> <a
+     * Iteratively computes rational from double.
+     * <p>Reference:
+     * <br> <a
      * href="http://www2.fz-juelich.de/video/cpp/html/exercises/exercise/Rational_cpp.html">
      * http://www2.fz-juelich.de/video/cpp/html/exercises/exercise/Rational_cpp.html</a>
      * </p>

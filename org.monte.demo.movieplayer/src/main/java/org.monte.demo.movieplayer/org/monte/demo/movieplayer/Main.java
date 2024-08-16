@@ -26,13 +26,15 @@ public class Main extends Application {
         Parent root = loader.load();
         MainWindowController controller = loader.getController();
 
-        stage.titleProperty().bind(controller.fileProperty().map(f -> {
-            return labels.getString("application.name") + (f == null ? "" : ": " + f.getName());
-        }));
+
+        stage.titleProperty().bind(controller.fileProperty().map(f ->
+                labels.getString("application.name") + (f == null ? "" : ": " + f.getName())
+        ));
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("style.css").toString());
         stage.setScene(scene);
-        stage.sizeToScene();
+        stage.setWidth(400);
+        stage.setHeight(300);
         stage.show();
     }
 }

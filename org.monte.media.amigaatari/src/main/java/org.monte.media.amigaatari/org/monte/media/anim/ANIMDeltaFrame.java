@@ -7,7 +7,7 @@ package org.monte.media.anim;
 import org.monte.media.amigabitmap.AmigaBitmapImage;
 
 /**
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class ANIMDeltaFrame
         extends ANIMFrame {

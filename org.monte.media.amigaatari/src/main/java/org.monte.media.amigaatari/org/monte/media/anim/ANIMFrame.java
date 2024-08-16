@@ -10,7 +10,7 @@ import java.awt.image.ColorModel;
 import java.util.ArrayList;
 
 /**
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public abstract class ANIMFrame {
     protected ColorModel colorModel;

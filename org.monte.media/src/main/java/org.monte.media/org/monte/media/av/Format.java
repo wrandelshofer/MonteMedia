@@ -65,6 +65,11 @@ public class Format {
     }
 
     @SuppressWarnings("unchecked")
+    public <T> T getOrDefault(FormatKey<T> key) {
+        return get(key, key.getDefaultValue());
+    }
+
+    @SuppressWarnings("unchecked")
     public <T> T get(FormatKey<T> key, T defaultValue) {
         return (properties.containsKey(key)) ? (T) properties.get(key) : defaultValue;
     }

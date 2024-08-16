@@ -20,7 +20,7 @@ import java.util.List;
  * Gives access to the static resources of
  * a movie (image and audio data, global informations).
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class ANIMMovieResources {
 
@@ -216,7 +216,7 @@ public class ANIMMovieResources {
     }
 
     private void firePropertyChange(String name, int oldValue, int newValue) {
-        listeners.firePropertyChange(name, new Integer(oldValue), new Integer(newValue));
+        listeners.firePropertyChange(name, oldValue, newValue);
     }
 
     public void setJiffies(int newValue) {

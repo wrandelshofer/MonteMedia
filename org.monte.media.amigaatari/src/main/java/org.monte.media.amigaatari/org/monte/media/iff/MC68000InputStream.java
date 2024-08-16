@@ -18,7 +18,7 @@ import java.io.InputStream;
  * <p>
  * This stream filter is suitable for IFF-EA85 files.
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class MC68000InputStream
         extends FilterInputStream {

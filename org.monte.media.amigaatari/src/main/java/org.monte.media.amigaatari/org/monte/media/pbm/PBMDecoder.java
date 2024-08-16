@@ -48,7 +48,7 @@ import java.util.Hashtable;
  * [square bracket items] are optional, and "*" means 0 or more repetitions. A
  * sometimes-needed pad byte is shown as "[0]".
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class PBMDecoder implements IFFVisitor {
     /* ---- constants ---- */
@@ -210,7 +210,7 @@ public class PBMDecoder implements IFFVisitor {
         @SuppressWarnings("unchecked")
         Hashtable<Object, Object> props = (Hashtable<Object, Object>) memoryImageSource.getProperties();
 
-        props.put("aspect", new Double(aspect));
+        props.put("aspect", aspect);
         String s = "Indexed Colors";
         props.put("screenMode", s);
         props.put("nbPlanes", "" + bmhdNbPlanes + (((bmhdMasking & MSK_HAS_MASK) != 0) ? "+mask" : ""));

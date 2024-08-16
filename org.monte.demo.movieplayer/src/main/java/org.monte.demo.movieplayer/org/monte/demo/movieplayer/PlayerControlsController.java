@@ -18,6 +18,7 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
+import org.monte.demo.movieplayer.model.MediaPlayerInterface;
 
 import java.net.URL;
 import java.text.NumberFormat;
@@ -25,7 +26,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class PlayerControlsController {
-    private final ObjectProperty<GenericMediaPlayer> player = new SimpleObjectProperty<>();
+    private final ObjectProperty<MediaPlayerInterface> player = new SimpleObjectProperty<>();
 
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -50,26 +51,45 @@ public class PlayerControlsController {
     private ChangeListener<MediaPlayer.Status> statusChangeListener = (o, old, newv) -> playButton.setSelected(newv == MediaPlayer.Status.PLAYING);
 
     @FXML
-    void forwardEnd(ActionEvent event) {
-        GenericMediaPlayer p = getPlayer();
+    void seekLast(ActionEvent event) {
+        MediaPlayerInterface p = getPlayer();
         if (p != null) {
             p.seek(p.getTotalDuration());
         }
     }
 
     @FXML
-    void backwardEnd(ActionEvent event) {
-        GenericMediaPlayer p = getPlayer();
+    void seekFirst(ActionEvent event) {
+        MediaPlayerInterface p = getPlayer();
         if (p != null) {
             p.seek(Duration.ZERO);
         }
     }
 
     @FXML
+    void seekNext(ActionEvent event) {
+        MediaPlayerInterface p = getPlayer();
+        if (p != null) {
+            p.seek(p.getCurrentTime().add(Duration.seconds(1.0 / 10)));
+        }
+    }
+
+    @FXML
+    void seekPrevious(ActionEvent event) {
+        MediaPlayerInterface p = getPlayer();
+        if (p != null) {
+            p.seek(p.getCurrentTime().subtract(Duration.seconds(1.0 / 10)));
+        }
+    }
+
+    @FXML
     void togglePlay(ActionEvent event) {
-        GenericMediaPlayer p = getPlayer();
+        MediaPlayerInterface p = getPlayer();
         if (p != null) {
             switch (p.getStatus()) {
+                case null -> {
+                    // do nothing
+                }
                 default -> {
                     p.play();
                 }
@@ -94,7 +114,7 @@ public class PlayerControlsController {
     }
 
     private void timeSliderChanged(Observable observable, Number oldValue, Number newValue) {
-        GenericMediaPlayer p = getPlayer();
+        MediaPlayerInterface p = getPlayer();
         if (p != null && newValue != null && (timeSlider.isPressed())) {
             p.seek(new Duration(newValue.doubleValue()));
         }
@@ -102,11 +122,11 @@ public class PlayerControlsController {
 
     private final ChangeListener<Duration> currentTimeHandler = this::currenTimeChanged;
 
-    private void playerChanged(Observable observable, GenericMediaPlayer oldValue, GenericMediaPlayer newValue) {
+    private void playerChanged(Observable observable, MediaPlayerInterface oldValue, MediaPlayerInterface newValue) {
         if (oldValue != null) {
             playButton.textProperty().unbind();
             timeSlider.maxProperty().unbind();
-            oldValue.currentTimeProperty().removeListener((ChangeListener<? super javafx.util.Duration>) currentTimeHandler);
+            oldValue.currentTimeProperty().removeListener(currentTimeHandler);
             currentTimeLabel.textProperty().unbind();
             totalDurationLabel.textProperty().unbind();
             newValue.statusProperty().removeListener(statusChangeListener);
@@ -124,11 +144,16 @@ public class PlayerControlsController {
         }
     }
 
-    private final static NumberFormat fmt2IntegerDigits = NumberFormat.getNumberInstance(Locale.ENGLISH);
+    private final static NumberFormat fmt2Digits = NumberFormat.getNumberInstance(Locale.ENGLISH);
+    private final static NumberFormat fmt3Digits = NumberFormat.getNumberInstance(Locale.ENGLISH);
 
     static {
-        fmt2IntegerDigits.setMinimumIntegerDigits(2);
-        fmt2IntegerDigits.setMaximumFractionDigits(0);
+        fmt2Digits.setMinimumIntegerDigits(2);
+        fmt2Digits.setMaximumFractionDigits(0);
+        fmt2Digits.setGroupingUsed(false);
+        fmt3Digits.setMinimumIntegerDigits(3);
+        fmt3Digits.setMaximumFractionDigits(0);
+        fmt3Digits.setGroupingUsed(false);
     }
 
     private String toTotalDurationString(Duration duration) {
@@ -144,14 +169,18 @@ public class PlayerControlsController {
         int minutes = (int) ((millis / 60_000.0) % 60);
         int hours = (int) ((millis / 3600_000.0));
         if (hours > 0) {
-            buf.append(fmt2IntegerDigits.format(hours));
+            buf.append(fmt2Digits.format(hours));
             buf.append(':');
         }
         if (hours > 0 || minutes > 0) {
-            buf.append(fmt2IntegerDigits.format(minutes));
+            buf.append(fmt2Digits.format(minutes));
             buf.append(':');
         }
-        buf.append(fmt2IntegerDigits.format(seconds));
+        buf.append(fmt2Digits.format(seconds));
+        int fraction = (int) millis % 1000;
+        buf.append('.');
+        buf.append(fmt3Digits.format(fraction));
+
         return buf.toString();
     }
 
@@ -171,18 +200,20 @@ public class PlayerControlsController {
         int minutes = (int) ((millis / 60_000.0) % 60);
         int hours = (int) ((millis / 3600_000.0));
         double totalMillis = totalDuration.toMillis();
-        int totalSeconds = (int) ((totalMillis / 1000.0) % 60);
         int totalMinutes = (int) ((totalMillis / 60_000.0) % 60);
         int totalHours = (int) ((totalMillis / 3600_000.0));
         if (totalHours > 0) {
-            buf.append(fmt2IntegerDigits.format(hours));
+            buf.append(fmt2Digits.format(hours));
             buf.append(':');
         }
         if (totalHours > 0 || totalMinutes > 0) {
-            buf.append(fmt2IntegerDigits.format(minutes));
+            buf.append(fmt2Digits.format(minutes));
             buf.append(':');
         }
-        buf.append(fmt2IntegerDigits.format(seconds));
+        buf.append(fmt2Digits.format(seconds));
+        int fraction = (int) millis % 1000;
+        buf.append('.');
+        buf.append(fmt3Digits.format(fraction));
         return buf.toString();
     }
 
@@ -197,15 +228,15 @@ public class PlayerControlsController {
         return root;
     }
 
-    public GenericMediaPlayer getPlayer() {
+    public MediaPlayerInterface getPlayer() {
         return player.get();
     }
 
-    public Property<GenericMediaPlayer> playerProperty() {
+    public Property<MediaPlayerInterface> playerProperty() {
         return player;
     }
 
-    public void setPlayer(GenericMediaPlayer p) {
+    public void setPlayer(MediaPlayerInterface p) {
         player.set(p);
     }
 }

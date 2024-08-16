@@ -11,7 +11,7 @@ import java.util.Iterator;
 /**
  * RIFF Chunks form the building blocks of a RIFF file.
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class RIFFChunk {
     private int id;

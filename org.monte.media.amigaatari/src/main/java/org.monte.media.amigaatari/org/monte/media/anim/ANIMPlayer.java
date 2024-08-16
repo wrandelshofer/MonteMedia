@@ -37,7 +37,7 @@ import static java.lang.Math.max;
 /**
  * Player for IFF cel animations.
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class ANIMPlayer
         extends AbstractPlayer
@@ -191,7 +191,7 @@ public class ANIMPlayer
         // ------------------------
         @Override
         public void mouseClicked(MouseEvent event) {
-            if (getState() != CLOSED && event.getModifiers() == InputEvent.BUTTON1_MASK) {
+            if (getState() != CLOSED && event.getModifiersEx() == InputEvent.BUTTON1_DOWN_MASK) {
                 if (getState() == STARTED && getTargetState() == STARTED && event.getClickCount() == 1) {
                     stop();
                 } else if (getState() != STARTED && getTargetState() != STARTED && event.getClickCount() == 2) {
@@ -249,7 +249,7 @@ public class ANIMPlayer
                     }
                 } else {
                     // Render the video on the worker thread.
-                    dispatcher.dispatch(
+                    dispatcher.execute(
                             new Runnable() {
 
                                 @Override
@@ -523,7 +523,7 @@ public class ANIMPlayer
         properties = new Hashtable<>();
         properties.put(
                 "aspect",
-                new Double((double) track.getXAspect() / (double) track.getYAspect()));
+                (double) track.getXAspect() / (double) track.getYAspect());
         Object comment = track.getProperty("comment");
         if (comment != null) {
             properties.put("comment", comment);

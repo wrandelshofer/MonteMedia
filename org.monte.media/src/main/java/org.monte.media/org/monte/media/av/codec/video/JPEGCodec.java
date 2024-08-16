@@ -37,6 +37,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_MJPG;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_JPEG;
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ProgressiveImageEncodingKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.QualityKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
@@ -128,6 +129,9 @@ public class JPEGCodec extends AbstractVideoCodec {
             iwParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
             float quality = outputFormat.get(QualityKey, 1f);
             iwParam.setCompressionQuality(quality);
+            if (outputFormat.getOrDefault(ProgressiveImageEncodingKey)) {
+                iwParam.setProgressiveMode(ImageWriteParam.MODE_DEFAULT);
+            }
             iw.setOutput(tmp);
             IIOImage img = new IIOImage(image, null, null);
             iw.write(null, img, iwParam);

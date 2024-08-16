@@ -302,9 +302,9 @@ public class DIBCodec extends AbstractVideoCodec {
         for (int y = 0; y < h; y++) {
             for (int k = 0, k3 = 0; k < w; k++, k3 += 3) {
                 out[j + k] = 0xff000000//Alpha
-                        | ((in[i + k3 + 2] & 0xff))//Red
+                        | ((in[i + k3] & 0xff))//Red
                         | ((in[i + k3 + 1] & 0xff) << 8)//Green
-                        | ((in[i + k3] & 0xff) << 16);//Blue
+                        | ((in[i + k3 + 2] & 0xff) << 16);//Blue
             }
             i += w * 3;
             j -= scanlineStride;

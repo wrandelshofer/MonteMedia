@@ -9,7 +9,7 @@ package org.monte.media.eightsvx;
 /**
  * LoopableAudioClip.
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public interface LoopableAudioClip extends AudioClip {
     /**

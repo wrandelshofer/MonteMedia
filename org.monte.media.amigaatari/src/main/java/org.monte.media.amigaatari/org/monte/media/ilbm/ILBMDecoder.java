@@ -47,7 +47,7 @@ import java.util.Hashtable;
  * Literal strings are shown in "quotes", [square bracket items] are optional, and
  * "*" means 0 or more repetitions. A sometimes-needed pad byte is shown as "[0]".
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class ILBMDecoder
         implements IFFVisitor {
@@ -283,7 +283,7 @@ public class ILBMDecoder
         if (bmhdXAspect == 0 || bmhdYAspect == 0) {
             aspect = 1d;
         }
-        props.put("aspect", new Double(aspect));
+        props.put("aspect", aspect);
         String s;
         switch (camgMode) {
             case MODE_INDEXED_COLORS:
@@ -307,7 +307,7 @@ public class ILBMDecoder
         }
         props.put("screenMode", s);
         props.put("nbPlanes", "" + bmhdNbPlanes + (((bmhdMasking & MSK_HAS_MASK) != 0) ? "+mask" : ""));
-        props.put("CAMG", new Integer(camg));
+        props.put("CAMG", camg);
 
         StringBuffer comment = new StringBuffer();
         IFFChunk[] chunks = group.getCollectionChunks(ANNO_ID);

@@ -11,7 +11,7 @@ import java.util.HashMap;
  * IFF Chunks form the building blocks of an IFF file. This class is made for
  * reading purposes only. See MutableIFFChunk for writing purposes.
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class IFFChunk {
 

@@ -22,7 +22,7 @@
     <testSourceDirectory>${basedir}/src/test/java/org.monte.demo.quicktimewriter</testSourceDirectory>
     <resources>
       <resource>
-        <directory>${basedir}/src/main/java/org.monte.demo.quicktimewriter</directory>
+        <directory>${basedir}/src/main/resources/org.monte.demo.quicktimewriter</directory>
         <excludes>
           <exclude>**/*.java</exclude>
         </excludes>

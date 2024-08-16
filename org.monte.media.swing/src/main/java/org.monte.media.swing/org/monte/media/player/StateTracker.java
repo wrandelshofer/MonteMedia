@@ -7,7 +7,7 @@ package org.monte.media.player;
 /**
  * Tracks state changes in a StateModel.
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class StateTracker
         implements StateListener {

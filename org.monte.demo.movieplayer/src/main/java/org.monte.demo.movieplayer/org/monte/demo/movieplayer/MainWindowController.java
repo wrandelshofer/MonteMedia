@@ -8,10 +8,9 @@ package org.monte.demo.movieplayer;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -23,12 +22,17 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
-import javafx.scene.media.MediaErrorEvent;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.monte.demo.movieplayer.fxplayer.MediaPlayerAdapter;
+import org.monte.demo.movieplayer.fxplayer.FXMedia;
+import org.monte.demo.movieplayer.fxplayer.FXMediaPlayer;
+import org.monte.demo.movieplayer.model.MediaInterface;
+import org.monte.demo.movieplayer.model.MediaPlayerInterface;
+import org.monte.demo.movieplayer.monteplayer.MonteMedia;
+import org.monte.demo.movieplayer.monteplayer.MonteMediaPlayer;
+import org.monte.demo.movieplayer.monteplayer.MonteMediaView;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +40,11 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MainWindowController {
+    enum Mode {
+        JavaFX, MonteMedia
+    }
 
+    private final ObjectProperty<Mode> mode = new SimpleObjectProperty<>(Mode.MonteMedia);
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
 
@@ -101,7 +109,7 @@ public class MainWindowController {
 
         new DropFileHandler(centerPane, this::setFile);
 
-        fileProperty().addListener(o -> this.createMediaPlayer());
+        fileProperty().addListener(o -> this.createMoviePlayer());
         showStatusBarCheckMenuItem.selectedProperty().addListener(this::statusBarVisibilityChanged);
         showStatusBarCheckMenuItem.setSelected(false);
     }
@@ -119,7 +127,7 @@ public class MainWindowController {
     }
 
     private final ObjectProperty<File> file = new SimpleObjectProperty<>();
-    private final ObjectProperty<GenericMediaPlayer> player = new SimpleObjectProperty<>();
+    private final ObjectProperty<MediaPlayerInterface> player = new SimpleObjectProperty<>();
 
     private FileChooser getFileChooser() {
         if (fileChooser == null) {
@@ -140,7 +148,7 @@ public class MainWindowController {
         return file;
     }
 
-    private void createMediaPlayer() {
+    private void createMoviePlayer() {
         centerPane.getChildren().clear();
         leftStatusLabel.setText(null);
         var oldPlayer = player.get();
@@ -148,11 +156,36 @@ public class MainWindowController {
             oldPlayer.dispose();
             player.set(null);
         }
+        switch (mode.get()) {
+            case JavaFX -> {
+                createFXMoviePlayer();
+            }
+            case MonteMedia -> {
+                createMonteMediaPlayer();
+            }
+        }
+    }
+
+    private void createMonteMediaPlayer() {
         File mediaFile = file.get();
         if (mediaFile == null) {
             return;
         }
+        MonteMedia movie = new MonteMedia(mediaFile);
+        MonteMediaPlayer player = new MonteMediaPlayer(movie);
+        MonteMediaView monteMediaView = MonteMediaView.newVideoView();
+        monteMediaView.setMedia(movie);
+        PlayerControlsController playerController = createPlayerController();
+        playerController.setPlayer(player);
+        showPlayer(monteMediaView.getRoot(), player, movie, playerController);
+        movie.errorProperty().addListener((o, oldv, newv) -> leftStatusLabel.setText(resources.getString("error") + newv.toString()));
+    }
 
+    private void createFXMoviePlayer() {
+        File mediaFile = file.get();
+        if (mediaFile == null) {
+            return;
+        }
         Media media;
         MediaPlayer mediaPlayer;
         MediaView mediaView;
@@ -162,41 +195,39 @@ public class MainWindowController {
             mediaPlayer = new MediaPlayer(media);
 
             if (mediaPlayer.getError() != null) {
-                // Handle synchronous error creating MediaPlayer.
+                // Handle synchronous error creating Player.
                 leftStatusLabel.setText(resources.getString("error") + mediaPlayer.getError().getMessage());
                 mediaPlayer.dispose();
                 return;
             }
             PlayerControlsController playerController = createPlayerController();
-            MediaPlayerAdapter p = new MediaPlayerAdapter(mediaPlayer);
+            FXMediaPlayer p = new FXMediaPlayer(mediaPlayer);
             player.set(p);
             playerController.setPlayer(p);
             mediaPlayer.setAutoPlay(true);
             mediaView = new MediaView(mediaPlayer);
-            ScrollPane scrollPane = new ScrollPane(mediaView);
-            mediaPlayer.setOnReady(() -> {
-                Insets insets = scrollPane.getInsets();
-                scrollPane.setPrefHeight(media.getHeight() + insets.getTop() + insets.getBottom());
-                scrollPane.setPrefWidth(media.getWidth() + insets.getLeft() + insets.getRight());
-                sizeStageToScene();
-            });
-            VBox.setVgrow(scrollPane, Priority.ALWAYS);
-            VBox.setVgrow(playerController.getRoot(), Priority.NEVER);
-            VBox view = new VBox();
-            VBox.setVgrow(view, Priority.ALWAYS);
-            view.getChildren().addAll(scrollPane, playerController.getRoot());
-            centerPane.getChildren().add(view);
-            mediaView.setOnError(new EventHandler<MediaErrorEvent>() {
-                public void handle(MediaErrorEvent t) {
-                    leftStatusLabel.setText(resources.getString("error") + t.toString());
-                }
-            });
+
+            showPlayer(mediaView, p, new FXMedia(media), playerController);
+            mediaView.setOnError(t -> leftStatusLabel.setText(resources.getString("error") + t.toString()));
 
 
         } catch (Exception mediaException) {
             // Handle exception in Media constructor.
             leftStatusLabel.setText(resources.getString("error") + mediaException.getMessage());
         }
+    }
+
+    private void showPlayer(Node mediaView, MediaPlayerInterface mediaPlayer, MediaInterface media, PlayerControlsController playerController) {
+        ScrollPane scrollPane = new ScrollPane(mediaView);
+        mediaPlayer.setOnReady(() -> {
+            sizeStageToScene();
+        });
+        VBox.setVgrow(scrollPane, Priority.ALWAYS);
+        VBox.setVgrow(playerController.getRoot(), Priority.NEVER);
+        VBox view = new VBox();
+        VBox.setVgrow(view, Priority.ALWAYS);
+        view.getChildren().addAll(scrollPane, playerController.getRoot());
+        centerPane.getChildren().add(view);
     }
 
     private PlayerControlsController createPlayerController() {

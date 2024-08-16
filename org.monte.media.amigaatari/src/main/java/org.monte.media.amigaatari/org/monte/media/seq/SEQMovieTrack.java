@@ -4,9 +4,9 @@
  */
 package org.monte.media.seq;
 
+import org.monte.media.eightsvx.AudioClip;
 import org.monte.media.ilbm.ColorCycle;
 
-import java.applet.AudioClip;
 import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
 import java.beans.PropertyChangeListener;
@@ -22,7 +22,7 @@ import static java.lang.Math.max;
  * A movie track gives access to the static resources of
  * a movie (image and audio data, global informations).
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class SEQMovieTrack {
 
@@ -217,7 +217,7 @@ public class SEQMovieTrack {
     }
 
     private void firePropertyChange(String name, int oldValue, int newValue) {
-        listeners.firePropertyChange(name, new Integer(oldValue), new Integer(newValue));
+        listeners.firePropertyChange(name, oldValue, newValue);
     }
 
     public void setJiffies(int newValue) {

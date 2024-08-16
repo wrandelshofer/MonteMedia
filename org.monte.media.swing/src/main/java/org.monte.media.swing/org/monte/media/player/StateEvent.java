@@ -9,27 +9,36 @@ import java.util.EventObject;
 /**
  * Event for state changes.
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class StateEvent
         extends EventObject {
-    private final static long serialVersionUID = 1L;
+    private final static long serialVersionUID = 2L;
     /**
-     * State.
+     * The old State.
      */
-    private int state_;
+    private final int oldState;
+    /**
+     * The new State.
+     */
+    private final int newState;
 
-    public StateEvent(Object source, int state) {
+    public StateEvent(Object source, int oldState, int newState) {
         super(source);
-        state_ = state;
+        this.oldState = oldState;
+        this.newState = newState;
     }
 
     public int getNewState() {
-        return state_;
+        return newState;
+    }
+
+    public int getOldState() {
+        return oldState;
     }
 
     public String toString() {
-        return getClass().getName() + "[source=" + getSource() + ",state=" + state_ + "]";
+        return getClass().getName() + "[source=" + getSource() + ",state=" + newState + "]";
 
     }
 }

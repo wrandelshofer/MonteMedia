@@ -162,7 +162,7 @@ import java.util.HashSet;
  * </pre>
  *
  * @see    IFFVisitor
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class IFFParser
         extends Object {
@@ -455,7 +455,7 @@ public class IFFParser
                     break;
                 case ID_PROP:
                     IFFChunk prop = parsePROP();
-                    props.put(new Integer(prop.getType()), prop);
+                    props.put(prop.getType(), prop);
                     break;
                 default:
                     if (isLocalChunkID(id)) {

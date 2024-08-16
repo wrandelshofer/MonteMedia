@@ -168,7 +168,7 @@ import java.util.WeakHashMap;
  * </pre>
  *
  * @see    RIFFVisitor
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class RIFFParser extends Object {
 

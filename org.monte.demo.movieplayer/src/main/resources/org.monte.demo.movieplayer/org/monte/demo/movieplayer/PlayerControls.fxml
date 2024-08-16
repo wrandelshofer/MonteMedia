@@ -15,40 +15,64 @@
     <HBox alignment="CENTER_LEFT" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" styleClass="player-controls"
           HBox.hgrow="NEVER">
       <children>
-        <ToggleButton fx:id="playButton" mnemonicParsing="false" onAction="#togglePlay" prefHeight="28.0"
-                      prefWidth="28.0" styleClass="play-button">
+        <ToggleButton fx:id="playButton" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false"
+                      onAction="#togglePlay" prefHeight="30.0" prefWidth="30.0" styleClass="play-button">
           <graphic>
             <Group>
               <children>
                 <SVGPath
-                  content="M222,32v-480h180v480h-180zm-300,0v-480h180v480h-180zm340,-40h100v-400h-100v400zm-300,0h100v-400h-100v400zm0,-400v400v-400zm300,0v400v-400z"
+                  content="M530,-220v-520h210v520h-210zm-310,0v-520h210v520h-210zm370,-60h90v-400h-90v400zm-310,0h90v-400h-90v400zm0,-400v400v-400zm310,0v400v-400z"
                   scaleX="0.025" scaleY="0.025" styleClass="selected-graphics"/>
                 <SVGPath
-                  content="M0,0v-415.38l326.15,207.69l-326.15,207.69zm40,-207.69zm0,134l211.54,-134l-211.54,-134v268z"
-                  scaleX="0.025" scaleY="0.025" styleClass="unselected-graphics"/>
+                  content="M340,-236.16v-487.68l383.07,243.84l-383.07,243.84zm60,-243.84zm0,134l210.77,-134l-210.77,-134v268z"
+                  scaleX="0.025" scaleY="0.025" styleClass="deselected-graphics"/>
               </children>
             </Group>
           </graphic>
         </ToggleButton>
-        <Button mnemonicParsing="false" onAction="#backwardEnd" prefHeight="28.0" prefWidth="28.0"
-                styleClass="backward-end-button">
+        <Button mnemonicParsing="false" onAction="#seekPrevious" prefHeight="28.0" prefWidth="28.0"
+                styleClass="backward-step-button">
           <graphic>
             <Group>
               <children>
                 <SVGPath
-                  content="M269.23-295.38v-369.24h40v369.24h-40Zm421.54 0L413.85-480l276.92-184.62v369.24Zm-40-184.62Zm0 110v-220L485.54-480l165.23 110Z"
+                  content="M264.62,-267.69v-424.62h60v424.62h-60zm147.69,0l354.23,-212.31l-354.23,-212.31v424.62zm60,-106.77v-211.08l176.15,105.54l-176.15,105.54zm0,-105.54z"
+                  scaleX="-0.025" scaleY="0.025"/>
+              </children>
+            </Group>
+          </graphic>
+        </Button>
+        <Button mnemonicParsing="false" onAction="#seekNext" prefHeight="28.0" prefWidth="28.0"
+                styleClass="forward-step-button">
+          <graphic>
+            <Group>
+              <children>
+                <SVGPath
+                  content="M264.62,-267.69v-424.62h60v424.62h-60zm147.69,0l354.23,-212.31l-354.23,-212.31v424.62zm60,-106.77v-211.08l176.15,105.54l-176.15,105.54zm0,-105.54z"
                   scaleX="0.025" scaleY="0.025"/>
               </children>
             </Group>
           </graphic>
         </Button>
-        <Button mnemonicParsing="false" onAction="#forwardEnd" prefHeight="28.0" prefWidth="28.0"
+        <Button mnemonicParsing="false" onAction="#seekFirst" prefHeight="28.0" prefWidth="28.0"
+                styleClass="backward-end-button">
+          <graphic>
+            <Group>
+              <children>
+                <SVGPath
+                  content="M655.38,-267.69v-424.62h60v424.62h-60zm-410.76,0v-424.62l318.46,212.31l-318.46,212.31zm60,-212.31zm0,100l150.61,-100l-150.61,-100v200z"
+                  scaleX="-0.025" scaleY="0.025"/>
+              </children>
+            </Group>
+          </graphic>
+        </Button>
+        <Button mnemonicParsing="false" onAction="#seekLast" prefHeight="28.0" prefWidth="28.0"
                 styleClass="forward-end-button">
           <graphic>
             <Group>
               <children>
                 <SVGPath
-                  content="M650.77-295.38v-369.24h40v369.24h-40Zm-381.54 0v-369.24L546.15-480 269.23-295.38Zm40-184.62Zm0 110 165.23-110-165.23-110v220Z"
+                  content="M655.38,-267.69v-424.62h60v424.62h-60zm-410.76,0v-424.62l318.46,212.31l-318.46,212.31zm60,-212.31zm0,100l150.61,-100l-150.61,-100v200z"
                   scaleX="0.025" scaleY="0.025"/>
               </children>
             </Group>

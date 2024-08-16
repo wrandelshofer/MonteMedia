@@ -1,13 +1,23 @@
-/* empty */
-ToggleButton .unselected-graphics {
-    visibility:true;
-}
-ToggleButton .selected-graphics {
+
+.toggle-button .selected-graphics {
     visibility:false;
 }
-ToggleButton:selected .unselected-graphics {
+.toggle-button:selected .deselected-graphics {
     visibility:false;
 }
-ToggleButton:selected .selected-graphics {
+.toggle-button:selected .selected-graphics {
     visibility:true;
+}
+
+.button .disabled-graphics,
+.toggle-button .disabled-graphics {
+    visibility:false;
+}
+.button:disabled .disabled-graphics,
+.toggle-button:disabled .disabled-graphics {
+    visibility:true;
+}
+.button:disabled .enabled-graphics,
+.toggle-button:disabled .enabled-graphics {
+    visibility:false;
 }

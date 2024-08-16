@@ -4,6 +4,7 @@
  */
 package org.monte.media.mjpg;
 
+import org.monte.media.av.MovieReader;
 import org.monte.media.av.codec.video.AVIBMPDIB;
 
 import javax.imageio.ImageIO;
@@ -43,6 +44,8 @@ public class MJPGImageReader extends ImageReader {
      * This value is set to true, when we returned the image.
      */
     private boolean didReturnImage;
+
+    private MovieReader reader;
 
     public MJPGImageReader(ImageReaderSpi originatingProvider) {
         super(originatingProvider);

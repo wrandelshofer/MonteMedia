@@ -895,7 +895,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
     }
 
     /**
-     * Encodes a 8-bit key frame with indexed colors.
+     * Encodes an 8-bit key frame with indexed colors.
      *
      * @param out            The output stream.
      * @param data           The image data.

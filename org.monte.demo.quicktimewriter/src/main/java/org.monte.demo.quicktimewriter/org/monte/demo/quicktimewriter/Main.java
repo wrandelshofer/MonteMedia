@@ -12,15 +12,13 @@ import org.monte.media.math.Rational;
 import org.monte.media.quicktime.QuickTimeReader;
 import org.monte.media.quicktime.QuickTimeWriter;
 
+import javax.imageio.ImageIO;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.LinearGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.File;
@@ -58,8 +56,7 @@ public class Main {
         System.out.println();
 
         try {
-            test(new File("quicktimedemo-jpg.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_JPEG, DepthKey, 24, QualityKey, 1f));
-            test(new File("quicktimedemo-jpg-q0.5.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_JPEG, DepthKey, 24, QualityKey, 0.5f));
+            test(new File("quicktimedemo-jpg-q0.75.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_JPEG, DepthKey, 24, QualityKey, 0.75f));
             test(new File("quicktimedemo-png.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_PNG, DepthKey, 24));
             test(new File("quicktimedemo-raw24.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_RAW, DepthKey, 24));
             test(new File("quicktimedemo-raw8.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_RAW, DepthKey, 8));
@@ -91,8 +88,9 @@ public class Main {
         System.out.println("Writing " + file.getAbsolutePath());
 
         // Make the format more specific
+        Rational frameRate = new Rational(10, 1);
         format = format.prepend(MediaTypeKey, MediaType.VIDEO, //
-                FrameRateKey, new Rational(30, 1),//
+                FrameRateKey, frameRate,//
                 WidthKey, 640, //
                 HeightKey, 480);
 
@@ -100,6 +98,10 @@ public class Main {
         BufferedImage img = createImage(format);
         Graphics2D g = img.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        var backgroundImage = ImageIO.read(Main.class.getResource("BackgroundImage.png"));
+        if (backgroundImage != null) {
+            g.drawImage(backgroundImage, 0, 0, null);
+        }
 
         QuickTimeWriter out = null;
         try {
@@ -111,8 +113,8 @@ public class Main {
             out.setVideoColorTable(0, img.getColorModel());
 
             // Draw the animation
-            for (int i = 0, n = 61; i < n; i++) {
-                double t = (double) i / n - 1;
+            for (int i = 0, n = frameRate.multiply(60).intValue(); i < n; i++) {
+                double t = frameRate.divide(i).doubleValue() + 8 * 3600 + 25 * 60;
                 drawAnimationFrame(img, g, t);
 
                 // write image to the writer
@@ -130,51 +132,40 @@ public class Main {
         }
     }
 
-    private static void drawAnimationFrame(BufferedImage img, Graphics2D g, double t) {
-        int rhour = Math.min(img.getWidth(), img.getHeight()) / 6;
-        int rminute = Math.min(img.getWidth(), img.getHeight()) / 4;
-        int cx = img.getWidth() / 2;
-        int cy = img.getHeight() / 2;
-
-        double tminute = t;
-        double thour = tminute / 60.0;
-        Stroke sfine = new BasicStroke(1.0f);
-        Stroke shour = new BasicStroke(7.0f);
-        Stroke sminute = new BasicStroke(5.0f);
-        g.setBackground(Color.WHITE);
-        g.clearRect(0, 0, img.getWidth(), img.getHeight());
-
-        // draw color-changing dot
-        g.setColor(Color.getHSBColor((float) t, 0.8f, 0.6f));
-        Ellipse2D ellipse = new Ellipse2D.Double(cx - 10, cy + rhour - 10, 20, 20);
-        g.fill(ellipse);
-
-        // draw color strip
-        float[] fractions = new float[12];
-        Color[] colors = new Color[fractions.length];
-        for (int i = 0; i < fractions.length; i++) {
-            fractions[i] = (float) i / (fractions.length - 1);
-            colors[i] = Color.getHSBColor(fractions[i], 0.8f, 0.6f);
-        }
-        g.setPaint(new LinearGradientPaint(cx - rminute, cy + rminute, cx + rminute, cy + rminute,
-                fractions,
-                colors));
-        Rectangle2D rectangle = new Rectangle2D.Double(cx - rminute, cy + rhour + 10, rminute * 2, 20);
-        g.fill(rectangle);
-
-
-        // draw clock hour hand
-        Line2D.Double lhour = new Line2D.Double(cx, cy, cx + Math.sin(thour * Math.PI * 2) * rhour, cy - Math.cos(thour * Math.PI * 2) * rhour);
-        g.setColor(Color.BLUE);
-        g.setStroke(shour);
-        g.draw(lhour);
-
-        // draw clock minute hand
-        g.setColor(Color.RED);
-        Line2D.Double lminute = new Line2D.Double(cx, cy, cx + Math.sin(tminute * Math.PI * 2) * rminute, cy - Math.cos(tminute * Math.PI * 2) * rminute);
-        g.setStroke(sminute);
-        g.draw(lminute);
+    private static void drawAnimationFrame(BufferedImage img, Graphics2D g, double second) {
+        drawClock(g, 232, 240, 150, second);
     }
+
+    private static void drawClock(Graphics2D g, int cx, int cy, int radius, double seconds) {
+        g.setPaint(Color.WHITE);
+        g.fillOval(cx - radius, cy - radius, radius * 2, radius * 2);
+
+
+        double minutes = seconds / 60.0;
+        double hours = minutes / 60.0;
+        drawClockHand(g, cx, cy, -10, radius / 2, new BasicStroke(20, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL), Color.BLACK, (hours) * (Math.PI * 2.0 / 12.0));
+        drawClockHand(g, cx, cy, -10, radius - 20, new BasicStroke(20, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL), new Color(0x1a1a1a), (minutes) * (Math.PI * 2.0 / 60.0));
+        drawClockHand(g, cx, cy, -64, radius - 1, new BasicStroke(6, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL), Color.RED, (seconds) * (Math.PI * 2.0 / +60.0));
+        drawClockHand(g, cx, cy, -64, radius - 1, new BasicStroke(20, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL, 4f, new float[]{20f, radius * 2}, 0f), Color.RED, (seconds) * (Math.PI * 2.0 / +60.0));
+
+        // Draw plug
+        int plugRadius = 12;
+        g.setPaint(Color.WHITE);
+        g.fillOval(cx - plugRadius, cy - plugRadius, plugRadius * 2, plugRadius * 2);
+        g.setStroke(new BasicStroke(10));
+        g.setPaint(new Color(0x333333));
+        g.drawOval(cx - plugRadius, cy - plugRadius, plugRadius * 2, plugRadius * 2);
+    }
+
+    private static void drawClockHand(Graphics2D g, int cx, int cy, int radius1, int radius2, Stroke stroke, Color color, double angle) {
+        angle = angle % (Math.PI * 2);
+        double sin = Math.sin(angle);
+        double cos = Math.cos(angle);
+        g.setPaint(color);
+        g.setStroke(stroke);
+        g.draw(new Line2D.Double(cx + radius1 * sin, cy - radius1 * cos, cx + radius2 * sin, cy - radius2 * cos));
+    }
+
 
     private static void testReading(File file) throws IOException {
         System.out.println("Reading " + file.getAbsolutePath());

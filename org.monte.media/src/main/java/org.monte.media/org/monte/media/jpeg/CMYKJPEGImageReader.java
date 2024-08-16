@@ -7,6 +7,7 @@ package org.monte.media.jpeg;
 import org.monte.media.image.CMYKImages;
 import org.monte.media.io.ByteArrayImageInputStream;
 import org.monte.media.io.ImageInputStreamAdapter;
+import org.monte.media.io.SeekableByteArrayOutputStream;
 import org.monte.media.jfif.JFIFInputStream;
 
 import javax.imageio.ImageIO;
@@ -21,7 +22,6 @@ import java.awt.color.ICC_Profile;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -192,7 +192,7 @@ public class CMYKJPEGImageReader extends ImageReader {
     int numberOfSamplesPerLine = 0;
     int numberOfComponentsInFrame = 0;
     int app14AdobeColorTransform = 0;
-    ByteArrayOutputStream app2ICCProfile = new ByteArrayOutputStream();
+      SeekableByteArrayOutputStream app2ICCProfile = new SeekableByteArrayOutputStream();
     // Browse for marker segments, and extract data from those
     // which are of interest.
     JFIFInputStream fifi = new JFIFInputStream(new ImageInputStreamAdapter(in));
@@ -246,7 +246,7 @@ public class CMYKJPEGImageReader extends ImageReader {
     ICC_Profile profile = defaultProfile;
     if (!ignoreProfile && app2ICCProfile.size() > 0) {
       try {
-        profile = ICC_Profile.getInstance(new ByteArrayInputStream(app2ICCProfile.toByteArray()));
+          profile = ICC_Profile.getInstance(new ByteArrayInputStream(app2ICCProfile.getBuffer(), 0, app2ICCProfile.size()));
       } catch (Throwable ex) {
         // icc profile is corrupt
         throw new IOException("icc profile is corrupt", ex);

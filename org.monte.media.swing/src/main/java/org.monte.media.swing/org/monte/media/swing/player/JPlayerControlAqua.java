@@ -13,12 +13,24 @@ import org.monte.media.swing.border.ButtonStateBorder;
 import org.monte.media.swing.border.ImageBevelBorder;
 import org.monte.media.swing.plaf.CustomButtonUI;
 
-import javax.swing.*;
+import javax.swing.BoundedRangeModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JToggleButton;
+import javax.swing.Timer;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.ButtonUI;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -31,7 +43,7 @@ import java.util.ResourceBundle;
  * The MovieControlAqua contains an audio on/off button, a start/stop button,
  * a slider, a forward and a rewind button, and a color cycling on/off button.
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class JPlayerControlAqua extends JComponent
         implements PlayerControl, ActionListener, ChangeListener, PropertyChangeListener {

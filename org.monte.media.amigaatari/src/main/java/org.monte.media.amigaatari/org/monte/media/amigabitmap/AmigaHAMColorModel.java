@@ -9,7 +9,7 @@ import java.awt.image.DirectColorModel;
 /**
  * ColorModel for HAM compressed images.
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class AmigaHAMColorModel extends DirectColorModel {
     //insert class definition here

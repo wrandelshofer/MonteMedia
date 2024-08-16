@@ -7,7 +7,7 @@ package org.monte.media.exception;
 /**
  * Exception thrown by IFFParse.
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class ParseException extends Exception {
 

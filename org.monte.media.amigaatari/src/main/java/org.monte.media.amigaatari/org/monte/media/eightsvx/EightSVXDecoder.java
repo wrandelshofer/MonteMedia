@@ -109,7 +109,7 @@ import java.util.ArrayList;
  * "quotes", [square bracket items] are optional, and "*" means 0 ore more replications.
  * A sometimes-needed pad byte is shown as "[0]".
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class EightSVXDecoder
         implements IFFVisitor {

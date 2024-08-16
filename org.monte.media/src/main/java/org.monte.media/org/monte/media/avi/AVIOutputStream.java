@@ -24,7 +24,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import static java.lang.Math.max;
-import static java.lang.Math.min;
 import static org.monte.media.av.FormatKeys.EncodingKey;
 import static org.monte.media.av.FormatKeys.FrameRateKey;
 import static org.monte.media.av.FormatKeys.KeyFrameIntervalKey;
@@ -327,7 +326,7 @@ public class AVIOutputStream extends AbstractAVIStream {
      */
     public void setCompressionQuality(int track, float newValue) {
         Track t = tracks.get(track);
-        t.quality = (int) (max(min(newValue, 1.0f), 0.0f) * 10000);
+        t.quality = Math.clamp((int) (newValue * 10_000f), 0, 10_000);
     }
 
     /**
@@ -337,7 +336,7 @@ public class AVIOutputStream extends AbstractAVIStream {
      */
     public float getCompressionQuality(int track) {
         Track t = tracks.get(track);
-        return (max(min(t.quality == -1 ? 9700 : t.quality, 0), 10000) / 10000f);
+        return t.quality == -1 ? 0.97f : Math.clamp(t.quality / 10_000f, 0f, 1f);
     }
 
     /**

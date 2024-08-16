@@ -12,7 +12,7 @@ import java.util.ArrayList;
 /**
  * Represents a frame in a movie track.
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public abstract class SEQFrame {
     protected ColorModel colorModel;

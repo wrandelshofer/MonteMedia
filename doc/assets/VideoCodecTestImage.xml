@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Drawing id="drawing1" xmlns="http://jhotdraw.org/samples/grapher">
+  <Layer id="layer1">
+    <Image bounds="472 116 168 126" id="image1" src="Weggis.png"/>
+    <Rectangle bounds="488 341 8 10" fill="#ffff00" id="rectangle11" stroke="none"/>
+    <Rectangle bounds="504 341 8 10" fill="#00ffff" id="rectangle10" stroke="none"/>
+    <Rectangle bounds="480 341 8 10" fill="#00ffff" id="rectangle9" stroke="none"/>
+    <Rectangle bounds="472 341 8 10" fill="#00ff00" id="rectangle7" stroke="none"/>
+    <Rectangle bounds="496 341 8 10" fill="#00ff00" id="rectangle12" stroke="none"/>
+    <Rectangle bounds="472 360 168 120" fill="#000000" id="rectangle16" stroke="none"/>
+    <Rectangle bounds="544.0000000000002 440 23.999999999999773 8" fill="#00ff00" id="rectangle3" stroke="none"/>
+    <Rectangle bounds="592 440 24 8" fill="#ff0000" id="rectangle42" stroke="none"/>
+    <Rectangle bounds="0 0 472 480" fill="#999999" id="rectangle1" stroke="none"/>
+    <Rectangle bounds="472 240 168 10" fill="#000000" id="rectangle8" stroke="none"/>
+    <Rectangle bounds="584 448 56 8" fill="linear-gradient(to right, #000000, #3f3f3f)" id="gray-gradient-00-3f"
+               stroke="none"/>
+    <Rectangle bounds="584 456 56 8" fill="linear-gradient(to left, #404040, #7f7f7f)" id="gray-gradient-40-7f"
+               stroke="none"/>
+    <Rectangle bounds="584 464 56 8" fill="linear-gradient(to right, #808080, #bfbfbf)" id="gray-gradient-80-fb"
+               stroke="none"/>
+    <Rectangle bounds="584 472 56 8" fill="linear-gradient(to left, #c0c0c0, #ffffff)" id="gray-gradient-c0-ff"
+               stroke="none"/>
+    <Rectangle bounds="616 440 8 8"
+               fill="linear-gradient(from 0 0 to 4 0, repeat, #ff0000 25%, #00ff00 25%, #00ff00 50%, #0000ff 50%, #0000ff 75%, #000000 75%)"
+               id="gray-fill" stroke="none"/>
+    <Polygon id="polygon1" points="616 440, 616 360, 640 360, 640 440" stroke="none"/>
+    <Polygon fill="#ffff00" id="polygon2" points="592 440, 592 360, 616 360, 616 440" stroke="none"/>
+    <Polygon fill="#00ffff" id="polygon3" points="544 440, 544 360, 568 360, 568 436, 568 440" stroke="none"/>
+    <Polygon fill="#00ff00" id="polygon4" points="496 440, 496 360, 520 360, 520 436, 520 440" stroke="none"/>
+    <Polygon fill="#ff00ff" id="polygon5" points="568 440, 568 360, 592 360, 592 436, 592 440" stroke="none"/>
+    <Polygon fill="#ff0000" id="polygon6" points="472 440, 472 360, 496 360, 496 436, 496 440" stroke="none"/>
+    <Polygon fill="#0000ff" id="polygon7" points="520 440, 520 360, 544 360, 544 436, 544 440" stroke="none"/>
+    <Ellipse blendMode="add" center="520 460"
+             fill="linear-gradient(color(srgb 255 0 0 / 100%), color(srgb 255 0 0 / 0%))" id="ellipse1" radius="20 20"
+             stroke="none"/>
+    <Ellipse blendMode="add" center="520 460"
+             fill="linear-gradient(color(srgb 0 255 0 / 100%), color(srgb 0 255 0 / 0%))" id="ellipse2" radius="20 20"
+             rotate="120" stroke="none"/>
+    <Ellipse blendMode="add" center="520 460"
+             fill="linear-gradient(color(srgb 0 0 255 / 100%), color(srgb 0 0 255 / 0%))" id="ellipse3" radius="20 20"
+             rotate="240" stroke="none"/>
+    <Ellipse center="232 240" fill="white" id="ellipse4" radius="216 216" stroke="black" stroke-width="25"/>
+    <Line end="232 440" id="line1" start="232 40" stroke="black" stroke-dasharray="30, 1000" stroke-dashoffset="-10"
+          stroke-width="20"/>
+    <Line end="232 440" id="line2" rotate="90" start="232 40" stroke="black" stroke-dasharray="30, 1000"
+          stroke-dashoffset="-10" stroke-width="20"/>
+    <Line end="232 440" id="line3" rotate="30" start="232 40" stroke="black" stroke-dasharray="30, 1000"
+          stroke-dashoffset="-10" stroke-width="20"/>
+    <Line end="232 440" id="line4" rotate="60" start="232 40" stroke="black" stroke-dasharray="30, 1000"
+          stroke-dashoffset="-10" stroke-width="20"/>
+    <Line end="232 440" id="line5" rotate="120" start="232 40" stroke="black" stroke-dasharray="30, 1000"
+          stroke-dashoffset="-10" stroke-width="20"/>
+    <Line end="232 440" id="line6" rotate="150" start="232 40" stroke="black" stroke-dasharray="30, 1000"
+          stroke-dashoffset="-10" stroke-width="20"/>
+    <Line end="232 440" id="line7" rotate="180" start="232 40" stroke="black" stroke-dasharray="30, 1000"
+          stroke-dashoffset="-10" stroke-width="20"/>
+    <Line end="232 440" id="line8" rotate="270" start="232 40" stroke="black" stroke-dasharray="30, 1000"
+          stroke-dashoffset="-10" stroke-width="20"/>
+    <Line end="232 440" id="line9" rotate="210" start="232 40" stroke="black" stroke-dasharray="30, 1000"
+          stroke-dashoffset="-10" stroke-width="20"/>
+    <Line end="232 440" id="line10" rotate="240" start="232 40" stroke="black" stroke-dasharray="30, 1000"
+          stroke-dashoffset="-10" stroke-width="20"/>
+    <Line end="232 440" id="line11" rotate="300" start="232 40" stroke="black" stroke-dasharray="30, 1000"
+          stroke-dashoffset="-10" stroke-width="20"/>
+    <Line end="232 440" id="line12" rotate="330" start="232 40" stroke="black" stroke-dasharray="30, 1000"
+          stroke-dashoffset="-10" stroke-width="20"/>
+    <Ellipse center="232 240" fill="#000000" id="ellipse5" radius="16 16"/>
+    <Line end="232 104" id="line13" start="232 240" stroke="black" stroke-linecap="round" stroke-width="20"/>
+    <Line end="152 288" id="line14" start="232 240" stroke="black" stroke-linecap="round" stroke-width="20"/>
+    <Ellipse center="232 240" id="ellipse6" radius="8 8"/>
+    <Line end="208 240" id="line16" start="184 240" stroke="red" stroke-width="20"/>
+    <Line end="376 240" id="line15" start="184 240" stroke="red" stroke-width="6"/>
+    <BezierPath fill="#00ff00" fill-rule="even-odd" id="bezier12"
+                path="M608,440 616,440 616,441 608,441 Z M608,443 616,443 616,445 608,445 Z M608,447 616,447 616,448 608,448 Z M609,440 611,440 611,448 609,448 Z M613,440 615,440 615,448 613,448 Z"
+                stroke="none"/>
+    <BezierPath fill="#00ff00" fill-rule="even-odd" id="bezier2"
+                path="M600,440 608,440 608,442 600,442 Z M600,444 608,444 608,446 600,446 Z M602,440 604,440 604,448 602,448 Z M606,440 608,440 608,448 606,448 Z"
+                stroke="none"/>
+    <BezierPath fill="#00ff00" fill-rule="even-odd" id="bezier1"
+                path="M592,440 600,440 600,441 592,441 Z M592,442 600,442 600,443 592,443 Z M592,444 600,444 600,445 592,445 Z M592,446 600,446 600,447 592,447 Z M593,440 594,440 594,448 593,448 Z M595,440 596,440 596,448 595,448 Z M597,440 598,440 598,448 597,448 Z M599,440 600,440 600,448 599,448 Z"
+                stroke="none"/>
+    <Rectangle bounds="568.0000000000002 440 23.999999999999773 8" fill="#ff0000" id="rectangle2" stroke="none"/>
+    <BezierPath fill="#0000ff" fill-rule="even-odd" id="bezier3"
+                path="M560,440 568,440 568,441 560,441 Z M560,443 568,443 568,445 560,445 Z M560,447 568,447 568,448 560,448 Z M561,440 563,440 563,448 561,448 Z M565,440 567,440 567,448 565,448 Z"
+                stroke="none"/>
+    <BezierPath fill="#0000ff" fill-rule="even-odd" id="bezier8"
+                path="M542,430 550,430 550,432 542,432 Z M542,434 550,434 550,436 542,436 Z M544,430 546,430 546,438 544,438 Z M548,430 550,430 550,438 548,438 Z"
+                stroke="none" translate="10 10"/>
+    <BezierPath fill="#0000ff" fill-rule="even-odd" id="bezier9"
+                path="M544,440 552,440 552,441 544,441 Z M544,442 552,442 552,443 544,443 Z M544,444 552,444 552,445 544,445 Z M544,446 552,446 552,447 544,447 Z M545,440 546,440 546,448 545,448 Z M547,440 548,440 548,448 547,448 Z M549,440 550,440 550,448 549,448 Z M551,440 552,440 552,448 551,448 Z"
+                stroke="none"/>
+    <BezierPath fill="#0000ff" fill-rule="even-odd" id="bezier10"
+                path="M584,440 592,440 592,441 584,441 Z M584,443 592,443 592,445 584,445 Z M584,447 592,447 592,448 584,448 Z M585,440 587,440 587,448 585,448 Z M589,440 591,440 591,448 589,448 Z"
+                stroke="none"/>
+    <BezierPath fill="#0000ff" fill-rule="even-odd" id="bezier11"
+                path="M566,430 574,430 574,432 566,432 Z M566,434 574,434 574,436 566,436 Z M568,430 570,430 570,438 568,438 Z M572,430 574,430 574,438 572,438 Z"
+                stroke="none" translate="10 10"/>
+    <BezierPath fill="#0000ff" fill-rule="even-odd" id="bezier13"
+                path="M568,440 576,440 576,441 568,441 Z M568,442 576,442 576,443 568,443 Z M568,444 576,444 576,445 568,445 Z M568,446 576,446 576,447 568,447 Z M569,440 570,440 570,448 569,448 Z M571,440 572,440 572,448 571,448 Z M573,440 574,440 574,448 573,448 Z M575,440 576,440 576,448 575,448 Z"
+                stroke="none"/>
+    <Rectangle bounds="632 440 8 8"
+               fill="linear-gradient(from 4 0 to 0 0, repeat, #ff0000 25%, #00ff00 25%, #00ff00 50%, #0000ff 50%, #0000ff 75%, #000000 75%)"
+               id="rectangle4" stroke="none"/>
+    <Rectangle bounds="624 440 8 8"
+               fill="linear-gradient(from 0 0 to 0 4, repeat, #ff0000 25%, #00ff00 25%, #00ff00 50%, #0000ff 50%, #0000ff 75%, #000000 75%)"
+               id="rectangle5" stroke="none"/>
+    <TextArea bounds="520 251 120 53" fill="none" font="8 Pixel Operator \38 " id="textarea6" lineSpacing="2"
+              stroke="none"
+              text="The Quick Brown Fox Jumps Over the Lazy Dog. THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG."
+              textFill="#000000"/>
+    <TextArea bounds="472 251 32 8" fill="none" font="8 Pixel Operator \38 " id="textarea1" lineSpacing="1"
+              stroke="none" text="red" textFill="#ff0000"/>
+    <TextArea bounds="472 262 40 8" fill="none" font="8 Pixel Operator \38 " id="textarea2" lineSpacing="1"
+              stroke="none" text="green" textFill="#008000"/>
+    <TextArea bounds="472 240 56 8" fill="none" font="8 Pixel Operator \38 " id="textarea4" lineSpacing="1"
+              stroke="none" text="Text" textFill="#ffffff"/>
+    <TextArea bounds="472 283 32 8" fill="none" font="8 Pixel Operator \38 " id="textarea8" lineSpacing="1"
+              stroke="none" text="gray" textFill="#7f7f7f"/>
+    <TextArea bounds="472 273 32 8" fill="none" font="8 Pixel Operator \38 " id="textarea9" lineSpacing="1"
+              stroke="none" text="blue" textFill="#0000ff"/>
+    <Rectangle bounds="472 294 40 43" fill="#7f7f7f" id="rectangle6" stroke="none"/>
+    <TextArea bounds="472 294 32 8" fill="none" font="8 Pixel Operator \38 " id="textarea3" lineSpacing="1"
+              stroke="none" text="red" textFill="#ff0000"/>
+    <TextArea bounds="472 304 40 8" fill="none" font="8 Pixel Operator \38 " id="textarea5" lineSpacing="1"
+              stroke="none" text="lime" textFill="#00ff00"/>
+    <TextArea bounds="472 326 40 8" fill="none" font="8 Pixel Operator \38 " id="textarea7" lineSpacing="1"
+              stroke="none" text="white" textFill="#ffffff"/>
+    <TextArea bounds="472 315 32 8" fill="none" font="8 Pixel Operator \38 " id="textarea10" lineSpacing="1"
+              stroke="none" text="blue" textFill="#0000ff"/>
+    <TextArea bounds="472 341 56 8" fill="none" font="8 Pixel Operator \38 " id="textarea11" lineSpacing="1"
+              stroke="none" text="colors" textFill="#ff0000"/>
+    <Rectangle bounds="616 440 24 8" fill="linear-gradient(from 0 0 to 0 4, repeat, #00000000 75%, #000000 75%)"
+               id="rectangle17" stroke="none"/>
+    <Rectangle bounds="624 440 8 8" fill="linear-gradient(from 0 0 to 4 0, repeat, #00000000 75%, #000000 75%)"
+               id="rectangle18" stroke="none"/>
+    <Rectangle bounds="472 0 168 120" fill="#999" id="rectangle13" stroke="none"/>
+    <Rectangle bounds="472 120 168 10" fill="#000000" id="rectangle14" stroke="none"/>
+    <TextArea bounds="472 120 72 8" fill="none" font="8 Pixel Operator \38 " id="textarea13" lineSpacing="1"
+              stroke="none" text="Photo" textFill="#ffffff"/>
+    <TextArea bounds="520 303 120 57" fill="none" font="13 Arial" id="textarea14" lineSpacing="2" padding="2 0"
+              stroke="none" text="the quick brown fox jumps over the lazy dog THE QUICK" textFill="#000000"/>
+    <Image bounds="519 306 120 56" id="image2" src="SubpixelAntialiasing.png"/>
+    <Rectangle bounds="472 360 168 10" fill="#000000" id="rectangle15" stroke="none"/>
+    <TextArea bounds="472 360 168 8" fill="none" font="8 Pixel Operator \38 " id="textarea12" lineSpacing="1"
+              stroke="none" text="Colors" textFill="#ffffff"/>
+  </Layer>
+</Drawing>

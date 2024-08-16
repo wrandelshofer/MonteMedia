@@ -6,6 +6,7 @@ package org.monte.media.quicktime;
 
 import org.monte.media.av.Format;
 import org.monte.media.io.ImageOutputStreamAdapter;
+import org.monte.media.io.SeekableByteArrayOutputStream;
 import org.monte.media.math.Rational;
 
 import javax.imageio.stream.FileImageOutputStream;
@@ -13,7 +14,6 @@ import javax.imageio.stream.ImageOutputStream;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -1886,7 +1886,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
             out = null;
 
             if (compressHeader) {
-                ByteArrayOutputStream buf = new ByteArrayOutputStream();
+                SeekableByteArrayOutputStream buf = new SeekableByteArrayOutputStream();
                 int maxIteration = 5;
                 long compressionHeadersSize = 40 + 8;
                 long headerSize = 0;
@@ -1935,7 +1935,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
                     daos.writeType("cmvd");
                     daos.writeUInt(originalMoovAtom.size());
 
-                    daos.write(buf.toByteArray());
+                    daos.write(buf.getBuffer(), 0, buf.size());
 
                     // 8 bytes "free" atom + free data
                     daos.writeUInt(freeSize + 8);

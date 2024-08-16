@@ -8,6 +8,7 @@ import org.monte.media.exception.AbortException;
 import org.monte.media.exception.ParseException;
 import org.monte.media.io.ByteArrayImageInputStream;
 import org.monte.media.io.ImageInputStreamAdapter;
+import org.monte.media.io.SeekableByteArrayOutputStream;
 import org.monte.media.jfif.JFIFInputStream;
 import org.monte.media.jfif.JFIFInputStream.Segment;
 import org.monte.media.math.Rational;
@@ -32,7 +33,6 @@ import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteOrder;
@@ -145,10 +145,10 @@ public class EXIFReader {
     private void readJFIF(ImageInputStream iin) throws IOException {
         root = new TIFFDirectory(null, null, -1);
 
-        ByteArrayOutputStream exifStream = null;
+        SeekableByteArrayOutputStream exifStream = null;
         ArrayList<FileSegment> exifSeg = null;
 
-        ByteArrayOutputStream mpStream = null;
+        SeekableByteArrayOutputStream mpStream = null;
         ArrayList<FileSegment> mpSeg = null;
 
         byte[] buf = new byte[512];
@@ -202,10 +202,10 @@ public class EXIFReader {
                 case JFIFInputStream.SOI_MARKER:
                     imageNode = new TIFFDirectory(ImageTagSet.getInstance(), null, imageCount++, 0, in.getStreamPosition(), new FileSegment(seg.offset, seg.length));
                     root.add(imageNode);
-                    exifStream = new ByteArrayOutputStream();
+                    exifStream = new SeekableByteArrayOutputStream();
                     exifSeg = new ArrayList<>();
 
-                    mpStream = new ByteArrayOutputStream();
+                    mpStream = new SeekableByteArrayOutputStream();
                     mpSeg = new ArrayList<>();
 
                     break;
@@ -252,13 +252,13 @@ public class EXIFReader {
                 case JFIFInputStream.SOS_MARKER:
                     // Extract the Exif data
                     if (exifStream.size() > 0) {
-                        TIFFInputStream tin = new TIFFInputStream(new ByteArrayImageInputStream(exifStream.toByteArray()));
+                        TIFFInputStream tin = new TIFFInputStream(new ByteArrayImageInputStream(exifStream.getBuffer(), 0, exifStream.size(), ByteOrder.BIG_ENDIAN));
                         readTIFFIFD(tin, imageNode, exifSeg);
                         exifStream.reset();
                     }
                     // Extract the MP data
                     if (mpStream.size() > 0) {
-                        TIFFInputStream tin = new TIFFInputStream(new ByteArrayImageInputStream(mpStream.toByteArray()));
+                        TIFFInputStream tin = new TIFFInputStream(new ByteArrayImageInputStream(mpStream.getBuffer(), 0, mpStream.size(), ByteOrder.BIG_ENDIAN));
                         readMPFIFD(tin, imageNode, null, mpSeg);
                         mpStream.reset();
                     }

@@ -18,6 +18,7 @@ import java.awt.image.ColorModel;
 public class VideoFormatKeys extends FormatKeys {
     // Standard video ENCODING strings for use with FormatKey.Encoding.
     public static final String ENCODING_BUFFERED_IMAGE = "image";
+    public static final String ENCODING_WRITABLE_IMAGE = "writableImage";
     /**
      * Cinepak format.
      */
@@ -94,6 +95,11 @@ public class VideoFormatKeys extends FormatKeys {
     public final static FormatKey<Integer> DepthKey = new FormatKey<>("dimZ", "depth", Integer.class);
 
     /**
+     * The affine transformation matrix of the video.
+     */
+    public final static FormatKey<AffineTransform> TransformKey = new FormatKey<>("transform", "transform", AffineTransform.class, false, false, AffineTransform.IDENTITY);
+
+    /**
      * Pixel format.
      */
     public enum PixelFormat {
@@ -130,6 +136,13 @@ public class VideoFormatKeys extends FormatKeys {
      * Encoding quality. Value between 0 and 1.
      */
     public final static FormatKey<Float> QualityKey = new FormatKey<>("quality", Float.class);
+    /**
+     * Progressive image encoding. Boolean value. Default is false.
+     * <p>
+     * Setting this to true reduces the file size of JPEG encoded images by about 10 percent.
+     * Unfortunately, the encoding time increases by factor 2 and the decoding time by factor 4.
+     */
+    public final static FormatKey<Boolean> ProgressiveImageEncodingKey = new FormatKey<>("progressiveImageEncodingMode", "progressiveMode", Boolean.class, false, false, false);
     /**
      * Color palette.
      */

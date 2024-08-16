@@ -39,7 +39,7 @@ import org.monte.media.eightsvx.LoopableAudioClip;
  * UBYTE    pad[4];       // For future use
  * </pre>
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class ANIMAudioCommand {
     /**

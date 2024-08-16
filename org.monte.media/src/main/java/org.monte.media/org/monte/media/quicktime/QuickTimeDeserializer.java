@@ -549,7 +549,7 @@ public class QuickTimeDeserializer {
                 String iso = new String(isochars);
 
                 // "und" means undetermined
-                m.mediaLanguage = "und".equals(iso) ? null : new Locale(iso);
+                m.mediaLanguage = "und".equals(iso) ? null : Locale.forLanguageTag(iso);
             } else {
                 m.mediaLanguage = null;
             }

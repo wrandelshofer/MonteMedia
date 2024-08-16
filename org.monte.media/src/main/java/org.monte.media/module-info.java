@@ -71,7 +71,6 @@ module org.monte.media {
     exports org.monte.media.avi;
     exports org.monte.media.avi.codec.audio;
     exports org.monte.media.avi.codec.video;
-    exports org.monte.media.concurrent;
     exports org.monte.media.color;
     exports org.monte.media.exception;
     exports org.monte.media.exif;

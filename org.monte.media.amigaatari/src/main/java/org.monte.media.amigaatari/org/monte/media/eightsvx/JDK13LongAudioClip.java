@@ -17,7 +17,7 @@ import javax.sound.sampled.SourceDataLine;
 /**
  * JDK13AudioClip.
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class JDK13LongAudioClip implements LoopableAudioClip, Runnable {
     /**

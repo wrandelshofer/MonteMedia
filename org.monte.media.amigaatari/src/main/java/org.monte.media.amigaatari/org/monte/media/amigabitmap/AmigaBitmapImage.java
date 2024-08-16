@@ -75,7 +75,7 @@ import java.awt.image.Raster;
  * to the current color model.
  * Supports indexed color model, direct color model, 6 and 8 bit HAM color model.
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class AmigaBitmapImage
         implements Cloneable {
@@ -805,7 +805,7 @@ public class AmigaBitmapImage
      * Obligation
      * -
      *
-     * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+     * @author Werner Randelshofer
      */
     private void indexPlanesToIndexPixels(int top, int left, int bottom, int right) {
 
@@ -2597,7 +2597,7 @@ public class AmigaBitmapImage
      * Obligation
      * -
      *
-     * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+     * @author Werner Randelshofer
      */
     private void ham6PlanesToDirectPixels(int top, int left, int bottom, int right) {
         /* Add one to bottom and right to facilitate computations. */

@@ -324,8 +324,6 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
      * stream to zero, so that all currently accumulated output in the
      * output stream is discarded. The output stream can be used again,
      * reusing the already allocated buffer space.
-     *
-     * @see java.io.ByteArrayInputStream#count
      */
     public void clear() {
         count = arrayOffset;

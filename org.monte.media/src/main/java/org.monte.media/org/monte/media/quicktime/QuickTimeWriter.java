@@ -14,7 +14,6 @@ import org.monte.media.math.Rational;
 
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -149,7 +148,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
  *
  * @author Werner Randelshofer
  */
-public class QuickTimeWriter implements MovieWriter {
+public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWriter {
 
     public final static Format QUICKTIME = new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_QUICKTIME);
     public final static Format VIDEO_RAW = new Format(
@@ -172,14 +171,13 @@ public class QuickTimeWriter implements MovieWriter {
             MimeTypeKey, MIME_QUICKTIME,
             EncodingKey, ENCODING_QUICKTIME_PNG, //
             CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_PNG);
-    private final QuickTimeOutputStream out;
     /**
      * Creates a new QuickTime writer.
      *
      * @param file the output file
      */
     public QuickTimeWriter(File file) throws IOException {
-        this(new QuickTimeOutputStream(file));
+        super(file);
     }
 
     /**
@@ -188,17 +186,10 @@ public class QuickTimeWriter implements MovieWriter {
      * @param out the output stream.
      */
     public QuickTimeWriter(ImageOutputStream out) throws IOException {
-        this(new QuickTimeOutputStream(out));
+        super(out);
     }
 
-    /**
-     * Creates a new QuickTime writer.
-     *
-     * @param out the output stream.
-     */
-    public QuickTimeWriter(QuickTimeOutputStream out) throws IOException {
-        this.out = out;
-    }
+
 
     @Override
     public Format getFileFormat() throws IOException {
@@ -207,7 +198,7 @@ public class QuickTimeWriter implements MovieWriter {
 
     @Override
     public Format getFormat(int track) {
-        return out.tracks.get(track).format;
+        return tracks.get(track).format;
     }
 
     /**
@@ -219,12 +210,12 @@ public class QuickTimeWriter implements MovieWriter {
     @Override
     public int addTrack(Format fmt) throws IOException {
         if (fmt.get(MediaTypeKey) == MediaType.VIDEO) {
-            int t = out.addVideoTrack(fmt.get(EncodingKey),
+            int t = addVideoTrack(fmt.get(EncodingKey),
                     fmt.get(CompressorNameKey, fmt.get(EncodingKey)),
                     Math.min(6000, fmt.get(FrameRateKey).getNumerator() * fmt.get(FrameRateKey).getDenominator()),
                     fmt.get(WidthKey), fmt.get(HeightKey), fmt.get(DepthKey),
                     (int) fmt.get(FrameRateKey).getDenominator());
-            out.setCompressionQuality(t, fmt.get(QualityKey, 1.0f));
+            setCompressionQuality(t, fmt.get(QualityKey, 1.0f));
             return t;
         } else if (fmt.get(MediaTypeKey) == MediaType.AUDIO) {
             // fill in unspecified values
@@ -243,7 +234,7 @@ public class QuickTimeWriter implements MovieWriter {
                 }
             }
 
-            return out.addAudioTrack(encoding,
+            return addAudioTrack(encoding,
                     fmt.get(SampleRateKey).longValue(),
                     fmt.get(SampleRateKey).doubleValue(),
                     channels,
@@ -276,8 +267,8 @@ public class QuickTimeWriter implements MovieWriter {
      *                                  than 1.
      */
     public int addVideoTrack(Format format, long timeScale, int width, int height) throws IOException {
-        int tr = out.addVideoTrack(format.get(EncodingKey), format.get(CompressorNameKey), timeScale, width, height, 24, 30);
-        out.setVideoColorTable(tr, format.get(PaletteKey));
+        int tr = addVideoTrack(format.get(EncodingKey), format.get(CompressorNameKey), timeScale, width, height, 24, 30);
+        setVideoColorTable(tr, format.get(PaletteKey));
         return tr;
     }
 
@@ -292,8 +283,8 @@ public class QuickTimeWriter implements MovieWriter {
      *                                  than 1.
      */
     public int addVideoTrack(Format format, int width, int height, int depth, int syncInterval) throws IOException {
-        int tr = out.addVideoTrack(format.get(EncodingKey), format.get(CompressorNameKey), format.get(FrameRateKey).getDenominator() * format.get(FrameRateKey).getNumerator(), width, height, depth, syncInterval);
-        out.setVideoColorTable(tr, format.get(PaletteKey));
+        int tr = addVideoTrack(format.get(EncodingKey), format.get(CompressorNameKey), format.get(FrameRateKey).getDenominator() * format.get(FrameRateKey).getNumerator(), width, height, depth, syncInterval);
+        setVideoColorTable(tr, format.get(PaletteKey));
         return tr;
     }
 
@@ -308,7 +299,7 @@ public class QuickTimeWriter implements MovieWriter {
      * @return Returns the track index.
      */
     public int addAudioTrack(javax.sound.sampled.AudioFormat format) throws IOException {
-        out.ensureStarted();
+        ensureStarted();
         String qtAudioFormat;
         double sampleRate = format.getSampleRate();
         long timeScale = (int) Math.floor(sampleRate);
@@ -361,14 +352,14 @@ public class QuickTimeWriter implements MovieWriter {
             }
         }
 
-        return out.addAudioTrack(qtAudioFormat, timeScale, sampleRate,
+        return addAudioTrack(qtAudioFormat, timeScale, sampleRate,
                 numberOfChannels, sampleSizeInBits,
                 isCompressed, frameDuration, frameSize, signed, byteOrder);
     }
 
     @Override
     public int getTrackCount() {
-        return out.tracks.size();
+        return tracks.size();
     }
 
     /**
@@ -376,7 +367,7 @@ public class QuickTimeWriter implements MovieWriter {
      */
     @Override
     public Rational getDuration(int track) {
-        AbstractQuickTimeStream.Track tr = out.tracks.get(track);
+        AbstractQuickTimeStream.Track tr = tracks.get(track);
         return new Rational(tr.mediaDuration, tr.mediaTimeScale);
     }
 
@@ -385,7 +376,7 @@ public class QuickTimeWriter implements MovieWriter {
     }
 
     private void createCodec(int track) {
-        AbstractQuickTimeStream.Track tr = out.tracks.get(track);
+        AbstractQuickTimeStream.Track tr = tracks.get(track);
         Format fmt = tr.format;
         tr.codec = createCodec(fmt);
         String enc = fmt.get(EncodingKey);
@@ -398,7 +389,7 @@ public class QuickTimeWriter implements MovieWriter {
 
                 if (null == tr.codec.setOutputFormat(
                         fmt.prepend(
-                                QualityKey, out.getCompressionQuality(track),
+                                QualityKey, getCompressionQuality(track),
                                 MimeTypeKey, MIME_QUICKTIME,
                                 DataClassKey, byte[].class))) {
                     throw new UnsupportedOperationException("Input format not supported:" + fmt);
@@ -423,14 +414,14 @@ public class QuickTimeWriter implements MovieWriter {
      * Returns the codec of the specified track.
      */
     public Codec getCodec(int track) {
-        return out.tracks.get(track).codec;
+        return tracks.get(track).codec;
     }
 
     /**
      * Sets the codec for the specified track.
      */
     public void setCodec(int track, Codec codec) {
-        out.tracks.get(track).codec = codec;
+        tracks.get(track).codec = codec;
     }
 
     /**
@@ -442,8 +433,8 @@ public class QuickTimeWriter implements MovieWriter {
      */
     @Override
     public void write(int track, Buffer buf) throws IOException {
-        out.ensureStarted();
-        AbstractQuickTimeStream.Track tr = out.tracks.get(track);
+        ensureStarted();
+        AbstractQuickTimeStream.Track tr = tracks.get(track);
 
         // Encode sample data
         {
@@ -485,15 +476,12 @@ public class QuickTimeWriter implements MovieWriter {
             tr.writeTime = tr.writeTime.add(sampleDuration);
             long sampleDurationInMediaTS = sampleDuration.getNumerator() * (tr.mediaTimeScale / sampleDuration.getDenominator());
 
-            out.writeSamples(track, buf.sampleCount, (byte[]) outBuf.data, outBuf.offset, outBuf.length,
+            writeSamples(track, buf.sampleCount, (byte[]) outBuf.data, outBuf.offset, outBuf.length,
                     sampleDurationInMediaTS / buf.sampleCount, outBuf.isFlag(KEYFRAME));
         }
     }
 
-    @Override
-    public void close() throws IOException {
-        out.close();
-    }
+
 
     /**
      * Encodes an image as a video frame and writes it into a video track.
@@ -508,7 +496,7 @@ public class QuickTimeWriter implements MovieWriter {
         if (duration <= 0) {
             throw new IllegalArgumentException("Duration must be greater 0.");
         }
-        AbstractQuickTimeStream.VideoTrack vt = (AbstractQuickTimeStream.VideoTrack) out.tracks.get(track); // throws index out of bounds exception if illegal track index
+        AbstractQuickTimeStream.VideoTrack vt = (AbstractQuickTimeStream.VideoTrack) tracks.get(track); // throws index out of bounds exception if illegal track index
         if (vt.mediaType != MediaType.VIDEO) {
             throw new IllegalArgumentException("Track " + track + " is not a video track");
         }
@@ -518,7 +506,7 @@ public class QuickTimeWriter implements MovieWriter {
         if (vt.codec == null) {
             throw new UnsupportedOperationException("No codec for this format: " + vt.format);
         }
-        out.ensureStarted();
+        ensureStarted();
 
         // Get the dimensions of the first image
         if (vt.width == -1) {
@@ -527,7 +515,7 @@ public class QuickTimeWriter implements MovieWriter {
         } else {
             // The dimension of the image must match the dimension of the video track
             if (vt.width != image.getWidth() || vt.height != image.getHeight()) {
-                throw new IllegalArgumentException("Dimensions of frame[" + out.tracks.get(track).getSampleCount()
+                throw new IllegalArgumentException("Dimensions of frame[" + tracks.get(track).getSampleCount()
                         + "] (width=" + image.getWidth() + ", height=" + image.getHeight()
                         + ") differs from video dimension (width="
                         + vt.width + ", height=" + vt.height + ") in track " + track + ".");
@@ -553,11 +541,11 @@ public class QuickTimeWriter implements MovieWriter {
 
             isSync = vt.outputBuffer.isFlag(KEYFRAME);
 
-            long offset = out.getRelativeStreamPosition();
-            OutputStream mdatOut = out.mdatAtom.getOutputStream();
+            long offset = getRelativeStreamPosition();
+            OutputStream mdatOut = mdatAtom.getOutputStream();
             mdatOut.write((byte[]) vt.outputBuffer.data, vt.outputBuffer.offset, vt.outputBuffer.length);
 
-            long length = out.getRelativeStreamPosition() - offset;
+            long length = getRelativeStreamPosition() - offset;
             vt.addSample(new AbstractQuickTimeStream.Sample(duration, offset, length), 1, isSync);
         }
     }
@@ -579,7 +567,7 @@ public class QuickTimeWriter implements MovieWriter {
      */
     @Deprecated
     public void write(int track, byte[] data, int off, int len, long duration, boolean isSync) throws IOException {
-        out.writeSamples(track, 1, data, off, len, duration, isSync);
+        writeSamples(track, 1, data, off, len, duration, isSync);
     }
 
     /**
@@ -603,9 +591,9 @@ public class QuickTimeWriter implements MovieWriter {
      */
     @Deprecated
     public void write(int track, int sampleCount, byte[] data, int off, int len, long sampleDuration, boolean isSync) throws IOException {
-        AbstractQuickTimeStream.Track tr = out.tracks.get(track);
+        AbstractQuickTimeStream.Track tr = tracks.get(track);
         if (tr.codec == null) {
-            out.writeSamples(track, sampleCount, data, off, len, sampleDuration, isSync);
+            writeSamples(track, sampleCount, data, off, len, sampleDuration, isSync);
         } else {
             if (tr.outputBuffer == null) {
                 tr.outputBuffer = new Buffer();
@@ -623,7 +611,7 @@ public class QuickTimeWriter implements MovieWriter {
             inb.setFlag(KEYFRAME, isSync);
             tr.codec.process(inb, outb);
             if (!outb.isFlag(DISCARD)) {
-                out.writeSample(track, (byte[]) outb.data, outb.offset, outb.length, outb.sampleCount, outb.isFlag(KEYFRAME));
+                writeSample(track, (byte[]) outb.data, outb.offset, outb.length, outb.sampleCount, outb.isFlag(KEYFRAME));
             }
         }
     }
@@ -635,180 +623,9 @@ public class QuickTimeWriter implements MovieWriter {
         return true;
     }
 
-    /**
-     * Returns true if the limit for media samples has been reached. If this
-     * limit is reached, no more samples should be added to the movie.
-     * <p>
-     * QuickTime files can be up to 64 TB long, but there are other values that
-     * may overflow before this size is reached. This method returns true when
-     * the files size exceeds 2^60 or when the media sampleDuration value of a
-     * track exceeds 2^61.
-     */
-    @Override
-    public boolean isDataLimitReached() {
-        return out.isDataLimitReached();
-    }
 
     @Override
     public boolean isEmpty(int track) {
-        return out.tracks.get(track).isEmpty();
-    }
-
-    /**
-     * Sets the color table for videos with indexed color models.
-     *
-     * @param track The track number.
-     * @param icm   IndexColorModel. Specify null to use the standard Macintosh
-     *              color table.
-     */
-    public void setVideoColorTable(int track, ColorModel icm) {
-        out.setVideoColorTable(track, icm);
-    }
-
-    /**
-     * Sets the time scale for this movie, that is, the number of time units
-     * that pass per second in its time coordinate system. <p> The default value
-     * is 600.
-     *
-     * @param timeScale
-     */
-    public void setMovieTimeScale(long timeScale) {
-        out.setMovieTimeScale(timeScale);
-    }
-
-
-    /**
-     * Finishes writing the contents of the QuickTime output stream without
-     * closing the underlying stream. Use this method when applying multiple
-     * filters in succession to the same output stream.
-     *
-     * @throws IllegalStateException if the dimension of the video track has
-     *                               not been specified or determined yet.
-     * @throws IOException           if an I/O exception has occurred
-     */
-    public void finish() throws IOException {
-        out.finish();
-    }
-
-
-    /**
-     * Sets the sync interval for the specified video track.
-     *
-     * @param track The track number.
-     * @param i     Interval between sync samples (keyframes). 0 = automatic. 1 =
-     *              write all samples as sync samples. n = sync every n-th sample.
-     */
-    public void setSyncInterval(int track, int i) {
-        out.setSyncInterval(track, i);
-    }
-
-    /**
-     * Writes an already encoded sample from a file into a track. <p> This
-     * method does not inspect the contents of the samples. The contents has to
-     * match the format and dimensions of the media in this track.
-     *
-     * @param track    The track index.
-     * @param file     The file which holds the encoded data sample.
-     * @param duration The duration of the sample in media time scale units.
-     * @param isSync   whether the sample is a sync sample (key frame).
-     * @throws IOException if writing the sample data failed.
-     */
-    public void writeSample(int track, File file, long duration, boolean isSync) throws IOException {
-        out.writeSample(track, file, duration, isSync);
-    }
-
-    /**
-     * Writes multiple sync samples from a byte array into a track. <p> This
-     * method does not inspect the contents of the samples. The contents has to
-     * match the format and dimensions of the media in this track.
-     *
-     * @param track          The track index.
-     * @param sampleCount    The number of samples.
-     * @param data           The encoded sample data.
-     * @param off            The start offset in the data.
-     * @param len            The number of bytes to write. Must be dividable by
-     *                       sampleCount.
-     * @param sampleDuration The duration of a sample. All samples must have the
-     *                       same duration.
-     * @throws IllegalArgumentException if the duration is less than 1.
-     * @throws IOException              if writing the sample data failed.
-     */
-    public void writeSamples(int track, int sampleCount, byte[] data, int off, int len, long sampleDuration) throws IOException {
-        out.writeSamples(track, sampleCount, data, off, len, sampleDuration);
-    }
-
-    /**
-     * Writes a version of the movie which is optimized for the web into the
-     * specified output file. <p> This method finishes the movie and then copies
-     * its content into the specified file. The web-optimized file starts with
-     * the movie header.
-     *
-     * @param outputFile     The output file
-     * @param compressHeader Whether the movie header shall be compressed.
-     */
-    public void toWebOptimizedMovie(File outputFile, boolean compressHeader) throws IOException {
-        out.toWebOptimizedMovie(outputFile, compressHeader);
-    }
-
-    /**
-     * Returns the time scale of the media in a track.
-     *
-     * @param track Track index.
-     * @return time scale
-     * @see #setMovieTimeScale(long)
-     */
-    public long getMediaTimeScale(int track) {
-        return out.getMediaTimeScale(track);
-    }
-
-    /**
-     * Sets the compression quality of a track. <p> A value of 0 stands for
-     * "high compression is important" a value of 1 for "high image quality is
-     * important". <p> Changing this value affects the encoding of video frames
-     * which are subsequently written into the track. Frames which have already
-     * been written are not changed. <p> This value has no effect on videos
-     * encoded with lossless encoders such as the PNG format. <p> The default
-     * value is 0.97.
-     *
-     * @param newValue
-     */
-    public void setCompressionQuality(int track, float newValue) {
-        out.setCompressionQuality(track, newValue);
-    }
-
-    /**
-     * Returns the time scale of the movie.
-     *
-     * @return time scale
-     * @see #setMovieTimeScale(long)
-     */
-    public long getMovieTimeScale() {
-        return out.getMovieTimeScale();
-    }
-
-    /**
-     * Returns the track duration in the movie's time scale. <p> If the track
-     * has an edit-list, the track duration is the sum of all edit durations.
-     * <p> If the track does not have an edit-list, then this method returns the
-     * media duration of the track in the movie's time scale.
-     *
-     * @param track Track index.
-     * @return track duration
-     */
-    public long getTrackDuration(int track) {
-        return out.getTrackDuration(track);
-    }
-
-
-    /**
-     * Sets the edit list for the specified track. <p> In the absence of an edit
-     * list, the presentation of the track starts immediately. An empty edit is
-     * used to offset the start time of a track. <p>
-     *
-     * @throws IllegalArgumentException If the edit list ends with an empty
-     *                                  edit.
-     */
-    public void setEditList(int track, AbstractQuickTimeStream.Edit[] editList) {
-        out.setEditList(track, editList);
+        return tracks.get(track).isEmpty();
     }
 }

@@ -23,7 +23,7 @@ import java.util.LinkedList;
  * This class is designed and tuned for use in applets. It is not recommended
  * to use this class in Java applications.
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 @SuppressWarnings("unchecked")
 public class JDK13AppletAudioClip implements LoopableAudioClip, Runnable {

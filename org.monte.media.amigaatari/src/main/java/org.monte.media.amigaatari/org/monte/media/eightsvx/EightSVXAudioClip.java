@@ -29,7 +29,7 @@ import java.io.OutputStream;
  * <br>Stereo sound is converted to mono. As far as I know there is now stereo
  * support built in JDK 1.1.
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class EightSVXAudioClip
         implements LoopableAudioClip {

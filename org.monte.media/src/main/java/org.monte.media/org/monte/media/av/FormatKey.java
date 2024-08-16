@@ -40,6 +40,11 @@ public class FormatKey<T> {
     private final boolean nullable;
 
     /**
+     * This value can be null even if the key does not allow null values!
+     */
+    private final T defaultValue;
+
+    /**
      * Creates a new instance with the specified attribute key, type token class,
      * default value null, and allowing null values.
      */
@@ -65,6 +70,20 @@ public class FormatKey<T> {
         this.clazz = clazz;
         this.comment = comment;
         this.nullable = nullable;
+        this.defaultValue = null;
+    }
+
+    /**
+     * Creates a new instance with the specified attribute key, type token class,
+     * default value null, and whether the key is just a comment.
+     */
+    public FormatKey(String key, String name, Class<T> clazz, boolean comment, boolean nullable, T defaultValue) {
+        this.key = key;
+        this.name = name;
+        this.clazz = clazz;
+        this.comment = comment;
+        this.nullable = nullable;
+        this.defaultValue = defaultValue;
     }
 
     /**
@@ -83,6 +102,16 @@ public class FormatKey<T> {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Gets the default value.
+     * This value can be null even if the key does not allow null values!
+     *
+     * @return the default value
+     */
+    public T getDefaultValue() {
+        return defaultValue;
     }
 
     /**

@@ -45,36 +45,36 @@ public class QuickTimeMeta extends AbstractMovie {
 
     private final static long serialVersionUID = 1L;
     public final static Locale[] LANGUAGE_CODES = {
-            new Locale("en"),//0 English
-            new Locale("fr"),//1 French
-            new Locale("de"),//2 German
-            new Locale("it"),//3 Italian
-            new Locale("nld"),//4 Dutch
-            new Locale("swe"),//5 Swedish
-            new Locale("spa"),//6 Spanish
-            new Locale("dan"),//7 Danish
-            new Locale("por"),//8 Portuguese
-            new Locale("nor"),//9 Norwegian
-            new Locale("heb"),//10 Hebrew
-            new Locale("ja"),//11 Japanese
-            new Locale("ara"),//12 Arabic
-            new Locale("fin"),//13 Finnish
-            new Locale("ell"),//14 Greek
-            new Locale("isl"),//15 Icelandic
-            new Locale("mlt"),//16 Maltese
-            new Locale("tur"),//17 Turkish
-            new Locale("hrv"),//18 Croatian
-            new Locale("zh"),//19 Traditional Chinese
-            new Locale("urd"),//20 Urdu
-            new Locale("hin"),//21 Hindi
-            new Locale("tha"),//22 Thai
-            new Locale("ko"),//23 Koeran
-            new Locale("lit"),//24 Lithuanian
-            new Locale("pol"),//25 Polish
-            new Locale("hun"),//26 Hungarian
-            new Locale("est"),//27 Estonian
-            new Locale("lav"),//28 LettishLatvian
-            new Locale("sme"),//29 SaamishLappish
+            Locale.forLanguageTag("en"),//0 English
+            Locale.forLanguageTag("fr"),//1 French
+            Locale.forLanguageTag("de"),//2 German
+            Locale.forLanguageTag("it"),//3 Italian
+            Locale.forLanguageTag("nld"),//4 Dutch
+            Locale.forLanguageTag("swe"),//5 Swedish
+            Locale.forLanguageTag("spa"),//6 Spanish
+            Locale.forLanguageTag("dan"),//7 Danish
+            Locale.forLanguageTag("por"),//8 Portuguese
+            Locale.forLanguageTag("nor"),//9 Norwegian
+            Locale.forLanguageTag("heb"),//10 Hebrew
+            Locale.forLanguageTag("ja"),//11 Japanese
+            Locale.forLanguageTag("ara"),//12 Arabic
+            Locale.forLanguageTag("fin"),//13 Finnish
+            Locale.forLanguageTag("ell"),//14 Greek
+            Locale.forLanguageTag("isl"),//15 Icelandic
+            Locale.forLanguageTag("mlt"),//16 Maltese
+            Locale.forLanguageTag("tur"),//17 Turkish
+            Locale.forLanguageTag("hrv"),//18 Croatian
+            Locale.forLanguageTag("zh"),//19 Traditional Chinese
+            Locale.forLanguageTag("urd"),//20 Urdu
+            Locale.forLanguageTag("hin"),//21 Hindi
+            Locale.forLanguageTag("tha"),//22 Thai
+            Locale.forLanguageTag("ko"),//23 Koeran
+            Locale.forLanguageTag("lit"),//24 Lithuanian
+            Locale.forLanguageTag("pol"),//25 Polish
+            Locale.forLanguageTag("hun"),//26 Hungarian
+            Locale.forLanguageTag("est"),//27 Estonian
+            Locale.forLanguageTag("lav"),//28 LettishLatvian
+            Locale.forLanguageTag("sme"),//29 SaamishLappish
             null,//30
             null,//31
             null,//32
@@ -97,38 +97,38 @@ public class QuickTimeMeta extends AbstractMovie {
             null,//49
             null,//50
             null,//51
-            new Locale("kat"),//52 Georgian
-            new Locale("ron"),//53 Moldavian
-            new Locale("kir"),//54 Kirghiz
-            new Locale("tgk"),//55 Tajiki
-            new Locale("tuk"),//56 Turkmen
-            new Locale("mon"),//57 Mongolian
-            new Locale("mon"),//58 MongolianCyr
-            new Locale("pus"),//59 Pashto
-            new Locale("kur"),//60 Kurdish
-            new Locale("kas"),//61 Kashmiri
-            new Locale("snd"),//62 Sindhi
-            new Locale("bod"),//63 Tibetan
-            new Locale("npi"),//64 Nepali
-            new Locale("san"),//65 Sanskrit
-            new Locale("mar"),//66 Marathi
-            new Locale("ben"),//67 Bengali
-            new Locale("asm"),//68 Assamese
-            new Locale("guj"),//69 Gujarati
-            new Locale("pan"),//70 Punjabi
-            new Locale("ory"),//71 Oriya
-            new Locale("mal"),//72 Malayalam
-            new Locale("kan"),//73 Kannada
-            new Locale("tam"),//74 Tamil
-            new Locale("tel"),//75 Telugu
-            new Locale("sin"),//76 Sinhalese
-            new Locale("mya"),//77 Burmese
-            new Locale("khm"),//78 Khmer
-            new Locale("lao"),//79 Lao
-            new Locale("vie"),//80 Vietnamese
-            new Locale("ind"),//81 Indonesian
-            new Locale("tgl"),//82 Tagalog
-            new Locale("mal"),//83 MalayRoman
+            Locale.forLanguageTag("kat"),//52 Georgian
+            Locale.forLanguageTag("ron"),//53 Moldavian
+            Locale.forLanguageTag("kir"),//54 Kirghiz
+            Locale.forLanguageTag("tgk"),//55 Tajiki
+            Locale.forLanguageTag("tuk"),//56 Turkmen
+            Locale.forLanguageTag("mon"),//57 Mongolian
+            Locale.forLanguageTag("mon"),//58 MongolianCyr
+            Locale.forLanguageTag("pus"),//59 Pashto
+            Locale.forLanguageTag("kur"),//60 Kurdish
+            Locale.forLanguageTag("kas"),//61 Kashmiri
+            Locale.forLanguageTag("snd"),//62 Sindhi
+            Locale.forLanguageTag("bod"),//63 Tibetan
+            Locale.forLanguageTag("npi"),//64 Nepali
+            Locale.forLanguageTag("san"),//65 Sanskrit
+            Locale.forLanguageTag("mar"),//66 Marathi
+            Locale.forLanguageTag("ben"),//67 Bengali
+            Locale.forLanguageTag("asm"),//68 Assamese
+            Locale.forLanguageTag("guj"),//69 Gujarati
+            Locale.forLanguageTag("pan"),//70 Punjabi
+            Locale.forLanguageTag("ory"),//71 Oriya
+            Locale.forLanguageTag("mal"),//72 Malayalam
+            Locale.forLanguageTag("kan"),//73 Kannada
+            Locale.forLanguageTag("tam"),//74 Tamil
+            Locale.forLanguageTag("tel"),//75 Telugu
+            Locale.forLanguageTag("sin"),//76 Sinhalese
+            Locale.forLanguageTag("mya"),//77 Burmese
+            Locale.forLanguageTag("khm"),//78 Khmer
+            Locale.forLanguageTag("lao"),//79 Lao
+            Locale.forLanguageTag("vie"),//80 Vietnamese
+            Locale.forLanguageTag("ind"),//81 Indonesian
+            Locale.forLanguageTag("tgl"),//82 Tagalog
+            Locale.forLanguageTag("mal"),//83 MalayRoman
     };
     public List<IndexColorModel> colorTables = new ArrayList<>();
     /**
@@ -1018,7 +1018,7 @@ public class QuickTimeMeta extends AbstractMovie {
                         trackSampleMap.computeIfAbsent(sampleTrackTime, k -> new ArrayList<>()).add(trackSample);
                         trackSamplesList.add(trackSample);
                     }
-                    TrackSample trackSample = new TrackSample(lastMediaSample, sampleTrackTime, duration, cutStart, mediaSampleDuration);
+                    TrackSample trackSample = new TrackSample(lastMediaSample, sampleTrackTime, trackSampleDuration, cutStart, mediaSampleDuration);
                     trackSampleMap.computeIfAbsent(sampleTrackTime, k -> new ArrayList<>()).add(trackSample);
                     trackSamplesList.add(trackSample);
 
@@ -1099,7 +1099,7 @@ public class QuickTimeMeta extends AbstractMovie {
                     // We can have samples with zero duration.
                     MediaSample sample = new MediaSample(duration, offset, length);
                     sample.timeStamp = time;
-                    sample.isKeyframe = m.syncSamples == null || m.syncSamples.contains((long) (sampleIndex + 1));
+                    sample.isKeyframe = m.syncSamples == null || m.syncSamples.contains((long) (sampleIndex));
                     m.mediaSamples.computeIfAbsent(time, k -> new ArrayList<>(1)).add(sample);
 
                     time += duration;

@@ -13,7 +13,7 @@ import org.monte.media.eightsvx.LoopableAudioClip;
  * An SEQAudioCommand handles an audio command that is associated to
  * a single frame of a SEQMovieTrack. This class is currently unused.
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class SEQAudioCommand {
     /**

@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<BorderPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+<BorderPane fx:id="rootPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
             xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.monte.demo.movieplayer.MainWindowController">
   <top>
@@ -37,7 +37,7 @@
     </MenuBar>
   </top>
   <bottom>
-    <HBox fx:id="statusBar" spacing="5.0" BorderPane.alignment="CENTER">
+    <HBox fx:id="statusBar" minWidth="10.0" spacing="5.0" BorderPane.alignment="CENTER">
       <children>
         <Label fx:id="leftStatusLabel" HBox.hgrow="NEVER"/>
         <Pane HBox.hgrow="ALWAYS"/>
@@ -49,6 +49,6 @@
     </HBox>
   </bottom>
   <center>
-    <VBox fx:id="centerPane" minHeight="100.0" minWidth="100.0" BorderPane.alignment="CENTER"/>
+    <VBox fx:id="centerPane" BorderPane.alignment="CENTER"/>
   </center>
 </BorderPane>

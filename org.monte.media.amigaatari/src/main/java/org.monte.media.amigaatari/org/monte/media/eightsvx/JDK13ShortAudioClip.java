@@ -16,7 +16,7 @@ import javax.sound.sampled.LineUnavailableException;
 /**
  * JDK13ShortAudioClip.
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class JDK13ShortAudioClip implements LoopableAudioClip {
     private Clip clip;

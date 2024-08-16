@@ -7,7 +7,7 @@ package org.monte.media.player;
 /**
  * Generic interface for Objects with state.
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public interface StateModel {
     /**

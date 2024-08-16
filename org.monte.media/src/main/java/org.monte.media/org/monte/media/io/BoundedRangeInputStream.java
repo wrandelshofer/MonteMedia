@@ -4,7 +4,7 @@
  */
 package org.monte.media.io;
 
-import javax.swing.*;
+import javax.swing.BoundedRangeModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
@@ -16,7 +16,7 @@ import java.io.InputStream;
  * This input stream implements the BoundedRangeModel and allows the observation
  * of the input reading process.
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland.
+ * @author Werner Randelshofer.
  */
 public class BoundedRangeInputStream
         extends FilterInputStream

@@ -41,7 +41,7 @@ import static java.lang.Math.max;
  * <a href="http://www.atari-forum.com/wiki/index.php/ST_Picture_Formats"
  * >http://www.atari-forum.com/wiki/index.php/ST_Picture_Formats</a>
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class SEQPlayer
         extends AbstractPlayer
@@ -195,7 +195,7 @@ public class SEQPlayer
         // ------------------------
         @Override
         public void mouseClicked(MouseEvent event) {
-            if (getState() != CLOSED && event.getModifiers() == InputEvent.BUTTON1_MASK) {
+            if (getState() != CLOSED && event.getModifiersEx() == InputEvent.BUTTON1_DOWN_MASK) {
                 if (getState() == STARTED && getTargetState() == STARTED && event.getClickCount() == 1) {
                     stop();
                 } else if (getState() != STARTED && getTargetState() != STARTED && event.getClickCount() == 2) {
@@ -253,7 +253,7 @@ public class SEQPlayer
                     }
                 } else {
                     // Render the video on the worker thread.
-                    dispatcher.dispatch(
+                    dispatcher.execute(
                             new Runnable() {
 
                                 @Override
@@ -527,7 +527,7 @@ public class SEQPlayer
         properties = new Hashtable<>();
         properties.put(
                 "aspect",
-                new Double((double) track.getXAspect() / (double) track.getYAspect()));
+                (double) track.getXAspect() / (double) track.getYAspect());
         Object comment = track.getProperty("comment");
         if (comment != null) {
             properties.put("comment", comment);

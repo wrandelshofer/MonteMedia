@@ -22,7 +22,7 @@
     <testSourceDirectory>${basedir}/src/test/java/org.monte.demo.aviwriter</testSourceDirectory>
     <resources>
       <resource>
-        <directory>${basedir}/src/main/java/org.monte.demo.aviwriter</directory>
+        <directory>${basedir}/src/main/resources/org.monte.demo.aviwriter</directory>
         <excludes>
           <exclude>**/*.java</exclude>
         </excludes>

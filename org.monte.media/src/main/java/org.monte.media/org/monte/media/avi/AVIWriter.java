@@ -16,7 +16,6 @@ import org.monte.media.riff.RIFFParser;
 
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
 import java.io.File;
 import java.io.IOException;
@@ -64,7 +63,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
  *
  * @author Werner Randelshofer
  */
-public class AVIWriter implements MovieWriter {
+public class AVIWriter extends AVIOutputStream implements MovieWriter {
 
     public final static Format AVI = new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_AVI);
     public final static Format VIDEO_RAW = new Format(
@@ -82,14 +81,13 @@ public class AVIWriter implements MovieWriter {
     public final static Format VIDEO_SCREEN_CAPTURE = new Format(
             MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
             EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_RAW);
-    private final AVIOutputStream out;
     /**
      * Creates a new AVI writer.
      *
      * @param file the output file
      */
     public AVIWriter(File file) throws IOException {
-        this(new AVIOutputStream(file));
+        super(file);
     }
 
     /**
@@ -98,17 +96,9 @@ public class AVIWriter implements MovieWriter {
      * @param out the output stream.
      */
     public AVIWriter(ImageOutputStream out) throws IOException {
-        this(new AVIOutputStream(out));
+        super(out);
     }
 
-    /**
-     * Creates a new AVI writer.
-     *
-     * @param out the output stream.
-     */
-    public AVIWriter(AVIOutputStream out) throws IOException {
-        this.out = out;
-    }
 
     @Override
     public Format getFileFormat() throws IOException {
@@ -117,7 +107,7 @@ public class AVIWriter implements MovieWriter {
 
     @Override
     public Format getFormat(int track) {
-        return out.tracks.get(track).format;
+        return tracks.get(track).format;
     }
 
     /**
@@ -125,8 +115,8 @@ public class AVIWriter implements MovieWriter {
      */
     @Override
     public Rational getDuration(int track) {
-        AVIOutputStream.Track tr = out.tracks.get(track);
-        long duration = out.getMediaDuration(track);
+        AVIOutputStream.Track tr = tracks.get(track);
+        long duration = getMediaDuration(track);
         return new Rational(duration * tr.scale, tr.rate);
     }
 
@@ -171,12 +161,12 @@ public class AVIWriter implements MovieWriter {
         if (!vf.containsKey(DepthKey)) {
             throw new IllegalArgumentException("DepthKey missing in " + vf);
         }
-        int tr = out.addVideoTrack(vf.get(EncodingKey),
+        int tr = addVideoTrack(vf.get(EncodingKey),
                 vf.get(FrameRateKey).getDenominator(), vf.get(FrameRateKey).getNumerator(),
                 vf.get(WidthKey), vf.get(HeightKey), vf.get(DepthKey),
                 vf.get(KeyFrameIntervalKey, vf.get(FrameRateKey).floor(1).intValue()));
-        out.setPalette(tr, vf.get(PaletteKey));
-        out.setCompressionQuality(tr, vf.get(QualityKey, 1.0f));
+        setPalette(tr, vf.get(PaletteKey));
+        setCompressionQuality(tr, vf.get(QualityKey, 1.0f));
         return tr;
     }
 
@@ -214,7 +204,7 @@ public class AVIWriter implements MovieWriter {
             waveFormatTag = RIFFParser.stringToID(format.get(EncodingKey)) & 0xffff;
         }
 
-        return out.addAudioTrack(waveFormatTag, //
+        return addAudioTrack(waveFormatTag, //
                 timeScale, sampleRate, //
                 numberOfChannels, sampleSizeInBits, //
                 isCompressed, //
@@ -225,19 +215,19 @@ public class AVIWriter implements MovieWriter {
      * Returns the codec of the specified track.
      */
     public Codec getCodec(int track) {
-        return out.tracks.get(track).codec;
+        return tracks.get(track).codec;
     }
 
     /**
      * Sets the codec for the specified track.
      */
     public void setCodec(int track, Codec codec) {
-        out.tracks.get(track).codec = codec;
+        tracks.get(track).codec = codec;
     }
 
     @Override
     public int getTrackCount() {
-        return out.tracks.size();
+        return tracks.size();
     }
 
     /**
@@ -250,9 +240,9 @@ public class AVIWriter implements MovieWriter {
      * @throws IOException if writing the sample data failed.
      */
     public void write(int track, BufferedImage image, long duration) throws IOException {
-        out.ensureStarted();
+        ensureStarted();
 
-        AbstractAVIStream.VideoTrack vt = (AbstractAVIStream.VideoTrack) out.tracks.get(track);
+        AbstractAVIStream.VideoTrack vt = (AbstractAVIStream.VideoTrack) tracks.get(track);
         if (vt.codec == null) {
             createCodec(track);
             if (vt.codec == null) {
@@ -290,12 +280,12 @@ public class AVIWriter implements MovieWriter {
      */
     @Override
     public void write(int track, Buffer buf) throws IOException {
-        out.ensureStarted();
+        ensureStarted();
         if (buf.flags.contains(DISCARD)) {
             return;
         }
 
-        AbstractAVIStream.Track tr = out.tracks.get(track);
+        AbstractAVIStream.Track tr = tracks.get(track);
 
         boolean isKeyframe = buf.flags.contains(KEYFRAME);
         if (buf.data instanceof BufferedImage) {
@@ -316,7 +306,7 @@ public class AVIWriter implements MovieWriter {
                 throw new IllegalArgumentException("Buffer.format must not be null");
             }
             if (buf.format.matchesWithout(tr.format, FrameRateKey) && buf.data instanceof byte[]) {
-                out.writeSamples(track, buf.sampleCount, (byte[]) buf.data, buf.offset, buf.length,
+                writeSamples(track, buf.sampleCount, (byte[]) buf.data, buf.offset, buf.length,
                         buf.isFlag(KEYFRAME) && !paletteChange);
                 return;
             }
@@ -341,20 +331,13 @@ public class AVIWriter implements MovieWriter {
             if (outBuf.isFlag(DISCARD)) {
                 return;
             }
-            out.writeSamples(track, outBuf.sampleCount, (byte[]) outBuf.data, outBuf.offset, outBuf.length,
+            writeSamples(track, outBuf.sampleCount, (byte[]) outBuf.data, outBuf.offset, outBuf.length,
                     isKeyframe && !paletteChange);
         }
     }
 
-    @Override
-    public void close() throws IOException {
-        out.close();
-    }
 
-    @Override
-    public boolean isDataLimitReached() {
-        return out.isDataLimitReached();
-    }
+
 
     private boolean writePalette(int track, BufferedImage image, boolean isKeyframe) throws IOException {
         if ((image.getColorModel() instanceof IndexColorModel)) {
@@ -364,9 +347,9 @@ public class AVIWriter implements MovieWriter {
     }
 
     private boolean writePalette(int track, IndexColorModel imgPalette, boolean isKeyframe) throws IOException {
-        out.ensureStarted();
+        ensureStarted();
 
-        AbstractAVIStream.VideoTrack vt = (AbstractAVIStream.VideoTrack) out.tracks.get(track);
+        AbstractAVIStream.VideoTrack vt = (AbstractAVIStream.VideoTrack) tracks.get(track);
         int imgDepth = vt.bitCount;
         ByteArrayImageOutputStream tmp = null;
         boolean paletteChange = false;
@@ -480,7 +463,7 @@ public class AVIWriter implements MovieWriter {
         }
         if (tmp != null) {
             tmp.close();
-            out.writePalette(track, tmp.toByteArray(), 0, (int) tmp.length(), isKeyframe);
+            writePalette(track, tmp.getBuffer(), 0, (int) tmp.length(), isKeyframe);
         }
 
         if (paletteChange) {
@@ -495,7 +478,7 @@ public class AVIWriter implements MovieWriter {
     }
 
     private void createCodec(int track) {
-        AbstractAVIStream.Track tr = out.tracks.get(track);
+        AbstractAVIStream.Track tr = tracks.get(track);
         Format fmt = tr.format;
         tr.codec = createCodec(fmt);
         if (tr.codec != null) {
@@ -505,7 +488,7 @@ public class AVIWriter implements MovieWriter {
                         DataClassKey, BufferedImage.class));
                 if (null == tr.codec.setOutputFormat(
                         fmt.prepend(FixedFrameRateKey, true,
-                                QualityKey, out.getCompressionQuality(track),
+                                QualityKey, getCompressionQuality(track),
                                 MimeTypeKey, MIME_AVI,
                                 DataClassKey, byte[].class))) {
                     throw new UnsupportedOperationException("Track " + tr + " codec does not support format " + fmt + ". codec=" + tr.codec);
@@ -514,7 +497,7 @@ public class AVIWriter implements MovieWriter {
                 tr.codec.setInputFormat(null);
                 if (null == tr.codec.setOutputFormat(
                         fmt.prepend(FixedFrameRateKey, true,
-                                QualityKey, out.getCompressionQuality(track),
+                                QualityKey, getCompressionQuality(track),
                                 MimeTypeKey, MIME_AVI,
                                 DataClassKey, byte[].class))) {
                     throw new UnsupportedOperationException("Track " + tr + " codec " + tr.codec + " does not support format. " + fmt);
@@ -529,10 +512,6 @@ public class AVIWriter implements MovieWriter {
 
     @Override
     public boolean isEmpty(int track) {
-        return out.tracks.get(track).samples.isEmpty();
-    }
-
-    public void setPalette(int track, ColorModel palette) {
-        out.setPalette(track, palette);
+        return tracks.get(track).samples.isEmpty();
     }
 }

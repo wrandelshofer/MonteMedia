@@ -6,17 +6,23 @@ package org.monte.media.swing.player;
 
 import org.monte.media.image.Images;
 
-import javax.swing.*;
+import javax.swing.BoundedRangeModel;
+import javax.swing.DefaultBoundedRangeModel;
+import javax.swing.JComponent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.MediaTracker;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 /**
  * MovieSliderAqua.
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class JPlayerSliderAqua extends JComponent
         implements ChangeListener, MouseListener, MouseMotionListener {

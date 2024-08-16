@@ -99,8 +99,6 @@ public class SeekableByteArrayOutputStream extends ByteArrayOutputStream {
      * stream to zero, so that all currently accumulated output in the
      * output stream is discarded. The output stream can be used again,
      * reusing the already allocated buffer space.
-     *
-     * @see java.io.ByteArrayInputStream#count
      */
     @Override
     public synchronized void reset() {
@@ -115,7 +113,7 @@ public class SeekableByteArrayOutputStream extends ByteArrayOutputStream {
      *
      * <p> An <code>IndexOutOfBoundsException</code> will be thrown if
      * <code>pos</code> is smaller than the flushed position (as
-     * returned by <code>getflushedPosition</code>).
+     * returned by <code>getFlushedPosition</code>).
      *
      * <p> It is legal to seek past the end of the file; an
      * <code>EOFException</code> will be thrown only if a read is

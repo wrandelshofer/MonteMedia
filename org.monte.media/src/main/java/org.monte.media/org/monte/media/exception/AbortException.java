@@ -8,7 +8,7 @@ package org.monte.media.exception;
  * This exception is thrown when the production of an image
  * has been aborted.
  *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
+ * @author Werner Randelshofer
  */
 public class AbortException extends Exception {
 
