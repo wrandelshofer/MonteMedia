@@ -6,6 +6,7 @@ package org.monte.media.avi;
 
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
+import org.monte.media.av.codec.video.AffineTransform;
 import org.monte.media.exception.AbortException;
 import org.monte.media.exception.ParseException;
 import org.monte.media.io.ByteArrayImageInputStream;
@@ -43,6 +44,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.FixedFrameRateKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.PaletteKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.PixelAspectRatioKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.TransformKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
 /**
@@ -617,7 +619,8 @@ public class AVIInputStream extends AbstractAVIStream {
                 DepthKey, tr.bitCount,
                 PixelAspectRatioKey, new Rational(1, 1),
                 FrameRateKey, new Rational(tr.rate, tr.scale),
-                FixedFrameRateKey, true);
+                FixedFrameRateKey, true,
+                TransformKey, AffineTransform.createReshapeTransform(0, 0, tr.width, tr.height, tr.frameLeft, tr.frameTop, tr.frameRight - tr.frameLeft, tr.frameBottom - tr.frameTop));
         if (tr.palette != null) {
             tr.format = tr.format.append(PaletteKey, tr.palette);
         }

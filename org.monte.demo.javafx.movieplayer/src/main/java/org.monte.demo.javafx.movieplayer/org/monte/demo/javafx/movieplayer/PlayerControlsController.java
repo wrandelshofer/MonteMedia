@@ -1,5 +1,5 @@
 /**
- * Sample Skeleton for 'Controls.fxml' Controller Class
+ * Sample Skeleton for 'PlayerControls.fxml' Controller Class
  */
 
 package org.monte.demo.javafx.movieplayer;
@@ -13,7 +13,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -21,7 +20,6 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 import org.monte.demo.javafx.movieplayer.model.MediaPlayerInterface;
@@ -33,7 +31,7 @@ import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class ControlsController {
+public class PlayerControlsController extends AnchorPane {
 
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -74,19 +72,31 @@ public class ControlsController {
 
 
     @FXML
-    void goBackward(ActionEvent event) {
+    void seekBackward(ActionEvent event) {
         MediaPlayerInterface p = getPlayer();
         if (p == null) return;
-
-        p.seek(p.getCurrentTime().subtract(
-                p.getStatus() == MediaPlayer.Status.PLAYING ? Duration.minutes(1) : Duration.seconds(1)));
+        Duration seekTime;
+        Duration currentTime = p.getCurrentTime();
+        if (p.getStatus() == MediaPlayer.Status.PLAYING) {
+            seekTime = currentTime.subtract(Duration.minutes(1));
+        } else {
+            seekTime = p.getFrameBefore(currentTime);
+        }
+        p.seek(seekTime);
     }
 
     @FXML
-    void goForward(ActionEvent event) {
+    void seekForward(ActionEvent event) {
         MediaPlayerInterface p = getPlayer();
         if (p == null) return;
-        p.seek(p.getCurrentTime().add(p.getStatus() == MediaPlayer.Status.PLAYING ? Duration.minutes(1) : Duration.seconds(1)));
+        Duration seekTime;
+        Duration currentTime = p.getCurrentTime();
+        if (p.getStatus() == MediaPlayer.Status.PLAYING) {
+            seekTime = currentTime.add(Duration.minutes(1));
+        } else {
+            seekTime = p.getFrameAfter(currentTime);
+        }
+        p.seek(seekTime);
     }
 
     public MediaPlayerInterface getPlayer() {
@@ -122,16 +132,16 @@ public class ControlsController {
     @FXML
         // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
-        assert backwardButton != null : "fx:id=\"backwardButton\" was not injected: check your FXML file 'Controls.fxml'.";
-        assert controllerPane != null : "fx:id=\"controllerPane\" was not injected: check your FXML file 'Controls.fxml'.";
-        assert durationLabel != null : "fx:id=\"durationLabel\" was not injected: check your FXML file 'Controls.fxml'.";
-        assert forwardButton != null : "fx:id=\"forwardButton\" was not injected: check your FXML file 'Controls.fxml'.";
-        assert muteButton != null : "fx:id=\"muteButton\" was not injected: check your FXML file 'Controls.fxml'.";
-        assert playButton != null : "fx:id=\"playButton\" was not injected: check your FXML file 'Controls.fxml'.";
-        assert rootPane != null : "fx:id=\"rootPane\" was not injected: check your FXML file 'Controls.fxml'.";
-        assert timeLabel != null : "fx:id=\"timeLabel\" was not injected: check your FXML file 'Controls.fxml'.";
-        assert timeSlider != null : "fx:id=\"timeSlider\" was not injected: check your FXML file 'Controls.fxml'.";
-        assert volumeSlider != null : "fx:id=\"volumeSlider\" was not injected: check your FXML file 'Controls.fxml'.";
+        assert backwardButton != null : "fx:id=\"backwardButton\" was not injected: check your FXML file 'PlayerControls.fxml'.";
+        assert controllerPane != null : "fx:id=\"controllerPane\" was not injected: check your FXML file 'PlayerControls.fxml'.";
+        assert durationLabel != null : "fx:id=\"durationLabel\" was not injected: check your FXML file 'PlayerControls.fxml'.";
+        assert forwardButton != null : "fx:id=\"forwardButton\" was not injected: check your FXML file 'PlayerControls.fxml'.";
+        assert muteButton != null : "fx:id=\"muteButton\" was not injected: check your FXML file 'PlayerControls.fxml'.";
+        assert playButton != null : "fx:id=\"playButton\" was not injected: check your FXML file 'PlayerControls.fxml'.";
+        assert rootPane != null : "fx:id=\"rootPane\" was not injected: check your FXML file 'PlayerControls.fxml'.";
+        assert timeLabel != null : "fx:id=\"timeLabel\" was not injected: check your FXML file 'PlayerControls.fxml'.";
+        assert timeSlider != null : "fx:id=\"timeSlider\" was not injected: check your FXML file 'PlayerControls.fxml'.";
+        assert volumeSlider != null : "fx:id=\"volumeSlider\" was not injected: check your FXML file 'PlayerControls.fxml'.";
 
         ControllerPaneMouseDraggedHandler dh = new ControllerPaneMouseDraggedHandler(this);
 
@@ -262,7 +272,7 @@ public class ControlsController {
     }
 
     private class ControllerPaneVisibleHandler {
-        private Timer timer = new Timer();
+        private Timer timer;
 
         private class ShowHideTask extends TimerTask {
             private final boolean show;
@@ -282,7 +292,11 @@ public class ControlsController {
             public void run() {
                 Platform.runLater(() -> {
                     if (!cancelled) {
-                        controllerPane.setVisible(show);
+                        if (show) {
+                            show();
+                        } else {
+                            controllerPane.setVisible(show);
+                        }
                     }
                 });
             }
@@ -290,12 +304,20 @@ public class ControlsController {
 
         private ShowHideTask currentTask;
 
-        public ControllerPaneVisibleHandler(ControlsController controlsController) {
+        public ControllerPaneVisibleHandler(PlayerControlsController controlsController) {
             rootPane.setOnMouseEntered(this::rootPaneEntered);
             rootPane.setOnMouseExited(this::rootPaneExited);
             controllerPane.setOnMouseEntered(this::controllerPaneEntered);
             rootPane.setOnMouseMoved(this::rootPaneMouseMoved);
             controllerPane.setOnMouseMoved(this::controllerPaneMouseMoved);
+
+            rootPane.sceneProperty().addListener((o, oldv, newv) -> {
+                if (timer != null) {
+                    timer.cancel();
+                    timer = null;
+                }
+            });
+
         }
 
         private void controllerPaneMouseMoved(MouseEvent mouseEvent) {
@@ -304,8 +326,18 @@ public class ControlsController {
 
         private void rootPaneMouseMoved(MouseEvent mouseEvent) {
             mouseEvent.consume();
-            controllerPane.setVisible(true);
+            show();
             schedule(false);
+        }
+
+        private void show() {
+            var b = controllerPane.getLayoutBounds();
+            double rw = rootPane.getWidth();
+            double rh = rootPane.getHeight();
+            if (b.getMinX() < 0 || b.getMinY() < 0 || b.getMaxX() > rh || b.getMaxY() > rw) {
+                controllerPane.relocate((rw - b.getWidth()) * 0.5, (rh - b.getHeight()) * 0.75);
+            }
+            controllerPane.setVisible(true);
         }
 
         private void cancelScheduled() {
@@ -317,7 +349,11 @@ public class ControlsController {
 
         private void schedule(boolean show) {
             cancelScheduled();
-            timer.schedule(currentTask = new ShowHideTask(show), 2000);
+            getOrCreateTimer().schedule(currentTask = new ShowHideTask(show), 2000);
+        }
+
+        private Timer getOrCreateTimer() {
+            return timer == null ? timer = new Timer(PlayerControlsController.this + "-timer") : timer;
         }
 
         private void controllerPaneEntered(MouseEvent mouseEvent) {
@@ -333,7 +369,7 @@ public class ControlsController {
         private void rootPaneEntered(MouseEvent mouseEvent) {
             mouseEvent.consume();
             cancelScheduled();
-            controllerPane.setVisible(true);
+            show();
         }
     }
 
@@ -341,7 +377,7 @@ public class ControlsController {
 
         private double prevMouseX, prevMouseY;
 
-        public ControllerPaneMouseDraggedHandler(ControlsController controlsController) {
+        public ControllerPaneMouseDraggedHandler(PlayerControlsController controlsController) {
             controllerPane.setOnMouseDragged(this::mouseDragged);
             controllerPane.setOnMousePressed(this::mousePressed);
 
@@ -359,19 +395,16 @@ public class ControlsController {
             double dx = sceneX - prevMouseX;
             double sceneY = event.getSceneY();
             double dy = sceneY - prevMouseY;
-            Parent parent = controllerPane.getParent();
             double width = controllerPane.getWidth();
             double height = controllerPane.getHeight();
-            double parentWidth, parentHeight;
-            if (parent instanceof Pane p) {
-                parentWidth = Math.max(p.getWidth(), width);
-                parentHeight = Math.max(p.getHeight(), height);
-            } else {
-                parentHeight = height;
-                parentWidth = width;
-            }
-            controllerPane.setLayoutX(Math.clamp(controllerPane.getLayoutX() + dx, 0, parentWidth - width));
-            controllerPane.setLayoutY(Math.clamp(controllerPane.getLayoutY() + dy, 0, parentHeight - height));
+            double parentWidth = rootPane.getWidth();
+            double parentHeight = rootPane.getHeight();
+
+            int minimumAmountVisible = 10;
+            double newX = Math.clamp(controllerPane.getLayoutX() + dx, 0 - width + minimumAmountVisible, parentWidth - minimumAmountVisible);
+            double newY = Math.clamp(controllerPane.getLayoutY() + dy, 0 - height + minimumAmountVisible, parentHeight - minimumAmountVisible);
+            AnchorPane.setRightAnchor(controllerPane, rootPane.getWidth() - width - newX);
+            AnchorPane.setBottomAnchor(controllerPane, rootPane.getHeight() - height - newY);
             prevMouseX = sceneX;
             prevMouseY = sceneY;
         }

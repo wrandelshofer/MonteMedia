@@ -11,6 +11,7 @@ import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.av.MovieReader;
 import org.monte.media.av.Registry;
+import org.monte.media.av.codec.video.VideoFormatKeys;
 import org.monte.media.math.Rational;
 import org.monte.media.util.ArrayUtil;
 
@@ -18,6 +19,8 @@ import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumSet;
 
 import static java.lang.Math.max;
@@ -56,7 +59,8 @@ public class AVIReader extends AVIInputStream implements MovieReader {
 
     @Override
     public Format getFileFormat() throws IOException {
-        return AVI;
+        ensureRealized();
+        return AVI.append(VideoFormatKeys.WidthKey, mainHeader.size.width, VideoFormatKeys.HeightKey, mainHeader.size.height);
     }
 
     @Override
@@ -297,27 +301,12 @@ public class AVIReader extends AVIInputStream implements MovieReader {
     @Override
     public long timeToSample(int track, Rational time) {
         AbstractAVIStream.Track tr = tracks.get(track);
-        // This only works, if all samples contain only one sample!
-        // FIXME - We foolishly assume that only audio tracks have more than one
-        // sample in a frame.
-        // FIXME - We foolishly assume that all samples have a sampleDuration != 0.
-        long index = time.getNumerator() * tr.rate / time.getDenominator() / tr.scale - tr.startTime;
-        if (tr.mediaType == AbstractAVIStream.AVIMediaType.AUDIO) {
-            int count = 0;
-            // FIXME This is very inefficient, perform binary search with sample.timestamp
-            // this will work for all media types!
-            for (int i = 0, n = tr.samples.size(); i < n; i++) {
-                long d = tr.samples.get(i).duration * tr.scale; // foolishly assume that sampleDuration = sample count
-                if (count + d > index) {
-                    index = i;
-                    break;
-                }
-                count += d;
-
-            }
-        }
-
-        return max(0, min(index, tr.samples.size()));
+        Sample key = new Sample(0, 0, 0, 0, false);
+        key.timeStamp = time.multiply(new Rational(tr.rate, tr.scale)).longValue();
+        int result = Collections.binarySearch(tr.samples, key, Comparator.comparingLong(a -> a.timeStamp));
+        if (result < 0) result = ~result;
+        result = Math.clamp(result, 0, tr.samples.size() - 1);
+        return result;
     }
 
     @Override
@@ -330,6 +319,21 @@ public class AVIReader extends AVIInputStream implements MovieReader {
             time += sample.duration * tr.scale;
         }
         return new Rational(time, tr.rate);
+    }
+
+    @Override
+    public Rational getDuration(int track, long sampleIndex) throws IOException {
+        ensureRealized();
+        AbstractAVIStream.Track tr = tracks.get(track);
+        AbstractAVIStream.Sample sample = tr.samples.get((int) max(0, min(tr.samples.size() - 1, sampleIndex)));
+        Rational duration;
+        if (sampleIndex >= tr.samples.size()) {
+            duration = Rational.ZERO;
+        } else {
+            duration = new Rational(sample.duration * tr.scale, tr.rate);
+
+        }
+        return duration;
     }
 
     @Override

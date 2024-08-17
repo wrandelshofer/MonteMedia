@@ -329,8 +329,6 @@ public abstract class AbstractAVIStream {
 
         /**
          * The media format.
-         * <p>
-         * FIXME - AbstractAVIStream should have no dependencies to Format.
          */
         public Format format;
         // Common metadata

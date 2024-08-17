@@ -27,9 +27,13 @@ public class Main extends Application {
         MainWindowController controller = loader.getController();
 
 
-        stage.titleProperty().bind(controller.fileProperty().map(f ->
-                labels.getString("application.name") + (f == null ? "" : ": " + f.getName())
-        ));
+        controller.fileProperty().addListener((o, oldv, f) ->
+                stage.setTitle((f == null ? labels.getString("file.noFile") : f.getName()))
+        );
+        stage.setOnHidden(event -> controller.close(null));
+
+
+        stage.setTitle(labels.getString("file.noFile"));
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("controls.css").toString());
         stage.setScene(scene);

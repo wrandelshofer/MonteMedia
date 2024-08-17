@@ -31,6 +31,7 @@ public class MonteMediaPlayer extends AbstractMediaPlayer {
     @Override
     public void dispose() {
         engine.close();
+        media.dispose();
     }
 
     @Override
@@ -51,6 +52,16 @@ public class MonteMediaPlayer extends AbstractMediaPlayer {
     @Override
     public void stop() {
         engine.stop();
+    }
+
+    @Override
+    public Duration getFrameAfter(Duration timestamp) {
+        return Duration.seconds(engine.getFrameAfter(Rational.valueOf(timestamp.toSeconds())).doubleValue());
+    }
+
+    @Override
+    public Duration getFrameBefore(Duration timestamp) {
+        return Duration.seconds(engine.getFrameBefore(Rational.valueOf(timestamp.toSeconds())).doubleValue());
     }
 
     /**

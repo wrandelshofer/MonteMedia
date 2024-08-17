@@ -115,6 +115,12 @@ public class Rational extends Number implements Comparable<Rational> {
         this(r.num, r.den);
     }
 
+    public static Rational clamp(Rational v, Rational min, Rational max) {
+        if (v.compareTo(min) < 0) return min;
+        if (v.compareTo(max) > 0) return max;
+        return v;
+    }
+
     public long getNumerator() {
         return num;
     }

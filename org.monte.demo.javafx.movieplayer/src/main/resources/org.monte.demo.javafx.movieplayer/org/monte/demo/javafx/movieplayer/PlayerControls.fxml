@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -10,11 +9,13 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
-<AnchorPane fx:id="rootPane" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/22"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.monte.demo.javafx.movieplayer.ControlsController">
+<fx:root fx:id="rootPane" minHeight="10.0" minWidth="10.0" prefHeight="480.0" prefWidth="640.0" type="AnchorPane"
+         xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1"
+         fx:controller="org.monte.demo.javafx.movieplayer.PlayerControlsController">
   <children>
     <GridPane fx:id="controllerPane" hgap="4.0" layoutX="80.0" layoutY="190.0" maxHeight="-Infinity"
-              maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="controls-panel" vgap="4.0">
+              maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="controls-panel" vgap="4.0"
+              AnchorPane.bottomAnchor="60.0" AnchorPane.rightAnchor="60.0">
       <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0"/>
@@ -31,13 +32,13 @@
       <children>
         <Slider fx:id="volumeSlider" disable="true" max="1.0" GridPane.columnIndex="1"/>
         <Button fx:id="backwardButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-                minWidth="-Infinity" mnemonicParsing="false" onAction="#goBackward" prefHeight="24.0" prefWidth="24.0"
+                minWidth="-Infinity" mnemonicParsing="false" onAction="#seekBackward" prefHeight="24.0" prefWidth="24.0"
                 styleClass="backward-button" GridPane.columnIndex="2" GridPane.halignment="RIGHT"/>
         <ToggleButton fx:id="playButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
                       minWidth="-Infinity" mnemonicParsing="false" onAction="#togglePlayPause" prefHeight="32.0"
                       prefWidth="32.0" styleClass="play-button" GridPane.columnIndex="3" GridPane.halignment="CENTER"/>
         <Button fx:id="forwardButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-                minWidth="-Infinity" mnemonicParsing="false" onAction="#goForward" prefHeight="24.0" prefWidth="24.0"
+                minWidth="-Infinity" mnemonicParsing="false" onAction="#seekForward" prefHeight="24.0" prefWidth="24.0"
                 styleClass="forward-button" GridPane.columnIndex="4"/>
         <Label fx:id="durationLabel" styleClass="duration-label" text="00:00.0000" GridPane.columnIndex="6"
                GridPane.rowIndex="1"/>
@@ -53,4 +54,4 @@
       </padding>
     </GridPane>
   </children>
-</AnchorPane>
+</fx:root>

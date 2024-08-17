@@ -306,5 +306,7 @@ public interface MediaPlayerInterface {
 
     void stop();
 
+    Duration getFrameAfter(Duration timestamp);
 
+    Duration getFrameBefore(Duration timestamp);
 }

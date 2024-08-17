@@ -327,4 +327,19 @@ public abstract class AbstractPCMAudioCodec extends AbstractAudioCodec {
             // end of data reached
         }
     }
+
+    @Override
+    public Format setOutputFormat(Format f) {
+        Format out = super.setOutputFormat(f);
+        if (inputFormat != null) {
+            out = out.prepend(SampleRateKey, inputFormat.get(SampleRateKey),
+                    ChannelsKey, inputFormat.get(ChannelsKey));
+            out = out.append(ByteOrderKey, inputFormat.get(ByteOrderKey),
+                    SampleSizeInBitsKey, inputFormat.get(SampleSizeInBitsKey),
+                    FrameSizeKey, inputFormat.get(FrameSizeKey),
+                    SignedKey, inputFormat.get(SignedKey));
+        }
+        outputFormat = out;
+        return out;
+    }
 }

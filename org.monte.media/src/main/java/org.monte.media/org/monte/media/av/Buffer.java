@@ -58,11 +58,11 @@ public class Buffer {
      * Duration of a sample in seconds. Multiply this with {@code sampleCount}
      * to get the buffer duration.
      */
-    public Rational sampleDuration;
+    public Rational sampleDuration = Rational.ZERO;
     /**
      * The time stamp of this buffer in seconds.
      */
-    public Rational timeStamp;
+    public Rational timeStamp = Rational.ZERO;
     /**
      * The format of the data in this buffer.
      */
@@ -124,6 +124,14 @@ public class Buffer {
             return Codec.CODEC_FAILED;
         }
         return Codec.CODEC_OK;
+    }
+
+    public Rational getBufferDuration() {
+        return sampleDuration.multiply(sampleCount);
+    }
+
+    public Rational getBufferEndTimestamp() {
+        return timeStamp.add(getBufferDuration());
     }
 
     private Object copy(Object from, Object into) throws UnsupportedOperationException {

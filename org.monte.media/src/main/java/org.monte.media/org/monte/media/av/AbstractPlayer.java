@@ -7,6 +7,7 @@ package org.monte.media.av;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -19,7 +20,12 @@ public abstract class AbstractPlayer implements Player {
     /**
      * The dispatcher.
      */
-    protected ExecutorService dispatcher = Executors.newSingleThreadExecutor();
+    protected ExecutorService dispatcher = Executors.newSingleThreadExecutor(new ThreadFactory() {
+        @Override
+        public Thread newThread(Runnable r) {
+            return new Thread(r, AbstractPlayer.this + "-worker");
+        }
+    });
     /**
      * Current state of the player.
      * Note: Only method run() may change the value of
@@ -49,12 +55,9 @@ public abstract class AbstractPlayer implements Player {
     @Override
     public void prefetch() {
         switch (getState()) {
-            case CLOSED:
-                throw new IllegalStateException("Prefetch closed player.");
-                //  break; not reached
-            case STARTED:
-                throw new IllegalStateException("Prefetch started player.");
-                //  break; not reached
+            case CLOSED, STARTED -> {
+                return;
+            }
         }
         setTargetState(PREFETCHED);
     }
@@ -106,6 +109,7 @@ public abstract class AbstractPlayer implements Player {
     @Override
     public void close() {
         setTargetState(CLOSED);
+        dispatcher.shutdown();
     }
 
     @Override

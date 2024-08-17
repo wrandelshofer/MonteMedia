@@ -84,6 +84,13 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
     }
 
     @Override
+    public Rational getDuration(int track, long sample) throws IOException {
+        ensureRealized();
+        QuickTimeMeta.Track tr = meta.tracks.get(track);
+        return new Rational(tr.trackSamplesList.get((int) sample).duration, meta.timeScale);
+    }
+
+    @Override
     public Format getFileFormat() throws IOException {
         return QUICKTIME;
     }

@@ -52,6 +52,11 @@ public interface MovieReader extends AutoCloseable {
     Rational sampleToTime(int track, long sample) throws IOException;
 
     /**
+     * Returns the duration of the specified sample number.
+     */
+    Rational getDuration(int track, long sample) throws IOException;
+
+    /**
      * Returns the file format.
      */
     Format getFileFormat() throws IOException;

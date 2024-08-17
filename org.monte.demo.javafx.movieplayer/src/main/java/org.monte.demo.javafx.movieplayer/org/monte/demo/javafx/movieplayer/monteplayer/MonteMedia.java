@@ -5,16 +5,14 @@
 
 package org.monte.demo.javafx.movieplayer.monteplayer;
 
-import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.property.ReadOnlyProperty;
-import javafx.scene.image.WritableImage;
 import javafx.util.Duration;
 import org.monte.demo.javafx.movieplayer.model.AbstractMedia;
+import org.monte.media.av.Format;
 
 import java.io.File;
 
 public class MonteMedia extends AbstractMedia {
-    protected final ReadOnlyObjectWrapper<WritableImage> videoImage = new ReadOnlyObjectWrapper<>();
+    private Format format;
 
     public MonteMedia(String source) {
         super(source);
@@ -22,6 +20,14 @@ public class MonteMedia extends AbstractMedia {
 
     public MonteMedia(File source) {
         super(source.toURI().toString());
+    }
+
+    public void dispose() {
+        for (var tr : tracks) {
+            if (tr instanceof MonteTrackInterface mtr) {
+                mtr.dispose();
+            }
+        }
     }
 
     /**
@@ -42,24 +48,16 @@ public class MonteMedia extends AbstractMedia {
         duration.set(newValue);
     }
 
+    public void setFormat(Format fileFormat) {
+        this.format = fileFormat;
+    }
+
     void setWidth(int newValue) {
         width.set(newValue);
     }
 
     void setHeight(int newValue) {
         height.set(newValue);
-    }
-
-    public WritableImage getVideoImage() {
-        return videoImage.get();
-    }
-
-    public ReadOnlyProperty<WritableImage> videoImageProperty() {
-        return videoImage.getReadOnlyProperty();
-    }
-
-    void setVideoImage(WritableImage newValue) {
-        videoImage.set(newValue);
     }
 
 }

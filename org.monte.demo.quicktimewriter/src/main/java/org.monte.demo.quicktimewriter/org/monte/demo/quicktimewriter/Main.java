@@ -18,7 +18,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
-import java.awt.geom.Line2D;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.File;
@@ -142,18 +142,16 @@ public class Main {
         g.drawString("Frame " + (frameIndex + 1) + " of " + frameCount, 473, 24);
     }
 
-    private static void drawClock(Graphics2D g, int cx, int cy, int radius, double seconds) {
+    private static void drawClock(Graphics2D g, int cx, int cy, int radius, double timeInSeconds) {
         g.setPaint(Color.WHITE);
         g.fillOval(cx - radius, cy - radius, radius * 2, radius * 2);
 
-
-        double minutes = seconds / 60.0;
-        double hours = minutes / 60.0;
-        drawClockHand(g, cx, cy, -10, radius / 2, new BasicStroke(20, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL), Color.BLACK, (hours) * (Math.PI * 2.0 / 12.0));
-        drawClockHand(g, cx, cy, -10, radius - 20, new BasicStroke(20, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL), new Color(0x1a1a1a), (minutes) * (Math.PI * 2.0 / 60.0));
-        drawClockHand(g, cx, cy, -64, radius - 1, new BasicStroke(6, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL), Color.RED, (seconds) * (Math.PI * 2.0 / +60.0));
-        drawClockHand(g, cx, cy, -64, radius - 1, new BasicStroke(20, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL, 4f, new float[]{20f, radius * 2}, 0f), Color.RED, (seconds) * (Math.PI * 2.0 / +60.0));
-
+        double timeInMinutes = timeInSeconds / 60.0;
+        double timeInHours = timeInMinutes / 60.0;
+        drawClockHand(g, cx, cy, -10, radius / 2, new BasicStroke(20, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL), Color.BLACK, (timeInHours) * (Math.PI * 2.0 / 12.0));
+        drawClockHand(g, cx, cy, -10, radius - 20, new BasicStroke(20, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL), new Color(0x1a1a1a), (timeInMinutes) * (Math.PI * 2.0 / 60.0));
+        drawClockHand(g, cx, cy, -64, radius - 1, new BasicStroke(6, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL), Color.RED, (timeInSeconds) * (Math.PI * 2.0 / +60.0));
+        drawClockHand(g, cx, cy, -64, -24, new BasicStroke(20, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL), Color.RED, (timeInSeconds) * (Math.PI * 2.0 / +60.0));
         // Draw plug
         int plugRadius = 12;
         g.setPaint(Color.WHITE);
@@ -163,13 +161,15 @@ public class Main {
         g.drawOval(cx - plugRadius, cy - plugRadius, plugRadius * 2, plugRadius * 2);
     }
 
-    private static void drawClockHand(Graphics2D g, int cx, int cy, int radius1, int radius2, Stroke stroke, Color color, double angle) {
-        angle = angle % (Math.PI * 2);
-        double sin = Math.sin(angle);
-        double cos = Math.cos(angle);
-        g.setPaint(color);
+    private static void drawClockHand(Graphics2D g, int cx, int cy, int radius1, int radius2, Stroke stroke, Color color, double theta) {
+        AffineTransform tx = new AffineTransform();
+        tx.setToRotation(theta % (Math.PI * 2), cx, cy);
+        g.setTransform(tx);
+        g.setColor(color);
         g.setStroke(stroke);
-        g.draw(new Line2D.Double(cx + radius1 * sin, cy - radius1 * cos, cx + radius2 * sin, cy - radius2 * cos));
+        g.drawLine(cx, cy - radius1, cx, cy - radius2);
+        tx.setToIdentity();
+        g.setTransform(tx);
     }
 
 

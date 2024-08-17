@@ -77,6 +77,7 @@ public class ReadImagesFromAMovieMain {
      */
     private void createFrame() {
         frame = new JFrame("please drop a file in this window");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel panel = new JPanel(new BorderLayout());
         imageLabel = new JLabel();
         slider = new JSlider();
