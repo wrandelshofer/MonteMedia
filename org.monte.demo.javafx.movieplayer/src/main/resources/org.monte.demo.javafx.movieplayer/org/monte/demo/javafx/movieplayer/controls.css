@@ -26,7 +26,7 @@
 .time-label,
 .duration-label {
     -fx-text-fill: white;
-    -fx-effect:  dropshadow(one-pass-box , black , 3 , 3 , 0 , 0 );
+   /* -fx-effect:  dropshadow(one-pass-box , black , 3 , 3 , 0 , 0 );*/
     -fx-font-family: Monospaced;
     -fx-font-weight: bold;
 }
