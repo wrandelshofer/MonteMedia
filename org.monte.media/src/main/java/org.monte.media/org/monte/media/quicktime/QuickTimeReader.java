@@ -92,7 +92,8 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
 
     @Override
     public Format getFileFormat() throws IOException {
-        return QUICKTIME;
+        ensureRealized();
+        return meta.getFileFormat();
     }
 
     @Override

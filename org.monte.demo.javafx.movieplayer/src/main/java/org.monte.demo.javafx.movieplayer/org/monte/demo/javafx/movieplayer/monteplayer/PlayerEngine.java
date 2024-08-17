@@ -114,6 +114,7 @@ class PlayerEngine extends AbstractPlayer {
         reader = Registry.getInstance().getReader(new File(new URI(media.getSource())));
         List<TrackInterface> tracks = new ArrayList<>();
         int mediaWidth = 0, mediaHeight = 0;
+        int trackWidth = 0, trackHeight = 0;
         Format fileFormat = reader.getFileFormat();
         for (int i = 0, n = reader.getTrackCount(); i < n; i++) {
             mediaWidth = (fileFormat.get(VideoFormatKeys.WidthKey, 0));
@@ -125,6 +126,8 @@ class PlayerEngine extends AbstractPlayer {
             tracks.add(switch (format.get(MediaTypeKey)) {
                 case FormatKeys.MediaType.VIDEO -> {
                     realizeVideoTrack(i, metadata, format, trackFormat);
+                    trackWidth = Math.max(trackWidth, trackFormat.get(VideoFormatKeys.WidthKey));
+                    trackHeight = Math.max(trackHeight, trackFormat.get(VideoFormatKeys.HeightKey));
                     yield vTrack;
                 }
                 case FormatKeys.MediaType.AUDIO -> {
@@ -135,8 +138,8 @@ class PlayerEngine extends AbstractPlayer {
                 default -> new MonteUnsupportedTrack(Locale.ENGLISH, i, i + "", metadata);
             });
         }
-        int finalWidth = mediaWidth;
-        int finalHeight = mediaHeight;
+        int finalWidth = mediaWidth == 0 ? trackWidth : mediaWidth;
+        int finalHeight = mediaHeight == 0 ? trackHeight : mediaHeight;
         runAndWait(() -> {
             media.setFormat(fileFormat);
             media.getTracks().addAll(tracks);
