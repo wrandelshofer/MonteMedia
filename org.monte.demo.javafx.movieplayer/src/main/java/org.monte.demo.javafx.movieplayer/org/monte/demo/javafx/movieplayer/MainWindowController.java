@@ -87,6 +87,22 @@ public class MainWindowController {
         }
     }
 
+    @FXML
+    void play(ActionEvent event) {
+        MediaPlayerInterface player = getPlayer();
+        if (player != null) {
+            player.play();
+        }
+    }
+
+    @FXML
+    void pause(ActionEvent event) {
+        MediaPlayerInterface player = getPlayer();
+        if (player != null) {
+            player.pause();
+        }
+    }
+
     private Stage getStage() {
         Scene scene = rootPane.getScene();
         return scene == null ? null : (Stage) scene.getWindow();

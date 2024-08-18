@@ -7,8 +7,8 @@
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.StackPane?>
-<BorderPane fx:id="rootPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-            xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1"
+<BorderPane fx:id="rootPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="120.0"
+            minWidth="240.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.monte.demo.javafx.movieplayer.MainWindowController">
   <top>
     <MenuBar useSystemMenuBar="true" BorderPane.alignment="CENTER">
@@ -25,6 +25,12 @@
                 <KeyCodeCombination alt="UP" code="W" control="UP" meta="DOWN" shift="UP" shortcut="UP"/>
               </accelerator>
             </MenuItem>
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="%play.menu">
+          <items>
+            <MenuItem mnemonicParsing="false" onAction="#play" text="%play.menuItem"/>
+            <MenuItem mnemonicParsing="false" onAction="#pause" text="%pause.menuItem"/>
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="%view.menu">

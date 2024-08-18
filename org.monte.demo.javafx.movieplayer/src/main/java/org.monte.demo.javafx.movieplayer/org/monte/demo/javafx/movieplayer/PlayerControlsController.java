@@ -69,8 +69,6 @@ public class PlayerControlsController extends AnchorPane {
     @FXML // fx:id="timeSlider"
     private Slider timeSlider; // Value injected by FXMLLoader
 
-    @FXML // fx:id="volumeSlider"
-    private Slider volumeSlider; // Value injected by FXMLLoader
     private final ObjectProperty<MediaPlayerInterface> player = new SimpleObjectProperty<>();
 
 
@@ -143,16 +141,13 @@ public class PlayerControlsController extends AnchorPane {
         assert rootPane != null : "fx:id=\"rootPane\" was not injected: check your FXML file 'PlayerControls.fxml'.";
         assert timeLabel != null : "fx:id=\"timeLabel\" was not injected: check your FXML file 'PlayerControls.fxml'.";
         assert timeSlider != null : "fx:id=\"timeSlider\" was not injected: check your FXML file 'PlayerControls.fxml'.";
-        assert volumeSlider != null : "fx:id=\"volumeSlider\" was not injected: check your FXML file 'PlayerControls.fxml'.";
 
         ControllerPaneMouseDraggedHandler dh = new ControllerPaneMouseDraggedHandler(this);
 
         ControllerPaneVisibleHandler vh = new ControllerPaneVisibleHandler(this);
         player.addListener(this::playerChanged);
-        volumeSlider.disableProperty().bind(muteButton.selectedProperty());
 
         muteButton.visibleProperty().bind(hasAudio);
-        volumeSlider.visibleProperty().bind(hasAudio);
 
         timeSlider.valueProperty().addListener(this::timeSliderChanged);
     }
@@ -195,7 +190,6 @@ public class PlayerControlsController extends AnchorPane {
             oldValue.currentTimeProperty().removeListener(currentTimeHandler);
             timeLabel.textProperty().unbind();
             newValue.statusProperty().removeListener(statusChangeListener);
-            volumeSlider.valueProperty().unbindBidirectional(oldValue.volumeProperty());
             muteButton.selectedProperty().unbindBidirectional(oldValue.muteProperty());
             oldValue.getMedia().getTracks().removeListener(trackHandler);
         }
@@ -208,7 +202,6 @@ public class PlayerControlsController extends AnchorPane {
             ));
             newValue.currentTimeProperty().addListener(currentTimeHandler);
             newValue.statusProperty().addListener(statusChangeListener);
-            volumeSlider.valueProperty().bindBidirectional(newValue.volumeProperty());
             muteButton.selectedProperty().bindBidirectional(newValue.muteProperty());
             newValue.getMedia().getTracks().addListener(trackHandler);
         }

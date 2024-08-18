@@ -332,10 +332,12 @@ class PlayerEngine extends AbstractPlayer {
     private void stopAudio() {
         for (var t : media.getTracks()) {
             if (t instanceof MonteAudioTrack mat) {
-                SourceDataLine sourceDataLine = mat.getSourceDataLine();
-                if (sourceDataLine != null) {
-                    sourceDataLine.flush();
-                }
+                mat.dispatcher.execute(() -> {
+                    SourceDataLine sourceDataLine = mat.getSourceDataLine();
+                    if (sourceDataLine != null) {
+                        sourceDataLine.flush();
+                    }
+                });
             }
         }
     }
