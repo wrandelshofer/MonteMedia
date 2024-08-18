@@ -71,7 +71,7 @@ public class MonteMediaView {
                 }
                 scaleGroupBinding = Bindings.createObjectBinding(() -> {
                             return new Scale(rootPane.getWidth() / newv.getWidth(), rootPane.getHeight() / newv.getHeight(), 0, 0);
-                        }, rootPane.layoutBoundsProperty(), newv.widthProperty(), newv.heightProperty()
+                        }, rootPane.widthProperty(), rootPane.heightProperty(), newv.widthProperty(), newv.heightProperty()
 
                 );
                 scaleGroupBinding.addListener((oo, oldvv, newvv) -> {

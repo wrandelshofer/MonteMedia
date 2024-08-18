@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -10,7 +11,7 @@
             xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.monte.demo.javafx.movieplayer.MainWindowController">
   <top>
-    <MenuBar BorderPane.alignment="CENTER">
+    <MenuBar useSystemMenuBar="true" BorderPane.alignment="CENTER">
       <menus>
         <Menu mnemonicParsing="false" text="%file.menu">
           <items>
@@ -59,6 +60,10 @@
     </MenuBar>
   </top>
   <center>
-    <StackPane id="stackPane" fx:id="stackPane" styleClass=".background-pane"/>
+    <StackPane id="stackPane" fx:id="stackPane" styleClass=".background-pane">
+      <children>
+        <Label text="%mainWindow.onboardingText" textAlignment="CENTER"/>
+      </children>
+    </StackPane>
   </center>
 </BorderPane>

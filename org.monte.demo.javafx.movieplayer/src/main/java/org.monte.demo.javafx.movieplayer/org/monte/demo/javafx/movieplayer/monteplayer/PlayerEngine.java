@@ -51,6 +51,7 @@ import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
 
 class PlayerEngine extends AbstractPlayer {
+    private static final int PLAYER_RATE = 60;
     private final MonteMediaPlayer player;
     private final MonteMedia media;
     private MovieReader reader;
@@ -282,7 +283,7 @@ class PlayerEngine extends AbstractPlayer {
         renderBuffers(playTime, false);
     }
 
-    private Rational frameRate = Rational.valueOf(1, 60);
+    private Rational frameRate = Rational.valueOf(1, PLAYER_RATE);
 
     @Override
     protected void doStarted() throws Exception {
@@ -370,13 +371,69 @@ class PlayerEngine extends AbstractPlayer {
     }
 
     private void renderBuffers(Rational renderTime, boolean playAudio) throws IOException {
-        Platform.runLater(() -> {
+        renderVideoBuffers(renderTime, playAudio);
+        renderAudioBuffers(renderTime, playAudio);
+    }
+
+    private void renderAudioBuffers(Rational renderTime, boolean playAudio) {
+        for (var track : media.getTracks()) {
+            if (!(track instanceof MonteAudioTrack tr)
+                    || tr.getCodec() == null) {
+                // we cannot decode this track
+                continue;
+            }
+            Buffer outBuf = tr.getOutBufferA();
             boolean muted = player.muteProperty().get();
+            if (!outBuf.isFlag(BufferFlag.DISCARD)) {
+                // outBufA contains the sample for this playTime
+
+                Rational bufferStartTime = outBuf.timeStamp;
+                Rational bufferEndTime = outBuf.getBufferEndTimestamp();
+                boolean previouslyRenderedBufferTimeIntersectsPlayTime = tr.getRenderedStartTime().compareTo(renderTime) <= 0 &&
+                        renderTime.compareTo(tr.getRenderedEndTime()) < 0;
+                boolean bufferTimeIntersectsPlayTime = bufferStartTime.compareTo(renderTime) <= 0 &&
+                        renderTime.compareTo(bufferEndTime) < 0;
+                if (bufferTimeIntersectsPlayTime) {
+                    // unsupported track type
+                    if (tr instanceof MonteAudioTrack mat) {
+                        if (mat.getSourceDataLine() != null && outBuf.data instanceof byte[] byteArray) {
+                            if (playAudio & !muted) {
+                                long currentNanoTime = System.nanoTime();
+                                boolean isRenderTimeValid = mat.renderTimeValidUntilNanoTime > currentNanoTime;
+                                int skipSamples;
+                                if (isRenderTimeValid && tr.getRenderedStartTime().compareTo(renderTime) < 0
+                                        && renderTime.compareTo(tr.getRenderedEndTime()) < 0) {
+                                    skipSamples = (bufferStartTime.compareTo(tr.getRenderedEndTime()) < 0) ?
+                                            tr.getRenderedEndTime().subtract(bufferStartTime).divide(outBuf.sampleDuration).intValue() : 0;
+                                } else {
+                                    skipSamples = 0;
+                                }
+                                if (skipSamples < outBuf.sampleCount) {
+                                    int sampleSize = outBuf.length / outBuf.sampleCount;
+                                    byte[] clippedSamples = new byte[sampleSize * (outBuf.sampleCount - skipSamples)];
+                                    System.arraycopy(byteArray, outBuf.offset + skipSamples * sampleSize, clippedSamples, 0, clippedSamples.length);
+                                    mat.dispatcher.execute(() -> {
+                                        mat.getSourceDataLine().write(clippedSamples, 0, clippedSamples.length);
+                                    });
+                                    Rational clippedBufferDuration = outBuf.sampleDuration.multiply(outBuf.sampleCount - skipSamples);
+                                    mat.renderTimeValidUntilNanoTime = (long) (currentNanoTime + clippedBufferDuration.doubleValue() * 1e9) + (long) (1e9 / PLAYER_RATE);
+                                    tr.setRenderedStartTime(bufferStartTime);
+                                    tr.setRenderedEndTime(bufferEndTime);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void renderVideoBuffers(Rational renderTime, boolean playAudio) {
+        Platform.runLater(() -> {
             player.setCurrentTime(Duration.seconds(renderTime.doubleValue()));
             for (var track : media.getTracks()) {
-                if (!(track instanceof MonteTrackInterface tr)
+                if (!(track instanceof MonteVideoTrack tr)
                         || tr.getCodec() == null) {
-                    // we cannot decode this track
                     continue;
                 }
                 Buffer outBuf = tr.getOutBufferA();
@@ -385,46 +442,12 @@ class PlayerEngine extends AbstractPlayer {
 
                     Rational bufferStartTime = outBuf.timeStamp;
                     Rational bufferEndTime = outBuf.getBufferEndTimestamp();
-                    boolean previouslyRenderedBufferTimeIntersectsPlayTime = tr.getRenderedStartTime().compareTo(renderTime) <= 0 &&
-                            renderTime.compareTo(tr.getRenderedEndTime()) < 0;
                     boolean bufferTimeIntersectsPlayTime = bufferStartTime.compareTo(renderTime) <= 0 &&
                             renderTime.compareTo(bufferEndTime) < 0;
                     if (bufferTimeIntersectsPlayTime) {
-                        switch (tr) {
-                            case MonteVideoTrack mvt -> {
-                                if (outBuf.data instanceof WritableImage img) {
-                                    mvt.setVideoImage(img);
-                                }
-                            }
-                            case MonteAudioTrack mat -> {
-                                if (mat.getSourceDataLine() != null && outBuf.data instanceof byte[] byteArray) {
-                                    if (playAudio & !muted) {
-                                        long currentNanoTime = System.nanoTime();
-                                        boolean isRenderTimeValid = mat.renderTimeValidUntilNanoTime > currentNanoTime;
-                                        int skipSamples;
-                                        if (isRenderTimeValid && tr.getRenderedStartTime().compareTo(renderTime) < 0
-                                                && renderTime.compareTo(tr.getRenderedEndTime()) < 0) {
-                                            skipSamples = (bufferStartTime.compareTo(tr.getRenderedEndTime()) < 0) ?
-                                                    tr.getRenderedEndTime().subtract(bufferStartTime).divide(outBuf.sampleDuration).intValue() : 0;
-                                        } else {
-                                            skipSamples = 0;
-                                        }
-                                        if (skipSamples < outBuf.sampleCount) {
-                                            int sampleSize = outBuf.length / outBuf.sampleCount;
-                                            byte[] clippedSamples = new byte[sampleSize * (outBuf.sampleCount - skipSamples)];
-                                            System.arraycopy(byteArray, outBuf.offset + skipSamples * sampleSize, clippedSamples, 0, clippedSamples.length);
-                                            mat.dispatcher.execute(() -> {
-                                                mat.getSourceDataLine().write(clippedSamples, 0, clippedSamples.length);
-                                            });
-                                            Rational clippedBufferDuration = outBuf.sampleDuration.multiply(outBuf.sampleCount - skipSamples);
-                                            mat.renderTimeValidUntilNanoTime = (long) (currentNanoTime + clippedBufferDuration.doubleValue() * 1e9);
-
-                                        }
-                                    }
-                                }
-                            }
-                            default -> {
-                                // unsupported track type
+                        if (tr instanceof MonteVideoTrack mvt) {
+                            if (outBuf.data instanceof WritableImage img) {
+                                mvt.setVideoImage(img);
                             }
                         }
                     }

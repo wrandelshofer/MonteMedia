@@ -8,8 +8,11 @@ import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -22,7 +25,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
+import org.monte.demo.javafx.movieplayer.model.AudioTrackInterface;
 import org.monte.demo.javafx.movieplayer.model.MediaPlayerInterface;
+import org.monte.demo.javafx.movieplayer.model.TrackInterface;
 
 import java.net.URL;
 import java.text.NumberFormat;
@@ -45,8 +50,6 @@ public class PlayerControlsController extends AnchorPane {
     @FXML // fx:id="controllerPane"
     private GridPane controllerPane; // Value injected by FXMLLoader
 
-    @FXML // fx:id="durationLabel"
-    private Label durationLabel; // Value injected by FXMLLoader
 
     @FXML // fx:id="forwardButton"
     private Button forwardButton; // Value injected by FXMLLoader
@@ -134,7 +137,6 @@ public class PlayerControlsController extends AnchorPane {
     void initialize() {
         assert backwardButton != null : "fx:id=\"backwardButton\" was not injected: check your FXML file 'PlayerControls.fxml'.";
         assert controllerPane != null : "fx:id=\"controllerPane\" was not injected: check your FXML file 'PlayerControls.fxml'.";
-        assert durationLabel != null : "fx:id=\"durationLabel\" was not injected: check your FXML file 'PlayerControls.fxml'.";
         assert forwardButton != null : "fx:id=\"forwardButton\" was not injected: check your FXML file 'PlayerControls.fxml'.";
         assert muteButton != null : "fx:id=\"muteButton\" was not injected: check your FXML file 'PlayerControls.fxml'.";
         assert playButton != null : "fx:id=\"playButton\" was not injected: check your FXML file 'PlayerControls.fxml'.";
@@ -149,6 +151,8 @@ public class PlayerControlsController extends AnchorPane {
         player.addListener(this::playerChanged);
         volumeSlider.disableProperty().bind(muteButton.selectedProperty());
 
+        muteButton.visibleProperty().bind(hasAudio);
+        volumeSlider.visibleProperty().bind(hasAudio);
 
         timeSlider.valueProperty().addListener(this::timeSliderChanged);
     }
@@ -162,6 +166,27 @@ public class PlayerControlsController extends AnchorPane {
 
     private final ChangeListener<Duration> currentTimeHandler = this::currentTimeChanged;
     private ChangeListener<MediaPlayer.Status> statusChangeListener = (o, old, newv) -> playButton.setSelected(newv == MediaPlayer.Status.PLAYING);
+    private final ReadOnlyBooleanWrapper hasAudio = new ReadOnlyBooleanWrapper();
+    private final ListChangeListener<TrackInterface> trackHandler = new ListChangeListener<TrackInterface>() {
+        @Override
+        public void onChanged(Change<? extends TrackInterface> c) {
+            updateHasAudio();
+        }
+    };
+
+    private void updateHasAudio() {
+        boolean hasAudio = false;
+        MediaPlayerInterface player = getPlayer();
+        if (player != null) {
+            for (var e : player.getMedia().getTracks()) {
+                if (e instanceof AudioTrackInterface) {
+                    hasAudio = true;
+                    break;
+                }
+            }
+            PlayerControlsController.this.hasAudio.set(hasAudio);
+        }
+    }
 
     private void playerChanged(Observable observable, MediaPlayerInterface oldValue, MediaPlayerInterface newValue) {
         if (oldValue != null) {
@@ -169,15 +194,13 @@ public class PlayerControlsController extends AnchorPane {
             timeSlider.maxProperty().unbind();
             oldValue.currentTimeProperty().removeListener(currentTimeHandler);
             timeLabel.textProperty().unbind();
-            durationLabel.textProperty().unbind();
             newValue.statusProperty().removeListener(statusChangeListener);
             volumeSlider.valueProperty().unbindBidirectional(oldValue.volumeProperty());
-            muteButton.setDisable(true);
             muteButton.selectedProperty().unbindBidirectional(oldValue.muteProperty());
+            oldValue.getMedia().getTracks().removeListener(trackHandler);
         }
         if (newValue != null) {
             timeSlider.maxProperty().bind(newValue.totalDurationProperty().map(duration -> duration == null ? 0.0 : duration.toMillis()));
-            durationLabel.textProperty().bind(newValue.totalDurationProperty().map(this::toTotalDurationString));
             timeLabel.textProperty().bind(Bindings.createStringBinding(
                     () -> this.toCurrentTimeString(newValue.getCurrentTime(), newValue.getTotalDuration()),
                     newValue.totalDurationProperty(),
@@ -187,8 +210,9 @@ public class PlayerControlsController extends AnchorPane {
             newValue.statusProperty().addListener(statusChangeListener);
             volumeSlider.valueProperty().bindBidirectional(newValue.volumeProperty());
             muteButton.selectedProperty().bindBidirectional(newValue.muteProperty());
-            muteButton.setDisable(false);
+            newValue.getMedia().getTracks().addListener(trackHandler);
         }
+        updateHasAudio();
     }
 
     private final static NumberFormat fmt2Digits = NumberFormat.getNumberInstance(Locale.ENGLISH);
@@ -243,34 +267,6 @@ public class PlayerControlsController extends AnchorPane {
     }
 
 
-    private String toTotalDurationString(Duration duration) {
-        if (duration == null || duration.isUnknown()) {
-            return resources.getString("duration.unknown");
-        }
-        if (duration.isIndefinite()) {
-            return resources.getString("duration.indefinite");
-        }
-        StringBuilder buf = new StringBuilder();
-        double millis = duration.toMillis();
-        int seconds = (int) ((millis / 1000.0) % 60);
-        int minutes = (int) ((millis / 60_000.0) % 60);
-        int hours = (int) ((millis / 3600_000.0));
-        if (hours > 0) {
-            buf.append(fmt2Digits.format(hours));
-            buf.append(':');
-        }
-        if (hours > 0 || minutes > 0) {
-            buf.append(fmt2Digits.format(minutes));
-            buf.append(':');
-        }
-        buf.append(fmt2Digits.format(seconds));
-        int fraction = (int) millis % 1000;
-        buf.append('.');
-        buf.append(fmt3Digits.format(fraction));
-
-        return buf.toString();
-    }
-
     private class ControllerPaneVisibleHandler {
         private Timer timer;
 
@@ -295,10 +291,14 @@ public class PlayerControlsController extends AnchorPane {
                         if (show) {
                             show();
                         } else {
-                            controllerPane.setVisible(show);
+                            hide();
                         }
                     }
                 });
+            }
+
+            private void hide() {
+                rootPane.getChildren().remove(controllerPane);
             }
         }
 
@@ -327,7 +327,7 @@ public class PlayerControlsController extends AnchorPane {
         private void rootPaneMouseMoved(MouseEvent mouseEvent) {
             mouseEvent.consume();
             show();
-            schedule(false);
+            schedule(false, 2000);
         }
 
         private void show() {
@@ -337,7 +337,10 @@ public class PlayerControlsController extends AnchorPane {
             if (b.getMinX() < 0 || b.getMinY() < 0 || b.getMaxX() > rh || b.getMaxY() > rw) {
                 controllerPane.relocate((rw - b.getWidth()) * 0.5, (rh - b.getHeight()) * 0.75);
             }
-            controllerPane.setVisible(true);
+            ObservableList<Node> children = rootPane.getChildren();
+            if (!children.contains(controllerPane)) {
+                children.add(controllerPane);
+            }
         }
 
         private void cancelScheduled() {
@@ -347,9 +350,9 @@ public class PlayerControlsController extends AnchorPane {
             }
         }
 
-        private void schedule(boolean show) {
+        private void schedule(boolean show, int millis) {
             cancelScheduled();
-            getOrCreateTimer().schedule(currentTask = new ShowHideTask(show), 2000);
+            getOrCreateTimer().schedule(currentTask = new ShowHideTask(show), millis);
         }
 
         private Timer getOrCreateTimer() {
@@ -363,7 +366,7 @@ public class PlayerControlsController extends AnchorPane {
 
         private void rootPaneExited(MouseEvent mouseEvent) {
             mouseEvent.consume();
-            schedule(false);
+            schedule(false, 100);
         }
 
         private void rootPaneEntered(MouseEvent mouseEvent) {

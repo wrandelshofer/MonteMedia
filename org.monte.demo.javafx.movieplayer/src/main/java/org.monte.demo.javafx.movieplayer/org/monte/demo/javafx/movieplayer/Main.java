@@ -28,12 +28,12 @@ public class Main extends Application {
 
 
         controller.fileProperty().addListener((o, oldv, f) ->
-                stage.setTitle((f == null ? labels.getString("file.noFile") : f.getName()))
+                stage.setTitle((f == null ? labels.getString("application.name") : f.getName()))
         );
         stage.setOnHidden(event -> controller.close(null));
 
 
-        stage.setTitle(labels.getString("file.noFile"));
+        stage.setTitle(labels.getString("application.name"));
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("controls.css").toString());
         stage.setScene(scene);
