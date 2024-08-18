@@ -300,9 +300,10 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                             xy += opcode;
                             if ((opcode & 1) == 1) {
                                 int pad = in.readByte() & 0xff;
+                               /* do not check if pad byte is valid
                                 if (pad != 0) {
-                                    throw new IOException("Illegal pad byte, pad=0x" + Integer.toHexString(pad));
-                                }
+                                    //throw new IOException("Illegal pad byte, pad=0x" + Integer.toHexString(pad));
+                                }*/
                             }
                             break;
                     }
@@ -390,9 +391,10 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                             xy += opcode;
                             if ((opcode & 1) == 1) {
                                 int pad = in.readByte() & 0xff;
+                               /* do not check if pad byte is valid
                                 if (pad != 0) {
-                                    throw new IOException("Illegal pad byte, pad=0x" + Integer.toHexString(pad));
-                                }
+                                    //throw new IOException("Illegal pad byte, pad=0x" + Integer.toHexString(pad));
+                                }*/
                             }
                             break;
                         }
