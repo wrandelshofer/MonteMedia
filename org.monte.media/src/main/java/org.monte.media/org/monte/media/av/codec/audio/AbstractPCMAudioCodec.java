@@ -80,13 +80,13 @@ public abstract class AbstractPCMAudioCodec extends AbstractAudioCodec {
         Format outFormat = outputFormat;
         if (inFormat.get(SampleRateKey) == null || !inFormat.get(SampleRateKey).equals(outFormat.get(SampleRateKey))) {
             out.setFlag(DISCARD);
+            out.exception = new UnsupportedOperationException("Sample Rate conversion not supported. in:" + inFormat + ", out:" + outFormat);
             return CODEC_FAILED;
-            //throw new UnsupportedOperationException("Sample Rate conversion not supported. in:" + inFormat + ", out:" + outFormat);
         }
         if (!Objects.equals(inFormat.get(ChannelsKey), outFormat.get(ChannelsKey))) {
             out.setFlag(DISCARD);
+            out.exception = new UnsupportedOperationException("Channel conversion not supported. in:" + inFormat + ", out:" + outFormat);
             return CODEC_FAILED;
-            //throw new UnsupportedOperationException("Channel conversion not supported. in:" + inFormat + ", out:" + outFormat);
         }
 
         boolean fixSilenceBug = inFormat.get(SilenceBugKey, false);

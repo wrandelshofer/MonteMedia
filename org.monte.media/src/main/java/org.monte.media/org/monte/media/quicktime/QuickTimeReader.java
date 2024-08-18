@@ -71,7 +71,7 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
         long timeStamp = seconds.multiply(meta.timeScale).longValue();
         QuickTimeMeta.TrackSample key = new QuickTimeMeta.TrackSample(null, timeStamp, 0, timeStamp, 0);
         int result = Collections.binarySearch(tr.trackSamplesList, key, Comparator.comparingLong(a -> a.timeStamp));
-        if (result < 0) result = ~result;
+        if (result < 0) result = ~result - 1;
         result = Math.clamp(result, 0, tr.trackSamplesList.size() - 1);
         return result;
     }

@@ -304,7 +304,7 @@ public class AVIReader extends AVIInputStream implements MovieReader {
         Sample key = new Sample(0, 0, 0, 0, false);
         key.timeStamp = time.multiply(new Rational(tr.rate, tr.scale)).longValue();
         int result = Collections.binarySearch(tr.samples, key, Comparator.comparingLong(a -> a.timeStamp));
-        if (result < 0) result = ~result;
+        if (result < 0) result = ~result - 1;
         result = Math.clamp(result, 0, tr.samples.size() - 1);
         return result;
     }
