@@ -88,18 +88,14 @@ public class MainWindowController {
     }
 
     @FXML
-    void play(ActionEvent event) {
+    void togglePlayPause(ActionEvent event) {
         MediaPlayerInterface player = getPlayer();
         if (player != null) {
-            player.play();
-        }
-    }
-
-    @FXML
-    void pause(ActionEvent event) {
-        MediaPlayerInterface player = getPlayer();
-        if (player != null) {
-            player.pause();
+            if (player.getStatus() == MediaPlayer.Status.PLAYING) {
+                player.pause();
+            } else {
+                player.play();
+            }
         }
     }
 

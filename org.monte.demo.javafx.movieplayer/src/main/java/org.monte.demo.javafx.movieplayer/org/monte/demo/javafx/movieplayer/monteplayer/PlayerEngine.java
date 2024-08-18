@@ -11,6 +11,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 import org.monte.demo.javafx.movieplayer.model.TrackInterface;
+import org.monte.demo.javafx.movieplayer.model.VideoTrackInterface;
 import org.monte.media.av.AbstractPlayer;
 import org.monte.media.av.Buffer;
 import org.monte.media.av.BufferFlag;
@@ -62,7 +63,7 @@ class PlayerEngine extends AbstractPlayer {
      * And seek to the desired time.
      */
     private final AtomicReference<Rational> seekTime = new AtomicReference<>();
-    private MonteVideoTrack vTrack;
+
 
     public PlayerEngine(MonteMediaPlayer player) {
         this.player = player;
@@ -126,10 +127,10 @@ class PlayerEngine extends AbstractPlayer {
             format.getProperties().entrySet().iterator().forEachRemaining(e -> metadata.put(e.getKey().getName(), e.getValue()));
             tracks.add(switch (format.get(MediaTypeKey)) {
                 case FormatKeys.MediaType.VIDEO -> {
-                    realizeVideoTrack(i, metadata, format, trackFormat);
+                    MonteVideoTrack videoTrack = realizeVideoTrack(i, metadata, format, trackFormat);
                     trackWidth = Math.max(trackWidth, trackFormat.get(VideoFormatKeys.WidthKey));
                     trackHeight = Math.max(trackHeight, trackFormat.get(VideoFormatKeys.HeightKey));
-                    yield vTrack;
+                    yield videoTrack;
                 }
                 case FormatKeys.MediaType.AUDIO -> {
                     MonteAudioTrack audioTrack = realizeAudioTrack(i, metadata, trackFormat, format);
@@ -147,7 +148,7 @@ class PlayerEngine extends AbstractPlayer {
             media.setDuration(Duration.seconds(reader.getDuration().doubleValue()));
             media.setWidth(finalWidth);
             media.setHeight(finalHeight);
-            player.setCurrentTime(Duration.seconds(vTrack.getRenderedStartTime().doubleValue()));
+            player.setCurrentTime(Duration.seconds(renderedTime.doubleValue()));
             player.setCurrentCount(0);
             player.setCurrentRate(0.0);
             return null;
@@ -196,8 +197,8 @@ class PlayerEngine extends AbstractPlayer {
         return audioTrack;
     }
 
-    private void realizeVideoTrack(int i, Map<String, Object> metadata, Format format, Format trackFormat) throws IOException {
-        vTrack = new MonteVideoTrack(Locale.ENGLISH, i, i + "", metadata);
+    private MonteVideoTrack realizeVideoTrack(int i, Map<String, Object> metadata, Format format, Format trackFormat) throws IOException {
+        MonteVideoTrack vTrack = new MonteVideoTrack(Locale.ENGLISH, i, i + "", metadata);
         vTrack.setWidth(format.get(VideoFormatKeys.WidthKey));
         vTrack.setHeight(format.get(VideoFormatKeys.HeightKey));
         CodecChain codecChain = null;
@@ -225,9 +226,20 @@ class PlayerEngine extends AbstractPlayer {
                 throw new IOException("Could not decode the video track.");
             }
         }
+        return vTrack;
     }
 
     public Rational getFrameAfter(Rational seconds) {
+        VideoTrackInterface vTrack = null;
+        for (TrackInterface track : media.getTracks()) {
+            if (track instanceof VideoTrackInterface v) {
+                vTrack = v;
+                break;
+            }
+        }
+        if (vTrack == null) {
+            return Rational.ZERO;
+        }
         int trackID = (int) vTrack.getTrackID();
         try {
             long sample = reader.timeToSample(trackID, seconds);
@@ -240,6 +252,16 @@ class PlayerEngine extends AbstractPlayer {
     }
 
     public Rational getFrameBefore(Rational seconds) {
+        VideoTrackInterface vTrack = null;
+        for (TrackInterface track : media.getTracks()) {
+            if (track instanceof VideoTrackInterface v) {
+                vTrack = v;
+                break;
+            }
+        }
+        if (vTrack == null) {
+            return Rational.ZERO;
+        }
         int trackID = (int) vTrack.getTrackID();
         try {
             long sample = reader.timeToSample(trackID, seconds);
@@ -274,7 +296,7 @@ class PlayerEngine extends AbstractPlayer {
     @Override
     protected void doPrefetched() throws Exception {
         Rational playTime = seekTime.getAndSet(null);
-        if (playTime == null || vTrack == null) {
+        if (playTime == null) {
             return;
         }
 
@@ -284,16 +306,16 @@ class PlayerEngine extends AbstractPlayer {
     }
 
     private Rational frameRate = Rational.valueOf(1, PLAYER_RATE);
+    private Rational renderedTime = Rational.ZERO;
 
     @Override
     protected void doStarted() throws Exception {
-        int trackId = (int) vTrack.getTrackID();
-        Rational playTime = vTrack.getRenderedEndTime() == null ? Rational.valueOf(player.getCurrentTime().toSeconds()) : vTrack.getRenderedEndTime();
-        if (playTime == null || vTrack == null) {
+        Rational playTime = renderedTime;
+        if (playTime == null) {
             return;
         }
         // Start from beginning if we are at the end of the movie
-        Rational playEndTime = reader.getDuration(trackId);
+        Rational playEndTime = reader.getDuration();
         if (playTime.compareTo(playEndTime) >= 0) {
             playTime = Rational.ZERO;
         }
@@ -313,6 +335,7 @@ class PlayerEngine extends AbstractPlayer {
             }
 
             renderBuffers(playTime, !player.isMute());
+            renderedTime = playTime;
 
             // Compute the next play time
             Rational newTargetTime = seekTime.getAndSet(null);

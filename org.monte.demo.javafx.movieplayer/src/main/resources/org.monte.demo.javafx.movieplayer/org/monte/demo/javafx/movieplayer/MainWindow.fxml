@@ -29,8 +29,11 @@
         </Menu>
         <Menu mnemonicParsing="false" text="%play.menu">
           <items>
-            <MenuItem mnemonicParsing="false" onAction="#play" text="%play.menuItem"/>
-            <MenuItem mnemonicParsing="false" onAction="#pause" text="%pause.menuItem"/>
+            <MenuItem mnemonicParsing="false" onAction="#togglePlayPause" text="%togglePlayPause.menuItem">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="P" control="UP" meta="DOWN" shift="UP" shortcut="UP"/>
+              </accelerator>
+            </MenuItem>
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="%view.menu">
@@ -47,12 +50,12 @@
             </MenuItem>
             <MenuItem mnemonicParsing="false" onAction="#zoomIn" text="%view.zoomIn">
               <accelerator>
-                <KeyCodeCombination alt="UP" code="PERIOD" control="UP" meta="DOWN" shift="UP" shortcut="UP"/>
+                <KeyCodeCombination alt="UP" code="DIGIT1" control="UP" meta="DOWN" shift="UP" shortcut="UP"/>
               </accelerator>
             </MenuItem>
             <MenuItem mnemonicParsing="false" onAction="#zoomOut" text="%view.zoomOut">
               <accelerator>
-                <KeyCodeCombination alt="UP" code="COMMA" control="UP" meta="DOWN" shift="UP" shortcut="UP"/>
+                <KeyCodeCombination alt="UP" code="DIGIT2" control="UP" meta="DOWN" shift="UP" shortcut="UP"/>
               </accelerator>
             </MenuItem>
           </items>
