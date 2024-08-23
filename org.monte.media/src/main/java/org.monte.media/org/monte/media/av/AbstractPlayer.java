@@ -5,8 +5,11 @@
 
 package org.monte.media.av;
 
+
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -122,25 +125,24 @@ public abstract class AbstractPlayer implements Player {
         return targetState;
     }
 
-    private static class Worker implements Runnable {
+    private static class Worker implements Callable<Void> {
         private final AbstractPlayer player;
         private final int targetState;
 
         private Worker(AbstractPlayer player, int targetState) {
+            super();
             this.player = player;
             this.targetState = targetState;
         }
 
         @Override
-        public void run() {
-            if (player.currentWorker != this) {
-                return;
-            }
+        public Void call() throws Exception {
             player.performRequestedState(targetState);
+            return null;
         }
     }
 
-    private volatile Worker currentWorker;
+    private volatile FutureTask<Void> currentWorker;
 
     @Override
     public void setTargetState(int state) {
@@ -149,7 +151,10 @@ public abstract class AbstractPlayer implements Player {
             if (targetState != Player.CLOSED) {
                 targetState = state;
                 lockCondition.signalAll();
-                currentWorker = new Worker(this, targetState);
+                if (currentWorker != null) {
+                    currentWorker.cancel(true);
+                }
+                currentWorker = new FutureTask<>(new Worker(this, targetState));
                 dispatcher.execute(currentWorker);
             }
         } finally {
@@ -208,6 +213,8 @@ public abstract class AbstractPlayer implements Player {
                         setTargetState(PREFETCHED);
                         break;
                 }
+            } catch (InterruptedException e) {
+                // this is okay!
             } catch (Throwable t) {
                 error = true;
                 fireErrorHappened(t);

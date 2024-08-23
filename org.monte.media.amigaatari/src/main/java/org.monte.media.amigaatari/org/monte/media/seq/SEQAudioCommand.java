@@ -168,7 +168,7 @@ public class SEQAudioCommand {
     }
 
     public void doCommand(SEQMovieTrack track, SEQAudioCommand[] runningCommands) {
-        //    long start = System.currentTimeMillis();
+        //    long start = (System.nanoTime()/1_000_000);
         switch (command) {
             case COMMAND_PLAY_SOUND: {
                 boolean isPlayingOnOneChannel = false;

@@ -153,7 +153,7 @@ public class JDK13AppletAudioClip implements LoopableAudioClip, Runnable {
             line = (SourceDataLine) getMixer().getLine(lineInfo);
             line.open();
             line.start();
-            //System.out.println("aquireLine elapsed:"+(System.currentTimeMillis() - start));
+            //System.out.println("aquireLine elapsed:"+((System.nanoTime()/1_000_000) - start));
         }
         return line;
     }
@@ -287,7 +287,7 @@ public class JDK13AppletAudioClip implements LoopableAudioClip, Runnable {
      */
     public void run() {
         //System.out.println("run "+hashCode());
-        long start = System.currentTimeMillis();
+        long start = (System.nanoTime() / 1_000_000);
         long mediaDuration = (samples.length * Math.max(loopCount, 1)) / 8;
         int framePosition = 0;
 
@@ -341,14 +341,14 @@ public class JDK13AppletAudioClip implements LoopableAudioClip, Runnable {
 
         // We wait until the line has played all the samples
         // that we have provided
-        long end = System.currentTimeMillis();
+        long end = (System.nanoTime() / 1_000_000);
         long elapsed = end - start;
         while (workerThread == Thread.currentThread() && mediaDuration > elapsed) {
             try {
                 Thread.sleep(Math.max(1, Math.min(mediaDuration - elapsed, 100)));
             } catch (InterruptedException e) {
             }
-            elapsed = System.currentTimeMillis() - start;
+            elapsed = (System.nanoTime() / 1_000_000) - start;
         }
 
         // Flush the line if the user aborted playback

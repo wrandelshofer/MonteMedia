@@ -308,11 +308,11 @@ public class ColorCyclingMemoryImageSource extends MemoryImageSource {
 
                 private int[] previousCycled = new int[rgbs.length];
                 private int[] cycled = new int[rgbs.length];
-                long startTime = System.currentTimeMillis();
+                long startTime = (System.nanoTime() / 1_000_000);
 
                 @Override
                 public void actionPerformed(ActionEvent evt) {
-                    long now = System.currentTimeMillis();
+                    long now = (System.nanoTime() / 1_000_000);
                     System.arraycopy(rgbs, 0, cycled, 0, rgbs.length);
                     for (ColorCycle cc : colorCycles) {
                         cc.doCycle(cycled, now - startTime);

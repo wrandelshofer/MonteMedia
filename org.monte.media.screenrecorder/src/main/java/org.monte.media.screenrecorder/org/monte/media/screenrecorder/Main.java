@@ -770,7 +770,7 @@ public class Main extends javax.swing.JFrame {
 
     private void updateTimeLabel() {
         if (screenRecorder != null) {
-            long t = System.currentTimeMillis() - screenRecorder.getStartTime();
+            long t = (System.nanoTime() / 1_000_000) - screenRecorder.getStartTime();
             long h = t / (1000 * 3600);
             long m = t / (1000 * 60) - (h * 60);
             long s = t / (1000) - (h * 3600 + m * 60);

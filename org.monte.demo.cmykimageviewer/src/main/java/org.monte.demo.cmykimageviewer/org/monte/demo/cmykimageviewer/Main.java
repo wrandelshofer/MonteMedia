@@ -173,7 +173,7 @@ public class Main extends Application {
     root.setBottom(null);
     imageView.setImage(null);
     Platform.runLater(() -> dropLabel.setText("..."));
-    long start = System.currentTimeMillis();
+    long start = (System.nanoTime() / 1_000_000);
 
     CompletableFuture.supplyAsync(() -> {// on worker thread
       try {
@@ -191,7 +191,7 @@ public class Main extends Application {
         throw new UncheckedIOException(e);
       }
     }).handleAsync((images, ex) -> {// on application thread
-      long end = System.currentTimeMillis();
+      long end = (System.nanoTime() / 1_000_000);
       System.out.println("elapsed:" + (end - start));
 
       if (ex != null) {
@@ -225,11 +225,11 @@ public class Main extends Application {
     if (bufferedImage == null) {
       return null;
     }
-    long start = System.currentTimeMillis();
+    long start = (System.nanoTime() / 1_000_000);
 
     WritableImage fxImage = FXImages.toFXImage(bufferedImage, null);
 
-    long end = System.currentTimeMillis();
+    long end = (System.nanoTime() / 1_000_000);
     System.out.println("  convert to FX ms:" + (end - start));
     return fxImage;
   }
@@ -239,11 +239,11 @@ public class Main extends Application {
       return null;
     }
 
-    long start = System.currentTimeMillis();
+    long start = (System.nanoTime() / 1_000_000);
 
     BufferedImage rgbImage = Images.toRGBImage(bufferedImage);
 
-    long end = System.currentTimeMillis();
+    long end = (System.nanoTime() / 1_000_000);
     System.out.println("  convert to RGB ms:" + (end - start));
     return rgbImage;
   }
@@ -251,11 +251,11 @@ public class Main extends Application {
   private BufferedImage loadImage(final File file) throws IOException {
     System.out.println("loading " + file);
     try (ImageInputStream iis = new FileImageInputStream(file)) {
-      long start = System.currentTimeMillis();
+      long start = (System.nanoTime() / 1_000_000);
       ImageReader r = new CMYKJPEGImageReader();
       r.setInput(iis);
       BufferedImage cmykImage = r.read(0);
-      long end = System.currentTimeMillis();
+      long end = (System.nanoTime() / 1_000_000);
       System.out.println("  load ms:" + (end - start));
       return cmykImage;
     }

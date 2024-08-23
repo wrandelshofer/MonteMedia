@@ -718,7 +718,7 @@ public class SEQPlayer
      */
     @Override
     protected void doStarted() {
-        long mediaTime = System.currentTimeMillis() + (long) jiffieMillis;
+        long mediaTime = (System.nanoTime() / 1_000_000) + (long) jiffieMillis;
         int index;
         long sleepTime;
 
@@ -734,8 +734,8 @@ public class SEQPlayer
                     prepareAudio(index);
                 }
                 prepareVideo(index);
-                if (mediaTime > System.currentTimeMillis()) {
-                    sleepTime = mediaTime - System.currentTimeMillis();
+                if (mediaTime > (System.nanoTime() / 1_000_000)) {
+                    sleepTime = mediaTime - (System.nanoTime() / 1_000_000);
                     if (sleepTime > 0) {
                         try {
                             Thread.sleep(sleepTime);
@@ -744,9 +744,9 @@ public class SEQPlayer
                     }
                 }
                 if (globalFrameDuration == -1) {
-                    mediaTime = System.currentTimeMillis() + (long) (max(track.getFrameDuration(index), 1) * jiffieMillis);
+                    mediaTime = (System.nanoTime() / 1_000_000) + (long) (max(track.getFrameDuration(index), 1) * jiffieMillis);
                 } else {
-                    mediaTime = System.currentTimeMillis() + globalFrameDuration;
+                    mediaTime = (System.nanoTime() / 1_000_000) + globalFrameDuration;
                 }
                 if (isAudioEnabled && !timeModel.getValueIsAdjusting()) {
                     renderAudio(index);
@@ -755,12 +755,12 @@ public class SEQPlayer
                 }
                 renderVideo(index);
             } else {
-                if (mediaTime > System.currentTimeMillis()) {
+                if (mediaTime > (System.nanoTime() / 1_000_000)) {
                     if (isAudioEnabled) {
                         prepareAudio(index);
                     }
                     prepareVideo(index);
-                    sleepTime = mediaTime - System.currentTimeMillis();
+                    sleepTime = mediaTime - (System.nanoTime() / 1_000_000);
                     if (sleepTime > 0) {
                         try {
                             Thread.sleep(sleepTime);

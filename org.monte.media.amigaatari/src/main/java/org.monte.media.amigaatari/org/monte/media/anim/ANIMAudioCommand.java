@@ -201,7 +201,7 @@ public class ANIMAudioCommand {
     }
 
     public void doCommand(ANIMMovieResources track, ANIMAudioCommand[] runningCommands) {
-        //    long start = System.currentTimeMillis();
+        //    long start = (System.nanoTime()/1_000_000);
         switch (command) {
             case COMMAND_PLAY_SOUND: {
                 boolean isPlayingOnOneChannel = false;

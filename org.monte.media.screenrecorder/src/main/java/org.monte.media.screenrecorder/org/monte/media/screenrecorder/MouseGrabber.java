@@ -9,7 +9,11 @@ import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
 import org.monte.media.math.Rational;
 
-import java.awt.*;
+import java.awt.GraphicsDevice;
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.PointerInfo;
+import java.awt.Rectangle;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -113,7 +117,7 @@ class MouseGrabber implements Runnable, AutoCloseable {
      * Captures the mouse cursor position and state.
      */
     private void grabMouse() throws InterruptedException {
-        long now = System.currentTimeMillis();
+        long now = (System.nanoTime() / 1_000_000);
         if (now > getStopTime()) {
             future.cancel(false);
             return;

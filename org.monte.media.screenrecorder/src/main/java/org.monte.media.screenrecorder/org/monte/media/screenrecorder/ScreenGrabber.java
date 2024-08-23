@@ -145,7 +145,7 @@ class ScreenGrabber implements Runnable, AutoCloseable {
      */
     private void grabScreen() throws IOException, InterruptedException {
         BufferedImage previousScreenCapture = screenCapture;
-        long timeBeforeCapture = System.currentTimeMillis();
+        long timeBeforeCapture = (System.nanoTime() / 1_000_000);
 
         try {
             screenCapture = robot.createScreenCapture(captureArea);
@@ -155,7 +155,7 @@ class ScreenGrabber implements Runnable, AutoCloseable {
             return;
         }
 
-        long timeAfterCapture = System.currentTimeMillis();
+        long timeAfterCapture = (System.nanoTime() / 1_000_000);
         previousScreenCapture = (previousScreenCapture == null) ? screenCapture : previousScreenCapture;
         videoGraphics.drawImage(previousScreenCapture, 0, 0, null);
 

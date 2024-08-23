@@ -4,9 +4,20 @@
  */
 package org.monte.media.screenrecorder;
 
-import javax.swing.*;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
-import java.awt.*;
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -207,7 +218,7 @@ public class JRecordingAreaFrame extends javax.swing.JFrame {
             g.drawRect(3, 3, w - 7, h - 7);
 
             g.setColor(Color.WHITE);
-            float dash_phase = (System.currentTimeMillis() % 1000) / 50;
+            float dash_phase = ((System.nanoTime() / 1_000_000) % 1000) / 50;
             BasicStroke s = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 1f, new float[]{5f, 5f}, dash_phase);
             g.setStroke(s);
             g.drawRect(2, 2, w - 5, h - 5);

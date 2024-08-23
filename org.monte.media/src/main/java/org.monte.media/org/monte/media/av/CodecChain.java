@@ -20,8 +20,6 @@ public class CodecChain implements Codec {
     private Buffer tmpBuf;
     private int firstState;
     private int secondState;
-    private long firstElapsed;
-    private long secondElapsed;
 
     public CodecChain(Codec first, Codec second) {
         if (first == null || second == null) throw new IllegalArgumentException("first and second must not be null");
@@ -99,16 +97,13 @@ public class CodecChain implements Codec {
 
         if (CODEC_INPUT_NOT_CONSUMED == (secondState & CODEC_INPUT_NOT_CONSUMED)) {
             // => second codec needs to process tmpBuffer again
-            long start = System.currentTimeMillis();
+            long start = (System.nanoTime() / 1_000_000);
             secondState = second.process(tmpBuf, out);
-            secondElapsed += System.currentTimeMillis() - start;
             return secondState;
         }
 
 
-        long start = System.currentTimeMillis();
         firstState = first.process(in, tmpBuf);
-        firstElapsed += System.currentTimeMillis() - start;
         if (firstState == CODEC_FAILED) {
             return firstState;
         }
@@ -117,9 +112,7 @@ public class CodecChain implements Codec {
             return firstState;
         }
 
-        start = System.currentTimeMillis();
         secondState = second.process(tmpBuf, out);
-        secondElapsed += System.currentTimeMillis() - start;
         if (secondState == CODEC_FAILED) {
             return secondState;
         }
@@ -142,25 +135,5 @@ public class CodecChain implements Codec {
     @Override
     public String toString() {
         return "CodecChain{" + first + "," + second + "}";
-    }
-
-    public long getElapsedTime() {
-        return firstElapsed + secondElapsed;
-    }
-
-    public String reportElapsedTime() {
-        if (second instanceof CodecChain) {
-            return "{" + first.getName() + " " + firstElapsed + ((CodecChain) second).reportElapsedTime0() + "}";
-        } else {
-            return "{" + first.getName() + " " + firstElapsed + ", " + second.getName() + " " + secondElapsed + "}";
-        }
-    }
-
-    private String reportElapsedTime0() {
-        if (second instanceof CodecChain) {
-            return ", " + first.getName() + " " + firstElapsed + ((CodecChain) second).reportElapsedTime0();
-        } else {
-            return ", " + first.getName() + " " + firstElapsed + ", " + second.getName() + " " + secondElapsed;
-        }
     }
 }

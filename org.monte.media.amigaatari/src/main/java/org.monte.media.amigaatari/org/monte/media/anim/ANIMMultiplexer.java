@@ -43,10 +43,6 @@ public class ANIMMultiplexer implements Multiplexer {
     @Override
     public void write(int trackIndex, Buffer buf) throws IOException {
         if (!buf.isFlag(DISCARD)) {
-            // FIXME - For each track, fix accumulating rounding errors!!!
-            //         Or maybe, just let them accumulate. In case the
-            //         frames are compressed, we can't do anything at this
-            //         stage anyway.
             long jiffies = out.getJiffies();
 
             if (inputTime == null) {

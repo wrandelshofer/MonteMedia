@@ -101,7 +101,7 @@ public class DefaultAnimator implements Animator {
     }
 
     public void animateStep() {
-        long now = System.currentTimeMillis();
+        long now = (System.nanoTime() / 1_000_000);
 
         // Enqueue new interpolators into the activeInterpolators list
         // Avoid enqueuing new interpolators which must be run sequentually
@@ -187,7 +187,7 @@ public class DefaultAnimator implements Animator {
         //       above.
         synchronized (newInterpolators) {
             synchronized (lock) {
-                long now = System.currentTimeMillis();
+                long now = (System.nanoTime() / 1_000_000);
                 for (int i = 0; i < activeInterpolators.size(); i++) {
                     Interpolator active = activeInterpolators.get(i);
                     active.finish(now);

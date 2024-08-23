@@ -389,7 +389,7 @@ public class ScreenRecorder extends AbstractStateModel {
             }
         }
 
-        fileStartTime = System.currentTimeMillis();
+        fileStartTime = (System.nanoTime() / 1_000_000);
         return mw;
     }
 
@@ -458,7 +458,7 @@ public class ScreenRecorder extends AbstractStateModel {
         recordedFiles.clear();
         createMovieWriter();
         try {
-            recordingStartTime = System.currentTimeMillis();
+            recordingStartTime = (System.nanoTime() / 1_000_000);
             recordingStopTime = Long.MAX_VALUE;
 
             outputTime = new Rational(0, 0);
@@ -705,7 +705,7 @@ public class ScreenRecorder extends AbstractStateModel {
      */
     public void stop() throws IOException {
         if (state == State.RECORDING || state == State.FAILING) {
-            recordingStopTime = System.currentTimeMillis();
+            recordingStopTime = (System.nanoTime() / 1_000_000);
             stopMouseCapture();
             stopScreenCapture();
             stopAudioCapture();
@@ -868,7 +868,7 @@ public class ScreenRecorder extends AbstractStateModel {
         // FIXME - this assumes that all audio frames are key-frames
         // FIXME - this does not guarantee that audio and video track have
         //         the same duration
-        long now = System.currentTimeMillis();
+        long now = (System.nanoTime() / 1_000_000);
         if (buf.track == videoTrackId && buf.isFlag(BufferFlag.KEYFRAME)
                 && (mw.isDataLimitReached() || now - fileStartTime > maxRecordingTime)) {
             final MovieWriter closingWriter = mw;
