@@ -18,6 +18,17 @@ import java.util.Date;
  * @author Werner Randelshofer
  */
 public class QuickTimeInputStream {
+    /**
+     * Gets the number of a samples of the specified track.
+     *
+     * @param track The track index.
+     * @return the number of samples in the track
+     * @throws IOException if reading the sample data failed.
+     */
+    public int getSampleCount(int track) throws IOException {
+        QuickTimeMeta.Track tr = meta.tracks.get(track);
+        return (int) tr.media.sampleCount;
+    }
 
     /**
      * The image input stream.

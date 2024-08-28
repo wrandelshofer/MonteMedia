@@ -18,20 +18,25 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.ThreadFactory;
 
 public class MonteAudioTrack extends AbstractAudioTrack implements MonteTrackInterface {
-    protected long renderTimeValidUntilNanoTime;
+    protected long renderedUntilNanoTime;
     private SourceDataLine sourceDataLine;
     /**
      * The dispatcher.
      */
-    protected ExecutorService dispatcher = Executors.newSingleThreadExecutor(new ThreadFactory() {
+    private ExecutorService dispatcher = Executors.newSingleThreadExecutor(new ThreadFactory() {
         @Override
         public Thread newThread(Runnable r) {
             return new Thread(r, MonteAudioTrack.this + "-worker");
         }
     });
+
+    private FutureTask<Void> worker;
+
+
     public MonteAudioTrack(Locale locale, long trackId, String name, Map<String, Object> metadata) {
         super(locale, trackId, name, metadata);
     }
@@ -44,6 +49,17 @@ public class MonteAudioTrack extends AbstractAudioTrack implements MonteTrackInt
     private Rational renderedStartTime = Rational.ZERO;
     private Rational renderedEndTime = Rational.ZERO;
     private Format format;
+
+    public void executeWorker(Runnable r) {
+        dispatcher.execute(worker = new FutureTask<Void>(() -> {
+            r.run();
+            return null;
+        }));
+    }
+
+    public void interruptWorker() {
+        if (worker != null) worker.cancel(true);
+    }
 
 
     public Codec getCodec() {
@@ -81,7 +97,6 @@ public class MonteAudioTrack extends AbstractAudioTrack implements MonteTrackInt
     public void setSourceDataLine(SourceDataLine sourceDataLine) {
         this.sourceDataLine = sourceDataLine;
     }
-
 
     @Override
     public Buffer swapOutBuffers() {

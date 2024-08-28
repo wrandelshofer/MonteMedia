@@ -1,2 +1,3 @@
 org.monte.media.avi.AVIWriterSpi
 org.monte.media.quicktime.QuickTimeWriterSpi
+org.monte.media.zipmovie.ZipMovieWriterSpi

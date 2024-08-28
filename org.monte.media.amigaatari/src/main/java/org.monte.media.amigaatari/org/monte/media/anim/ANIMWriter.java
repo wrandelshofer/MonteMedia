@@ -10,6 +10,7 @@ import org.monte.media.av.MovieWriter;
 import org.monte.media.math.Rational;
 
 import javax.imageio.stream.ImageOutputStream;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -84,6 +85,12 @@ public class ANIMWriter extends ANIMMultiplexer implements MovieWriter {
     public int getTrackCount() {
         return tracks.size();
     }
+
+    @Override
+    public void write(int track, BufferedImage image, long duration) throws IOException {
+        throw new UnsupportedOperationException("not implemented yet");
+    }
+
 
     public boolean isVFRSupported() {
         return true;

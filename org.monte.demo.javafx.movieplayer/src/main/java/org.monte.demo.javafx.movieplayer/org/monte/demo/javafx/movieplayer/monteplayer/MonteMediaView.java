@@ -87,7 +87,7 @@ public class MonteMediaView {
             imageView.imageProperty().bind(vt.videoImageProperty());
             Format format = vt.getFormat();
             if (format != null) {
-                AffineTransform transform = format.getOrDefault(VideoFormatKeys.TransformKey);
+                AffineTransform transform = format.get(VideoFormatKeys.TransformKey, AffineTransform.IDENTITY);
                 if (!transform.isIdentity()) {
                     Affine affine = new Affine(transform.getFlatMatrix(), MatrixType.MT_2D_2x3, 0);
                     imageView.getTransforms().add(affine);

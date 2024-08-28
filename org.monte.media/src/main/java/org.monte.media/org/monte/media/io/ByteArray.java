@@ -41,6 +41,7 @@ public class ByteArray {
         return (short) SHORT_BE.get(array, offset);
     }
 
+
     /**
      * Reads a short in little endian order at the specified array offset.
      *
@@ -50,6 +51,29 @@ public class ByteArray {
      */
     public static short getShortLE(byte[] array, int offset) {
         return (short) SHORT_LE.get(array, offset);
+    }
+
+    /**
+     * Reads a short in big endian order at the specified array offset.
+     *
+     * @param array  an array
+     * @param offset the offset
+     * @return the value
+     */
+    public static int getUShortBE(byte[] array, int offset) {
+        return Short.toUnsignedInt((short) SHORT_BE.get(array, offset));
+    }
+
+
+    /**
+     * Reads a short in little endian order at the specified array offset.
+     *
+     * @param array  an array
+     * @param offset the offset
+     * @return the value
+     */
+    public static int getUShortLE(byte[] array, int offset) {
+        return Short.toUnsignedInt((short) SHORT_LE.get(array, offset));
     }
 
     /**
@@ -116,6 +140,28 @@ public class ByteArray {
      */
     public static void setShortLE(byte[] array, int offset, short value) {
         SHORT_LE.set(array, offset, value);
+    }
+
+    /**
+     * Writes a short in big endian order at the specified array offset.
+     *
+     * @param array  an array
+     * @param offset the offset
+     * @param value  the value
+     */
+    public static void setUShortBE(byte[] array, int offset, int value) {
+        SHORT_BE.set(array, offset, (short) (char) value);
+    }
+
+    /**
+     * Writes a short in little endian order at the specified array offset.
+     *
+     * @param array  an array
+     * @param offset the offset
+     * @param value  the value
+     */
+    public static void setUShortLE(byte[] array, int offset, int value) {
+        SHORT_LE.set(array, offset, (short) (char) value);
     }
 
     /**

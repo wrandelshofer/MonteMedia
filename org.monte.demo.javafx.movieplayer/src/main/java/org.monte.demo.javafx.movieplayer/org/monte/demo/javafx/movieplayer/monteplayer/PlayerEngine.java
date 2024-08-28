@@ -145,10 +145,10 @@ class PlayerEngine extends AbstractPlayer {
         runAndWait(() -> {
             media.setFormat(fileFormat);
             media.getTracks().addAll(tracks);
-            media.setDuration(Duration.seconds(reader.getDuration().doubleValue()));
+            media.setDuration(Duration.millis(reader.getDuration().multiply(1000).doubleValue()));
             media.setWidth(finalWidth);
             media.setHeight(finalHeight);
-            player.setCurrentTime(Duration.seconds(renderedTime.doubleValue()));
+            player.setCurrentTime(Duration.millis(renderedTime.multiply(1000).doubleValue()));
             player.setCurrentCount(0);
             player.setCurrentRate(0.0);
             return null;
@@ -209,6 +209,9 @@ class PlayerEngine extends AbstractPlayer {
                 codecChain = new CodecChain(codec1, codec2);
             }
             vTrack.setCodec(codecChain);
+            if (codecChain == null) {
+                throw new IOException("Could not find a codec for the video track.");
+            }
 
             vTrack.setFormat(trackFormat);
             Buffer inBuf = vTrack.inBuffer;
@@ -245,7 +248,11 @@ class PlayerEngine extends AbstractPlayer {
             long sample = reader.timeToSample(trackID, seconds);
             Rational time = reader.sampleToTime(trackID, sample);
             Rational duration = reader.getDuration(trackID, sample);
-            return time.add(duration);
+            Rational sampleEndTime = time.add(duration);
+            if (sampleEndTime.compareTo(seconds) <= 0 && sample == reader.getSampleCount(trackID) - 1) {
+                return reader.getDuration();
+            }
+            return sampleEndTime;
         } catch (IOException e) {
             return Rational.ZERO;
         }
@@ -265,7 +272,11 @@ class PlayerEngine extends AbstractPlayer {
         int trackID = (int) vTrack.getTrackID();
         try {
             long sample = reader.timeToSample(trackID, seconds);
-            Rational time = reader.sampleToTime(trackID, Math.max(0, sample - 1));
+            Rational time = reader.sampleToTime(trackID, sample);
+            if (sample > 0 && time.compareTo(seconds) >= 0) {
+                sample--;
+                time = reader.sampleToTime(trackID, sample);
+            }
             return time;
         } catch (IOException e) {
             return Rational.ZERO;
@@ -302,7 +313,7 @@ class PlayerEngine extends AbstractPlayer {
 
         reader.setMovieReadTime(playTime);
         updateBuffers(playTime);
-        renderBuffers(playTime, false);
+        renderBuffers(playTime, false, System.nanoTime());
     }
 
     private Rational frameRate = Rational.valueOf(1, PLAYER_RATE);
@@ -310,52 +321,56 @@ class PlayerEngine extends AbstractPlayer {
 
     @Override
     protected void doStarted() throws Exception {
-        Rational playTime = renderedTime;
-        if (playTime == null) {
-            return;
-        }
-        // Start from beginning if we are at the end of the movie
-        Rational playEndTime = reader.getDuration();
-        if (playTime.compareTo(playEndTime) >= 0) {
-            playTime = Rational.ZERO;
-        }
-
-        reader.setMovieReadTime(playTime);
-        Rational playStartTime = playTime;
-        long startNanoTime = System.nanoTime();
-        while (playTime.compareTo(playEndTime) <= 0 && getTargetState() == PlayerEngine.STARTED) {
-
-            updateBuffers(playTime);
-
-            int elapsedMovieMillis = playTime.subtract(playStartTime).multiply(1000).intValue();
-            int elapsedSystemMillis = (int) ((System.nanoTime() - startNanoTime) / 1_000_000L);
-            int sleepMillis = (elapsedMovieMillis - elapsedSystemMillis);
-            if (sleepMillis > 0) {
-                Thread.sleep(sleepMillis);
+        try {
+            Rational playTime = seekTime.getAndSet(null);
+            if (playTime == null) {
+                playTime = renderedTime;
+            }
+            // Start from beginning if we are at the end of the movie
+            Rational playEndTime = reader.getDuration();
+            if (playTime.compareTo(Rational.ZERO) < 0 || playTime.compareTo(playEndTime) >= 0) {
+                playTime = Rational.ZERO;
             }
 
-            renderBuffers(playTime, !player.isMute());
-            renderedTime = playTime;
+            reader.setMovieReadTime(playTime);
+            Rational playStartTime = playTime;
+            long startNanoTime = System.nanoTime();
+            while (true) {
+                updateBuffers(playTime);
+                int elapsedMovieMillis = playTime.subtract(playStartTime).multiply(1000).intValue();
+                int elapsedSystemMillis = (int) ((System.nanoTime() - startNanoTime) / 1_000_000L);
+                int sleepMillis = (elapsedMovieMillis - elapsedSystemMillis);
+                if (sleepMillis > 0) {
+                    Thread.sleep(sleepMillis);
+                }
+                long currentNanoTime = System.nanoTime();
+                renderBuffers(playTime, !player.isMute(), currentNanoTime);
 
-            // Compute the next play time
-            Rational newTargetTime = seekTime.getAndSet(null);
-            if (newTargetTime != null) {
-                newTargetTime = Rational.clamp(newTargetTime, Rational.ZERO, playEndTime);
-                reader.setMovieReadTime(newTargetTime);
-                playStartTime = playTime = newTargetTime;
-                startNanoTime = System.nanoTime();
-            } else {
-                playTime = playTime.add(frameRate);
+                if (!(playTime.compareTo(playEndTime) <= 0 && getTargetState() == PlayerEngine.STARTED)) {
+                    break;
+                }
+
+                // Compute the next play time
+                Rational newTargetTime = seekTime.getAndSet(null);
+                if (newTargetTime != null) {
+                    newTargetTime = Rational.clamp(newTargetTime, Rational.ZERO, playEndTime);
+                    reader.setMovieReadTime(newTargetTime);
+                    playStartTime = playTime = newTargetTime;
+                    startNanoTime = currentNanoTime;
+                } else {
+                    playTime = playTime.add(frameRate);
+                }
             }
+        } finally {
+            stopAudio();
         }
-
-        stopAudio();
     }
 
     private void stopAudio() {
         for (var t : media.getTracks()) {
             if (t instanceof MonteAudioTrack mat) {
-                mat.dispatcher.execute(() -> {
+                mat.interruptWorker();
+                mat.executeWorker(() -> {
                     SourceDataLine sourceDataLine = mat.getSourceDataLine();
                     if (sourceDataLine != null) {
                         sourceDataLine.flush();
@@ -392,14 +407,15 @@ class PlayerEngine extends AbstractPlayer {
         }
     }
 
-    private void renderBuffers(Rational renderTime, boolean playAudio) throws IOException {
+    private void renderBuffers(Rational renderTime, boolean playAudio, long currentNanoTime) throws IOException {
+        renderedTime = renderTime;
         renderVideoBuffers(renderTime);
         if (playAudio) {
-            renderAudioBuffers(renderTime);
+            renderAudioBuffers(renderTime, currentNanoTime);
         }
     }
 
-    private void renderAudioBuffers(Rational renderTime) {
+    private void renderAudioBuffers(Rational renderTime, long currentNanoTime) {
         for (var track : media.getTracks()) {
             if (!(track instanceof MonteAudioTrack tr) || tr.getCodec() == null) {
                 continue;
@@ -409,29 +425,34 @@ class PlayerEngine extends AbstractPlayer {
             if (!outBuf.isFlag(BufferFlag.DISCARD)) {
                 Rational bufferStartTime = outBuf.timeStamp;
                 Rational bufferEndTime = outBuf.getBufferEndTimestamp();
-                boolean bufferTimeIntersectsPlayTime = bufferStartTime.compareTo(renderTime) <= 0 &&
-                        renderTime.compareTo(bufferEndTime) < 0;
+                boolean bufferTimeIntersectsPlayTime = renderTime.isInRange(bufferStartTime, bufferEndTime);
                 if (bufferTimeIntersectsPlayTime && tr.getSourceDataLine() != null && outBuf.data instanceof byte[] byteArray) {
-                    long currentNanoTime = System.nanoTime();
-                    boolean isRenderTimeValid = tr.renderTimeValidUntilNanoTime > currentNanoTime;
+                    boolean isRenderTimeValid = tr.renderedUntilNanoTime + (1_000_000_000L / PLAYER_RATE) > currentNanoTime;
                     int skipSamples;
-                    if (isRenderTimeValid
-                            && tr.getRenderedStartTime().compareTo(renderTime) < 0
-                            && renderTime.compareTo(tr.getRenderedEndTime()) < 0) {
-                        skipSamples = (bufferStartTime.compareTo(tr.getRenderedEndTime()) < 0) ?
-                                tr.getRenderedEndTime().subtract(bufferStartTime).divide(outBuf.sampleDuration).intValue() : 0;
+
+                    if (isRenderTimeValid && bufferStartTime.compareTo(tr.getRenderedStartTime()) == 0
+                            && bufferEndTime.compareTo(tr.getRenderedEndTime()) == 0) {
+                        // We have already played this sample
+                        skipSamples = outBuf.sampleCount;
                     } else {
-                        skipSamples = 0;
+                        // Skip samples that are before render time
+                        if (isRenderTimeValid) {
+                            skipSamples = Math.max(0, tr.getRenderedEndTime().subtract(bufferStartTime).divide(outBuf.sampleDuration).intValue());
+                        } else {
+                            skipSamples = Math.max(0, renderTime.subtract(bufferStartTime).divide(outBuf.sampleDuration).intValue());
+                        }
+                        int skipRenderedSamples = new Rational(tr.renderedUntilNanoTime - currentNanoTime - 20_000_000, 1_000_000_000).divide(outBuf.sampleDuration).intValue();
+                        skipSamples = Math.max(skipRenderedSamples, skipSamples);
                     }
                     if (skipSamples < outBuf.sampleCount) {
                         int sampleSize = outBuf.length / outBuf.sampleCount;
                         int samplesLength = sampleSize * (outBuf.sampleCount - skipSamples);
                         int samplesOffset = outBuf.offset + skipSamples * sampleSize;
-                        tr.dispatcher.execute(() -> {
+                        tr.executeWorker(() -> {
                             tr.getSourceDataLine().write(byteArray, samplesOffset, samplesLength);
                         });
                         Rational clippedBufferDuration = outBuf.sampleDuration.multiply(outBuf.sampleCount - skipSamples);
-                        tr.renderTimeValidUntilNanoTime = (long) (currentNanoTime + clippedBufferDuration.doubleValue() * 1e9) + (long) (1e9 / PLAYER_RATE);
+                        tr.renderedUntilNanoTime = Math.max(tr.renderedUntilNanoTime, currentNanoTime) + (long) (clippedBufferDuration.doubleValue() * 1e9);
                         tr.setRenderedStartTime(bufferStartTime);
                         tr.setRenderedEndTime(bufferEndTime);
                     }

@@ -209,7 +209,6 @@ public class PlayerControlsController extends AnchorPane {
     }
 
     private final static NumberFormat fmt2Digits = NumberFormat.getNumberInstance(Locale.ENGLISH);
-    private final static NumberFormat fmt3Digits = NumberFormat.getNumberInstance(Locale.ENGLISH);
 
     private void currentTimeChanged(Observable observable, Duration oldValue, Duration newValue) {
         if (!timeSlider.isPressed() && newValue != null) {
@@ -221,9 +220,6 @@ public class PlayerControlsController extends AnchorPane {
         fmt2Digits.setMinimumIntegerDigits(2);
         fmt2Digits.setMaximumFractionDigits(0);
         fmt2Digits.setGroupingUsed(false);
-        fmt3Digits.setMinimumIntegerDigits(3);
-        fmt3Digits.setMaximumFractionDigits(0);
-        fmt3Digits.setGroupingUsed(false);
     }
 
     private String toCurrentTimeString(Duration duration, Duration totalDuration) {
@@ -253,9 +249,9 @@ public class PlayerControlsController extends AnchorPane {
             buf.append(':');
         }
         buf.append(fmt2Digits.format(seconds));
-        int fraction = (int) millis % 1000;
+        int hundreds = (int) (millis / 10) % 100;
         buf.append('.');
-        buf.append(fmt3Digits.format(fraction));
+        buf.append(fmt2Digits.format(hundreds));
         return buf.toString();
     }
 
@@ -399,7 +395,13 @@ public class PlayerControlsController extends AnchorPane {
             int minimumAmountVisible = 10;
             double newX = Math.clamp(controllerPane.getLayoutX() + dx, 0 - width + minimumAmountVisible, parentWidth - minimumAmountVisible);
             double newY = Math.clamp(controllerPane.getLayoutY() + dy, 0 - height + minimumAmountVisible, parentHeight - minimumAmountVisible);
-            AnchorPane.setRightAnchor(controllerPane, rootPane.getWidth() - width - newX);
+
+            AnchorPane.setLeftAnchor(controllerPane, null);
+            AnchorPane.setRightAnchor(controllerPane, null);
+            AnchorPane.setTopAnchor(controllerPane, null);
+            AnchorPane.setBottomAnchor(controllerPane, null);
+            AnchorPane.setLeftAnchor(controllerPane, newX);
+            //AnchorPane.setRightAnchor(controllerPane, rootPane.getWidth() - width - newX);
             AnchorPane.setBottomAnchor(controllerPane, rootPane.getHeight() - height - newY);
             prevMouseX = sceneX;
             prevMouseY = sceneY;

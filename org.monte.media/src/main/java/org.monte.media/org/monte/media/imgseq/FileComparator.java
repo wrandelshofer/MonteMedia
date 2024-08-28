@@ -14,7 +14,7 @@ import java.util.Comparator;
  */
 public class FileComparator implements Comparator<File> {
 
-    private final OSXCollator collator = new OSXCollator();
+    private final NaturalSortCollator collator = new NaturalSortCollator();
 
     @Override
     public int compare(File o1, File o2) {

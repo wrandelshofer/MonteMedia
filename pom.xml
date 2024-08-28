@@ -58,7 +58,7 @@
     <module>org.monte.demo.animmerger</module>
     <module>org.monte.demo.moviereader</module>
     <module>org.monte.demo.audiorecorder</module>
-    <module>org.monte.demo.aviwriter</module>
+    <module>org.monte.demo.moviewriter</module>
     <module>org.monte.demo.cleartype</module>
     <module>org.monte.demo.cmykimageviewer</module>
     <module>org.monte.demo.imageioviewer</module>
@@ -67,13 +67,13 @@
     <module>org.monte.demo.javafx.movieplayer</module>
     <module>org.monte.demo.moviemaker</module>
     <module>org.monte.demo.mpoimagesplitter</module>
-    <module>org.monte.demo.quicktimewriter</module>
     <module>org.monte.demo.rationalnumber</module>
     <module>org.monte.demo.screenrecorder</module>
     <module>org.monte.demo.sift</module>
     <module>org.monte.media</module>
     <module>org.monte.media.amigaatari</module>
     <module>org.monte.media.javafx</module>
+    <module>org.monte.media.jcodec</module>
     <module>org.monte.media.screenrecorder</module>
     <module>org.monte.media.swing</module>
     <!--
@@ -327,7 +327,7 @@
       </dependency>
       <dependency>
         <groupId>ch.randelshofer</groupId>
-        <artifactId>org.monte.demo.aviwriter</artifactId>
+        <artifactId>moviewriter</artifactId>
         <version>${revision}</version>
       </dependency>
       <dependency>
@@ -417,6 +417,11 @@
       </dependency>
       <dependency>
         <groupId>ch.randelshofer</groupId>
+        <artifactId>org.monte.media.jcodec</artifactId>
+        <version>${revision}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.randelshofer</groupId>
         <artifactId>org.monte.media.jmf</artifactId>
         <version>${revision}</version>
       </dependency>
@@ -429,6 +434,16 @@
         <groupId>ch.randelshofer</groupId>
         <artifactId>org.monte.media.swing</artifactId>
         <version>${revision}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jcodec</groupId>
+        <artifactId>jcodec</artifactId>
+        <version>0.2.5</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jcodec</groupId>
+        <artifactId>jcodec-javase</artifactId>
+        <version>0.2.5</version>
       </dependency>
 
       <!-- https://mvnrepository.com/artifact/javax.media/jmf -->
@@ -477,6 +492,18 @@
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-swing</artifactId>
         <version>22.0.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openjdk.jmh</groupId>
+        <artifactId>jmh-core</artifactId>
+        <version>1.37</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openjdk.jmh</groupId>
+        <artifactId>jmh-generator-annprocess</artifactId>
+        <version>1.37</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>

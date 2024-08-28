@@ -4,6 +4,9 @@
  */
 package org.monte.media.io;
 
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteOrder;
 
 /**
@@ -55,6 +58,10 @@ public class ByteArrayImageInputStream extends ImageInputStreamImpl2 {
         this.length = Math.min(length, buf.length - offset);
         this.offset = offset;
         this.byteOrder = byteOrder;
+    }
+
+    public ByteArrayImageInputStream(byte[] buf, int off, int length) {
+        this(buf, off, length, ByteOrder.BIG_ENDIAN);
     }
 
     /**
@@ -185,5 +192,41 @@ public class ByteArrayImageInputStream extends ImageInputStreamImpl2 {
     @Override
     public long length() {
         return length;
+    }
+
+    @Override
+    public int readInt() throws IOException {
+        if (streamPos > length - 4) {
+            throw new EOFException();
+        }
+        int v = (byteOrder == ByteOrder.BIG_ENDIAN)
+                ? ByteArray.getIntBE(buf, (int) streamPos)
+                : ByteArray.getIntLE(buf, (int) streamPos);
+        streamPos += 4;
+        return v;
+    }
+
+    @Override
+    public long readLong() throws IOException {
+        if (streamPos > length - 8) {
+            throw new EOFException();
+        }
+        long v = (byteOrder == ByteOrder.BIG_ENDIAN)
+                ? ByteArray.getLongBE(buf, (int) streamPos)
+                : ByteArray.getLongLE(buf, (int) streamPos);
+        streamPos += 8;
+        return v;
+    }
+
+    @Override
+    public short readShort() throws IOException {
+        if (streamPos > length - 2) {
+            throw new EOFException();
+        }
+        short v = (byteOrder == ByteOrder.BIG_ENDIAN)
+                ? ByteArray.getShortBE(buf, (int) streamPos)
+                : ByteArray.getShortLE(buf, (int) streamPos);
+        streamPos += 2;
+        return v;
     }
 }

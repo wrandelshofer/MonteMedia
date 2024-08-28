@@ -39,6 +39,7 @@ public class FormatKeys {
     //
     public final static String MIME_AVI = "video/avi";
     public final static String MIME_QUICKTIME = "video/quicktime";
+    public final static String MIME_ZIP = "application/zip";
     public final static String MIME_MP4 = "video/mp4";
     public final static String MIME_JAVA = "Java";
     public final static String MIME_ANIM = "x-iff/anim";

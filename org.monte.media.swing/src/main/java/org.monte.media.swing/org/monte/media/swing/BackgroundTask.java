@@ -107,7 +107,7 @@ public abstract class BackgroundTask implements Runnable {
     }
 
     /**
-     * Starts the Worker on an internal worker thread.
+     * Starts the AbstractWorker on an internal worker thread.
      */
     public void start() {
         new Thread(this).start();

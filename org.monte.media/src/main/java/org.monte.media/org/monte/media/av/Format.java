@@ -65,11 +65,6 @@ public class Format {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getOrDefault(FormatKey<T> key) {
-        return get(key, key.getDefaultValue());
-    }
-
-    @SuppressWarnings("unchecked")
     public <T> T get(FormatKey<T> key, T defaultValue) {
         return (properties.containsKey(key)) ? (T) properties.get(key) : defaultValue;
     }
@@ -260,14 +255,17 @@ public class Format {
     }
 
     /**
-     * Returns true if the format has the specified keys.
+     * Checks if the format has all the specified keys.
+     *
+     * @param keys the required keys
+     * @throws IllegalArgumentException if the format does not have a key
      */
-    public Format containsKeys(FormatKey<?>... keys) {
-        Map<FormatKey<?>, Object> m = new HashMap<>(properties);
+    public void requireKeys(FormatKey<?>... keys) {
         for (FormatKey<?> k : keys) {
-            m.remove(k);
+            if (!properties.containsKey(k)) {
+                throw new IllegalArgumentException(k + " missing in " + this);
+            }
         }
-        return new Format(m, false);
     }
 
     @Override

@@ -129,7 +129,7 @@ public class JPEGCodec extends AbstractVideoCodec {
             iwParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
             float quality = outputFormat.get(QualityKey, 1f);
             iwParam.setCompressionQuality(quality);
-            if (outputFormat.getOrDefault(ProgressiveImageEncodingKey)) {
+            if (outputFormat.get(ProgressiveImageEncodingKey, Boolean.FALSE)) {
                 iwParam.setProgressiveMode(ImageWriteParam.MODE_DEFAULT);
             }
             iw.setOutput(tmp);

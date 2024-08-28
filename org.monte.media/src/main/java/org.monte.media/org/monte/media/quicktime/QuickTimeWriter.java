@@ -213,7 +213,7 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
             int t = addVideoTrack(fmt.get(EncodingKey),
                     fmt.get(CompressorNameKey, fmt.get(EncodingKey)),
                     Math.min(6000, fmt.get(FrameRateKey).getNumerator() * fmt.get(FrameRateKey).getDenominator()),
-                    fmt.get(WidthKey), fmt.get(HeightKey), fmt.get(DepthKey),
+                    fmt.get(WidthKey), fmt.get(HeightKey), fmt.get(DepthKey, 24),
                     (int) fmt.get(FrameRateKey).getDenominator());
             setCompressionQuality(t, fmt.get(QualityKey, 1.0f));
             return t;

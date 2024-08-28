@@ -6,6 +6,7 @@ package org.monte.media.av;
 
 import org.monte.media.math.Rational;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 /**
@@ -64,6 +65,16 @@ public interface MovieWriter extends Multiplexer, AutoCloseable {
     @Override
     public void write(int track, Buffer buf) throws IOException;
 
+    /**
+     * Encodes the provided image and writes its sample data into the specified
+     * track.
+     *
+     * @param track    The track index.
+     * @param image    The image of the video frame.
+     * @param duration Duration given in media time units (=number of frames to be written).
+     * @throws IOException if writing the sample data failed.
+     */
+    public void write(int track, BufferedImage image, long duration) throws IOException;
     /**
      * Closes the writer.
      */

@@ -4,6 +4,7 @@
  */
 package org.monte.media.io;
 
+
 import javax.imageio.stream.ImageOutputStream;
 import javax.imageio.stream.ImageOutputStreamImpl;
 import java.io.IOException;
@@ -329,4 +330,55 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
         count = arrayOffset;
         streamPos = arrayOffset;
     }
+
+    @Override
+    public void writeShort(int v) throws IOException {
+        flushBits();
+        growBy(2);
+        if (byteOrder == ByteOrder.BIG_ENDIAN) {
+            ByteArray.setUShortBE(buf, (int) streamPos, v);
+        } else {
+            ByteArray.setUShortLE(buf, (int) streamPos, v);
+        }
+        streamPos += 2;
+    }
+
+    /**
+     * Grows capacity if necessary, so that it can hold the given number of additional bytes.
+     *
+     * @param len the number of additional bytes
+     */
+    private void growBy(int len) {
+        int newcount = max((int) streamPos + len, count);
+        if (newcount > buf.length) {
+            buf = Arrays.copyOf(buf, Math.max(buf.length << 1, newcount));
+        }
+        count = newcount;
+    }
+
+
+    @Override
+    public void writeInt(int v) throws IOException {
+        flushBits();
+        growBy(4);
+        if (byteOrder == ByteOrder.BIG_ENDIAN) {
+            ByteArray.setIntBE(buf, (int) streamPos, v);
+        } else {
+            ByteArray.setIntLE(buf, (int) streamPos, v);
+        }
+        streamPos += 4;
+    }
+
+    @Override
+    public void writeLong(long v) throws IOException {
+        flushBits();
+        growBy(8);
+        if (byteOrder == ByteOrder.BIG_ENDIAN) {
+            ByteArray.setLongBE(buf, (int) streamPos, v);
+        } else {
+            ByteArray.setLongLE(buf, (int) streamPos, v);
+        }
+        streamPos += 8;
+    }
+
 }

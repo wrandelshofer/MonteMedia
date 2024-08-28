@@ -38,6 +38,8 @@ public class IntMath {
      * @return {@code GCD(a, b)}
      */
     public static int gcd(int a, int b) {
+        a = Math.abs(a);
+        b = Math.abs(b);
         // GCD(0, b) == b; GCD(a, 0) == a,
         // GCD(0, 0) == 0
         if (a == 0)
@@ -97,6 +99,8 @@ public class IntMath {
     public static long gcd(long a, long b) {
         // GCD(0, b) == b; GCD(a, 0) == a,
         // GCD(0, 0) == 0
+        a = Math.abs(a);
+        b = Math.abs(b);
         if (a == 0)
             return b;
         if (b == 0)

@@ -13,40 +13,41 @@
          xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1"
          fx:controller="org.monte.demo.javafx.movieplayer.PlayerControlsController">
   <children>
-    <GridPane fx:id="controllerPane" hgap="4.0" layoutX="4.0" layoutY="100.0" maxHeight="-Infinity" maxWidth="-Infinity"
-              minHeight="-Infinity" minWidth="-Infinity" styleClass="controls-panel" vgap="4.0"
-              AnchorPane.bottomAnchor="4.0">
+    <GridPane fx:id="controllerPane" hgap="8.0" layoutX="4.0" layoutY="100.0" maxHeight="-Infinity" maxWidth="-Infinity"
+              minHeight="-Infinity" minWidth="-Infinity" styleClass="controls-panel" stylesheets="@controls.css"
+              vgap="4.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0">
       <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="24.0"/>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="48.0"/>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="48.0"/>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="48.0"/>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="24.0"/>
+        <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="24.0"/>
+        <ColumnConstraints hgrow="NEVER" minWidth="10.0"/>
+        <ColumnConstraints hgrow="NEVER" minWidth="10.0"/>
+        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="120.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
+        <ColumnConstraints hgrow="NEVER" minWidth="10.0"/>
+        <ColumnConstraints/>
+        <ColumnConstraints/>
       </columnConstraints>
       <rowConstraints>
-        <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
-        <RowConstraints minHeight="10.0" prefHeight="24.0" vgrow="SOMETIMES"/>
         <RowConstraints minHeight="10.0" prefHeight="24.0" vgrow="SOMETIMES"/>
       </rowConstraints>
       <children>
         <Button fx:id="backwardButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-                minWidth="-Infinity" mnemonicParsing="false" onAction="#seekBackward" prefHeight="24.0" prefWidth="24.0"
+                minWidth="-Infinity" mnemonicParsing="false" onAction="#seekBackward" prefHeight="20.0" prefWidth="20.0"
                 styleClass="backward-button" GridPane.columnIndex="1" GridPane.halignment="RIGHT"/>
         <ToggleButton fx:id="playButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-                      minWidth="-Infinity" mnemonicParsing="false" onAction="#togglePlayPause" prefHeight="32.0"
-                      prefWidth="32.0" styleClass="play-button" GridPane.columnIndex="2" GridPane.halignment="CENTER"/>
+                      minWidth="-Infinity" mnemonicParsing="false" onAction="#togglePlayPause" prefHeight="20.0"
+                      prefWidth="20.0" styleClass="play-button" GridPane.halignment="CENTER"/>
         <Button fx:id="forwardButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-                minWidth="-Infinity" mnemonicParsing="false" onAction="#seekForward" prefHeight="24.0" prefWidth="24.0"
-                styleClass="forward-button" GridPane.columnIndex="3"/>
-        <Label fx:id="timeLabel" styleClass="time-label" text="00:00.0000" GridPane.columnIndex="1"
-               GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="2"/>
-        <Slider fx:id="timeSlider" GridPane.columnSpan="7" GridPane.rowIndex="1"/>
+                minWidth="-Infinity" mnemonicParsing="false" onAction="#seekForward" prefHeight="20.0" prefWidth="20.0"
+                styleClass="forward-button" GridPane.columnIndex="2"/>
+        <Label fx:id="timeLabel" styleClass="time-label" text="00:00:00.00" GridPane.columnIndex="4"
+               GridPane.halignment="CENTER"/>
+        <Slider fx:id="timeSlider" GridPane.columnIndex="3"/>
         <ToggleButton fx:id="muteButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-                      minWidth="-Infinity" mnemonicParsing="false" prefHeight="24.0" prefWidth="24.0"
-                      styleClass="mute-button" GridPane.halignment="RIGHT"/>
+                      minWidth="-Infinity" mnemonicParsing="false" prefHeight="20.0" prefWidth="20.0"
+                      styleClass="mute-button" GridPane.columnIndex="5" GridPane.halignment="LEFT"/>
       </children>
       <padding>
-        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+        <Insets bottom="8.0" left="8.0" top="8.0"/>
       </padding>
     </GridPane>
   </children>

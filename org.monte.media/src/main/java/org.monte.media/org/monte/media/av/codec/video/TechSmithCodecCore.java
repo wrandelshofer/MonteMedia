@@ -7,9 +7,9 @@ package org.monte.media.av.codec.video;
 import org.monte.media.io.ByteArrayImageInputStream;
 import org.monte.media.io.UncachedImageInputStream;
 
+import javax.imageio.stream.ImageInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -257,11 +257,12 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
      * @throws IOException on IO failure
      */
     public boolean decode8(byte[] inDat, int off, int length, byte[] outDat, byte[] prevDat, int width, int height, boolean onlyDecodeIfKeyframe) throws IOException {
-        InputStream innerStream = new ByteArrayInputStream(inDat, off, length);
+        ImageInputStream in;
         if (isCompressed(inDat, off, length)) {
-            innerStream = new InflaterInputStream(innerStream);
+            in = new UncachedImageInputStream(new InflaterInputStream(new ByteArrayInputStream(inDat, off, length)), ByteOrder.LITTLE_ENDIAN);
+        } else {
+            in = new ByteArrayImageInputStream(inDat, off, length, ByteOrder.LITTLE_ENDIAN);
         }
-        UncachedImageInputStream in = new UncachedImageInputStream(innerStream, ByteOrder.LITTLE_ENDIAN);
 
         int offset = 0;
         int scanlineStride = width;
@@ -418,12 +419,12 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
      * Decodes to 24-bit RGB. Returns true if a key-frame was decoded.
      */
     public boolean decode24(byte[] inDat, int off, int length, int[] outDat, int[] prevDat, int width, int height, boolean onlyDecodeIfKeyframe) throws IOException {
-        InputStream innerStream = new ByteArrayInputStream(inDat, off, length);
+        ImageInputStream in;
         if (isCompressed(inDat, off, length)) {
-            innerStream = new InflaterInputStream(innerStream);
+            in = new UncachedImageInputStream(new InflaterInputStream(new ByteArrayInputStream(inDat, off, length)), ByteOrder.LITTLE_ENDIAN);
+        } else {
+            in = new ByteArrayImageInputStream(inDat, off, length, ByteOrder.LITTLE_ENDIAN);
         }
-        UncachedImageInputStream in = new UncachedImageInputStream(innerStream, ByteOrder.LITTLE_ENDIAN);
-
         int offset = 0;
         int scanlineStride = width;
         int upsideDown = (height - 1) * scanlineStride + offset;
@@ -513,12 +514,12 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
      * decoded.
      */
     public boolean decode16(byte[] inDat, int off, int length, int[] outDat, int[] prevDat, int width, int height, boolean onlyDecodeIfKeyframe) throws IOException {
-        InputStream innerStream = new ByteArrayInputStream(inDat, off, length);
+        ImageInputStream in;
         if (isCompressed(inDat, off, length)) {
-            innerStream = new InflaterInputStream(innerStream);
+            in = new UncachedImageInputStream(new InflaterInputStream(new ByteArrayInputStream(inDat, off, length)), ByteOrder.LITTLE_ENDIAN);
+        } else {
+            in = new ByteArrayImageInputStream(inDat, off, length, ByteOrder.LITTLE_ENDIAN);
         }
-        UncachedImageInputStream in = new UncachedImageInputStream(innerStream, ByteOrder.LITTLE_ENDIAN);
-
         int offset = 0;
         int scanlineStride = width;
         int upsideDown = (height - 1) * scanlineStride + offset;

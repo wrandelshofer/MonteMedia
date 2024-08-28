@@ -3,8 +3,6 @@
   <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
     <file url="file://$PROJECT_DIR$/org.monte.demo.animmerger/src/main/java/org.monte.demo.animmerger" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.monte.demo.audiorecorder/src/main/java/org.monte.demo.audiorecorder" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/org.monte.demo.aviwriter/src/main/java/org.monte.demo.aviwriter" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/org.monte.demo.aviwriter/src/main/resources/org.monte.demo.aviwriter" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.monte.demo.cleartype/src/main/java/org.monte.demo.cleartype" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.monte.demo.cmykimageviewer/src/main/java/org.monte.demo.cmykimageviewer" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.monte.demo.imageioviewer/src/main/java/org.monte.demo.imageioviewer" charset="UTF-8" />
@@ -16,6 +14,8 @@
     <file url="file://$PROJECT_DIR$/org.monte.demo.movieconverter/src/main/java/org.monte.demo.movieconverter" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.monte.demo.moviemaker/src/main/java/org.monte.demo.moviemaker" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.monte.demo.moviereader/src/main/java/org.monte.demo.moviereader" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/org.monte.demo.moviewriter/src/main/java/org.monte.demo.moviewriter" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/org.monte.demo.moviewriter/src/main/resources/org.monte.demo.moviewriter" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.monte.demo.mpoimagesplitter/src/main/java/org.monte.demo.mpoimagesplitter" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.monte.demo.quicktimewriter/src/main/java/org.monte.demo.quicktimewriter" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.monte.demo.quicktimewriter/src/main/resources/org.monte.demo.quicktimewriter" charset="UTF-8" />
@@ -25,6 +25,7 @@
     <file url="file://$PROJECT_DIR$/org.monte.media.amigaatari/src/main/java/org.monte.media.amigaatari" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.monte.media.animconverter/src/main/java/org.monte.media.animconverter" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.monte.media.javafx/src/main/java/org.monte.media.javafx" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/org.monte.media.jcodec/src/main/java/org.monte.media.jcodec" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.monte.media.jmf/src/main/java/org.monte.media.jmf" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.monte.media.screenrecorder/src/main/java/org.monte.media.screenrecorder" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.monte.media.swing/src/main/java/org.monte.media.swing" charset="UTF-8" />

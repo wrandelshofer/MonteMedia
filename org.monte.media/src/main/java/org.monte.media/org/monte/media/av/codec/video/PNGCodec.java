@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import static org.monte.media.av.BufferFlag.DISCARD;
 import static org.monte.media.av.BufferFlag.KEYFRAME;
+import static org.monte.media.av.FormatKeys.MIME_ZIP;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_PNG;
@@ -57,9 +58,15 @@ public class PNGCodec extends AbstractVideoCodec {
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
                                 DepthKey, 8,
                                 EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_ZIP,
+                                DepthKey, 8,
+                                EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
                         //
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
                                 EncodingKey, ENCODING_BUFFERED_IMAGE), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_ZIP,
+                                DepthKey, 24,
+                                EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
                                 DepthKey, 24,
                                 EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
@@ -78,8 +85,14 @@ public class PNGCodec extends AbstractVideoCodec {
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
                                 DepthKey, 24,
                                 EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_ZIP,
+                                DepthKey, 24,
+                                EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
                         //
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                                DepthKey, 8,
+                                EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_ZIP,
                                 DepthKey, 8,
                                 EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
                         //

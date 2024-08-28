@@ -6,17 +6,24 @@ package org.monte.media.av;
 
 import org.monte.media.math.Rational;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 /**
  * A simple API for reading movie data (audio and video) from a file.
  *
- * <p>
- * FIXME - MovieReader should extend Demultiplexer
- *
  * @author Werner Randelshofer
  */
 public interface MovieReader extends AutoCloseable {
+    /**
+     * Gets the number of a samples of the specified track.
+     *
+     * @param track The track index.
+     * @return the number of samples in the track
+     * @throws IOException if reading the sample data failed.
+     */
+    int getSampleCount(int track) throws IOException;
+
     /**
      * Returns the number of tracks.
      */
@@ -83,6 +90,16 @@ public interface MovieReader extends AutoCloseable {
      */
     void read(int track, Buffer buffer) throws IOException;
 
+    /**
+     * Reads an image.
+     *
+     * @param track The track number
+     * @param img   An image that can be reused if it fits the media format of the
+     *              track. Pass null to create a new image on each read.
+     * @return An image or null if the end of the media has been reached.
+     * @throws IOException on IO failure
+     */
+    BufferedImage read(int track, BufferedImage img) throws IOException;
     /**
      * Returns the index of the next track in playback sequence.
      *

@@ -146,24 +146,10 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
      * @return The track number.
      */
     private int addVideoTrack(Format vf) throws IOException {
-        if (!vf.containsKey(EncodingKey)) {
-            throw new IllegalArgumentException("EncodingKey missing in " + vf);
-        }
-        if (!vf.containsKey(FrameRateKey)) {
-            throw new IllegalArgumentException("FrameRateKey missing in " + vf);
-        }
-        if (!vf.containsKey(WidthKey)) {
-            throw new IllegalArgumentException("WidthKey missing in " + vf);
-        }
-        if (!vf.containsKey(HeightKey)) {
-            throw new IllegalArgumentException("HeightKey missing in " + vf);
-        }
-        if (!vf.containsKey(DepthKey)) {
-            throw new IllegalArgumentException("DepthKey missing in " + vf);
-        }
+        vf.requireKeys(EncodingKey, FrameRateKey, WidthKey, HeightKey);
         int tr = addVideoTrack(vf.get(EncodingKey),
                 vf.get(FrameRateKey).getDenominator(), vf.get(FrameRateKey).getNumerator(),
-                vf.get(WidthKey), vf.get(HeightKey), vf.get(DepthKey),
+                vf.get(WidthKey), vf.get(HeightKey), vf.get(DepthKey, 24),
                 vf.get(KeyFrameIntervalKey, vf.get(FrameRateKey).floor(1).intValue()));
         setPalette(tr, vf.get(PaletteKey));
         setCompressionQuality(tr, vf.get(QualityKey, 1.0f));
@@ -419,17 +405,6 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
                 }
                 if (isKeyframe || !Arrays.equals(imgRGBs, previousRGBs)) {
                     paletteChange = true;
-                    /*
-                     int first = imgPalette.getMapSize();
-                     int last = -1;
-                     for (int i = 0; i < 16; i++) {
-                     if (previousRGBs[i] != imgRGBs[i] && i < first) {
-                     first = i;
-                     }
-                     if (previousRGBs[i] != imgRGBs[i] && i > last) {
-                     last = i;
-                     }
-                     }*/
                     int first = 0;
                     int last = imgPalette.getMapSize() - 1;
                     /*
@@ -473,14 +448,10 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
         return paletteChange;
     }
 
-    private Codec createCodec(Format fmt) {
-        return Registry.getInstance().getEncoder(fmt.prepend(MimeTypeKey, MIME_AVI));
-    }
-
     private void createCodec(int track) {
         AbstractAVIStream.Track tr = tracks.get(track);
         Format fmt = tr.format;
-        tr.codec = createCodec(fmt);
+        tr.codec = Registry.getInstance().getEncoder(fmt);
         if (tr.codec != null) {
             if (fmt.get(MediaTypeKey) == MediaType.VIDEO) {
                 tr.codec.setInputFormat(fmt.prepend(

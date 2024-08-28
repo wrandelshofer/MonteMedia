@@ -155,6 +155,11 @@ public class Rational extends Number implements Comparable<Rational> {
                 s, reduceFraction);
     }
 
+    public boolean isInRange(Rational minInclusive, Rational maxExclusive) {
+        return minInclusive.compareTo(this) <= 0 &&
+                this.compareTo(maxExclusive) < 0;
+    }
+
     public Rational subtract(Rational that) {
         return add(that.negate());
     }

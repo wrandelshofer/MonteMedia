@@ -47,8 +47,8 @@ import java.util.HashSet;
 public class JFIFInputStream extends FilterInputStream {
 
     /**
-     * This hash set holds the Id's of markers which stand alone,
-     * respectively do no have a data segment.
+     * This hash set holds the ids of markers which stand alone,
+     * respectively do not have a data segment.
      */
     private final HashSet<Integer> standaloneMarkers = new HashSet<>();
     /**

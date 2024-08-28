@@ -132,6 +132,7 @@ public class ImageSequenceWriter implements MovieWriter {
 //    vt.codec.setQuality(vt.videoQuality);
     }
 
+    @Override
     public void write(int track, BufferedImage image, long duration) throws IOException {
         VideoTrack t = tracks.get(track);
         if (t.inputBuffer == null) {

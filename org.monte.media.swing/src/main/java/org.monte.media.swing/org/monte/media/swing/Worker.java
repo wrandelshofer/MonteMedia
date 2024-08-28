@@ -1,10 +1,10 @@
 /*
- * @(#)Worker.java
+ * @(#)AbstractWorker.java
  * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.swing;
 
-import javax.swing.*;
+import javax.swing.SwingUtilities;
 
 /**
  * This is an abstract class that you can subclass to
@@ -122,7 +122,7 @@ public abstract class Worker<T> implements Runnable {
     }
 
     /**
-     * Starts the Worker on an internal worker thread.
+     * Starts the AbstractWorker on an internal worker thread.
      */
     public void start() {
         new Thread(this).start();

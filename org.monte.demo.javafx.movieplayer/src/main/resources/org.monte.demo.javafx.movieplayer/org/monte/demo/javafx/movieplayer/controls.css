@@ -21,7 +21,7 @@
 }
 .controls-panel {
     -fx-background-color: rgba( 127 , 127 , 127 , 0.8 ) ;
-    -fx-background-radius: 16;
+    -fx-background-radius: 12;
 }
 .time-label,
 .duration-label {

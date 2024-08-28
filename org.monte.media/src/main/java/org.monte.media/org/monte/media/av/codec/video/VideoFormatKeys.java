@@ -97,7 +97,8 @@ public class VideoFormatKeys extends FormatKeys {
     /**
      * The affine transformation matrix of the video.
      */
-    public final static FormatKey<AffineTransform> TransformKey = new FormatKey<>("transform", "transform", AffineTransform.class, false, false, AffineTransform.IDENTITY);
+    public final static FormatKey<AffineTransform> TransformKey = new FormatKey<>("transform", "transform", AffineTransform.class);
+    public static final Object ENCODING_H264 = "H264";
 
     /**
      * Pixel format.
@@ -142,9 +143,17 @@ public class VideoFormatKeys extends FormatKeys {
      * Setting this to true reduces the file size of JPEG encoded images by about 10 percent.
      * Unfortunately, the encoding time increases by factor 2 and the decoding time by factor 4.
      */
-    public final static FormatKey<Boolean> ProgressiveImageEncodingKey = new FormatKey<>("progressiveImageEncodingMode", "progressiveMode", Boolean.class, false, false, false);
+    public final static FormatKey<Boolean> ProgressiveImageEncodingKey = new FormatKey<>("progressiveImageEncodingMode", "progressiveMode", Boolean.class);
     /**
      * Color palette.
      */
     public final static FormatKey<ColorModel> PaletteKey = new FormatKey<>("palette", ColorModel.class);
+    /**
+     * Motion search range of the motion estimator.
+     * <p>
+     * A reasonable value is 16.
+     * <p>
+     * Set this value to 0 to disable motion estimation in the video codec.
+     */
+    public final static FormatKey<Integer> MotionSearchRangeKey = new FormatKey<>("motionSearchRange", Integer.class);
 }

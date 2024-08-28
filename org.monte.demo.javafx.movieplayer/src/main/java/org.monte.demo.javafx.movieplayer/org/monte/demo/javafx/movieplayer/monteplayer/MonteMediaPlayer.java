@@ -56,12 +56,25 @@ public class MonteMediaPlayer extends AbstractMediaPlayer {
 
     @Override
     public Duration getFrameAfter(Duration timestamp) {
-        return Duration.seconds(engine.getFrameAfter(Rational.valueOf(timestamp.toSeconds())).doubleValue());
+        Rational t = engine.getFrameAfter(Rational.valueOf((long) timestamp.toMillis(), 1000));
+        Duration seconds = Duration.millis(t.multiply(1000).doubleValue());
+        if (Math.abs(timestamp.toMillis() - seconds.toMillis()) < 0.01) {
+            t = engine.getFrameAfter(t);
+            seconds = Duration.millis(t.multiply(1000).doubleValue());
+        }
+        return seconds;
     }
 
     @Override
     public Duration getFrameBefore(Duration timestamp) {
-        return Duration.seconds(engine.getFrameBefore(Rational.valueOf(timestamp.toSeconds())).doubleValue());
+        Rational t = engine.getFrameBefore(Rational.valueOf((long) timestamp.toMillis(), 1000));
+        Duration seconds = Duration.millis(t.multiply(1000).doubleValue());
+        /*
+        if(Math.abs(timestamp.toMillis()-seconds.toMillis())<0.01){
+            t=engine.getFrameBefore(t);
+            seconds = Duration.millis(t.multiply(1000).doubleValue());
+        }*/
+        return seconds;
     }
 
     /**
