@@ -32,6 +32,7 @@ import static org.monte.media.av.FormatKeys.EncodingKey;
 import static org.monte.media.av.FormatKeys.FrameRateKey;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVC1;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_DIB;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_MJPG;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_PNG;
@@ -135,9 +136,13 @@ public class Main {
 
         try {
             var m = new Main();
+            m.test(new File("moviewriterdemo-tscc24.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 24), true);
+            m.test(new File("moviewriterdemo-h264-motion16.mov"), new Format(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 16), false);
+            m.test(new File("moviewriterdemo-h264-motion0.mov"), new Format(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0), false);
+            if (true) return;
             m.test(new File("moviewriterdemo-h264-motion16.m4v"), new Format(DepthKey, 24, QualityKey, 0.75f, MotionSearchRangeKey, 16), true);
             m.test(new File("moviewriterdemo-h264-motion0.m4v"), new Format(DepthKey, 24, QualityKey, 0.75f, MotionSearchRangeKey, 0), true);
-            //   if(true)return;
+            m.test(new File("moviewriterdemo-h264-motion0.avi"), new Format(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0), true);
             m.test(new File("moviewriterdemo-jpg-q0.75.avi"), new Format(EncodingKey, ENCODING_AVI_MJPG, DepthKey, 24, QualityKey, 0.75f), true);
             m.test(new File("moviewriterdemo-png.avi"), new Format(EncodingKey, ENCODING_AVI_PNG, DepthKey, 24), true);
             m.test(new File("moviewriterdemo-raw24.avi"), new Format(EncodingKey, ENCODING_AVI_DIB, DepthKey, 24), true);
@@ -145,10 +150,10 @@ public class Main {
             m.test(new File("moviewriterdemo-rle8.avi"), new Format(EncodingKey, ENCODING_AVI_RLE8, DepthKey, 8), true);
             m.test(new File("moviewriterdemo-tscc8.avi"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8), true);
             m.test(new File("moviewriterdemo-tscc16.avi"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 16), true);
+            m.test(new File("moviewriterdemo-tscc24.avi"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 24), true);
             m.test(new File("moviewriterdemo-raw8gray.avi"), new Format(EncodingKey, ENCODING_AVI_DIB, DepthKey, 8, PixelFormatKey, PixelFormat.GRAY), true);
             m.test(new File("moviewriterdemo-rle8gray.avi"), new Format(EncodingKey, ENCODING_AVI_RLE8, DepthKey, 8, PixelFormatKey, PixelFormat.GRAY), false);
             m.test(new File("moviewriterdemo-tscc8gray.avi"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8, PixelFormatKey, PixelFormat.GRAY), true);
-            m.test(new File("moviewriterdemo-tscc24.avi"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 24), true);
             //test(new File("avidemo-rle4.avi"), AVIOutputStreamOLD.AVIVideoFormat.RLE, 4, 1f);
             m.test(new File("moviewriterdemo-jpg-q0.75.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_JPEG, DepthKey, 24, QualityKey, 0.75f), true);
             m.test(new File("moviewriterdemo-png.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_PNG, DepthKey, 24), true);
@@ -158,7 +163,6 @@ public class Main {
             m.test(new File("moviewriterdemo-tscc8gray.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8,
                     PixelFormatKey, VideoFormatKeys.PixelFormat.GRAY), true);
             m.test(new File("moviewriterdemo-tscc16.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 16), true);
-            m.test(new File("moviewriterdemo-tscc24.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 24), true);
             m.test(new File("moviewriterdemo-rle8.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 8), false);
             m.test(new File("moviewriterdemo-rle16.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 16), false);
             m.test(new File("moviewriterdemo-rle24.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 24), false);

@@ -82,6 +82,10 @@ public class Buffer {
      */
     public Throwable exception;
 
+    public void setException(Throwable exception) {
+        this.exception = exception;
+    }
+
     /**
      * Sets all variables of this buffer to that buffer except for
      * <ul>

@@ -214,7 +214,7 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
                     fmt.get(CompressorNameKey, fmt.get(EncodingKey)),
                     Math.min(6000, fmt.get(FrameRateKey).getNumerator() * fmt.get(FrameRateKey).getDenominator()),
                     fmt.get(WidthKey), fmt.get(HeightKey), fmt.get(DepthKey, 24),
-                    (int) fmt.get(FrameRateKey).getDenominator());
+                    (int) fmt.get(FrameRateKey).getDenominator(), fmt);
             setCompressionQuality(t, fmt.get(QualityKey, 1.0f));
             return t;
         } else if (fmt.get(MediaTypeKey) == MediaType.AUDIO) {
@@ -267,7 +267,7 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
      *                                  than 1.
      */
     public int addVideoTrack(Format format, long timeScale, int width, int height) throws IOException {
-        int tr = addVideoTrack(format.get(EncodingKey), format.get(CompressorNameKey), timeScale, width, height, 24, 30);
+        int tr = addVideoTrack(format.get(EncodingKey), format.get(CompressorNameKey), timeScale, width, height, 24, 30, format);
         setVideoColorTable(tr, format.get(PaletteKey));
         return tr;
     }
@@ -283,7 +283,7 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
      *                                  than 1.
      */
     public int addVideoTrack(Format format, int width, int height, int depth, int syncInterval) throws IOException {
-        int tr = addVideoTrack(format.get(EncodingKey), format.get(CompressorNameKey), format.get(FrameRateKey).getDenominator() * format.get(FrameRateKey).getNumerator(), width, height, depth, syncInterval);
+        int tr = addVideoTrack(format.get(EncodingKey), format.get(CompressorNameKey), format.get(FrameRateKey).getDenominator() * format.get(FrameRateKey).getNumerator(), width, height, depth, syncInterval, format);
         setVideoColorTable(tr, format.get(PaletteKey));
         return tr;
     }

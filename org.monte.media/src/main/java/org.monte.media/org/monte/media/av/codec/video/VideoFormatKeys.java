@@ -16,39 +16,42 @@ import java.awt.image.ColorModel;
  * @author Werner Randelshofer
  */
 public class VideoFormatKeys extends FormatKeys {
-    // Standard video ENCODING strings for use with FormatKey.Encoding.
-    public static final String ENCODING_BUFFERED_IMAGE = "image";
-    public static final String ENCODING_WRITABLE_IMAGE = "writableImage";
-    /**
-     * Cinepak format.
-     */
-    public static final String ENCODING_QUICKTIME_CINEPAK = "cvid";
-    public static final String COMPRESSOR_NAME_QUICKTIME_CINEPAK = "Cinepak";
-    /**
-     * JPEG format.
-     */
-    public static final String ENCODING_QUICKTIME_JPEG = "jpeg";
-    public static final String COMPRESSOR_NAME_QUICKTIME_JPEG = "Photo - JPEG";
-    /**
-     * PNG format.
-     */
-    public static final String ENCODING_QUICKTIME_PNG = "png ";
-    public static final String COMPRESSOR_NAME_QUICKTIME_PNG = "PNG";
-    /**
-     * Animation format.
-     */
-    public static final String ENCODING_QUICKTIME_ANIMATION = "rle ";
+    public static final String COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE = "Techsmith Screen Capture";
     public static final String COMPRESSOR_NAME_QUICKTIME_ANIMATION = "Animation";
-    /**
-     * Raw format.
-     */
-    public static final String ENCODING_QUICKTIME_RAW = "raw ";
+    public static final String COMPRESSOR_NAME_QUICKTIME_CINEPAK = "Cinepak";
+    public static final String COMPRESSOR_NAME_QUICKTIME_JPEG = "Photo - JPEG";
+    public static final String COMPRESSOR_NAME_QUICKTIME_PNG = "PNG";
     public static final String COMPRESSOR_NAME_QUICKTIME_RAW = "NONE";
-    // AVI Formats
+    /**
+     * The compressor name.
+     */
+    public final static FormatKey<String> CompressorNameKey = new FormatKey<>("compressorName", "compressorName", String.class, true, false);
+    /**
+     * The data class.
+     */
+    @SuppressWarnings("rawtypes")
+    public final static FormatKey<Class> DataClassKey = new FormatKey<>("dataClass", Class.class);
+    /**
+     * The number of bits per pixel.
+     */
+    public final static FormatKey<Integer> DepthKey = new FormatKey<>("dimZ", "depth", Integer.class);
     /**
      * Microsoft Device Independent Bitmap (DIB) format.
      */
     public static final String ENCODING_AVI_DIB = "\u0000\u0000\u0000\u0000";
+    /**
+     * DosBox Screen Capture format.
+     */
+    public static final String ENCODING_AVI_DOSBOX_SCREEN_CAPTURE = "ZMBV";
+    /**
+     * JPEG format.
+     */
+    public static final String ENCODING_AVI_MJPG = "MJPG";
+    // AVI Formats
+    /**
+     * PNG format.
+     */
+    public static final String ENCODING_AVI_PNG = "png ";
     /**
      * Microsoft Run Length format.
      */
@@ -61,93 +64,52 @@ public class VideoFormatKeys extends FormatKeys {
      * Techsmith Screen Capture format.
      */
     public static final String ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE = "tscc";
-    public static final String COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE = "Techsmith Screen Capture";
-    /**
-     * DosBox Screen Capture format.
-     */
-    public static final String ENCODING_AVI_DOSBOX_SCREEN_CAPTURE = "ZMBV";
-    /**
-     * JPEG format.
-     */
-    public static final String ENCODING_AVI_MJPG = "MJPG";
-    /**
-     * PNG format.
-     */
-    public static final String ENCODING_AVI_PNG = "png ";
     /**
      * Interleaved planar bitmap format.
      */
     public static final String ENCODING_BITMAP_IMAGE = "ILBM";
+    // Standard video ENCODING strings for use with FormatKey.Encoding.
+    public static final String ENCODING_BUFFERED_IMAGE = "image";
+
+    /**
+     * H.264 Encoding format.
+     */
+    public static final String ENCODING_AVC1 = "avc1";
+    /**
+     * Animation format.
+     */
+    public static final String ENCODING_QUICKTIME_ANIMATION = "rle ";
+    /**
+     * Cinepak format.
+     */
+    public static final String ENCODING_QUICKTIME_CINEPAK = "cvid";
 
     //
-
     /**
-     * The WidthKey of a video frame.
+     * JPEG format.
      */
-    public final static FormatKey<Integer> WidthKey = new FormatKey<>("dimX", "width", Integer.class);
+    public static final String ENCODING_QUICKTIME_JPEG = "jpeg";
     /**
-     * The HeightKey of a video frame.
+     * PNG format.
      */
-    public final static FormatKey<Integer> HeightKey = new FormatKey<>("dimY", "height", Integer.class);
+    public static final String ENCODING_QUICKTIME_PNG = "png ";
     /**
-     * The number of bits per pixel.
+     * Raw format.
      */
-    public final static FormatKey<Integer> DepthKey = new FormatKey<>("dimZ", "depth", Integer.class);
-
-    /**
-     * The affine transformation matrix of the video.
-     */
-    public final static FormatKey<AffineTransform> TransformKey = new FormatKey<>("transform", "transform", AffineTransform.class);
-    public static final Object ENCODING_H264 = "H264";
-
-    /**
-     * Pixel format.
-     */
-    public enum PixelFormat {
-        RGB, GRAY
-    }
-
-    /**
-     * The pixel format.
-     */
-    public final static FormatKey<PixelFormat> PixelFormatKey = new FormatKey<>("pixelFormat", PixelFormat.class);
-
-    /**
-     * The data class.
-     */
-    @SuppressWarnings("rawtypes")
-    public final static FormatKey<Class> DataClassKey = new FormatKey<>("dataClass", Class.class);
-    /**
-     * The compressor name.
-     */
-    public final static FormatKey<String> CompressorNameKey = new FormatKey<>("compressorName", "compressorName", String.class, true, false);
-    /**
-     * The pixel aspect ratio WidthKey : HeightKey;
-     */
-    public final static FormatKey<Rational> PixelAspectRatioKey = new FormatKey<>("pixelAspectRatio", Rational.class);
+    public static final String ENCODING_QUICKTIME_RAW = "raw ";
+    public static final String ENCODING_WRITABLE_IMAGE = "writableImage";
     /**
      * Whether the frame rate must be fixed. False means variable frame rate.
      */
     public final static FormatKey<Boolean> FixedFrameRateKey = new FormatKey<>("fixedFrameRate", Boolean.class);
     /**
+     * The HeightKey of a video frame.
+     */
+    public final static FormatKey<Integer> HeightKey = new FormatKey<>("dimY", "height", Integer.class);
+    /**
      * Whether the video is interlaced.
      */
     public final static FormatKey<Boolean> InterlaceKey = new FormatKey<>("interlace", Boolean.class);
-    /**
-     * Encoding quality. Value between 0 and 1.
-     */
-    public final static FormatKey<Float> QualityKey = new FormatKey<>("quality", Float.class);
-    /**
-     * Progressive image encoding. Boolean value. Default is false.
-     * <p>
-     * Setting this to true reduces the file size of JPEG encoded images by about 10 percent.
-     * Unfortunately, the encoding time increases by factor 2 and the decoding time by factor 4.
-     */
-    public final static FormatKey<Boolean> ProgressiveImageEncodingKey = new FormatKey<>("progressiveImageEncodingMode", "progressiveMode", Boolean.class);
-    /**
-     * Color palette.
-     */
-    public final static FormatKey<ColorModel> PaletteKey = new FormatKey<>("palette", ColorModel.class);
     /**
      * Motion search range of the motion estimator.
      * <p>
@@ -156,4 +118,42 @@ public class VideoFormatKeys extends FormatKeys {
      * Set this value to 0 to disable motion estimation in the video codec.
      */
     public final static FormatKey<Integer> MotionSearchRangeKey = new FormatKey<>("motionSearchRange", Integer.class);
+    /**
+     * Color palette.
+     */
+    public final static FormatKey<ColorModel> PaletteKey = new FormatKey<>("palette", ColorModel.class);
+    /**
+     * The pixel aspect ratio WidthKey : HeightKey;
+     */
+    public final static FormatKey<Rational> PixelAspectRatioKey = new FormatKey<>("pixelAspectRatio", Rational.class);
+    /**
+     * The pixel format.
+     */
+    public final static FormatKey<PixelFormat> PixelFormatKey = new FormatKey<>("pixelFormat", PixelFormat.class);
+    /**
+     * Progressive image encoding. Boolean value. Default is false.
+     * <p>
+     * Setting this to true reduces the file size of JPEG encoded images by about 10 percent.
+     * Unfortunately, the encoding time increases by factor 2 and the decoding time by factor 4.
+     */
+    public final static FormatKey<Boolean> ProgressiveImageEncodingKey = new FormatKey<>("progressiveImageEncodingMode", "progressiveMode", Boolean.class);
+    /**
+     * Encoding quality. Value between 0 and 1.
+     */
+    public final static FormatKey<Float> QualityKey = new FormatKey<>("quality", Float.class);
+    /**
+     * The affine transformation matrix of the video.
+     */
+    public final static FormatKey<AffineTransform> TransformKey = new FormatKey<>("transform", "transform", AffineTransform.class);
+    /**
+     * The WidthKey of a video frame.
+     */
+    public final static FormatKey<Integer> WidthKey = new FormatKey<>("dimX", "width", Integer.class);
+
+    /**
+     * Pixel format.
+     */
+    public enum PixelFormat {
+        RGB, GRAY
+    }
 }

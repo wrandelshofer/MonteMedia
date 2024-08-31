@@ -70,7 +70,7 @@ public class AudioFormatKeys extends FormatKeys {
      */
     public final static FormatKey<Integer> SampleSizeInBitsKey = new FormatKey<>("sampleSizeInBits", Integer.class);
     /**
-     * The number of ChannelsKey.
+     * The number of channels.
      */
     public final static FormatKey<Integer> ChannelsKey = new FormatKey<>("channels", Integer.class);
     /**

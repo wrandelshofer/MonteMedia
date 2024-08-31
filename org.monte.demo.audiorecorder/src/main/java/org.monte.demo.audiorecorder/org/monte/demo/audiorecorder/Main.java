@@ -13,12 +13,16 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.Line;
 import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.Mixer;
 import javax.sound.sampled.TargetDataLine;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * {@code Main} records audio into an AVI file.
@@ -29,9 +33,11 @@ public class Main implements Runnable {
 
     private volatile Thread worker;
     private final File file;
+    private final AudioTargetInfo audioTargetInfo;
 
-    public Main(File file) {
+    public Main(File file, AudioTargetInfo audioTargetInfo) {
         this.file = file;
+        this.audioTargetInfo = audioTargetInfo;
     }
 
     public void start() throws LineUnavailableException {
@@ -59,13 +65,10 @@ public class Main implements Runnable {
      */
     @Override
     public void run() {
-        DataLine.Info lineInfo = new DataLine.Info(
-                TargetDataLine.class, new AudioFormat(44100, 16, 2, true, true));
-
         AVIWriter writer = null;
         TargetDataLine line = null;
         try {
-            line = (TargetDataLine) AudioSystem.getLine(lineInfo);
+            line = (TargetDataLine) audioTargetInfo.mixer.getLine(audioTargetInfo.info);
             AudioFormat lineFormat = line.getFormat();
             Buffer buf = new Buffer();
             buf.format = AudioFormatKeys.fromAudioFormat(lineFormat);
@@ -105,6 +108,9 @@ public class Main implements Runnable {
         }
     }
 
+    record AudioTargetInfo(Mixer mixer, Line.Info info, AudioFormat format) {
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -115,10 +121,35 @@ public class Main implements Runnable {
             file.getParentFile().mkdirs();
         }
 
+        System.out.println("Available target data lines:\n");
+        List<AudioTargetInfo> targetLines = new ArrayList<>();
+        for (Mixer.Info info : AudioSystem.getMixerInfo()) {
+            System.out.println("  " + info);
+            Mixer mixer = AudioSystem.getMixer(info);
+            for (Line.Info info1 : mixer.getTargetLineInfo()) {
+                System.out.println("    " + info1);
+                if (info1 instanceof DataLine.Info dlInfo) {
+                    for (AudioFormat format : dlInfo.getFormats()) {
+                        if (format.getEncoding() == AudioFormat.Encoding.PCM_SIGNED && format.getSampleRate() != AudioSystem.NOT_SPECIFIED) {
+                            System.out.println((targetLines.size() + 1) + ".    " + format);
+                            targetLines.add(new AudioTargetInfo(mixer, info1, format));
+                        }
+                    }
+                }
+            }
+        }
+
+        System.out.println("\nEnter the number of the desired source line and press ENTER.");
+        StringBuffer line = new StringBuffer();
+        for (int ch = System.in.read(); ch != '\n'; ch = System.in.read()) line.append((char) ch);
+        Integer index = Integer.valueOf(line.toString());
+        AudioTargetInfo sourceLineInfo = targetLines.get(index - 1);
+        System.out.println("You have selected line " + index);
+
 
         System.out.println("Press ENTER to start audio recording.");
         while (System.in.read() != '\n') ;
-        Main r = new Main(file);
+        Main r = new Main(file, sourceLineInfo);
         r.start();
         System.out.println("Recording...\nPress ENTER to stop audio recording.");
         while (System.in.read() != '\n') ;

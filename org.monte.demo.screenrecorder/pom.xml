@@ -64,6 +64,10 @@
     </dependency>
     <dependency>
       <groupId>ch.randelshofer</groupId>
+      <artifactId>org.monte.media.jcodec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>ch.randelshofer</groupId>
       <artifactId>org.monte.media.swing</artifactId>
     </dependency>
     <dependency>

@@ -134,7 +134,6 @@ class ScreenGrabber implements Runnable, AutoCloseable {
         try {
             grabScreen();
         } catch (Throwable ex) {
-            ex.printStackTrace();
             recorder.recordingFailed(ex);
         }
     }

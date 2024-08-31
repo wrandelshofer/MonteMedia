@@ -606,7 +606,7 @@ public class ScreenRecorder extends AbstractStateModel {
     private void startAudioCapture() throws LineUnavailableException {
         audioCaptureTimer = new ScheduledThreadPoolExecutor(1);
         int delay = 500;
-        audioGrabber = new AudioGrabber(mixer, audioFormat, audioTrackId, recordingStartTime, writerQueue);
+        audioGrabber = new AudioGrabber(this, mixer, audioFormat, audioTrackId, recordingStartTime, writerQueue);
         audioFuture = audioCaptureTimer.scheduleWithFixedDelay(audioGrabber, 0, 10, TimeUnit.MILLISECONDS);
         audioGrabber.setFuture(audioFuture);
     }

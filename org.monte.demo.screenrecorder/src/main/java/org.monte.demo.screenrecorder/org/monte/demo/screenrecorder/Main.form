@@ -47,13 +47,12 @@
                           <Component id="audioSourceLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="formatChoice" linkSize="1" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="colorsChoice" linkSize="1" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="cursorChoice" linkSize="1" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="audioSourceChoice" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -62,11 +61,9 @@
                                       <Component id="mouseRateLabel" alignment="1" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Component id="encodingLabel" min="-2" max="-2" attributes="0"/>
-                                  <Component id="audioRateLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="audioRateChoice" linkSize="1" min="-2" max="-2" attributes="0"/>
                                   <Component id="encodingChoice" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="screenRateField" alignment="0" min="-2" pref="77" max="-2" attributes="0"/>
                                   <Component id="mouseRateField" alignment="0" min="-2" pref="77" max="-2" attributes="0"/>
@@ -77,6 +74,7 @@
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Component id="selectAreaButton" min="-2" max="-2" attributes="0"/>
                           </Group>
+                          <Component id="audioSourceChoice" alignment="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <Component id="infoLabel" alignment="0" max="32767" attributes="0"/>
@@ -125,8 +123,6 @@
               </Group>
               <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="audioRateChoice" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="audioRateLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="audioSourceLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="audioSourceChoice" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
@@ -157,9 +153,10 @@
     <Component class="javax.swing.JComboBox" name="formatChoice">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="2">
-            <StringItem index="0" value="AVI"/>
-            <StringItem index="1" value="QuickTime"/>
+          <StringArray count="3">
+            <StringItem index="0" value="MP4"/>
+            <StringItem index="1" value="AVI"/>
+            <StringItem index="2" value="QuickTime"/>
           </StringArray>
         </Property>
       </Properties>
@@ -215,20 +212,6 @@
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="audioRateLabel">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Audio Rate:"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JComboBox" name="audioRateChoice">
-      <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="1">
-            <StringItem index="0" value="44.100 kHz"/>
-          </StringArray>
-        </Property>
-      </Properties>
-    </Component>
     <Component class="javax.swing.JLabel" name="screenRateLabel">
       <Properties>
         <Property name="text" type="java.lang.String" value="Screen Rate:"/>
@@ -251,13 +234,8 @@
     <Component class="javax.swing.JComboBox" name="encodingChoice">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="6">
-            <StringItem index="0" value="Screen Capture"/>
-            <StringItem index="1" value="Run Length"/>
-            <StringItem index="2" value="None"/>
-            <StringItem index="3" value="PNG"/>
-            <StringItem index="4" value="JPEG 100 %"/>
-            <StringItem index="5" value="JPEG   50 %"/>
+          <StringArray count="1">
+            <StringItem index="0" value="H264"/>
           </StringArray>
         </Property>
       </Properties>

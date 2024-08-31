@@ -34,20 +34,21 @@ class AudioGrabber implements Runnable, AutoCloseable {
     private final TargetDataLine line;
     private final BlockingQueue<Buffer> queue;
     private final Integer audioTrack;
-    private final Long startTime;
-    private Long totalSampleCount;
+    private final long startTime;
+    private long totalSampleCount;
     private ScheduledFuture<?> future;
-    private Long sequenceNumber;
-
+    private long sequenceNumber;
+    private final ScreenRecorder recorder;
     private float audioLevelLeft = AudioSystem.NOT_SPECIFIED;
     private float audioLevelRight = AudioSystem.NOT_SPECIFIED;
     private final AtomicLong stopTime = new AtomicLong(Long.MAX_VALUE);
 
-    public AudioGrabber(final Mixer mixer, final Format audioFormat, final int audioTrack, long startTime, BlockingQueue<Buffer> queue)
+    public AudioGrabber(ScreenRecorder recorder, final Mixer mixer, final Format audioFormat, final int audioTrack, long startTime, BlockingQueue<Buffer> queue)
             throws LineUnavailableException {
         this.audioTrack = audioTrack;
         this.queue = queue;
         this.startTime = startTime;
+        this.recorder = recorder;
 
         DataLine.Info lineInfo = new DataLine.Info(TargetDataLine.class, AudioFormatKeys.toAudioFormat(audioFormat));
         this.line = initializeAudioLine(mixer, lineInfo);
@@ -107,6 +108,14 @@ class AudioGrabber implements Runnable, AutoCloseable {
 
     @Override
     public void run() {
+        try {
+            grabAudio();
+        } catch (Throwable ex) {
+            recorder.recordingFailed(ex);
+        }
+    }
+
+    public void grabAudio() {
         Buffer buf = new Buffer();
         AudioFormat lineFormat = line.getFormat();
         buf.format = fromAudioFormat(lineFormat).append(SilenceBugKey, true);

@@ -1,1 +1,2 @@
 org.monte.media.jcodec.codec.PictureCodecSpi
+org.monte.media.jcodec.codec.H264CodecSpi

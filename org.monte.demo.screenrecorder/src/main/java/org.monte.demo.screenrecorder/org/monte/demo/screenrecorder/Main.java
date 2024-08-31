@@ -15,10 +15,12 @@ import org.monte.media.swing.BackgroundTask;
 import org.monte.media.swing.JLabelHyperlinkHandler;
 import org.monte.media.swing.datatransfer.DropFileTransferHandler;
 
+import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
+import javax.sound.sampled.Line;
 import javax.sound.sampled.Mixer;
-import javax.sound.sampled.TargetDataLine;
+import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -48,6 +50,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.ByteOrder;
+import java.util.Objects;
 import java.util.Vector;
 import java.util.prefs.Preferences;
 
@@ -57,17 +61,22 @@ import static org.monte.media.av.FormatKeys.EncodingKey;
 import static org.monte.media.av.FormatKeys.FrameRateKey;
 import static org.monte.media.av.FormatKeys.KeyFrameIntervalKey;
 import static org.monte.media.av.FormatKeys.MIME_AVI;
+import static org.monte.media.av.FormatKeys.MIME_MP4;
 import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.FormatKeys.MimeTypeKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ByteOrderKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ChannelsKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleRateKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleSizeInBitsKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.COMPRESSOR_NAME_QUICKTIME_ANIMATION;
 import static org.monte.media.av.codec.video.VideoFormatKeys.COMPRESSOR_NAME_QUICKTIME_JPEG;
 import static org.monte.media.av.codec.video.VideoFormatKeys.COMPRESSOR_NAME_QUICKTIME_PNG;
 import static org.monte.media.av.codec.video.VideoFormatKeys.COMPRESSOR_NAME_QUICKTIME_RAW;
 import static org.monte.media.av.codec.video.VideoFormatKeys.CompressorNameKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVC1;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_DIB;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_MJPG;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_PNG;
@@ -89,6 +98,20 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 public class Main extends javax.swing.JFrame {
 
     private final static long serialVersionUID = 1L;
+    public static final String COLORS_HUNDREDS = "Hundreds";
+    public static final String COLORS_THOUSANDS = "Thousands";
+    public static final String COLORS_MILLIONS = "Millions";
+    public static final String ENC_SCREEN_CAPTURE = "Screen Capture";
+    public static final String ENC_RUN_LENGTH = "Run Length";
+    public static final String ENC_NONE = "None";
+    public static final String ENC_PNG = "PNG";
+    public static final String ENC_JPEG_100PERCENT = "JPEG 100 %";
+    public static final String ENC_JPEG_50PERCENT = "JPEG  50 %";
+    public static final String ENC_ANIMATION = "Animation";
+    public static final String ENC_H264 = "H264";
+    public static final String FMT_MP4 = "MP4";
+    public static final String FMT_AVI = "AVI";
+    public static final String FMT_QUICKTIME = "QuickTime";
 
     private class Handler implements ChangeListener {
 
@@ -103,9 +126,9 @@ public class Main extends javax.swing.JFrame {
 
     private Handler handler = new Handler();
     private ScreenRecorder screenRecorder;
-    private int depth;
-    private int format;
-    private int encoding;
+    private String depth;
+    private String format;
+    private String encoding;
     private int cursor;
     private int audioRate;
     private int audioSource;
@@ -114,39 +137,11 @@ public class Main extends javax.swing.JFrame {
     private double mouseRate;
     private File movieFolder;
 
-    private static class AudioRateItem {
 
-        private String title;
-        private int sampleRate;
-        private int bitsPerSample;
-
-        public AudioRateItem(String title, int sampleRate, int bitsPerSample) {
-            this.title = title;
-            this.sampleRate = sampleRate;
-            this.bitsPerSample = bitsPerSample;
-        }
-
-        @Override
-        public String toString() {
-            return title;
-        }
-    }
-
-    private static class AudioSourceItem {
-
-        private String title;
-        private Mixer.Info mixerInfo;
-        private boolean isEnabled;
-
-        public AudioSourceItem(String title, Mixer.Info mixerInfo) {
-            this(title, mixerInfo, true);
-        }
-
-        public AudioSourceItem(String title, Mixer.Info mixerInfo, boolean isEnabled) {
-            this.title = title;
-            this.mixerInfo = mixerInfo;
-            this.isEnabled = isEnabled;
-        }
+    private record AudioSourceItem(
+            String title,
+            Mixer.Info mixerInfo,
+            AudioFormat format) {
 
         @Override
         public String toString() {
@@ -270,12 +265,12 @@ public class Main extends javax.swing.JFrame {
             }
         }));
 
-        depth = min(max(0, prefs.getInt("ScreenRecording.colorDepth", 3)), colorsChoice.getItemCount() - 1);
-        colorsChoice.setSelectedIndex(depth);
-        format = min(max(0, prefs.getInt("ScreenRecording.format", 0)), formatChoice.getItemCount() - 1);
-        formatChoice.setSelectedIndex(format);
-        encoding = min(max(0, prefs.getInt("ScreenRecording.encoding", 0)), encodingChoice.getItemCount() - 1);
-        encodingChoice.setSelectedIndex(encoding);
+        depth = prefs.get("ScreenRecording.colorDepth", COLORS_MILLIONS);
+        colorsChoice.setSelectedIndex(findIndex(depth, colorsChoice.getModel()));
+        format = prefs.get("ScreenRecording.format", FMT_MP4);
+        formatChoice.setSelectedIndex(findIndex(format, formatChoice.getModel()));
+        encoding = prefs.get("ScreenRecording.encoding", ENC_H264);
+        encodingChoice.setSelectedIndex(findIndex(encoding, encodingChoice.getModel()));
         cursor = min(max(0, prefs.getInt("ScreenRecording.cursor", 1)), cursorChoice.getItemCount() - 1);
         cursorChoice.setSelectedIndex(cursor);
 
@@ -287,21 +282,8 @@ public class Main extends javax.swing.JFrame {
         SpinnerNumberModel mouseRateModel = new SpinnerNumberModel(mouseRate, 1, 30, 1);
         mouseRateField.setModel(mouseRateModel);
 
-        // FIXME - 8-bit recording is currently broken
-        audioRateChoice.setModel(new DefaultComboBoxModel<>(new AudioRateItem[]{
-                //new AudioItem("No Audio", 0, 0),
-                //new AudioItem("8.000 Hz, 8-bit",8000,8),
-                new AudioRateItem("8.000 Hz", 8000, 16),
-                //new AudioItem("11.025 Hz, 8-bit",11025,8),
-                new AudioRateItem("11.025 Hz", 11025, 16),
-                //new AudioItem("22.050 Hz, 8-bit",22050,8),
-                new AudioRateItem("22.050 Hz", 22050, 16),
-                //new AudioItem("44.100 Hz, 8-bit",44100,8),
-                new AudioRateItem("44.100 Hz", 44100, 16),}));
-        audioRate = prefs.getInt("ScreenRecording.audioRate", 0);
-        audioRateChoice.setSelectedIndex(audioRate);
         audioSourceChoice.setModel(new DefaultComboBoxModel<>(getAudioSources()));
-        audioSource = prefs.getInt("ScreenRecording.audioSource", 0);
+        audioSource = Math.clamp(prefs.getInt("ScreenRecording.audioSource", 0), 0, audioSourceChoice.getItemCount() - 1);
         audioSourceChoice.setSelectedIndex(audioSource);
 
         Dimension customDim = new Dimension(prefs.getInt("ScreenRecording.customAreaWidth", 1024),
@@ -333,6 +315,16 @@ public class Main extends javax.swing.JFrame {
         pack();
     }
 
+    private int findIndex(String value, ComboBoxModel<String> model) {
+        for (int i = 0, n = model.getSize(); i < n; i++) {
+            if (Objects.equals(value, model.getElementAt(i))) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -350,8 +342,6 @@ public class Main extends javax.swing.JFrame {
         startStopButton = new javax.swing.JButton();
         mouseLabel = new javax.swing.JLabel();
         cursorChoice = new javax.swing.JComboBox();
-        audioRateLabel = new javax.swing.JLabel();
-        audioRateChoice = new javax.swing.JComboBox();
         screenRateLabel = new javax.swing.JLabel();
         screenRateField = new javax.swing.JSpinner();
         mouseRateLabel = new javax.swing.JLabel();
@@ -374,7 +364,7 @@ public class Main extends javax.swing.JFrame {
 
         formatLabel.setText("Format:");
 
-        formatChoice.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"AVI", "QuickTime"}));
+        formatChoice.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"MP4", "AVI", "QuickTime"}));
         formatChoice.addActionListener(formListener);
 
         colorsLabel.setText("Colors:");
@@ -391,17 +381,13 @@ public class Main extends javax.swing.JFrame {
 
         cursorChoice.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"No Cursor", "Black Cursor", "White Cursor"}));
 
-        audioRateLabel.setText("Audio Rate:");
-
-        audioRateChoice.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"44.100 kHz"}));
-
         screenRateLabel.setText("Screen Rate:");
 
         mouseRateLabel.setText("Mouse Rate:");
 
         encodingLabel.setText("Encoding:");
 
-        encodingChoice.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Screen Capture", "Run Length", "None", "PNG", "JPEG 100 %", "JPEG   50 %"}));
+        encodingChoice.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"H264"}));
 
         areaLabel.setText("Area:");
 
@@ -437,35 +423,33 @@ public class Main extends javax.swing.JFrame {
                                                         .addComponent(areaLabel)
                                                         .addComponent(audioSourceLabel))
                                                 .addGap(18, 18, 18)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                                         .addGroup(layout.createSequentialGroup()
                                                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                                         .addComponent(formatChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                                         .addComponent(colorsChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                        .addComponent(cursorChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                        .addComponent(audioSourceChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                        .addComponent(cursorChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                                                 .addGap(18, 18, 18)
                                                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                                                 .addComponent(screenRateLabel, javax.swing.GroupLayout.Alignment.TRAILING)
                                                                                 .addComponent(mouseRateLabel, javax.swing.GroupLayout.Alignment.TRAILING))
-                                                                        .addComponent(encodingLabel)
-                                                                        .addComponent(audioRateLabel))
+                                                                        .addComponent(encodingLabel))
                                                                 .addGap(18, 18, 18)
                                                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                                        .addComponent(audioRateChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                                         .addComponent(encodingChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                                         .addComponent(screenRateField, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                                         .addComponent(mouseRateField, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                                         .addGroup(layout.createSequentialGroup()
                                                                 .addComponent(areaChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(selectAreaButton))))
+                                                                .addComponent(selectAreaButton))
+                                                        .addComponent(audioSourceChoice, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                         .addComponent(infoLabel))
                                 .addContainerGap())
         );
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[]{audioRateChoice, colorsChoice, cursorChoice, formatChoice});
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[]{colorsChoice, cursorChoice, formatChoice});
 
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -498,8 +482,6 @@ public class Main extends javax.swing.JFrame {
                                                         .addComponent(mouseRateLabel))))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(audioRateChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(audioRateLabel)
                                         .addComponent(audioSourceLabel)
                                         .addComponent(audioSourceChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -524,7 +506,6 @@ public class Main extends javax.swing.JFrame {
     private class FormListener implements java.awt.event.ActionListener, java.awt.event.WindowListener {
         FormListener() {
         }
-
         public void actionPerformed(java.awt.event.ActionEvent evt) {
             if (evt.getSource() == formatChoice) {
                 Main.this.formatChoicePerformed(evt);
@@ -565,23 +546,20 @@ public class Main extends javax.swing.JFrame {
 
     private static Vector<AudioSourceItem> getAudioSources() {
         Vector<AudioSourceItem> l = new Vector<>();
-
-        l.add(new AudioSourceItem("None", null, false));
-        l.add(new AudioSourceItem("Default Input", null, true));
-        Mixer.Info[] mixers = AudioSystem.getMixerInfo();
-        DataLine.Info lineInfo = new DataLine.Info(
-                TargetDataLine.class,
-                new javax.sound.sampled.AudioFormat(
-                        44100.0f,
-                        16,
-                        2,
-                        true,
-                        true));
-
-        for (Mixer.Info info : mixers) {
-            Mixer mixer = AudioSystem.getMixer(info);
-            if (mixer.isLineSupported(lineInfo)) {
-                l.add(new AudioSourceItem(info.getName(), info));
+        for (Mixer.Info mixerInfo : AudioSystem.getMixerInfo()) {
+            Mixer mixer = AudioSystem.getMixer(mixerInfo);
+            for (Line.Info targetLineInfo : mixer.getTargetLineInfo()) {
+                if (targetLineInfo instanceof DataLine.Info dlInfo) {
+                    for (AudioFormat format : dlInfo.getFormats()) {
+                        if (format.getEncoding() == AudioFormat.Encoding.PCM_SIGNED
+                                && !format.isBigEndian()
+                                && format.getSampleRate() != AudioSystem.NOT_SPECIFIED) {
+                            l.add(new AudioSourceItem(
+                                    mixerInfo.getName() + ", " + format,
+                                    mixerInfo, format));
+                        }
+                    }
+                }
             }
         }
         return l;
@@ -589,16 +567,14 @@ public class Main extends javax.swing.JFrame {
 
     private void updateValues() {
         Preferences prefs = Preferences.userNodeForPackage(Main.class);
-        format = formatChoice.getSelectedIndex();
-        prefs.putInt("ScreenRecording.format", format);
-        encoding = encodingChoice.getSelectedIndex();
-        prefs.putInt("ScreenRecording.encoding", encoding);
-        depth = colorsChoice.getSelectedIndex();
-        prefs.putInt("ScreenRecording.colorDepth", depth);
+        format = (String) formatChoice.getSelectedItem();
+        prefs.put("ScreenRecording.format", format);
+        encoding = (String) encodingChoice.getSelectedItem();
+        prefs.put("ScreenRecording.encoding", encoding);
+        depth = (String) colorsChoice.getSelectedItem();
+        prefs.put("ScreenRecording.colorDepth", depth);
         cursor = cursorChoice.getSelectedIndex();
         prefs.putInt("ScreenRecording.cursor", cursor);
-        audioRate = audioRateChoice.getSelectedIndex();
-        prefs.putInt("ScreenRecording.audioRate", audioRate);
         audioSource = audioSourceChoice.getSelectedIndex();
         prefs.putInt("ScreenRecording.audioSource", audioSource);
         area = areaChoice.getSelectedIndex();
@@ -627,83 +603,88 @@ public class Main extends javax.swing.JFrame {
             int bitDepth;
             switch (depth) {
                 default:
-                case 0:
+                case COLORS_HUNDREDS:
                     bitDepth = 8;
                     break;
-                case 1:
+                case COLORS_THOUSANDS:
                     bitDepth = 16;
                     break;
-                case 2:
+                case COLORS_MILLIONS:
                     bitDepth = 24;
                     break;
             }
             switch (format) {
                 default:
-                case 0:
+                case FMT_MP4:
+                    mimeType = MIME_MP4;
+                    videoFormatName = compressorName = ENCODING_AVC1;
+                    bitDepth = 24;
+                    break;
+                case FMT_AVI:
                     mimeType = MIME_AVI;
                     switch (encoding) {
-                        case 0:
+                        case ENC_SCREEN_CAPTURE:
                         default:
                             videoFormatName = compressorName = ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE;
                             break;
-                        case 1:
+                        case ENC_RUN_LENGTH:
                             videoFormatName = compressorName = ENCODING_AVI_RLE8;
                             bitDepth = 8;
                             break;
-                        case 2:
+                        case ENC_NONE:
                             videoFormatName = compressorName = ENCODING_AVI_DIB;
                             if (bitDepth == 16) {
                                 bitDepth = 24;
                             }
                             break;
-                        case 3:
+                        case ENC_PNG:
                             videoFormatName = compressorName = ENCODING_AVI_PNG;
                             bitDepth = 24;
                             break;
-                        case 4:
+                        case ENC_JPEG_100PERCENT:
                             videoFormatName = compressorName = ENCODING_AVI_MJPG;
                             bitDepth = 24;
                             break;
-                        case 5:
+                        case ENC_JPEG_50PERCENT:
                             videoFormatName = compressorName = ENCODING_AVI_MJPG;
                             bitDepth = 24;
                             quality = 0.5f;
                             break;
                     }
                     break;
-                case 1:
+                case FMT_QUICKTIME:
                     mimeType = MIME_QUICKTIME;
                     switch (encoding) {
-                        case 0:
+                        case ENC_SCREEN_CAPTURE:
                         default:
                             if (bitDepth == 8) {
                                 // FIXME - 8-bit Techsmith Screen Capture is broken
                                 videoFormatName = ENCODING_QUICKTIME_ANIMATION;
                                 compressorName = COMPRESSOR_NAME_QUICKTIME_ANIMATION;
                             } else {
-                                videoFormatName = compressorName = ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE;
+                                videoFormatName = ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE;
                                 compressorName = ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE;
                             }
                             break;
-                        case 1:
+                        case ENC_ANIMATION:
                             videoFormatName = ENCODING_QUICKTIME_ANIMATION;
                             compressorName = COMPRESSOR_NAME_QUICKTIME_ANIMATION;
                             break;
-                        case 2:
+                        case ENC_NONE:
                             videoFormatName = ENCODING_QUICKTIME_RAW;
                             compressorName = COMPRESSOR_NAME_QUICKTIME_RAW;
                             break;
-                        case 3:
+                        case ENC_PNG:
                             videoFormatName = ENCODING_QUICKTIME_PNG;
                             compressorName = COMPRESSOR_NAME_QUICKTIME_PNG;
                             bitDepth = 24;
                             break;
-                        case 4:
+                        case ENC_JPEG_100PERCENT:
                             videoFormatName = ENCODING_QUICKTIME_JPEG;
                             compressorName = COMPRESSOR_NAME_QUICKTIME_JPEG;
                             bitDepth = 24;
                             break;
-                        case 5:
+                        case ENC_JPEG_50PERCENT:
                             videoFormatName = ENCODING_QUICKTIME_JPEG;
                             compressorName = COMPRESSOR_NAME_QUICKTIME_JPEG;
                             bitDepth = 24;
@@ -716,12 +697,18 @@ public class Main extends javax.swing.JFrame {
             Mixer.Info mixerInfo;
             int audioRate;
             int audioBitsPerSample;
+            int audioChannels;
+            ByteOrder audioByteOrder;
+            boolean audioSigned;
             {
                 AudioSourceItem src = (AudioSourceItem) audioSourceChoice.getItemAt(this.audioSource);
-                AudioRateItem rate = (AudioRateItem) audioRateChoice.getItemAt(this.audioRate);
                 mixerInfo = src.mixerInfo;
-                audioRate = src.isEnabled ? rate.sampleRate : 0;
-                audioBitsPerSample = rate.bitsPerSample;
+                AudioFormat srcFormat = src.format;
+                audioRate = (int) srcFormat.getSampleRate();
+                audioBitsPerSample = srcFormat.getSampleSizeInBits();
+                audioChannels = srcFormat.getChannels();
+                audioByteOrder = srcFormat.isBigEndian() ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN;
+                audioSigned = srcFormat.getEncoding() == AudioFormat.Encoding.PCM_SIGNED;
             }
 
             String crsr;
@@ -767,9 +754,12 @@ public class Main extends javax.swing.JFrame {
                     //
                     // the output format for audio capture:
                     audioRate == 0 ? null : new Format(MediaTypeKey, MediaType.AUDIO,
-                            //EncodingKey, audioFormatName,
+                            ChannelsKey, audioChannels,
                             SampleRateKey, Rational.valueOf(audioRate),
-                            SampleSizeInBitsKey, audioBitsPerSample),
+                            SampleSizeInBitsKey, audioBitsPerSample,
+                            SignedKey, audioSigned,
+                            ByteOrderKey, audioByteOrder
+                    ),
                     //
                     // the storage location of the movie
                     movieFolder);
@@ -832,14 +822,24 @@ public class Main extends javax.swing.JFrame {
 
     private void updateEncodingChoice() {
         int index = encodingChoice.getSelectedIndex();
-        switch (formatChoice.getSelectedIndex()) {
-            case 0: // AVI
+        switch ((String) formatChoice.getSelectedItem()) {
+            case FMT_MP4:
+                colorsChoice.setModel(
+                        new javax.swing.DefaultComboBoxModel<>(new String[]{COLORS_MILLIONS}));
                 encodingChoice.setModel(
-                        new javax.swing.DefaultComboBoxModel<>(new String[]{"Screen Capture", "Run Length", "None", "PNG", "JPEG 100 %", "JPEG  50 %"}));
+                        new javax.swing.DefaultComboBoxModel<>(new String[]{ENC_H264}));
                 break;
-            case 1: // QuickTime
+            case FMT_AVI: // AVI
+                colorsChoice.setModel(
+                        new javax.swing.DefaultComboBoxModel<>(new String[]{COLORS_HUNDREDS, COLORS_THOUSANDS, COLORS_MILLIONS}));
                 encodingChoice.setModel(
-                        new javax.swing.DefaultComboBoxModel<>(new String[]{"Screen Capture", "Animation", "None", "PNG", "JPEG 100 %", "JPEG  50 %"}));
+                        new javax.swing.DefaultComboBoxModel<>(new String[]{ENC_SCREEN_CAPTURE, ENC_RUN_LENGTH, ENC_NONE, ENC_PNG, ENC_JPEG_100PERCENT, ENC_JPEG_50PERCENT}));
+                break;
+            case FMT_QUICKTIME:
+                colorsChoice.setModel(
+                        new javax.swing.DefaultComboBoxModel<>(new String[]{COLORS_HUNDREDS, COLORS_THOUSANDS, COLORS_MILLIONS}));
+                encodingChoice.setModel(
+                        new javax.swing.DefaultComboBoxModel<>(new String[]{ENC_SCREEN_CAPTURE, ENC_ANIMATION, ENC_NONE, ENC_PNG, ENC_JPEG_100PERCENT, ENC_JPEG_50PERCENT}));
                 break;
         }
         encodingChoice.setSelectedIndex(index);
@@ -937,8 +937,6 @@ public class Main extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox areaChoice;
     private javax.swing.JLabel areaLabel;
-    private javax.swing.JComboBox audioRateChoice;
-    private javax.swing.JLabel audioRateLabel;
     private javax.swing.JComboBox audioSourceChoice;
     private javax.swing.JLabel audioSourceLabel;
     private javax.swing.JComboBox colorsChoice;

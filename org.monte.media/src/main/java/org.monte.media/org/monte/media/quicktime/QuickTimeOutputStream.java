@@ -25,7 +25,6 @@ import java.util.zip.DeflaterOutputStream;
 
 import static java.lang.Math.max;
 import static org.monte.media.av.FormatKeys.EncodingKey;
-import static org.monte.media.av.FormatKeys.FrameRateKey;
 import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
 import static org.monte.media.av.FormatKeys.MediaType;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
@@ -36,11 +35,6 @@ import static org.monte.media.av.codec.audio.AudioFormatKeys.FrameSizeKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleRateKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleSizeInBitsKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
-import static org.monte.media.av.codec.video.VideoFormatKeys.CompressorNameKey;
-import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
-import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
-import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
-import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
 /**
  * This class provides low-level support for writing already encoded audio and
@@ -222,13 +216,14 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
      *                        are keyframes. Values larger than 1 specify that for every n-th frame is
      *                        a keyframe. Apple's QuickTime will not work properly if there is not at
      *                        least one keyframe every second.
+     * @param format
      * @return Returns the track index.
      * @throws IllegalArgumentException if {@code width} or {@code height} is
      *                                  smaller than 1, if the length of {@code compressionType} is not equal to
      *                                  4, if the length of the {@code compressorName} is not between 1 and 32,
      *                                  if the tiimeScale is not between 1 and 2^32.
      */
-    public int addVideoTrack(String compressionType, String compressorName, long timeScale, int width, int height, int depth, int syncInterval) throws IOException {
+    public int addVideoTrack(String compressionType, String compressorName, long timeScale, int width, int height, int depth, int syncInterval, Format format) throws IOException {
         ensureStarted();
         if (compressionType == null || compressionType.length() != 4) {
             throw new IllegalArgumentException("compressionType must be 4 characters long:" + compressionType);
@@ -251,14 +246,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         t.height = height;
         t.videoDepth = depth;
         t.syncInterval = syncInterval;
-        t.format = new Format(
-                MediaTypeKey, MediaType.VIDEO,
-                MimeTypeKey, MIME_QUICKTIME,
-                EncodingKey, compressionType,
-                CompressorNameKey, compressorName,
-                DataClassKey, byte[].class,
-                WidthKey, width, HeightKey, height, DepthKey, depth,
-                FrameRateKey, new Rational(timeScale, 1));
+        t.format = format;
         tracks.add(t);
         return tracks.size() - 1;
     }

@@ -17,28 +17,29 @@ import org.monte.media.jcodec.impl.AWTUtil;
 import java.awt.image.BufferedImage;
 
 import static org.monte.media.av.FormatKeys.EncodingKey;
-import static org.monte.media.av.FormatKeys.MIME_JAVA;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
-import static org.monte.media.av.FormatKeys.MimeTypeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
 
+/**
+ * Codec for {@link BufferedImage} to/from {@link Picture}.
+ */
 public class PictureCodec extends AbstractCodec {
     public static final String ENCODING_PICTURE = "picture";
 
     public PictureCodec() {
         super(new Format[]{
-                        new Format(MediaTypeKey, FormatKeys.MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
+                        new Format(MediaTypeKey, FormatKeys.MediaType.VIDEO,
                                 EncodingKey, ENCODING_BUFFERED_IMAGE,
                                 DataClassKey, BufferedImage.class), //
                 },
                 new Format[]{
-                        new Format(MediaTypeKey, FormatKeys.MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
+                        new Format(MediaTypeKey, FormatKeys.MediaType.VIDEO,
                                 EncodingKey, ENCODING_PICTURE,
                                 DataClassKey, Picture.class), //
                 }//
         );
-        name = "Picture Codec";
+        name = "JCodec Picture Codec";
     }
 
     @Override

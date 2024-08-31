@@ -370,12 +370,11 @@ class PlayerEngine extends AbstractPlayer {
         for (var t : media.getTracks()) {
             if (t instanceof MonteAudioTrack mat) {
                 mat.interruptWorker();
-                mat.executeWorker(() -> {
-                    SourceDataLine sourceDataLine = mat.getSourceDataLine();
-                    if (sourceDataLine != null) {
-                        sourceDataLine.flush();
-                    }
-                });
+                SourceDataLine sourceDataLine = mat.getSourceDataLine();
+                if (sourceDataLine != null) {
+                    sourceDataLine.stop();
+                    sourceDataLine.flush();
+                }
             }
         }
     }
@@ -449,7 +448,9 @@ class PlayerEngine extends AbstractPlayer {
                         int samplesLength = sampleSize * (outBuf.sampleCount - skipSamples);
                         int samplesOffset = outBuf.offset + skipSamples * sampleSize;
                         tr.executeWorker(() -> {
-                            tr.getSourceDataLine().write(byteArray, samplesOffset, samplesLength);
+                            SourceDataLine sourceDataLine = tr.getSourceDataLine();
+                            sourceDataLine.start();
+                            sourceDataLine.write(byteArray, samplesOffset, samplesLength);
                         });
                         Rational clippedBufferDuration = outBuf.sampleDuration.multiply(outBuf.sampleCount - skipSamples);
                         tr.renderedUntilNanoTime = Math.max(tr.renderedUntilNanoTime, currentNanoTime) + (long) (clippedBufferDuration.doubleValue() * 1e9);

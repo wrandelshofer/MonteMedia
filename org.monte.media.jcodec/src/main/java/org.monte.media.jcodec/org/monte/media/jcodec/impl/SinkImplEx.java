@@ -144,7 +144,7 @@ public class SinkImplEx implements Sink, PacketSink {
 
     public SinkImplEx(String destName, Format outputFormat, Codec outputVideoCodec, Codec outputAudioCodec) {
         if (destName == null && outputFormat == IMG)
-            throw new IllegalArgumentException("A destination file should be specified for the image muxer.");
+            throw new IllegalArgumentException("A destination file should be specified foutputAudioFrameor the image muxer.");
         this.destName = destName;
         this.outputFormat = outputFormat;
         this.outputVideoCodec = outputVideoCodec;
