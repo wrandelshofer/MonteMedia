@@ -4,9 +4,10 @@
  */
 package org.monte.media.io;
 
+import org.monte.media.util.ByteArrays;
+
 import java.io.EOFException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteOrder;
 
 /**
@@ -200,8 +201,8 @@ public class ByteArrayImageInputStream extends ImageInputStreamImpl2 {
             throw new EOFException();
         }
         int v = (byteOrder == ByteOrder.BIG_ENDIAN)
-                ? ByteArray.getIntBE(buf, (int) streamPos)
-                : ByteArray.getIntLE(buf, (int) streamPos);
+                ? ByteArrays.getIntBE(buf, (int) streamPos)
+                : ByteArrays.getIntLE(buf, (int) streamPos);
         streamPos += 4;
         return v;
     }
@@ -212,8 +213,8 @@ public class ByteArrayImageInputStream extends ImageInputStreamImpl2 {
             throw new EOFException();
         }
         long v = (byteOrder == ByteOrder.BIG_ENDIAN)
-                ? ByteArray.getLongBE(buf, (int) streamPos)
-                : ByteArray.getLongLE(buf, (int) streamPos);
+                ? ByteArrays.getLongBE(buf, (int) streamPos)
+                : ByteArrays.getLongLE(buf, (int) streamPos);
         streamPos += 8;
         return v;
     }
@@ -224,8 +225,8 @@ public class ByteArrayImageInputStream extends ImageInputStreamImpl2 {
             throw new EOFException();
         }
         short v = (byteOrder == ByteOrder.BIG_ENDIAN)
-                ? ByteArray.getShortBE(buf, (int) streamPos)
-                : ByteArray.getShortLE(buf, (int) streamPos);
+                ? ByteArrays.getShortBE(buf, (int) streamPos)
+                : ByteArrays.getShortLE(buf, (int) streamPos);
         streamPos += 2;
         return v;
     }

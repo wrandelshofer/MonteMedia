@@ -5,12 +5,13 @@
 package org.monte.media.av.codec.video;
 
 import org.monte.media.io.ByteArrayImageInputStream;
+import org.monte.media.io.ImageOutputStreamAdapter;
 import org.monte.media.io.UncachedImageInputStream;
 
 import javax.imageio.stream.ImageInputStream;
+import javax.imageio.stream.ImageOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
@@ -170,11 +171,11 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
         reset();
     }
 
-    private void deflateBBuf(OutputStream out) throws IOException {
+    private void deflateBBuf(ImageOutputStream out) throws IOException {
         if (bbuf.position() == 2) {
             out.write(bbuf.array(), 0, 2);
         } else {
-            DeflaterOutputStream defl = new DeflaterOutputStream(out);
+            DeflaterOutputStream defl = new DeflaterOutputStream(new ImageOutputStreamAdapter(out));
             defl.write(bbuf.array(), 0, bbuf.position());
             defl.finish();
         }
@@ -585,7 +586,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
      * @param scanlineStride The number to add to offset to get to the next
      *                       scanline.
      */
-    public void encodeDelta8(OutputStream out, byte[] data, byte[] prev, int width, int height, int offset, int scanlineStride)
+    public void encodeDelta8(ImageOutputStream out, byte[] data, byte[] prev, int width, int height, int offset, int scanlineStride)
             throws IOException {
 
         ensureBBufCapacity(width, height, 1);
@@ -713,7 +714,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
      * @param scanlineStride The number to add to offset to get to the next
      *                       scanline.
      */
-    public void encodeDelta8to24(OutputStream out, byte[] data, byte[] prev, int width, int height, int offset, int scanlineStride)
+    public void encodeDelta8to24(ImageOutputStream out, byte[] data, byte[] prev, int width, int height, int offset, int scanlineStride)
             throws IOException {
 
         ensureBBufCapacity(width, height, 3);
@@ -853,7 +854,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
      * @param scanlineStride
      * @throws IOException
      */
-    public void encodeSameDelta8(OutputStream out, byte[] data, byte[] prev, int width, int height, int offset, int scanlineStride)
+    public void encodeSameDelta8(ImageOutputStream out, byte[] data, byte[] prev, int width, int height, int offset, int scanlineStride)
             throws IOException {
         out.write(0); // Escape code
         out.write(0x01);// End of bitmap
@@ -872,7 +873,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
      * @param scanlineStride
      * @throws IOException
      */
-    public void encodeSameDelta24(OutputStream out, int[] data, int[] prev, int width, int height, int offset, int scanlineStride)
+    public void encodeSameDelta24(ImageOutputStream out, int[] data, int[] prev, int width, int height, int offset, int scanlineStride)
             throws IOException {
         out.write(0); // Escape code
         out.write(0x01);// End of bitmap
@@ -891,7 +892,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
      * @param scanlineStride
      * @throws IOException
      */
-    public void encodeSameDelta16(OutputStream out, short[] data, short[] prev, int width, int height, int offset, int scanlineStride)
+    public void encodeSameDelta16(ImageOutputStream out, short[] data, short[] prev, int width, int height, int offset, int scanlineStride)
             throws IOException {
         out.write(0); // Escape code
         out.write(0x01);// End of bitmap
@@ -907,7 +908,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
      * @param scanlineStride The number to add to offset to get to the next
      *                       scanline.
      */
-    public void encodeKey8(OutputStream out, byte[] data, int width, int height, int offset, int scanlineStride)
+    public void encodeKey8(ImageOutputStream out, byte[] data, int width, int height, int offset, int scanlineStride)
             throws IOException {
         ensureBBufCapacity(width, height, 1);
         int ymax = offset + height * scanlineStride;
@@ -998,7 +999,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
      * @param scanlineStride The number to add to offset to get to the next
      *                       scanline.
      */
-    public void encodeKey8to24(OutputStream out, byte[] data, int width, int height, int offset, int scanlineStride)
+    public void encodeKey8to24(ImageOutputStream out, byte[] data, int width, int height, int offset, int scanlineStride)
             throws IOException {
         ensureBBufCapacity(width, height, 3);
         int ymax = offset + height * scanlineStride;
@@ -1098,7 +1099,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
      * @param scanlineStride The number to add to offset to get to the next
      *                       scanline.
      */
-    public void encodeDelta16(OutputStream out, short[] data, short[] prev, int width, int height, int offset, int scanlineStride)
+    public void encodeDelta16(ImageOutputStream out, short[] data, short[] prev, int width, int height, int offset, int scanlineStride)
             throws IOException {
 
         ensureBBufCapacity(width, height, 2);
@@ -1220,7 +1221,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
      * @param scanlineStride The number to add to offset to get to the next
      *                       scanline.
      */
-    public void encodeKey24(OutputStream out, int[] data, int width, int height, int offset, int scanlineStride)
+    public void encodeKey24(ImageOutputStream out, int[] data, int width, int height, int offset, int scanlineStride)
             throws IOException {
         ensureBBufCapacity(width, height, 3);
         int ymax = offset + height * scanlineStride;
@@ -1311,7 +1312,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
      * @param scanlineStride The number to add to offset to get to the next
      *                       scanline.
      */
-    public void encodeDelta24(OutputStream out, int[] data, int[] prev, int width, int height, int offset, int scanlineStride)
+    public void encodeDelta24(ImageOutputStream out, int[] data, int[] prev, int width, int height, int offset, int scanlineStride)
             throws IOException {
         ensureBBufCapacity(width, height, 3);
 
@@ -1438,7 +1439,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
      * @param scanlineStride The number to add to offset to get to the next
      *                       scanline.
      */
-    public void encodeKey16(OutputStream out, short[] data, int width, int height, int offset, int scanlineStride)
+    public void encodeKey16(ImageOutputStream out, short[] data, int width, int height, int offset, int scanlineStride)
             throws IOException {
         ensureBBufCapacity(width, height, 2);
         int ymax = offset + height * scanlineStride;

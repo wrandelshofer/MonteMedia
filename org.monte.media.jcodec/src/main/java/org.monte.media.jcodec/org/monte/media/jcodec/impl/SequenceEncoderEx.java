@@ -92,7 +92,8 @@ public class SequenceEncoderEx {
     }
 
     public void setMotionSearchRange(int newValue) {
-        if (sink.getVideoEncoder() instanceof H264Encoder e) {
+        if (sink.getVideoEncoder() instanceof H264Encoder) {
+            H264Encoder e = (H264Encoder) sink.getVideoEncoder();
             e.setMotionSearchRange(newValue);
         }
     }

@@ -20,11 +20,11 @@
         <module name="org.monte.media.screenrecorder" />
         <module name="org.monte.media.animconverter" />
         <module name="org.monte.demo.io" />
+        <module name="org.monte.demo.javafx.movieplayer" />
         <module name="org.monte.media" />
         <module name="org.monte.demo.cmykimageviewer" />
         <module name="org.monte.demo.sift" />
         <module name="org.monte.demo.mpoimagesplitter" />
-        <module name="movieplayer" />
         <module name="org.monte.media.javafx" />
         <module name="org.monte.media.amigaatari" />
         <module name="org.monte.media.swing" />
@@ -34,7 +34,6 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="org.monte.demo.javafx.movieplayer" target="21" />
       <module name="org.monte.demo.jmjavi" target="17" />
       <module name="org.monte.demo.jmjtsccdemo" target="17" />
       <module name="org.monte.demo.quicktimewriter" target="21" />

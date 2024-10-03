@@ -74,7 +74,7 @@ public class AudioFormatKeys extends FormatKeys {
      */
     public final static FormatKey<Integer> ChannelsKey = new FormatKey<>("channels", Integer.class);
     /**
-     * The size of a frame.
+     * The size of a frame in bits or bytes?.
      */
     public final static FormatKey<Integer> FrameSizeKey = new FormatKey<>("frameSize", Integer.class);
     /**

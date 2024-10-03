@@ -7,8 +7,8 @@ package org.monte.media.exif;
 import org.monte.media.exception.AbortException;
 import org.monte.media.exception.ParseException;
 import org.monte.media.io.ByteArrayImageInputStream;
+import org.monte.media.io.ByteArrayImageOutputStream;
 import org.monte.media.io.ImageInputStreamAdapter;
-import org.monte.media.io.SeekableByteArrayOutputStream;
 import org.monte.media.jfif.JFIFInputStream;
 import org.monte.media.jfif.JFIFInputStream.Segment;
 import org.monte.media.math.Rational;
@@ -37,7 +37,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Stack;
@@ -145,10 +147,10 @@ public class EXIFReader {
     private void readJFIF(ImageInputStream iin) throws IOException {
         root = new TIFFDirectory(null, null, -1);
 
-        SeekableByteArrayOutputStream exifStream = null;
+        ByteArrayImageOutputStream exifStream = null;
         ArrayList<FileSegment> exifSeg = null;
 
-        SeekableByteArrayOutputStream mpStream = null;
+        ByteArrayImageOutputStream mpStream = null;
         ArrayList<FileSegment> mpSeg = null;
 
         byte[] buf = new byte[512];
@@ -202,10 +204,10 @@ public class EXIFReader {
                 case JFIFInputStream.SOI_MARKER:
                     imageNode = new TIFFDirectory(ImageTagSet.getInstance(), null, imageCount++, 0, in.getStreamPosition(), new FileSegment(seg.offset, seg.length));
                     root.add(imageNode);
-                    exifStream = new SeekableByteArrayOutputStream();
+                    exifStream = new ByteArrayImageOutputStream();
                     exifSeg = new ArrayList<>();
 
-                    mpStream = new SeekableByteArrayOutputStream();
+                    mpStream = new ByteArrayImageOutputStream();
                     mpSeg = new ArrayList<>();
 
                     break;
@@ -251,14 +253,14 @@ public class EXIFReader {
                     break;
                 case JFIFInputStream.SOS_MARKER:
                     // Extract the Exif data
-                    if (exifStream.size() > 0) {
+                    if (exifStream.length() > 0) {
                         TIFFInputStream tin = new TIFFInputStream(new ByteArrayImageInputStream(exifStream.getBuffer(), 0, exifStream.size(), ByteOrder.BIG_ENDIAN));
                         readTIFFIFD(tin, imageNode, exifSeg);
                         exifStream.reset();
                     }
                     // Extract the MP data
-                    if (mpStream.size() > 0) {
-                        TIFFInputStream tin = new TIFFInputStream(new ByteArrayImageInputStream(mpStream.getBuffer(), 0, mpStream.size(), ByteOrder.BIG_ENDIAN));
+                    if (mpStream.length() > 0) {
+                        TIFFInputStream tin = new TIFFInputStream(new ByteArrayImageInputStream(mpStream.getBuffer(), 0, (int) mpStream.length(), ByteOrder.BIG_ENDIAN));
                         readMPFIFD(tin, imageNode, null, mpSeg);
                         mpStream.reset();
                     }
@@ -625,8 +627,8 @@ public class EXIFReader {
      * Returns all IFDDirectories of the specified tag set for the given image.
      */
     public ArrayList<TIFFDirectory> getDirectories(int image, TagSet tagSet) {
-        ArrayList<TIFFDirectory> dirs = new ArrayList<>();
-        Stack<TIFFDirectory> stack = new Stack<>();
+        Deque<TIFFDirectory> dirs = new ArrayDeque<>();
+        Deque<TIFFDirectory> stack = new ArrayDeque<>();
         stack.push((TIFFDirectory) getMetaDataTree().getChildAt(image));
         while (!stack.isEmpty()) {
             TIFFDirectory dir = stack.pop();
@@ -642,18 +644,18 @@ public class EXIFReader {
                 }
             }
         }
-        return dirs;
+        return new ArrayList<>(dirs);
     }
 
     /**
      * Returns all thumbnails.
      */
     public ArrayList<BufferedImage> getThumbnails(boolean suppressException) throws IOException {
-        ArrayList<BufferedImage> thumbnails = new ArrayList<>();
+        ArrayDeque<BufferedImage> thumbnails = new ArrayDeque<>();
         Stack<TIFFDirectory> stack = new Stack<>();
         stack.push((TIFFDirectory) getMetaDataTree());
         if (stack.peek() == null) {
-            return thumbnails;
+            return new ArrayList<>(thumbnails);
         }
         while (!stack.isEmpty()) {
             TIFFDirectory dir = stack.pop();
@@ -676,7 +678,7 @@ public class EXIFReader {
                 }
             }
         }
-        return thumbnails;
+        return new ArrayList<>(thumbnails);
     }
 
     /**

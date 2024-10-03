@@ -111,7 +111,7 @@ public class PBMPlayer extends AbstractPlayer implements ColorCyclePlayer {
             if (track.size() == 0) {
                 setTargetState(CLOSED);
             } else {
-                memoryImage = track.getFirst();
+                memoryImage = track.get(0);
                 memoryImage.setAnimated(true);
                 if (memoryImage.isColorCyclingAvailable()) {
                     propertyChangeSupport.firePropertyChange("colorCyclingAvailable", false, true);

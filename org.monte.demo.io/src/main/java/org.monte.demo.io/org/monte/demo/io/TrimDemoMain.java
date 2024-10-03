@@ -197,11 +197,11 @@ public class TrimDemoMain {
      */
     private static void info(MovieReader in) throws IOException {
         System.out.println("  Format: " + FormatFormatter.toString(in.getFileFormat()));
-        System.out.println("  Duration: " + in.getDuration().toDescriptiveString() + " seconds");
+        System.out.println("  Duration: " + in.getMovieDuration().toDescriptiveString() + " seconds");
         for (int t = 0; t < in.getTrackCount(); t++) {
             System.out.println("  Track " + t);
             System.out.println("    Format: " + FormatFormatter.toString(in.getFormat(t)));
-            System.out.println("    Duration: " + in.getDuration(t).toDescriptiveString() + " seconds");
+            System.out.println("    Duration: " + in.getTrackDuration(t).toDescriptiveString() + " seconds");
             System.out.println("    Chunk Count: " + in.getChunkCount(t));
         }
     }
@@ -349,7 +349,7 @@ public class TrimDemoMain {
                 return Rational.valueOf(str);
             } catch (NumberFormatException e) {
                 if (r[0] == null && !infiles.isEmpty()) {
-                    r[0] = Registry.getInstance().getReader(infiles.getFirst());
+                    r[0] = Registry.getInstance().getReader(infiles.get(0));
                 }
                 if (r[0] != null) {
                     int t = r[0].findTrack(0, new Format(MediaTypeKey, MediaType.VIDEO));

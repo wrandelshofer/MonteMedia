@@ -43,10 +43,10 @@ public class DefaultRegistry extends Registry {
         if (mimeTypeToExtensionMap == null) {
             mimeTypeToExtensionMap = new LinkedHashMap<>();
             for (MovieReaderSpi spi : getReaderSpis()) {
-                mimeTypeToExtensionMap.put(spi.getFileFormat().get(FormatKeys.MimeTypeKey), spi.getExtensions().isEmpty() ? "" : spi.getExtensions().getFirst());
+                mimeTypeToExtensionMap.put(spi.getFileFormat().get(FormatKeys.MimeTypeKey), spi.getExtensions().isEmpty() ? "" : spi.getExtensions().get(0));
             }
             for (MovieWriterSpi spi : getWriterSpis()) {
-                mimeTypeToExtensionMap.put(spi.getFileFormat().get(FormatKeys.MimeTypeKey), spi.getExtensions().isEmpty() ? "" : spi.getExtensions().getFirst());
+                mimeTypeToExtensionMap.put(spi.getFileFormat().get(FormatKeys.MimeTypeKey), spi.getExtensions().isEmpty() ? "" : spi.getExtensions().get(0));
             }
         }
         return mimeTypeToExtensionMap;
@@ -69,7 +69,7 @@ public class DefaultRegistry extends Registry {
         return extensionToFormatMap;
     }
 
-    private synchronized List<MovieReaderSpi> getReaderSpis() {
+    public synchronized List<MovieReaderSpi> getReaderSpis() {
         if (readerSpis == null) {
             readerSpis = new ArrayList<>();
             for (MovieReaderSpi spi : ServiceLoader.load(MovieReaderSpi.class)) {
@@ -79,7 +79,7 @@ public class DefaultRegistry extends Registry {
         return readerSpis;
     }
 
-    private synchronized List<MovieWriterSpi> getWriterSpis() {
+    public synchronized List<MovieWriterSpi> getWriterSpis() {
         if (writerSpis == null) {
             writerSpis = new ArrayList<>();
             for (MovieWriterSpi spi : ServiceLoader.load(MovieWriterSpi.class)) {
@@ -151,6 +151,17 @@ public class DefaultRegistry extends Registry {
     }
 
     @Override
+    public List<MovieReaderSpi> getReaderSpis(Format fileFormat) throws IOException {
+        List<MovieReaderSpi> result = new ArrayList<>();
+        for (MovieReaderSpi spi : getReaderSpis()) {
+            if (spi.getFileFormat().matches(fileFormat)) {
+                result.add(spi);
+            }
+        }
+        return result;
+    }
+
+    @Override
     public MovieWriter getWriter(Format fileFormat, File file) throws IOException {
         if (fileFormat == null) {
             fileFormat = getFileFormat(file);
@@ -161,6 +172,17 @@ public class DefaultRegistry extends Registry {
             }
         }
         return null;
+    }
+
+    @Override
+    public List<MovieWriterSpi> getWriterSpis(Format fileFormat) throws IOException {
+        List<MovieWriterSpi> result = new ArrayList<>();
+        for (MovieWriterSpi spi : getWriterSpis()) {
+            if (spi.getFileFormat().matches(fileFormat)) {
+                result.add(spi);
+            }
+        }
+        return result;
     }
 
     @Override

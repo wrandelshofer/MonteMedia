@@ -1,13 +1,20 @@
 /*
- * @(#)QuickTimeOutputStream.java
+ * @(#)MP4OutputStream.java
  * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.quicktime;
 
 import org.monte.media.av.Format;
+import org.monte.media.av.codec.video.VideoFormatKeys;
+import org.monte.media.io.ByteArrayImageOutputStream;
+import org.monte.media.io.IOStreams;
 import org.monte.media.io.ImageOutputStreamAdapter;
-import org.monte.media.io.SeekableByteArrayOutputStream;
 import org.monte.media.math.Rational;
+import org.monte.media.qtff.AbstractQTFFMovieStream;
+import org.monte.media.qtff.AvcDecoderConfigurationRecord;
+import org.monte.media.qtff.QTFFImageOutputStream;
+import org.monte.media.util.ByteArray;
+import org.monte.media.util.MathUtil;
 
 import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
@@ -18,12 +25,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.ByteOrder;
-import java.util.Date;
+import java.time.Instant;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.zip.DeflaterOutputStream;
 
 import static java.lang.Math.max;
+import static org.monte.media.av.FormatKeys.DataClassKey;
 import static org.monte.media.av.FormatKeys.EncodingKey;
 import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
 import static org.monte.media.av.FormatKeys.MediaType;
@@ -42,7 +54,8 @@ import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
  *
  * @author Werner Randelshofer
  */
-public class QuickTimeOutputStream extends AbstractQuickTimeStream {
+public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
+
 
     /**
      * Creates a new instance.
@@ -51,7 +64,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
      */
     public QuickTimeOutputStream(File file) throws IOException {
         if (file.exists()) {
-            file.delete();
+            if (!file.delete()) throw new IOException("can not delete file");
         }
         this.out = new FileImageOutputStream(file);
         this.streamOffset = 0;
@@ -70,8 +83,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     }
 
     private void init() {
-        creationTime = new Date();
-        modificationTime = new Date();
+        creationTime = modificationTime = Instant.ofEpochMilli(0);
     }
 
     /**
@@ -228,7 +240,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         if (compressionType == null || compressionType.length() != 4) {
             throw new IllegalArgumentException("compressionType must be 4 characters long:" + compressionType);
         }
-        if (compressorName == null || compressorName.length() < 1 || compressorName.length() > 32) {
+        if (compressorName == null || compressorName.isEmpty() || compressorName.length() > 32) {
             throw new IllegalArgumentException("compressorName must be between 1 and 32 characters long:" + (compressorName == null ? "null" : "\"" + compressorName + "\""));
         }
         if (timeScale < 1 || timeScale > (2L << 32)) {
@@ -246,7 +258,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         t.height = height;
         t.videoDepth = depth;
         t.syncInterval = syncInterval;
-        t.format = format;
+        t.format = format.prepend(VideoFormatKeys.DataClassKey, byte[].class);
         tracks.add(t);
         return tracks.size() - 1;
     }
@@ -254,20 +266,20 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     /**
      * Adds an audio track.
      *
-     * @param compressionType  The QuickTime 4-character code. A list of
-     *                         supported 4-Character codes is given in qtff, table 3-7, page 113.
-     * @param timeScale        The media time scale between 1 and 2^32.
-     * @param sampleRate       The sample rate. The integer portion must match the
-     *                         {@code timeScale}.
-     * @param numberOfChannels The number of channels: 1 for mono, 2 for stereo.
-     * @param sampleSizeInBits The number of bits in a sample: 8 or 16.
-     * @param isCompressed     Whether the sound is compressed.
-     * @param frameDuration    The frame duration, expressed in the media’s
-     *                         timescale, where the timescale is equal to the sample rate. For
-     *                         uncompressed formats, this field is always 1.
-     * @param frameSize        For uncompressed audio, the number of bytes in a sample
-     *                         for a single channel (sampleSize divided by 8). For compressed audio, the
-     *                         number of bytes in a frame.
+     * @param compressionType     The QuickTime 4-character code. A list of
+     *                            supported 4-Character codes is given in qtff, table 3-7, page 113.
+     * @param timeScale           The media time scale between 1 and 2^32.
+     * @param sampleRate          The sample rate. The integer portion must match the
+     *                            {@code timeScale}.
+     * @param numberOfChannels    The number of channels: 1 for mono, 2 for stereo.
+     * @param sampleSizeInBits    The number of bits in a sample: 8 or 16.
+     * @param isCompressed        Whether the sound is compressed.
+     * @param frameDuration       The frame duration, expressed in the media’s
+     *                            timescale, where the timescale is equal to the sample rate. For
+     *                            uncompressed formats, this field is always 1.
+     * @param soundBytesPerPacket For uncompressed audio, the number of bytes in a sample
+     *                            for a single channel (sampleSize divided by 8). For compressed audio, the
+     *                            number of bytes in a frame.
      * @return Returns the track index.
      * @throws IllegalArgumentException if the audioFormat is not 4 characters
      *                                  long, if the time scale is not between 1 and 2^32, if the integer portion
@@ -278,7 +290,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
                              long timeScale, double sampleRate, //
                              int numberOfChannels, int sampleSizeInBits, //
                              boolean isCompressed, //
-                             int frameDuration, int frameSize, boolean signed, ByteOrder byteOrder) throws IOException {
+                             int frameDuration, int soundBytesPerPacket, boolean signed, ByteOrder byteOrder) throws IOException {
         ensureStarted();
         if (compressionType == null || compressionType.length() != 4) {
             throw new IllegalArgumentException("audioFormat must be 4 characters long:" + compressionType);
@@ -305,22 +317,23 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         t.soundSampleSize = sampleSizeInBits;
         t.soundSamplesPerPacket = frameDuration;
         if (isCompressed) {
-            t.soundBytesPerPacket = frameSize;
-            t.soundBytesPerFrame = frameSize * numberOfChannels;
+            t.soundBytesPerPacket = soundBytesPerPacket;
+            t.soundBytesPerFrame = soundBytesPerPacket * numberOfChannels;
         } else {
-            t.soundBytesPerPacket = frameSize / numberOfChannels;
-            t.soundBytesPerFrame = frameSize;
+            t.soundBytesPerPacket = soundBytesPerPacket;
+            t.soundBytesPerFrame = soundBytesPerPacket * numberOfChannels;
         }
         t.soundBytesPerSample = sampleSizeInBits / 8;
 
         t.format = new Format(
+                DataClassKey, byte[].class,
                 MediaTypeKey, MediaType.AUDIO,
                 MimeTypeKey, MIME_QUICKTIME,
                 EncodingKey, compressionType,
                 SampleRateKey, Rational.valueOf(sampleRate),
                 SampleSizeInBitsKey, sampleSizeInBits,
                 ChannelsKey, numberOfChannels,
-                FrameSizeKey, frameSize,
+                FrameSizeKey, soundBytesPerPacket,
                 SampleRateKey, Rational.valueOf(sampleRate),
                 SignedKey, signed,
                 ByteOrderKey, byteOrder);
@@ -374,28 +387,28 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     /**
      * Sets the creation time of the movie.
      */
-    public void setCreationTime(Date creationTime) {
+    public void setCreationTime(Instant creationTime) {
         this.creationTime = creationTime;
     }
 
     /**
      * Gets the creation time of the movie.
      */
-    public Date getCreationTime() {
+    public Instant getCreationTime() {
         return creationTime;
     }
 
     /**
      * Sets the modification time of the movie.
      */
-    public void setModificationTime(Date modificationTime) {
+    public void setModificationTime(Instant modificationTime) {
         this.modificationTime = modificationTime;
     }
 
     /**
      * Gets the modification time of the movie.
      */
-    public Date getModificationTime() {
+    public Instant getModificationTime() {
         return modificationTime;
     }
 
@@ -578,7 +591,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     }
 
     /**
-     * Sets the state of the QuickTimeWriter to started. <p> If the state is
+     * Sets the state of the MP4Writer to started. <p> If the state is
      * changed by this method, the prolog is written.
      */
     protected void ensureStarted() throws IOException {
@@ -620,7 +633,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     /**
      * Writes an already encoded sample from an input stream into a track. <p>
      * This method does not inspect the contents of the samples. The contents
-     * has to match the format and dimensions of the media in this track.
+     * have to match the format and dimensions of the media in this track.
      *
      * @param track    The track index.
      * @param in       The input stream which holds the encoded sample data.
@@ -639,8 +652,8 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         ensureOpen();
         ensureStarted();
         long offset = getRelativeStreamPosition();
-        OutputStream mdatOut = mdatAtom.getOutputStream();
-        in.transferTo(mdatOut);
+        QTFFImageOutputStream mdatOut = mdatAtom.getOutputStream();
+        IOStreams.copy(in, mdatOut);
         long length = getRelativeStreamPosition() - offset;
         t.addSample(new Sample(duration, offset, length), 1, isSync);
     }
@@ -684,7 +697,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         ensureOpen();
         ensureStarted();
         long offset = getRelativeStreamPosition();
-        OutputStream mdatOut = mdatAtom.getOutputStream();
+        ImageOutputStream mdatOut = mdatAtom.getOutputStream();
         mdatOut.write(data, off, len);
         t.addSample(new Sample(duration, offset, len), 1, isSync);
     }
@@ -761,7 +774,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         ensureOpen();
         ensureStarted();
         long offset = getRelativeStreamPosition();
-        OutputStream mdatOut = mdatAtom.getOutputStream();
+        ImageOutputStream mdatOut = mdatAtom.getOutputStream();
         mdatOut.write(data, off, len);
 
 
@@ -769,6 +782,34 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         Sample first = new Sample(sampleDuration, offset, sampleLength);
         Sample last = new Sample(sampleDuration, offset + sampleLength * (sampleCount - 1), sampleLength);
         t.addChunk(new Chunk(first, last, sampleCount, 1), isSync);
+    }
+
+    /**
+     * Writes an {@link AvcDecoderConfigurationRecord} into the track.
+     *
+     * @param track the track index
+     * @param r     the record
+     */
+    public void writeAvcDecoderConfigurationRecord(int track, AvcDecoderConfigurationRecord r) {
+        Track t = tracks.get(track); // throws index out of bounds exception if illegal track index
+        if (t instanceof VideoTrack) {
+            VideoTrack vt = (VideoTrack) t;
+            AvcDecoderConfigurationRecord record = vt.avcDecoderConfigurationRecord;
+            if (record == null) {
+                record = new AvcDecoderConfigurationRecord(r.avcProfileIndication(),
+                        r.profileCompatibility(), r.avcLevelIndication(), r.nalLengthSize(),
+                        r.sequenceParameterSetNALUnit(), r.pictureParameterSetNALUnit());
+            } else {
+                var pps = new LinkedHashSet<>(record.pictureParameterSetNALUnit());
+                pps.addAll(r.pictureParameterSetNALUnit());
+                var sps = new LinkedHashSet<>(record.sequenceParameterSetNALUnit());
+                pps.addAll(r.sequenceParameterSetNALUnit());
+                record = new AvcDecoderConfigurationRecord(r.avcProfileIndication(),
+                        r.profileCompatibility(), r.avcLevelIndication(), r.nalLengthSize(),
+                        pps, sps);
+            }
+            vt.avcDecoderConfigurationRecord = record;
+        }
     }
 
     /**
@@ -862,15 +903,12 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
          } ftypAtom;
          */
         DataAtom ftypAtom = new DataAtom("ftyp");
-        DataAtomOutputStream d = ftypAtom.getOutputStream();
+        QTFFImageOutputStream d = ftypAtom.getOutputStream();
         d.writeType("qt  "); // brand
-        d.writeBCD4(2005); // versionYear
-        d.writeBCD2(3); // versionMonth
+        d.writeBCD4(0); // versionYear
+        d.writeBCD2(0); // versionMonth
         d.writeBCD2(0); // versionMinor
         d.writeType("qt  "); // compatibleBrands
-        d.writeInt(0); // compatibleBrands (0 is used to denote no value)
-        d.writeInt(0); // compatibleBrands (0 is used to denote no value)
-        d.writeInt(0); // compatibleBrands (0 is used to denote no value)
         ftypAtom.finish();
     }
 
@@ -917,7 +955,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
          */
         leaf = new DataAtom("mvhd");
         moovAtom.add(leaf);
-        DataAtomOutputStream d = leaf.getOutputStream();
+        QTFFImageOutputStream d = leaf.getOutputStream();
         d.writeByte(0); // version
         // A 1-byte specification of the version of this movie header atom.
 
@@ -974,7 +1012,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         // The matrix structure associated with this movie. A matrix shows how
         // to map points from one coordinate space into another. See “Matrices”
         // for a discussion of how display matrices are used in QuickTime:
-        // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap4/chapter_5_section_4.html#//apple_ref/doc/uid/TP40000939-CH206-18737
+        // https://developer.apple.com/documentation/quicktime-file-format/movie_header_atom/matrix_structure
 
         d.writeUInt(previewTime); // previewTime
         // The time value in the movie at which the preview begins.
@@ -1006,9 +1044,10 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
         // Optional color table atom
         for (Track t : tracks) {
-            if (t instanceof VideoTrack vt) {
+            if (t instanceof VideoTrack) {
+                VideoTrack vt = (VideoTrack) t;
                 if (vt.videoColorTable != null) {
-                    vt.writeColorTableAtom(moovAtom);
+                    writeVideoColorTableAtom(vt, moovAtom);
                     break;
                 }
             }
@@ -1019,11 +1058,11 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         moovAtom.finish();
     }
 
-    protected void writeTrackAtoms(int trackIndex, CompositeAtom moovAtom, Date modificationTime) throws IOException {
+    protected void writeTrackAtoms(int trackIndex, CompositeAtom moovAtom, Instant modificationTime) throws IOException {
         Track t = tracks.get(trackIndex);
 
         DataAtom leaf;
-        DataAtomOutputStream d;
+        QTFFImageOutputStream d;
 
         /* Track Atom ======== */
         CompositeAtom trakAtom = new CompositeAtom("trak");
@@ -1140,8 +1179,11 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         d.writeFixed16D16(m[7]); // matrix[7]
         d.writeFixed2D30(m[8]); // matrix[8]
         // The matrix structure associated with this track.
-        // See Figure 2-8 for an illustration of a matrix structure:
-        // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap2/chapter_3_section_3.html#//apple_ref/doc/uid/TP40000939-CH204-32967
+        // [ 0 1 2 ]
+        // [ 3 4 5 ]
+        // [ 6 7 8 ]
+        // See
+        // https://developer.apple.com/documentation/quicktime-file-format/movie_header_atom/matrix_structure
 
         d.writeFixed16D16(t.mediaType == MediaType.VIDEO ? t.width : 0); // width
         // A 32-bit fixed-point number that specifies the width of this track in pixels.
@@ -1149,6 +1191,49 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         d.writeFixed16D16(t.mediaType == MediaType.VIDEO ? t.height : 0); // height
         // A 32-bit fixed-point number that indicates the height of this track in pixels.
 
+        if (t instanceof VideoTrack) {
+            VideoTrack vt = (VideoTrack) t;
+            writeTaptAtoms(trakAtom, vt);
+        }
+        writeEditAtoms(trakAtom, t);
+        writeMediaAtoms(trakAtom, trackIndex, modificationTime, t);
+    }
+
+    private void writeTaptAtoms(CompositeAtom trakAtom, VideoTrack t) throws IOException {
+        DataAtom leaf;
+        QTFFImageOutputStream d;
+        /* Edit Atom ========= */
+        CompositeAtom taptAtom = new CompositeAtom("tapt");
+        trakAtom.add(taptAtom);
+
+        /* Track Clean Aperture Dimensions,
+          Track Production Aperture Dimensions,
+          Track Encoded Pixels Dimensions
+         */
+        /*
+        typedef struct {
+            byte version;
+            byte[3] flags;
+            fixed16d16 width;
+            fixed16d16 height;
+        } clefAtom;
+         */
+        for (String id : List.of("clef", "prof", "enof")) {
+            leaf = new DataAtom(id);
+            taptAtom.add(leaf);
+            d = leaf.getOutputStream();
+            d.write(0); // version
+            d.write(0); // flag[0]
+            d.write(0); // flag[1]
+            d.write(0); // flag[2]
+            d.writeFixed16D16(t.width);
+            d.writeFixed16D16(t.height);
+        }
+    }
+
+    private void writeEditAtoms(CompositeAtom trakAtom, Track t) throws IOException {
+        DataAtom leaf;
+        QTFFImageOutputStream d;
         /* Edit Atom ========= */
         CompositeAtom edtsAtom = new CompositeAtom("edts");
         trakAtom.add(edtsAtom);
@@ -1161,7 +1246,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
          int numberOfEntries;
          editListTable editListTable[numberOfEntries];
          } editListAtom;
-            
+
          typedef struct {
          int trackDuration;
          int mediaTime;
@@ -1173,8 +1258,6 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         d = leaf.getOutputStream();
 
         d.write(0); // version
-        // One byte that specifies the version of this header atom.
-
         d.write(0); // flag[0]
         d.write(0); // flag[1]
         d.write(0); // flag[2]
@@ -1193,9 +1276,12 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
                 d.writeUInt(edit.mediaRate); // mediaRate
             }
         }
+    }
 
-
-        /* Media Atom ========= */
+    /* Media Atom ========= */
+    private void writeMediaAtoms(CompositeAtom trakAtom, int trackIndex, Instant modificationTime, Track t) throws IOException {
+        DataAtom leaf;
+        QTFFImageOutputStream d;
         CompositeAtom mdiaAtom = new CompositeAtom("mdia");
         trakAtom.add(mdiaAtom);
 
@@ -1244,7 +1330,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         d.writeShort(0); // language;
         // A 16-bit integer that specifies the language code for this media.
         // See “Language Code Values” for valid language codes:
-        // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap4/chapter_5_section_2.html#//apple_ref/doc/uid/TP40000939-CH206-27005
+        // https://developer.apple.com/documentation/quicktime-file-format/language_code_values
 
         d.writeShort(0); // quality
         // A 16-bit integer that specifies the media’s playback quality—that is,
@@ -1288,13 +1374,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         // For data handlers, this field defines the data reference type—for
         // example, a component subtype value of 'alis' identifies a file alias.
 
-        if (t.mediaType == MediaType.AUDIO) {
-            d.writeType("appl");
-        } else {
-            d.writeUInt(0);
-        }
-        // componentManufacturer
-        // Reserved. Set to 0.
+        d.writeType(t.componentManufacturer);        // componentManufacturer
 
         d.writeUInt(t.mediaType == MediaType.AUDIO ? 268435456L : 0); // componentFlags
         // Reserved. Set to 0.
@@ -1302,7 +1382,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         d.writeUInt(t.mediaType == MediaType.AUDIO ? 65941 : 0); // componentFlagsMask
         // Reserved. Set to 0.
 
-        d.writePString(t.mediaType == MediaType.AUDIO ? "Apple Sound Media Handler" : ""); // componentName (empty string)
+        d.writePString(t.componentName); // componentName (empty string)
         // A (counted) string that specifies the name of the component—that is,
         // the media handler used when this media was created. This field may
         // contain a zero-length (empty) string.
@@ -1314,7 +1394,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     protected void writeMediaInformationAtoms(int trackIndex, CompositeAtom mdiaAtom) throws IOException {
         Track t = tracks.get(trackIndex);
         DataAtom leaf;
-        DataAtomOutputStream d;
+        QTFFImageOutputStream d;
         /* Media Information atom ========= */
         CompositeAtom minfAtom = new CompositeAtom("minf");
         mdiaAtom.add(minfAtom);
@@ -1366,13 +1446,8 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         // For data handlers, this field defines the data reference type—for
         // example, a component subtype value of 'alis' identifies a file alias.
 
-        if (t.mediaType == MediaType.AUDIO) {
-            d.writeType("appl");
-        } else {
-            d.writeUInt(0);
-        }
-        // componentManufacturer
-        // Reserved. Set to 0.
+        d.writeType(t.componentManufacturer);        // componentManufacturer
+
 
         d.writeUInt(t.mediaType == MediaType.AUDIO ? 268435457L : 0); // componentFlags
         // Reserved. Set to 0.
@@ -1380,7 +1455,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         d.writeInt(t.mediaType == MediaType.AUDIO ? 65967 : 0); // componentFlagsMask
         // Reserved. Set to 0.
 
-        d.writePString("Apple Alias Data Handler"); // componentName (empty string)
+        d.writePString(t.componentName); // componentName (empty string)
         // A (counted) string that specifies the name of the component—that is,
         // the media handler used when this media was created. This field may
         // contain a zero-length (empty) string.
@@ -1458,7 +1533,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     protected void writeVideoMediaInformationHeaderAtom(int trackIndex, CompositeAtom minfAtom) throws IOException {
         DataAtom leaf;
-        DataAtomOutputStream d;
+        QTFFImageOutputStream d;
 
         /* Video media information atom -------- */
         leaf = new DataAtom("vmhd");
@@ -1502,7 +1577,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
     protected void writeSoundMediaInformationHeaderAtom(int trackIndex, CompositeAtom minfAtom) throws IOException {
         DataAtom leaf;
-        DataAtomOutputStream d;
+        QTFFImageOutputStream d;
 
         /* Sound media information header atom -------- */
         leaf = new DataAtom("smhd");
@@ -1543,14 +1618,22 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
     protected void writeSampleTableAtoms(int trackIndex, CompositeAtom minfAtom) throws IOException {
         Track t = tracks.get(trackIndex);
         DataAtom leaf;
-        DataAtomOutputStream d;
+        QTFFImageOutputStream d;
 
         /* Sample Table atom ========= */
         CompositeAtom stblAtom = new CompositeAtom("stbl");
         minfAtom.add(stblAtom);
 
         /* Sample Description atom ------- */
-        t.writeSampleDescriptionAtom(stblAtom);
+        if (Objects.requireNonNull(t) instanceof VideoTrack) {
+            VideoTrack vt = (VideoTrack) Objects.requireNonNull(t);
+            writeVideoSampleDescriptionAtom(vt, stblAtom);
+        } else if (t instanceof AudioTrack) {
+            AudioTrack at = (AudioTrack) t;
+            writeAudioSampleDescriptionAtom(at, stblAtom);
+        } else {
+            writeGenericSampleDescriptionAtom(t, stblAtom);
+        }
 
 
         /* Time to Sample atom ---- */
@@ -1736,13 +1819,13 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
                 ? ((AudioTrack) t).soundSampleSize / 8 * ((AudioTrack) t).soundNumberOfChannels//
                 : 1;
         if (t.sampleSizes.size() == 1) {
-            d.writeUInt(t.sampleSizes.getFirst().getSampleLength() / sampleUnit); // sample size
+            d.writeUInt(t.sampleSizes.get(0).getSampleLength() / sampleUnit); // sample size
             // A 32-bit integer specifying the sample size. If all the samples are
             // the same size, this field contains that size value. If this field is
             // set to 0, then the samples have different sizes, and those sizes are
             // stored in the sample size table.
 
-            d.writeUInt(t.sampleSizes.getFirst().getSampleCount()); // number of entries
+            d.writeUInt(t.sampleSizes.get(0).getSampleCount()); // number of entries
             // A 32-bit integer containing the count of entries in the sample size
             // table.
 
@@ -1780,7 +1863,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         // 32-bit or 64-bit offsets. The latter is useful when managing very
         // large movies. Only one of these variants occurs in any single
         // instance of a sample table atom.
-        if (t.chunks.isEmpty() || t.chunks.getLast().getChunkOffset() <= 0xffffffffL) {
+        if (t.chunks.isEmpty() || t.chunks.get(t.chunks.size() - 1).getChunkOffset() <= 0xffffffffL) {
             /* 32-bit chunk offset atom -------- */
             leaf = new DataAtom("stco");
             stblAtom.add(leaf);
@@ -1854,6 +1937,10 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         }
     }
 
+    private void writeGenericSampleDescriptionAtom(Track t, CompositeAtom stblAtom) {
+        // empty, for now
+    }
+
     /**
      * Writes a version of the movie which is optimized for the web into the
      * specified output file. <p> This method finishes the movie and then copies
@@ -1874,7 +1961,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
             out = null;
 
             if (compressHeader) {
-                SeekableByteArrayOutputStream buf = new SeekableByteArrayOutputStream();
+                ByteArrayImageOutputStream buf = new ByteArrayImageOutputStream();
                 int maxIteration = 5;
                 long compressionHeadersSize = 40 + 8;
                 long headerSize = 0;
@@ -1882,7 +1969,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
                 while (true) {
                     mdatOffset = compressionHeadersSize + headerSize + freeSize;
                     buf.reset();
-                    DeflaterOutputStream deflater = new DeflaterOutputStream(buf);
+                    DeflaterOutputStream deflater = new DeflaterOutputStream(new ImageOutputStreamAdapter(buf));
                     out = new MemoryCacheImageOutputStream(deflater);
                     writeEpilog();
                     out.close();
@@ -1902,13 +1989,13 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
 
                 if (buf.size() == 0) {
                     compressHeader = false;
-                    System.err.println("WARNING QuickTimeWriter failed to compress header.");
+                    System.err.println("WARNING MP4Writer failed to compress header.");
                 } else {
                     out = new FileImageOutputStream(outputFile);
                     writeProlog();
 
                     // 40 bytes compression headers
-                    DataAtomOutputStream daos = new DataAtomOutputStream(new ImageOutputStreamAdapter(out));
+                    QTFFImageOutputStream daos = new QTFFImageOutputStream(out);
                     daos.writeUInt(headerSize + 40);
                     daos.writeType("moov");
 
@@ -1954,5 +2041,468 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
             moovAtom = originalMoovAtom;
             out = originalOut;
         }
+    }
+
+    protected void writeVideoSampleDescriptionAtom(VideoTrack t, CompositeAtom stblAtom) throws IOException {
+        CompositeAtom leaf;
+        QTFFImageOutputStream d;
+
+        /* Sample Description atom ------- */
+        // The sample description atom stores information that allows you to
+        // decode samples in the media. The data stored in the sample
+        // description varies, depending on the media type. For example, in the
+        // case of video media, the sample descriptions are image description
+        // structures. The sample description information for each media type is
+        // explained in “Media Data Atom Types”:
+        // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap3/chapter_4_section_1.html#//apple_ref/doc/uid/TP40000939-CH205-SW1
+        leaf = new CompositeAtom("stsd");
+        stblAtom.add(leaf);
+            /*
+             typedef struct {
+             byte version;
+             byte[3] flags;
+             int numberOfEntries;
+             sampleDescriptionEntry sampleDescriptionTable[numberOfEntries];
+             } sampleDescriptionAtom;
+
+             typedef struct {
+             int size;
+             magic type;
+             byte[6] reserved; // six bytes that must be zero
+             short dataReferenceIndex; // A 16-bit integer that contains the index
+                                      //of the data reference to use to retrieve
+                                      //data associated with samples that use this
+                                      //sample description. Data references are
+                                      //stored in data reference atoms.
+             byte[size - 16] data;
+             } sampleDescriptionEntry;
+             */
+        d = leaf.getOutputStream();
+        d.write(0); // version
+        // A 1-byte specification of the version of this sample description atom.
+
+        d.write(0); // flag[0]
+        d.write(0); // flag[1]
+        d.write(0); // flag[2]
+        // A 3-byte space for sample description flags. Set this field to 0.
+
+        d.writeInt(1); // number of Entries
+        // A 32-bit integer containing the number of sample descriptions that follow.
+
+        // A 32-bit integer indicating the number of bytes in the sample description.
+        long sizeStreamPosition = d.getStreamPosition();
+        d.writeInt(0); // sampleDescriptionTable[0].size
+
+        d.writeType(t.mediaCompressionType); // sampleDescriptionTable[0].type
+
+        // A 32-bit integer indicating the format of the stored data.
+        // This depends on the media type, but is usually either the
+        // compression format or the media type.
+
+        d.write(new byte[6]); // sampleDescriptionTable[0].reserved
+        // Six bytes that must be set to 0.
+
+        d.writeShort(1); // sampleDescriptionTable[0].dataReferenceIndex
+        // A 16-bit integer that contains the index of the data
+        // reference to use to retrieve data associated with samples
+        // that use this sample description. Data references are stored
+        // in data reference atoms.
+
+        // Video Sample Description
+        // ------------------------
+        // The format of the following fields is described here:
+        // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap3/chapter_4_section_2.html
+
+        d.writeShort(0); // sampleDescriptionTable.videoSampleDescription.version
+        // A 16-bit integer indicating the version number of the
+        // compressed data. This is set to 0, unless a compressor has
+        // changed its data format.
+
+        d.writeShort(0); // sampleDescriptionTable.videoSampleDescription.revisionLevel
+        // A 16-bit integer that must be set to 0.
+
+        d.writeType(t.componentManufacturer); // sampleDescriptionTable.videoSampleDescription.manufacturer
+        // A 32-bit integer that specifies the developer of the
+        // compressor that generated the compressed data. Often this
+        // field contains 'appl' to indicate Apple Computer, Inc.
+
+        d.writeInt(0);  // sampleDescriptionTable.videoSampleDescription.temporalQuality
+        // A 32-bit integer containing a value from 0 to 1023 indicating
+        // the degree of temporal compression.
+
+        d.writeInt(MathUtil.clamp((int) (1024 * (1 - t.videoQuality)), 0, 1024)); // sampleDescriptionTable.videoSampleDescription.spatialQuality
+        // A 32-bit integer containing a value from 0 to 1024 indicating
+        // the degree of spatial compression.
+
+        d.writeUShort((int) t.width); // sampleDescriptionTable.videoSampleDescription.width
+        // A 16-bit integer that specifies the width of the source image
+        // in pixels.
+
+        d.writeUShort((int) t.height); // sampleDescriptionTable.videoSampleDescription.height
+        // A 16-bit integer that specifies the height of the source image in pixels.
+
+        d.writeFixed16D16(72.0); // sampleDescriptionTable.videoSampleDescription.horizontalResolution
+        // A 32-bit fixed-point number containing the horizontal
+        // resolution of the image in pixels per inch.
+
+        d.writeFixed16D16(72.0); // sampleDescriptionTable.videoSampleDescription.verticalResolution
+        // A 32-bit fixed-point number containing the vertical
+        // resolution of the image in pixels per inch.
+
+        d.writeInt(0); // sampleDescriptionTable.videoSampleDescription.dataSize
+        // A 32-bit integer that must be set to 0.
+
+        d.writeShort(1); // sampleDescriptionTable.videoSampleDescription.sampleCount
+        // A 16-bit integer that indicates how many bytes of compressed
+        // data are stored in each sample. Usually set to 1.
+
+        d.writePString(t.mediaCompressorName, 32); // sampleDescriptionTable.videoSampleDescription.compressorName
+        // A 32-byte Pascal string containing the name of the compressor
+        // that created the image, such as "jpeg".
+
+        d.writeShort(t.videoDepth); // sampleDescriptionTable.videoSampleDescription.depth
+        // A 16-bit integer that indicates the pixel depth of the
+        // compressed image. Values of 1, 2, 4, 8 ,16, 24, and 32
+        // indicate the depth of color images. The value 32 should be
+        // used only if the image contains an alpha channel. Values of
+        // 34, 36, and 40 indicate 2-, 4-, and 8-bit grayscale,
+        // respectively, for grayscale images.
+
+        d.writeShort(t.videoColorTable == null ? -1 : 0); // sampleDescriptionTable.videoSampleDescription.colorTableID
+        // A 16-bit integer that identifies which color table to use.
+        // If this field is set to –1, the default color table should be
+        // used for the specified depth. For all depths below 16 bits
+        // per pixel, this indicates a standard Macintosh color table
+        // for the specified depth. Depths of 16, 24, and 32 have no
+        // color table.
+
+        if (t.avcDecoderConfigurationRecord != null) {
+            writeMandatoryAvcAtoms(t, leaf);
+        }
+
+        long size = (d.getStreamPosition() - sizeStreamPosition);
+        d.mark();
+        d.seek(sizeStreamPosition);
+        d.writeInt((int) size);
+        d.reset();
+    }
+
+    /**
+     * Writes the avcC atom.
+     *
+     * @param t      the track
+     * @param parent the composite atom
+     * @throws IOException on IO failure
+     */
+    private void writeMandatoryAvcAtoms(VideoTrack t, CompositeAtom parent) throws IOException {
+        DataAtom leaf = new DataAtom("avcC");
+        parent.add(leaf);
+        /*
+        typedef struct {
+            ubyte configurationVersion; // always = 1
+            ubyte AVCProfileIndication; // Contains the profile code as defined in ISO/IEC 14496-10.
+                                        // profile_compatibility is a byte defined exactly the same as the byte which occurs
+                                        // between the profile_IDC and level_IDC in a sequence parameter set (SPS),
+                                        // as defined in ISO/IEC 14496-10
+            ubyte profile_compatibility; //
+            ubyte AVCLevelIndication; // Contains the level code as defined in ISO/IEC 14496-10.
+            uint6 reserved1; // always 111111
+            uint2 lengthSizeMinusOne; // Indicates the length in bytes of the NALUnitLength field in an AVC
+                                      // video sample or AVC parameter set sample of the associated stream minus one.
+                                      // For example, a size of one byte is indicated with a value of 0. The value of this field
+                                       // shall be one of 0, 1, or 3 corresponding to a length encoded with 1, 2, or 4 bytes,
+                                       // respectively.
+            uint3 reserved2; // always 111
+            uint5 numOfSequenceParameterSets; // numOfSequenceParameterSets indicates the number of SPSs that are used as the
+                                              // initial set of SPSs for decoding the AVC elementary stream.
+            AvcSequenceParameterSet[numOfSequenceParameterSets] sequenceParameterSet;
+            uint8 numOfPictureParameterSets; // Indicates the number of picture parameter sets (PPSs) that are used as the
+                                             // initial set of PPSs for decoding the AVC elementary stream.
+            AvcPictureParameterSet[numOfPictureParameterSets] pictureParameterSet
+        } AvcDecoderConfigurationRecord;
+         */
+        var d = leaf.getOutputStream();
+        AvcDecoderConfigurationRecord r = t.avcDecoderConfigurationRecord;
+        d.writeByte(1);//version
+        d.writeByte(r.avcProfileIndication());
+        d.writeByte(r.profileCompatibility());
+        d.writeByte(r.avcLevelIndication());
+        d.writeByte(0b111111_00 | (r.nalLengthSize() - 1));
+
+        Set<ByteArray> spsList = r.sequenceParameterSetNALUnit();
+        int n = Math.min(spsList.size(), (1 << 5) - 1);
+        d.writeByte(0b111_00000 | n);
+        Iterator<ByteArray> it = spsList.iterator();
+        for (int i = 0; i < n; i++) {
+            byte[] sps = it.next().getArray();
+            d.writeShort((short) (sps.length + 1));
+            d.writeByte((byte) 0x67);
+            d.write(sps);
+        }
+
+        Set<ByteArray> ppsList = r.pictureParameterSetNALUnit();
+        n = Math.min(ppsList.size(), (1 << 8) - 1);
+        d.writeByte(n);
+        it = ppsList.iterator();
+        for (int i = 0; i < n; i++) {
+            byte[] pps = it.next().getArray();
+            d.writeShort((short) (pps.length + 1));
+            d.writeByte((byte) 0x68);
+            d.write(pps);
+        }
+
+        /* colr atom */
+        /*---------*/
+        /*
+        typedef struct {
+            magic colorParameterType; // An unsigned 32-bit field.
+                                     // The currently defined types are 'nclc' for video, and 'prof' for print.
+            uint16 primariesIndex; // A 16-bit unsigned integer containing an index into a table specifying the
+                                   // CIE 1931 xy chromaticity coordinates of the white point and the red, green,
+                                   // and blue primaries.
+                                   //  Index 1
+                                   //      Recommendation ITU-R BT.709 white x = 0.3127 y = 0.3290 (CIE III. D65) red x = 0.640 y = 0.330 green x = 0.300 y = 0.600 blue x = 0.150 y = 0.060
+
+            uint16 transferFunctionIndex; // A 16-bit unsigned integer containing an index into a table specifying the
+                                    // nonlinear transfer function coefficients used to translate between RGB color space
+                                    // values and Y´CbCr values.
+                                    //  Index 1
+                                    //      Recommendation ITU-R BT.709-2, SMPTE 274M-1995, 296M-1997, 293M-1996, 170M-1994 An image that shows two formulas for transfer functions for index 1. The first formula is E’ with subscript W is equal to four point five zero zero for zero is less than or equal to W is less than zero point zero one eight. The second formula is E’ with subscript W is equal to one point zero nine nine W raised to the power zero point four five, minus zero point zero nine nine for zero point zero one eight is less than or equal to W is less than or equal to one.
+
+            uint16 matrixIndex; // A 16-bit unsigned integer containing an index into a table specifying the
+                                // transformation matrix coefficients used to translate between RGB color space values
+                                 // and Y´CbCr values.
+                                 //  Index 1
+                                 //      Recommendation ITU-R BT.709-2 (1125/60/2:1 only), SMPTE 274M-1995, 296M-1997 An image that shows the formula for matrix index 1. The formula is E’ with subscript Y is equal to zero point seven one five two E’ with subscript G, plus zero point zero seven two two E’ with subscript B, plus zero point two one two six E’ with subscript R.
+                                 // https://developer.apple.com/documentation/quicktime-file-format/color_parameter_atom
+
+        } videoColrSampleDescriptionExtensionAtom;
+        */
+        /*
+        leaf = new DataAtom("colr");
+        parent.add(leaf);
+        d = leaf.getOutputStream();
+        d.writeType("nclc");
+        d.writeUShort(1);
+        d.writeUShort(1);
+        d.writeUShort(1);
+         */
+
+        /* pasp atom */
+        /*---------*/
+        /*
+        typedef struct {
+            uint32 hSpacing; // An unsigned 32-bit integer specifying the horizontal spacing of pixels,
+                     // such as luma sampling instants for Y´CbCr or YUV video.
+            uint32 vSpacing; // An unsigned 32-bit integer specifying the vertical spacing of pixels,
+                     // such as video picture lines.
+        } videoPaspSampleDescriptionExtensionAtom;
+        https://developer.apple.com/documentation/quicktime-file-format/pixel_aspect_ratio
+         */
+        Rational pixelAspectRatio = t.format.get(VideoFormatKeys.PixelAspectRatioKey, Rational.ONE);
+        if (!pixelAspectRatio.equals(Rational.ONE)) {
+            leaf = new DataAtom("pasp");
+            parent.add(leaf);
+            d = leaf.getOutputStream();
+            d.writeUInt(pixelAspectRatio.getNumerator());
+            d.writeUInt(pixelAspectRatio.getDenominator());
+        }
+    }
+
+    /**
+     * Color table atoms define a list of preferred colors for displaying
+     * the movie on devices that support only 256 colors. The list may
+     * contain up to 256 colors. These optional atoms have a type value of
+     * 'ctab'. The color table atom contains a Macintosh color table data
+     * structure.
+     *
+     * @param stblAtom
+     * @throws IOException
+     */
+    protected void writeVideoColorTableAtom(VideoTrack t, CompositeAtom stblAtom) throws IOException {
+        DataAtom leaf;
+        QTFFImageOutputStream d;
+        leaf = new DataAtom("ctab");
+        stblAtom.add(leaf);
+
+        d = leaf.getOutputStream();
+
+        d.writeUInt(0); // Color table seed. A 32-bit integer that must be set to 0.
+        d.writeUShort(0x8000); // Color table flags. A 16-bit integer that must be set to 0x8000.
+        IndexColorModel videoColorTable = t.videoColorTable;
+        d.writeUShort(videoColorTable.getMapSize() - 1);
+        // Color table size. A 16-bit integer that indicates the number of
+        // colors in the following color array. This is a zero-relative value;
+        // setting this field to 0 means that there is one color in the array.
+
+        for (int i = 0, n = videoColorTable.getMapSize(); i < n; ++i) {
+            // An array of colors. Each color is made of four unsigned 16-bit integers.
+            // The first integer must be set to 0, the second is the red value,
+            // the third is the green value, and the fourth is the blue value.
+            d.writeUShort(0);
+            d.writeUShort((videoColorTable.getRed(i) << 8) | videoColorTable.getRed(i));
+            d.writeUShort((videoColorTable.getGreen(i) << 8) | videoColorTable.getGreen(i));
+            d.writeUShort((videoColorTable.getBlue(i) << 8) | videoColorTable.getBlue(i));
+        }
+    }
+
+    protected void writeAudioSampleDescriptionAtom(AudioTrack t, CompositeAtom stblAtom) throws IOException {
+        // TO DO
+        DataAtom leaf;
+        QTFFImageOutputStream d;
+
+        /* Sample Description atom ------- */
+        // The sample description atom stores information that allows you to
+        // decode samples in the media. The data stored in the sample
+        // description varies, depending on the media type. For example, in the
+        // case of video media, the sample descriptions are image description
+        // structures. The sample description information for each media type is
+        // explained in “Media Data Atom Types”:
+        // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap3/chapter_4_section_1.html#//apple_ref/doc/uid/TP40000939-CH205-SW1
+        leaf = new DataAtom("stsd");
+        stblAtom.add(leaf);
+            /*
+             typedef struct {
+             byte version;
+             byte[3] flags;
+             int numberOfEntries;
+             soundSampleDescriptionEntry sampleDescriptionTable[numberOfEntries];
+             } soundSampleDescriptionAtom;
+
+             typedef struct {
+             int size;
+             magic type;
+             byte[6] reserved;
+             short dataReferenceIndex;
+             soundSampleDescription data;
+             } soundSampleDescriptionEntry;
+
+             typedef struct {
+             ushort version;
+             ushort revisionLevel;
+             uint vendor;
+             ushort numberOfChannels;
+             ushort sampleSize;
+             short compressionId;
+             ushort packetSize;
+             fixed16d16 sampleRate;
+             byte[] extendedData;
+             } soundSampleDescription;
+             */
+        d = leaf.getOutputStream();
+
+        // soundSampleDescriptionAtom:
+        // ---------------------------
+        d.write(0); // version
+        // A 1-byte specification of the version of this sample description atom.
+
+        d.write(0); // flag[0]
+        d.write(0); // flag[1]
+        d.write(0); // flag[2]
+        // A 3-byte space for sample description flags. Set this field to 0.
+
+        d.writeInt(1); // number of Entries
+        // A 32-bit integer containing the number of sample descriptions that follow.
+
+        // soundSampleDescriptionEntry:
+        // ----------------------------
+        // A 32-bit integer indicating the number of bytes in the sample description.
+        d.writeUInt(4 + 12 + 20 + 16 + t.stsdExtensions.length); // sampleDescriptionTable[0].size
+
+        // Common header: 12 bytes
+        d.writeType(t.mediaCompressionType); // sampleDescriptionTable[0].type
+        // A 32-bit integer indicating the format of the stored data.
+        // This depends on the media type, but is usually either the
+        // compression format or the media type.
+
+        d.write(new byte[6]); // sampleDescriptionTable[0].reserved
+        // Six bytes that must be set to 0.
+
+        d.writeUShort(1); // sampleDescriptionTable[0].dataReferenceIndex
+        // A 16-bit integer that contains the index of the data
+        // reference to use to retrieve data associated with samples
+        // that use this sample description. Data references are stored
+        // in data reference atoms.
+
+        // Sound Sample Description (Version 0) 20 bytes
+        // ------------------------
+
+        d.writeUShort(1); // version
+        // A 16-bit integer that holds the sample description version (currently 0 or 1).
+
+        d.writeUShort(0); // revisionLevel
+        // A 16-bit integer that must be set to 0.
+
+        d.writeUInt(0); // vendor
+        // A 32-bit integer that must be set to 0.
+
+        d.writeUShort(t.soundNumberOfChannels);  // numberOfChannels
+        // A 16-bit integer that indicates the number of sound channels used by
+        // the sound sample. Set to 1 for monaural sounds, 2 for stereo sounds.
+        // Higher numbers of channels are not supported.
+
+        d.writeUShort(t.soundSampleSize); // sampleSize (bits)
+        // A 16-bit integer that specifies the number of bits in each
+        // uncompressed sound sample. Allowable values are 8 or 16. Formats
+        // using more than 16 bits per sample set this field to 16 and use sound
+        // description version 1.
+
+        d.writeUShort(t.soundCompressionId); // compressionId
+        // XXX - This must be set to -1, or the QuickTime player won't accept this file.
+        // A 16-bit integer that must be set to 0 for version 0 sound
+        // descriptions. This may be set to –2 for some version 1 sound
+        // descriptions; see “Redefined Sample Tables” (page 135).
+
+        d.writeUShort(0); // packetSize
+        // A 16-bit integer that must be set to 0.
+
+        d.writeFixed16D16(t.soundSampleRate); // sampleRate
+        // A 32-bit unsigned fixed-point number (16.16) that indicates the rate
+        // at which the sound samples were obtained. The integer portion of this
+        // number should match the media’s time scale. Many older version 0
+        // files have values of 22254.5454 or 11127.2727, but most files have
+        // integer values, such as 44100. Sample rates greater than 2^16 are not
+        // supported.
+
+        // Sound Sample Description Additional fields (only in Version 1) 16 bytes
+        // ------------------------
+        d.writeUInt(t.soundSamplesPerPacket); // samplesPerPacket
+        // A 32-bit integer.
+        // The number of uncompressed samples generated by a
+        // compressed sample (an uncompressed sample is one sample
+        // from each channel). This is also the sample duration,
+        // expressed in the media’s timescale, where the
+        // timescale is equal to the sample rate. For
+        // uncompressed formats, this field is always 1.
+        //
+        d.writeUInt(t.soundBytesPerPacket); // bytesPerPacket
+        // A 32-bit integer.
+        // For uncompressed audio, the number of bytes in a
+        // sample for a single channel. This replaces the older
+        // sampleSize field, which is set to 16.
+        // This value is calculated by dividing the frame size
+        // by the number of channels. The same calculation is
+        // performed to calculate the value of this field for
+        // compressed audio, but the result of the calculation
+        // is not generally meaningful for compressed audio.
+        //
+        d.writeUInt(t.soundBytesPerFrame); // bytesPerFrame
+        // A 32-bit integer.
+        // The number of bytes in a sample: for uncompressed
+        // audio, an uncompressed frame; for compressed audio, a
+        // compressed frame. This can be calculated by
+        // multiplying the bytes per packet field by the number
+        // of channels.
+        //
+        d.writeUInt(t.soundBytesPerSample); // bytesPerSample
+        // A 32-bit integer.
+        // The size of an uncompressed sample in bytes. This is
+        // set to 1 for 8-bit audio, 2 for all other cases, even
+        // if the sample size is greater than 2 bytes.
+
+        // Write stsd Extensions
+        // Extensions must be atom-based fields
+        // ------------------------------------
+        d.write(t.stsdExtensions);
     }
 }

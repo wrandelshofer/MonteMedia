@@ -37,10 +37,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteOrder;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CancellationException;
@@ -352,9 +353,6 @@ public class ScreenRecorder extends AbstractStateModel {
                 .append(WidthKey, captureArea.width, HeightKey, captureArea.height);
 
         videoTrackId = w.addTrack(videoOutputFormat);
-        if (audioFormat != null) {
-            audioTrackId = w.addTrack(audioFormat);
-        }
 
         Codec encoder = Registry.getInstance().getEncoder(w.getFormat(videoTrackId));
         if (encoder == null) {
@@ -365,6 +363,11 @@ public class ScreenRecorder extends AbstractStateModel {
         frameEncoder.setOutputFormat(videoOutputFormat);
         if (frameEncoder.getOutputFormat() == null) {
             throw new IOException("Unable to encode video frames in this output format:\n" + videoOutputFormat);
+        }
+
+        // Create the audio encoder
+        if (audioFormat != null) {
+            audioTrackId = w.addTrack(audioFormat);
         }
 
         // If the capture area does not have the same dimensions as the
@@ -418,9 +421,9 @@ public class ScreenRecorder extends AbstractStateModel {
             throw new IOException("\"" + movieFolder + "\" is not a directory.");
         }
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd 'at' HH.mm.ss");
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd 'at' HH.mm.ss").withZone(ZoneId.systemDefault());
 
-        return new File(movieFolder, "ScreenRecording " + dateFormat.format(new Date()) + "." + Registry.getInstance().getExtension(fileFormat));
+        return new File(movieFolder, "ScreenRecording " + dateFormat.format(Instant.now()) + "." + Registry.getInstance().getExtension(fileFormat));
     }
 
     /**
@@ -605,7 +608,6 @@ public class ScreenRecorder extends AbstractStateModel {
      */
     private void startAudioCapture() throws LineUnavailableException {
         audioCaptureTimer = new ScheduledThreadPoolExecutor(1);
-        int delay = 500;
         audioGrabber = new AudioGrabber(this, mixer, audioFormat, audioTrackId, recordingStartTime, writerQueue);
         audioFuture = audioCaptureTimer.scheduleWithFixedDelay(audioGrabber, 0, 10, TimeUnit.MILLISECONDS);
         audioGrabber.setFuture(audioFuture);

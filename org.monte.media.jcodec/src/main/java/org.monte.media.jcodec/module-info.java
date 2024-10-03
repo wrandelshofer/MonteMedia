@@ -2,7 +2,9 @@
  * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
  */
 
-import org.monte.media.jcodec.mp4.MP4WriterSpi;
+import org.monte.media.jcodec.codec.JCodecH264CodecSpi;
+import org.monte.media.jcodec.codec.JCodecPictureCodecSpi;
+import org.monte.media.jcodec.mp4.JCodecMP4WriterSpi;
 
 /**
  * Provides a movie writer that uses the JCodec library.
@@ -16,6 +18,6 @@ module org.monte.media.jcodec {
 
     requires org.monte.media;
 
-    provides org.monte.media.av.MovieWriterSpi with MP4WriterSpi;
-    provides org.monte.media.av.CodecSpi with org.monte.media.jcodec.codec.PictureCodecSpi, org.monte.media.jcodec.codec.H264CodecSpi;
+    provides org.monte.media.av.MovieWriterSpi with JCodecMP4WriterSpi;
+    provides org.monte.media.av.CodecSpi with JCodecPictureCodecSpi, JCodecH264CodecSpi;
 }

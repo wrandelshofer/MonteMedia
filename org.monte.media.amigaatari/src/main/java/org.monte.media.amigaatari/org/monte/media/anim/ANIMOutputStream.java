@@ -7,7 +7,7 @@ package org.monte.media.anim;
 import org.monte.media.amigabitmap.AmigaBitmapImage;
 import org.monte.media.amigabitmap.AmigaDisplayInfo;
 import org.monte.media.iff.IFFOutputStream;
-import org.monte.media.io.SeekableByteArrayOutputStream;
+import org.monte.media.io.ByteArrayImageOutputStream;
 
 import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
@@ -211,7 +211,7 @@ public class ANIMOutputStream {
     }
 
     /**
-     * Sets the state of the QuickTimeWriter to started.
+     * Sets the state of the MP4Writer to started.
      * <p>
      * If the state is changed by this method, the prolog is written.
      */
@@ -523,7 +523,7 @@ public class ANIMOutputStream {
         byte[] data = img.getBitmap();
 
         byte[] prevData = prev.getBitmap();
-        SeekableByteArrayOutputStream buf = new SeekableByteArrayOutputStream();
+        ByteArrayImageOutputStream buf = new ByteArrayImageOutputStream();
 
         // Buffers for a theoretical maximum of 16 planes.
         byte[][] planes = new byte[16][0];
@@ -592,7 +592,7 @@ public class ANIMOutputStream {
      * @param step
      * @throws IOException
      */
-    private void writeByteVertical(SeekableByteArrayOutputStream out, byte[] data, byte[] prev, int offset, int length, int step) throws IOException {
+    private void writeByteVertical(ImageOutputStream out, byte[] data, byte[] prev, int offset, int length, int step) throws IOException {
         int opCount = 0;
 
         // Reserve space for opCount in the stream

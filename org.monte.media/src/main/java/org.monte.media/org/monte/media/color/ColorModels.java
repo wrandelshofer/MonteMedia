@@ -10,7 +10,7 @@ import java.awt.image.DirectColorModel;
 import java.awt.image.IndexColorModel;
 import java.util.Arrays;
 
-import static java.lang.Math.clamp;
+import static org.monte.media.util.MathUtil.clamp;
 
 /**
  * Utility methods for ColorModels.
@@ -30,7 +30,8 @@ public class ColorModels {
      */
     public static String toString(ColorModel cm) {
         StringBuilder buf = new StringBuilder();
-        if (cm instanceof DirectColorModel dcm) {
+        if (cm instanceof DirectColorModel) {
+            DirectColorModel dcm = (DirectColorModel) cm;
             buf.append("Direct Color Model ");
 
             int[] masks = dcm.getMasks();
@@ -59,7 +60,8 @@ public class ColorModels {
             for (MaskEntry entry : entries) {
                 buf.append(entry);
             }
-        } else if (cm instanceof IndexColorModel icm) {
+        } else if (cm instanceof IndexColorModel) {
+            IndexColorModel icm = (IndexColorModel) cm;
             buf.append("Index Color Model ");
             int mapSize = icm.getMapSize();
             buf.append(icm.getMapSize());

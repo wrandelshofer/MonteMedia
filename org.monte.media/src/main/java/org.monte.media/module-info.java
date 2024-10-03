@@ -95,6 +95,7 @@ module org.monte.media {
     exports org.monte.media.util.stream;
     exports org.monte.media.zipmovie;
     exports org.monte.media.av.codec.text;
+    exports org.monte.media.qtff;
 
     uses org.monte.media.av.CodecSpi;
     uses org.monte.media.av.MovieWriterSpi;
@@ -115,6 +116,7 @@ module org.monte.media {
 
     provides org.monte.media.av.MovieWriterSpi with
             org.monte.media.quicktime.QuickTimeWriterSpi,
+            org.monte.media.mp4.MP4WriterSpi,
             org.monte.media.avi.AVIWriterSpi,
             org.monte.media.zipmovie.ZipMovieWriterSpi;
 

@@ -344,7 +344,7 @@ public class AVIInputStream extends AbstractAVIStream {
                                     // The first chunk and all uncompressed chunks are keyframes
                                     s.isKeyframe = tr.samples.isEmpty() || (id & 0xffff) == WB_ID || (id & 0xffff) == DB_ID;
                                     if (tr.samples.size() > 0) {
-                                        Sample lastSample = tr.samples.getLast();
+                                        Sample lastSample = tr.samples.get(tr.samples.size() - 1);
                                         s.timeStamp = lastSample.timeStamp + lastSample.duration;
                                     }
                                     tr.length = s.timeStamp + s.duration;

@@ -1,5 +1,5 @@
 /*
- * @(#)MP4Writer.java
+ * @(#)JCodecMP4Writer.java
  * Copyright © 2024 Werner Randelshofer, Switzerland. MIT License.
  */
 
@@ -44,7 +44,6 @@ import java.util.List;
 
 import static org.jcodec.common.Codec.H264;
 import static org.monte.media.av.BufferFlag.DISCARD;
-import static org.monte.media.av.BufferFlag.KEYFRAME;
 import static org.monte.media.av.FormatKeys.EncodingKey;
 import static org.monte.media.av.FormatKeys.FrameRateKey;
 import static org.monte.media.av.FormatKeys.KeyFrameIntervalKey;
@@ -64,9 +63,9 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.MotionSearchRangeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.QualityKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
-import static org.monte.media.jcodec.codec.PictureCodec.ENCODING_PICTURE;
+import static org.monte.media.jcodec.codec.JCodecPictureCodec.ENCODING_PICTURE;
 
-public class MP4Writer implements MovieWriter {
+public class JCodecMP4Writer implements MovieWriter {
     public final static Format MP4 = new Format(MediaTypeKey, FormatKeys.MediaType.FILE, MimeTypeKey, MIME_MP4);
     private final List<Track> tracks = new ArrayList<>();
     private Muxer muxer;
@@ -86,12 +85,12 @@ public class MP4Writer implements MovieWriter {
         private VideoEncoder videoEncoder;
     }
 
-    public MP4Writer(File file) throws IOException {
+    public JCodecMP4Writer(File file) throws IOException {
         destStream = NIOUtils.writableChannel(file);
         muxer = MP4Muxer.createMP4MuxerToChannel(destStream);
     }
 
-    public MP4Writer(FileOutputStream out) throws IOException {
+    public JCodecMP4Writer(FileOutputStream out) throws IOException {
         destStream = new FileChannelWrapper(out.getChannel());
         muxer = MP4Muxer.createMP4MuxerToChannel(destStream);
     }
@@ -218,8 +217,6 @@ public class MP4Writer implements MovieWriter {
         }
 
         Track tr = tracks.get(track);
-
-        boolean isKeyframe = buf.flags.contains(KEYFRAME);
 
         // Encode sample data
 

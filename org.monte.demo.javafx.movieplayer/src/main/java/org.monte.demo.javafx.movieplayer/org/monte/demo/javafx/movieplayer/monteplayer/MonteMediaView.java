@@ -82,7 +82,8 @@ public class MonteMediaView {
     }
 
     private void addTrack(TrackInterface tr) {
-        if (tr instanceof MonteVideoTrack vt) {
+        if (tr instanceof MonteVideoTrack) {
+            MonteVideoTrack vt = (MonteVideoTrack) tr;
             ImageView imageView = new ImageView();
             imageView.imageProperty().bind(vt.videoImageProperty());
             Format format = vt.getFormat();
@@ -116,7 +117,8 @@ public class MonteMediaView {
     private void removeTrack(TrackInterface remitem) {
         Node remove = trackMap.remove(remitem);
         group.getChildren().remove(remove);
-        if (remove instanceof ImageView imageView) {
+        if (remove instanceof ImageView) {
+            ImageView imageView = (ImageView) remove;
             imageView.imageProperty().unbind();
         }
     }

@@ -120,7 +120,7 @@ public class MainWindowController {
     }
 
     void zoomTo(double power) {
-        MediaInterface media = getPlayer() instanceof MediaPlayerInterface p ? p.getMedia() : null;
+        MediaInterface media = getPlayer() instanceof MediaPlayerInterface ? getPlayer().getMedia() : null;
         if (media == null) {
             return;
         }
@@ -135,7 +135,7 @@ public class MainWindowController {
     }
 
     private double getZoomPower() {
-        MediaInterface media = getPlayer() instanceof MediaPlayerInterface p ? p.getMedia() : null;
+        MediaInterface media = getPlayer() instanceof MediaPlayerInterface ? getPlayer().getMedia() : null;
         if (media == null) {
             return 1;
         }

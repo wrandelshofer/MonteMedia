@@ -5,7 +5,8 @@
 
 package org.monte.media.color;
 
-import static java.lang.Math.clamp;
+import static org.monte.media.util.MathUtil.clamp;
+
 
 public class YccConverters {
     /**

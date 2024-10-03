@@ -1,9 +1,9 @@
 /*
- * @(#)ByteArray.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * @(#)ByteArrays.java
+ * Copyright © 2024 Werner Randelshofer, Switzerland. MIT License.
  */
 
-package org.monte.media.io;
+package org.monte.media.util;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
@@ -12,7 +12,7 @@ import java.nio.ByteOrder;
 /**
  * Utility methods for reading/writing primitive values into byte arrays.
  */
-public class ByteArray {
+public class ByteArrays {
     private static final VarHandle SHORT_LE = MethodHandles.byteArrayViewVarHandle(short[].class, ByteOrder.LITTLE_ENDIAN);
     private static final VarHandle SHORT_BE = MethodHandles.byteArrayViewVarHandle(short[].class, ByteOrder.BIG_ENDIAN);
     private static final VarHandle INT_LE = MethodHandles.byteArrayViewVarHandle(int[].class, ByteOrder.LITTLE_ENDIAN);
@@ -25,7 +25,7 @@ public class ByteArray {
     /**
      * Don't let anyone instantiate this class.
      */
-    private ByteArray() {
+    private ByteArrays() {
 
     }
 

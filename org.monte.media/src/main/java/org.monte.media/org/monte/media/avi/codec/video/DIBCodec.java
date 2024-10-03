@@ -8,9 +8,10 @@ import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.av.codec.video.AbstractVideoCodec;
-import org.monte.media.io.SeekableByteArrayOutputStream;
+import org.monte.media.io.ByteArrayImageOutputStream;
 import org.monte.media.util.ArrayUtil;
 
+import javax.imageio.stream.ImageOutputStream;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -18,7 +19,6 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
-import java.io.OutputStream;
 
 import static org.monte.media.av.BufferFlag.DISCARD;
 import static org.monte.media.av.BufferFlag.KEYFRAME;
@@ -188,7 +188,7 @@ public class DIBCodec extends AbstractVideoCodec {
             return CODEC_OK;
         }
 
-        SeekableByteArrayOutputStream tmp = new SeekableByteArrayOutputStream(ArrayUtil.reuseByteArray(out.data, 32));
+        ByteArrayImageOutputStream tmp = new ByteArrayImageOutputStream(ArrayUtil.reuseByteArray(out.data, 32));
 
         // Handle sub-image
         // FIXME - Scanline stride must be a multiple of four.
@@ -320,7 +320,7 @@ public class DIBCodec extends AbstractVideoCodec {
      * @param width          The width of the image in data elements.
      * @param scanlineStride The number to append to offset to get to the next scanline.
      */
-    public void writeKey4(OutputStream out, byte[] pixels, int width, int height, int offset, int scanlineStride)
+    public void writeKey4(ImageOutputStream out, byte[] pixels, int width, int height, int offset, int scanlineStride)
             throws IOException {
 
         byte[] bytes = new byte[width / 2 + width % 2];
@@ -342,7 +342,7 @@ public class DIBCodec extends AbstractVideoCodec {
      * @param width          The width of the image in data elements.
      * @param scanlineStride The number to append to offset to get to the next scanline.
      */
-    public void writeKey8(OutputStream out, byte[] pixels, int width, int height, int offset, int scanlineStride)
+    public void writeKey8(ImageOutputStream out, byte[] pixels, int width, int height, int offset, int scanlineStride)
             throws IOException {
 
         for (int y = (height - 1) * scanlineStride; y >= 0; y -= scanlineStride) { // Upside down
@@ -359,7 +359,7 @@ public class DIBCodec extends AbstractVideoCodec {
      * @param width          The width of the image in data elements.
      * @param scanlineStride The number to append to offset to get to the next scanline.
      */
-    public void writeKey24(OutputStream out, int[] pixels, int width, int height, int offset, int scanlineStride)
+    public void writeKey24(ImageOutputStream out, int[] pixels, int width, int height, int offset, int scanlineStride)
             throws IOException {
         int w3 = width * 3;
         byte[] bytes = new byte[w3]; // holds a scanline of raw image data with 3 channels of 8 bit data

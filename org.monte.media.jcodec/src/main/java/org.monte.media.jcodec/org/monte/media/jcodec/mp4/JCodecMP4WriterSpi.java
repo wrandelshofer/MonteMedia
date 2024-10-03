@@ -1,5 +1,5 @@
 /*
- * @(#)MP4WriterSpi.java
+ * @(#)JCodecMP4WriterSpi.java
  * Copyright © 2024 Werner Randelshofer, Switzerland. MIT License.
  */
 
@@ -16,16 +16,16 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class MP4WriterSpi implements MovieWriterSpi {
+public class JCodecMP4WriterSpi implements MovieWriterSpi {
 
     private final static List<String> extensions = Collections.unmodifiableList(Arrays.asList(new String[]{"mp4", "m4v", "m4a"}));
 
-    public MP4WriterSpi() {
+    public JCodecMP4WriterSpi() {
     }
 
     @Override
     public MovieWriter create(File file) throws IOException {
-        return new MP4Writer(file);
+        return new JCodecMP4Writer(file);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class MP4WriterSpi implements MovieWriterSpi {
 
     @Override
     public Format getFileFormat() {
-        return MP4Writer.MP4;
+        return JCodecMP4Writer.MP4;
     }
 
 }

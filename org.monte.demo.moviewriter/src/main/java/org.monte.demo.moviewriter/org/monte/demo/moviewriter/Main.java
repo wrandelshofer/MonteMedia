@@ -1,15 +1,13 @@
 /*
- * @(#)Main.java
+ * @(#)TestMovieWriters.java
  * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.demo.moviewriter;
 
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
-import org.monte.media.av.MovieReader;
 import org.monte.media.av.MovieWriter;
 import org.monte.media.av.Registry;
-import org.monte.media.av.codec.video.VideoFormatKeys;
 import org.monte.media.av.codec.video.VideoFormatKeys.PixelFormat;
 import org.monte.media.avi.AVIReader;
 import org.monte.media.avi.AVIWriter;
@@ -24,9 +22,11 @@ import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.awt.image.IndexColorModel;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import static org.monte.media.av.FormatKeys.EncodingKey;
 import static org.monte.media.av.FormatKeys.FrameRateKey;
@@ -85,7 +85,7 @@ public class Main {
         return img;
     }
 
-    private static void drawAnimationFrame(BufferedImage img, Graphics2D g, double second, int frameIndex, int frameCount) {
+    private static void drawAnimationFrame(Graphics2D g, double second, int frameIndex, int frameCount) {
         drawClock(g, 232, 240, 150, second);
 
         g.setPaint(Color.WHITE);
@@ -128,7 +128,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        System.out.println("AVIDemo " + Main.class.getPackage().getImplementationVersion());
+        System.out.println("MovieWriterDemo " + Main.class.getPackage().getImplementationVersion());
         System.out.println("This is a demo of the Monte Media library.");
         System.out.println("Copyright © Werner Randelshofer. All Rights Reserved.");
         System.out.println("License: MIT License");
@@ -136,89 +136,40 @@ public class Main {
 
         try {
             var m = new Main();
-            m.test(new File("moviewriterdemo-tscc24.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 24), true);
-            m.test(new File("moviewriterdemo-h264-motion16.mov"), new Format(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 16), false);
-            m.test(new File("moviewriterdemo-h264-motion0.mov"), new Format(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0), false);
-            if (true) return;
-            m.test(new File("moviewriterdemo-h264-motion16.m4v"), new Format(DepthKey, 24, QualityKey, 0.75f, MotionSearchRangeKey, 16), true);
-            m.test(new File("moviewriterdemo-h264-motion0.m4v"), new Format(DepthKey, 24, QualityKey, 0.75f, MotionSearchRangeKey, 0), true);
-            m.test(new File("moviewriterdemo-h264-motion0.avi"), new Format(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0), true);
-            m.test(new File("moviewriterdemo-jpg-q0.75.avi"), new Format(EncodingKey, ENCODING_AVI_MJPG, DepthKey, 24, QualityKey, 0.75f), true);
-            m.test(new File("moviewriterdemo-png.avi"), new Format(EncodingKey, ENCODING_AVI_PNG, DepthKey, 24), true);
-            m.test(new File("moviewriterdemo-raw24.avi"), new Format(EncodingKey, ENCODING_AVI_DIB, DepthKey, 24), true);
-            m.test(new File("moviewriterdemo-raw8.avi"), new Format(EncodingKey, ENCODING_AVI_DIB, DepthKey, 8), true);
-            m.test(new File("moviewriterdemo-rle8.avi"), new Format(EncodingKey, ENCODING_AVI_RLE8, DepthKey, 8), true);
-            m.test(new File("moviewriterdemo-tscc8.avi"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8), true);
-            m.test(new File("moviewriterdemo-tscc16.avi"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 16), true);
-            m.test(new File("moviewriterdemo-tscc24.avi"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 24), true);
-            m.test(new File("moviewriterdemo-raw8gray.avi"), new Format(EncodingKey, ENCODING_AVI_DIB, DepthKey, 8, PixelFormatKey, PixelFormat.GRAY), true);
-            m.test(new File("moviewriterdemo-rle8gray.avi"), new Format(EncodingKey, ENCODING_AVI_RLE8, DepthKey, 8, PixelFormatKey, PixelFormat.GRAY), false);
-            m.test(new File("moviewriterdemo-tscc8gray.avi"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8, PixelFormatKey, PixelFormat.GRAY), true);
-            //test(new File("avidemo-rle4.avi"), AVIOutputStreamOLD.AVIVideoFormat.RLE, 4, 1f);
-            m.test(new File("moviewriterdemo-jpg-q0.75.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_JPEG, DepthKey, 24, QualityKey, 0.75f), true);
-            m.test(new File("moviewriterdemo-png.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_PNG, DepthKey, 24), true);
-            m.test(new File("moviewriterdemo-raw24.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_RAW, DepthKey, 24), false);
-            m.test(new File("moviewriterdemo-raw8.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_RAW, DepthKey, 8), false);
-            m.test(new File("moviewriterdemo-tscc8.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8), true);
-            m.test(new File("moviewriterdemo-tscc8gray.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8,
-                    PixelFormatKey, VideoFormatKeys.PixelFormat.GRAY), true);
-            m.test(new File("moviewriterdemo-tscc16.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 16), true);
-            m.test(new File("moviewriterdemo-rle8.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 8), false);
-            m.test(new File("moviewriterdemo-rle16.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 16), false);
-            m.test(new File("moviewriterdemo-rle24.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 24), false);
-            m.test(new File("moviewriterdemo-png.zip"), new Format(EncodingKey, ENCODING_AVI_PNG, DepthKey, 24), true);
+            m.test(new File("moviewriterdemo-h264-motion0.mp4"), new Format(EncodingKey, ENCODING_AVC1, DepthKey, 24, QualityKey, 0.75f, MotionSearchRangeKey, 0));
+            m.test(new File("moviewriterdemo-h264-motion0.mov"), new Format(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0));
+            m.test(new File("moviewriterdemo-h264-motion0.avi"), new Format(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0));
+            m.test(new File("moviewriterdemo-h264-motion16.mp4"), new Format(DepthKey, 24, QualityKey, 0.75f, MotionSearchRangeKey, 16));
+            m.test(new File("moviewriterdemo-h264-motion16.mov"), new Format(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 16));
+            m.test(new File("moviewriterdemo-jpg-q0.75.avi"), new Format(EncodingKey, ENCODING_AVI_MJPG, DepthKey, 24, QualityKey, 0.75f));
+            m.test(new File("moviewriterdemo-jpg-q0.75.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_JPEG, DepthKey, 24, QualityKey, 0.75f));
+            m.test(new File("moviewriterdemo-png.avi"), new Format(EncodingKey, ENCODING_AVI_PNG, DepthKey, 24));
+            m.test(new File("moviewriterdemo-png.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_PNG, DepthKey, 24));
+            m.test(new File("moviewriterdemo-png.zip"), new Format(EncodingKey, ENCODING_AVI_PNG, DepthKey, 24));
+            m.test(new File("moviewriterdemo-raw24.avi"), new Format(EncodingKey, ENCODING_AVI_DIB, DepthKey, 24));
+            m.test(new File("moviewriterdemo-raw24.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_RAW, DepthKey, 24));
+            m.test(new File("moviewriterdemo-raw8.avi"), new Format(EncodingKey, ENCODING_AVI_DIB, DepthKey, 8));
+            m.test(new File("moviewriterdemo-raw8.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_RAW, DepthKey, 8));
+            m.test(new File("moviewriterdemo-raw8gray.avi"), new Format(EncodingKey, ENCODING_AVI_DIB, DepthKey, 8, PixelFormatKey, PixelFormat.GRAY));
+            m.test(new File("moviewriterdemo-rle16.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 16));
+            m.test(new File("moviewriterdemo-rle24.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 24));
+            m.test(new File("moviewriterdemo-rle8.avi"), new Format(EncodingKey, ENCODING_AVI_RLE8, DepthKey, 8));
+            m.test(new File("moviewriterdemo-rle8.mov"), new Format(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 8));
+            m.test(new File("moviewriterdemo-rle8gray.avi"), new Format(EncodingKey, ENCODING_AVI_RLE8, DepthKey, 8, PixelFormatKey, PixelFormat.GRAY));
+            m.test(new File("moviewriterdemo-tscc16.avi"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 16));
+            m.test(new File("moviewriterdemo-tscc16.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 16));
+            m.test(new File("moviewriterdemo-tscc24.avi"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 24));
+            m.test(new File("moviewriterdemo-tscc24.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 24));
+            m.test(new File("moviewriterdemo-tscc8.avi"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8));
+            m.test(new File("moviewriterdemo-tscc8.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8));
+            m.test(new File("moviewriterdemo-tscc8gray.avi"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8, PixelFormatKey, PixelFormat.GRAY));
+            m.test(new File("moviewriterdemo-tscc8gray.mov"), new Format(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8, PixelFormatKey, PixelFormat.GRAY));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
 
-    private void test(File file, Format format, boolean tryToReadTheFile) throws IOException {
-        testWriting(file, format);
-        if (tryToReadTheFile) {
-            try {
-                testReading(file);
-            } catch (UnsupportedOperationException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private static void testReading(File file) throws IOException {
-        System.out.print("Reading " + file.getAbsolutePath());
-        long startTime = System.nanoTime();
-        MovieReader in = null;
-
-        try {
-            // Create the reader
-            in = Registry.getInstance().getReader(file);
-
-            // Look for the first video track
-            int track = 0;
-            while (track < in.getTrackCount()
-                    && in.getFormat(track).get(MediaTypeKey) != MediaType.VIDEO) {
-                track++;
-            }
-
-            // Read images from the track
-            BufferedImage img = null;
-            do {
-                img = in.read(track, img);
-
-                //...to do: do something with the image...
-            } while (img != null);
-        } catch (IOException e) {
-            System.out.println("Reading failed " + file + " " + e.getMessage());
-            //throw e;
-        } finally {
-            // Close the rader
-            if (in != null) {
-                in.close();
-            }
-        }
-        System.out.println(" elapsed " + (System.nanoTime() - startTime) / 1e9 + " seconds");
-    }
-
-    private static void testWriting(File file, Format format) throws IOException {
+    private void test(File file, Format format) throws IOException {
         System.out.print("Writing " + file.getAbsolutePath());
         long startTime = System.nanoTime();
 
@@ -233,10 +184,7 @@ public class Main {
         BufferedImage img = createImage(format);
         Graphics2D g = img.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        var backgroundImage = ImageIO.read(Main.class.getResource("BackgroundImage.png"));
-        if (backgroundImage != null) {
-            g.drawImage(backgroundImage, 0, 0, null);
-        }
+        drawBackgroundImage(g);
 
         MovieWriter out = null;
         int n = frameRate.multiply(60).intValue();
@@ -250,7 +198,7 @@ public class Main {
             // Draw the animation
             for (int i = 0; i < n; i++) {
                 double t = frameRate.divide(i).doubleValue() + 8 * 3600 + 25 * 60;
-                drawAnimationFrame(img, g, t, i, n);
+                drawAnimationFrame(g, t, i, n);
 
                 // write image to the writer
                 out.write(0, img, 1);
@@ -265,6 +213,26 @@ public class Main {
             // Dispose the graphics object
             g.dispose();
         }
-        System.out.println(" elapsed " + (int) ((n * 1e9) / (System.nanoTime() - startTime)) + " fps");
+        System.out.println(", " + (int) ((n * 1e9) / (System.nanoTime() - startTime)) + " fps");
+    }
+
+    private static int compareImages(BufferedImage expectedImage, BufferedImage actualImage) {
+        if (expectedImage.getRaster().getDataBuffer() instanceof DataBufferInt && actualImage.getRaster().getDataBuffer() instanceof DataBufferInt) {
+            DataBufferInt expectedBuffer = (DataBufferInt) expectedImage.getRaster().getDataBuffer();
+            DataBufferInt actualBuffer = (DataBufferInt) actualImage.getRaster().getDataBuffer();
+            int[] expectedData = expectedBuffer.getData();
+            int[] actualData = actualBuffer.getData();
+            int mismatch = Arrays.mismatch(expectedData, 0, expectedData.length, actualData, 0, actualData.length);
+            return mismatch;
+        } else {
+            return -2;
+        }
+    }
+
+    private static void drawBackgroundImage(Graphics2D g) throws IOException {
+        var backgroundImage = ImageIO.read(Main.class.getResource("BackgroundImage.png"));
+        if (backgroundImage != null) {
+            g.drawImage(backgroundImage, 0, 0, null);
+        }
     }
 }

@@ -393,8 +393,8 @@ public class PlayerControlsController extends AnchorPane {
             double parentHeight = rootPane.getHeight();
 
             int minimumAmountVisible = 10;
-            double newX = Math.clamp(controllerPane.getLayoutX() + dx, 0 - width + minimumAmountVisible, parentWidth - minimumAmountVisible);
-            double newY = Math.clamp(controllerPane.getLayoutY() + dy, 0 - height + minimumAmountVisible, parentHeight - minimumAmountVisible);
+            double newX = MathUtil.clamp(controllerPane.getLayoutX() + dx, 0 - width + minimumAmountVisible, parentWidth - minimumAmountVisible);
+            double newY = MathUtil.clamp(controllerPane.getLayoutY() + dy, 0 - height + minimumAmountVisible, parentHeight - minimumAmountVisible);
 
             AnchorPane.setLeftAnchor(controllerPane, null);
             AnchorPane.setRightAnchor(controllerPane, null);

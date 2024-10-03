@@ -21,6 +21,8 @@ import javafx.util.Duration;
 import org.monte.demo.javafx.movieplayer.model.MediaInterface;
 import org.monte.demo.javafx.movieplayer.model.TrackInterface;
 
+import java.util.Objects;
+
 /**
  * Adapter for JavaFX {@link Media}.
  */
@@ -32,11 +34,17 @@ public class FXMedia implements MediaInterface {
     public FXMedia(Media media) {
         this.media = media;
         for (Track track : media.getTracks()) {
-            switch (track) {
-                case VideoTrack t -> tracks.add(new FXVideoTrack(t));
-                case AudioTrack t -> tracks.add(new FXAudioTrack(t));
-                case SubtitleTrack t -> tracks.add(new FXSubtitleTrack(t));
-                default -> tracks.add(new FXTrack(track));
+            if (Objects.requireNonNull(track) instanceof VideoTrack) {
+                VideoTrack t = (VideoTrack) Objects.requireNonNull(track);
+                tracks.add(new FXVideoTrack(t));
+            } else if (track instanceof AudioTrack) {
+                AudioTrack t = (AudioTrack) track;
+                tracks.add(new FXAudioTrack(t));
+            } else if (track instanceof SubtitleTrack) {
+                SubtitleTrack t = (SubtitleTrack) track;
+                tracks.add(new FXSubtitleTrack(t));
+            } else {
+                tracks.add(new FXTrack(track));
             }
         }
 
@@ -51,11 +59,17 @@ public class FXMedia implements MediaInterface {
                     if (c.wasAdded()) {
                         int i = c.getFrom();
                         for (Track track : c.getAddedSubList()) {
-                            switch (track) {
-                                case VideoTrack t -> tracks.add(i, new FXVideoTrack(t));
-                                case AudioTrack t -> tracks.add(i, new FXAudioTrack(t));
-                                case SubtitleTrack t -> tracks.add(i, new FXSubtitleTrack(t));
-                                default -> tracks.add(i, new FXTrack(track));
+                            if (Objects.requireNonNull(track) instanceof VideoTrack) {
+                                VideoTrack t = (VideoTrack) Objects.requireNonNull(track);
+                                tracks.add(i, new FXVideoTrack(t));
+                            } else if (track instanceof AudioTrack) {
+                                AudioTrack t = (AudioTrack) track;
+                                tracks.add(i, new FXAudioTrack(t));
+                            } else if (track instanceof SubtitleTrack) {
+                                SubtitleTrack t = (SubtitleTrack) track;
+                                tracks.add(i, new FXSubtitleTrack(t));
+                            } else {
+                                tracks.add(i, new FXTrack(track));
                             }
                             i++;
                         }

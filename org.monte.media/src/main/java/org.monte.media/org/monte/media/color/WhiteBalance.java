@@ -11,8 +11,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
 import static java.lang.Math.abs;
-import static java.lang.Math.clamp;
 import static java.lang.Math.max;
+import static org.monte.media.util.MathUtil.clamp;
 
 /**
  * {@code WhiteBalance}.

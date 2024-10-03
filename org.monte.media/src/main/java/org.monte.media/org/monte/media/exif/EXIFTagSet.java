@@ -53,7 +53,7 @@ public class EXIFTagSet extends TagSet {
     // TIFFTag Relating to Related File Information
     public final static TIFFTag RelatedSoundFile = new TIFFTag("RelatedSoundFile", 0xa004, ASCII_MASK);
     //
-    // Tags Relating to Date and Time
+    // Tags Relating to Instant and Time
     public final static TIFFTag DateTimeOriginal = new TIFFTag("DateTimeOriginal", 0x9003, ASCII_MASK, new DateValueFormatter());
     public final static TIFFTag DateTimeDigitized = new TIFFTag("DateTimeDigitized", 0x9004, ASCII_MASK, new DateValueFormatter());
     public final static TIFFTag SubSecTime = new TIFFTag("SubSecTime", 0x9290, ASCII_MASK);

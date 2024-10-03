@@ -13,6 +13,7 @@ import org.monte.media.av.MovieReader;
 import org.monte.media.av.Registry;
 import org.monte.media.math.Rational;
 import org.monte.media.util.ArrayUtil;
+import org.monte.media.util.MathUtil;
 
 import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
@@ -65,26 +66,26 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
     }
 
     @Override
-    public long timeToSample(int track, Rational seconds) throws IOException {
+    public long findSampleAtTime(int track, Rational seconds) throws IOException {
         ensureRealized();
         QuickTimeMeta.Track tr = meta.tracks.get(track);
         long timeStamp = seconds.multiply(meta.timeScale).longValue();
         QuickTimeMeta.TrackSample key = new QuickTimeMeta.TrackSample(null, timeStamp, 0, timeStamp, 0);
         int result = Collections.binarySearch(tr.trackSamplesList, key, Comparator.comparingLong(a -> a.timeStamp));
         if (result < 0) result = ~result - 1;
-        result = Math.clamp(result, 0, tr.trackSamplesList.size() - 1);
+        result = MathUtil.clamp(result, 0, tr.trackSamplesList.size() - 1);
         return result;
     }
 
     @Override
-    public Rational sampleToTime(int track, long sample) throws IOException {
+    public Rational getSampleTime(int track, long sample) throws IOException {
         ensureRealized();
         QuickTimeMeta.Track tr = meta.tracks.get(track);
         return new Rational(tr.trackSamplesList.get((int) sample).timeStamp, meta.timeScale);
     }
 
     @Override
-    public Rational getDuration(int track, long sample) throws IOException {
+    public Rational getSampleDuration(int track, long sample) throws IOException {
         ensureRealized();
         QuickTimeMeta.Track tr = meta.tracks.get(track);
         return new Rational(tr.trackSamplesList.get((int) sample).duration, meta.timeScale);
@@ -162,7 +163,6 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
         var ts = tr.trackSamplesList.get((int) tr.readIndex);
         var ms = ts.mediaSample;
 
-        // FIXME - This should be done using QuickTimeInputStream.readSample()
         in.seek(ms.offset);
         byte[] b;
         buffer.data = b = ArrayUtil.reuseByteArray(buffer.data, (int) ms.length);
@@ -199,7 +199,7 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
         ensureRealized();
         for (int t = 0, n = meta.tracks.size(); t < n; t++) {
             QuickTimeMeta.Track tr = meta.tracks.get(t);
-            int sample = (int) min(timeToSample(t, newValue), tr.media.sampleCount - 1);
+            int sample = (int) min(findSampleAtTime(t, newValue), tr.media.sampleCount - 1);
             for (; sample > 0 && !tr.trackSamplesList.get(sample).mediaSample.isKeyframe; sample--) ;
             tr.readIndex = sample;
         }
@@ -208,16 +208,16 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
     @Override
     public Rational getReadTime(int track) throws IOException {
         QuickTimeMeta.Track tr = meta.tracks.get(track);
-        return sampleToTime(track, tr.readIndex);
+        return getSampleTime(track, tr.readIndex);
     }
 
     @Override
-    public Rational getDuration() throws IOException {
-        return new Rational(getMovieDuration(), getMovieTimeScale());
+    public Rational getMovieDuration() throws IOException {
+        return new Rational(getMovieDurationInMovieTimeScale(), getMovieTimeScale());
     }
 
     @Override
-    public Rational getDuration(int track) throws IOException {
+    public Rational getTrackDuration(int track) throws IOException {
         ensureRealized();
         QuickTimeMeta.Track tr = meta.tracks.get(track);
         return new Rational(tr.duration, meta.timeScale);

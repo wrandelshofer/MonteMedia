@@ -131,8 +131,8 @@ public class AmigaVideoFormatKeys extends VideoFormatKeys {
 
     private static void reduceListRational(Rational value, InfGetter<Rational> g, ArrayList<AmigaDisplayInfo> infs) {
         ArrayList<AmigaDisplayInfo> bestInfs = new ArrayList<>();
-        bestInfs.add(infs.getFirst());
-        float bestCost = g.get(infs.getFirst()).subtract(value).floatValue();
+        bestInfs.add(infs.get(0));
+        float bestCost = g.get(infs.get(0)).subtract(value).floatValue();
         bestCost *= bestCost;
         for (Iterator<AmigaDisplayInfo> i = infs.iterator(); i.hasNext(); ) {
             AmigaDisplayInfo inf = i.next();
@@ -156,8 +156,8 @@ public class AmigaVideoFormatKeys extends VideoFormatKeys {
 
     private static void reduceListInteger(int value, InfGetter<Integer> g, ArrayList<AmigaDisplayInfo> infs) {
         ArrayList<AmigaDisplayInfo> bestInfs = new ArrayList<>();
-        bestInfs.add(infs.getFirst());
-        float bestCost = g.get(infs.getFirst()) - value;
+        bestInfs.add(infs.get(0));
+        float bestCost = g.get(infs.get(0)) - value;
         bestCost *= bestCost;
         for (Iterator<AmigaDisplayInfo> i = infs.iterator(); i.hasNext(); ) {
             AmigaDisplayInfo inf = i.next();

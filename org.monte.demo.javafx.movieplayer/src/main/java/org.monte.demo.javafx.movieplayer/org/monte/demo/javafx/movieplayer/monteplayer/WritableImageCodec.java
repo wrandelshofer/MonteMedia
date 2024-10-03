@@ -42,10 +42,11 @@ public class WritableImageCodec extends AbstractCodec {
 
         out.format = this.outputFormat;
 
-        if (!(in.data instanceof BufferedImage b)) {
+        if (!(in.data instanceof BufferedImage)) {
             out.setFlag(BufferFlag.DISCARD);
             return WritableImageCodec.CODEC_FAILED;
         }
+        BufferedImage b = (BufferedImage) in.data;
 
         // SwingFXUtils is slow if the image has an indexed color model
         /*
@@ -70,7 +71,7 @@ public class WritableImageCodec extends AbstractCodec {
         }*/
 
 
-        out.data = SwingFXUtils.toFXImage(b, (out.data instanceof WritableImage w) ? w : null);
+        out.data = SwingFXUtils.toFXImage(b, (out.data instanceof WritableImage) ? (WritableImage) out.data : null);
         return WritableImageCodec.CODEC_OK;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * @(#)H264Codec.java
+ * @(#)JCodecH264Codec.java
  * Copyright © 2024 Werner Randelshofer, Switzerland. MIT License.
  */
 
@@ -8,6 +8,8 @@ package org.monte.media.jcodec.codec;
 import org.jcodec.api.transcode.PixelStore;
 import org.jcodec.api.transcode.VideoFrameWithPacket;
 import org.jcodec.codecs.h264.H264Encoder;
+import org.jcodec.codecs.h264.H264Utils;
+import org.jcodec.codecs.h264.io.model.SeqParameterSet;
 import org.jcodec.common.VideoEncoder;
 import org.jcodec.common.io.NIOUtils;
 import org.jcodec.common.model.ColorSpace;
@@ -18,9 +20,17 @@ import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys;
 import org.monte.media.av.codec.video.AbstractVideoCodec;
 import org.monte.media.jcodec.impl.AWTUtil;
+import org.monte.media.qtff.AvcDecoderConfigurationRecord;
+import org.monte.media.util.ArrayUtil;
+import org.monte.media.util.ByteArray;
 
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.monte.media.av.BufferFlag.DISCARD;
 import static org.monte.media.av.BufferFlag.KEYFRAME;
@@ -38,16 +48,16 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_I
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.MotionSearchRangeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
-import static org.monte.media.jcodec.codec.PictureCodec.ENCODING_PICTURE;
+import static org.monte.media.jcodec.codec.JCodecPictureCodec.ENCODING_PICTURE;
 
 /**
  * Codec for {@link Picture} to {@code H264} byte array.
  */
-public class H264Codec extends AbstractVideoCodec {
+public class JCodecH264Codec extends AbstractVideoCodec {
     private VideoEncoder videoEncoder = null;
     private ByteBuffer byteBuffer;
 
-    public H264Codec() {
+    public JCodecH264Codec() {
         super(new Format[]{
                         new Format(MediaTypeKey, FormatKeys.MediaType.VIDEO,
                                 EncodingKey, ENCODING_BUFFERED_IMAGE,
@@ -136,13 +146,29 @@ public class H264Codec extends AbstractVideoCodec {
             byteBuffer = ByteBuffer.allocate(bufferSize);
         }
         byteBuffer.clear();
-        VideoEncoder.EncodedFrame encodeFrame = enc.encodeFrame(picture, byteBuffer);
-        outputVideoPacket = Packet.createPacketWithData(videoFrame.getPacket(), NIOUtils.clone(encodeFrame.getData()));
-        outputVideoPacket.setFrameType(encodeFrame.isKeyFrame() ? Packet.FrameType.KEY : Packet.FrameType.INTER);
+        VideoEncoder.EncodedFrame encodedFrame = enc.encodeFrame(picture, byteBuffer);
+        outputVideoPacket = Packet.createPacketWithData(videoFrame.getPacket(), NIOUtils.clone(encodedFrame.getData()));
+        outputVideoPacket.setFrameType(encodedFrame.isKeyFrame() ? Packet.FrameType.KEY : Packet.FrameType.INTER);
 
-        out.setFlag(KEYFRAME, encodeFrame.isKeyFrame());
+        // compute header
+        out.header = null;
+        if (encodedFrame.isKeyFrame()) {
+            List<ByteBuffer> spsList = new ArrayList<>();
+            List<ByteBuffer> ppsList = new ArrayList<>();
+            H264Utils.wipePSinplace(outputVideoPacket.data, spsList, ppsList);
+            if (!spsList.isEmpty()) {
+                SeqParameterSet p = H264Utils.readSPS(spsList.get(0));
+                Function<ByteBuffer, ByteArray> byteBufferFunction = b -> new ByteArray(ArrayUtil.copyOf(b.array(), b.arrayOffset(), b.remaining()));
+                out.header = new AvcDecoderConfigurationRecord(p.profileIdc, 0, p.levelIdc, 4,
+                        spsList.stream().map(byteBufferFunction).collect(Collectors.toCollection(LinkedHashSet::new)),
+                        ppsList.stream().map(byteBufferFunction).collect(Collectors.toCollection(LinkedHashSet::new)));
+            }
+        }
+
+        out.setFlag(KEYFRAME, encodedFrame.isKeyFrame());
         ByteBuffer packetBuf = outputVideoPacket.data;
-        if (out.data instanceof byte[] byteArray && byteArray.length >= packetBuf.remaining()) {
+        if (out.data instanceof byte[] && ((byte[]) out.data).length >= packetBuf.remaining()) {
+            byte[] byteArray = (byte[]) out.data;
             System.arraycopy(packetBuf.array(), packetBuf.position(), byteArray, 0, packetBuf.remaining());
             out.offset = 0;
             out.length = packetBuf.remaining();
@@ -166,16 +192,12 @@ public class H264Codec extends AbstractVideoCodec {
     }
 
     private Picture getPicture(Buffer buf) {
-        switch (buf.data) {
-            case BufferedImage img -> {
-
-                return AWTUtil.fromBufferedImage(img, ColorSpace.YUV420J);
-            }
-            case Picture picture -> {
-                return picture;
-            }
-            case null, default -> {
-            }
+        if (buf.data instanceof BufferedImage) {
+            BufferedImage img = (BufferedImage) buf.data;
+            return AWTUtil.fromBufferedImage(img, ColorSpace.YUV420J);
+        } else if (buf.data instanceof Picture) {
+            Picture picture = (Picture) buf.data;
+            return picture;
         }
         return null;
     }

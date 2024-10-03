@@ -10,7 +10,7 @@ import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys;
 import org.monte.media.av.codec.text.AbstractTextCodec;
 import org.monte.media.io.ByteArrayImageInputStream;
-import org.monte.media.quicktime.QTFFImageInputStream;
+import org.monte.media.qtff.QTFFImageInputStream;
 import org.monte.media.quicktime.codec.text.cta608.Cta608Memory;
 import org.monte.media.quicktime.codec.text.cta608.Cta608Parser;
 import org.monte.media.quicktime.codec.text.cta608.Cta608Token;

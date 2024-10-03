@@ -491,19 +491,7 @@ public abstract class AbstractAVIStream {
          * The optional name of the track.
          */
         protected String name;
-        /**
-         * The codec.
-         */
-        public Codec codec;
-        /**
-         * The output buffer is used to store the output of the codec.
-         */
-        public Buffer outputBuffer;
-        /**
-         * The input buffer is used when one of the convenience methods without
-         * a Buffer parameter is used.
-         */
-        public Buffer inputBuffer;
+
         /**
          * The current chunk index of the reader.
          */
@@ -528,7 +516,7 @@ public abstract class AbstractAVIStream {
 
         public void addSample(Sample s) {
             if (!samples.isEmpty()) {
-                s.timeStamp = samples.getLast().timeStamp + samples.getLast().duration;
+                s.timeStamp = samples.get(samples.size() - 1).timeStamp + samples.get(samples.size() - 1).duration;
             }
             samples.add(s);
             length++;
@@ -1399,7 +1387,7 @@ public abstract class AbstractAVIStream {
 
         public void add(Chunk child) throws IOException {
             if (children.size() > 0) {
-                children.getLast().finish();
+                children.get(children.size() - 1).finish();
             }
             children.add(child);
         }
@@ -1453,7 +1441,6 @@ public abstract class AbstractAVIStream {
      */
     protected class DataChunk extends Chunk {
 
-        //protected SubImageOutputStream data;
         protected boolean finished;
         private long finishedSize;
 
@@ -1477,7 +1464,7 @@ public abstract class AbstractAVIStream {
         public DataChunk(int name, long dataSize) throws IOException {
             super(name);
             /*
-             data = new SubImageOutputStream(out, ByteOrder.LITTLE_ENDIAN, false);
+             data = new FilterImageOutputStream(out, ByteOrder.LITTLE_ENDIAN, false);
              data.writeInt(typeToInt(chunkType));
              data.writeInt((int)Math.max(0, dataSize)); */
             out.setByteOrder(ByteOrder.BIG_ENDIAN);

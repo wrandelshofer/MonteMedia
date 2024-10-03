@@ -6,7 +6,7 @@ package org.monte.media.jmf.codec.video;
 
 import com.sun.media.format.AviVideoFormat;
 import org.monte.media.av.codec.video.TechSmithCodecCore;
-import org.monte.media.io.SeekableByteArrayOutputStream;
+import org.monte.media.io.ByteArrayImageOutputStream;
 import org.monte.media.util.ArrayUtil;
 
 import javax.media.Buffer;
@@ -178,7 +178,7 @@ public class TSCCCodec extends AbstractVideoDecoder {
         }
         out.setFormat(outputFormat);
 
-        SeekableByteArrayOutputStream tmp = new SeekableByteArrayOutputStream(ArrayUtil.reuseByteArray(out.getData(), 32));
+        ByteArrayImageOutputStream tmp = new ByteArrayImageOutputStream(ArrayUtil.reuseByteArray(out.getData(), 32));
 
         VideoFormat outvf = outputFormat;
         boolean isKeyframe = isSet(in, Buffer.FLAG_KEY_FRAME) || frameCounter % (int) outvf.getFrameRate() == 0;
@@ -290,7 +290,7 @@ public class TSCCCodec extends AbstractVideoDecoder {
             out.setFormat(outputFormat);
             out.setData(tmp.getBuffer());
             out.setOffset(0);
-            out.setLength(tmp.size());
+            out.setLength((int) tmp.length());
             return BUFFER_PROCESSED_OK;
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -318,34 +318,30 @@ public class TSCCCodec extends AbstractVideoDecoder {
         int pixelStride;
         int offset = in.getOffset();
         int inputDepth;
-        switch (invf) {
-            case RGBFormat rgbFormat -> {
-                RGBFormat inrgbf = (RGBFormat) outputFormat;
-                inputDepth = 24;
-                scanlineStride = inrgbf.getLineStride();
-                pixelStride = inrgbf.getPixelStride();
-                if (inrgbf.getFlipped() == Format.TRUE) {
-                    offset += (height - 1) * scanlineStride;
-                    scanlineStride = -scanlineStride;
-                }
+        if (invf instanceof RGBFormat) {
+            RGBFormat inrgbf = (RGBFormat) outputFormat;
+            inputDepth = 24;
+            scanlineStride = inrgbf.getLineStride();
+            pixelStride = inrgbf.getPixelStride();
+            if (inrgbf.getFlipped() == Format.TRUE) {
+                offset += (height - 1) * scanlineStride;
+                scanlineStride = -scanlineStride;
             }
-            case AviVideoFormat inavivf -> {
-                inputDepth = inavivf.getBitsPerPixel();
-                scanlineStride = width;
-                pixelStride = 1;
-            }
-            case IndexedColorFormat inicvf -> {
-                inputDepth = 8;
-                scanlineStride = inicvf.getLineStride();
-                pixelStride = 1;
-            }
-            default -> {
-                // If this is a QuickTime movie, we can not determine the input depth.
-                // So, we fail to decode QuickTime videos that have depth that is different from 24 bits.
-                VideoFormat vf = invf;
-                inputDepth = 24;
-                scanlineStride = pixelStride = vf.getSize().width * 3;
-            }
+        } else if (invf instanceof AviVideoFormat) {
+            AviVideoFormat inavivf = (AviVideoFormat) invf;
+            inputDepth = inavivf.getBitsPerPixel();
+            scanlineStride = width;
+            pixelStride = 1;
+        } else if (invf instanceof IndexedColorFormat) {
+            IndexedColorFormat inicvf = (IndexedColorFormat) invf;
+            inputDepth = 8;
+            scanlineStride = inicvf.getLineStride();
+            pixelStride = 1;
+        } else {// If this is a QuickTime movie, we can not determine the input depth.
+            // So, we fail to decode QuickTime videos that have depth that is different from 24 bits.
+            VideoFormat vf = invf;
+            inputDepth = 24;
+            scanlineStride = pixelStride = vf.getSize().width * 3;
         }
         int outputDepth = inputDepth;
         if (outputFormat instanceof RGBFormat) {

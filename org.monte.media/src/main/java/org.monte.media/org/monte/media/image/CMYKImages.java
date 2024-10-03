@@ -25,8 +25,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.IntStream;
 
-import static java.lang.Math.clamp;
 import static java.lang.Math.min;
+import static org.monte.media.util.MathUtil.clamp;
 
 /**
  * Provides utility methods for images in the CMYK color space..

@@ -49,9 +49,12 @@ public class DropFileHandler {
     private void dragDropped(DragEvent event) {
         Dragboard db = event.getDragboard();
         boolean success = false;
-        if (db.hasFiles() && db.getFiles() instanceof List<File> fileList && !fileList.isEmpty()) {
-            fileDroppedConsumer.accept(fileList.getFirst());
+        if (db.hasFiles()) {
+            List<File> files = db.getFiles();
+            if (files != null && !files.isEmpty()) {
+                fileDroppedConsumer.accept(files.get(0));
             success = true;
+            }
         }
         event.setDropCompleted(success);
         event.consume();

@@ -13,9 +13,10 @@ import org.monte.media.math.Rational;
 
 import java.awt.image.IndexColorModel;
 import java.io.IOException;
+import java.nio.ByteOrder;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -30,6 +31,11 @@ import static org.monte.media.av.FormatKeys.MediaType;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.FormatKeys.MimeTypeKey;
 import static org.monte.media.av.FormatKeys.SampleFormatKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ByteOrderKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.ChannelsKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.FrameSizeKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleRateKey;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleSizeInBitsKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.CompressorNameKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
@@ -152,11 +158,11 @@ public class QuickTimeMeta extends AbstractMovie {
     /**
      * Creation time of the movie.
      */
-    protected Date creationTime;
+    protected Instant creationTime;
     /**
      * Modification time of the movie.
      */
-    protected Date modificationTime;
+    protected Instant modificationTime;
     /**
      * The time scale of the movie. A time value that indicates the time scale
      * for this media—that is, the number of time units that pass per second in
@@ -235,7 +241,7 @@ public class QuickTimeMeta extends AbstractMovie {
         );
         String dataFormat = (track.media != null
                 && !track.media.sampleDescriptions.isEmpty())
-                ? track.media.sampleDescriptions.getFirst().dataFormat : null;
+                ? track.media.sampleDescriptions.get(0).dataFormat : null;
         if (dataFormat != null) {
             format = format.append(EncodingKey, dataFormat);
         }
@@ -248,7 +254,7 @@ public class QuickTimeMeta extends AbstractMovie {
                 if (m.sampleDescriptions.size() != 1) {
                     throw new UnsupportedOperationException("not implemented for media with multiple sample descriptions.. " + trackIndex + " " + track.mediaType + " " + m + " " + m.sampleDescriptions);
                 }
-                SampleDescription desc = m.sampleDescriptions.getFirst();
+                SampleDescription desc = m.sampleDescriptions.get(0);
 
                 if (desc.videoDepth == 8) {
                     if (0 <= desc.videoColorTableId && desc.videoColorTableId < this.colorTables.size()) {
@@ -266,11 +272,27 @@ public class QuickTimeMeta extends AbstractMovie {
                         DepthKey, desc.videoDepth
                 );
                 if (m.timeToSamples.size() == 1) {
-                    TimeToSampleGroup ttsg = m.timeToSamples.getFirst();
+                    TimeToSampleGroup ttsg = m.timeToSamples.get(0);
                     format = format.append(FrameRateKey, new Rational(ttsg.getSampleDuration(), m.mediaTimeScale));
                 } else {
                     format = format.append(FrameRateKey, new Rational(1, m.mediaTimeScale));
                 }
+                break;
+            }
+            case AUDIO: {
+                if (m.sampleDescriptions.size() != 1) {
+                    throw new UnsupportedOperationException("not implemented for media with multiple sample descriptions.. " + trackIndex + " " + track.mediaType + " " + m + " " + m.sampleDescriptions);
+                }
+
+                SampleDescription desc = m.sampleDescriptions.get(0);
+                format = format.append(
+                        SampleFormatKey, desc.dataFormat,
+                        SampleRateKey, Rational.valueOf(desc.soundSampleRate),
+                        SampleSizeInBitsKey, desc.soundSampleSize,
+                        FrameSizeKey, (int) desc.soundBytesPerFrame,
+                        ChannelsKey, desc.soundNumberOfChannels,
+                        ByteOrderKey, "sowt".equals(desc.dataFormat) ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN
+                );
                 break;
             }
             default: {
@@ -278,7 +300,7 @@ public class QuickTimeMeta extends AbstractMovie {
                     throw new UnsupportedOperationException("not implemented for media with multiple sample descriptions.. " + trackIndex + " " + track.mediaType + " " + m + " " + m.sampleDescriptions);
                 }
 
-                SampleDescription desc = m.sampleDescriptions.getFirst();
+                SampleDescription desc = m.sampleDescriptions.get(0);
                 format = format.append(
                         SampleFormatKey, desc.dataFormat
                 );
@@ -288,19 +310,19 @@ public class QuickTimeMeta extends AbstractMovie {
         track.format = format;
     }
 
-    public Date getCreationTime() {
+    public Instant getCreationTime() {
         return creationTime;
     }
 
-    public void setCreationTime(Date creationTime) {
+    public void setCreationTime(Instant creationTime) {
         this.creationTime = creationTime;
     }
 
-    public Date getModificationTime() {
+    public Instant getModificationTime() {
         return modificationTime;
     }
 
-    public void setModificationTime(Date modificationTime) {
+    public void setModificationTime(Instant modificationTime) {
         this.modificationTime = modificationTime;
     }
 
@@ -432,7 +454,7 @@ public class QuickTimeMeta extends AbstractMovie {
         compatibleBrands.clear();
         compatibleBrands.add(brand);
         // Movie Header 
-        creationTime = modificationTime = new Date();
+        creationTime = modificationTime = Instant.ofEpochMilli(0);
         timeScale = 600;
         duration = 0;
         preferredRate = 1.0;
@@ -860,11 +882,11 @@ public class QuickTimeMeta extends AbstractMovie {
         /**
          * Creation time of the track.
          */
-        protected Date creationTime;
+        protected Instant creationTime;
         /**
          * Modification time of the track.
          */
-        protected Date modificationTime;
+        protected Instant modificationTime;
         /**
          * The id of the track. The value 0 cannot be used.
          */
@@ -1016,7 +1038,7 @@ public class QuickTimeMeta extends AbstractMovie {
                     long mediaSampleTime = entry.getKey();
 
                     // if multiple samples have the same timestamp, then only the last one has a duration >=0
-                    MediaSample lastMediaSample = mediaSamples.getLast();
+                    MediaSample lastMediaSample = mediaSamples.get(mediaSamples.size() - 1);
                     long mediaSampleDuration = lastMediaSample.duration;
                     // cut duration if the media sample ends after the end time of the edit
                     long cutStart = Math.max(0, mediaSampleTime + mediaSampleDuration - editMediaEndTime);
@@ -1155,8 +1177,8 @@ public class QuickTimeMeta extends AbstractMovie {
     protected static class Media {
         // BEGIN Media Header
 
-        protected Date mediaCreationTime;
-        protected Date mediaModificationTime;
+        protected Instant mediaCreationTime;
+        protected Instant mediaModificationTime;
         /**
          * The timescale of the media in the track. A time value that indicates
          * the timescale for this media. That is, the number of time units that

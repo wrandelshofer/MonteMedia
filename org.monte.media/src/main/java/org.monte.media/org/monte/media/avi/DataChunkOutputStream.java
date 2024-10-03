@@ -4,7 +4,7 @@
  */
 package org.monte.media.avi;
 
-import org.monte.media.io.ByteArray;
+import org.monte.media.util.ByteArrays;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;
@@ -118,7 +118,7 @@ public class DataChunkOutputStream extends FilterOutputStream {
      * @see java.io.FilterOutputStream#out
      */
     public void writeInt(int v) throws IOException {
-        ByteArray.setIntLE(byteBuffer, 0, v);
+        ByteArrays.setIntLE(byteBuffer, 0, v);
         out.write(byteBuffer, 0, 4);
         incCount(4);
     }
@@ -130,7 +130,7 @@ public class DataChunkOutputStream extends FilterOutputStream {
      * @throws java.io.IOException
      */
     public void writeUInt(long v) throws IOException {
-        ByteArray.setIntLE(byteBuffer, 0, (int) v);
+        ByteArrays.setIntLE(byteBuffer, 0, (int) v);
         out.write(byteBuffer, 0, 4);
         incCount(4);
     }
@@ -142,7 +142,7 @@ public class DataChunkOutputStream extends FilterOutputStream {
      * @throws java.io.IOException
      */
     public void writeShort(int v) throws IOException {
-        ByteArray.setShortLE(byteBuffer, 0, (short) v);
+        ByteArrays.setShortLE(byteBuffer, 0, (short) v);
         out.write(byteBuffer, 0, 2);
         incCount(2);
     }
@@ -177,13 +177,13 @@ public class DataChunkOutputStream extends FilterOutputStream {
     }
 
     public void writeLong(long v) throws IOException {
-        ByteArray.setLongLE(byteBuffer, 0, v);
+        ByteArrays.setLongLE(byteBuffer, 0, v);
         out.write(byteBuffer, 0, 8);
         incCount(8);
     }
 
     public void writeUShort(int v) throws IOException {
-        ByteArray.setShortLE(byteBuffer, 0, (short) v);
+        ByteArrays.setShortLE(byteBuffer, 0, (short) v);
         out.write(byteBuffer, 0, 2);
         incCount(2);
     }

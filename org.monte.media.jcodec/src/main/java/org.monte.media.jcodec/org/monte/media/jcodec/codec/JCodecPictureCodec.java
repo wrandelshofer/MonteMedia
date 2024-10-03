@@ -1,5 +1,5 @@
 /*
- * @(#)PictureCodec.java
+ * @(#)JCodecPictureCodec.java
  * Copyright © 2024 Werner Randelshofer, Switzerland. MIT License.
  */
 
@@ -24,10 +24,10 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_I
 /**
  * Codec for {@link BufferedImage} to/from {@link Picture}.
  */
-public class PictureCodec extends AbstractCodec {
+public class JCodecPictureCodec extends AbstractCodec {
     public static final String ENCODING_PICTURE = "picture";
 
-    public PictureCodec() {
+    public JCodecPictureCodec() {
         super(new Format[]{
                         new Format(MediaTypeKey, FormatKeys.MediaType.VIDEO,
                                 EncodingKey, ENCODING_BUFFERED_IMAGE,
@@ -48,7 +48,8 @@ public class PictureCodec extends AbstractCodec {
         if (in.isFlag(BufferFlag.DISCARD)) {
             return CODEC_OK;
         }
-        if (in.data instanceof BufferedImage img) {
+        if (in.data instanceof BufferedImage) {
+            BufferedImage img = (BufferedImage) in.data;
             out.data = AWTUtil.fromBufferedImage(img, ColorSpace.YUV420J);
             return CODEC_OK;
         }

@@ -132,7 +132,8 @@ public class AVIBMPDIB {
     }
 
     public static ImageInputStream prependDHTSeg(InputStream inWithoutDHT) throws IOException {
-        if (inWithoutDHT instanceof ByteArrayInputStream b) {
+        if (inWithoutDHT instanceof ByteArrayInputStream) {
+            ByteArrayInputStream b = (ByteArrayInputStream) inWithoutDHT;
             return prependDHTSeg(b);
         }
 

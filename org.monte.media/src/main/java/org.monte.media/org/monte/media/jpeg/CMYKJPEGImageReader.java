@@ -6,8 +6,9 @@ package org.monte.media.jpeg;
 
 import org.monte.media.image.CMYKImages;
 import org.monte.media.io.ByteArrayImageInputStream;
+import org.monte.media.io.ByteArrayImageOutputStream;
+import org.monte.media.io.IOStreams;
 import org.monte.media.io.ImageInputStreamAdapter;
-import org.monte.media.io.SeekableByteArrayOutputStream;
 import org.monte.media.jfif.JFIFInputStream;
 
 import javax.imageio.ImageIO;
@@ -192,7 +193,7 @@ public class CMYKJPEGImageReader extends ImageReader {
     int numberOfSamplesPerLine = 0;
     int numberOfComponentsInFrame = 0;
     int app14AdobeColorTransform = 0;
-      SeekableByteArrayOutputStream app2ICCProfile = new SeekableByteArrayOutputStream();
+      ByteArrayImageOutputStream app2ICCProfile = new ByteArrayImageOutputStream();
     // Browse for marker segments, and extract data from those
     // which are of interest.
     JFIFInputStream fifi = new JFIFInputStream(new ImageInputStreamAdapter(in));
@@ -224,7 +225,7 @@ public class CMYKJPEGImageReader extends ImageReader {
 
             // Read Adobe ICC_PROFILE int buffer. The profile is split up over
             // multiple APP2 marker segments.
-            dis.transferTo(app2ICCProfile);
+              IOStreams.copy(dis, app2ICCProfile);
           }
         }
       } else if (seg.marker == 0xffee) {

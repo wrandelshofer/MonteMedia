@@ -12,11 +12,11 @@ import org.monte.media.av.CodecSpi;
  *
  * @author Werner Randelshofer
  */
-public class H264CodecSpi implements CodecSpi {
+public class JCodecH264CodecSpi implements CodecSpi {
 
     @Override
-    public H264Codec create() {
-        return new H264Codec();
+    public JCodecH264Codec create() {
+        return new JCodecH264Codec();
     }
 
 }

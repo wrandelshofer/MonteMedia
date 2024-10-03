@@ -6,6 +6,8 @@ package org.monte.media.quicktime;
 
 import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.io.UncachedImageInputStream;
+import org.monte.media.qtff.QTFFImageInputStream;
+import org.monte.media.util.MathUtil;
 
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
@@ -156,7 +158,7 @@ public class QuickTimeDeserializer {
                 // Perform recursion:
                 parseRecursively(in, atom.size - atom.headerSize, m);
             } else {
-                QuickTimeMeta.Track track = (m.tracks.isEmpty()) ? null : m.tracks.getLast();
+                QuickTimeMeta.Track track = (m.tracks.isEmpty()) ? null : m.tracks.get(m.tracks.size() - 1);
                 QuickTimeMeta.Media media = (track == null) ? null : track.media;
 
                 if (null != t) {
@@ -850,6 +852,8 @@ public class QuickTimeDeserializer {
                 d.soundBytesPerFrame = in.readUnsignedInt();
                 d.soundBytesPerSample = in.readUnsignedInt();
                 remainingEntrySize -= 16;
+            } else {
+                d.soundBytesPerFrame = ((d.soundNumberOfChannels * d.soundSampleSize) + 7) / 8;
             }
 
             while (remainingEntrySize > 0) {
@@ -1020,10 +1024,10 @@ public class QuickTimeDeserializer {
             int vendor = in.readInt();
             float value1 = in.readInt() / 1024f;
 
-            d.videoTemporalQuality = Math.clamp(value1, 0.0f, 1.0f);
+            d.videoTemporalQuality = MathUtil.clamp(value1, 0.0f, 1.0f);
             float value = in.readInt() / 1024f;
 
-            d.videoSpatialQuality = Math.clamp(value, 0.0f, 1.0f);
+            d.videoSpatialQuality = MathUtil.clamp(value, 0.0f, 1.0f);
             d.videoWidth = in.readUnsignedShort();
             d.videoHeight = in.readUnsignedShort();
             d.videoHorizontalResolution = in.readFixed16D16();

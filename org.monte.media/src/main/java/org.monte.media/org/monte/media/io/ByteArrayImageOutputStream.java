@@ -5,6 +5,8 @@
 package org.monte.media.io;
 
 
+import org.monte.media.util.ByteArrays;
+
 import javax.imageio.stream.ImageOutputStream;
 import javax.imageio.stream.ImageOutputStreamImpl;
 import java.io.IOException;
@@ -320,6 +322,10 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
         return count - arrayOffset;
     }
 
+    public int size() {
+        return (int) length();
+    }
+
     /**
      * Resets the <code>count</code> field of this byte array output
      * stream to zero, so that all currently accumulated output in the
@@ -336,9 +342,9 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
         flushBits();
         growBy(2);
         if (byteOrder == ByteOrder.BIG_ENDIAN) {
-            ByteArray.setUShortBE(buf, (int) streamPos, v);
+            ByteArrays.setUShortBE(buf, (int) streamPos, v);
         } else {
-            ByteArray.setUShortLE(buf, (int) streamPos, v);
+            ByteArrays.setUShortLE(buf, (int) streamPos, v);
         }
         streamPos += 2;
     }
@@ -362,9 +368,9 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
         flushBits();
         growBy(4);
         if (byteOrder == ByteOrder.BIG_ENDIAN) {
-            ByteArray.setIntBE(buf, (int) streamPos, v);
+            ByteArrays.setIntBE(buf, (int) streamPos, v);
         } else {
-            ByteArray.setIntLE(buf, (int) streamPos, v);
+            ByteArrays.setIntLE(buf, (int) streamPos, v);
         }
         streamPos += 4;
     }
@@ -374,9 +380,9 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
         flushBits();
         growBy(8);
         if (byteOrder == ByteOrder.BIG_ENDIAN) {
-            ByteArray.setLongBE(buf, (int) streamPos, v);
+            ByteArrays.setLongBE(buf, (int) streamPos, v);
         } else {
-            ByteArray.setLongLE(buf, (int) streamPos, v);
+            ByteArrays.setLongLE(buf, (int) streamPos, v);
         }
         streamPos += 8;
     }

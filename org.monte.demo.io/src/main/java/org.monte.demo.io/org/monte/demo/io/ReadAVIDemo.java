@@ -72,7 +72,7 @@ public class ReadAVIDemo {
             public void run() {
                 JFrame fr = new JFrame(f.getName());
                 fr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                final JLabel label = new JLabel(new ImageIcon(frames.getFirst()));
+                final JLabel label = new JLabel(new ImageIcon(frames.get(0)));
                 final JSlider slider = new JSlider(JSlider.HORIZONTAL, 0, frames.size() - 1, 0);
 
                 slider.addChangeListener(new ChangeListener() {

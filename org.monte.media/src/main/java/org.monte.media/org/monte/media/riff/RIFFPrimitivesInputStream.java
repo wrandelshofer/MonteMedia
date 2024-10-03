@@ -4,7 +4,7 @@
  */
 package org.monte.media.riff;
 
-import org.monte.media.io.ByteArray;
+import org.monte.media.util.ByteArrays;
 
 import java.io.EOFException;
 import java.io.FilterInputStream;
@@ -59,7 +59,7 @@ public class RIFFPrimitivesInputStream extends FilterInputStream {
     public short readWORD()
             throws IOException {
         readFully(byteBuffer, 0, 2);
-        return ByteArray.getShortLE(byteBuffer, 0);
+        return ByteArrays.getShortLE(byteBuffer, 0);
     }
 
     /**
@@ -78,7 +78,7 @@ public class RIFFPrimitivesInputStream extends FilterInputStream {
     public int readLONG()
             throws IOException {
         readFully(byteBuffer, 0, 4);
-        return ByteArray.getIntLE(byteBuffer, 0);
+        return ByteArrays.getIntLE(byteBuffer, 0);
     }
 
     /**
@@ -96,7 +96,7 @@ public class RIFFPrimitivesInputStream extends FilterInputStream {
     public int readFourCC()
             throws IOException {
         readFully(byteBuffer, 0, 4);
-        return ByteArray.getIntBE(byteBuffer, 0);
+        return ByteArrays.getIntBE(byteBuffer, 0);
     }
 
     /**

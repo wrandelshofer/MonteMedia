@@ -24,7 +24,8 @@ public class MonteMedia extends AbstractMedia {
 
     public void dispose() {
         for (var tr : tracks) {
-            if (tr instanceof MonteTrackInterface mtr) {
+            if (tr instanceof MonteTrackInterface) {
+                MonteTrackInterface mtr = (MonteTrackInterface) tr;
                 mtr.dispose();
             }
         }

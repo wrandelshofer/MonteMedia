@@ -14,14 +14,17 @@ import org.monte.media.av.Registry;
 import org.monte.media.av.codec.video.VideoFormatKeys;
 import org.monte.media.math.Rational;
 import org.monte.media.util.ArrayUtil;
+import org.monte.media.util.MathUtil;
 
 import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
+import java.util.List;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -44,7 +47,16 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_I
  * @author Werner Randelshofer
  */
 public class AVIReader extends AVIInputStream implements MovieReader {
+    private static class TrackEncoder {
+        /**
+         * The codec.
+         */
+        public Codec codec;
+        public Buffer outputBuffer;
+        public Buffer inputBuffer;
+    }
 
+    private List<TrackEncoder> trackEncoders = new ArrayList<>();
     public final static Format AVI = new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_AVI);
     private Rational movieDuration = null;
 
@@ -182,28 +194,29 @@ public class AVIReader extends AVIInputStream implements MovieReader {
      */
     public BufferedImage read(int track, BufferedImage img) throws IOException {
         AbstractAVIStream.Track tr = tracks.get(track);
-        if (tr.inputBuffer == null) {
-            tr.inputBuffer = new Buffer();
+        TrackEncoder tre = getTrackEncoder(track);
+        if (tre.inputBuffer == null) {
+            tre.inputBuffer = new Buffer();
         }
-        if (tr.codec == null) {
-            createCodec(tr);
+        if (tre.codec == null) {
+            createCodec(track);
         }
         Buffer buf = new Buffer();
         buf.data = img;
         do {
-            read(track, tr.inputBuffer);
-            // FIXME - We assume a one-step codec here!
-            tr.codec.process(tr.inputBuffer, buf);
+            read(track, tre.inputBuffer);
+            tre.codec.process(tre.inputBuffer, buf);
         } while (buf.isFlag(DISCARD) && !buf.isFlag(END_OF_MEDIA));
 
-        if (tr.inputBuffer.isFlag(END_OF_MEDIA)) {
+        if (tre.inputBuffer.isFlag(END_OF_MEDIA)) {
             return null;
         }
 
         return (BufferedImage) buf.data;
     }
 
-    private void createCodec(AbstractAVIStream.Track tr) throws IOException {
+    private void createCodec(int track) throws IOException {
+        AbstractAVIStream.Track tr = tracks.get(track);
         Format fmt = tr.format;
         Codec codec = createCodec(fmt);
         String enc = fmt.get(EncodingKey);
@@ -222,8 +235,8 @@ public class AVIReader extends AVIInputStream implements MovieReader {
                 }
             }
         }
-
-        tr.codec = codec;
+        var tre = getTrackEncoder(track);
+        tre.codec = codec;
     }
 
     private Codec createCodec(Format fmt) {
@@ -252,7 +265,7 @@ public class AVIReader extends AVIInputStream implements MovieReader {
                 continue;
             }
 
-            AbstractAVIStream.Sample currentSample = tr.readIndex < tr.samples.size() ? tr.samples.get((int) tr.readIndex) : tr.samples.getLast();
+            AbstractAVIStream.Sample currentSample = tr.readIndex < tr.samples.size() ? tr.samples.get((int) tr.readIndex) : tr.samples.get(tr.samples.size() - 1);
 
             long readTimeStamp = currentSample.timeStamp;
             if (tr.readIndex >= tr.samples.size()) {
@@ -271,7 +284,7 @@ public class AVIReader extends AVIInputStream implements MovieReader {
 
 
     @Override
-    public Rational getDuration() throws IOException {
+    public Rational getMovieDuration() throws IOException {
         ensureRealized();
         if (movieDuration == null) {
             Rational maxDuration = new Rational(0, 1);
@@ -287,7 +300,7 @@ public class AVIReader extends AVIInputStream implements MovieReader {
     }
 
     @Override
-    public Rational getDuration(int track) throws IOException {
+    public Rational getTrackDuration(int track) throws IOException {
         ensureRealized();
         AbstractAVIStream.Track tr = tracks.get(track);
         return new Rational((tr.samples.size() * tr.scale + tr.startTime), tr.rate);
@@ -299,18 +312,18 @@ public class AVIReader extends AVIInputStream implements MovieReader {
     }
 
     @Override
-    public long timeToSample(int track, Rational time) {
+    public long findSampleAtTime(int track, Rational time) {
         AbstractAVIStream.Track tr = tracks.get(track);
         Sample key = new Sample(0, 0, 0, 0, false);
         key.timeStamp = time.multiply(new Rational(tr.rate, tr.scale)).longValue();
         int result = Collections.binarySearch(tr.samples, key, Comparator.comparingLong(a -> a.timeStamp));
         if (result < 0) result = ~result - 1;
-        result = Math.clamp(result, 0, tr.samples.size() - 1);
+        result = MathUtil.clamp(result, 0, tr.samples.size() - 1);
         return result;
     }
 
     @Override
-    public Rational sampleToTime(int track, long sampleIndex) throws IOException {
+    public Rational getSampleTime(int track, long sampleIndex) throws IOException {
         ensureRealized();
         AbstractAVIStream.Track tr = tracks.get(track);
         AbstractAVIStream.Sample sample = tr.samples.get((int) max(0, min(tr.samples.size() - 1, sampleIndex)));
@@ -322,7 +335,7 @@ public class AVIReader extends AVIInputStream implements MovieReader {
     }
 
     @Override
-    public Rational getDuration(int track, long sampleIndex) throws IOException {
+    public Rational getSampleDuration(int track, long sampleIndex) throws IOException {
         ensureRealized();
         AbstractAVIStream.Track tr = tracks.get(track);
         AbstractAVIStream.Sample sample = tr.samples.get((int) max(0, min(tr.samples.size() - 1, sampleIndex)));
@@ -341,7 +354,7 @@ public class AVIReader extends AVIInputStream implements MovieReader {
         ensureRealized();
         for (int t = 0, n = tracks.size(); t < n; t++) {
             AbstractAVIStream.Track tr = tracks.get(t);
-            int sample = (int) min(timeToSample(t, newValue), tr.samples.size() - 1);
+            int sample = (int) min(findSampleAtTime(t, newValue), tr.samples.size() - 1);
             for (; sample > 0 && !tr.samples.get(sample).isKeyframe; sample--) ;
             tr.readIndex = sample;
         }
@@ -358,5 +371,11 @@ public class AVIReader extends AVIInputStream implements MovieReader {
         return -1;
     }
 
+    private TrackEncoder getTrackEncoder(int track) {
+        while (trackEncoders.size() < track) {
+            trackEncoders.add(new TrackEncoder());
+        }
+        return trackEncoders.get(track);
+    }
 
 }

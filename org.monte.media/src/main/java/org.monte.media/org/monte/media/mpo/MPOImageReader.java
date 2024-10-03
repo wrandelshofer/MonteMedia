@@ -9,7 +9,7 @@ import org.monte.media.exif.EXIFReader;
 import org.monte.media.exif.EXIFTagSet;
 import org.monte.media.exif.MPEntryTagSet;
 import org.monte.media.exif.MPFTagSet;
-import org.monte.media.io.SubImageInputStream;
+import org.monte.media.io.FilterImageInputStream;
 import org.monte.media.jpeg.CMYKJPEGImageReader;
 import org.monte.media.tiff.BaselineTagSet;
 import org.monte.media.tiff.TIFFDirectory;
@@ -127,7 +127,7 @@ public class MPOImageReader extends ImageReader {
             throw new IndexOutOfBoundsException("illegal imageIndex=" + imageIndex);
         }
         ImageInputStream in = (ImageInputStream) getInput();
-        SubImageInputStream sin = new SubImageInputStream(in, imageOffsets[imageIndex], imageLengths[imageIndex]);
+        FilterImageInputStream sin = new FilterImageInputStream(in, imageOffsets[imageIndex], imageLengths[imageIndex]);
         sin.seek(0);
 
         ImageReader ir = new CMYKJPEGImageReader(getOriginatingProvider());
@@ -180,7 +180,8 @@ public class MPOImageReader extends ImageReader {
                     TIFFNode imageNode = metaDataTree.getChildAt(i);
                     for (Iterator<TIFFNode> e = imageNode.preorderIterator(); e.hasNext(); ) {
                         TIFFNode node = e.next();
-                        if (node instanceof TIFFDirectory dir) {
+                        if (node instanceof TIFFDirectory) {
+                            TIFFDirectory dir = (TIFFDirectory) node;
                             if ((mde = dir.getField(BaselineTagSet.ImageWidth)) != null) {
                                 width[i] = ((Number) mde.getData()).intValue();
                             }
@@ -209,9 +210,10 @@ public class MPOImageReader extends ImageReader {
             int index = 0;
             for (Iterator<TIFFNode> e = er.getMetaDataTree().preorderIterator(); e.hasNext(); ) {
                 TIFFNode n = e.next();
-                if (n instanceof TIFFDirectory dir) {
+                if (n instanceof TIFFDirectory) {
+                    TIFFDirectory dir = (TIFFDirectory) n;
                     if (dir.getName() != null && dir.getName().equals("MPEntry")) {
-                        long dirOffset = dir.getFileSegments().getFirst().offset();
+                        long dirOffset = dir.getFileSegments().get(0).offset();
                         TIFFField offsetField = dir.getField(MPEntryTagSet.IndividualImageDataOffset);
                         TIFFField lengthField = dir.getField(MPEntryTagSet.IndividualImageSize);
                         if (offsetField != null && lengthField != null) {

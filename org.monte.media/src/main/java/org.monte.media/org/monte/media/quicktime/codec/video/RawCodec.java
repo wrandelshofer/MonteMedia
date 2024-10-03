@@ -8,9 +8,10 @@ import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.av.codec.video.AbstractVideoCodec;
-import org.monte.media.io.SeekableByteArrayOutputStream;
+import org.monte.media.io.ByteArrayImageOutputStream;
 import org.monte.media.util.ArrayUtil;
 
+import javax.imageio.stream.ImageOutputStream;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
@@ -97,7 +98,7 @@ public class RawCodec extends AbstractVideoCodec {
      * @param offset         The offset to the first pixel in the data array.
      * @param scanlineStride The number to append to offset to get to the next scanline.
      */
-    public void writeKey8(OutputStream out, byte[] data, int width, int height, int offset, int scanlineStride)
+    public void writeKey8(ImageOutputStream out, byte[] data, int width, int height, int offset, int scanlineStride)
             throws IOException {
 
         // Write the samples
@@ -116,7 +117,7 @@ public class RawCodec extends AbstractVideoCodec {
      * @param offset         The offset to the first pixel in the data array.
      * @param scanlineStride The number to append to offset to get to the next scanline.
      */
-    public void writeKey16(OutputStream out, short[] data, int width, int height, int offset, int scanlineStride)
+    public void writeKey16(ImageOutputStream out, short[] data, int width, int height, int offset, int scanlineStride)
             throws IOException {
 
         // Write the samples
@@ -141,7 +142,7 @@ public class RawCodec extends AbstractVideoCodec {
      * @param offset         The offset to the first pixel in the data array.
      * @param scanlineStride The number to append to offset to get to the next scanline.
      */
-    public void writeKey24(OutputStream out, int[] data, int width, int height, int offset, int scanlineStride)
+    public void writeKey24(ImageOutputStream out, int[] data, int width, int height, int offset, int scanlineStride)
             throws IOException {
 
         // Write the samples
@@ -216,7 +217,7 @@ public class RawCodec extends AbstractVideoCodec {
         }
         out.format = outputFormat;
 
-        SeekableByteArrayOutputStream tmp = new SeekableByteArrayOutputStream(ArrayUtil.reuseByteArray(out.data, 32));
+        ByteArrayImageOutputStream tmp = new ByteArrayImageOutputStream(ArrayUtil.reuseByteArray(out.data, 32));
         Format vf = outputFormat;
 
         // Handle sub-image

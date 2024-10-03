@@ -66,7 +66,8 @@ public class Format {
 
     @SuppressWarnings("unchecked")
     public <T> T get(FormatKey<T> key, T defaultValue) {
-        return (properties.containsKey(key)) ? (T) properties.get(key) : defaultValue;
+        T actualValue = (T) properties.get(key);
+        return actualValue != null ? actualValue : defaultValue;
     }
 
     public boolean containsKey(FormatKey<?> key) {

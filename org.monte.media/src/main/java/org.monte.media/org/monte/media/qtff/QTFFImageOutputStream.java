@@ -1,17 +1,18 @@
 /*
- * @(#)DataAtomOutputStream.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * @(#)QTFFImageOutputStream.java
+ * Copyright © 2024 Werner Randelshofer, Switzerland. MIT License.
  */
-package org.monte.media.quicktime;
+package org.monte.media.qtff;
 
-import org.monte.media.io.ByteArray;
 
-import java.io.FilterOutputStream;
+import org.monte.media.io.FilterImageOutputStream;
+import org.monte.media.util.ByteArrays;
+
+import javax.imageio.stream.ImageOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
+import java.time.Instant;
 import java.util.GregorianCalendar;
 
 /**
@@ -20,17 +21,12 @@ import java.util.GregorianCalendar;
  *
  * @author Werner Randelshofer
  */
-public class DataAtomOutputStream extends FilterOutputStream {
+public class QTFFImageOutputStream extends FilterImageOutputStream {
 
     protected static final long MAC_TIMESTAMP_EPOCH = new GregorianCalendar(1904, GregorianCalendar.JANUARY, 1).getTimeInMillis();
-    /**
-     * The number of bytes written to the data output stream so far.
-     * If this counter overflows, it will be wrapped to Integer.MAX_VALUE.
-     */
-    protected long written;
     private final byte[] byteBuffer = new byte[8];
 
-    public DataAtomOutputStream(OutputStream out) {
+    public QTFFImageOutputStream(ImageOutputStream out) throws IOException {
         super(out);
     }
 
@@ -40,128 +36,45 @@ public class DataAtomOutputStream extends FilterOutputStream {
      * @param s A string with a length of 4 characters.
      */
     public void writeType(String s) throws IOException {
+        if (s == null) {
+            writeInt(0);
+            return;
+        }
         if (s.length() != 4) {
             throw new IllegalArgumentException("type string must have 4 characters");
         }
 
         try {
-            out.write(s.getBytes(StandardCharsets.US_ASCII), 0, 4);
-            incCount(4);
+            write(s.getBytes(StandardCharsets.US_ASCII), 0, 4);
         } catch (UnsupportedEncodingException e) {
             throw new InternalError(e.toString());
         }
     }
 
-    /**
-     * Writes out a <code>byte</code> to the underlying output stream as
-     * a 1-byte value. If no exception is thrown, the counter
-     * <code>written</code> is incremented by <code>1</code>.
-     *
-     * @param v a <code>byte</code> value to be written.
-     * @throws IOException if an I/O error occurs.
-     * @see FilterOutputStream#out
-     */
-    public final void writeByte(int v) throws IOException {
-        out.write(v);
-        incCount(1);
-    }
 
     /**
-     * Writes <code>len</code> bytes from the specified byte array
-     * starting at offset <code>off</code> to the underlying output stream.
-     * If no exception is thrown, the counter <code>written</code> is
-     * incremented by <code>len</code>.
-     *
-     * @param b   the data.
-     * @param off the start offset in the data.
-     * @param len the number of bytes to write.
-     * @throws IOException if an I/O error occurs.
-     * @see FilterOutputStream#out
-     */
-    @Override
-    public synchronized void write(byte[] b, int off, int len)
-            throws IOException {
-        out.write(b, off, len);
-        incCount(len);
-    }
-
-    /**
-     * Writes the specified byte (the low eight bits of the argument
-     * <code>b</code>) to the underlying output stream. If no exception
-     * is thrown, the counter <code>written</code> is incremented by
-     * <code>1</code>.
-     * <p>
-     * Implements the <code>write</code> method of <code>OutputStream</code>.
-     *
-     * @param b the <code>byte</code> to be written.
-     * @throws IOException if an I/O error occurs.
-     * @see FilterOutputStream#out
-     */
-    @Override
-    public synchronized void write(int b) throws IOException {
-        out.write(b);
-        incCount(1);
-    }
-
-    /**
-     * Writes an <code>int</code> to the underlying output stream as four
-     * bytes, high byte first. If no exception is thrown, the counter
-     * <code>written</code> is incremented by <code>4</code>.
+     * Writes a <code>BCD2</code> (one byte) to the underlying output stream.
      *
      * @param v an <code>int</code> to be written.
      * @throws IOException if an I/O error occurs.
-     * @see FilterOutputStream#out
-     */
-    public void writeInt(int v) throws IOException {
-        ByteArray.setIntBE(byteBuffer, 0, v);
-        write(byteBuffer, 0, 4);
-    }
-
-    /**
-     * Writes an unsigned 32-bit integer value.
-     *
-     * @param v The value to be written.
-     * @throws IOException if an I/O error occurs.
-     */
-    public void writeUInt(long v) throws IOException {
-        ByteArray.setIntBE(byteBuffer, 0, (int) v);
-        write(byteBuffer, 0, 4);
-    }
-
-    /**
-     * Writes a signed 16-bit integer value.
-     *
-     * @param v The value to be written.
-     * @throws IOException if an I/O error occurs.
-     */
-    public void writeShort(int v) throws IOException {
-        ByteArray.setShortBE(byteBuffer, 0, (short) v);
-        write(byteBuffer, 0, 2);
-    }
-
-    /**
-     * Writes a <code>BCD2</code> to the underlying output stream.
-     *
-     * @param v an <code>int</code> to be written.
-     * @throws IOException if an I/O error occurs.
-     * @see FilterOutputStream#out
      */
     public void writeBCD2(int v) throws IOException {
-        out.write(((v % 100 / 10) << 4) | (v % 10));
-        incCount(1);
+        write(((v % 100 / 10) << 4) | (v % 10));
     }
 
     /**
-     * Writes a <code>BCD4</code> to the underlying output stream.
+     * Writes a <code>BCD4</code> (two bytes) to the underlying output stream.
      *
      * @param v an <code>int</code> to be written.
      * @throws IOException if an I/O error occurs.
-     * @see FilterOutputStream#out
      */
     public void writeBCD4(int v) throws IOException {
-        out.write(((v % 10000 / 1000) << 4) | (v % 1000 / 100));
-        out.write(((v % 100 / 10) << 4) | (v % 10));
-        incCount(2);
+        writeShort(
+                ((v % 10000 / 1000) << 12)
+                        | ((v % 1000 / 100) << 8)
+                        | ((v % 100 / 10) << 4)
+                        | (v % 10)
+        );
     }
 
     /**
@@ -170,11 +83,11 @@ public class DataAtomOutputStream extends FilterOutputStream {
      * @param date the date to be converted to a Mac timestamp
      * @throws IOException if an I/O error occurs
      */
-    public void writeMacTimestamp(Date date) throws IOException {
-        long millis = date.getTime();
+    public void writeMacTimestamp(Instant date) throws IOException {
+        long millis = date.toEpochMilli();
         long qtMillis = millis - MAC_TIMESTAMP_EPOCH;
         long qtSeconds = qtMillis / 1000;
-        writeUInt(qtSeconds);
+        writeInt((int) qtSeconds);
     }
 
     /**
@@ -182,7 +95,6 @@ public class DataAtomOutputStream extends FilterOutputStream {
      *
      * @param f an <code>int</code> to be written.
      * @throws IOException if an I/O error occurs.
-     * @see FilterOutputStream#out
      */
     public void writeFixed16D16(double f) throws IOException {
         double v = (f >= 0) ? f : -f;
@@ -202,7 +114,6 @@ public class DataAtomOutputStream extends FilterOutputStream {
      *
      * @param f an <code>int</code> to be written.
      * @throws IOException if an I/O error occurs.
-     * @see FilterOutputStream#out
      */
     public void writeFixed2D30(double f) throws IOException {
         double v = (f >= 0) ? f : -f;
@@ -222,7 +133,6 @@ public class DataAtomOutputStream extends FilterOutputStream {
      *
      * @param f an <code>int</code> to be written.
      * @throws IOException if an I/O error occurs.
-     * @see FilterOutputStream#out
      */
     public void writeFixed8D8(double f) throws IOException {
         double v = (f >= 0) ? f : -f;
@@ -234,7 +144,22 @@ public class DataAtomOutputStream extends FilterOutputStream {
         if (f < 0) {
             t = t - 1;
         }
-        writeUShort(t);
+        writeShort(t);
+    }
+
+    /**
+     * Writes a zero-terminated C String.
+     *
+     * @param s the string to be written
+     * @throws IOException if an I/O error occurs
+     */
+    public void writeCString(String s) throws IOException {
+        for (int i = 0; i < s.length(); i++) {
+            byte ch = (byte) s.charAt(i);
+            if (ch == 0) break;
+            write(ch);
+        }
+        write(0);
     }
 
     /**
@@ -244,19 +169,23 @@ public class DataAtomOutputStream extends FilterOutputStream {
      * @throws IOException if an I/O error occurs
      */
     public void writePString(String s) throws IOException {
+        if (s == null) {
+            write(0);
+            writeShort(0);
+            return;
+        }
         if (s.length() > 0xffff) {
             throw new IllegalArgumentException("String too long for PString");
         }
         if (!s.isEmpty() && s.length() < 256) {
-            out.write(s.length());
+            write(s.length());
         } else {
-            out.write(0);
-            writeShort(s.length()); // increments +2
+            write(0);
+            writeShort(s.length());
         }
         for (int i = 0; i < s.length(); i++) {
-            out.write(s.charAt(i));
+            write(s.charAt(i));
         }
-        incCount(1 + s.length());
     }
 
     /**
@@ -271,44 +200,21 @@ public class DataAtomOutputStream extends FilterOutputStream {
             throw new IllegalArgumentException("String too long for PString of length " + length);
         }
         if (!s.isEmpty() && s.length() < 256) {
-            out.write(s.length());
+            write(s.length());
         } else {
-            out.write(0);
+            write(0);
             writeShort(s.length()); // increments +2
         }
         for (int i = 0; i < s.length(); i++) {
-            out.write(s.charAt(i));
+            write(s.charAt(i));
         }
 
         // write pad bytes
         for (int i = 1 + s.length(); i < length; i++) {
-            out.write(0);
+            write(0);
         }
-
-        incCount(length);
     }
 
-    public void writeLong(long v) throws IOException {
-        ByteArray.setLongBE(byteBuffer, 0, v);
-        write(byteBuffer, 0, 8);
-    }
-
-    public void writeUShort(int v) throws IOException {
-        ByteArray.setShortBE(byteBuffer, 0, (short) v);
-        write(byteBuffer, 0, 2);
-    }
-
-    /**
-     * Increases the written counter by the specified value
-     * until it reaches Long.MAX_VALUE.
-     */
-    protected void incCount(int value) {
-        long temp = written + value;
-        if (temp < 0) {
-            temp = Long.MAX_VALUE;
-        }
-        written = temp;
-    }
 
     public void writeShorts(short[] s, int off, int len) throws IOException {
         // Fix 4430357 - if off + len < 0, overflow occurred
@@ -348,7 +254,7 @@ public class DataAtomOutputStream extends FilterOutputStream {
 
 
     public void writeInt24(int v) throws IOException {
-        ByteArray.setIntBE(byteBuffer, 0, v);
+        ByteArrays.setIntBE(byteBuffer, 0, v);
         write(byteBuffer, 0, 3);
     }
 
@@ -371,14 +277,11 @@ public class DataAtomOutputStream extends FilterOutputStream {
         write(b, 0, len * 3);
     }
 
-    /**
-     * Returns the current value of the counter <code>written</code>,
-     * the number of bytes written to this data output stream so far.
-     * If the counter overflows, it will be wrapped to Integer.MAX_VALUE.
-     *
-     * @return the value of the <code>written</code> field.
-     */
-    public final long size() {
-        return written;
+    public void writeUInt(long value) throws IOException {
+        writeInt((int) value);
+    }
+
+    public void writeUShort(int value) throws IOException {
+        writeShort(value);
     }
 }

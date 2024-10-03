@@ -41,27 +41,59 @@ public interface MovieReader extends AutoCloseable {
     /**
      * Returns the total duration of the movie .
      */
-    Rational getDuration() throws IOException;
+    Rational getMovieDuration() throws IOException;
 
     /**
      * Returns the duration of the specified track.
      */
-    Rational getDuration(int track) throws IOException;
+    Rational getTrackDuration(int track) throws IOException;
 
     /**
-     * Returns the sample number for the specified time.
+     * Returns the sample number for a given time.
+     * <p>
+     * The following cases can occur:
+     * <dl>
+     *     <dt>The track starts after the specified time.</dt>
+     *     <dd>In this case the method returns the index of the first sample in the track.</dd>
+     *
+     *     <dt>The track ends before the specified time.</dt>
+     *     <dd>In this case the method returns the index of the last sample in the track.</dd>
+     *
+     *     <dt>The track starts before the specified time and ends after the specified time.</dt>
+     *     <dd>In this case the method returns the index of the first sample that
+     *     intersects with the time.</dd>
+     * </dl>
+     *
+     * @param track the track number
+     * @param seconds the time in seconds
+     * @return the sample number
+     * @throws IOException on IO failure
      */
-    long timeToSample(int track, Rational seconds) throws IOException;
+    long findSampleAtTime(int track, Rational seconds) throws IOException;
 
     /**
-     * Returns the time for the specified sample number.
+     * Returns the movie time for the specified sample number.
+     * <p>
+     * There can be multiple samples at the same time.
+     * In this case, all except the last sample at this time are used
+     * for prefetching.
+     *
+     * @param track the track number
+     * @param sample the sample number
+     * @return the sample time
+     * @throws IOException on IO failure
      */
-    Rational sampleToTime(int track, long sample) throws IOException;
+    Rational getSampleTime(int track, long sample) throws IOException;
 
     /**
-     * Returns the duration of the specified sample number.
+     * Returns the duration of the specified sample.
+     *
+     * @param track the track number
+     * @param sample the sample number
+     * @return the duration of the specified sample
+     * @throws IOException on IO failure
      */
-    Rational getDuration(int track, long sample) throws IOException;
+    Rational getSampleDuration(int track, long sample) throws IOException;
 
     /**
      * Returns the file format.

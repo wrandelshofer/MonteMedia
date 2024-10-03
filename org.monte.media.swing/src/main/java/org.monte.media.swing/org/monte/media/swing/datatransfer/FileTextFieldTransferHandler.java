@@ -93,7 +93,7 @@ public class FileTextFieldTransferHandler extends TransferHandler {
                 @SuppressWarnings("unchecked")
                 List<File> list = (List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
                 if (!list.isEmpty()) {
-                    File file = list.getFirst();
+                    File file = list.get(0);
 
                     switch (fileSelectionMode) {
                         case JFileChooser.FILES_AND_DIRECTORIES:

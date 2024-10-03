@@ -48,6 +48,7 @@ import static org.monte.media.av.FormatKeys.MIME_JAVA;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.FormatKeys.MimeTypeKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.ENCODING_PCM_SIGNED;
+import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleRateKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
 
@@ -145,7 +146,7 @@ class PlayerEngine extends AbstractPlayer {
         runAndWait(() -> {
             media.setFormat(fileFormat);
             media.getTracks().addAll(tracks);
-            media.setDuration(Duration.millis(reader.getDuration().multiply(1000).doubleValue()));
+            media.setDuration(Duration.millis(reader.getMovieDuration().multiply(1000).doubleValue()));
             media.setWidth(finalWidth);
             media.setHeight(finalHeight);
             player.setCurrentTime(Duration.millis(renderedTime.multiply(1000).doubleValue()));
@@ -166,6 +167,7 @@ class PlayerEngine extends AbstractPlayer {
         Format desiredOutputFormat = new Format(MediaTypeKey, FormatKeys.MediaType.AUDIO,//
                 EncodingKey, ENCODING_PCM_SIGNED,//
                 MimeTypeKey, MIME_JAVA,//
+                SampleRateKey, trackFormat.get(SampleRateKey),
                 SignedKey, true);
         Codec codec1 = Registry.getInstance().getCodec(format, desiredOutputFormat);
         if (codec1 != null) {
@@ -221,7 +223,8 @@ class PlayerEngine extends AbstractPlayer {
             do {
                 status = codecChain.process(inBuf, outBuf);
             } while (status == Codec.CODEC_OUTPUT_NOT_FILLED);
-            if (!outBuf.isFlag(BufferFlag.DISCARD) && outBuf.data instanceof WritableImage wImg) {
+            if (!outBuf.isFlag(BufferFlag.DISCARD) && outBuf.data instanceof WritableImage) {
+                WritableImage wImg = (WritableImage) outBuf.data;
                 vTrack.setVideoImage(wImg);
                 vTrack.setRenderedStartTime(outBuf.timeStamp);
                 vTrack.setRenderedEndTime(outBuf.timeStamp.add(outBuf.sampleDuration));
@@ -235,7 +238,8 @@ class PlayerEngine extends AbstractPlayer {
     public Rational getFrameAfter(Rational seconds) {
         VideoTrackInterface vTrack = null;
         for (TrackInterface track : media.getTracks()) {
-            if (track instanceof VideoTrackInterface v) {
+            if (track instanceof VideoTrackInterface) {
+                VideoTrackInterface v = (VideoTrackInterface) track;
                 vTrack = v;
                 break;
             }
@@ -245,12 +249,12 @@ class PlayerEngine extends AbstractPlayer {
         }
         int trackID = (int) vTrack.getTrackID();
         try {
-            long sample = reader.timeToSample(trackID, seconds);
-            Rational time = reader.sampleToTime(trackID, sample);
-            Rational duration = reader.getDuration(trackID, sample);
+            long sample = reader.findSampleAtTime(trackID, seconds);
+            Rational time = reader.getSampleTime(trackID, sample);
+            Rational duration = reader.getSampleDuration(trackID, sample);
             Rational sampleEndTime = time.add(duration);
             if (sampleEndTime.compareTo(seconds) <= 0 && sample == reader.getSampleCount(trackID) - 1) {
-                return reader.getDuration();
+                return reader.getMovieDuration();
             }
             return sampleEndTime;
         } catch (IOException e) {
@@ -261,7 +265,8 @@ class PlayerEngine extends AbstractPlayer {
     public Rational getFrameBefore(Rational seconds) {
         VideoTrackInterface vTrack = null;
         for (TrackInterface track : media.getTracks()) {
-            if (track instanceof VideoTrackInterface v) {
+            if (track instanceof VideoTrackInterface) {
+                VideoTrackInterface v = (VideoTrackInterface) track;
                 vTrack = v;
                 break;
             }
@@ -271,11 +276,11 @@ class PlayerEngine extends AbstractPlayer {
         }
         int trackID = (int) vTrack.getTrackID();
         try {
-            long sample = reader.timeToSample(trackID, seconds);
-            Rational time = reader.sampleToTime(trackID, sample);
+            long sample = reader.findSampleAtTime(trackID, seconds);
+            Rational time = reader.getSampleTime(trackID, sample);
             if (sample > 0 && time.compareTo(seconds) >= 0) {
                 sample--;
-                time = reader.sampleToTime(trackID, sample);
+                time = reader.getSampleTime(trackID, sample);
             }
             return time;
         } catch (IOException e) {
@@ -327,7 +332,7 @@ class PlayerEngine extends AbstractPlayer {
                 playTime = renderedTime;
             }
             // Start from beginning if we are at the end of the movie
-            Rational playEndTime = reader.getDuration();
+            Rational playEndTime = reader.getMovieDuration();
             if (playTime.compareTo(Rational.ZERO) < 0 || playTime.compareTo(playEndTime) >= 0) {
                 playTime = Rational.ZERO;
             }
@@ -368,7 +373,8 @@ class PlayerEngine extends AbstractPlayer {
 
     private void stopAudio() {
         for (var t : media.getTracks()) {
-            if (t instanceof MonteAudioTrack mat) {
+            if (t instanceof MonteAudioTrack) {
+                MonteAudioTrack mat = (MonteAudioTrack) t;
                 mat.interruptWorker();
                 SourceDataLine sourceDataLine = mat.getSourceDataLine();
                 if (sourceDataLine != null) {
@@ -381,9 +387,10 @@ class PlayerEngine extends AbstractPlayer {
 
     private void updateBuffers(Rational playTime) throws IOException {
         for (var track : media.getTracks()) {
-            if (!(track instanceof MonteTrackInterface tr) || tr.getCodec() == null) {
+            if (!(track instanceof MonteTrackInterface) || ((MonteTrackInterface) track).getCodec() == null) {
                 continue;
             }
+            MonteTrackInterface tr = (MonteTrackInterface) track;
             Buffer outBuf = tr.getOutBufferA();
             if (outBuf.timeStamp.compareTo(playTime) <= 0 &&
                     playTime.compareTo(outBuf.getBufferEndTimestamp()) < 0) {
@@ -416,16 +423,18 @@ class PlayerEngine extends AbstractPlayer {
 
     private void renderAudioBuffers(Rational renderTime, long currentNanoTime) {
         for (var track : media.getTracks()) {
-            if (!(track instanceof MonteAudioTrack tr) || tr.getCodec() == null) {
+            if (!(track instanceof MonteAudioTrack) || ((MonteAudioTrack) track).getCodec() == null) {
                 continue;
             }
+            MonteAudioTrack tr = (MonteAudioTrack) track;
             Buffer outBuf = tr.getOutBufferA();
 
             if (!outBuf.isFlag(BufferFlag.DISCARD)) {
                 Rational bufferStartTime = outBuf.timeStamp;
                 Rational bufferEndTime = outBuf.getBufferEndTimestamp();
                 boolean bufferTimeIntersectsPlayTime = renderTime.isInRange(bufferStartTime, bufferEndTime);
-                if (bufferTimeIntersectsPlayTime && tr.getSourceDataLine() != null && outBuf.data instanceof byte[] byteArray) {
+                if (bufferTimeIntersectsPlayTime && tr.getSourceDataLine() != null && outBuf.data instanceof byte[]) {
+                    byte[] byteArray = (byte[]) outBuf.data;
                     boolean isRenderTimeValid = tr.renderedUntilNanoTime + (1_000_000_000L / PLAYER_RATE) > currentNanoTime;
                     int skipSamples;
 
@@ -466,10 +475,11 @@ class PlayerEngine extends AbstractPlayer {
         Platform.runLater(() -> {
             player.setCurrentTime(Duration.seconds(renderTime.doubleValue()));
             for (var track : media.getTracks()) {
-                if (!(track instanceof MonteVideoTrack tr)
-                        || tr.getCodec() == null) {
+                if (!(track instanceof MonteVideoTrack)
+                        || ((MonteVideoTrack) track).getCodec() == null) {
                     continue;
                 }
+                MonteVideoTrack tr = (MonteVideoTrack) track;
                 Buffer outBuf = tr.getOutBufferA();
                 if (!outBuf.isFlag(BufferFlag.DISCARD)) {
                     Rational bufferStartTime = outBuf.timeStamp;
@@ -477,8 +487,10 @@ class PlayerEngine extends AbstractPlayer {
                     boolean bufferTimeIntersectsPlayTime = bufferStartTime.compareTo(renderTime) <= 0 &&
                             renderTime.compareTo(bufferEndTime) < 0;
                     if (bufferTimeIntersectsPlayTime
-                            && tr instanceof MonteVideoTrack mvt
-                            && outBuf.data instanceof WritableImage img) {
+                            && tr instanceof MonteVideoTrack
+                            && outBuf.data instanceof WritableImage) {
+                        MonteVideoTrack mvt = tr;
+                        WritableImage img = (WritableImage) outBuf.data;
                         mvt.setVideoImage(img);
                     }
                     tr.setRenderedStartTime(bufferStartTime);

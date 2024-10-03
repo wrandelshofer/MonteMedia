@@ -4,12 +4,14 @@
  */
 package org.monte.media.quicktime;
 
+import org.monte.media.qtff.QTFFImageInputStream;
+
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteOrder;
-import java.util.Date;
+import java.time.Instant;
 
 /**
  * Provides low-level support for reading encoded audio and video samples from a
@@ -28,6 +30,44 @@ public class QuickTimeInputStream {
     public int getSampleCount(int track) throws IOException {
         QuickTimeMeta.Track tr = meta.tracks.get(track);
         return (int) tr.media.sampleCount;
+    }
+
+    /**
+     * Gets the size of a sample in bytes.
+     *
+     * @param track  The track index.
+     * @param sample The sample index.
+     * @return the size of the sample
+     * @throws IOException if reading the sample data failed.
+     */
+    public int getSampleSize(int track, int sample) throws IOException {
+        QuickTimeMeta.Track tr = meta.tracks.get(track);
+        var ts = tr.trackSamplesList.get(sample);
+        var ms = ts.mediaSample;
+        return (int) ms.length;
+    }
+
+
+    /**
+     * Reads a sample from a track into a byte array.
+     *
+     * @param track  The track index.
+     * @param sample The sample index.
+     * @param data   The encoded sample data.
+     * @param off    The startTime offset in the data.
+     * @param len    The maximal number of bytes to read
+     * @return the actual number of samples read
+     * @throws IOException if reading the sample data failed.
+     */
+    public int readSample(int track, int sample, byte[] data, int off, int len) throws IOException {
+        QuickTimeMeta.Track tr = meta.tracks.get(track);
+        var ts = tr.trackSamplesList.get(sample);
+        var ms = ts.mediaSample;
+        in.seek(ms.offset);
+        if (len < ms.length) throw new IOException("len=" + len + " is too small. Should be at least len=" + ms.length);
+        int bytesRead = Math.min((int) ms.length, len);
+        in.readFully(data, off, bytesRead);
+        return bytesRead;
     }
 
     /**
@@ -71,7 +111,7 @@ public class QuickTimeInputStream {
         return meta.getTrackCount();
     }
 
-    public long getMovieDuration() throws IOException {
+    public long getMovieDurationInMovieTimeScale() throws IOException {
         ensureRealized();
         long duration = 0;
         long movieTimeScale = meta.getTimeScale();
@@ -84,7 +124,7 @@ public class QuickTimeInputStream {
     /**
      * Gets the creation time of the movie.
      */
-    public Date getCreationTime() throws IOException {
+    public Instant getCreationTime() throws IOException {
         ensureRealized();
         return meta.getCreationTime();
     }
@@ -92,7 +132,7 @@ public class QuickTimeInputStream {
     /**
      * Gets the modification time of the movie.
      */
-    public Date getModificationTime() throws IOException {
+    public Instant getModificationTime() throws IOException {
         ensureRealized();
         return meta.getModificationTime();
     }

@@ -14,7 +14,6 @@ import org.monte.media.interpolator.SplineInterpolator;
 
 import java.awt.image.BufferedImage;
 
-import static java.lang.Math.clamp;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.Math.sqrt;
@@ -24,6 +23,7 @@ import static org.monte.media.av.FormatKeys.MIME_JAVA;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.FormatKeys.MimeTypeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
+import static org.monte.media.util.MathUtil.clamp;
 
 /**
  * Adjusts the colors of a buffered image.

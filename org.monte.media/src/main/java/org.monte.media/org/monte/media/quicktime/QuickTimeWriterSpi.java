@@ -1,5 +1,5 @@
 /*
- * @(#)QuickTimeWriterSpi.java
+ * @(#)MP4WriterSpi.java
  * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.quicktime;
@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * QuickTimeWriterSpi.
+ * MP4WriterSpi.
  *
  * @author Werner Randelshofer
  */

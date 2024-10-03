@@ -4,6 +4,8 @@
  */
 package org.monte.media.io;
 
+import org.monte.media.util.ByteArrays;
+
 import javax.imageio.stream.ImageInputStreamImpl;
 import java.io.IOException;
 import java.nio.ByteOrder;
@@ -33,14 +35,14 @@ public abstract class ImageInputStreamImpl2 extends ImageInputStreamImpl {
     public short readShort() throws IOException {
         readFully(byteBuf, 0, 2);
         return (byteOrder == ByteOrder.BIG_ENDIAN)
-                ? ByteArray.getShortBE(byteBuf, 0)
-                : ByteArray.getShortLE(byteBuf, 0);
+                ? ByteArrays.getShortBE(byteBuf, 0)
+                : ByteArrays.getShortLE(byteBuf, 0);
     }
 
     public int readInt() throws IOException {
         readFully(byteBuf, 0, 4);
         return (byteOrder == ByteOrder.BIG_ENDIAN)
-                ? ByteArray.getIntBE(byteBuf, 0)
-                : ByteArray.getIntLE(byteBuf, 0);
+                ? ByteArrays.getIntBE(byteBuf, 0)
+                : ByteArrays.getIntLE(byteBuf, 0);
     }
 }

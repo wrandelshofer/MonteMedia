@@ -12,11 +12,11 @@ import org.monte.media.av.CodecSpi;
  *
  * @author Werner Randelshofer
  */
-public class PictureCodecSpi implements CodecSpi {
+public class JCodecPictureCodecSpi implements CodecSpi {
 
     @Override
-    public PictureCodec create() {
-        return new PictureCodec();
+    public JCodecPictureCodec create() {
+        return new JCodecPictureCodec();
     }
 
 }

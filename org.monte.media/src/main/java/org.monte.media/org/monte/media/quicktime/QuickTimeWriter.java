@@ -1,5 +1,5 @@
 /*
- * @(#)QuickTimeWriter.java
+ * @(#)MP4Writer.java
  * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.quicktime;
@@ -7,17 +7,22 @@ package org.monte.media.quicktime;
 import org.monte.media.av.Buffer;
 import org.monte.media.av.Codec;
 import org.monte.media.av.Format;
+import org.monte.media.av.FormatKeys;
 import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.av.MovieWriter;
 import org.monte.media.av.Registry;
+import org.monte.media.av.codec.video.VideoFormatKeys;
 import org.monte.media.math.Rational;
+import org.monte.media.qtff.AbstractQTFFMovieStream;
+import org.monte.media.qtff.AvcDecoderConfigurationRecord;
 
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.monte.media.av.BufferFlag.DISCARD;
 import static org.monte.media.av.BufferFlag.KEYFRAME;
@@ -56,8 +61,8 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
  * Supports writing of time-based video and audio data into a QuickTime movie
  * file (.MOV) without the need of native code.
  * <p>
- * {@code QuickTimeWriter} works with tracks and samples. After creating a
- * {@code QuickTimeWriter} one or more video and audio tracks can be added to
+ * {@code MP4Writer} works with tracks and samples. After creating a
+ * {@code MP4Writer} one or more video and audio tracks can be added to
  * it. Then samples can be written into the track(s). A sample is a single
  * element in a sequence of time-ordered data. For video data a sample typically
  * consists of a single video frame, for uncompressed stereo audio data a sample
@@ -86,14 +91,14 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
  * For convenience, this class has built-in encoders for video frames in the
  * following formats: RAW, ANIMATION, JPEG and PNG. Media data in other formats,
  * including all audio data, must be encoded before it can be written with
- * {@code QuickTimeWriter}. Alternatively, you can plug in your own codec.
+ * {@code MP4Writer}. Alternatively, you can plug in your own codec.
  * <p>
  * <b>Example:</b> Writing 10 seconds of a movie with 640x480 pixel, 30 fps,
  * PNG-encoded video and 16-bit stereo, 44100 Hz, PCM-encoded audio.
  * <pre>
- * QuickTimeWriter w = new QuickTimeWriter(new File("mymovie.mov"));
+ * MP4Writer w = new MP4Writer(new File("mymovie.mov"));
  * w.addAudioTrack(new AudioFormat(AudioFormat.Encoding.PCM_SIGNED), 44100, 2, 16, 2, 44100, true)); // audio in track 0
- * w.addVideoTrack(QuickTimeWriter.VIDEO_PNG, 30, 640, 480);  // video in track 1
+ * w.addVideoTrack(MP4Writer.VIDEO_PNG, 30, 640, 480);  // video in track 1
  *
  * // calculate total movie sampleDuration in media time units for each track
  * long atmax = w.getMediaTimeScale(0) * 10;
@@ -149,6 +154,16 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
  * @author Werner Randelshofer
  */
 public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWriter {
+    private static class TrackEncoder {
+        /**
+         * The codec.
+         */
+        public Codec codec;
+        public Buffer outputBuffer;
+        public Buffer inputBuffer;
+    }
+
+    private List<TrackEncoder> trackEncoders = new ArrayList<>();
 
     public final static Format QUICKTIME = new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_QUICKTIME);
     public final static Format VIDEO_RAW = new Format(
@@ -171,6 +186,7 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
             MimeTypeKey, MIME_QUICKTIME,
             EncodingKey, ENCODING_QUICKTIME_PNG, //
             CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_PNG);
+
     /**
      * Creates a new QuickTime writer.
      *
@@ -188,7 +204,6 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
     public QuickTimeWriter(ImageOutputStream out) throws IOException {
         super(out);
     }
-
 
 
     @Override
@@ -211,7 +226,7 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
     public int addTrack(Format fmt) throws IOException {
         if (fmt.get(MediaTypeKey) == MediaType.VIDEO) {
             int t = addVideoTrack(fmt.get(EncodingKey),
-                    fmt.get(CompressorNameKey, fmt.get(EncodingKey)),
+                    fmt.get(CompressorNameKey, AbstractQTFFMovieStream.DEFAULT_COMPONENT_NAME),
                     Math.min(6000, fmt.get(FrameRateKey).getNumerator() * fmt.get(FrameRateKey).getDenominator()),
                     fmt.get(WidthKey), fmt.get(HeightKey), fmt.get(DepthKey, 24),
                     (int) fmt.get(FrameRateKey).getDenominator(), fmt);
@@ -225,7 +240,7 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
             String encoding = fmt.get(EncodingKey, null);
             Rational frameRate = fmt.get(FrameRateKey, fmt.get(SampleRateKey));
             int channels = fmt.get(ChannelsKey, 1);
-            int frameSize = fmt.get(FrameSizeKey, (sampleSizeInBits + 7) / 8 * sampleSizeInBits);
+            int frameSize = fmt.get(FrameSizeKey, (sampleSizeInBits + 7) / 8);
             if (encoding == null || encoding.length() != 4) {
                 if (signed) {
                     encoding = bo == ByteOrder.BIG_ENDIAN ? "twos" : "sowt";
@@ -367,7 +382,7 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
      */
     @Override
     public Rational getDuration(int track) {
-        AbstractQuickTimeStream.Track tr = tracks.get(track);
+        AbstractQTFFMovieStream.Track tr = tracks.get(track);
         return new Rational(tr.mediaDuration, tr.mediaTimeScale);
     }
 
@@ -376,36 +391,32 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
     }
 
     private void createCodec(int track) {
-        AbstractQuickTimeStream.Track tr = tracks.get(track);
+        AbstractQTFFMovieStream.Track tr = tracks.get(track);
+        TrackEncoder tre = getTrackEncoder(track);
         Format fmt = tr.format;
-        tr.codec = createCodec(fmt);
-        String enc = fmt.get(EncodingKey);
-        if (tr.codec != null) {
+        tre.codec = createCodec(fmt);
+        if (tre.codec != null) {
             if (fmt.get(MediaTypeKey) == MediaType.VIDEO) {
-                Format vf = fmt;
-                tr.codec.setInputFormat(fmt.prepend(
+                tre.codec.setInputFormat(fmt.prepend(
                         MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE,
                         DataClassKey, BufferedImage.class));
 
-                if (null == tr.codec.setOutputFormat(
+                if (null == tre.codec.setOutputFormat(
                         fmt.prepend(
                                 QualityKey, getCompressionQuality(track),
                                 MimeTypeKey, MIME_QUICKTIME,
                                 DataClassKey, byte[].class))) {
                     throw new UnsupportedOperationException("Input format not supported:" + fmt);
                 }
-                //tr.codec.setQuality(tr.videoQuality);
             } else {
-                Format vf = fmt;
-                tr.codec.setInputFormat(fmt.prepend(
+                tre.codec.setInputFormat(fmt.prepend(
                         MimeTypeKey, MIME_JAVA, EncodingKey, fmt.containsKey(SignedKey) && fmt.get(SignedKey) ? ENCODING_PCM_SIGNED : ENCODING_PCM_UNSIGNED,
                         DataClassKey, byte[].class));
-                if (tr.codec.setOutputFormat(fmt) == null) {
-                    throw new UnsupportedOperationException("Codec output format not supported:" + fmt + " codec:" + tr.codec);
+                if (tre.codec.setOutputFormat(fmt) == null) {
+                    throw new UnsupportedOperationException("Codec output format not supported:" + fmt + " codec:" + tre.codec);
                 } else {
-                    tr.format = tr.codec.getOutputFormat();
+                    tr.format = tre.codec.getOutputFormat();
                 }
-                //tr.codec.setQuality(tr.dwQuality);
             }
         }
     }
@@ -414,14 +425,14 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
      * Returns the codec of the specified track.
      */
     public Codec getCodec(int track) {
-        return tracks.get(track).codec;
+        return getTrackEncoder(track).codec;
     }
 
     /**
      * Sets the codec for the specified track.
      */
     public void setCodec(int track, Codec codec) {
-        tracks.get(track).codec = codec;
+        getTrackEncoder(track).codec = codec;
     }
 
     /**
@@ -434,53 +445,62 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
     @Override
     public void write(int track, Buffer buf) throws IOException {
         ensureStarted();
-        AbstractQuickTimeStream.Track tr = tracks.get(track);
+        AbstractQTFFMovieStream.Track tr = tracks.get(track);
+        TrackEncoder tre = getTrackEncoder(track);
 
         // Encode sample data
-        {
-            if (tr.outputBuffer == null) {
-                tr.outputBuffer = new Buffer();
-                tr.outputBuffer.format = tr.format;
-            }
-            Buffer outBuf;
-            if (tr.format.matchesWithout(buf.format, FrameRateKey)) {
-                outBuf = buf;
-            } else {
-                outBuf = tr.outputBuffer;
-                boolean isSync = tr.syncInterval == 0 ? false : tr.sampleCount % tr.syncInterval == 0;
-                buf.setFlag(KEYFRAME, isSync);
-                if (tr.codec == null) {
-                    createCodec(track);
-                    if (tr.codec == null) {
-                        throw new UnsupportedOperationException("No codec for this format " + tr.format);
-                    }
+
+        if (tre.outputBuffer == null) {
+            tre.outputBuffer = new Buffer();
+        }
+        Buffer outBuf;
+        if (tr.format.matchesWithout(buf.format, FrameRateKey)) {
+            outBuf = buf;
+        } else {
+            outBuf = tre.outputBuffer;
+            if (tre.codec == null) {
+                createCodec(track);
+                if (tre.codec == null) {
+                    throw new UnsupportedOperationException("No codec for this format " + tr.format);
                 }
+            }
+            //FIXME we assume a single-step encoding process
+            tre.codec.process(buf, outBuf);
+        }
+        if (outBuf.isFlag(DISCARD) || outBuf.sampleCount == 0) {
+            return;
+        }
 
-                tr.codec.process(buf, outBuf);
-            }
-            if (outBuf.isFlag(DISCARD) || outBuf.sampleCount == 0) {
-                return;
-            }
+        if (tr.startTime == null) {
+            tr.startTime = buf.timeStamp;
+        }
 
-            // Compute sample sampleDuration in media time scale
-            Rational sampleDuration;
-            if (tr.inputTime == null) {
-                tr.inputTime = buf.timeStamp;
-                tr.writeTime = buf.timeStamp;
-            }
-            Rational exactSampleDuration = outBuf.sampleDuration.multiply(outBuf.sampleCount);
-            sampleDuration = exactSampleDuration.floor(tr.mediaTimeScale);
-            if (sampleDuration.compareTo(new Rational(0, 1)) <= 0) {
-                sampleDuration = new Rational(1, tr.mediaTimeScale);
-            }
-            tr.writeTime = tr.writeTime.add(sampleDuration);
-            long sampleDurationInMediaTS = sampleDuration.getNumerator() * (tr.mediaTimeScale / sampleDuration.getDenominator());
 
-            writeSamples(track, buf.sampleCount, (byte[]) outBuf.data, outBuf.offset, outBuf.length,
-                    sampleDurationInMediaTS / buf.sampleCount, outBuf.isFlag(KEYFRAME));
+        // Compute sample sampleDuration in media time scale
+        Rational sampleDuration;
+        Rational exactSampleDuration = outBuf.sampleDuration.multiply(outBuf.sampleCount);
+        sampleDuration = exactSampleDuration.floor(tr.mediaTimeScale);
+        if (sampleDuration.compareTo(new Rational(0, 1)) <= 0) {
+            sampleDuration = new Rational(1, tr.mediaTimeScale);
+        }
+        long sampleDurationInMediaTS = sampleDuration.getNumerator() * (tr.mediaTimeScale / sampleDuration.getDenominator());
+
+        writeSamples(track, outBuf.sampleCount, (byte[]) outBuf.data, outBuf.offset, outBuf.length,
+                sampleDurationInMediaTS / outBuf.sampleCount, outBuf.isFlag(KEYFRAME));
+
+        if (outBuf.header instanceof AvcDecoderConfigurationRecord) {
+            AvcDecoderConfigurationRecord r = (AvcDecoderConfigurationRecord) outBuf.header;
+            writeAvcDecoderConfigurationRecord(track, r);
         }
     }
 
+
+    private TrackEncoder getTrackEncoder(int track) {
+        while (trackEncoders.size() <= track) {
+            trackEncoders.add(new TrackEncoder());
+        }
+        return trackEncoders.get(track);
+    }
 
 
     /**
@@ -493,61 +513,17 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
      * @throws IOException if writing the sample data failed.
      */
     public void write(int track, BufferedImage image, long duration) throws IOException {
-        if (duration <= 0) {
-            throw new IllegalArgumentException("Duration must be greater 0.");
-        }
-        AbstractQuickTimeStream.VideoTrack vt = (AbstractQuickTimeStream.VideoTrack) tracks.get(track); // throws index out of bounds exception if illegal track index
-        if (vt.mediaType != MediaType.VIDEO) {
-            throw new IllegalArgumentException("Track " + track + " is not a video track");
-        }
-        if (vt.codec == null) {
-            createCodec(track);
-        }
-        if (vt.codec == null) {
-            throw new UnsupportedOperationException("No codec for this format: " + vt.format);
-        }
-        ensureStarted();
+        Track tr = tracks.get(track);
 
-        // Get the dimensions of the first image
-        if (vt.width == -1) {
-            vt.width = image.getWidth();
-            vt.height = image.getHeight();
-        } else {
-            // The dimension of the image must match the dimension of the video track
-            if (vt.width != image.getWidth() || vt.height != image.getHeight()) {
-                throw new IllegalArgumentException("Dimensions of frame[" + tracks.get(track).getSampleCount()
-                        + "] (width=" + image.getWidth() + ", height=" + image.getHeight()
-                        + ") differs from video dimension (width="
-                        + vt.width + ", height=" + vt.height + ") in track " + track + ".");
-            }
-        }
-
-        // Encode pixel data
-        {
-
-            if (vt.outputBuffer == null) {
-                vt.outputBuffer = new Buffer();
-            }
-
-            boolean isSync = vt.syncInterval == 0 ? false : vt.sampleCount % vt.syncInterval == 0;
-
-            Buffer inputBuffer = new Buffer();
-            inputBuffer.setFlag(KEYFRAME, isSync);
-            inputBuffer.data = image;
-            vt.codec.process(inputBuffer, vt.outputBuffer);
-            if (vt.outputBuffer.isFlag(DISCARD)) {
-                return;
-            }
-
-            isSync = vt.outputBuffer.isFlag(KEYFRAME);
-
-            long offset = getRelativeStreamPosition();
-            OutputStream mdatOut = mdatAtom.getOutputStream();
-            mdatOut.write((byte[]) vt.outputBuffer.data, vt.outputBuffer.offset, vt.outputBuffer.length);
-
-            long length = getRelativeStreamPosition() - offset;
-            vt.addSample(new AbstractQuickTimeStream.Sample(duration, offset, length), 1, isSync);
-        }
+        Buffer buf = new Buffer();
+        buf.data = image;
+        buf.sampleDuration = Rational.valueOf(duration, tr.mediaTimeScale);
+        buf.format = new Format(FormatKeys.MediaTypeKey, FormatKeys.MediaType.VIDEO,
+                VideoFormatKeys.DataClassKey, BufferedImage.class,
+                WidthKey, image.getWidth(),
+                HeightKey, image.getHeight()
+        );
+        write(track, buf);
     }
 
     /**
@@ -591,25 +567,26 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
      */
     @Deprecated
     public void write(int track, int sampleCount, byte[] data, int off, int len, long sampleDuration, boolean isSync) throws IOException {
-        AbstractQuickTimeStream.Track tr = tracks.get(track);
-        if (tr.codec == null) {
+        AbstractQTFFMovieStream.Track tr = tracks.get(track);
+        TrackEncoder tre = getTrackEncoder(track);
+        if (tre.codec == null) {
             writeSamples(track, sampleCount, data, off, len, sampleDuration, isSync);
         } else {
-            if (tr.outputBuffer == null) {
-                tr.outputBuffer = new Buffer();
+            if (tre.outputBuffer == null) {
+                tre.outputBuffer = new Buffer();
             }
-            if (tr.inputBuffer == null) {
-                tr.inputBuffer = new Buffer();
+            if (tre.inputBuffer == null) {
+                tre.inputBuffer = new Buffer();
             }
-            Buffer outb = tr.outputBuffer;
-            Buffer inb = tr.inputBuffer;
+            Buffer outb = tre.outputBuffer;
+            Buffer inb = tre.inputBuffer;
             inb.data = data;
             inb.offset = off;
             inb.length = len;
             inb.sampleDuration = new Rational(sampleDuration, tr.mediaTimeScale);
             inb.sampleCount = sampleCount;
             inb.setFlag(KEYFRAME, isSync);
-            tr.codec.process(inb, outb);
+            tre.codec.process(inb, outb);
             if (!outb.isFlag(DISCARD)) {
                 writeSample(track, (byte[]) outb.data, outb.offset, outb.length, outb.sampleCount, outb.isFlag(KEYFRAME));
             }

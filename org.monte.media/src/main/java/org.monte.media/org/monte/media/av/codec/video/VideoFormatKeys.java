@@ -27,11 +27,6 @@ public class VideoFormatKeys extends FormatKeys {
      */
     public final static FormatKey<String> CompressorNameKey = new FormatKey<>("compressorName", "compressorName", String.class, true, false);
     /**
-     * The data class.
-     */
-    @SuppressWarnings("rawtypes")
-    public final static FormatKey<Class> DataClassKey = new FormatKey<>("dataClass", Class.class);
-    /**
      * The number of bits per pixel.
      */
     public final static FormatKey<Integer> DepthKey = new FormatKey<>("dimZ", "depth", Integer.class);

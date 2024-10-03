@@ -5,6 +5,8 @@
 
 package org.monte.media.quicktime.codec.text.cta608;
 
+import org.monte.media.util.MathUtil;
+
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Arrays;
@@ -72,8 +74,8 @@ public class Cta608Screen {
     }
 
     public Point write(Point pos, Cta608CharAttr attr, String text) {
-        int x = Math.clamp(pos.x, 0, WIDTH - 1);
-        int y = Math.clamp(pos.y, 0, HEIGHT - 1);
+        int x = MathUtil.clamp(pos.x, 0, WIDTH - 1);
+        int y = MathUtil.clamp(pos.y, 0, HEIGHT - 1);
         int length = text.length();
         int xy = y * WIDTH;
         for (int i = 0; i < length; i++) {
@@ -86,8 +88,8 @@ public class Cta608Screen {
     }
 
     public void deleteToEndOfRow(Point pos) {
-        int x = Math.clamp(pos.x, 0, WIDTH - 1);
-        int y = Math.clamp(pos.y, 0, HEIGHT - 1);
+        int x = MathUtil.clamp(pos.x, 0, WIDTH - 1);
+        int y = MathUtil.clamp(pos.y, 0, HEIGHT - 1);
         int xy = y * WIDTH + x;
         int endOfRow = y * WIDTH + WIDTH;
         Arrays.fill(chars, xy, endOfRow, '\0');
@@ -95,7 +97,7 @@ public class Cta608Screen {
     }
 
     public void rollUp(int numRows) {
-        int shift = WIDTH * Math.clamp(numRows, 0, HEIGHT);
+        int shift = WIDTH * MathUtil.clamp(numRows, 0, HEIGHT);
         if (shift < CAPACITY) {
             System.arraycopy(chars, shift, chars, 0, CAPACITY - shift);
             System.arraycopy(attrs, shift, attrs, 0, CAPACITY - shift);

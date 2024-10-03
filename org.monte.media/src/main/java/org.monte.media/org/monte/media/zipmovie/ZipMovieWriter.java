@@ -14,6 +14,7 @@ import org.monte.media.av.MovieWriter;
 import org.monte.media.av.Registry;
 import org.monte.media.av.codec.video.VideoFormatKeys;
 import org.monte.media.math.Rational;
+import org.monte.media.util.MathUtil;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -166,7 +167,7 @@ public class ZipMovieWriter implements MovieWriter {
 
     public void setCompressionQuality(int track, float newValue) {
         Track t = tracks.get(track);
-        t.quality = Math.clamp((int) (newValue * 10_000f), 0, 10_000);
+        t.quality = MathUtil.clamp((int) (newValue * 10_000f), 0, 10_000);
     }
 
     /**
@@ -176,7 +177,7 @@ public class ZipMovieWriter implements MovieWriter {
      */
     public float getCompressionQuality(int track) {
         Track t = tracks.get(track);
-        return t.quality == -1 ? 0.97f : Math.clamp(t.quality / 10_000f, 0f, 1f);
+        return t.quality == -1 ? 0.97f : MathUtil.clamp(t.quality / 10_000f, 0f, 1f);
     }
 
     private Codec createCodec(Format fmt) {

@@ -30,7 +30,7 @@ public class DefaultMovie extends AbstractMovie {
     @Override
     public Rational getDuration() {
         try {
-            return reader.getDuration();
+            return reader.getMovieDuration();
         } catch (IOException ex) {
             InternalError ie = new InternalError("Can't read duration.");
             ie.initCause(ex);
@@ -41,7 +41,7 @@ public class DefaultMovie extends AbstractMovie {
     @Override
     public long timeToSample(int track, Rational time) {
         try {
-            return reader.timeToSample(track, time);
+            return reader.findSampleAtTime(track, time);
         } catch (IOException ex) {
             return 0;
         }
@@ -50,7 +50,7 @@ public class DefaultMovie extends AbstractMovie {
     @Override
     public Rational sampleToTime(int track, long sample) {
         try {
-            return reader.sampleToTime(track, sample);
+            return reader.getSampleTime(track, sample);
         } catch (IOException ex) {
             return new Rational(0);
         }

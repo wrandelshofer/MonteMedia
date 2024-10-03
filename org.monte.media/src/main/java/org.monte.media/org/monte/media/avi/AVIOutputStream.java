@@ -9,6 +9,7 @@ import org.monte.media.io.IOStreams;
 import org.monte.media.math.Rational;
 import org.monte.media.riff.RIFFChunk;
 import org.monte.media.riff.RIFFParser;
+import org.monte.media.util.MathUtil;
 
 import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
@@ -326,7 +327,7 @@ public class AVIOutputStream extends AbstractAVIStream {
      */
     public void setCompressionQuality(int track, float newValue) {
         Track t = tracks.get(track);
-        t.quality = Math.clamp((int) (newValue * 10_000f), 0, 10_000);
+        t.quality = MathUtil.clamp((int) (newValue * 10_000f), 0, 10_000);
     }
 
     /**
@@ -336,7 +337,7 @@ public class AVIOutputStream extends AbstractAVIStream {
      */
     public float getCompressionQuality(int track) {
         Track t = tracks.get(track);
-        return t.quality == -1 ? 0.97f : Math.clamp(t.quality / 10_000f, 0f, 1f);
+        return t.quality == -1 ? 0.97f : MathUtil.clamp(t.quality / 10_000f, 0f, 1f);
     }
 
     /**
@@ -448,7 +449,7 @@ public class AVIOutputStream extends AbstractAVIStream {
             // If a keyframe sample is immediately preceeded by a palette change
             // we can raise the palette change to a keyframe.
             if (tr.samples.size() > 0) {
-                Sample s = tr.samples.getLast();
+                Sample s = tr.samples.get(tr.samples.size() - 1);
                 if ((s.chunkType & 0xffff) == PC_ID) {
                     s.isKeyframe = true;
                 }
@@ -574,7 +575,7 @@ public class AVIOutputStream extends AbstractAVIStream {
 
         long duration = tr.startTime;
         if (!tr.samples.isEmpty()) {
-            Sample s = tr.samples.getLast();
+            Sample s = tr.samples.get(tr.samples.size() - 1);
             duration += s.timeStamp + s.duration;
         }
         return duration;
@@ -806,7 +807,7 @@ public class AVIOutputStream extends AbstractAVIStream {
 
 
             // FIXME compute dwMicroSecPerFrame properly!
-            Track tt = tracks.getFirst();
+            Track tt = tracks.get(0);
 
             d.writeInt((int) ((1000000L * tt.scale) / tt.rate)); // dwMicroSecPerFrame
             // Specifies the number of microseconds between frames.
@@ -1009,7 +1010,8 @@ public class AVIOutputStream extends AbstractAVIStream {
             // corner of the destination rectangle is relative to the upper-left
             // corner of the movie rectangle.
 
-            if (tr instanceof VideoTrack vt) {
+            if (tr instanceof VideoTrack) {
+                VideoTrack vt = (VideoTrack) tr;
                 Format vf = tr.format;
 
                 /* Write BITMAPINFOHEADR Data into AVI Stream Format Chunk
@@ -1088,7 +1090,8 @@ public class AVIOutputStream extends AbstractAVIStream {
                         d.write(0);
                     }
                 }
-            } else if (tr instanceof AudioTrack at) {
+            } else if (tr instanceof AudioTrack) {
+                AudioTrack at = (AudioTrack) tr;
 
                 /* Write WAVEFORMATEX Data into AVI Stream Format Chunk
                  /* -------------

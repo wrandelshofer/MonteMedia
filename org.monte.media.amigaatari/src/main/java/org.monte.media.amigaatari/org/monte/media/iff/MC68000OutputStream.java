@@ -4,7 +4,7 @@
  */
 package org.monte.media.iff;
 
-import org.monte.media.io.ByteArray;
+import org.monte.media.util.ByteArrays;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;
@@ -33,25 +33,25 @@ public class MC68000OutputStream extends FilterOutputStream {
     }
 
     public void writeLONG(int v) throws IOException {
-        ByteArray.setIntBE(byteBuffer, 0, v);
+        ByteArrays.setIntBE(byteBuffer, 0, v);
         out.write(byteBuffer, 0, 4);
         incCount(4);
     }
 
     public void writeULONG(long v) throws IOException {
-        ByteArray.setIntBE(byteBuffer, 0, (int) v);
+        ByteArrays.setIntBE(byteBuffer, 0, (int) v);
         out.write(byteBuffer, 0, 4);
         incCount(4);
     }
 
     public void writeWORD(int v) throws IOException {
-        ByteArray.setShortBE(byteBuffer, 0, (short) v);
+        ByteArrays.setShortBE(byteBuffer, 0, (short) v);
         out.write(byteBuffer, 0, 2);
         incCount(2);
     }
 
     public void writeUWORD(int v) throws IOException {
-        ByteArray.setShortBE(byteBuffer, 0, (short) v);
+        ByteArrays.setShortBE(byteBuffer, 0, (short) v);
         out.write(byteBuffer, 0, 2);
         incCount(2);
     }
@@ -178,7 +178,6 @@ public class MC68000OutputStream extends FilterOutputStream {
      * If the counter overflows, it will be wrapped to Integer.MAX_VALUE.
      *
      * @return the value of the <code>written</code> field.
-     * @see java.io.DataOutputStream#written
      */
     public final long size() {
         return written;

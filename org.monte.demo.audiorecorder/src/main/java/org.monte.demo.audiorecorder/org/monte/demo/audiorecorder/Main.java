@@ -19,9 +19,10 @@ import javax.sound.sampled.Mixer;
 import javax.sound.sampled.TargetDataLine;
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -115,8 +116,9 @@ public class Main implements Runnable {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException, LineUnavailableException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd 'at' HH.mm.ss");
-        File file = new File(System.getProperty("user.home"), "Movies/AudioRecording " + dateFormat.format(new Date()) + ".avi");
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd 'at' HH.mm.ss").withZone(ZoneId.systemDefault());
+        ;
+        File file = new File(System.getProperty("user.home"), "Movies/AudioRecording " + dateFormat.format(Instant.now()) + ".avi");
         if (!file.getParentFile().isDirectory()) {
             file.getParentFile().mkdirs();
         }
@@ -128,7 +130,8 @@ public class Main implements Runnable {
             Mixer mixer = AudioSystem.getMixer(info);
             for (Line.Info info1 : mixer.getTargetLineInfo()) {
                 System.out.println("    " + info1);
-                if (info1 instanceof DataLine.Info dlInfo) {
+                if (info1 instanceof DataLine.Info) {
+                    DataLine.Info dlInfo = (DataLine.Info) info1;
                     for (AudioFormat format : dlInfo.getFormats()) {
                         if (format.getEncoding() == AudioFormat.Encoding.PCM_SIGNED && format.getSampleRate() != AudioSystem.NOT_SPECIFIED) {
                             System.out.println((targetLines.size() + 1) + ".    " + format);

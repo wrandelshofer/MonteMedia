@@ -8,7 +8,7 @@ package org.monte.media.av.codec.video;
 import org.junit.jupiter.api.Test;
 import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
-import org.monte.media.io.SeekableByteArrayOutputStream;
+import org.monte.media.io.ByteArrayImageOutputStream;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -25,11 +25,11 @@ public class TechSmithCodecTest {
         int width = 40, height = 30;
         int[] rgb24 = toRgb24(createFrame(width, height, 0, BufferedImage.TYPE_INT_RGB), true);
         TechSmithCodecCore codec = new TechSmithCodecCore();
-        SeekableByteArrayOutputStream encoded = new SeekableByteArrayOutputStream();
+        ByteArrayImageOutputStream encoded = new ByteArrayImageOutputStream();
         codec.encodeKey24(encoded, rgb24, width, height, 0, width);
         byte[] encodedBytes = encoded.getBuffer();
         int[] actualPixels = new int[width * height];
-        codec.decode24(encodedBytes, 0, encoded.size(), actualPixels, null, width, height, true);
+        codec.decode24(encodedBytes, 0, (int) encoded.length(), actualPixels, null, width, height, true);
 
         assertArrayEquals(rgb24, actualPixels);
     }
@@ -42,11 +42,11 @@ public class TechSmithCodecTest {
         int[] rgb24 = toRgb24(frame24, true);
         short[] rgb16 = toRgb16(frame16);
         TechSmithCodecCore codec = new TechSmithCodecCore();
-        SeekableByteArrayOutputStream encoded = new SeekableByteArrayOutputStream();
+        ByteArrayImageOutputStream encoded = new ByteArrayImageOutputStream();
         codec.encodeKey16(encoded, rgb16, width, height, 0, width);
         byte[] encodedBytes = encoded.getBuffer();
         int[] actualPixels = new int[width * height];
-        codec.decode16(encodedBytes, 0, encoded.size(), actualPixels, null, width, height, true);
+        codec.decode16(encodedBytes, 0, (int) encoded.length(), actualPixels, null, width, height, true);
         assertArrayEquals(rgb24, actualPixels);
     }
 
@@ -58,14 +58,14 @@ public class TechSmithCodecTest {
         int[] rgb24 = toRgb24(frame24, false);
         byte[] rgb8 = toRgb8(frame8);
         TechSmithCodecCore codec = new TechSmithCodecCore();
-        SeekableByteArrayOutputStream encoded = new SeekableByteArrayOutputStream();
+        ByteArrayImageOutputStream encoded = new ByteArrayImageOutputStream();
         codec.encodeKey8(encoded, rgb8, width, height, 0, width);
         byte[] encodedBytes = encoded.getBuffer();
         int[] actualPixels = new int[width * height];
         int[] palette = new int[256];
         ((IndexColorModel) frame8.getColorModel()).getRGBs(palette);
         codec.setPalette(palette);
-        codec.decode8(encodedBytes, 0, encoded.size(), actualPixels, null, width, height, true);
+        codec.decode8(encodedBytes, 0, (int) encoded.length(), actualPixels, null, width, height, true);
         assertArrayEquals(rgb24, actualPixels);
     }
 

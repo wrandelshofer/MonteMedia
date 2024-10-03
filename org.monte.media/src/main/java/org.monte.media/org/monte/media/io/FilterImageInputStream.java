@@ -8,81 +8,93 @@ import javax.imageio.stream.ImageInputStream;
 import java.io.IOException;
 
 /**
- * {@code FilterImageInputStream}.
+ * FilterImageInputStream.
  *
  * @author Werner Randelshofer
  */
 public class FilterImageInputStream extends ImageInputStreamImpl2 {
-    /**
-     * The underlying input stream.
-     */
-    protected ImageInputStream in;
 
-    public FilterImageInputStream(ImageInputStream in) {
+    private final ImageInputStream in;
+    private final long offset;
+    private final long length;
+
+    public FilterImageInputStream(ImageInputStream in) throws IOException {
+        this(in, in.getStreamPosition(), in.length() - in.getStreamPosition());
+    }
+
+    public FilterImageInputStream(ImageInputStream in, long offset, long length) throws IOException {
         this.in = in;
+        this.offset = offset;
+        this.length = length;
+        if (in.length() != -1 && offset + length > in.length()) {
+            throw new IllegalArgumentException("Offset too large. offset=" + offset + " length=" + length + " in.length=" + in.length());
+        }
+        // setByteOrder(in.getByteOrder());
+        in.seek(offset);
+    }
+
+    private long available() throws IOException {
+        checkClosed();
+        long pos = in.getStreamPosition();
+        if (pos < offset) {
+            in.seek(offset);
+            pos = offset;
+        }
+        return offset + length - pos;
     }
 
     @Override
     public int read() throws IOException {
-        flushBits();
-        return in.read();
-    }
-
-    @Override
-    public int read(byte[] b, int off, int len) throws IOException {
-        flushBits();
-        return in.read(b, off, len);
-    }
-
-    @Override
-    public int skipBytes(int n) throws IOException {
-        flushBits();
-        return in.skipBytes(n);
-    }
-
-    @Override
-    public long skipBytes(long n) throws IOException {
-        flushBits();
-        return in.skipBytes(n);
-    }
-
-    @Override
-    public void close() throws IOException {
-        // Do nothing!
-    }
-
-    @Override
-    public long getStreamPosition() throws IOException {
-        return in.getStreamPosition();
-    }
-
-    @Override
-    public void seek(long pos) throws IOException {
-        flushBits();
-        in.seek(pos);
-    }
-
-    @Override
-    public long length() {
-        try {
-            return in.length();
-        } catch (IOException ex) {
-            return -1L;
+        if (available() <= 0) {
+            return -1;
+        } else {
+            return in.read();
         }
     }
 
     @Override
-    public void flushBefore(long pos) throws IOException {
-        super.flushBefore(pos);
-        in.flushBefore(pos);
+    public int read(byte[] b, int off, int len) throws IOException {
+        long av = available();
+        if (av <= 0) {
+            return -1;
+        } else {
+            return in.read(b, off, (int) Math.min(len, av));
+        }
     }
 
+    @Override
+    public long getStreamPosition() throws IOException {
+        return in.getStreamPosition() - offset;
+    }
 
+    @Override
+    public void seek(long pos) throws IOException {
+        in.seek(pos + offset);
+    }
+
+    @Override
+    public void flush() throws IOException {
+        in.flush();
+    }
+
+    @Override
+    public long getFlushedPosition() {
+        return in.getFlushedPosition() - offset;
+    }
+
+    /**
+     * Default implementation returns false.  Subclasses should
+     * override this if they cache data.
+     */
     @Override
     public boolean isCached() {
         return in.isCached();
     }
 
+    /**
+     * Default implementation returns false.  Subclasses should
+     * override this if they cache data in main memory.
+     */
     @Override
     public boolean isCachedMemory() {
         return in.isCachedMemory();
@@ -93,7 +105,8 @@ public class FilterImageInputStream extends ImageInputStreamImpl2 {
         return in.isCachedFile();
     }
 
-    private void flushBits() {
-        bitOffset = 0;
+    @Override
+    public long length() {
+        return length;
     }
 }

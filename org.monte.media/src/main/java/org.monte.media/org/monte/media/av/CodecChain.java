@@ -45,7 +45,7 @@ public class CodecChain implements Codec {
         if (clist.size() == 1) {
             return codecs[0];
         } else {
-            CodecChain cc = new CodecChain(clist.get(clist.size() - 2), clist.getLast());
+            CodecChain cc = new CodecChain(clist.get(clist.size() - 2), clist.get(clist.size() - 1));
             for (int i = clist.size() - 3; i >= 0; i--) {
                 cc = new CodecChain(clist.get(i), cc);
             }

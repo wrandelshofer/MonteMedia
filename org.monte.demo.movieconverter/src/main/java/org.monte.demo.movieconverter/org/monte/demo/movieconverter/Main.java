@@ -86,7 +86,7 @@ public class Main extends javax.swing.JFrame {
                 MovieReader r = Registry.getInstance().getReader(newFile);
                 if (r == null) throw new IOException("no reader");
                 DefaultMovie m = new DefaultMovie();
-                r.getDuration();// this ensures that we realize the reader!
+                r.getMovieDuration();// this ensures that we realize the reader!
                 m.setReader(r);
                 return m;
             }

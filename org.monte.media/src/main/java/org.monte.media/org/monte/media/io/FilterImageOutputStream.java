@@ -1,5 +1,5 @@
 /*
- * @(#)SubImageOutputStream.java
+ * @(#)FilterImageOutputStream.java
  * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.io;
@@ -10,28 +10,49 @@ import java.io.IOException;
 import java.nio.ByteOrder;
 
 /**
- * {@code SubImageOutputStream}.
+ * {@code FilterImageOutputStream}.
  *
  * @author Werner Randelshofer
  */
-public class SubImageOutputStream extends ImageOutputStreamImpl {
+public class FilterImageOutputStream extends ImageOutputStreamImpl {
 
-    private ImageOutputStream out;
+    private final ImageOutputStream out;
+    private long maxStreamPos;
     private final long offset;
-    private long length;
 
     /**
      * Whether flush and close request shall be forwarded to underlying stream.
      */
     private final boolean forwardFlushAndClose;
 
-    public SubImageOutputStream(ImageOutputStream out, ByteOrder bo, boolean forwardFlushAndClose) throws IOException {
-        this(out, out.getStreamPosition(), bo, forwardFlushAndClose);
+    /**
+     * Creates a new instance that does not close the underlying stream when this instance is closed.
+     * <p>
+     * The stream position of this instance is relative to the stream position of the underlying stream
+     * when the instance was created.
+     *
+     * @param out the underlying stream.
+     * @throws IOException on IO failure
+     */
+    public FilterImageOutputStream(ImageOutputStream out) throws IOException {
+        this(out, out.getStreamPosition(), out.getByteOrder(), false);
     }
 
-    public SubImageOutputStream(ImageOutputStream out, long offset, ByteOrder bo, boolean forwardFlushAndClose) throws IOException {
+    /**
+     * Creates a new instance that optionally closes the underlying stream when this instance is closed.
+     * <p>
+     * The stream position of this instance is relative to the specified offset.
+     *
+     * @param out                  the underlying stream
+     * @param offset               the offset into the underlying stream.
+     * @param bo                   the byte order (will be set on the underlying stream)
+     * @param forwardFlushAndClose whether to forward flush and close to the underlying stream
+     * @throws IOException on IO failure
+     */
+    public FilterImageOutputStream(ImageOutputStream out, long offset, ByteOrder bo, boolean forwardFlushAndClose) throws IOException {
         this.out = out;
         this.offset = offset;
+        this.maxStreamPos=offset;
         this.forwardFlushAndClose = forwardFlushAndClose;
         setByteOrder(bo);
         out.seek(offset);
@@ -74,7 +95,6 @@ public class SubImageOutputStream extends ImageOutputStreamImpl {
     @Override
     public void seek(long pos) throws IOException {
         out.seek(pos + offset);
-        length = Math.max(pos - offset + 1, length);
     }
 
     @Override
@@ -121,25 +141,24 @@ public class SubImageOutputStream extends ImageOutputStreamImpl {
 
     @Override
     public long length() {
-        return length;
+        return maxStreamPos - offset;
     }
 
     @Override
-    public void write(int b) throws IOException {
+    public final void write(int b) throws IOException {
         out.write(b);
-        length = Math.max(out.getStreamPosition() - offset, length);
+        maxStreamPos=Math.max(maxStreamPos, out.getStreamPosition());
     }
 
     @Override
-    public void write(byte[] b, int off, int len) throws IOException {
+    public final void write(byte[] b, int off, int len) throws IOException {
         out.write(b, off, len);
-        length = Math.max(out.getStreamPosition() - offset, length);
+        maxStreamPos=Math.max(maxStreamPos,out.getStreamPosition());
     }
 
     public void dispose() throws IOException {
         if (forwardFlushAndClose) {
             checkClosed();
         }
-        out = null;
     }
 }

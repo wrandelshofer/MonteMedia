@@ -66,7 +66,7 @@ public class Cta608Parser {
      * <p>
      */
     public List<Cta608Token> parse(InputStream in) throws IOException {
-        ImageInputStream iis = in instanceof ImageInputStream s ? s : new UncachedImageInputStream(in);
+        ImageInputStream iis = in instanceof ImageInputStream ? (ImageInputStream) in : new UncachedImageInputStream(in);
         return parse(iis);
     }
 
@@ -124,11 +124,13 @@ public class Cta608Parser {
         StringBuilder buf = new StringBuilder();
         for (Cta608Token token : tokens) {
             if (!buf.isEmpty()) buf.append(' ');
-            if (token instanceof TextToken tx) {
+            if (token instanceof TextToken) {
+                TextToken tx = (TextToken) token;
                 buf.append('"');
                 buf.append(tx.getText().replaceAll("\"", "\\\""));
                 buf.append('"');
-            } else if (token instanceof CmdToken ct) {
+            } else if (token instanceof CmdToken) {
+                CmdToken ct = (CmdToken) token;
                 buf.append("{Cmd:C");
                 buf.append(ct.getChannel());
                 buf.append(':');
@@ -138,7 +140,8 @@ public class Cta608Parser {
                     buf.append(ct.getOperation());
                 }
                 buf.append('}');
-            } else if (token instanceof PacToken ct) {
+            } else if (token instanceof PacToken) {
+                PacToken ct = (PacToken) token;
                 buf.append("{Pac:C");
                 buf.append(ct.getChannel());
                 buf.append(":R");
@@ -294,84 +297,83 @@ public class Cta608Parser {
         Point pos = new Point(0, 0);
         Cta608CharAttr attr = Cta608Screen.DEFAULT_ATTR;
         for (Cta608Token token : tokens) {
-            switch (token) {
-                case TextToken tx -> {
-                    pos = memory.nonDisplayed.write(pos, attr, tx.getText());
-                }
-                case CmdToken cmd -> {
-                    CmdToken.Command op = cmd.getOperation();
-                    attr = attr.withBackground(bgCommandMap.get(op));
-                    attr = attr.withForeground(fgCommandMap.get(op));
-                    attr = attr.withUnderline(underlineCommandMap.get(op));
-                    attr = attr.withItalics(italicsCommandMap.get(op));
+            if (Objects.requireNonNull(token) instanceof TextToken) {
+                TextToken tx = (TextToken) Objects.requireNonNull(token);
+                pos = memory.nonDisplayed.write(pos, attr, tx.getText());
+            } else if (token instanceof CmdToken) {
+                CmdToken cmd = (CmdToken) token;
+                CmdToken.Command op = cmd.getOperation();
+                attr = attr.withBackground(bgCommandMap.get(op));
+                attr = attr.withForeground(fgCommandMap.get(op));
+                attr = attr.withUnderline(underlineCommandMap.get(op));
+                attr = attr.withItalics(italicsCommandMap.get(op));
 
-                    switch (op) {
-                        case RCL -> {
-                            memory.nonDisplayed.style = Cta608Style.POP_ON;
+                switch (op) {
+                    case RCL -> {
+                        memory.nonDisplayed.style = Cta608Style.POP_ON;
+                    }
+                    case BS -> {
+                        pos.x = Math.max(pos.x - 1, 0);
+                        memory.nonDisplayed.write(pos, attr, "\0");
+                    }
+                    case DER -> {
+                        memory.nonDisplayed.deleteToEndOfRow(pos);
+                    }
+                    case RU2 -> {
+                        memory.nonDisplayed.rollUp(2);
+                    }
+                    case RU3 -> {
+                        memory.nonDisplayed.rollUp(3);
+                    }
+                    case RU4 -> {
+                        memory.nonDisplayed.rollUp(4);
+                    }
+                    case RDC -> {
+                        memory.nonDisplayed.style = Cta608Style.PAINT_ON;
+                    }
+                    case TR -> {
+                        memory.nonDisplayed.textRestart();
+                    }
+                    case RTD -> {
+                        pos.x = 0;
+                        pos.y = 0;
+                    }
+                    case EDM -> {
+                        memory.displayed.erase();
+                    }
+                    case CR -> {
+                        pos.x = 0;
+                        if (pos.y == Cta608Screen.HEIGHT - 1) {
+                            memory.nonDisplayed.rollUp(1);
+                        } else {
+                            pos.y = pos.y + 1;
                         }
-                        case BS -> {
-                            pos.x = Math.max(pos.x - 1, 0);
-                            memory.nonDisplayed.write(pos, attr, "\0");
-                        }
-                        case DER -> {
-                            memory.nonDisplayed.deleteToEndOfRow(pos);
-                        }
-                        case RU2 -> {
-                            memory.nonDisplayed.rollUp(2);
-                        }
-                        case RU3 -> {
-                            memory.nonDisplayed.rollUp(3);
-                        }
-                        case RU4 -> {
-                            memory.nonDisplayed.rollUp(4);
-                        }
-                        case RDC -> {
-                            memory.nonDisplayed.style = Cta608Style.PAINT_ON;
-                        }
-                        case TR -> {
-                            memory.nonDisplayed.textRestart();
-                        }
-                        case RTD -> {
-                            pos.x = 0;
-                            pos.y = 0;
-                        }
-                        case EDM -> {
-                            memory.displayed.erase();
-                        }
-                        case CR -> {
-                            pos.x = 0;
-                            if (pos.y == Cta608Screen.HEIGHT - 1) {
-                                memory.nonDisplayed.rollUp(1);
-                            } else {
-                                pos.y = pos.y + 1;
-                            }
-                        }
-                        case ENM -> {
-                            memory.nonDisplayed.erase();
-                        }
-                        case EOC -> {
-                            memory.flipMemories();
-                        }
-                        case TO1 -> {
-                            pos.x = Math.min(Cta608Screen.WIDTH - 1, pos.x + 1);
-                        }
-                        case TO2 -> {
-                            pos.x = Math.min(Cta608Screen.WIDTH - 1, pos.x + 2);
-                        }
-                        case TO3 -> {
-                            pos.x = Math.min(Cta608Screen.WIDTH - 1, pos.x + 3);
-                        }
+                    }
+                    case ENM -> {
+                        memory.nonDisplayed.erase();
+                    }
+                    case EOC -> {
+                        memory.flipMemories();
+                    }
+                    case TO1 -> {
+                        pos.x = Math.min(Cta608Screen.WIDTH - 1, pos.x + 1);
+                    }
+                    case TO2 -> {
+                        pos.x = Math.min(Cta608Screen.WIDTH - 1, pos.x + 2);
+                    }
+                    case TO3 -> {
+                        pos.x = Math.min(Cta608Screen.WIDTH - 1, pos.x + 3);
                     }
                 }
-                case PacToken pac -> {
-                    pos.y = pac.getRow() - 1;
-                    PacToken.Attributes ta = pac.getTextAttributes();
-                    attr = attr.withForeground(pacFgCommandMap.get(ta));
-                    attr = attr.withItalics(pacItalicsCommandMap.get(ta));
-                    Integer indent = pacIndentCommandMap.get(ta);
-                    if (indent != null) {
-                        pos.x = indent;
-                    }
+            } else if (token instanceof PacToken) {
+                PacToken pac = (PacToken) token;
+                pos.y = pac.getRow() - 1;
+                PacToken.Attributes ta = pac.getTextAttributes();
+                attr = attr.withForeground(pacFgCommandMap.get(ta));
+                attr = attr.withItalics(pacItalicsCommandMap.get(ta));
+                Integer indent = pacIndentCommandMap.get(ta);
+                if (indent != null) {
+                    pos.x = indent;
                 }
             }
         }
@@ -393,7 +395,9 @@ public class Cta608Parser {
             int minX = screen.getMinX(y);
             int indent;
             if (textBox != null && y == textBox.y) {
-                buf.repeat("&nbsp", textBox.x);
+                for (int i = 0; i < textBox.x; i++) {
+                    buf.append("&nbsp");
+                }
                 buf.append("<div style=\"");
                 attrToCssStyle(buf, screen.attrAt(textBox.x, textBox.y), false);
                 buf.append("padding:4 8 4 8;");
@@ -403,7 +407,9 @@ public class Cta608Parser {
                 indent = minX;
             }
             if (minX < Cta608Screen.WIDTH) {
-                buf.repeat("&nbsp", indent);
+                for (int i = 0; i < indent; i++) {
+                    buf.append("&nbsp");
+                }
                 int maxX = screen.getMaxX(y);
                 Cta608CharAttr prevAttr = null;
                 for (int x = minX; x <= maxX; x++) {
@@ -468,7 +474,9 @@ public class Cta608Parser {
         for (int y = 0; y < Cta608Screen.HEIGHT; y++) {
             int minX = screen.getMinX(y);
             if (minX < Cta608Screen.WIDTH) {
-                buf.repeat(' ', minX);
+                for (int i = 0; i < minX; i++) {
+                    buf.append(' ');
+                }
                 int maxX = screen.getMaxX(y);
                 for (int x = minX; x <= maxX; x++) {
                     char c = screen.charAt(x, y);

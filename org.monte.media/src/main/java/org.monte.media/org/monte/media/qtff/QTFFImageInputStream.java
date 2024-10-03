@@ -1,8 +1,8 @@
 /*
  * @(#)QTFFImageInputStream.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2024 Werner Randelshofer, Switzerland. MIT License.
  */
-package org.monte.media.quicktime;
+package org.monte.media.qtff;
 
 import org.monte.media.io.FilterImageInputStream;
 
@@ -10,7 +10,7 @@ import javax.imageio.stream.ImageInputStream;
 import java.io.IOException;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
+import java.time.Instant;
 import java.util.GregorianCalendar;
 
 import static java.lang.Math.min;
@@ -23,7 +23,7 @@ import static java.lang.Math.min;
 public class QTFFImageInputStream extends FilterImageInputStream {
     protected static final long MAC_TIMESTAMP_EPOCH = new GregorianCalendar(1904, GregorianCalendar.JANUARY, 1).getTimeInMillis();
 
-    public QTFFImageInputStream(ImageInputStream in) {
+    public QTFFImageInputStream(ImageInputStream in) throws IOException {
         super(in);
         setByteOrder(ByteOrder.BIG_ENDIAN);
     }
@@ -34,9 +34,9 @@ public class QTFFImageInputStream extends FilterImageInputStream {
      * @return the date corresponding to the Mac timestamp
      * @throws IOException if an I/O error occurs
      */
-    public Date readMacTimestamp() throws IOException {
+    public Instant readMacTimestamp() throws IOException {
         long timestamp = ((long) readInt()) & 0xffffffffL;
-        return new Date(MAC_TIMESTAMP_EPOCH + timestamp * 1000);
+        return Instant.ofEpochMilli(MAC_TIMESTAMP_EPOCH + timestamp * 1000);
     }
 
     /**
@@ -79,11 +79,7 @@ public class QTFFImageInputStream extends FilterImageInputStream {
     public String readPString() throws IOException {
         int size = readUnsignedByte();
         if (size == 0) {
-            size = readUnsignedByte();
-            skipBytes(2); // why do we skip two bytes here?
-        }
-        if (size < 0) {
-            return "";
+            size = readUnsignedShort();
         }
         byte[] b = (size <= byteBuf.length) ? byteBuf : new byte[size];
         readFully(b, 0, size);

@@ -350,7 +350,8 @@ public class IFDEntry {
                     }
                     buf.append(d[i]);
                 }
-            } else if (data instanceof Object[] d) {
+            } else if (data instanceof Object[]) {
+                Object[] d = (Object[]) data;
                 for (int i = 0; i < d.length; i++) {
                     if (i != 0) {
                         buf.append(',');

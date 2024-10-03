@@ -130,7 +130,7 @@ public class Main extends javax.swing.JFrame {
     private String format;
     private String encoding;
     private int cursor;
-    private int audioRate;
+    private String audioRate;
     private int audioSource;
     private int area;
     private double screenRate;
@@ -283,8 +283,10 @@ public class Main extends javax.swing.JFrame {
         mouseRateField.setModel(mouseRateModel);
 
         audioSourceChoice.setModel(new DefaultComboBoxModel<>(getAudioSources()));
-        audioSource = Math.clamp(prefs.getInt("ScreenRecording.audioSource", 0), 0, audioSourceChoice.getItemCount() - 1);
+        audioSource = MathUtil.clamp(prefs.getInt("ScreenRecording.audioSource", 0), 0, audioSourceChoice.getItemCount() - 1);
         audioSourceChoice.setSelectedIndex(audioSource);
+        audioRate = prefs.get("AudioRate", audioRateChoice.getItemAt(0));
+        audioRateChoice.setSelectedIndex(findIndex(audioRate, audioRateChoice.getModel()));
 
         Dimension customDim = new Dimension(prefs.getInt("ScreenRecording.customAreaWidth", 1024),
                 prefs.getInt("ScreenRecording.customAreaHeight", 768));
@@ -333,6 +335,7 @@ public class Main extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         formatLabel = new javax.swing.JLabel();
         formatChoice = new javax.swing.JComboBox();
@@ -354,6 +357,8 @@ public class Main extends javax.swing.JFrame {
         stateLabel = new javax.swing.JLabel();
         audioSourceLabel = new javax.swing.JLabel();
         audioSourceChoice = new javax.swing.JComboBox();
+        jLabel1 = new javax.swing.JLabel();
+        audioRateChoice = new javax.swing.JComboBox<>();
 
         FormListener formListener = new FormListener();
 
@@ -361,142 +366,222 @@ public class Main extends javax.swing.JFrame {
         setTitle("Monte Screen Recorder");
         setResizable(false);
         addWindowListener(formListener);
+        getContentPane().setLayout(new java.awt.GridBagLayout());
 
         formatLabel.setText("Format:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(9, 6, 0, 0);
+        getContentPane().add(formatLabel, gridBagConstraints);
 
         formatChoice.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"MP4", "AVI", "QuickTime"}));
         formatChoice.addActionListener(formListener);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.ipadx = 13;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 18, 0, 0);
+        getContentPane().add(formatChoice, gridBagConstraints);
 
         colorsLabel.setText("Colors:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(4, 6, 0, 0);
+        getContentPane().add(colorsLabel, gridBagConstraints);
 
         colorsChoice.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Hundreds", "Thousands", "Millions"}));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.ipadx = 11;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(1, 18, 0, 0);
+        getContentPane().add(colorsChoice, gridBagConstraints);
 
         infoLabel.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
         infoLabel.setText("<html>The recording will be stored in the folder \"Movies\".<br> Drop a folder on this text to change the storage location.<br> A new file will be created every hour or when the file size limit is reached.<br> <br>This window will be minized before the recording starts.<br> To stop the recording, restore this window and press the Stop button.<br> ");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 16;
+        gridBagConstraints.gridwidth = 82;
+        gridBagConstraints.ipadx = 363;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(18, 6, 0, 6);
+        getContentPane().add(infoLabel, gridBagConstraints);
 
         startStopButton.setText("Start");
         startStopButton.addActionListener(formListener);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 33;
+        gridBagConstraints.gridy = 17;
+        gridBagConstraints.gridwidth = 48;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 12, 6, 0);
+        getContentPane().add(startStopButton, gridBagConstraints);
 
         mouseLabel.setText("Mouse:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(9, 6, 0, 0);
+        getContentPane().add(mouseLabel, gridBagConstraints);
 
         cursorChoice.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"No Cursor", "Black Cursor", "White Cursor"}));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 18, 0, 0);
+        getContentPane().add(cursorChoice, gridBagConstraints);
 
         screenRateLabel.setText("Screen Rate:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 6;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = 6;
+        gridBagConstraints.gridheight = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(9, 18, 0, 0);
+        getContentPane().add(screenRateLabel, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 15;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = 37;
+        gridBagConstraints.gridheight = 4;
+        gridBagConstraints.ipadx = 13;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 13, 0, 0);
+        getContentPane().add(screenRateField, gridBagConstraints);
 
         mouseRateLabel.setText("Mouse Rate:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 8;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(9, 0, 0, 0);
+        getContentPane().add(mouseRateLabel, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 15;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridwidth = 37;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.ipadx = 13;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 13, 0, 0);
+        getContentPane().add(mouseRateField, gridBagConstraints);
 
         encodingLabel.setText("Encoding:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 6;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridheight = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(14, 18, 0, 0);
+        getContentPane().add(encodingLabel, gridBagConstraints);
 
         encodingChoice.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"H264"}));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 15;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 19;
+        gridBagConstraints.gridheight = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(11, 13, 0, 0);
+        getContentPane().add(encodingChoice, gridBagConstraints);
 
         areaLabel.setText("Area:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 14;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(9, 6, 0, 0);
+        getContentPane().add(areaLabel, gridBagConstraints);
 
         areaChoice.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Entire Screen", "0 0,  1024 x 768", " "}));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 14;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 18, 0, 0);
+        getContentPane().add(areaChoice, gridBagConstraints);
 
         selectAreaButton.setText("Custom Area...");
         selectAreaButton.addActionListener(formListener);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 8;
+        gridBagConstraints.gridy = 14;
+        gridBagConstraints.gridwidth = 8;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        getContentPane().add(selectAreaButton, gridBagConstraints);
 
         stateLabel.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         stateLabel.setText(" ");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 17;
+        gridBagConstraints.gridwidth = 18;
+        gridBagConstraints.ipadx = 186;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(9, 94, 0, 0);
+        getContentPane().add(stateLabel, gridBagConstraints);
 
         audioSourceLabel.setText("Audio:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 10;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(15, 6, 0, 0);
+        getContentPane().add(audioSourceLabel, gridBagConstraints);
 
         audioSourceChoice.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"No Audio", "44.100 kHz"}));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 10;
+        gridBagConstraints.gridwidth = 47;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.ipadx = 198;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(12, 18, 0, 0);
+        getContentPane().add(audioSourceChoice, gridBagConstraints);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                                .addComponent(stateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(startStopButton)
-                                                .addGap(10, 10, 10))
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(colorsLabel)
-                                                        .addComponent(mouseLabel)
-                                                        .addComponent(formatLabel)
-                                                        .addComponent(areaLabel)
-                                                        .addComponent(audioSourceLabel))
-                                                .addGap(18, 18, 18)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                        .addGroup(layout.createSequentialGroup()
-                                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                                        .addComponent(formatChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                        .addComponent(colorsChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                        .addComponent(cursorChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                                .addGap(18, 18, 18)
-                                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                                                .addComponent(screenRateLabel, javax.swing.GroupLayout.Alignment.TRAILING)
-                                                                                .addComponent(mouseRateLabel, javax.swing.GroupLayout.Alignment.TRAILING))
-                                                                        .addComponent(encodingLabel))
-                                                                .addGap(18, 18, 18)
-                                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                                        .addComponent(encodingChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                        .addComponent(screenRateField, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                        .addComponent(mouseRateField, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                                        .addGroup(layout.createSequentialGroup()
-                                                                .addComponent(areaChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(selectAreaButton))
-                                                        .addComponent(audioSourceChoice, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                        .addComponent(infoLabel))
-                                .addContainerGap())
-        );
+        jLabel1.setText("Sample Rate:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 8;
+        gridBagConstraints.gridy = 12;
+        gridBagConstraints.gridwidth = 7;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(9, 0, 0, 0);
+        getContentPane().add(jLabel1, gridBagConstraints);
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[]{colorsChoice, cursorChoice, formatChoice});
-
-        layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                        .addComponent(formatChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(formatLabel))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                        .addComponent(colorsChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(colorsLabel))
-                                                .addGap(11, 11, 11)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                        .addComponent(cursorChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(mouseLabel)))
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                        .addComponent(encodingChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(encodingLabel))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                                                        .addComponent(screenRateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(screenRateLabel))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                                                        .addComponent(mouseRateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(mouseRateLabel))))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(audioSourceLabel)
-                                        .addComponent(audioSourceChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(areaChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(areaLabel)
-                                        .addComponent(selectAreaButton))
-                                .addGap(18, 18, 18)
-                                .addComponent(infoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(startStopButton)
-                                        .addComponent(stateLabel))
-                                .addContainerGap())
-        );
+        audioRateChoice.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"48000", "44100"}));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 15;
+        gridBagConstraints.gridy = 12;
+        gridBagConstraints.gridwidth = 37;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 18, 0, 0);
+        getContentPane().add(audioRateChoice, gridBagConstraints);
 
         pack();
     }
@@ -549,11 +634,10 @@ public class Main extends javax.swing.JFrame {
         for (Mixer.Info mixerInfo : AudioSystem.getMixerInfo()) {
             Mixer mixer = AudioSystem.getMixer(mixerInfo);
             for (Line.Info targetLineInfo : mixer.getTargetLineInfo()) {
-                if (targetLineInfo instanceof DataLine.Info dlInfo) {
+                if (targetLineInfo instanceof DataLine.Info) {
+                    DataLine.Info dlInfo = (DataLine.Info) targetLineInfo;
                     for (AudioFormat format : dlInfo.getFormats()) {
-                        if (format.getEncoding() == AudioFormat.Encoding.PCM_SIGNED
-                                && !format.isBigEndian()
-                                && format.getSampleRate() != AudioSystem.NOT_SPECIFIED) {
+                        if (format.getEncoding() == AudioFormat.Encoding.PCM_SIGNED) {
                             l.add(new AudioSourceItem(
                                     mixerInfo.getName() + ", " + format,
                                     mixerInfo, format));
@@ -577,6 +661,8 @@ public class Main extends javax.swing.JFrame {
         prefs.putInt("ScreenRecording.cursor", cursor);
         audioSource = audioSourceChoice.getSelectedIndex();
         prefs.putInt("ScreenRecording.audioSource", audioSource);
+        audioRate = (String) audioRateChoice.getSelectedItem();
+        prefs.put("ScreenRecording.audioRate", audioRate);
         area = areaChoice.getSelectedIndex();
         prefs.putInt("ScreenRecording.area", area);
         if (screenRateField.getValue() instanceof Double) {
@@ -623,6 +709,10 @@ public class Main extends javax.swing.JFrame {
                 case FMT_AVI:
                     mimeType = MIME_AVI;
                     switch (encoding) {
+                        case ENC_H264:
+                            videoFormatName = compressorName = ENCODING_AVC1;
+                            bitDepth = 24;
+                            break;
                         case ENC_SCREEN_CAPTURE:
                         default:
                             videoFormatName = compressorName = ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE;
@@ -655,6 +745,10 @@ public class Main extends javax.swing.JFrame {
                 case FMT_QUICKTIME:
                     mimeType = MIME_QUICKTIME;
                     switch (encoding) {
+                        case ENC_H264:
+                            videoFormatName = compressorName = ENCODING_AVC1;
+                            bitDepth = 24;
+                            break;
                         case ENC_SCREEN_CAPTURE:
                         default:
                             if (bitDepth == 8) {
@@ -705,6 +799,9 @@ public class Main extends javax.swing.JFrame {
                 mixerInfo = src.mixerInfo;
                 AudioFormat srcFormat = src.format;
                 audioRate = (int) srcFormat.getSampleRate();
+                if (audioRate <= 0) {
+                    audioRate = Integer.parseInt((String) audioRateChoice.getSelectedItem());
+                }
                 audioBitsPerSample = srcFormat.getSampleSizeInBits();
                 audioChannels = srcFormat.getChannels();
                 audioByteOrder = srcFormat.isBigEndian() ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN;
@@ -821,7 +918,8 @@ public class Main extends javax.swing.JFrame {
     }
 
     private void updateEncodingChoice() {
-        int index = encodingChoice.getSelectedIndex();
+        String encodingItem = (String) encodingChoice.getSelectedItem();
+        String colorItem = (String) colorsChoice.getSelectedItem();
         switch ((String) formatChoice.getSelectedItem()) {
             case FMT_MP4:
                 colorsChoice.setModel(
@@ -833,16 +931,17 @@ public class Main extends javax.swing.JFrame {
                 colorsChoice.setModel(
                         new javax.swing.DefaultComboBoxModel<>(new String[]{COLORS_HUNDREDS, COLORS_THOUSANDS, COLORS_MILLIONS}));
                 encodingChoice.setModel(
-                        new javax.swing.DefaultComboBoxModel<>(new String[]{ENC_SCREEN_CAPTURE, ENC_RUN_LENGTH, ENC_NONE, ENC_PNG, ENC_JPEG_100PERCENT, ENC_JPEG_50PERCENT}));
+                        new javax.swing.DefaultComboBoxModel<>(new String[]{ENC_H264, ENC_SCREEN_CAPTURE, ENC_RUN_LENGTH, ENC_NONE, ENC_PNG, ENC_JPEG_100PERCENT, ENC_JPEG_50PERCENT}));
                 break;
             case FMT_QUICKTIME:
                 colorsChoice.setModel(
                         new javax.swing.DefaultComboBoxModel<>(new String[]{COLORS_HUNDREDS, COLORS_THOUSANDS, COLORS_MILLIONS}));
                 encodingChoice.setModel(
-                        new javax.swing.DefaultComboBoxModel<>(new String[]{ENC_SCREEN_CAPTURE, ENC_ANIMATION, ENC_NONE, ENC_PNG, ENC_JPEG_100PERCENT, ENC_JPEG_50PERCENT}));
+                        new javax.swing.DefaultComboBoxModel<>(new String[]{ENC_H264, ENC_SCREEN_CAPTURE, ENC_ANIMATION, ENC_NONE, ENC_PNG, ENC_JPEG_100PERCENT, ENC_JPEG_50PERCENT}));
                 break;
         }
-        encodingChoice.setSelectedIndex(index);
+        colorsChoice.setSelectedIndex(findIndex(colorItem, colorsChoice.getModel()));
+        encodingChoice.setSelectedIndex(findIndex(encodingItem, encodingChoice.getModel()));
     }
 
     private void startStopPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startStopPerformed
@@ -937,6 +1036,7 @@ public class Main extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox areaChoice;
     private javax.swing.JLabel areaLabel;
+    private javax.swing.JComboBox<String> audioRateChoice;
     private javax.swing.JComboBox audioSourceChoice;
     private javax.swing.JLabel audioSourceLabel;
     private javax.swing.JComboBox colorsChoice;
@@ -947,6 +1047,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JComboBox formatChoice;
     private javax.swing.JLabel formatLabel;
     private javax.swing.JLabel infoLabel;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel mouseLabel;
     private javax.swing.JSpinner mouseRateField;
     private javax.swing.JLabel mouseRateLabel;

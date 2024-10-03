@@ -4,7 +4,7 @@
  */
 package org.monte.media.iff;
 
-import org.monte.media.io.ByteArray;
+import org.monte.media.util.ByteArrays;
 
 import java.io.EOFException;
 import java.io.FilterInputStream;
@@ -57,7 +57,7 @@ public class MC68000InputStream
     public short readWORD()
             throws IOException {
         readFully(byteBuffer, 0, 2);
-        return ByteArray.getShortBE(byteBuffer, 0);
+        return ByteArrays.getShortBE(byteBuffer, 0);
     }
 
     /**
@@ -76,7 +76,7 @@ public class MC68000InputStream
     public int readLONG()
             throws IOException {
         readFully(byteBuffer, 0, 4);
-        return ByteArray.getIntBE(byteBuffer, 0);
+        return ByteArrays.getIntBE(byteBuffer, 0);
     }
 
     /**
@@ -86,7 +86,7 @@ public class MC68000InputStream
     public long readINT64()
             throws IOException {
         readFully(byteBuffer, 0, 8);
-        return ByteArray.getLongBE(byteBuffer, 0);
+        return ByteArrays.getLongBE(byteBuffer, 0);
     }
 
     /**

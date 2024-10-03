@@ -8,7 +8,7 @@ import org.monte.media.av.Buffer;
 import org.monte.media.av.BufferFlag;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
-import org.monte.media.io.SeekableByteArrayOutputStream;
+import org.monte.media.io.ByteArrayImageOutputStream;
 import org.monte.media.util.ArrayUtil;
 
 import java.awt.Rectangle;
@@ -265,7 +265,7 @@ public class TechSmithCodec extends AbstractVideoCodec {
             return CODEC_FAILED;
         }
 
-        BufferedImage img = (out.data instanceof BufferedImage bimg) ? bimg : null;
+        BufferedImage img = (out.data instanceof BufferedImage) ? (BufferedImage) out.data : null;
 
         switch (outputDepth) {
             case 8: {
@@ -328,7 +328,7 @@ public class TechSmithCodec extends AbstractVideoCodec {
             return CODEC_OK;
         }
 
-        SeekableByteArrayOutputStream tmp = new SeekableByteArrayOutputStream(ArrayUtil.reuseByteArray(out.data, 32));
+        ByteArrayImageOutputStream tmp = new ByteArrayImageOutputStream(ArrayUtil.reuseByteArray(out.data, 32));
 
         Integer keyFrameInterval = outputFormat.get(KeyFrameIntervalKey, outputFormat.get(FrameRateKey).intValue());
         boolean isKeyframe = frameCounter == 0
@@ -446,7 +446,7 @@ public class TechSmithCodec extends AbstractVideoCodec {
             out.data = tmp.getBuffer();
             out.offset = 0;
             out.sampleCount = 1;
-            out.length = tmp.size();
+            out.length = (int) tmp.length();
             return CODEC_OK;
         } catch (IOException ex) {
             out.exception = ex;

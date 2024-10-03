@@ -20,8 +20,10 @@ import java.awt.image.IndexColorModel;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.List;
 
 import static org.monte.media.av.BufferFlag.DISCARD;
 import static org.monte.media.av.BufferFlag.KEYFRAME;
@@ -64,6 +66,16 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
  * @author Werner Randelshofer
  */
 public class AVIWriter extends AVIOutputStream implements MovieWriter {
+    private static class TrackEncoder {
+        /**
+         * The codec.
+         */
+        public Codec codec;
+        public Buffer outputBuffer;
+        public Buffer inputBuffer;
+    }
+
+    private List<TrackEncoder> trackEncoders = new ArrayList<>();
 
     public final static Format AVI = new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_AVI);
     public final static Format VIDEO_RAW = new Format(
@@ -201,14 +213,14 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
      * Returns the codec of the specified track.
      */
     public Codec getCodec(int track) {
-        return tracks.get(track).codec;
+        return getTrackEncoder(track).codec;
     }
 
     /**
      * Sets the codec for the specified track.
      */
     public void setCodec(int track, Codec codec) {
-        tracks.get(track).codec = codec;
+        getTrackEncoder(track).codec = codec;
     }
 
     @Override
@@ -229,9 +241,10 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
         ensureStarted();
 
         AbstractAVIStream.VideoTrack vt = (AbstractAVIStream.VideoTrack) tracks.get(track);
-        if (vt.codec == null) {
+        TrackEncoder tre = getTrackEncoder(track);
+        if (tre.codec == null) {
             createCodec(track);
-            if (vt.codec == null) {
+            if (tre.codec == null) {
                 throw new IOException("No codec for this format: " + vt.format);
             }
         }
@@ -272,6 +285,7 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
         }
 
         AbstractAVIStream.Track tr = tracks.get(track);
+        TrackEncoder tre = getTrackEncoder(track);
 
         boolean isKeyframe = buf.flags.contains(KEYFRAME);
         if (buf.data instanceof BufferedImage) {
@@ -300,19 +314,19 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
             // We got here, because the buffer format does not match the track 
             // format. Let's see if we can create a codec which can perform the
             // encoding for us.
-            if (tr.codec == null) {
+            if (tre.codec == null) {
                 createCodec(track);
-                if (tr.codec == null) {
+                if (tre.codec == null) {
                     throw new UnsupportedOperationException("No codec for this format " + tr.format);
                 }
             }
 
-            if (tr.outputBuffer == null) {
-                tr.outputBuffer = new Buffer();
+            if (tre.outputBuffer == null) {
+                tre.outputBuffer = new Buffer();
             }
-            Buffer outBuf = tr.outputBuffer;
-            if (tr.codec.process(buf, outBuf) != Codec.CODEC_OK) {
-                throw new IOException("Codec failed or could not encode the sample in a single step. codec:" + tr.codec);
+            Buffer outBuf = tre.outputBuffer;
+            if (tre.codec.process(buf, outBuf) != Codec.CODEC_OK) {
+                throw new IOException("Codec failed or could not encode the sample in a single step. codec:" + tre.codec);
             }
             if (outBuf.isFlag(DISCARD)) {
                 return;
@@ -322,7 +336,12 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
         }
     }
 
-
+    private TrackEncoder getTrackEncoder(int track) {
+        while (trackEncoders.size() <= track) {
+            trackEncoders.add(new TrackEncoder());
+        }
+        return trackEncoders.get(track);
+    }
 
 
     private boolean writePalette(int track, BufferedImage image, boolean isKeyframe) throws IOException {
@@ -450,28 +469,29 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
 
     private void createCodec(int track) {
         AbstractAVIStream.Track tr = tracks.get(track);
+        TrackEncoder tre = getTrackEncoder(track);
         Format fmt = tr.format;
-        tr.codec = Registry.getInstance().getEncoder(fmt);
-        if (tr.codec != null) {
+        tre.codec = Registry.getInstance().getEncoder(fmt);
+        if (tre.codec != null) {
             if (fmt.get(MediaTypeKey) == MediaType.VIDEO) {
-                tr.codec.setInputFormat(fmt.prepend(
+                tre.codec.setInputFormat(fmt.prepend(
                         EncodingKey, ENCODING_BUFFERED_IMAGE,
                         DataClassKey, BufferedImage.class));
-                if (null == tr.codec.setOutputFormat(
+                if (null == tre.codec.setOutputFormat(
                         fmt.prepend(FixedFrameRateKey, true,
                                 QualityKey, getCompressionQuality(track),
                                 MimeTypeKey, MIME_AVI,
                                 DataClassKey, byte[].class))) {
-                    throw new UnsupportedOperationException("Track " + tr + " codec does not support format " + fmt + ". codec=" + tr.codec);
+                    throw new UnsupportedOperationException("Track " + tr + " codec does not support format " + fmt + ". codec=" + tre.codec);
                 }
             } else {
-                tr.codec.setInputFormat(null);
-                if (null == tr.codec.setOutputFormat(
+                tre.codec.setInputFormat(null);
+                if (null == tre.codec.setOutputFormat(
                         fmt.prepend(FixedFrameRateKey, true,
                                 QualityKey, getCompressionQuality(track),
                                 MimeTypeKey, MIME_AVI,
                                 DataClassKey, byte[].class))) {
-                    throw new UnsupportedOperationException("Track " + tr + " codec " + tr.codec + " does not support format. " + fmt);
+                    throw new UnsupportedOperationException("Track " + tr + " codec " + tre.codec + " does not support format. " + fmt);
                 }
             }
         }

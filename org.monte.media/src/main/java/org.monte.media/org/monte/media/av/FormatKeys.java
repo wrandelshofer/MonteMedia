@@ -35,6 +35,11 @@ public class FormatKeys {
      * The format of the samples of the media.
      */
     public final static FormatKey<String> SampleFormatKey = new FormatKey<>("sampleFormat", String.class);
+    /**
+     * The data class.
+     */
+    @SuppressWarnings("rawtypes")
+    public final static FormatKey<Class> DataClassKey = new FormatKey<>("dataClass", Class.class);
 
     //
     public final static String MIME_AVI = "video/avi";
