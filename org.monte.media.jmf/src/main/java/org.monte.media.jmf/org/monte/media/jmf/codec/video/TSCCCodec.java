@@ -179,6 +179,7 @@ public class TSCCCodec extends AbstractVideoDecoder {
         out.setFormat(outputFormat);
 
         ByteArrayImageOutputStream tmp = new ByteArrayImageOutputStream(ArrayUtil.reuseByteArray(out.getData(), 32));
+        tmp.clear();
 
         VideoFormat outvf = outputFormat;
         boolean isKeyframe = isSet(in, Buffer.FLAG_KEY_FRAME) || frameCounter % (int) outvf.getFrameRate() == 0;

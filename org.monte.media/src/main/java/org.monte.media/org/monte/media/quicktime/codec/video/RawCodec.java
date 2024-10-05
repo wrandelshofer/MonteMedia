@@ -218,6 +218,8 @@ public class RawCodec extends AbstractVideoCodec {
         out.format = outputFormat;
 
         ByteArrayImageOutputStream tmp = new ByteArrayImageOutputStream(ArrayUtil.reuseByteArray(out.data, 32));
+        tmp.clear();
+
         Format vf = outputFormat;
 
         // Handle sub-image

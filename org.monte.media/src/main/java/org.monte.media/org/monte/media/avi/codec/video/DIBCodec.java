@@ -189,6 +189,7 @@ public class DIBCodec extends AbstractVideoCodec {
         }
 
         ByteArrayImageOutputStream tmp = new ByteArrayImageOutputStream(ArrayUtil.reuseByteArray(out.data, 32));
+        tmp.clear();
 
         // Handle sub-image
         // FIXME - Scanline stride must be a multiple of four.

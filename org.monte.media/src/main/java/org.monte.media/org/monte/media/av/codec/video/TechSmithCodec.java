@@ -329,6 +329,7 @@ public class TechSmithCodec extends AbstractVideoCodec {
         }
 
         ByteArrayImageOutputStream tmp = new ByteArrayImageOutputStream(ArrayUtil.reuseByteArray(out.data, 32));
+        tmp.clear();
 
         Integer keyFrameInterval = outputFormat.get(KeyFrameIntervalKey, outputFormat.get(FrameRateKey).intValue());
         boolean isKeyframe = frameCounter == 0

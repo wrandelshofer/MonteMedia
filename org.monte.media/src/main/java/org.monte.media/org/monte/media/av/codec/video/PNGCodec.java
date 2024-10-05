@@ -143,6 +143,7 @@ public class PNGCodec extends AbstractVideoCodec {
         }
 
         ByteArrayImageOutputStream tmp = new ByteArrayImageOutputStream(ArrayUtil.reuseByteArray(out.data, 32));
+        tmp.clear();
 
         try {
             ImageWriter iw = ImageIO.getImageWritersByMIMEType("image/png").next();

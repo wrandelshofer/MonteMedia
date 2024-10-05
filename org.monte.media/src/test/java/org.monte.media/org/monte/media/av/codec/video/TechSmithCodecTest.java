@@ -9,13 +9,21 @@ import org.junit.jupiter.api.Test;
 import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
 import org.monte.media.io.ByteArrayImageOutputStream;
+import org.monte.media.io.UncachedImageInputStream;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.awt.image.IndexColorModel;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.zip.InflaterInputStream;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
@@ -67,6 +75,110 @@ public class TechSmithCodecTest {
         codec.setPalette(palette);
         codec.decode8(encodedBytes, 0, (int) encoded.length(), actualPixels, null, width, height, true);
         assertArrayEquals(rgb24, actualPixels);
+    }
+
+    private static final byte ESCAPE_OP = (byte) 0x00;
+    private static final byte PADDING_OP = (byte) 0x00;
+    private static final byte END_OF_LINE_OP = (byte) 0x00;
+    private static final byte END_OF_BITMAP_OP = (byte) 0x01;
+    private static final byte SKIP_OP = (byte) 0x02;
+
+    private static byte repeatOp(int times) {
+        return (byte) times;
+    }
+
+    private static byte horizontalOffsetOp(int times) {
+        return (byte) times;
+    }
+
+    private static byte verticalOffsetOp(int times) {
+        return (byte) times;
+    }
+
+    private static byte endOfLineOp() {
+        return END_OF_LINE_OP;
+    }
+
+    private static byte endOFileOp() {
+        return END_OF_BITMAP_OP;
+    }
+
+    private static byte skipOp() {
+        return SKIP_OP;
+    }
+
+    private static byte escapeOp() {
+        return ESCAPE_OP;
+    }
+
+    @Test
+    public void shouldEncode24BitKeyFrameAndDeltas() throws IOException {
+        List<BufferedImage> images = new ArrayList<>();
+        int width = 8;
+        int height = 5;
+        RgbImageBuilder b = new RgbImageBuilder(width, height);
+        images.add(b.createBlack());
+        images.add(b.createBlack());
+        images.add(b.fillRectangle(b.createBlack(), 1, 2, 6, 1, RgbImageBuilder.WHITE));
+        images.add(b.fillRectangle(b.createBlack(), 1, 1, 6, 2, RgbImageBuilder.WHITE));
+
+        List<byte[]> expected = new ArrayList<>();
+        expected.add(new byte[]{
+                repeatOp(8), 0, 0, 0, escapeOp(), endOfLineOp(),
+                repeatOp(8), 0, 0, 0, escapeOp(), endOfLineOp(),
+                repeatOp(8), 0, 0, 0, escapeOp(), endOfLineOp(),
+                repeatOp(8), 0, 0, 0, escapeOp(), endOfLineOp(),
+                repeatOp(8), 0, 0, 0, escapeOp(), endOfLineOp(),
+                escapeOp(), endOFileOp()
+        });
+        expected.add(new byte[]{
+                escapeOp(), endOFileOp()
+        });
+        expected.add(new byte[]{
+                escapeOp(), skipOp(), horizontalOffsetOp(1), verticalOffsetOp(2),
+                repeatOp(6), -1, -1, -1, escapeOp(), endOfLineOp(),
+                escapeOp(), endOFileOp()
+        });
+        expected.add(new byte[]{
+                escapeOp(), skipOp(), horizontalOffsetOp(1), verticalOffsetOp(3),
+                repeatOp(6), -1, -1, -1, escapeOp(), endOfLineOp(),
+                escapeOp(), endOFileOp()
+        });
+
+
+        TechSmithCodecCore codec = new TechSmithCodecCore();
+        ByteArrayImageOutputStream encoded = new ByteArrayImageOutputStream();
+        int[] prev = null;
+        int frame = 0;
+        for (BufferedImage img : images) {
+            encoded.clear();
+            int[] current = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
+            if (prev == null) {
+                codec.encodeKey24(encoded, current, width, height, 0, width);
+            } else {
+                codec.encodeDelta24(encoded, current, prev, width, height, 0, width);
+            }
+            var in = inflate(encoded);
+            byte[] actual = new byte[width * height * 4];
+            int off = 0;
+            int len = 0;
+            while (true) {
+                int readLen = in.read(actual, off, actual.length - off);
+                if (readLen <= 0) break;
+                off += readLen;
+            }
+            actual = Arrays.copyOf(actual, off);
+            assertArrayEquals(expected.get(frame), actual, "frame " + frame);
+            frame++;
+            prev = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
+        }
+    }
+
+    private static UncachedImageInputStream inflate(ByteArrayImageOutputStream encoded) {
+        if (encoded.size() == 2) {
+            return new UncachedImageInputStream(new ByteArrayInputStream(encoded.getBuffer(), 0, encoded.size()), ByteOrder.LITTLE_ENDIAN);
+        }
+        return new UncachedImageInputStream(new InflaterInputStream(new ByteArrayInputStream(encoded.getBuffer(), 0, encoded.size())), ByteOrder.LITTLE_ENDIAN);
     }
 
     /**

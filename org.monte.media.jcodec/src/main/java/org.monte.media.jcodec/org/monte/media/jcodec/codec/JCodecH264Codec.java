@@ -1,5 +1,5 @@
 /*
- * @(#)JCodecH264Codec.java
+ * @(#)H264Codec.java
  * Copyright © 2024 Werner Randelshofer, Switzerland. MIT License.
  */
 

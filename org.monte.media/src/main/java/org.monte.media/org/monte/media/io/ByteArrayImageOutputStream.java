@@ -42,7 +42,7 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
      */
     protected byte[] buf;
     /**
-     * The index one greater than the last valid character in the input
+     * The index one greater than the last valid byte in the input
      * stream buffer.
      * This value should always be nonnegative
      * and not larger than the length of <code>buf</code>.
@@ -61,7 +61,7 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
     }
 
     public ByteArrayImageOutputStream(int initialCapacity) {
-        this(new byte[initialCapacity]);
+        this(new byte[initialCapacity], 0, 0, ByteOrder.BIG_ENDIAN);
     }
 
     public ByteArrayImageOutputStream(byte[] buf) {

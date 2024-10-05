@@ -122,6 +122,7 @@ public class JPEGCodec extends AbstractVideoCodec {
             return CODEC_FAILED;
         }
         ByteArrayImageOutputStream tmp = new ByteArrayImageOutputStream(ArrayUtil.reuseByteArray(out.data, 32));
+        tmp.clear();
 
         try {
             ImageWriter iw = ImageIO.getImageWritersByMIMEType("image/jpeg").next();

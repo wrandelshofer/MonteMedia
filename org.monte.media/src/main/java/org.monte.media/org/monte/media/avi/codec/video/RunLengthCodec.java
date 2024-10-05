@@ -171,6 +171,7 @@ public class RunLengthCodec extends AbstractVideoCodec {
         }
 
         ByteArrayImageOutputStream tmp = new ByteArrayImageOutputStream(ArrayUtil.reuseByteArray(out.data, 32));
+        tmp.clear();
 
         // Handle sub-image
         Rectangle r;

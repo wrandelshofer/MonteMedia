@@ -163,6 +163,11 @@ import static java.lang.Math.min;
  */
 public class TechSmithCodecCore extends AbstractVideoCodecCore {
 
+    private static final byte ESCAPE_OP = (byte) 0x00;
+    private static final byte PADDING_OP = (byte) 0x00;
+    private static final byte END_OF_LINE_OP = (byte) 0x00;
+    private static final byte END_OF_BITMAP_OP = (byte) 0x01;
+    private static final byte SKIP_OP = (byte) 0x02;
     private byte[] temp2;
     private int[] palette;
     private ByteBuffer bbuf;
@@ -611,8 +616,8 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
             }
 
             while (verticalOffset > 0 || skipCount > 0) {
-                bbuf.put((byte) 0x00); // Escape code
-                bbuf.put((byte) 0x02); // Skip OP-code
+                bbuf.put(ESCAPE_OP); // Escape code
+                bbuf.put(SKIP_OP); // Skip OP-code
                 bbuf.put((byte) min(255, skipCount)); // horizontal offset
                 bbuf.put((byte) min(255, verticalOffset)); // vertical offset
                 skipCount -= min(255, skipCount);
@@ -645,11 +650,11 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                             literalCount--;
                         } else {
                             int literalRun = min(254, literalCount);
-                            bbuf.put((byte) 0); // Escape code
+                            bbuf.put(ESCAPE_OP); // Escape code
                             bbuf.put((byte) literalRun); // Literal OP-code
                             bbuf.put(data, xy - literalCount, literalRun);
                             if ((literalRun & 1) == 1) {
-                                bbuf.put((byte) 0); // pad byte
+                                bbuf.put(PADDING_OP); // pad byte
                             }
                             literalCount -= literalRun;
                         }
@@ -660,10 +665,10 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                         xy += skipCount - 1;
                     } else if (skipCount >= repeatCount) {
                         while (skipCount > 0) {
-                            bbuf.put((byte) 0); // Escape code
+                            bbuf.put(ESCAPE_OP); // Escape code
                             bbuf.put((byte) 0x0002); // Skip OP-code
                             bbuf.put((byte) min(255, skipCount));
-                            bbuf.put((byte) 0);
+                            bbuf.put(PADDING_OP);
                             xy += min(255, skipCount);
                             skipCount -= min(255, skipCount);
                         }
@@ -684,21 +689,21 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                     literalCount--;
                 } else {
                     int literalRun = min(254, literalCount);
-                    bbuf.put((byte) 0);
+                    bbuf.put(ESCAPE_OP);
                     bbuf.put((byte) literalRun); // Literal OP-code
                     bbuf.put(data, xy - literalCount, literalRun);
                     if ((literalRun & 1) == 1) {
-                        bbuf.put((byte) 0); // pad byte
+                        bbuf.put(PADDING_OP); // pad byte
                     }
                     literalCount -= literalRun;
                 }
             }
 
-            bbuf.put((byte) 0); // Escape code
-            bbuf.put((byte) 0x00); // End of line OP-code
+            bbuf.put(ESCAPE_OP); // Escape code
+            bbuf.put(END_OF_LINE_OP); // End of line OP-code
         }
-        bbuf.put((byte) 0); // Escape code
-        bbuf.put((byte) 0x01);// End of bitmap
+        bbuf.put(ESCAPE_OP); // Escape code
+        bbuf.put(END_OF_BITMAP_OP);// End of bitmap
 
         deflateBBuf(out);
     }
@@ -742,8 +747,8 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
             }
 
             while (verticalOffset > 0 || skipCount > 0) {
-                bbuf.put((byte) 0x00); // Escape code
-                bbuf.put((byte) 0x02); // Skip OP-code
+                bbuf.put(ESCAPE_OP); // Escape code
+                bbuf.put(SKIP_OP); // Skip OP-code
                 bbuf.put((byte) min(255, skipCount)); // horizontal offset
                 bbuf.put((byte) min(255, verticalOffset)); // vertical offset
                 skipCount -= min(255, skipCount);
@@ -780,7 +785,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                             literalCount--;
                         } else {
                             int literalRun = min(254, literalCount);
-                            bbuf.put((byte) 0); // Escape code
+                            bbuf.put(ESCAPE_OP); // Escape code
                             bbuf.put((byte) literalRun); // Literal OP-code
                             for (int i = xy - literalCount, end = xy - literalCount + literalRun; i < end; i++) {
                                 writeInt24LE(bbuf, palette[data[i] & 0xff]);
@@ -794,10 +799,10 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                         xy += skipCount - 1;
                     } else if (skipCount >= repeatCount) {
                         while (skipCount > 0) {
-                            bbuf.put((byte) 0); // Escape code
+                            bbuf.put(ESCAPE_OP); // Escape code
                             bbuf.put((byte) 0x0002); // Skip OP-code
                             bbuf.put((byte) min(255, skipCount));
-                            bbuf.put((byte) 0);
+                            bbuf.put(END_OF_LINE_OP);
                             xy += min(255, skipCount);
                             skipCount -= min(255, skipCount);
                         }
@@ -818,7 +823,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                     literalCount--;
                 } else {
                     int literalRun = min(254, literalCount);
-                    bbuf.put((byte) 0);
+                    bbuf.put(ESCAPE_OP);
                     bbuf.put((byte) literalRun); // Literal OP-code
                     for (int i = xy - literalCount, end = xy - literalCount + literalRun; i < end; i++) {
                         writeInt24LE(bbuf, palette[data[i] & 0xff]);
@@ -832,11 +837,11 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                 }
             }
 
-            bbuf.put((byte) 0); // Escape code
-            bbuf.put((byte) 0x00); // End of line OP-code
+            bbuf.put(ESCAPE_OP); // Escape code
+            bbuf.put(END_OF_LINE_OP); // End of line OP-code
         }
-        bbuf.put((byte) 0); // Escape code
-        bbuf.put((byte) 0x01);// End of bitmap
+        bbuf.put(ESCAPE_OP); // Escape code
+        bbuf.put(END_OF_BITMAP_OP);// End of bitmap
 
         deflateBBuf(out);
     }
@@ -933,7 +938,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                 if (repeatCount < 3) {
                     literalCount++;
                     if (literalCount == 254) {
-                        bbuf.put((byte) 0);
+                        bbuf.put(ESCAPE_OP);
                         bbuf.put((byte) literalCount); // Literal OP-code
                         bbuf.put(data, xy - literalCount + 1, literalCount);
                         literalCount = 0;
@@ -946,11 +951,11 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                                 bbuf.put((byte) data[xy - literalCount]);
                             }
                         } else {
-                            bbuf.put((byte) 0);
+                            bbuf.put(ESCAPE_OP);
                             bbuf.put((byte) literalCount); // Literal OP-code
                             bbuf.put(data, xy - literalCount, literalCount);
                             if ((literalCount & 1) == 1) {
-                                bbuf.put((byte) 0); // pad byte
+                                bbuf.put(PADDING_OP); // pad byte
                             }
                             literalCount = 0;
                         }
@@ -969,21 +974,21 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                         bbuf.put((byte) data[xy - literalCount]);
                     }
                 } else {
-                    bbuf.put((byte) 0);
+                    bbuf.put(ESCAPE_OP);
                     bbuf.put((byte) literalCount);
                     bbuf.put(data, xy - literalCount, literalCount);
                     if ((literalCount & 1) == 1) {
-                        bbuf.put((byte) 0); // pad byte
+                        bbuf.put(PADDING_OP); // pad byte
                     }
                 }
                 literalCount = 0;
             }
 
-            bbuf.put((byte) 0);
-            bbuf.put((byte) 0x0000);// End of line
+            bbuf.put(ESCAPE_OP);
+            bbuf.put(END_OF_LINE_OP);// End of line
         }
-        bbuf.put((byte) 0);
-        bbuf.put((byte) 0x0001);// End of bitmap
+        bbuf.put(ESCAPE_OP);
+        bbuf.put(END_OF_BITMAP_OP);// End of bitmap
         //bbuf.toOutputStream(out);
 
         deflateBBuf(out);
@@ -1024,7 +1029,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                 if (repeatCount < 3) {
                     literalCount++;
                     if (literalCount == 254) {
-                        bbuf.put((byte) 0);
+                        bbuf.put(ESCAPE_OP);
                         bbuf.put((byte) literalCount); // Literal OP-code
                         for (int i = xy - literalCount + 1, end = xy + 1; i < end; i++) {
                             writeInt24LE(bbuf, palette[data[i] & 0xff]);
@@ -1040,7 +1045,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                                 writeInt24LE(bbuf, palette[data[xy - literalCount] & 0xff]);
                             }
                         } else {
-                            bbuf.put((byte) 0);
+                            bbuf.put(ESCAPE_OP);
                             bbuf.put((byte) literalCount); // Literal OP-code
                             for (int i = xy - literalCount, end = xy; i < end; i++) {
                                 writeInt24LE(bbuf, palette[data[i] & 0xff]);
@@ -1066,7 +1071,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                         writeInt24LE(bbuf, palette[data[xy - literalCount] & 0xff]);
                     }
                 } else {
-                    bbuf.put((byte) 0);
+                    bbuf.put(ESCAPE_OP);
                     bbuf.put((byte) literalCount);
                     for (int i = xy - literalCount, end = xy; i < end; i++) {
                         writeInt24LE(bbuf, palette[data[i] & 0xff]);
@@ -1079,11 +1084,11 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                 literalCount = 0;
             }
 
-            bbuf.put((byte) 0);
-            bbuf.put((byte) 0x0000);// End of line
+            bbuf.put(ESCAPE_OP);
+            bbuf.put(END_OF_LINE_OP);// End of line
         }
-        bbuf.put((byte) 0);
-        bbuf.put((byte) 0x0001);// End of bitmap
+        bbuf.put(ESCAPE_OP);
+        bbuf.put(END_OF_BITMAP_OP);// End of bitmap
 
         deflateBBuf(out);
     }
@@ -1124,8 +1129,8 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
             }
 
             while (verticalOffset > 0 || skipCount > 0) {
-                bbuf.put((byte) 0x00); // Escape code
-                bbuf.put((byte) 0x02); // Skip OP-code
+                bbuf.put(ESCAPE_OP); // Escape code
+                bbuf.put(SKIP_OP); // Skip OP-code
                 bbuf.put((byte) min(255, skipCount)); // horizontal offset
                 bbuf.put((byte) min(255, verticalOffset)); // vertical offset
                 skipCount -= min(255, skipCount);
@@ -1158,7 +1163,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                             literalCount--;
                         } else {
                             int literalRun = min(254, literalCount);
-                            bbuf.put((byte) 0); // Escape code
+                            bbuf.put(ESCAPE_OP); // Escape code
                             bbuf.put((byte) literalRun); // Literal OP-code
                             writeInts16LE(bbuf, data, xy - literalCount, literalRun);
                             literalCount -= literalRun;
@@ -1170,8 +1175,8 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                         xy += skipCount - 1;
                     } else if (skipCount >= repeatCount) {
                         while (skipCount > 0) {
-                            bbuf.put((byte) 0); // Escape code
-                            bbuf.put((byte) 0x02); // Skip OP-code
+                            bbuf.put(ESCAPE_OP); // Escape code
+                            bbuf.put(SKIP_OP); // Skip OP-code
                             bbuf.put((byte) min(255, skipCount)); // horizontal skip
                             bbuf.put((byte) 0); // vertical skip
                             xy += min(255, skipCount);
@@ -1194,19 +1199,19 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                     literalCount--;
                 } else {
                     int literalRun = min(254, literalCount);
-                    bbuf.put((byte) 0); // Escape code
+                    bbuf.put(ESCAPE_OP); // Escape code
                     bbuf.put((byte) literalRun); // Literal OP-code
                     writeInts16LE(bbuf, data, xy - literalCount, literalRun);
                     literalCount -= literalRun;
                 }
             }
 
-            bbuf.put((byte) 0); // Escape code
-            bbuf.put((byte) 0x00); // End of line OP-code
+            bbuf.put(ESCAPE_OP); // Escape code
+            bbuf.put(END_OF_LINE_OP); // End of line OP-code
         }
 
-        bbuf.put((byte) 0); // Escape code
-        bbuf.put((byte) 0x01);// End of bitmap OP-code
+        bbuf.put(ESCAPE_OP); // Escape code
+        bbuf.put(END_OF_BITMAP_OP);// End of bitmap
 
         deflateBBuf(out);
     }
@@ -1246,7 +1251,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                 if (repeatCount < 3) {
                     literalCount++;
                     if (literalCount == 254) {
-                        bbuf.put((byte) 0);
+                        bbuf.put(ESCAPE_OP);
                         bbuf.put((byte) literalCount); // Literal OP-code
                         writeInts24LE(bbuf, data, xy - literalCount + 1, literalCount);
                         literalCount = 0;
@@ -1259,7 +1264,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                                 writeInt24LE(bbuf, data[xy - literalCount]);
                             }
                         } else {
-                            bbuf.put((byte) 0);
+                            bbuf.put(ESCAPE_OP);
                             bbuf.put((byte) literalCount); // Literal OP-code
                             writeInts24LE(bbuf, data, xy - literalCount, literalCount);
                             ///if (literalCount & 1 == 1) {
@@ -1282,7 +1287,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                         writeInt24LE(bbuf, data[xy - literalCount]);
                     }
                 } else {
-                    bbuf.put((byte) 0);
+                    bbuf.put(ESCAPE_OP);
                     bbuf.put((byte) literalCount);
                     writeInts24LE(bbuf, data, xy - literalCount, literalCount);
                     ///if (literalCount & 1 == 1) {
@@ -1292,11 +1297,11 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                 literalCount = 0;
             }
 
-            bbuf.put((byte) 0);
-            bbuf.put((byte) 0x0000);// End of line
+            bbuf.put(ESCAPE_OP);
+            bbuf.put(END_OF_LINE_OP);// End of line
         }
-        bbuf.put((byte) 0);
-        bbuf.put((byte) 0x0001);// End of bitmap
+        bbuf.put(ESCAPE_OP);
+        bbuf.put(END_OF_BITMAP_OP);// End of bitmap
 
         deflateBBuf(out);
     }
@@ -1337,8 +1342,8 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
             }
 
             while (verticalOffset > 0 || skipCount > 0) {
-                bbuf.put((byte) 0x00); // Escape code
-                bbuf.put((byte) 0x02); // Skip OP-code
+                bbuf.put(ESCAPE_OP); // Escape code
+                bbuf.put(SKIP_OP); // Skip OP-code
                 bbuf.put((byte) min(255, skipCount)); // horizontal offset
                 bbuf.put((byte) min(255, verticalOffset)); // vertical offset
                 skipCount -= min(255, skipCount);
@@ -1371,7 +1376,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                             literalCount--;
                         } else {
                             int literalRun = min(254, literalCount);
-                            bbuf.put((byte) 0);
+                            bbuf.put(ESCAPE_OP);
                             bbuf.put((byte) literalRun); // Literal OP-code
                             writeInts24LE(bbuf, data, xy - literalCount, literalRun);
                             ///if (literalRun & 1 == 1) {
@@ -1386,10 +1391,10 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                         xy += skipCount - 1;
                     } else if (skipCount >= repeatCount) {
                         while (skipCount > 0) {
-                            bbuf.put((byte) 0);
+                            bbuf.put(ESCAPE_OP);
                             bbuf.put((byte) 0x0002); // Skip OP-code
                             bbuf.put((byte) min(255, skipCount));
-                            bbuf.put((byte) 0);
+                            bbuf.put(END_OF_LINE_OP);
                             xy += min(255, skipCount);
                             skipCount -= min(255, skipCount);
                         }
@@ -1410,7 +1415,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                     literalCount--;
                 } else {
                     int literalRun = min(254, literalCount);
-                    bbuf.put((byte) 0);
+                    bbuf.put(ESCAPE_OP);
                     bbuf.put((byte) literalRun); // Literal OP-code
                     writeInts24LE(bbuf, data, xy - literalCount, literalRun);
                     ///if (literalRun & 1 == 1) {
@@ -1420,12 +1425,12 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                 }
             }
 
-            bbuf.put((byte) 0); // Escape code
-            bbuf.put((byte) 0x00); // End of line OP-code
+            bbuf.put(ESCAPE_OP); // Escape code
+            bbuf.put(END_OF_LINE_OP); // End of line OP-code
         }
 
-        bbuf.put((byte) 0); // Escape code
-        bbuf.put((byte) 0x01);// End of bitmap
+        bbuf.put(ESCAPE_OP); // Escape code
+        bbuf.put(END_OF_BITMAP_OP);// End of bitmap
         deflateBBuf(out);
     }
 
@@ -1464,7 +1469,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                 if (repeatCount < 3) {
                     literalCount++;
                     if (literalCount == 254) {
-                        bbuf.put((byte) 0); // Escape code
+                        bbuf.put(ESCAPE_OP); // Escape code
                         bbuf.put((byte) literalCount); // Literal OP-code
                         writeInts16LE(bbuf, data, xy - literalCount + 1, literalCount);
                         literalCount = 0;
@@ -1477,7 +1482,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                                 bbuf.putShort(data[xy - literalCount]);
                             }
                         } else {
-                            bbuf.put((byte) 0);
+                            bbuf.put(ESCAPE_OP);
                             bbuf.put((byte) literalCount); // Literal OP-code
                             writeInts16LE(bbuf, data, xy - literalCount, literalCount);
                             ///if (literalCount & 1 == 1) {
@@ -1500,7 +1505,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                         bbuf.putShort(data[xy - literalCount]);
                     }
                 } else {
-                    bbuf.put((byte) 0);
+                    bbuf.put(ESCAPE_OP);
                     bbuf.put((byte) literalCount);
                     writeInts16LE(bbuf, data, xy - literalCount, literalCount);
                     ///if (literalCount & 1 == 1) {
@@ -1510,11 +1515,11 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                 literalCount = 0;
             }
 
-            bbuf.put((byte) 0);
-            bbuf.put((byte) 0x0000);// End of line
+            bbuf.put(ESCAPE_OP);
+            bbuf.put(END_OF_LINE_OP);// End of line
         }
-        bbuf.put((byte) 0);
-        bbuf.put((byte) 0x0001);// End of bitmap
+        bbuf.put(ESCAPE_OP);
+        bbuf.put(END_OF_BITMAP_OP);// End of bitmap
 
         deflateBBuf(out);
     }

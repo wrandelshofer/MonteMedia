@@ -28,6 +28,7 @@ import static org.monte.media.av.BufferFlag.DISCARD;
 import static org.monte.media.av.BufferFlag.KEYFRAME;
 import static org.monte.media.av.FormatKeys.EncodingKey;
 import static org.monte.media.av.FormatKeys.FrameRateKey;
+import static org.monte.media.av.FormatKeys.KeyFrameIntervalKey;
 import static org.monte.media.av.FormatKeys.MIME_JAVA;
 import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
@@ -229,7 +230,7 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
                     fmt.get(CompressorNameKey, AbstractQTFFMovieStream.DEFAULT_COMPONENT_NAME),
                     Math.min(6000, fmt.get(FrameRateKey).getNumerator() * fmt.get(FrameRateKey).getDenominator()),
                     fmt.get(WidthKey), fmt.get(HeightKey), fmt.get(DepthKey, 24),
-                    (int) fmt.get(FrameRateKey).getDenominator(), fmt);
+                    fmt.get(KeyFrameIntervalKey, fmt.get(FrameRateKey).floor(1).intValue()), fmt);
             setCompressionQuality(t, fmt.get(QualityKey, 1.0f));
             return t;
         } else if (fmt.get(MediaTypeKey) == MediaType.AUDIO) {
@@ -298,7 +299,8 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
      *                                  than 1.
      */
     public int addVideoTrack(Format format, int width, int height, int depth, int syncInterval) throws IOException {
-        int tr = addVideoTrack(format.get(EncodingKey), format.get(CompressorNameKey), format.get(FrameRateKey).getDenominator() * format.get(FrameRateKey).getNumerator(), width, height, depth, syncInterval, format);
+        int tr = addVideoTrack(format.get(EncodingKey), format.get(CompressorNameKey),
+                format.get(FrameRateKey).getDenominator() * format.get(FrameRateKey).getNumerator(), width, height, depth, syncInterval, format);
         setVideoColorTable(tr, format.get(PaletteKey));
         return tr;
     }
