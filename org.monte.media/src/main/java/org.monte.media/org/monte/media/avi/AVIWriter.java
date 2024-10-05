@@ -55,6 +55,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_TECHSM
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
 import static org.monte.media.av.codec.video.VideoFormatKeys.FixedFrameRateKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.MotionSearchRangeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.PaletteKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.QualityKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
@@ -166,6 +167,7 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
         );
         setPalette(tr, vf.get(PaletteKey));
         setCompressionQuality(tr, vf.get(QualityKey, 1.0f));
+        setMotionSearchRange(tr, vf.get(MotionSearchRangeKey, -1));
         return tr;
     }
 
@@ -481,6 +483,7 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
                 if (null == tre.codec.setOutputFormat(
                         fmt.prepend(FixedFrameRateKey, true,
                                 QualityKey, getCompressionQuality(track),
+                                MotionSearchRangeKey, getMotionSearchRange(track),
                                 MimeTypeKey, MIME_AVI,
                                 DataClassKey, byte[].class))) {
                     throw new UnsupportedOperationException("Track " + tr + " codec does not support format " + fmt + ". codec=" + tre.codec);

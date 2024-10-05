@@ -346,9 +346,11 @@ public class H264Encoder extends VideoEncoder {
                 if (ref != null)
                     mv = estimator.mvEstimate(pic, mbX, mbY);
 
-                NonRdVector params = new NonRdVector(mv, IntraPredEstimator.getLumaMode(pic, context, mbX, mbY),
-                        IntraPredEstimator.getLumaPred4x4(pic, context, mbX, mbY, mbQp),
-                        IntraPredEstimator.getChromaMode(pic, context, mbX, mbY));
+                NonRdVector params = motionSearchRange == 0 ?
+                        new NonRdVector(mv, 2, new int[16], 0) :
+                        new NonRdVector(mv, IntraPredEstimator.getLumaMode(pic, context, mbX, mbY),
+                                IntraPredEstimator.getLumaPred4x4(pic, context, mbX, mbY, mbQp),
+                                IntraPredEstimator.getChromaMode(pic, context, mbX, mbY));
 
                 EncodedMB outMB = new EncodedMB();
                 outMB.setPos(mbX, mbY);

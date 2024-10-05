@@ -5,6 +5,7 @@
 package org.monte.media.imgseq;
 
 import org.monte.media.av.Buffer;
+import org.monte.media.av.Codec;
 import org.monte.media.av.Format;
 import org.monte.media.av.Multiplexer;
 import org.monte.media.io.IOStreams;
@@ -38,6 +39,11 @@ public class FileMultiplexer implements Multiplexer {
     @Override
     public int addTrack(Format fmt) throws IOException {
         return trackCount++;
+    }
+
+    @Override
+    public void setCodec(int trackIndex, Codec codec) {
+        // do nothing
     }
 
     @Override

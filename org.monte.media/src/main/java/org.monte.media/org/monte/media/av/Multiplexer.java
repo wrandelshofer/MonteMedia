@@ -23,6 +23,8 @@ public interface Multiplexer extends Closeable {
      */
     int addTrack(Format fmt) throws IOException;
 
+    void setCodec(int trackIndex, Codec codec);
+
     /**
      * Writes a sample.
      * Does nothing if the discard-flag or the prefetch-flag in the buffer is set to true.

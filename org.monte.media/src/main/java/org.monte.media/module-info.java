@@ -87,13 +87,14 @@ module org.monte.media {
     exports org.monte.media.pgm;
     exports org.monte.media.quicktime;
     exports org.monte.media.quicktime.codec.audio;
-    exports org.monte.media.quicktime.codec.video;
+    exports org.monte.media.mp4.codec.video;
     exports org.monte.media.riff;
     exports org.monte.media.tree;
     exports org.monte.media.tiff;
     exports org.monte.media.util;
     exports org.monte.media.util.stream;
     exports org.monte.media.zipmovie;
+    exports org.monte.media.mp4;
     exports org.monte.media.av.codec.text;
     exports org.monte.media.qtff;
 
@@ -112,7 +113,8 @@ module org.monte.media {
             org.monte.media.avi.codec.audio.AVIPCMAudioCodecSpi,
             org.monte.media.avi.codec.video.DIBCodecSpi,
             org.monte.media.avi.codec.video.RunLengthCodecSpi,
-            org.monte.media.avi.codec.video.ZMBVCodecSpi;
+            org.monte.media.avi.codec.video.ZMBVCodecSpi,
+            org.monte.media.mp4.codec.video.H264CodecSpi;
 
     provides org.monte.media.av.MovieWriterSpi with
             org.monte.media.quicktime.QuickTimeWriterSpi,

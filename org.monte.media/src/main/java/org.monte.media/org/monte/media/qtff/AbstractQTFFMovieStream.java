@@ -862,7 +862,7 @@ public class AbstractQTFFMovieStream {
             if (isSyncSample) {
                 if (syncSamples != null) {
                     for (long i = sampleCount - chunk.sampleCount; i < sampleCount; i++) {
-                        syncSamples.add(i);
+                        syncSamples.add(i + 1);
                     }
                 }
             } else {

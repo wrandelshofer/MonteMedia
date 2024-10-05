@@ -37,10 +37,7 @@ import static org.monte.media.av.BufferFlag.KEYFRAME;
 import static org.monte.media.av.FormatKeys.EncodingKey;
 import static org.monte.media.av.FormatKeys.FrameRateKey;
 import static org.monte.media.av.FormatKeys.KeyFrameIntervalKey;
-import static org.monte.media.av.FormatKeys.MIME_AVI;
-import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
-import static org.monte.media.av.FormatKeys.MimeTypeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVC1;
@@ -68,12 +65,6 @@ public class H264Codec extends AbstractVideoCodec {
                 },
                 new Format[]{
                         new Format(MediaTypeKey, FormatKeys.MediaType.VIDEO,
-                                MimeTypeKey, MIME_QUICKTIME,
-                                DepthKey, 24,
-                                EncodingKey, ENCODING_AVC1,
-                                DataClassKey, byte[].class), //
-                        new Format(MediaTypeKey, FormatKeys.MediaType.VIDEO,
-                                MimeTypeKey, MIME_AVI,
                                 DepthKey, 24,
                                 EncodingKey, ENCODING_AVC1,
                                 DataClassKey, byte[].class), //
@@ -134,10 +125,11 @@ public class H264Codec extends AbstractVideoCodec {
 
         PixelStore.LoanerPicture toEncode = new PixelStore.LoanerPicture(picture, 0);
 
+        Packet.FrameType frameType = out.sequenceNumber % outputFormat.get(KeyFrameIntervalKey) == 0 ? Packet.FrameType.KEY : Packet.FrameType.INTER;
         Packet pkt = Packet.createPacket(null, 0, outputFormat.get(FrameRateKey).intValue(),
                 out.sampleDuration.divide(outputFormat.get(FrameRateKey)).intValue(),
                 out.sequenceNumber,
-                out.sequenceNumber % outputFormat.get(KeyFrameIntervalKey) == 0 ? Packet.FrameType.KEY : Packet.FrameType.INTER,
+                frameType,
                 null);
         VideoFrameWithPacket videoFrame = new VideoFrameWithPacket(pkt, toEncode);
         Packet outputVideoPacket;
@@ -164,6 +156,7 @@ public class H264Codec extends AbstractVideoCodec {
                         ppsList.stream().map(byteBufferFunction).collect(Collectors.toCollection(LinkedHashSet::new)));
             }
         }
+        outputVideoPacket.data = H264Utils.encodeMOVPacket(outputVideoPacket.data);
 
         out.setFlag(KEYFRAME, encodedFrame.isKeyFrame());
         ByteBuffer packetBuf = outputVideoPacket.data;
@@ -184,7 +177,10 @@ public class H264Codec extends AbstractVideoCodec {
     private VideoEncoder getEncoder(Format outputFormat) {
         if (videoEncoder == null) {
             H264Encoder enc = H264Encoder.createH264Encoder();
-            enc.setMotionSearchRange(outputFormat.get(MotionSearchRangeKey));
+            Integer motionSearchRange = outputFormat.get(MotionSearchRangeKey);
+            if (motionSearchRange != null && motionSearchRange >= 0) {
+                enc.setMotionSearchRange(motionSearchRange);
+            }
             enc.setKeyInterval(outputFormat.get(KeyFrameIntervalKey));
             videoEncoder = enc;
         }

@@ -96,6 +96,11 @@ public class ZipMovieWriter implements MovieWriter {
     }
 
     @Override
+    public void setCodec(int trackIndex, Codec codec) {
+        // do nothing
+    }
+
+    @Override
     public Format getFormat(int track) {
         return tracks.get(track).format;
     }

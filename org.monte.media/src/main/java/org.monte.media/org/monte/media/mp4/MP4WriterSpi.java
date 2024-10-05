@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class MP4WriterSpi implements MovieWriterSpi {
 
-    private final static List<String> extensions = List.of(new String[]{"mp4x", "m4vx"});
+    private final static List<String> extensions = List.of(new String[]{"mp4", "m4v"});
 
     @Override
     public MovieWriter create(File file) throws IOException {

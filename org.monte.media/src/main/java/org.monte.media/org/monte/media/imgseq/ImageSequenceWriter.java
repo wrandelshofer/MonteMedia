@@ -51,6 +51,11 @@ public class ImageSequenceWriter implements MovieWriter {
     }
 
     @Override
+    public void setCodec(int trackIndex, Codec codec) {
+        // Do nothing
+    }
+
+    @Override
     public Format getFileFormat() throws IOException {
         return fileFormat;
     }

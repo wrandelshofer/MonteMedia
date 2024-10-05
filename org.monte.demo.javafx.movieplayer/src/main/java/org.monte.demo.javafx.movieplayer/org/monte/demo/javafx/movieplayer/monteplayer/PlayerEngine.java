@@ -126,20 +126,26 @@ class PlayerEngine extends AbstractPlayer {
             Format format = trackFormat;
             final Map<String, Object> metadata = new LinkedHashMap<>();
             format.getProperties().entrySet().iterator().forEachRemaining(e -> metadata.put(e.getKey().getName(), e.getValue()));
-            tracks.add(switch (format.get(MediaTypeKey)) {
-                case FormatKeys.MediaType.VIDEO -> {
+            TrackInterface newTrack;
+            switch (format.get(MediaTypeKey)) {
+                case VIDEO:
                     MonteVideoTrack videoTrack = realizeVideoTrack(i, metadata, format, trackFormat);
                     trackWidth = Math.max(trackWidth, trackFormat.get(VideoFormatKeys.WidthKey));
                     trackHeight = Math.max(trackHeight, trackFormat.get(VideoFormatKeys.HeightKey));
-                    yield videoTrack;
-                }
-                case FormatKeys.MediaType.AUDIO -> {
+                    newTrack = videoTrack;
+                    break;
+                case AUDIO:
                     MonteAudioTrack audioTrack = realizeAudioTrack(i, metadata, trackFormat, format);
-                    yield audioTrack;
-                }
-                case FormatKeys.MediaType.TEXT -> realizeSubtitleTrack(i, metadata);
-                default -> new MonteUnsupportedTrack(Locale.ENGLISH, i, i + "", metadata);
-            });
+                    newTrack = audioTrack;
+                    break;
+                case TEXT:
+                    newTrack = realizeSubtitleTrack(i, metadata);
+                    break;
+                default:
+                    newTrack = new MonteUnsupportedTrack(Locale.ENGLISH, i, i + "", metadata);
+                    break;
+            }
+            tracks.add(newTrack);
         }
         int finalWidth = mediaWidth == 0 ? trackWidth : mediaWidth;
         int finalHeight = mediaHeight == 0 ? trackHeight : mediaHeight;

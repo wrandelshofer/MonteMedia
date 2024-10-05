@@ -2,8 +2,8 @@
  * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
  */
 
-import org.monte.media.jcodec.codec.JCodecH264CodecSpi;
-import org.monte.media.jcodec.codec.JCodecPictureCodecSpi;
+import org.monte.media.jcodec.h264.JCodecH264CodecSpi;
+import org.monte.media.jcodec.h264.JCodecPictureCodecSpi;
 import org.monte.media.jcodec.mp4.JCodecMP4WriterSpi;
 
 /**
@@ -15,6 +15,9 @@ import org.monte.media.jcodec.mp4.JCodecMP4WriterSpi;
 module org.monte.media.jcodec {
     requires jcodec;
     requires java.desktop;
+
+    exports org.monte.media.jcodec.h264;
+    exports org.monte.media.jcodec.mp4;
 
     requires org.monte.media;
 

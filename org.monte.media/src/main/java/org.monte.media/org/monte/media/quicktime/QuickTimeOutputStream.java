@@ -29,7 +29,6 @@ import java.nio.ByteOrder;
 import java.time.Instant;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.zip.DeflaterOutputStream;
@@ -803,10 +802,10 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
                 var pps = new LinkedHashSet<>(record.pictureParameterSetNALUnit());
                 pps.addAll(r.pictureParameterSetNALUnit());
                 var sps = new LinkedHashSet<>(record.sequenceParameterSetNALUnit());
-                pps.addAll(r.sequenceParameterSetNALUnit());
+                sps.addAll(r.sequenceParameterSetNALUnit());
                 record = new AvcDecoderConfigurationRecord(r.avcProfileIndication(),
                         r.profileCompatibility(), r.avcLevelIndication(), r.nalLengthSize(),
-                        pps, sps);
+                        sps, pps);
             }
             vt.avcDecoderConfigurationRecord = record;
         }
@@ -1193,23 +1192,23 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
 
         if (t instanceof VideoTrack) {
             VideoTrack vt = (VideoTrack) t;
-            writeTaptAtoms(trakAtom, vt);
+            //writeTaptAtoms(trakAtom, vt);
         }
         writeEditAtoms(trakAtom, t);
         writeMediaAtoms(trakAtom, trackIndex, modificationTime, t);
     }
 
-    private void writeTaptAtoms(CompositeAtom trakAtom, VideoTrack t) throws IOException {
+    /*private void writeTaptAtoms(CompositeAtom trakAtom, VideoTrack t) throws IOException {
         DataAtom leaf;
         QTFFImageOutputStream d;
-        /* Edit Atom ========= */
+        /* TAPT Atom ========= * /
         CompositeAtom taptAtom = new CompositeAtom("tapt");
         trakAtom.add(taptAtom);
 
         /* Track Clean Aperture Dimensions,
           Track Production Aperture Dimensions,
           Track Encoded Pixels Dimensions
-         */
+         * /
         /*
         typedef struct {
             byte version;
@@ -1217,7 +1216,7 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
             fixed16d16 width;
             fixed16d16 height;
         } clefAtom;
-         */
+         * /
         for (String id : List.of("clef", "prof", "enof")) {
             leaf = new DataAtom(id);
             taptAtom.add(leaf);
@@ -1229,9 +1228,14 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
             d.writeFixed16D16(t.width);
             d.writeFixed16D16(t.height);
         }
-    }
+    }*/
 
     private void writeEditAtoms(CompositeAtom trakAtom, Track t) throws IOException {
+        Edit[] elist = t.editList;
+        if (elist == null || elist.length == 0) {
+            return;
+        }
+
         DataAtom leaf;
         QTFFImageOutputStream d;
         /* Edit Atom ========= */
@@ -1262,19 +1266,11 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
         d.write(0); // flag[1]
         d.write(0); // flag[2]
 
-        Edit[] elist = t.editList;
-        if (elist == null || elist.length == 0) {
-            d.writeUInt(1); // numberOfEntries
-            d.writeUInt(t.getTrackDuration(movieTimeScale)); // trackDuration
-            d.writeUInt(t.getFirstSampleTime(movieTimeScale)); // mediaTime
-            d.writeFixed16D16(1); // mediaRate
-        } else {
-            d.writeUInt(elist.length); // numberOfEntries
-            for (Edit edit : elist) {
-                d.writeUInt(edit.trackDuration); // trackDuration
-                d.writeUInt(edit.mediaTime); // mediaTime
-                d.writeUInt(edit.mediaRate); // mediaRate
-            }
+        d.writeUInt(elist.length); // numberOfEntries
+        for (Edit edit : elist) {
+            d.writeUInt(edit.trackDuration); // trackDuration
+            d.writeUInt(edit.mediaTime); // mediaTime
+            d.writeUInt(edit.mediaRate); // mediaRate
         }
     }
 
@@ -1455,7 +1451,8 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
         d.writeInt(t.mediaType == MediaType.AUDIO ? 65967 : 0); // componentFlagsMask
         // Reserved. Set to 0.
 
-        d.writePString(t.componentName); // componentName (empty string)
+        d.writePString(t.componentName); // componentName (can be an empty string)
+
         // A (counted) string that specifies the name of the component—that is,
         // the media handler used when this media was created. This field may
         // contain a zero-length (empty) string.
@@ -1560,7 +1557,7 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
         // intended for playback using version 1.0 of QuickTime. This flag’s
         // value is 0x0001.
 
-        d.writeShort(0x40); // graphicsMode (0x40 = DitherCopy)
+        d.writeShort(0x40); // graphicsMode (0x40 = DitherCopy, 0x0 = Copy)
         // A 16-bit integer that specifies the transfer mode. The transfer mode
         // specifies which Boolean operation QuickDraw should perform when
         // drawing or transferring an image from one location to another.

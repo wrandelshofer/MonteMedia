@@ -340,6 +340,16 @@ public class AVIOutputStream extends AbstractAVIStream {
         return t.quality == -1 ? 0.97f : MathUtil.clamp(t.quality / 10_000f, 0f, 1f);
     }
 
+    public void setMotionSearchRange(int track, int newValue) {
+        Track t = tracks.get(track);
+        t.motionSearchRange = newValue;
+    }
+
+    public int getMotionSearchRange(int track) {
+        Track t = tracks.get(track);
+        return t.motionSearchRange;
+    }
+
     /**
      * Sets the state of the QuickTimeOutpuStream to started. <p> If the state
      * is changed by this method, the prolog is written.

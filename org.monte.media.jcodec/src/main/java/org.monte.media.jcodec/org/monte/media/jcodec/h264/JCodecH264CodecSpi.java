@@ -3,7 +3,7 @@
  * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 
-package org.monte.media.jcodec.codec;
+package org.monte.media.jcodec.h264;
 
 import org.monte.media.av.CodecSpi;
 

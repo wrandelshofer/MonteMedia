@@ -40,6 +40,9 @@ public class MotionEstimator {
     }
 
     public int[] mvEstimate(Picture pic, int mbX, int mbY) {
+        if (maxSearchRange == 0) {
+            return new int[2];
+        }
         int refIdx = 1;
         byte[] patch = new byte[256];
         boolean trAvb = mbY > 0 && mbX < sps.picWidthInMbsMinus1;

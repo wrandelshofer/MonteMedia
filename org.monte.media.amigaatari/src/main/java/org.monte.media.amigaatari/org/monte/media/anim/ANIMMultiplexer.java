@@ -6,6 +6,7 @@ package org.monte.media.anim;
 
 import org.monte.media.amigabitmap.AmigaBitmapImage;
 import org.monte.media.av.Buffer;
+import org.monte.media.av.Codec;
 import org.monte.media.av.Format;
 import org.monte.media.av.Multiplexer;
 import org.monte.media.math.Rational;
@@ -38,6 +39,11 @@ public class ANIMMultiplexer implements Multiplexer {
     @Override
     public int addTrack(Format fmt) throws IOException {
         return 0;
+    }
+
+    @Override
+    public void setCodec(int trackIndex, Codec codec) {
+        // do nothing
     }
 
     @Override

@@ -14,6 +14,7 @@ import org.monte.media.screenrecorder.State;
 import org.monte.media.swing.BackgroundTask;
 import org.monte.media.swing.JLabelHyperlinkHandler;
 import org.monte.media.swing.datatransfer.DropFileTransferHandler;
+import org.monte.media.util.MathUtil;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;

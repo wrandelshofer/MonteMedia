@@ -11,7 +11,7 @@ module org.monte.demo.moviewriter {
     requires java.desktop;
 
     requires org.monte.media;
-    requires static org.monte.media.jcodec;
+    requires org.monte.media.jcodec;
 
     exports org.monte.demo.moviewriter;
 }

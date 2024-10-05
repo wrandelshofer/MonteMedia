@@ -623,10 +623,10 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
                 var pps = new LinkedHashSet<>(record.pictureParameterSetNALUnit());
                 pps.addAll(r.pictureParameterSetNALUnit());
                 var sps = new LinkedHashSet<>(record.sequenceParameterSetNALUnit());
-                pps.addAll(r.sequenceParameterSetNALUnit());
+                sps.addAll(r.sequenceParameterSetNALUnit());
                 record = new AvcDecoderConfigurationRecord(r.avcProfileIndication(),
                         r.profileCompatibility(), r.avcLevelIndication(), r.nalLengthSize(),
-                        pps, sps);
+                        sps, pps);
             }
             vt.avcDecoderConfigurationRecord = record;
         }
@@ -903,8 +903,8 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         DataAtom ftypAtom = new DataAtom("ftyp");
         QTFFImageOutputStream d = ftypAtom.getOutputStream();
         d.writeType("isom"); // brand
-        d.writeBCD4(2005); // versionYear
-        d.writeBCD2(3); // versionMonth
+        d.writeBCD4(0); // versionYear
+        d.writeBCD2(2); // versionMonth
         d.writeBCD2(0); // versionMinor
         d.writeType("isom"); // compatibleBrands
         d.writeType("iso2"); // compatibleBrands
@@ -1189,52 +1189,50 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         d.writeFixed16D16(t.mediaType == MediaType.VIDEO ? t.height : 0); // height
         // A 32-bit fixed-point number that indicates the height of this track in pixels.
 
-        /* Edit Atom ========= */
-        CompositeAtom edtsAtom = new CompositeAtom("edts");
-        trakAtom.add(edtsAtom);
-
-        /* Edit List atom ------- */
-        /*
-         typedef struct {
-         byte version;
-         byte[3] flags;
-         int numberOfEntries;
-         editListTable editListTable[numberOfEntries];
-         } editListAtom;
-
-         typedef struct {
-         int trackDuration;
-         int mediaTime;
-         fixed16d16 mediaRate;
-         } editListTable;
-         */
-        leaf = new DataAtom("elst");
-        edtsAtom.add(leaf);
-        d = leaf.getOutputStream();
-
-        d.write(0); // version
-        // One byte that specifies the version of this header atom.
-
-        d.write(0); // flag[0]
-        d.write(0); // flag[1]
-        d.write(0); // flag[2]
-
-        Edit[] elist = t.editList;
-        if (elist == null || elist.length == 0) {
-            d.writeUInt(1); // numberOfEntries
-            d.writeUInt(t.getTrackDuration(movieTimeScale)); // trackDuration
-            d.writeUInt(t.getFirstSampleTime(movieTimeScale)); // mediaTime
-            d.writeFixed16D16(1); // mediaRate
-        } else {
-            d.writeUInt(elist.length); // numberOfEntries
-            for (Edit edit : elist) {
-                d.writeUInt(edit.trackDuration); // trackDuration
-                d.writeUInt(edit.mediaTime); // mediaTime
-                d.writeUInt(edit.mediaRate); // mediaRate
-            }
+        if (t instanceof VideoTrack) {
+            VideoTrack vt = (VideoTrack) t;
+            //writeTaptAtoms(trakAtom, vt);
         }
+        writeEditAtoms(trakAtom, t);
+        writeMediaAtoms(trackIndex, modificationTime, trakAtom, t);
+    }
 
+    /*
+    private void writeTaptAtoms(CompositeAtom trakAtom, VideoTrack t) throws IOException {
+        DataAtom leaf;
+        QTFFImageOutputStream d;
+        /* TAPT Atom ========= * /
+        CompositeAtom taptAtom = new CompositeAtom("tapt");
+        trakAtom.add(taptAtom);
 
+        /* Track Clean Aperture Dimensions,
+          Track Production Aperture Dimensions,
+          Track Encoded Pixels Dimensions
+         */
+        /*
+        typedef struct {
+            byte version;
+            byte[3] flags;
+            fixed16d16 width;
+            fixed16d16 height;
+        } clefAtom;
+         * /
+        for (String id : List.of("clef", "prof", "enof")) {
+            leaf = new DataAtom(id);
+            taptAtom.add(leaf);
+            d = leaf.getOutputStream();
+            d.write(0); // version
+            d.write(0); // flag[0]
+            d.write(0); // flag[1]
+            d.write(0); // flag[2]
+            d.writeFixed16D16(t.width);
+            d.writeFixed16D16(t.height);
+        }
+    }*/
+
+    private void writeMediaAtoms(int trackIndex, Instant modificationTime, CompositeAtom trakAtom, Track t) throws IOException {
+        DataAtom leaf;
+        QTFFImageOutputStream d;
         /* Media Atom ========= */
         CompositeAtom mdiaAtom = new CompositeAtom("mdia");
         trakAtom.add(mdiaAtom);
@@ -1338,7 +1336,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         d.writeUInt(t.mediaType == MediaType.AUDIO ? 65941 : 0); // componentFlagsMask
         // Reserved. Set to 0.
 
-        d.writeCString(t.mediaType == MediaType.AUDIO ? "Apple Sound Media Handler" : ""); // componentName (empty string)
+        d.writeCString(t.componentName); // componentName (empty string)
         // A (counted) string that specifies the name of the component—that is,
         // the media handler used when this media was created. This field may
         // contain a zero-length (empty) string.
@@ -1346,6 +1344,53 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         /* Media Information atom ========= */
         writeMediaInformationAtoms(trackIndex, mdiaAtom);
     }
+
+    private void writeEditAtoms(CompositeAtom trakAtom, Track t) throws IOException {
+        Edit[] elist = t.editList;
+        if (elist == null || elist.length == 0) {
+            return;
+        }
+
+        QTFFImageOutputStream d;
+        DataAtom leaf;
+        /* Edit Atom ========= */
+        CompositeAtom edtsAtom = new CompositeAtom("edts");
+        trakAtom.add(edtsAtom);
+
+        /* Edit List atom ------- */
+        /*
+         typedef struct {
+         byte version;
+         byte[3] flags;
+         int numberOfEntries;
+         editListTable editListTable[numberOfEntries];
+         } editListAtom;
+
+         typedef struct {
+         int trackDuration;
+         int mediaTime;
+         fixed16d16 mediaRate;
+         } editListTable;
+         */
+        leaf = new DataAtom("elst");
+        edtsAtom.add(leaf);
+        d = leaf.getOutputStream();
+
+        d.write(0); // version
+        // One byte that specifies the version of this header atom.
+
+        d.write(0); // flag[0]
+        d.write(0); // flag[1]
+        d.write(0); // flag[2]
+
+        d.writeUInt(elist.length); // numberOfEntries
+        for (Edit edit : elist) {
+            d.writeUInt(edit.trackDuration); // trackDuration
+            d.writeUInt(edit.mediaTime); // mediaTime
+            d.writeUInt(edit.mediaRate); // mediaRate
+        }
+    }
+
 
     protected void writeMediaInformationAtoms(int trackIndex, CompositeAtom mdiaAtom) throws IOException {
         Track t = tracks.get(trackIndex);
@@ -1402,13 +1447,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         // For data handlers, this field defines the data reference type—for
         // example, a component subtype value of 'alis' identifies a file alias.
 
-        if (t.mediaType == MediaType.AUDIO) {
-            d.writeType(t.componentManufacturer);
-        } else {
-            d.writeUInt(0);
-        }
-        // componentManufacturer
-        // Reserved. Set to 0.
+        d.writeType(t.componentManufacturer);        // componentManufacturer
 
         d.writeUInt(t.mediaType == MediaType.AUDIO ? 268435457L : 0); // componentFlags
         // Reserved. Set to 0.
@@ -1521,7 +1560,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         // intended for playback using version 1.0 of QuickTime. This flag’s
         // value is 0x0001.
 
-        d.writeShort(0x40); // graphicsMode (0x40 = DitherCopy)
+        d.writeShort(0x0); // graphicsMode (0x40 = DitherCopy, 0x0 = Copy)
         // A 16-bit integer that specifies the transfer mode. The transfer mode
         // specifies which Boolean operation QuickDraw should perform when
         // drawing or transferring an image from one location to another.

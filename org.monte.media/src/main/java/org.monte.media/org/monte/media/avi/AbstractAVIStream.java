@@ -4,8 +4,6 @@
  */
 package org.monte.media.avi;
 
-import org.monte.media.av.Buffer;
-import org.monte.media.av.Codec;
 import org.monte.media.av.Format;
 import org.monte.media.riff.RIFFChunk;
 
@@ -451,6 +449,7 @@ public abstract class AbstractAVIStream {
          * use the default quality value.
          */
         protected int quality = -1;
+        protected int motionSearchRange = -1;
         /**
          * Specifies the size of a single sample of data. This is set to zero if
          * the samples can vary in size. If this number is nonzero, then

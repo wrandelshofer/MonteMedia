@@ -63,7 +63,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.MotionSearchRangeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.QualityKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
-import static org.monte.media.jcodec.codec.JCodecPictureCodec.ENCODING_PICTURE;
+import static org.monte.media.jcodec.h264.JCodecPictureCodec.ENCODING_PICTURE;
 
 public class JCodecMP4Writer implements MovieWriter {
     public final static Format MP4 = new Format(MediaTypeKey, FormatKeys.MediaType.FILE, MimeTypeKey, MIME_MP4);
@@ -112,6 +112,11 @@ public class JCodecMP4Writer implements MovieWriter {
                 throw new IllegalArgumentException("VIDEO or AUDIO format expected: " + format);
 
         }
+    }
+
+    @Override
+    public void setCodec(int trackIndex, Codec codec) {
+        tracks.get(trackIndex).codec = codec;
     }
 
     /**

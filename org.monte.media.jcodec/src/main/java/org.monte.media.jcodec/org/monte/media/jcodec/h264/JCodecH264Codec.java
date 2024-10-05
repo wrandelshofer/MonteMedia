@@ -3,7 +3,7 @@
  * Copyright © 2024 Werner Randelshofer, Switzerland. MIT License.
  */
 
-package org.monte.media.jcodec.codec;
+package org.monte.media.jcodec.h264;
 
 import org.jcodec.api.transcode.PixelStore;
 import org.jcodec.api.transcode.VideoFrameWithPacket;
@@ -48,7 +48,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_I
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.MotionSearchRangeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
-import static org.monte.media.jcodec.codec.JCodecPictureCodec.ENCODING_PICTURE;
+import static org.monte.media.jcodec.h264.JCodecPictureCodec.ENCODING_PICTURE;
 
 /**
  * Codec for {@link Picture} to {@code H264} byte array.
@@ -134,10 +134,11 @@ public class JCodecH264Codec extends AbstractVideoCodec {
 
         PixelStore.LoanerPicture toEncode = new PixelStore.LoanerPicture(picture, 0);
 
+        Packet.FrameType frameType = out.sequenceNumber % outputFormat.get(KeyFrameIntervalKey) == 0 ? Packet.FrameType.KEY : Packet.FrameType.INTER;
         Packet pkt = Packet.createPacket(null, 0, outputFormat.get(FrameRateKey).intValue(),
                 out.sampleDuration.divide(outputFormat.get(FrameRateKey)).intValue(),
                 out.sequenceNumber,
-                out.sequenceNumber % outputFormat.get(KeyFrameIntervalKey) == 0 ? Packet.FrameType.KEY : Packet.FrameType.INTER,
+                frameType,
                 null);
         VideoFrameWithPacket videoFrame = new VideoFrameWithPacket(pkt, toEncode);
         Packet outputVideoPacket;
@@ -164,6 +165,7 @@ public class JCodecH264Codec extends AbstractVideoCodec {
                         ppsList.stream().map(byteBufferFunction).collect(Collectors.toCollection(LinkedHashSet::new)));
             }
         }
+        outputVideoPacket.data = H264Utils.encodeMOVPacket(outputVideoPacket.data);
 
         out.setFlag(KEYFRAME, encodedFrame.isKeyFrame());
         ByteBuffer packetBuf = outputVideoPacket.data;

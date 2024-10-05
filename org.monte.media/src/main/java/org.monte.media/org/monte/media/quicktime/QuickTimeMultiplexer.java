@@ -6,6 +6,7 @@
 package org.monte.media.quicktime;
 
 import org.monte.media.av.Buffer;
+import org.monte.media.av.Codec;
 import org.monte.media.av.Format;
 import org.monte.media.av.Multiplexer;
 
@@ -42,6 +43,11 @@ public class QuickTimeMultiplexer implements Multiplexer {
     @Override
     public int addTrack(Format fmt) throws IOException {
         return out.addTrack(fmt);
+    }
+
+    @Override
+    public void setCodec(int trackIndex, Codec codec) {
+        out.setCodec(trackIndex, codec);
     }
 
     @Override

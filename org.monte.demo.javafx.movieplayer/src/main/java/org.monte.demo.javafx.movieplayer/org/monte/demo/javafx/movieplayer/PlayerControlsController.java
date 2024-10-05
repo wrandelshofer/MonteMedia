@@ -28,6 +28,7 @@ import javafx.util.Duration;
 import org.monte.demo.javafx.movieplayer.model.AudioTrackInterface;
 import org.monte.demo.javafx.movieplayer.model.MediaPlayerInterface;
 import org.monte.demo.javafx.movieplayer.model.TrackInterface;
+import org.monte.media.util.MathUtil;
 
 import java.net.URL;
 import java.text.NumberFormat;
@@ -115,17 +116,14 @@ public class PlayerControlsController extends AnchorPane {
     @FXML
     void togglePlayPause(ActionEvent event) {
         MediaPlayerInterface p = getPlayer();
-        if (p != null) {
+        if (p != null && p.getStatus() != null) {
             switch (p.getStatus()) {
-                case null -> {
-                    // do nothing
-                }
-                default -> {
+                default:
                     p.play();
-                }
-                case PLAYING -> {
+                    break;
+                case PLAYING:
                     p.pause();
-                }
+                    break;
             }
         }
     }

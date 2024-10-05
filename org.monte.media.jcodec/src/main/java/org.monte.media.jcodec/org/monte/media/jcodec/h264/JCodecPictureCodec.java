@@ -3,7 +3,7 @@
  * Copyright © 2024 Werner Randelshofer, Switzerland. MIT License.
  */
 
-package org.monte.media.jcodec.codec;
+package org.monte.media.jcodec.h264;
 
 import org.jcodec.common.model.ColorSpace;
 import org.jcodec.common.model.Picture;
