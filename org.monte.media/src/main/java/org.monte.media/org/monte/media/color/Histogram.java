@@ -30,8 +30,8 @@ public class Histogram {
             row = raster.getPixels(0, y, w, 1, row);
             for (int x = 0, w3 = w * 3; x < w3; x += 3) {
                 ++rbin[row[x]];
-                ++gbin[row[x] + 1];
-                ++bbin[row[x] + 2];
+                ++gbin[row[x + 1]];
+                ++bbin[row[x + 2]];
             }
         }
     }
