@@ -11,7 +11,6 @@ import org.monte.media.av.FormatKeys;
 import org.monte.media.av.codec.video.AbstractVideoCodec;
 import org.monte.media.impl.jcodec.api.transcode.PixelStore;
 import org.monte.media.impl.jcodec.api.transcode.VideoFrameWithPacket;
-import org.monte.media.impl.jcodec.codecs.h264.H264Encoder;
 import org.monte.media.impl.jcodec.codecs.h264.H264Utils;
 import org.monte.media.impl.jcodec.codecs.h264.io.model.SeqParameterSet;
 import org.monte.media.impl.jcodec.common.VideoEncoder;
@@ -48,12 +47,12 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 import static org.monte.media.mp4.codec.video.JCodecPictureCodec.ENCODING_PICTURE;
 
 /**
- * Codec for {@link Picture} to {@code H264} byte array.
+ * Codec for {@link BufferedImage} or {@link Picture} to {@code H264} byte array.
  */
 public class H264Codec extends AbstractVideoCodec {
     private VideoEncoder videoEncoder = null;
     private ByteBuffer byteBuffer;
-
+    private int frameCounter;
     public H264Codec() {
         super(new Format[]{
                         new Format(MediaTypeKey, FormatKeys.MediaType.VIDEO,
@@ -110,6 +109,11 @@ public class H264Codec extends AbstractVideoCodec {
 
     }
 
+    @Override
+    public void reset() {
+        frameCounter = 0;
+    }
+
     public int encode(Buffer in, Buffer out) {
         out.setMetaTo(in);
         out.format = outputFormat;
@@ -125,7 +129,8 @@ public class H264Codec extends AbstractVideoCodec {
 
         PixelStore.LoanerPicture toEncode = new PixelStore.LoanerPicture(picture, 0);
 
-        Packet.FrameType frameType = out.sequenceNumber % outputFormat.get(KeyFrameIntervalKey) == 0 ? Packet.FrameType.KEY : Packet.FrameType.INTER;
+        boolean isKeyframe = frameCounter++ % outputFormat.get(KeyFrameIntervalKey, 60) == 0;
+        Packet.FrameType frameType = isKeyframe ? Packet.FrameType.KEY : Packet.FrameType.INTER;
         Packet pkt = Packet.createPacket(null, 0, outputFormat.get(FrameRateKey).intValue(),
                 out.sampleDuration.divide(outputFormat.get(FrameRateKey)).intValue(),
                 out.sequenceNumber,
@@ -176,12 +181,13 @@ public class H264Codec extends AbstractVideoCodec {
 
     private VideoEncoder getEncoder(Format outputFormat) {
         if (videoEncoder == null) {
-            H264Encoder enc = H264Encoder.createH264Encoder();
+            org.monte.media.impl.jcodec.codecs.h264.H264Encoder enc = org.monte.media.impl.jcodec.codecs.h264.H264Encoder.createH264Encoder();
             Integer motionSearchRange = outputFormat.get(MotionSearchRangeKey);
             if (motionSearchRange != null && motionSearchRange >= 0) {
                 enc.setMotionSearchRange(motionSearchRange);
             }
             enc.setKeyInterval(outputFormat.get(KeyFrameIntervalKey));
+
             videoEncoder = enc;
         }
         return videoEncoder;

@@ -27,7 +27,6 @@ import static org.monte.media.av.BufferFlag.DISCARD;
 import static org.monte.media.av.BufferFlag.KEYFRAME;
 import static org.monte.media.av.BufferFlag.SAME_DATA;
 import static org.monte.media.av.FormatKeys.EncodingKey;
-import static org.monte.media.av.FormatKeys.FrameRateKey;
 import static org.monte.media.av.FormatKeys.KeyFrameIntervalKey;
 import static org.monte.media.av.FormatKeys.MIME_AVI;
 import static org.monte.media.av.FormatKeys.MIME_JAVA;
@@ -331,13 +330,9 @@ public class TechSmithCodec extends AbstractVideoCodec {
         ByteArrayImageOutputStream tmp = new ByteArrayImageOutputStream(ArrayUtil.reuseByteArray(out.data, 32));
         tmp.clear();
 
-        Integer keyFrameInterval = outputFormat.get(KeyFrameIntervalKey, outputFormat.get(FrameRateKey).intValue());
-        boolean isKeyframe = frameCounter == 0
-                || keyFrameInterval == 0
-                || frameCounter % keyFrameInterval == 0;
+        boolean isKeyframe = frameCounter++ % outputFormat.get(KeyFrameIntervalKey, 60) == 0;
         out.setFlag(KEYFRAME, isKeyframe);
         out.clearFlag(SAME_DATA);
-        frameCounter++;
 
         // Handle sub-image
         Rectangle r;

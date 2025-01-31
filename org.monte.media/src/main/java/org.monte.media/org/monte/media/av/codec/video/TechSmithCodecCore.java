@@ -465,14 +465,14 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                             break;
                         }
                         default: {// literal run
-                            readInts24LE(in, outDat, xy, opcode);
+                            readInts24LE(in, outDat, xy, opcode, byteBuf);
                             xy += opcode;
                             break;
                         }
                     }
                 } else {
                     // repetition
-                    int v = readInt24LE(in);
+                    int v = readInt24LE(in, byteBuf);
                     Arrays.fill(outDat, xy, xy + opcode, v);
                     xy += opcode;
                 }

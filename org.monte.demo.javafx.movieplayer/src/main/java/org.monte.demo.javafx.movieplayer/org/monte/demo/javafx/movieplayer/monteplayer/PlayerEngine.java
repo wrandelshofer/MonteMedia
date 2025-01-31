@@ -414,7 +414,7 @@ class PlayerEngine extends AbstractPlayer {
                     status = codec.process(inBuf, outBuf);
                 } while (status == Codec.CODEC_OUTPUT_NOT_FILLED);
             } while (status == Codec.CODEC_OK
-                    && outBuf.getBufferEndTimestamp().compareTo(playTime) < 0
+                    && outBuf.getBufferEndTimestamp().compareTo(playTime) <= 0
                     && !outBuf.isFlag(BufferFlag.END_OF_MEDIA));
         }
     }

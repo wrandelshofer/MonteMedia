@@ -14,16 +14,22 @@ import org.monte.media.util.ArrayUtil;
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
+import java.awt.image.DataBufferUShort;
+import java.awt.image.DirectColorModel;
+import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 
 import static java.lang.Math.min;
 import static org.monte.media.av.BufferFlag.DISCARD;
 import static org.monte.media.av.BufferFlag.KEYFRAME;
 import static org.monte.media.av.FormatKeys.EncodingKey;
-import static org.monte.media.av.FormatKeys.FrameRateKey;
 import static org.monte.media.av.FormatKeys.KeyFrameIntervalKey;
 import static org.monte.media.av.FormatKeys.MIME_AVI;
 import static org.monte.media.av.FormatKeys.MIME_JAVA;
@@ -34,7 +40,6 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_RLE4;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_RLE8;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
-import static org.monte.media.av.codec.video.VideoFormatKeys.FixedFrameRateKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
@@ -117,19 +122,28 @@ public class RunLengthCodec extends AbstractVideoCodec {
 
     private byte[] previousPixels;
     private int frameCounter;
+    private Object newPixels;
 
     public RunLengthCodec() {
         super(new Format[]{
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
-                                EncodingKey, ENCODING_BUFFERED_IMAGE, FixedFrameRateKey, true), //
-                },
-                new Format[]{
+                                EncodingKey, ENCODING_BUFFERED_IMAGE), //
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
                                 EncodingKey, ENCODING_AVI_RLE8, DataClassKey, byte[].class,
-                                FixedFrameRateKey, true, DepthKey, 8), //
+                                DepthKey, 8), //
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
                                 EncodingKey, ENCODING_AVI_RLE4, DataClassKey, byte[].class,
-                                FixedFrameRateKey, true, DepthKey, 4), //
+                                DepthKey, 4), //
+                },
+                new Format[]{
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
+                                EncodingKey, ENCODING_BUFFERED_IMAGE), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+                                EncodingKey, ENCODING_AVI_RLE8, DataClassKey, byte[].class,
+                                DepthKey, 8), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
+                                EncodingKey, ENCODING_AVI_RLE4, DataClassKey, byte[].class,
+                                DepthKey, 4), //
                 });
     }
 
@@ -191,11 +205,7 @@ public class RunLengthCodec extends AbstractVideoCodec {
         }
         int offset = r.x + r.y * scanlineStride;
 
-        Integer keyFrameInterval = outputFormat.get(KeyFrameIntervalKey, outputFormat.get(FrameRateKey).intValue());
-        boolean isKeyframe = frameCounter == 0
-                || keyFrameInterval == 0
-                || frameCounter % keyFrameInterval == 0;
-        frameCounter++;
+        boolean isKeyframe = frameCounter++ % outputFormat.get(KeyFrameIntervalKey, 60) == 0;
 
         try {
             byte[] pixels = getIndexed8(in);
@@ -203,10 +213,10 @@ public class RunLengthCodec extends AbstractVideoCodec {
                 return CODEC_FAILED;
             }
             if (isKeyframe) {
-                writeKey8(tmp, pixels, r.width, r.height, offset, scanlineStride);
+                encodeKey8(tmp, pixels, r.width, r.height, offset, scanlineStride);
                 out.setFlag(KEYFRAME);
             } else {
-                writeDelta8(tmp, pixels, previousPixels, r.width, r.height, offset, scanlineStride);
+                encodeDelta8(tmp, pixels, previousPixels, r.width, r.height, offset, scanlineStride);
                 out.clearFlag(KEYFRAME);
             }
             out.data = tmp.getBuffer();
@@ -226,9 +236,84 @@ public class RunLengthCodec extends AbstractVideoCodec {
         }
     }
 
-    private int decode(Buffer in, Buffer out) {
-        return CODEC_FAILED;
+    public int decode(Buffer in, Buffer out) {
+        out.setMetaTo(in);
+        out.format = outputFormat;
+        out.length = 1;
+        out.offset = 0;
+
+
+        int width = outputFormat.get(WidthKey);
+        int height = outputFormat.get(HeightKey);
+        int inputDepth = inputFormat.get(DepthKey);
+        int outputDepth = outputFormat.get(DepthKey, inputDepth);
+
+        boolean isKeyFrame;
+        try {
+            newPixels = ArrayUtil.reuseByteArray(newPixels, width * height);
+            isKeyFrame = decode8((byte[]) in.data, in.offset, in.length, (byte[]) newPixels, (byte[]) newPixels, width, height, false);
+        } catch (IOException e) {
+            out.exception = e;
+            out.setFlag(DISCARD);
+            return CODEC_FAILED;
+        }
+
+        BufferedImage img = (out.data instanceof BufferedImage) ? (BufferedImage) out.data : null;
+
+        switch (outputDepth) {
+            case 8: {
+                int imgType = BufferedImage.TYPE_BYTE_INDEXED;
+                if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
+                    ColorModel cm = getColorModel(in);
+                    if (cm == null) {
+                        cm = new IndexColorModel(8, 256, new int[256], 0, false, -1, DataBuffer.TYPE_BYTE);
+                    }
+                    img = new BufferedImage(cm, cm.createCompatibleWritableRaster(width, height), false, null);
+                } else {
+                    BufferedImage oldImg = img;
+                    img = new BufferedImage(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
+                }
+                byte[] pixels = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
+                System.arraycopy((byte[]) newPixels, 0, pixels, 0, width * height);
+            }
+            break;
+            case 15: {
+                int imgType = BufferedImage.TYPE_USHORT_555_RGB;
+                if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
+                    DirectColorModel cm = new DirectColorModel(15, 0x1f << 10, 0x1f << 5, 0x1f);
+                    img = new BufferedImage(cm, cm.createCompatibleWritableRaster(width, height), false, null);
+                } else {
+                    BufferedImage oldImg = img;
+                    img = new BufferedImage(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
+                }
+                short[] pixels = ((DataBufferUShort) img.getRaster().getDataBuffer()).getData();
+                System.arraycopy((short[]) newPixels, 0, pixels, 0, width * height);
+            }
+            break;
+            case 16:
+            case 24: {
+                int imgType = BufferedImage.TYPE_INT_RGB;
+                if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
+                    DirectColorModel cm = new DirectColorModel(24, 0xff << 16, 0xff << 8, 0xff);
+                    img = new BufferedImage(cm, cm.createCompatibleWritableRaster(width, height), false, null);
+                } else {
+                    BufferedImage oldImg = img;
+                    img = new BufferedImage(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
+                }
+                int[] pixels = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
+                System.arraycopy((int[]) newPixels, 0, pixels, 0, width * height);
+            }
+            break;
+            default:
+                throw new UnsupportedOperationException("Unsupported depth:" + outputDepth);
+        }
+
+        out.setFlag(KEYFRAME, isKeyFrame);
+
+        out.data = img;
+        return CODEC_OK;
     }
+
 
     /**
      * Encodes an 8-bit key frame.
@@ -239,22 +324,7 @@ public class RunLengthCodec extends AbstractVideoCodec {
      * @param width          The width of the image in data elements.
      * @param scanlineStride The number to append to offset to get to the next scanline.
      */
-    public void writeKey8(OutputStream out, byte[] data, int width, int height, int offset, int scanlineStride) throws IOException {
-        ByteArrayImageOutputStream buf = new ByteArrayImageOutputStream(data.length);
-        writeKey8(buf, data, width, height, offset, scanlineStride);
-        buf.toOutputStream(out);
-    }
-
-    /**
-     * Encodes an 8-bit key frame.
-     *
-     * @param out            The output stream.
-     * @param data           The image data.
-     * @param offset         The offset to the first pixel in the data array.
-     * @param width          The width of the image in data elements.
-     * @param scanlineStride The number to append to offset to get to the next scanline.
-     */
-    public void writeKey8(ImageOutputStream out, byte[] data, int width, int height, int offset, int scanlineStride)
+    public void encodeKey8(ImageOutputStream out, byte[] data, int width, int height, int offset, int scanlineStride)
             throws IOException {
         out.setByteOrder(ByteOrder.LITTLE_ENDIAN);
 
@@ -333,20 +403,6 @@ public class RunLengthCodec extends AbstractVideoCodec {
         out.write(0x0001);// End of bitmap
     }
 
-    /**
-     * Encodes an 8-bit key frame.
-     *
-     * @param out            The output stream.
-     * @param data           The image data.
-     * @param offset         The offset to the first pixel in the data array.
-     * @param width          The width of the image in data elements.
-     * @param scanlineStride The number to append to offset to get to the next scanline.
-     */
-    public void writeDelta8(OutputStream out, byte[] data, byte[] prev, int width, int height, int offset, int scanlineStride) throws IOException {
-        ByteArrayImageOutputStream buf = new ByteArrayImageOutputStream(data.length);
-        writeDelta8(buf, data, prev, width, height, offset, scanlineStride);
-        buf.toOutputStream(out);
-    }
 
     /**
      * Encodes an 8-bit delta frame.
@@ -358,7 +414,7 @@ public class RunLengthCodec extends AbstractVideoCodec {
      * @param width          The width of the image in data elements.
      * @param scanlineStride The number to append to offset to get to the next scanline.
      */
-    public void writeDelta8(ImageOutputStream out, byte[] data, byte[] prev, int width, int height, int offset, int scanlineStride)
+    public void encodeDelta8(ImageOutputStream out, byte[] data, byte[] prev, int width, int height, int offset, int scanlineStride)
             throws IOException {
 
         out.setByteOrder(ByteOrder.LITTLE_ENDIAN);
@@ -373,12 +429,10 @@ public class RunLengthCodec extends AbstractVideoCodec {
             int xymax = xy + width;
 
             // determine skip count
-            int skipCount = 0;
-            for (; xy < xymax; ++xy, ++skipCount) {
-                if (data[xy] != prev[xy]) {
-                    break;
-                }
-            }
+            int mismatch = Arrays.mismatch(data, xy, xymax, prev, xy, xymax);
+            int skipCount = mismatch < 0 ? xymax - xy : mismatch;
+            xy += skipCount;
+
             if (skipCount == width) {
                 // => the entire line can be skipped
                 ++verticalOffset;
@@ -487,4 +541,67 @@ public class RunLengthCodec extends AbstractVideoCodec {
         out.write(0);
         out.write(0x0001);// End of bitmap
     }
+
+    public boolean decode8(byte[] in, int off, int length, byte[] out, byte[] prev, int width, int height, boolean onlyDecodeIfKeyframe) throws IOException {
+
+        if (prev != out) {
+            System.arraycopy(prev, 0, out, 0, width * height);
+        }
+
+        int limit = off + length;
+        int offset = 0;
+        int scanlineStride = width;
+        boolean isKeyFrame = true;
+        int upsideDown = (height - 1) * scanlineStride + offset;
+        // Decode each scanline separately
+        try {
+            int inIndex = off;
+            int x = 0;
+            int xy = upsideDown;
+            loop:
+            while (inIndex < limit) {
+                int opcode = in[inIndex++];
+                switch (opcode) {
+                    case 0:// escape
+                        int opcode2 = in[inIndex++];
+                        switch (opcode2) {
+                            case 0: // end of line
+                                isKeyFrame &= x == width;
+                                xy -= scanlineStride;
+                                x = 0;
+                                break;
+                            case 1: // end of bitmap
+                                isKeyFrame &= x == 0 && xy == -width;
+                                break loop;
+                            case 2: // skip
+                                int horizontalOffset = in[inIndex++] & 0xff;
+                                int verticalOffset = in[inIndex++] & 0xff;
+                                xy -= verticalOffset * scanlineStride;
+                                x += horizontalOffset;
+                                isKeyFrame = false;
+                                break;
+                            default:
+                                int literalCount = opcode2 & 0xff;
+                                System.arraycopy(in, inIndex, out, xy + x, literalCount);
+                                x += literalCount;
+                                inIndex += literalCount + (literalCount & 1);// skip pad byte
+                                break;
+                        }
+                        break;
+                    default://repeat
+                        int repeatCount = opcode & 0xff;
+                        byte value = in[inIndex++];
+                        Arrays.fill(out, xy + x, xy + x + repeatCount, value);
+                        x += repeatCount;
+                        break;
+                }
+
+            }
+        } catch (ArrayIndexOutOfBoundsException t) {
+            throw new IOException(t);
+        }
+        return isKeyFrame;
+    }
+
+
 }

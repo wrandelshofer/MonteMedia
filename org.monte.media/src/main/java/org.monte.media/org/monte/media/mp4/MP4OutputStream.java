@@ -13,6 +13,9 @@ import org.monte.media.math.Rational;
 import org.monte.media.qtff.AbstractQTFFMovieStream;
 import org.monte.media.qtff.AvcDecoderConfigurationRecord;
 import org.monte.media.qtff.QTFFImageOutputStream;
+import org.monte.media.qtff.atom.CompositeAtom;
+import org.monte.media.qtff.atom.DataAtom;
+import org.monte.media.qtff.atom.WideDataAtom;
 import org.monte.media.util.ByteArray;
 import org.monte.media.util.MathUtil;
 
@@ -25,10 +28,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.time.Instant;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.zip.DeflaterOutputStream;
@@ -599,38 +602,11 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         }
         if (state != States.STARTED) {
             writeProlog();
-            mdatAtom = new WideDataAtom("mdat");
+            mdatAtom = new WideDataAtom("mdat", out);
             state = States.STARTED;
         }
     }
 
-    /**
-     * Writes an {@link AvcDecoderConfigurationRecord} into the track.
-     *
-     * @param track the track index
-     * @param r     the record
-     */
-    public void writeAvcDecoderConfigurationRecord(int track, AvcDecoderConfigurationRecord r) {
-        Track t = tracks.get(track); // throws index out of bounds exception if illegal track index
-        if (t instanceof VideoTrack) {
-            VideoTrack vt = (VideoTrack) t;
-            AvcDecoderConfigurationRecord record = vt.avcDecoderConfigurationRecord;
-            if (record == null) {
-                record = new AvcDecoderConfigurationRecord(r.avcProfileIndication(),
-                        r.profileCompatibility(), r.avcLevelIndication(), r.nalLengthSize(),
-                        r.sequenceParameterSetNALUnit(), r.pictureParameterSetNALUnit());
-            } else {
-                var pps = new LinkedHashSet<>(record.pictureParameterSetNALUnit());
-                pps.addAll(r.pictureParameterSetNALUnit());
-                var sps = new LinkedHashSet<>(record.sequenceParameterSetNALUnit());
-                sps.addAll(r.sequenceParameterSetNALUnit());
-                record = new AvcDecoderConfigurationRecord(r.avcProfileIndication(),
-                        r.profileCompatibility(), r.avcLevelIndication(), r.nalLengthSize(),
-                        sps, pps);
-            }
-            vt.avcDecoderConfigurationRecord = record;
-        }
-    }
 
     /**
      * Writes an already encoded sample from a file into a track. <p> This
@@ -724,8 +700,17 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         ensureStarted();
         long offset = getRelativeStreamPosition();
         ImageOutputStream mdatOut = mdatAtom.getOutputStream();
-        mdatOut.write(data, off, len);
+        if (false) {
+            ByteBuffer bb = scrapeAvcDecoderConfigurationRecord(track, data, off, len, isSync);
+            mdatOut.write(bb.array(), bb.arrayOffset(), bb.remaining());
+        } else {
+            mdatOut.write(data, off, len);
+        }
         t.addSample(new Sample(duration, offset, len), 1, isSync);
+    }
+
+    private ByteBuffer scrapeAvcDecoderConfigurationRecord(int track, byte[] data, int off, int len, boolean isSync) {
+        return null;
     }
 
     /**
@@ -801,12 +786,12 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         ensureStarted();
         long offset = getRelativeStreamPosition();
         ImageOutputStream mdatOut = mdatAtom.getOutputStream();
+        int sampleLength;
         mdatOut.write(data, off, len);
+        sampleLength = len / sampleCount;
 
-
-        int sampleLength = len / sampleCount;
         Sample first = new Sample(sampleDuration, offset, sampleLength);
-        Sample last = new Sample(sampleDuration, offset + sampleLength * (sampleCount - 1), sampleLength);
+        Sample last = new Sample(sampleDuration, offset + (long) sampleLength * (sampleCount - 1), sampleLength);
         t.addChunk(new Chunk(first, last, sampleCount, 1), isSync);
     }
 
@@ -900,7 +885,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
          magic[4] compatibleBrands;
          } ftypAtom;
          */
-        DataAtom ftypAtom = new DataAtom("ftyp");
+        DataAtom ftypAtom = new DataAtom("ftyp", out);
         QTFFImageOutputStream d = ftypAtom.getOutputStream();
         d.writeType("isom"); // brand
         d.writeBCD4(0); // versionYear
@@ -919,7 +904,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         DataAtom leaf;
 
         /* Movie Atom ========= */
-        moovAtom = new CompositeAtom("moov");
+        moovAtom = new CompositeAtom("moov", out);
 
         /* Movie Header Atom -------------
          * The data contained in this atom defines characteristics of the entire
@@ -954,7 +939,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
          int nextTrackId;
          } movieHeaderAtom;
          */
-        leaf = new DataAtom("mvhd");
+        leaf = new DataAtom("mvhd", out);
         moovAtom.add(leaf);
         QTFFImageOutputStream d = leaf.getOutputStream();
         d.writeByte(0); // version
@@ -1066,7 +1051,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         QTFFImageOutputStream d;
 
         /* Track Atom ======== */
-        CompositeAtom trakAtom = new CompositeAtom("trak");
+        CompositeAtom trakAtom = new CompositeAtom("trak", out);
         moovAtom.add(trakAtom);
 
         /* Track Header Atom -----------
@@ -1094,7 +1079,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
          int trackWidth;
          int trackHeight;
          } trackHeaderAtom;     */
-        leaf = new DataAtom("tkhd");
+        leaf = new DataAtom("tkhd", out);
         trakAtom.add(leaf);
         d = leaf.getOutputStream();
         d.write(0); // version
@@ -1234,7 +1219,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         DataAtom leaf;
         QTFFImageOutputStream d;
         /* Media Atom ========= */
-        CompositeAtom mdiaAtom = new CompositeAtom("mdia");
+        CompositeAtom mdiaAtom = new CompositeAtom("mdia", out);
         trakAtom.add(mdiaAtom);
 
         /* Media Header atom -------
@@ -1248,7 +1233,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
          short language;
          short quality;
          } mediaHeaderAtom;*/
-        leaf = new DataAtom("mdhd");
+        leaf = new DataAtom("mdhd", out);
         mdiaAtom.add(leaf);
         d = leaf.getOutputStream();
         d.write(0); // version
@@ -1291,7 +1276,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         /*
          * Media Handler Reference Atom -------
          */
-        leaf = new DataAtom("hdlr");
+        leaf = new DataAtom("hdlr", out);
         mdiaAtom.add(leaf);
         /*typedef struct {
         byte version;
@@ -1354,7 +1339,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         QTFFImageOutputStream d;
         DataAtom leaf;
         /* Edit Atom ========= */
-        CompositeAtom edtsAtom = new CompositeAtom("edts");
+        CompositeAtom edtsAtom = new CompositeAtom("edts", out);
         trakAtom.add(edtsAtom);
 
         /* Edit List atom ------- */
@@ -1372,7 +1357,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
          fixed16d16 mediaRate;
          } editListTable;
          */
-        leaf = new DataAtom("elst");
+        leaf = new DataAtom("elst", out);
         edtsAtom.add(leaf);
         d = leaf.getOutputStream();
 
@@ -1397,7 +1382,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         DataAtom leaf;
         QTFFImageOutputStream d;
         /* Media Information atom ========= */
-        CompositeAtom minfAtom = new CompositeAtom("minf");
+        CompositeAtom minfAtom = new CompositeAtom("minf", out);
         mdiaAtom.add(minfAtom);
 
         /* Video or Audio media information atom -------- */
@@ -1412,7 +1397,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         // The handler reference atom specifies the media handler component that
         // is to be used to interpret the media’s data. The handler reference
         // atom has an atom type value of 'hdlr'.
-        leaf = new DataAtom("hdlr");
+        leaf = new DataAtom("hdlr", out);
         minfAtom.add(leaf);
         /*typedef struct {
          byte version;
@@ -1461,13 +1446,13 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         // contain a zero-length (empty) string.
 
         /* Data information atom ===== */
-        CompositeAtom dinfAtom = new CompositeAtom("dinf");
+        CompositeAtom dinfAtom = new CompositeAtom("dinf", out);
         minfAtom.add(dinfAtom);
 
         /* Data reference atom ----- */
         // Data reference atoms contain tabular data that instructs the data
         // handler component how to access the media’s data.
-        leaf = new DataAtom("dref");
+        leaf = new DataAtom("dref", out);
         dinfAtom.add(leaf);
         /*typedef struct {
          ubyte version;
@@ -1536,7 +1521,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         QTFFImageOutputStream d;
 
         /* Video media information atom -------- */
-        leaf = new DataAtom("vmhd");
+        leaf = new DataAtom("vmhd", out);
         minfAtom.add(leaf);
             /*typedef struct {
              byte version;
@@ -1580,7 +1565,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         QTFFImageOutputStream d;
 
         /* Sound media information header atom -------- */
-        leaf = new DataAtom("smhd");
+        leaf = new DataAtom("smhd", out);
         minfAtom.add(leaf);
             /*typedef struct {
              ubyte version;
@@ -1621,7 +1606,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         QTFFImageOutputStream d;
 
         /* Sample Table atom ========= */
-        CompositeAtom stblAtom = new CompositeAtom("stbl");
+        CompositeAtom stblAtom = new CompositeAtom("stbl", out);
         minfAtom.add(stblAtom);
 
         /* Sample Description atom ------- */
@@ -1641,7 +1626,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         // samples, providing a mapping from a time in a media to the
         // corresponding data sample. The time-to-sample atom has an atom type
         // of 'stts'.
-        leaf = new DataAtom("stts");
+        leaf = new DataAtom("stts", out);
         stblAtom.add(leaf);
         /*
          typedef struct {
@@ -1682,7 +1667,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         // The sample-to-chunk atom contains a table that maps samples to chunks
         // in the media data stream. By examining the sample-to-chunk atom, you
         // can determine the chunk that contains a specific sample.
-        leaf = new DataAtom("stsc");
+        leaf = new DataAtom("stsc", out);
         stblAtom.add(leaf);
         /*
          typedef struct {
@@ -1749,7 +1734,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         //
         /* sync sample atom -------- */
         if (t.syncSamples != null) {
-            leaf = new DataAtom("stss");
+            leaf = new DataAtom("stss", out);
             stblAtom.add(leaf);
             /*
              typedef struct {
@@ -1790,7 +1775,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         // unframed. The total number of samples in the media is always
         // indicated in the sample count. If the default size is indicated, then
         // no table follows.
-        leaf = new DataAtom("stsz");
+        leaf = new DataAtom("stsz", out);
         stblAtom.add(leaf);
         /*
          typedef struct {
@@ -1865,7 +1850,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         // instance of a sample table atom.
         if (t.chunks.isEmpty() || t.chunks.get(t.chunks.size() - 1).getChunkOffset() <= 0xffffffffL) {
             /* 32-bit chunk offset atom -------- */
-            leaf = new DataAtom("stco");
+            leaf = new DataAtom("stco", out);
             stblAtom.add(leaf);
             /*
              typedef struct {
@@ -1900,7 +1885,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
             }
         } else {
             /* 64-bit chunk offset atom -------- */
-            leaf = new DataAtom("co64");
+            leaf = new DataAtom("co64", out);
             stblAtom.add(leaf);
             /*
              typedef struct {
@@ -2048,7 +2033,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         QTFFImageOutputStream d;
 
         /* Sample Description box ------- */
-        leaf = new CompositeAtom("stsd");
+        leaf = new CompositeAtom("stsd", out);
         stblAtom.add(leaf);
             /*
             typedef struct {
@@ -2147,7 +2132,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
      * @throws IOException on IO failure
      */
     private void writeMandatoryAvcAtoms(VideoTrack t, CompositeAtom parent) throws IOException {
-        DataAtom leaf = new DataAtom("avcC");
+        DataAtom leaf = new DataAtom("avcC", out);
         parent.add(leaf);
         /*
         typedef struct {
@@ -2253,7 +2238,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
          */
         Rational pixelAspectRatio = t.format.get(VideoFormatKeys.PixelAspectRatioKey, Rational.ONE);
         if (!pixelAspectRatio.equals(Rational.ONE)) {
-            leaf = new DataAtom("pasp");
+            leaf = new DataAtom("pasp", out);
             parent.add(leaf);
             d = leaf.getOutputStream();
             d.writeUInt(pixelAspectRatio.getNumerator());
@@ -2274,7 +2259,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
     protected void writeVideoColorTableAtom(VideoTrack t, CompositeAtom stblAtom) throws IOException {
         DataAtom leaf;
         QTFFImageOutputStream d;
-        leaf = new DataAtom("ctab");
+        leaf = new DataAtom("ctab", out);
         stblAtom.add(leaf);
 
         d = leaf.getOutputStream();
@@ -2311,7 +2296,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         // structures. The sample description information for each media type is
         // explained in “Media Data Atom Types”:
         // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap3/chapter_4_section_1.html#//apple_ref/doc/uid/TP40000939-CH205-SW1
-        leaf = new DataAtom("stsd");
+        leaf = new DataAtom("stsd", out);
         stblAtom.add(leaf);
             /*
              typedef struct {

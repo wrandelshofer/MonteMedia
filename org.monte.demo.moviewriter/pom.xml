@@ -11,7 +11,7 @@
     <artifactId>org.monte.media.parent</artifactId>
     <version>${revision}</version>
   </parent>
-  <artifactId>moviewriter</artifactId>
+  <artifactId>org.monte.demo.moviewriter</artifactId>
   <packaging>jar</packaging>
 
   <name>Monte Media Demo MovieWriter</name>

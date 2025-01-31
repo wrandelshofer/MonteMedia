@@ -17,15 +17,15 @@ import java.nio.ByteBuffer;
  */
 public class AbstractVideoCodecCore {
 
-    private byte[] byteBuf = new byte[4];
+    protected byte[] byteBuf = new byte[4];
 
-    protected static void writeInt24LE(ByteBuffer out, int v) throws IOException {
+    public static void writeInt24LE(ByteBuffer out, int v) throws IOException {
         out.put((byte) (v));
         out.put((byte) (v >>> 8));
         out.put((byte) (v >>> 16));
     }
 
-    protected static void writeInts24LE(ByteBuffer out, int[] i, int off, int len) throws IOException {
+    public static void writeInts24LE(ByteBuffer out, int[] i, int off, int len) throws IOException {
         for (int j = off, n = off + len; j < n; j++) {
             int v = i[j];
             out.put((byte) (v));
@@ -34,7 +34,7 @@ public class AbstractVideoCodecCore {
         }
     }
 
-    protected void readInts24LE(ImageInputStream in, int[] i, int off, int len) throws IOException {
+    public static void readInts24LE(ImageInputStream in, int[] i, int off, int len, byte[] byteBuf) throws IOException {
         if (off < 0 || len < 0 || off + len > i.length || off + len < 0) {
             throw new IndexOutOfBoundsException("off < 0 || len < 0 || off + len > i.length!, off=" + off + ", len=" + len);
         }
@@ -42,18 +42,34 @@ public class AbstractVideoCodecCore {
         byte[] b = byteBuf;
         for (int j = off, end = off + len; j < end; j++) {
             in.readFully(b, 0, 3);
-
             int v = (b[0] & 0xff) | ((b[1] & 0xff) << 8) | ((b[2] & 0xff) << 16);
             i[j] = v;
         }
     }
 
-    protected int readInt24LE(ImageInputStream in) throws IOException {
+    public static void readInts24BE(ImageInputStream in, int[] i, int off, int len, byte[] byteBuf) throws IOException {
+        if (off < 0 || len < 0 || off + len > i.length || off + len < 0) {
+            throw new IndexOutOfBoundsException("off < 0 || len < 0 || off + len > i.length!, off=" + off + ", len=" + len);
+        }
+        byte[] b = byteBuf;
+        for (int j = off, end = off + len; j < end; j++) {
+            in.readFully(b, 0, 3);
+            int v = ((b[0] & 0xff) << 16) | ((b[1] & 0xff) << 8) | ((b[2] & 0xff) << 0);
+            i[j] = v;
+        }
+    }
+
+    public static int readInt24LE(ImageInputStream in, byte[] byteBuf) throws IOException {
         in.readFully(byteBuf, 0, 3);
         return ((byteBuf[2] & 0xff) << 16) | ((byteBuf[1] & 0xff) << 8) | ((byteBuf[0] & 0xff) << 0);
     }
 
-    protected static void writeInts16LE(ByteBuffer out, short[] i, int off, int len) throws IOException {
+    public static int readInt24BE(ImageInputStream in, byte[] byteBuf) throws IOException {
+        in.readFully(byteBuf, 0, 3);
+        return ((byteBuf[2] & 0xff) << 0) | ((byteBuf[1] & 0xff) << 8) | ((byteBuf[0] & 0xff) << 16);
+    }
+
+    public static void writeInts16LE(ByteBuffer out, short[] i, int off, int len) throws IOException {
         for (int j = off, n = off + len; j < n; j++) {
             int v = i[j];
             out.put((byte) (v));
@@ -61,7 +77,7 @@ public class AbstractVideoCodecCore {
         }
     }
 
-    protected static void readInts24LE(ByteBuffer in, int[] i, int off, int len) throws IOException {
+    public static void readInts24LE(ByteBuffer in, int[] i, int off, int len) throws IOException {
         for (int j = off, end = off + len; j < end; j++) {
             byte b0 = in.get();
             byte b1 = in.get();
@@ -72,7 +88,7 @@ public class AbstractVideoCodecCore {
         }
     }
 
-    protected static int readInt24LE(ByteBuffer in) throws IOException {
+    public static int readInt24LE(ByteBuffer in) throws IOException {
         byte b0 = in.get();
         byte b1 = in.get();
         byte b2 = in.get();
@@ -83,7 +99,7 @@ public class AbstractVideoCodecCore {
      * Reads 16-bit RGB and converts it to 24-bit RGB. Endian is defined by byte
      * buffer.
      */
-    protected static void readRGBs565to24(ByteBuffer in, int[] i, int off, int len) throws IOException {
+    public static void readRGBs565to24(ByteBuffer in, int[] i, int off, int len) throws IOException {
         for (int j = off, end = off + len; j < end; j++) {
             int v = in.getShort();
             i[j] = ((v & 0xf800) << 8) | ((v & 0x3800) << 5)
@@ -96,7 +112,7 @@ public class AbstractVideoCodecCore {
      * Reads 16-bit RGB and converts it to 24-bit RGB. Endian is defined by byte
      * buffer.
      */
-    protected int readRGB565to24(ByteBuffer in) throws IOException {
+    public static int readRGB565to24(ByteBuffer in) throws IOException {
         int v = in.getShort();
         return ((v & 0xf800) << 8) | ((v & 0x3800) << 5)
                 | ((v & 0x07e0) << 5) | ((v & 0x0060) << 3)
@@ -107,7 +123,7 @@ public class AbstractVideoCodecCore {
      * Reads 16-bit RGB and converts it to 24-bit RGB BE. Endian of input is
      * defined by byte buffer.
      */
-    protected static void readRGBs555to24(ImageInputStream in, int[] i, int off, int len) throws IOException {
+    public static void readRGBs555to24(ImageInputStream in, int[] i, int off, int len) throws IOException {
         for (int j = off, end = off + len; j < end; j++) {
             int v = in.readUnsignedShort();
             i[j] = ((v & (0x1f << 10)) << 9) | ((v & (0x1c << 10)) << 4) // red
@@ -119,7 +135,7 @@ public class AbstractVideoCodecCore {
     /**
      * ---
      */
-    protected static void readRGBs555to24(ByteBuffer in, int[] i, int off, int len) throws IOException {
+    public static void readRGBs555to24(ByteBuffer in, int[] i, int off, int len) throws IOException {
         for (int j = off, end = off + len; j < end; j++) {
             int v = in.getShort();
             i[j] = ((v & (0x1f << 10)) << 9) | ((v & (0x1c << 10)) << 4) // red
@@ -132,12 +148,12 @@ public class AbstractVideoCodecCore {
      * Reads 15-bit RGB and converts it to 24-bit RGB BE. Endian of input is
      * defined by byte buffer.
      */
-    protected int readRGB555to24(ImageInputStream in) throws IOException {
+    public static int readRGB555to24(ImageInputStream in) throws IOException {
         int v = in.readUnsignedShort();
         return BitDepthConverters.rgb15to24(v);
     }
 
-    protected static int readRGB555to24(ByteBuffer in) throws IOException {
+    public static int readRGB555to24(ByteBuffer in) throws IOException {
         int v = in.getShort();
         return BitDepthConverters.rgb15to24(v);
     }

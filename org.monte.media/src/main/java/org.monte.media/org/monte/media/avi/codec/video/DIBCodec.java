@@ -31,7 +31,6 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_DIB;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
-import static org.monte.media.av.codec.video.VideoFormatKeys.FixedFrameRateKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.PaletteKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
@@ -70,29 +69,29 @@ public class DIBCodec extends AbstractVideoCodec {
     public DIBCodec() {
         super(new Format[]{
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
-                                EncodingKey, ENCODING_BUFFERED_IMAGE, FixedFrameRateKey, true), //
+                                EncodingKey, ENCODING_BUFFERED_IMAGE), //
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
                                 EncodingKey, ENCODING_AVI_DIB, DataClassKey, byte[].class,
-                                FixedFrameRateKey, true, DepthKey, 4), //
+                                DepthKey, 4), //
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
                                 EncodingKey, ENCODING_AVI_DIB, DataClassKey, byte[].class,
-                                FixedFrameRateKey, true, DepthKey, 8), //
+                                DepthKey, 8), //
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
                                 EncodingKey, ENCODING_AVI_DIB, DataClassKey, byte[].class,
-                                FixedFrameRateKey, true, DepthKey, 24), //
+                                DepthKey, 24), //
                 },
                 new Format[]{
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
-                                EncodingKey, ENCODING_BUFFERED_IMAGE, FixedFrameRateKey, true), //
+                                EncodingKey, ENCODING_BUFFERED_IMAGE), //
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
                                 EncodingKey, ENCODING_AVI_DIB, DataClassKey, byte[].class,
-                                FixedFrameRateKey, true, DepthKey, 4), //
+                                DepthKey, 4), //
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
                                 EncodingKey, ENCODING_AVI_DIB, DataClassKey, byte[].class,
-                                FixedFrameRateKey, true, DepthKey, 8), //
+                                DepthKey, 8), //
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
                                 EncodingKey, ENCODING_AVI_DIB, DataClassKey, byte[].class,
-                                FixedFrameRateKey, true, DepthKey, 24), //
+                                DepthKey, 24), //
                 });
     }
 
@@ -176,7 +175,6 @@ public class DIBCodec extends AbstractVideoCodec {
                 readKey24((byte[]) in.data, in.offset, in.length, img);
                 break;
         }
-
 
         return CODEC_OK;
     }
@@ -278,12 +276,12 @@ public class DIBCodec extends AbstractVideoCodec {
         int h = img.getHeight();
         int w = img.getWidth();
         int i = offset;
-        int j = r.x + r.y * scanlineStride + (h - 1) * scanlineStride;
+        int xy = r.x + r.y * scanlineStride + (h - 1) * scanlineStride;
         byte[] out = buf.getData();
         for (int y = 0; y < h; y++) {
-            System.arraycopy(in, i, out, j, w);
+            System.arraycopy(in, i, out, xy, w);
             i += w;
-            j -= scanlineStride;
+            xy -= scanlineStride;
         }
     }
 
@@ -298,17 +296,17 @@ public class DIBCodec extends AbstractVideoCodec {
         int h = img.getHeight();
         int w = img.getWidth();
         int i = offset;
-        int j = r.x + r.y * scanlineStride + (h - 1) * scanlineStride;
+        int xy = r.x + r.y * scanlineStride + (h - 1) * scanlineStride;
         int[] out = buf.getData();
         for (int y = 0; y < h; y++) {
             for (int k = 0, k3 = 0; k < w; k++, k3 += 3) {
-                out[j + k] = 0xff000000//Alpha
+                out[xy + k] = 0xff000000//Alpha
                         | ((in[i + k3] & 0xff))//Red
                         | ((in[i + k3 + 1] & 0xff) << 8)//Green
                         | ((in[i + k3 + 2] & 0xff) << 16);//Blue
             }
             i += w * 3;
-            j -= scanlineStride;
+            xy -= scanlineStride;
         }
     }
 

@@ -2,12 +2,11 @@
  * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
  */
 
-import org.monte.media.jcodec.h264.JCodecH264CodecSpi;
-import org.monte.media.jcodec.h264.JCodecPictureCodecSpi;
-import org.monte.media.jcodec.mp4.JCodecMP4WriterSpi;
-
 /**
- * Provides a movie writer that uses the JCodec library.
+ * Provides a movie writer that uses the JCodec library as a third-party artifact.
+ * <p>
+ * Since the org.monte.media already contains an inlined copy of selected parts of the JCodec library,
+ * you will typically not need this module.
  *
  * @author Werner Randelshofer
  * @version $Id$

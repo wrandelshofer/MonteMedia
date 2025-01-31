@@ -196,12 +196,12 @@ public class FXMediaPlayer implements MediaPlayerInterface {
 
     @Override
     public Duration getFrameAfter(Duration timestamp) {
-        return timestamp.add(Duration.seconds(10));
+        return timestamp.add(Duration.seconds(5));
     }
 
     @Override
     public Duration getFrameBefore(Duration timestamp) {
-        return timestamp.add(Duration.seconds(10));
+        return timestamp.subtract(Duration.seconds(5));
     }
 
     @Override

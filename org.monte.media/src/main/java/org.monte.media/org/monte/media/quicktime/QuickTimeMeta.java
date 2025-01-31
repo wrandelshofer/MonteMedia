@@ -30,7 +30,6 @@ import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
 import static org.monte.media.av.FormatKeys.MediaType;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.FormatKeys.MimeTypeKey;
-import static org.monte.media.av.FormatKeys.SampleFormatKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.ByteOrderKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.ChannelsKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.FrameSizeKey;
@@ -265,7 +264,7 @@ public class QuickTimeMeta extends AbstractMovie {
                 }
 
                 format = format.append(
-                        SampleFormatKey, desc.dataFormat,
+                        EncodingKey, desc.dataFormat,
                         CompressorNameKey, desc.videoCompressorName,
                         HeightKey, desc.videoHeight,
                         WidthKey, desc.videoWidth,
@@ -286,7 +285,7 @@ public class QuickTimeMeta extends AbstractMovie {
 
                 SampleDescription desc = m.sampleDescriptions.get(0);
                 format = format.append(
-                        SampleFormatKey, desc.dataFormat,
+                        EncodingKey, desc.dataFormat,
                         SampleRateKey, Rational.valueOf(desc.soundSampleRate),
                         SampleSizeInBitsKey, desc.soundSampleSize,
                         FrameSizeKey, (int) desc.soundBytesPerFrame,
@@ -302,7 +301,7 @@ public class QuickTimeMeta extends AbstractMovie {
 
                 SampleDescription desc = m.sampleDescriptions.get(0);
                 format = format.append(
-                        SampleFormatKey, desc.dataFormat
+                        EncodingKey, desc.dataFormat
                 );
                 break;
             }

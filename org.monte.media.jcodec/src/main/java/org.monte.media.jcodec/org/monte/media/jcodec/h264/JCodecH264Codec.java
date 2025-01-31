@@ -8,8 +8,6 @@ package org.monte.media.jcodec.h264;
 import org.jcodec.api.transcode.PixelStore;
 import org.jcodec.api.transcode.VideoFrameWithPacket;
 import org.jcodec.codecs.h264.H264Encoder;
-import org.jcodec.codecs.h264.H264Utils;
-import org.jcodec.codecs.h264.io.model.SeqParameterSet;
 import org.jcodec.common.VideoEncoder;
 import org.jcodec.common.io.NIOUtils;
 import org.jcodec.common.model.ColorSpace;
@@ -20,17 +18,9 @@ import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys;
 import org.monte.media.av.codec.video.AbstractVideoCodec;
 import org.monte.media.jcodec.impl.AWTUtil;
-import org.monte.media.qtff.AvcDecoderConfigurationRecord;
-import org.monte.media.util.ArrayUtil;
-import org.monte.media.util.ByteArray;
 
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static org.monte.media.av.BufferFlag.DISCARD;
 import static org.monte.media.av.BufferFlag.KEYFRAME;
@@ -119,6 +109,13 @@ public class JCodecH264Codec extends AbstractVideoCodec {
 
     }
 
+    private int frameCounter;
+
+    @Override
+    public void reset() {
+        frameCounter = 0;
+    }
+
     public int encode(Buffer in, Buffer out) {
         out.setMetaTo(in);
         out.format = outputFormat;
@@ -134,7 +131,8 @@ public class JCodecH264Codec extends AbstractVideoCodec {
 
         PixelStore.LoanerPicture toEncode = new PixelStore.LoanerPicture(picture, 0);
 
-        Packet.FrameType frameType = out.sequenceNumber % outputFormat.get(KeyFrameIntervalKey) == 0 ? Packet.FrameType.KEY : Packet.FrameType.INTER;
+        boolean isKeyframe = frameCounter++ % outputFormat.get(KeyFrameIntervalKey, 60) == 0;
+        Packet.FrameType frameType = isKeyframe ? Packet.FrameType.KEY : Packet.FrameType.INTER;
         Packet pkt = Packet.createPacket(null, 0, outputFormat.get(FrameRateKey).intValue(),
                 out.sampleDuration.divide(outputFormat.get(FrameRateKey)).intValue(),
                 out.sequenceNumber,
@@ -150,22 +148,6 @@ public class JCodecH264Codec extends AbstractVideoCodec {
         VideoEncoder.EncodedFrame encodedFrame = enc.encodeFrame(picture, byteBuffer);
         outputVideoPacket = Packet.createPacketWithData(videoFrame.getPacket(), NIOUtils.clone(encodedFrame.getData()));
         outputVideoPacket.setFrameType(encodedFrame.isKeyFrame() ? Packet.FrameType.KEY : Packet.FrameType.INTER);
-
-        // compute header
-        out.header = null;
-        if (encodedFrame.isKeyFrame()) {
-            List<ByteBuffer> spsList = new ArrayList<>();
-            List<ByteBuffer> ppsList = new ArrayList<>();
-            H264Utils.wipePSinplace(outputVideoPacket.data, spsList, ppsList);
-            if (!spsList.isEmpty()) {
-                SeqParameterSet p = H264Utils.readSPS(spsList.get(0));
-                Function<ByteBuffer, ByteArray> byteBufferFunction = b -> new ByteArray(ArrayUtil.copyOf(b.array(), b.arrayOffset(), b.remaining()));
-                out.header = new AvcDecoderConfigurationRecord(p.profileIdc, 0, p.levelIdc, 4,
-                        spsList.stream().map(byteBufferFunction).collect(Collectors.toCollection(LinkedHashSet::new)),
-                        ppsList.stream().map(byteBufferFunction).collect(Collectors.toCollection(LinkedHashSet::new)));
-            }
-        }
-        outputVideoPacket.data = H264Utils.encodeMOVPacket(outputVideoPacket.data);
 
         out.setFlag(KEYFRAME, encodedFrame.isKeyFrame());
         ByteBuffer packetBuf = outputVideoPacket.data;
@@ -185,7 +167,7 @@ public class JCodecH264Codec extends AbstractVideoCodec {
 
     private VideoEncoder getEncoder(Format outputFormat) {
         if (videoEncoder == null) {
-            H264Encoder enc = H264Encoder.createH264Encoder();
+            H264Encoder enc = org.jcodec.codecs.h264.H264Encoder.createH264Encoder();
             enc.setMotionSearchRange(outputFormat.get(MotionSearchRangeKey));
             enc.setKeyInterval(outputFormat.get(KeyFrameIntervalKey));
             videoEncoder = enc;

@@ -212,10 +212,9 @@ public abstract class AbstractVideoCodec extends AbstractCodec {
         int boff = 0;
         for (int j = 0; j < len; j++) {
             int v = i[off + j];
-            //b[boff++] = (byte)(v >>> 24);
             b[boff++] = (byte) (v >>> 16);
             b[boff++] = (byte) (v >>> 8);
-            b[boff++] = (byte) (v >>> 0);
+            b[boff++] = (byte) (v);
         }
 
         out.write(b, 0, len * 3);

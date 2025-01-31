@@ -32,10 +32,6 @@ public class FormatKeys {
      */
     public final static FormatKey<String> EncodingKey = new FormatKey<>("encoding", String.class);
     /**
-     * The format of the samples of the media.
-     */
-    public final static FormatKey<String> SampleFormatKey = new FormatKey<>("sampleFormat", String.class);
-    /**
      * The data class.
      */
     @SuppressWarnings("rawtypes")

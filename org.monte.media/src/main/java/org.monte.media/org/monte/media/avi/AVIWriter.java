@@ -290,7 +290,25 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
         AbstractAVIStream.Track tr = tracks.get(track);
         TrackEncoder tre = getTrackEncoder(track);
 
-        boolean isKeyframe = buf.flags.contains(KEYFRAME);
+        if (tre.outputBuffer == null) {
+            tre.outputBuffer = new Buffer();
+        }
+        Buffer outBuf = tre.outputBuffer;
+        if (tre.codec == null) {
+            createCodec(track);
+            if (tre.codec == null) {
+                throw new IOException("No codec for this format: " + tr.format);
+            }
+        }
+        if (tre.codec.process(buf, outBuf) != Codec.CODEC_OK) {
+            throw new IOException("Codec failed or could not encode the sample in a single step. codec:" + tre.codec);
+        }
+        if (outBuf.isFlag(DISCARD)) {
+            return;
+        }
+
+
+        boolean isKeyframe = outBuf.flags.contains(KEYFRAME);
         if (buf.data instanceof BufferedImage) {
             if (tr.syncInterval != 0) {
                 isKeyframe = buf.flags.contains(KEYFRAME) | (tr.samples.size() % tr.syncInterval == 0);
@@ -310,7 +328,7 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
             }
             if (buf.format.matchesWithout(tr.format, FrameRateKey) && buf.data instanceof byte[]) {
                 writeSamples(track, buf.sampleCount, (byte[]) buf.data, buf.offset, buf.length,
-                        buf.isFlag(KEYFRAME) && !paletteChange);
+                        isKeyframe && !paletteChange);
                 return;
             }
 
@@ -324,16 +342,6 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
                 }
             }
 
-            if (tre.outputBuffer == null) {
-                tre.outputBuffer = new Buffer();
-            }
-            Buffer outBuf = tre.outputBuffer;
-            if (tre.codec.process(buf, outBuf) != Codec.CODEC_OK) {
-                throw new IOException("Codec failed or could not encode the sample in a single step. codec:" + tre.codec);
-            }
-            if (outBuf.isFlag(DISCARD)) {
-                return;
-            }
             writeSamples(track, outBuf.sampleCount, (byte[]) outBuf.data, outBuf.offset, outBuf.length,
                     isKeyframe && !paletteChange);
         }

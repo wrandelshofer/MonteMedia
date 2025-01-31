@@ -216,42 +216,6 @@ public class QTFFImageOutputStream extends FilterImageOutputStream {
     }
 
 
-    public void writeShorts(short[] s, int off, int len) throws IOException {
-        // Fix 4430357 - if off + len < 0, overflow occurred
-        if (off < 0 || len < 0 || off + len > s.length || off + len < 0) {
-            throw new IndexOutOfBoundsException("off < 0 || len < 0 || off + len > s.length!");
-        }
-
-        byte[] b = new byte[len * 2];
-        int boff = 0;
-        for (int i = 0; i < len; i++) {
-            short v = s[off + i];
-            b[boff++] = (byte) (v >>> 8);
-            b[boff++] = (byte) (v);
-        }
-
-        write(b, 0, len * 2);
-    }
-
-    public void writeInts(int[] i, int off, int len) throws IOException {
-        // Fix 4430357 - if off + len < 0, overflow occurred
-        if (off < 0 || len < 0 || off + len > i.length || off + len < 0) {
-            throw new IndexOutOfBoundsException("off < 0 || len < 0 || off + len > i.length!");
-        }
-
-        byte[] b = new byte[len * 4];
-        int boff = 0;
-        for (int j = 0; j < len; j++) {
-            int v = i[off + j];
-            b[boff++] = (byte) (v >>> 24);
-            b[boff++] = (byte) (v >>> 16);
-            b[boff++] = (byte) (v >>> 8);
-            b[boff++] = (byte) (v);
-        }
-
-        write(b, 0, len * 4);
-    }
-
 
     public void writeInt24(int v) throws IOException {
         ByteArrays.setIntBE(byteBuffer, 0, v);

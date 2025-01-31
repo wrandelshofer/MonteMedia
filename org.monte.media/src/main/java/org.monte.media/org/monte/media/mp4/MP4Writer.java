@@ -343,7 +343,7 @@ public class MP4Writer extends MP4OutputStream implements MovieWriter {
                 outBuf = buf;
             } else {
                 outBuf = tre.outputBuffer;
-                boolean isSync = tr.syncInterval == 0 ? false : tr.sampleCount % tr.syncInterval == 0;
+                boolean isSync = tr.syncInterval != 0 && tr.sampleCount % tr.syncInterval == 0;
                 buf.setFlag(KEYFRAME, isSync);
                 if (tre.codec == null) {
                     createCodec(track);
@@ -358,24 +358,14 @@ public class MP4Writer extends MP4OutputStream implements MovieWriter {
                 return;
             }
 
-            // Compute sample sampleDuration in media timescale
-            Rational sampleDuration;
-            if (tr.startTime == null) {
-                tr.startTime = buf.timeStamp;
-            }
-            Rational exactSampleDuration = outBuf.sampleDuration.multiply(outBuf.sampleCount);
-            sampleDuration = exactSampleDuration.floor(tr.mediaTimeScale);
-            if (sampleDuration.compareTo(new Rational(0, 1)) <= 0) {
-                sampleDuration = new Rational(1, tr.mediaTimeScale);
-            }
-            long sampleDurationInMediaTS = sampleDuration.getNumerator() * (tr.mediaTimeScale / sampleDuration.getDenominator());
 
+            // Compute sample sampleDuration in media time scale
+            long sampleDuration = Math.max(1, outBuf.sampleDuration.multiply(tr.mediaTimeScale).longValue());
             writeSamples(track, outBuf.sampleCount, (byte[]) outBuf.data, outBuf.offset, outBuf.length,
-                    sampleDurationInMediaTS / outBuf.sampleCount, outBuf.isFlag(KEYFRAME));
+                    sampleDuration, outBuf.isFlag(KEYFRAME));
 
-            if (outBuf.header instanceof AvcDecoderConfigurationRecord) {
-                AvcDecoderConfigurationRecord r = (AvcDecoderConfigurationRecord) outBuf.header;
-                writeAvcDecoderConfigurationRecord(track, r);
+            if (outBuf.header instanceof AvcDecoderConfigurationRecord r && tr instanceof VideoTrack vtr) {
+                vtr.avcDecoderConfigurationRecord = r;
             }
         }
     }

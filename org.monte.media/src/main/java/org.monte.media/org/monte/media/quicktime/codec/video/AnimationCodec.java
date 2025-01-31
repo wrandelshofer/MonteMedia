@@ -8,23 +8,33 @@ import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.av.codec.video.AbstractVideoCodec;
+import org.monte.media.av.codec.video.AbstractVideoCodecCore;
+import org.monte.media.io.ByteArrayImageInputStream;
 import org.monte.media.io.ByteArrayImageOutputStream;
 import org.monte.media.util.ArrayUtil;
+import org.monte.media.util.ByteArrays;
 
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
+import java.awt.image.DataBufferUShort;
+import java.awt.image.DirectColorModel;
+import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 import java.io.EOFException;
 import java.io.IOException;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 
 import static java.lang.Math.min;
 import static org.monte.media.av.BufferFlag.DISCARD;
 import static org.monte.media.av.BufferFlag.KEYFRAME;
 import static org.monte.media.av.FormatKeys.EncodingKey;
-import static org.monte.media.av.FormatKeys.FrameRateKey;
 import static org.monte.media.av.FormatKeys.KeyFrameIntervalKey;
 import static org.monte.media.av.FormatKeys.MIME_JAVA;
 import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
@@ -153,11 +163,24 @@ public class AnimationCodec extends AbstractVideoCodec {
 
     private Object previousPixels;
     private int frameCounter;
+    private Object newPixels;
+    protected byte[] byteBuf = new byte[4];
+
+    private final static int SKIP_CODE = 0;
+    private final static int EOL_CODE = -1;
 
     public AnimationCodec() {
         super(new Format[]{
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
                                 EncodingKey, ENCODING_BUFFERED_IMAGE), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                                EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 8), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                                EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 16), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                                EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 24), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                                EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 32), //
                 },
                 new Format[]{
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
@@ -194,6 +217,115 @@ public class AnimationCodec extends AbstractVideoCodec {
 
     @Override
     public int process(Buffer in, Buffer out) {
+        if (outputFormat == null) return CODEC_FAILED;
+        if (outputFormat.get(EncodingKey).equals(ENCODING_QUICKTIME_ANIMATION)) {
+            return encode(in, out);
+        } else {
+            return decode(in, out);
+        }
+    }
+
+    public int decode(Buffer in, Buffer out) {
+        out.setMetaTo(in);
+        out.format = outputFormat;
+        out.length = 1;
+        out.offset = 0;
+
+
+        int width = outputFormat.get(WidthKey);
+        int height = outputFormat.get(HeightKey);
+        int inputDepth = inputFormat.get(DepthKey);
+        int outputDepth = outputFormat.get(DepthKey, inputDepth);
+
+        boolean isKeyFrame;
+        try {
+
+            switch (inputDepth) {
+                case 8:
+                    newPixels = ArrayUtil.reuseByteArray(newPixels, width * height);
+                    isKeyFrame = decode8((byte[]) in.data, in.offset, in.length, (byte[]) newPixels, (byte[]) newPixels, width, height, false);
+                    break;
+                case 16:
+                    newPixels = ArrayUtil.reuseShortArray(newPixels, width * height);
+                    isKeyFrame = decode16((byte[]) in.data, in.offset, in.length, (short[]) newPixels, (short[]) newPixels, width, height, false);
+                    break;
+                case 24:
+                    newPixels = ArrayUtil.reuseIntArray(newPixels, width * height);
+                    isKeyFrame = decode24((byte[]) in.data, in.offset, in.length, (int[]) newPixels, (int[]) newPixels, width, height, false);
+                    break;
+                case 32:
+                    newPixels = ArrayUtil.reuseIntArray(newPixels, width * height);
+                    isKeyFrame = decode32((byte[]) in.data, in.offset, in.length, (int[]) newPixels, (int[]) newPixels, width, height, false);
+                    break;
+                default:
+                    out.setFlag(DISCARD);
+                    return CODEC_FAILED;
+            }
+        } catch (IOException e) {
+            out.exception = e;
+            out.setFlag(DISCARD);
+            return CODEC_FAILED;
+        }
+
+        BufferedImage img = (out.data instanceof BufferedImage) ? (BufferedImage) out.data : null;
+
+        switch (outputDepth) {
+            case 8: {
+                int imgType = BufferedImage.TYPE_BYTE_INDEXED;
+                if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
+                    ColorModel cm = getColorModel(in);
+                    if (cm == null) {
+                        cm = new IndexColorModel(8, 256, new int[256], 0, false, -1, DataBuffer.TYPE_BYTE);
+                    }
+                    img = new BufferedImage(cm, cm.createCompatibleWritableRaster(width, height), false, null);
+                } else {
+                    BufferedImage oldImg = img;
+                    img = new BufferedImage(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
+                }
+                byte[] pixels = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
+                System.arraycopy((byte[]) newPixels, 0, pixels, 0, width * height);
+            }
+            break;
+            case 16:
+            case 15: {
+                int imgType = BufferedImage.TYPE_USHORT_555_RGB;
+                if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
+                    DirectColorModel cm = new DirectColorModel(15, 0x1f << 10, 0x1f << 5, 0x1f);
+                    img = new BufferedImage(cm, cm.createCompatibleWritableRaster(width, height), false, null);
+                } else {
+                    BufferedImage oldImg = img;
+                    img = new BufferedImage(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
+                }
+                short[] pixels = ((DataBufferUShort) img.getRaster().getDataBuffer()).getData();
+                System.arraycopy((short[]) newPixels, 0, pixels, 0, width * height);
+            }
+            break;
+
+            case 24: {
+                int imgType = BufferedImage.TYPE_INT_RGB;
+                if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
+                    DirectColorModel cm = new DirectColorModel(24, 0xff << 16, 0xff << 8, 0xff);
+                    img = new BufferedImage(cm, cm.createCompatibleWritableRaster(width, height), false, null);
+                } else {
+                    BufferedImage oldImg = img;
+                    img = new BufferedImage(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
+                }
+                int[] pixels = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
+                System.arraycopy((int[]) newPixels, 0, pixels, 0, width * height);
+            }
+            break;
+            default:
+                throw new UnsupportedOperationException("Unsupported depth:" + outputDepth);
+        }
+
+        out.setFlag(KEYFRAME, isKeyFrame);
+
+        out.data = img;
+        return CODEC_OK;
+    }
+
+
+    public int encode(Buffer in, Buffer out) {
         out.setMetaTo(in);
         if (in.isFlag(DISCARD)) {
             return CODEC_OK;
@@ -218,9 +350,7 @@ public class AnimationCodec extends AbstractVideoCodec {
             r = new Rectangle(0, 0, vf.get(WidthKey), vf.get(HeightKey));
             scanlineStride = vf.get(WidthKey);
         }
-        boolean isKeyframe = frameCounter == 0
-                || frameCounter % outputFormat.get(KeyFrameIntervalKey, outputFormat.get(FrameRateKey).intValue()) == 0;
-        frameCounter++;
+        boolean isKeyframe = frameCounter++ % outputFormat.get(KeyFrameIntervalKey, 60) == 0;
 
         try {
             switch (vf.get(DepthKey)) {
@@ -228,13 +358,8 @@ public class AnimationCodec extends AbstractVideoCodec {
                     byte[] pixels = getIndexed8(in);
                     if (pixels == null) {
                         return CODEC_FAILED;
-                        //throw new UnsupportedOperationException("Unable to process buffer " + in);
                     }
-
-                    if (isKeyframe
-                            ||//
-                            previousPixels == null) {
-
+                    if (isKeyframe || previousPixels == null) {
                         encodeKey8(tmp, pixels, r.width, r.height, r.x + r.y * scanlineStride, scanlineStride);
                         out.setFlag(KEYFRAME, true);
                     } else {
@@ -252,10 +377,9 @@ public class AnimationCodec extends AbstractVideoCodec {
                     short[] pixels = getRGB15(in);
                     if (pixels == null) {
                         return CODEC_FAILED;
-//                        throw new UnsupportedOperationException("Unable to process buffer " + in);
                     }
 
-                    // FIXME - Support sub-images
+                    // XXX - Support sub-images
                     if (isKeyframe//
                             || previousPixels == null) {
                         encodeKey16(tmp, pixels, r.width, r.height, r.x + r.y * scanlineStride, scanlineStride);
@@ -263,16 +387,6 @@ public class AnimationCodec extends AbstractVideoCodec {
                     } else {
                         encodeDelta16(tmp, pixels, (short[]) previousPixels, r.width, r.height, r.x + r.y * scanlineStride, scanlineStride);
                         out.setFlag(KEYFRAME, false);
-
-                        /*
-                         if (test == null) {
-                         test = pixels.clone();
-                         } else {
-                         System.arraycopy(pixels, 0, test, 0, pixels.length);
-                         }
-                         decodeDelta16(new ByteArrayImageOutputStream(tmp.getBuffer(), 0, (int) tmp.getStreamPosition(), ByteOrder.BIG_ENDIAN),//
-                         test, (short[]) previousPixels, r.width, r.height, r.x + r.y * scanlineStride, scanlineStride);
-                         */
                     }
                     if (previousPixels == null) {
                         previousPixels = pixels.clone();
@@ -364,11 +478,10 @@ public class AnimationCodec extends AbstractVideoCodec {
         if (width % 4 != 0 || offset % 4 != 0 || scanlineStride % 4 != 0) {
             throw new UnsupportedOperationException("Conversion is not fully implemented yet.");
         }
-
-        // convert data to ints
+        // convert data: pack 4 consecutive bytes into one int
         int[] ints = new int[data.length / 4];
         for (int i = 0, j = 0; i < data.length; i += 4, j++) {
-            ints[j] = ((data[i] & 0xff) << 24) | ((data[i + 1] & 0xff) << 16) | ((data[i + 2] & 0xff) << 8) | ((data[i + 3] & 0xff));
+            ints[j] = ByteArrays.getIntBE(data, i);
         }
         encodeKey32(out, ints, width / 4, height, offset / 4, scanlineStride / 4);
     }
@@ -392,15 +505,12 @@ public class AnimationCodec extends AbstractVideoCodec {
         }
         out.setByteOrder(ByteOrder.BIG_ENDIAN);
 
-        // convert data to ints
+        // convert data: pack 4 consecutive bytes into one int
         int[] ints = new int[data.length / 4];
-        for (int i = 0, j = 0; i < data.length; i += 4, j++) {
-            ints[j] = ((data[i] & 0xff) << 24) | ((data[i + 1] & 0xff) << 16) | ((data[i + 2] & 0xff) << 8) | ((data[i + 3] & 0xff));
-        }
-        // convert prev to ints
         int[] pints = new int[prev.length / 4];
-        for (int i = 0, j = 0; i < prev.length; i += 4, j++) {
-            pints[j] = ((prev[i] & 0xff) << 24) | ((prev[i + 1] & 0xff) << 16) | ((prev[i + 2] & 0xff) << 8) | ((prev[i + 3] & 0xff));
+        for (int i = 0, j = 0; i < data.length; i += 4, j++) {
+            ints[j] = ByteArrays.getIntBE(data, i);
+            pints[j] = ByteArrays.getIntBE(prev, i);
         }
         encodeDelta32(out, ints, pints, width / 4, height, offset / 4, scanlineStride / 4);
     }
@@ -471,7 +581,7 @@ public class AnimationCodec extends AbstractVideoCodec {
                 literalCount = 0;
             }
 
-            out.write(-1);// End of line OP-code
+            out.write(EOL_CODE);// End of line OP-code
         }
 
         // Complete the header
@@ -498,37 +608,25 @@ public class AnimationCodec extends AbstractVideoCodec {
         out.setByteOrder(ByteOrder.BIG_ENDIAN);
 
         // Determine whether we can skip lines at the beginning
-        int ymin;
+        int ymin = offset;
         int ymax = offset + height * scanlineStride;
-        scanline:
-        for (ymin = offset; ymin < ymax; ymin += scanlineStride) {
-            int xy = ymin;
-            int xymax = ymin + width;
-            for (; xy < xymax; ++xy) {
-                if (data[xy] != prev[xy]) {
-                    break scanline;
-                }
-            }
-        }
-
-        if (ymin == ymax) {
+        int mismatch = Arrays.mismatch(data, ymin, ymax, prev, ymin, ymax);
+        if (mismatch < 0) {
             // => Frame is identical to previous one
             out.writeInt(4);
             return;
         }
+        ymin = offset + mismatch - mismatch % scanlineStride;
 
         // Determine whether we can skip lines at the end
-        scanline:
         for (; ymax > ymin; ymax -= scanlineStride) {
             int xy = ymax - scanlineStride;
             int xymax = ymax - scanlineStride + width;
-            for (; xy < xymax; ++xy) {
-                if (data[xy] != prev[xy]) {
-                    break scanline;
-                }
+            mismatch = Arrays.mismatch(data, xy, xymax, prev, xy, xymax);
+            if (mismatch >= 0) {
+                break;
             }
         }
-        //System.out.println("AnimationCodec ymin:" + ymin / step + " ymax" + ymax / step);
 
         // Reserve space for the header
         long headerPos = out.getStreamPosition();
@@ -561,7 +659,7 @@ public class AnimationCodec extends AbstractVideoCodec {
             if (skipCount == width) {
                 // => the entire line can be skipped
                 out.write(0 + 1); // don't skip any pixels
-                out.write(-1); // end of line
+                out.write(EOL_CODE); // end of line
                 continue;
             }
             out.write(min(254 + 1, skipCount + 1));
@@ -631,7 +729,7 @@ public class AnimationCodec extends AbstractVideoCodec {
                 literalCount = 0;
             }
 
-            out.write(-1);// End of line OP-code
+            out.write(EOL_CODE);// End of line OP-code
         }
 
         // Complete the header
@@ -707,7 +805,7 @@ public class AnimationCodec extends AbstractVideoCodec {
                 literalCount = 0;
             }
 
-            out.write(-1);// End of line OP-code
+            out.write(EOL_CODE);// End of line OP-code
         }
 
         // Complete the header
@@ -734,37 +832,25 @@ public class AnimationCodec extends AbstractVideoCodec {
         out.setByteOrder(ByteOrder.BIG_ENDIAN);
 
         // Determine whether we can skip lines at the beginning
-        int ymin;
+        int ymin = offset;
         int ymax = offset + height * scanlineStride;
-        scanline:
-        for (ymin = offset; ymin < ymax; ymin += scanlineStride) {
-            int xy = ymin;
-            int xymax = ymin + width;
-            for (; xy < xymax; ++xy) {
-                if (data[xy] != prev[xy]) {
-                    break scanline;
-                }
-            }
-        }
-
-        if (ymin == ymax) {
+        int mismatch = Arrays.mismatch(data, ymin, ymax, prev, ymin, ymax);
+        if (mismatch < 0) {
             // => Frame is identical to previous one
             out.writeInt(4);
             return;
         }
+        ymin = offset + mismatch - mismatch % scanlineStride;
 
         // Determine whether we can skip lines at the end
-        scanline:
         for (; ymax > ymin; ymax -= scanlineStride) {
             int xy = ymax - scanlineStride;
             int xymax = ymax - scanlineStride + width;
-            for (; xy < xymax; ++xy) {
-                if (data[xy] != prev[xy]) {
-                    break scanline;
-                }
+            mismatch = Arrays.mismatch(data, xy, xymax, prev, xy, xymax);
+            if (mismatch >= 0) {
+                break;
             }
         }
-        //System.out.println("AnimationCodec ymin:" + ymin / step + " ymax" + ymax / step);
 
         // Reserve space for the header
         long headerPos = out.getStreamPosition();
@@ -797,13 +883,13 @@ public class AnimationCodec extends AbstractVideoCodec {
             if (skipCount == width) {
                 // => the entire line can be skipped
                 out.write(0 + 1); // don't skip any pixels
-                out.write(-1); // end of line
+                out.write(EOL_CODE); // end of line
                 continue;
             }
             out.write(min(254 + 1, skipCount + 1));
             skipCount -= min(254, skipCount);
             while (skipCount > 0) {
-                out.write(0); // Skip Op-code
+                out.write(SKIP_CODE); // Skip Op-code
                 out.write(min(254 + 1, skipCount + 1)); // Number of bytes to skip + 1
                 skipCount -= min(254, skipCount);
             }
@@ -867,7 +953,7 @@ public class AnimationCodec extends AbstractVideoCodec {
                 literalCount = 0;
             }
 
-            out.write(-1);// End of line OP-code
+            out.write(EOL_CODE);// End of line OP-code
         }
 
         // Complete the header
@@ -943,7 +1029,7 @@ public class AnimationCodec extends AbstractVideoCodec {
                 literalCount = 0;
             }
 
-            out.write(-1);// End of line OP-code
+            out.write(EOL_CODE);// End of line OP-code
         }
 
         // Complete the header
@@ -970,37 +1056,25 @@ public class AnimationCodec extends AbstractVideoCodec {
         out.setByteOrder(ByteOrder.BIG_ENDIAN);
 
         // Determine whether we can skip lines at the beginning
-        int ymin;
+        int ymin = offset;
         int ymax = offset + height * scanlineStride;
-        scanline:
-        for (ymin = offset; ymin < ymax; ymin += scanlineStride) {
-            int xy = ymin;
-            int xymax = ymin + width;
-            for (; xy < xymax; ++xy) {
-                if (data[xy] != prev[xy]) {
-                    break scanline;
-                }
-            }
-        }
-
-        if (ymin == ymax) {
+        int mismatch = Arrays.mismatch(data, ymin, ymax, prev, ymin, ymax);
+        if (mismatch < 0) {
             // => Frame is identical to previous one
             out.writeInt(4);
             return;
         }
+        ymin = offset + mismatch - mismatch % scanlineStride;
 
         // Determine whether we can skip lines at the end
-        scanline:
         for (; ymax > ymin; ymax -= scanlineStride) {
             int xy = ymax - scanlineStride;
             int xymax = ymax - scanlineStride + width;
-            for (; xy < xymax; ++xy) {
-                if (data[xy] != prev[xy]) {
-                    break scanline;
-                }
+            mismatch = Arrays.mismatch(data, xy, xymax, prev, xy, xymax);
+            if (mismatch >= 0) {
+                break;
             }
         }
-        //System.out.println("AnimationCodec ymin:" + ymin / step + " ymax" + ymax / step);
 
         // Reserve space for the header
         long headerPos = out.getStreamPosition();
@@ -1033,7 +1107,7 @@ public class AnimationCodec extends AbstractVideoCodec {
             if (skipCount == width) {
                 // => the entire line can be skipped
                 out.write(1); // don't skip any pixels
-                out.write(-1); // end of line
+                out.write(EOL_CODE); // end of line
                 continue;
             }
             out.write(Math.min(255, skipCount + 1));
@@ -1110,7 +1184,7 @@ public class AnimationCodec extends AbstractVideoCodec {
                 literalCount = 0;
             }
 
-            out.write(-1);// End of line OP-code
+            out.write(EOL_CODE);// End of line OP-code
         }
 
         // Complete the header
@@ -1118,6 +1192,374 @@ public class AnimationCodec extends AbstractVideoCodec {
         out.seek(headerPos);
         out.writeInt((int) (pos - headerPos));
         out.seek(pos);
+    }
+
+    public boolean decode8(byte[] inArray, int off, int length, byte[] out, byte[] prev, int width, int height, boolean onlyDecodeIfKeyframe) throws IOException {
+        if (prev != out) {
+            System.arraycopy(prev, 0, out, 0, width * height);
+        }
+        ByteArrayImageInputStream in = new ByteArrayImageInputStream(inArray, off, length);
+        // Decode chunk size
+        // -----------------
+        long chunkSize = in.readUnsignedInt();
+        if (chunkSize <= 8) {
+            return false;
+        }
+        if (in.length() != chunkSize) {
+            throw new IOException("Illegal chunk size:" + chunkSize + " expected:" + in.length());
+        }
+        // Decode header
+        // -----------------
+        boolean isKeyFrame = true;
+        int header = in.readUnsignedShort();
+        int startingLine;
+        int numberOfLines;
+        if (header == 0) {
+            // decode entire image
+            startingLine = 0;
+            numberOfLines = height;
+        } else if (header == 8) {
+            // starting line and number of lines follows
+            startingLine = in.readUnsignedShort();
+            int reserved1 = in.readUnsignedShort(); // reserved, must be 0x0000
+            if (reserved1 != 0) {
+                throw new IOException("Illegal value in reserved1 0x" + Integer.toHexString(reserved1));
+            }
+            numberOfLines = in.readUnsignedShort();
+            int reserved2 = in.readUnsignedShort(); // reserved, must be 0x0000
+            if (reserved2 != 0) {
+                throw new IOException("Illegal value in reserved2 0x" + Integer.toHexString(reserved2));
+            }
+            isKeyFrame = startingLine == 0 && numberOfLines == height;
+        } else {
+            throw new IOException("Unknown header 0x" + Integer.toHexString(header));
+        }
+        if (startingLine > height || numberOfLines == 0) {
+            return isKeyFrame;
+        }
+        if (startingLine + numberOfLines - 1 > height) {
+            throw new IOException("Illegal startingLine or numberOfLines, startingLine=" + startingLine + ", numberOfLines=" + numberOfLines);
+        }
+
+        // Decode scanlines
+        // -----------------
+        int offset = 0;
+        int scanlineStride = width;
+        for (int l = 0; l < numberOfLines; l++) {
+            int i = offset + (startingLine + l) * scanlineStride;
+            int skipCode = in.readUnsignedByte() - 1;
+            if (skipCode == EOL_CODE) {
+                isKeyFrame &= l == numberOfLines - 1;
+                break; // end of image code
+            } else if (skipCode > 0) {
+                isKeyFrame = false;
+                i += skipCode * 4;
+            }
+            int x = 0;
+            while (true) {
+                int opCode = in.readByte();
+                if (opCode == SKIP_CODE) {// skip op
+                    skipCode = in.readUnsignedByte() - 1;
+                    if (skipCode > 0) {
+                        i += skipCode * 4;
+                        x += skipCode * 4;
+                    }
+                } else if (opCode > SKIP_CODE) { // run of data op
+                    in.readFully(out, i, opCode * 4);
+                    i += opCode * 4;
+                    x += opCode * 4;
+                } else if (opCode == EOL_CODE) { // end of line op
+                    isKeyFrame &= x == width;
+                    break;
+                } else { // repeat op
+                    int d = in.readInt();
+                    int end = i - opCode * 4;
+                    while (i < end) {
+                        ByteArrays.setIntBE(out, i, d);
+                        i += 4;
+                    }
+                    x -= opCode * 4;
+                }
+            }
+            assert i <= offset + (startingLine + l + 1) * scanlineStride;
+        }
+        assert in.getStreamPosition() == in.length();
+        return isKeyFrame;
+    }
+
+    public boolean decode16(byte[] inArray, int off, int length, short[] out, short[] prev, int width, int height, boolean onlyDecodeIfKeyframe) throws IOException {
+        if (prev != out) {
+            System.arraycopy(prev, 0, out, 0, width * height);
+        }
+        ByteArrayImageInputStream in = new ByteArrayImageInputStream(inArray, off, length);
+        // Decode chunk size
+        // -----------------
+        long chunkSize = in.readUnsignedInt();
+        if (chunkSize <= 8) {
+            return false;
+        }
+        if (in.length() != chunkSize) {
+            throw new IOException("Illegal chunk size:" + chunkSize + " expected:" + in.length());
+        }
+        // Decode header
+        // -----------------
+        boolean isKeyFrame = true;
+        int header = in.readUnsignedShort();
+        int startingLine;
+        int numberOfLines;
+        if (header == 0) {
+            // decode entire image
+            startingLine = 0;
+            numberOfLines = height;
+        } else if (header == 8) {
+            // starting line and number of lines follows
+            startingLine = in.readUnsignedShort();
+            int reserved1 = in.readUnsignedShort(); // reserved, must be 0x0000
+            if (reserved1 != 0) {
+                throw new IOException("Illegal value in reserved1 0x" + Integer.toHexString(reserved1));
+            }
+            numberOfLines = in.readUnsignedShort();
+            int reserved2 = in.readUnsignedShort(); // reserved, must be 0x0000
+            if (reserved2 != 0) {
+                throw new IOException("Illegal value in reserved2 0x" + Integer.toHexString(reserved2));
+            }
+            isKeyFrame = startingLine == 0 && numberOfLines == height;
+        } else {
+            throw new IOException("Unknown header 0x" + Integer.toHexString(header));
+        }
+        if (startingLine > height || numberOfLines == 0) {
+            return isKeyFrame;
+        }
+        if (startingLine + numberOfLines - 1 > height) {
+            throw new IOException("Illegal startingLine or numberOfLines, startingLine=" + startingLine + ", numberOfLines=" + numberOfLines);
+        }
+
+        // Decode scanlines
+        // -----------------
+        int offset = 0;
+        int scanlineStride = width;
+        for (int l = 0; l < numberOfLines; l++) {
+            int i = offset + (startingLine + l) * scanlineStride;
+            int skipCode = in.readUnsignedByte() - 1;
+            if (skipCode == EOL_CODE) {
+                isKeyFrame &= l == numberOfLines - 1;
+                break; // end of image code
+            } else if (skipCode > 0) {
+                isKeyFrame = false;
+                i += skipCode;
+            }
+
+            int x = 0;
+            while (true) {
+                int opCode = in.readByte();
+                if (opCode == SKIP_CODE) {// skip op
+                    skipCode = in.readUnsignedByte() - 1;
+                    if (skipCode > 0) {
+                        i += skipCode;
+                        x += skipCode;
+                    }
+                } else if (opCode > SKIP_CODE) { // run of data op
+                    in.readFully(out, i, opCode);
+                    i += opCode;
+                    x += opCode;
+                } else if (opCode == EOL_CODE) { // end of line op
+                    isKeyFrame &= x == width;
+                    break;
+                } else { // repeat op
+                    short d = in.readShort();
+                    int end = i - opCode;
+                    Arrays.fill(out, i, end, d);
+                    i = end;
+                    x -= opCode;
+                }
+            }
+            assert i <= offset + (startingLine + l + 1) * scanlineStride;
+        }
+        assert in.getStreamPosition() == in.length();
+        return isKeyFrame;
+    }
+
+    public boolean decode24(byte[] inArray, int off, int length, int[] out, int[] prev, int width, int height, boolean onlyDecodeIfKeyframe) throws IOException {
+        if (prev != out) {
+            System.arraycopy(prev, 0, out, 0, width * height);
+        }
+        ByteArrayImageInputStream in = new ByteArrayImageInputStream(inArray, off, length);
+        // Decode chunk size
+        // -----------------
+        long chunkSize = in.readUnsignedInt();
+        if (chunkSize <= 8) {
+            return false;
+        }
+        if (in.length() != chunkSize) {
+            throw new IOException("Illegal chunk size:" + chunkSize + " expected:" + in.length());
+        }
+        // Decode header
+        // -----------------
+        boolean isKeyFrame = true;
+        int header = in.readUnsignedShort();
+        int startingLine;
+        int numberOfLines;
+        if (header == 0) {
+            // decode entire image
+            startingLine = 0;
+            numberOfLines = height;
+        } else if (header == 8) {
+            // starting line and number of lines follows
+            startingLine = in.readUnsignedShort();
+            int reserved1 = in.readUnsignedShort(); // reserved, must be 0x0000
+            if (reserved1 != 0) {
+                throw new IOException("Illegal value in reserved1 0x" + Integer.toHexString(reserved1));
+            }
+            numberOfLines = in.readUnsignedShort();
+            int reserved2 = in.readUnsignedShort(); // reserved, must be 0x0000
+            if (reserved2 != 0) {
+                throw new IOException("Illegal value in reserved2 0x" + Integer.toHexString(reserved2));
+            }
+            isKeyFrame = startingLine == 0 && numberOfLines == height;
+        } else {
+            throw new IOException("Unknown header 0x" + Integer.toHexString(header));
+        }
+        if (startingLine > height || numberOfLines == 0) {
+            return isKeyFrame;
+        }
+        if (startingLine + numberOfLines - 1 > height) {
+            throw new IOException("Illegal startingLine or numberOfLines, startingLine=" + startingLine + ", numberOfLines=" + numberOfLines);
+        }
+
+        // Decode scanlines
+        // -----------------
+        int offset = 0;
+        int scanlineStride = width;
+        for (int l = 0; l < numberOfLines; l++) {
+            int i = offset + (startingLine + l) * scanlineStride;
+            int skipCode = in.readUnsignedByte() - 1;
+            if (skipCode == EOL_CODE) {
+                isKeyFrame &= l == numberOfLines - 1;
+                break; // end of image code
+            } else if (skipCode > 0) {
+                isKeyFrame = false;
+                i += skipCode;
+            }
+            int x = 0;
+            while (true) {
+                int opCode = in.readByte();
+                if (opCode == SKIP_CODE) {// skip op
+                    skipCode = in.readUnsignedByte() - 1;
+                    if (skipCode > 0) {
+                        i += skipCode;
+                        x += skipCode;
+                    }
+                } else if (opCode > SKIP_CODE) { // run of data op
+                    AbstractVideoCodecCore.readInts24BE(in, out, i, opCode, byteBuf);
+                    i += opCode;
+                    x += opCode;
+                } else if (opCode == EOL_CODE) { // end of line op
+                    isKeyFrame &= x == width;
+                    break;
+                } else { // repeat op
+                    int d = AbstractVideoCodecCore.readInt24BE(in, byteBuf);
+                    int end = i - opCode;
+                    Arrays.fill(out, i, end, d);
+                    i = end;
+                    x -= opCode;
+                }
+            }
+            assert i <= offset + (startingLine + l + 1) * scanlineStride;
+        }
+        assert in.getStreamPosition() == in.length();
+        return isKeyFrame;
+    }
+
+
+    public boolean decode32(byte[] inArray, int off, int length, int[] out, int[] prev, int width, int height, boolean onlyDecodeIfKeyframe) throws IOException {
+        if (prev != out) {
+            System.arraycopy(prev, 0, out, 0, width * height);
+        }
+        ByteArrayImageInputStream in = new ByteArrayImageInputStream(inArray, off, length);
+        // Decode chunk size
+        // -----------------
+        long chunkSize = in.readUnsignedInt();
+        if (chunkSize <= 8) {
+            return false;
+        }
+        if (in.length() != chunkSize) {
+            throw new IOException("Illegal chunk size:" + chunkSize + " expected:" + in.length());
+        }
+        // Decode header
+        // -----------------
+        boolean isKeyFrame = true;
+        int header = in.readUnsignedShort();
+        int startingLine;
+        int numberOfLines;
+        if (header == 0) {
+            // decode entire image
+            startingLine = 0;
+            numberOfLines = height;
+        } else if (header == 8) {
+            // starting line and number of lines follows
+            startingLine = in.readUnsignedShort();
+            int reserved1 = in.readUnsignedShort(); // reserved, must be 0x0000
+            if (reserved1 != 0) {
+                throw new IOException("Illegal value in reserved1 0x" + Integer.toHexString(reserved1));
+            }
+            numberOfLines = in.readUnsignedShort();
+            int reserved2 = in.readUnsignedShort(); // reserved, must be 0x0000
+            if (reserved2 != 0) {
+                throw new IOException("Illegal value in reserved2 0x" + Integer.toHexString(reserved2));
+            }
+            isKeyFrame = startingLine == 0 && numberOfLines == height;
+        } else {
+            throw new IOException("Unknown header 0x" + Integer.toHexString(header));
+        }
+        if (startingLine > height || numberOfLines == 0) {
+            return isKeyFrame;
+        }
+        if (startingLine + numberOfLines - 1 > height) {
+            throw new IOException("Illegal startingLine or numberOfLines, startingLine=" + startingLine + ", numberOfLines=" + numberOfLines);
+        }
+
+        // Decode scanlines
+        // -----------------
+        int offset = 0;
+        int scanlineStride = width;
+        for (int l = 0; l < numberOfLines; l++) {
+            int i = offset + (startingLine + l) * scanlineStride;
+            int skipCode = in.readUnsignedByte() - 1;
+            if (skipCode == EOL_CODE) {
+                isKeyFrame &= l == numberOfLines - 1;
+                break; // end of image code
+            } else if (skipCode > 0) {
+                isKeyFrame = false;
+                i += skipCode;
+            }
+            int x = 0;
+            while (true) {
+                int opCode = in.readByte();
+                if (opCode == SKIP_CODE) {// skip op
+                    skipCode = in.readUnsignedByte() - 1;
+                    if (skipCode > 0) {
+                        i += skipCode;
+                        x += skipCode;
+                    }
+                } else if (opCode > SKIP_CODE) { // run of data op
+                    in.readFully(out, i, opCode);
+                    i += opCode;
+                    x += opCode;
+                } else if (opCode == EOL_CODE) { // end of line op
+                    isKeyFrame &= x == width;
+                    break;
+                } else { // repeat op
+                    int d = in.readInt();
+                    int end = i - opCode;
+                    Arrays.fill(out, i, end, d);
+                    i = end;
+                    x -= opCode;
+                }
+            }
+            assert i <= offset + (startingLine + l + 1) * scanlineStride;
+        }
+        assert in.getStreamPosition() == in.length();
+        return isKeyFrame;
     }
 
     /**
@@ -1188,10 +1630,10 @@ public class AnimationCodec extends AbstractVideoCodec {
 
             {
                 int skipCode = in.readUnsignedByte() - 1;
-                if (skipCode == -1) {
+                if (skipCode == EOL_CODE) {
                     //System.out.println("end of image");
                     break; // end of image code
-                } else if (skipCode > 0) {
+                } else if (skipCode > SKIP_CODE) {
                     //System.out.println("skip " + skipCode);
                     if (data == prev) {
                         i += skipCode;
@@ -1206,7 +1648,7 @@ public class AnimationCodec extends AbstractVideoCodec {
 
             while (true) {
                 int opCode = in.readByte();
-                if (opCode == 0) {// skip op
+                if (opCode == SKIP_CODE) {// skip op
                     int skipCode = in.readUnsignedByte() - 1;
                     if (skipCode > 0) {
                         //System.out.println("skip " + skipCode);
@@ -1215,7 +1657,7 @@ public class AnimationCodec extends AbstractVideoCodec {
                         }
                         i += skipCode;
                     }
-                } else if (opCode > 0) { // run of data op
+                } else if (opCode > SKIP_CODE) { // run of data op
                     //System.out.println("data " + opCode);
                     try {
                         in.readFully(data, i, opCode);
@@ -1226,10 +1668,10 @@ public class AnimationCodec extends AbstractVideoCodec {
                         return;
                     }
                     i += opCode;
-                } else if (opCode == -1) { // end of line op
+                } else if (opCode == EOL_CODE) { // end of line op
                     //System.out.println("EOL");
                     break;
-                } else if (opCode < -1) { // repeat op
+                } else { // repeat op
                     //System.out.println("repeat "+opCode);
                     short d = in.readShort();
                     int end = i - opCode;
@@ -1241,58 +1683,5 @@ public class AnimationCodec extends AbstractVideoCodec {
             assert i <= offset + (startingLine + l + 1) * scanlineStride;
         }
         assert in.getStreamPosition() == in.length();
-        /*
-         * Header:
-         * uint32 chunkSize
-         *
-         * uint16 header 0x0000 => decode entire image
-         *               0x0008 => starting line and number of lines follows
-         * if header==0x0008 {
-         *   uint16 startingLine at which to begin updating frame
-         *   uint16 reserved 0x0000
-         *   uint16 numberOfLines to update
-         *   uint16 reserved 0x0000
-         * }
-         * n-bytes compressed lines
-         * </pre>
-         *
-         * The first 4 bytes defines the chunk length. This field also carries some
-         * other unknown flags, since at least one of the high bits is sometimes set.<br>
-         *
-         * If the overall length of the chunk is less than 8, treat the frame as a
-         * NOP, which means that the frame is the same as the one before it.<br>
-         *
-         * Next, there is a header of either 0x0000 or 0x0008. A header value onlyWith
-         * bit 3 set (header &amp; 0x0008) indicates that information follows revealing
-         * at which line the decode process is to begin:<br>
-         *
-         * <pre>
-         * 2 bytes    starting line at which to begin updating frame
-         * 2 bytes    unknown
-         * 2 bytes    the number of lines to update
-         * 2 bytes    unknown
-         * </pre>
-         *
-         * If the header is 0x0000, then the decode begins from the first line and
-         * continues through the entire height of the image.<br>
-         *
-         * After the header comes the individual RLE-compressed lines. An individual
-         * compressed line is comprised of a skip code, followed by a series of RLE
-         * codes and pixel data:<br>
-         * <pre>
-         *  1 byte     skip code
-         *  1 byte     RLE code
-         *  n bytes    pixel data
-         *  1 byte     RLE code
-         *  n bytes    pixel data
-         * </pre>
-         * Each line begins onlyWith a byte that defines the number of pixels to skip in
-         * a particular line in the output line before outputting new pixel
-         * data. Actually, the skip count is set to one more than the number of
-         * pixels to skip. For example, a skip byte of 15 means "skip 14 pixels",
-         * while a skip byte of 1 means "don't skip any pixels". If the skip byte is
-         * 0, then the frame decode is finished. Therefore, the maximum skip byte
-         * value of 255 allows for a maximum of 254 pixels to be skipped.
-         */
     }
 }

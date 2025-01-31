@@ -312,7 +312,6 @@ public class TSCCCodec extends AbstractVideoDecoder {
         // The following could be done in the open() method
         VideoFormat invf = inputFormat;
         boolean isKeyframe;
-        VideoFormat ooutvf = outputFormat;
         int width = invf.getSize().width;
         int height = invf.getSize().height;
         int scanlineStride;

@@ -674,7 +674,7 @@ public class AVIInputStream extends AbstractAVIStream {
         tr.bitsPerSample = in.readUnsignedShort();
         if (data.length > 16) {
             long cbSize = in.readUnsignedShort();
-            // FIXME - Don't ignore extra format information
+            // XXX - Don't ignore extra format information
         }
 
         tr.format = new Format(MimeTypeKey, MIME_AVI,

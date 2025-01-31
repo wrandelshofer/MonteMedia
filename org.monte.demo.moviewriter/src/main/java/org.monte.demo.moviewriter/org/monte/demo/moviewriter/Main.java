@@ -12,8 +12,6 @@ import org.monte.media.av.MovieWriter;
 import org.monte.media.av.MovieWriterSpi;
 import org.monte.media.av.Registry;
 import org.monte.media.av.codec.video.VideoFormatKeys.PixelFormat;
-import org.monte.media.avi.AVIReader;
-import org.monte.media.avi.AVIWriter;
 import org.monte.media.color.Colors;
 import org.monte.media.jcodec.mp4.JCodecMP4WriterSpi;
 import org.monte.media.math.Rational;
@@ -28,12 +26,10 @@ import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
 import java.awt.image.IndexColorModel;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.monte.media.av.FormatKeys.DataClassKey;
@@ -60,7 +56,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.QualityKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
 /**
- * Demonstrates the use of {@link AVIReader} and {@link AVIWriter}.
+ * Demonstrates the use of {@link MovieWriter}.
  *
  * @author Werner Randelshofer
  */
@@ -147,16 +143,23 @@ public class Main {
 
         try {
             var m = new Main();
-            Format baseFormat = new Format(QualityKey, 0.75f, KeyFrameIntervalKey, 60);
+            float quality = 0.75f;
+            Format baseFormat = new Format(QualityKey, quality, KeyFrameIntervalKey, 60);
             List<TestData> list = new ArrayList<>();
+            list.add(new TestData(new File("moviewriterdemo-rle8.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 8)));
+            list.add(new TestData(new File("moviewriterdemo-rle24.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 24)));
+            list.add(new TestData(new File("moviewriterdemo-rle16.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 16)));
+            list.add(new TestData(new File("moviewriterdemo-rle8.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_RLE8, DepthKey, 8)));
+            list.add(new TestData(new File("moviewriterdemo-raw16.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_RAW, DepthKey, 16)));
             list.add(new TestData(new File("moviewriterdemo-h264-motion0-jcodec.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0), null, new JCodecMP4WriterSpi()));
+            list.add(new TestData(new File("moviewriterdemo-h264-motion16-jcodec.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 16), null, new JCodecMP4WriterSpi()));
             list.add(new TestData(new File("moviewriterdemo-h264-motion0.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0), new H264CodecSpi(), new MP4WriterSpi()));
-            list.add(new TestData(new File("moviewriterdemo-h264-motion0.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0)));
-            list.add(new TestData(new File("moviewriterdemo-h264-motion0.mov"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0)));
-            list.add(new TestData(new File("moviewriterdemo-h264-motion16.mov"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 16)));
-            list.add(new TestData(new File("moviewriterdemo-h264-motion16.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 16)));
-            list.add(new TestData(new File("moviewriterdemo-jpg-q0.75.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_MJPG, DepthKey, 24, QualityKey, 0.75f)));
-            list.add(new TestData(new File("moviewriterdemo-jpg-q0.75.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_JPEG, DepthKey, 24, QualityKey, 0.75f)));
+            list.add(new TestData(new File("moviewriterdemo-h264-motion0.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0), new H264CodecSpi(), new MP4WriterSpi()));
+            list.add(new TestData(new File("moviewriterdemo-h264-motion0.mov"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0), new H264CodecSpi(), new MP4WriterSpi()));
+            list.add(new TestData(new File("moviewriterdemo-h264-motion16.mov"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 16), new H264CodecSpi(), new MP4WriterSpi()));
+            list.add(new TestData(new File("moviewriterdemo-h264-motion16.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 16), new H264CodecSpi(), new MP4WriterSpi()));
+            list.add(new TestData(new File("moviewriterdemo-jpg-q" + quality + ".avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_MJPG, DepthKey, 24)));
+            list.add(new TestData(new File("moviewriterdemo-jpg-q" + quality + ".mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_JPEG, DepthKey, 24)));
             list.add(new TestData(new File("moviewriterdemo-png.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_PNG, DepthKey, 24)));
             list.add(new TestData(new File("moviewriterdemo-png.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_PNG, DepthKey, 24)));
             list.add(new TestData(new File("moviewriterdemo-png.zip"), baseFormat.prepend(EncodingKey, ENCODING_AVI_PNG, DepthKey, 24)));
@@ -165,10 +168,6 @@ public class Main {
             list.add(new TestData(new File("moviewriterdemo-raw8.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_DIB, DepthKey, 8)));
             list.add(new TestData(new File("moviewriterdemo-raw8.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_RAW, DepthKey, 8)));
             list.add(new TestData(new File("moviewriterdemo-raw8gray.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_DIB, DepthKey, 8, PixelFormatKey, PixelFormat.GRAY)));
-            list.add(new TestData(new File("moviewriterdemo-rle16.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 16)));
-            list.add(new TestData(new File("moviewriterdemo-rle24.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 24)));
-            list.add(new TestData(new File("moviewriterdemo-rle8.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_RLE8, DepthKey, 8)));
-            list.add(new TestData(new File("moviewriterdemo-rle8.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 8)));
             list.add(new TestData(new File("moviewriterdemo-rle8gray.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_RLE8, DepthKey, 8, PixelFormatKey, PixelFormat.GRAY)));
             list.add(new TestData(new File("moviewriterdemo-tscc16.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 16)));
             list.add(new TestData(new File("moviewriterdemo-tscc16.mov"), baseFormat.prepend(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 16)));
@@ -178,7 +177,6 @@ public class Main {
             list.add(new TestData(new File("moviewriterdemo-tscc8.mov"), baseFormat.prepend(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8)));
             list.add(new TestData(new File("moviewriterdemo-tscc8gray.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8, PixelFormatKey, PixelFormat.GRAY)));
             list.add(new TestData(new File("moviewriterdemo-tscc8gray.mov"), baseFormat.prepend(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8, PixelFormatKey, PixelFormat.GRAY)));
-
             for (TestData data : list) {
                 m.test(data.file, data.format, data.codecSpi, data.movieWriterSpi);
             }
@@ -246,19 +244,6 @@ public class Main {
             g.dispose();
         }
         System.out.println(", " + (int) ((n * 1e9) / (System.nanoTime() - startTime)) + " fps");
-    }
-
-    private static int compareImages(BufferedImage expectedImage, BufferedImage actualImage) {
-        if (expectedImage.getRaster().getDataBuffer() instanceof DataBufferInt && actualImage.getRaster().getDataBuffer() instanceof DataBufferInt) {
-            DataBufferInt expectedBuffer = (DataBufferInt) expectedImage.getRaster().getDataBuffer();
-            DataBufferInt actualBuffer = (DataBufferInt) actualImage.getRaster().getDataBuffer();
-            int[] expectedData = expectedBuffer.getData();
-            int[] actualData = actualBuffer.getData();
-            int mismatch = Arrays.mismatch(expectedData, 0, expectedData.length, actualData, 0, actualData.length);
-            return mismatch;
-        } else {
-            return -2;
-        }
     }
 
     private static void drawBackgroundImage(Graphics2D g) throws IOException {

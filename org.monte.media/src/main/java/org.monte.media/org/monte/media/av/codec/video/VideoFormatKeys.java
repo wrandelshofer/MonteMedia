@@ -50,11 +50,11 @@ public class VideoFormatKeys extends FormatKeys {
     /**
      * Microsoft Run Length format.
      */
-    public static final String ENCODING_AVI_RLE4 = "\u0001\u0000\u0000\u0000";
+    public static final String ENCODING_AVI_RLE4 = "\u0002\u0000\u0000\u0000";
     /**
      * Microsoft Run Length format.
      */
-    public static final String ENCODING_AVI_RLE8 = "\u0002\u0000\u0000\u0000";
+    public static final String ENCODING_AVI_RLE8 = "\u0001\u0000\u0000\u0000";
     /**
      * Techsmith Screen Capture format.
      */

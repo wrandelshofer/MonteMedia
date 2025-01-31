@@ -34,7 +34,7 @@ public class WritableImageCodec extends AbstractCodec {
         );
     }
 
-    private BufferedImage reuseRgbImage;
+    //private BufferedImage reuseRgbImage;
 
     @Override
     public int process(Buffer in, Buffer out) {

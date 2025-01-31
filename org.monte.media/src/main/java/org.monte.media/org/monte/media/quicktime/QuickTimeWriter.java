@@ -473,26 +473,14 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
             return;
         }
 
-        if (tr.startTime == null) {
-            tr.startTime = buf.timeStamp;
-        }
-
 
         // Compute sample sampleDuration in media time scale
-        Rational sampleDuration;
-        Rational exactSampleDuration = outBuf.sampleDuration.multiply(outBuf.sampleCount);
-        sampleDuration = exactSampleDuration.floor(tr.mediaTimeScale);
-        if (sampleDuration.compareTo(new Rational(0, 1)) <= 0) {
-            sampleDuration = new Rational(1, tr.mediaTimeScale);
-        }
-        long sampleDurationInMediaTS = sampleDuration.getNumerator() * (tr.mediaTimeScale / sampleDuration.getDenominator());
-
+        long sampleDuration = Math.max(1, outBuf.sampleDuration.multiply(tr.mediaTimeScale).longValue());
         writeSamples(track, outBuf.sampleCount, (byte[]) outBuf.data, outBuf.offset, outBuf.length,
-                sampleDurationInMediaTS / outBuf.sampleCount, outBuf.isFlag(KEYFRAME));
+                sampleDuration, outBuf.isFlag(KEYFRAME));
 
-        if (outBuf.header instanceof AvcDecoderConfigurationRecord) {
-            AvcDecoderConfigurationRecord r = (AvcDecoderConfigurationRecord) outBuf.header;
-            writeAvcDecoderConfigurationRecord(track, r);
+        if (outBuf.header instanceof AvcDecoderConfigurationRecord r && tr instanceof VideoTrack vtr) {
+            vtr.avcDecoderConfigurationRecord = r;
         }
     }
 
