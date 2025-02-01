@@ -20,6 +20,8 @@ module org.monte.media.jcodec {
 
     requires org.monte.media;
 
-    provides org.monte.media.av.MovieWriterSpi with JCodecMP4WriterSpi;
-    provides org.monte.media.av.CodecSpi with JCodecPictureCodecSpi, JCodecH264CodecSpi;
+    provides org.monte.media.av.MovieWriterSpi with org.monte.media.jcodec.mp4.JCodecMP4WriterSpi;
+    provides org.monte.media.av.CodecSpi with
+            org.monte.media.jcodec.h264.JCodecPictureCodecSpi,
+            org.monte.media.jcodec.h264.JCodecH264CodecSpi;
 }

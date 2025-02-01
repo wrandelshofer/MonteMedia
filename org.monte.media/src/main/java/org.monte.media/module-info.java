@@ -115,7 +115,7 @@ module org.monte.media {
             org.monte.media.avi.codec.video.DIBCodecSpi,
             org.monte.media.avi.codec.video.RunLengthCodecSpi,
             org.monte.media.avi.codec.video.ZMBVCodecSpi,
-            H264CodecSpi;
+            org.monte.media.mp4.codec.video.H264CodecSpi;
 
     provides org.monte.media.av.MovieWriterSpi with
             org.monte.media.quicktime.QuickTimeWriterSpi,

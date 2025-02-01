@@ -17,12 +17,12 @@
         <module name="org.monte.demo.cleartype" />
         <module name="org.monte.demo.moviereader" />
         <module name="org.monte.demo.imageioviewer" />
-        <module name="org.monte.media.screenrecorder" />
         <module name="org.monte.media.animconverter" />
+        <module name="org.monte.media.screenrecorder" />
         <module name="org.monte.demo.io" />
         <module name="org.monte.demo.javafx.movieplayer" />
-        <module name="org.monte.media" />
         <module name="org.monte.demo.cmykimageviewer" />
+        <module name="org.monte.media" />
         <module name="org.monte.demo.sift" />
         <module name="org.monte.demo.mpoimagesplitter" />
         <module name="org.monte.media.javafx" />
