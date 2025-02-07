@@ -59,12 +59,10 @@ public class ILBMImageWriter extends ImageWriter {
         ILBMEncoder codec = new ILBMEncoder();
         switch (output) {
             case File f -> {
-                if (camg == null) codec.write(f, bmp);
-                else codec.write(f, bmp, camg);
+                codec.write(f, bmp, camg);
             }
             case ImageOutputStream f -> {
-                if (camg == null) codec.write(f, bmp);
-                else codec.write(f, bmp, camg);
+                codec.write(f, bmp, camg);
             }
             default -> throw new IOException("can not write to output=" + output);
         }
