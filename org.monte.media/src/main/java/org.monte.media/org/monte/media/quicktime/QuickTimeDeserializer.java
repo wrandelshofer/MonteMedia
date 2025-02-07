@@ -6,7 +6,6 @@ package org.monte.media.quicktime;
 
 import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.io.ByteArrayImageInputStream;
-import org.monte.media.io.UncachedImageInputStream;
 import org.monte.media.qtff.AtomInputStream;
 import org.monte.media.qtff.QTFFImageInputStream;
 import org.monte.media.util.MathUtil;
@@ -311,7 +310,17 @@ public class QuickTimeDeserializer {
             // decompress the header into a byte array and then parse it
             byte[] compressed = new byte[(int) remainingSize - 4];
             in.readFully(compressed);
-            QTFFImageInputStream decompressed = new QTFFImageInputStream(new UncachedImageInputStream(new InflaterInputStream(new ByteArrayInputStream(compressed))));
+            var inflater = new InflaterInputStream(new ByteArrayInputStream(compressed));
+            byte[] decompressedBytes = new byte[sizeOfDecompressedData];
+            int remaining = decompressedBytes.length;
+            int off = 0;
+            while (remaining > 0) {
+                int read = inflater.read(decompressedBytes, off, remaining);
+                if (read < 0) break;
+                off += read;
+                remaining -= read;
+            }
+            QTFFImageInputStream decompressed = new QTFFImageInputStream(new ByteArrayImageInputStream(decompressedBytes));
             parseRecursively(decompressed, sizeOfDecompressedData, m);
         }
     }
