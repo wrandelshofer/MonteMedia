@@ -439,6 +439,10 @@ public class Rational extends Number implements Comparable<Rational> {
         return valueOf(num, den, true);
     }
 
+    public static Rational valueOf(long num) {
+        return valueOf(num, 1, false);
+    }
+
     private static Rational valueOf(long num, long den, boolean reduceFraction) {
         if (num == den) {
             return ONE;
@@ -447,6 +451,10 @@ public class Rational extends Number implements Comparable<Rational> {
             return ZERO;
         }
         return new Rational(num, den, reduceFraction);
+    }
+
+    public static Rational valueOf(BigInteger num) {
+        return valueOf(num, BigInteger.ONE, false);
     }
 
     public static Rational valueOf(BigInteger num, BigInteger den) {

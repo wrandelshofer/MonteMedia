@@ -45,6 +45,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_ANIMATION;
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.PaletteKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
 /**
@@ -183,6 +184,8 @@ public class AnimationCodec extends AbstractVideoCodec {
                                 EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 32), //
                 },
                 new Format[]{
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
+                                EncodingKey, ENCODING_BUFFERED_IMAGE), //
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
                                 EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 8), //
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
@@ -290,7 +293,8 @@ public class AnimationCodec extends AbstractVideoCodec {
             case 15: {
                 int imgType = BufferedImage.TYPE_USHORT_555_RGB;
                 if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
-                    DirectColorModel cm = new DirectColorModel(15, 0x1f << 10, 0x1f << 5, 0x1f);
+                    ColorModel palette = outputFormat.get(PaletteKey);
+                    DirectColorModel cm = palette instanceof DirectColorModel dp && (dp.getPixelSize() == 15 || dp.getPixelSize() == 16) ? dp : new DirectColorModel(15, 0x1f << 10, 0x1f << 5, 0x1f);
                     img = new BufferedImage(cm, cm.createCompatibleWritableRaster(width, height), false, null);
                 } else {
                     BufferedImage oldImg = img;
@@ -1299,7 +1303,8 @@ public class AnimationCodec extends AbstractVideoCodec {
             return false;
         }
         if (in.length() != chunkSize) {
-            throw new IOException("Illegal chunk size:" + chunkSize + " expected:" + in.length());
+            // sometimes the chunk size is wrong, but we can still decode the input
+            // throw new IOException("Illegal chunk size:" + chunkSize + " expected:" + in.length());
         }
         // Decode header
         // -----------------
@@ -1375,7 +1380,9 @@ public class AnimationCodec extends AbstractVideoCodec {
             }
             assert i <= offset + (startingLine + l + 1) * scanlineStride;
         }
-        assert in.getStreamPosition() == in.length();
+        if (in.getStreamPosition() == in.length()) {
+            throw new IOException("did not consume all bytes of stream. consumed=" + in.getStreamPosition() + " stream length: " + in.length());
+        }
         return isKeyFrame;
     }
 

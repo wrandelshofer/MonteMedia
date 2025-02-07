@@ -12,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -85,6 +86,39 @@ public class MainWindowController {
         if (file != null) {
             setFile(file);
         }
+    }
+
+    public static void startStage(Stage stage) {
+        FXMLLoader loader = new FXMLLoader(MainWindowController.class.getResource("MainWindow.fxml"));
+        ResourceBundle labels = ResourceBundle.getBundle("org.monte.demo.javafx.movieplayer.Labels");
+        loader.setResources(labels);
+        Parent root = null;
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+//        throw new RuntimeException(e);
+        }
+        MainWindowController controller = loader.getController();
+
+
+        controller.fileProperty().addListener((o, oldv, f) ->
+                stage.setTitle((f == null ? labels.getString("application.name") : f.getName()))
+        );
+        stage.setOnHidden(event -> controller.close(null));
+
+
+        stage.setTitle(labels.getString("application.name"));
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(MainWindowController.class.getResource("controls.css").toString());
+        stage.setScene(scene);
+        stage.setWidth(400);
+        stage.setHeight(300);
+        stage.show();
+    }
+
+    @FXML
+    void newWindow(ActionEvent event) {
+        MainWindowController.startStage(new Stage());
     }
 
     @FXML

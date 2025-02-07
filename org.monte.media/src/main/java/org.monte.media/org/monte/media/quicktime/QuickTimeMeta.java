@@ -251,13 +251,13 @@ public class QuickTimeMeta extends AbstractMovie {
         switch (track.mediaType) {
             case VIDEO: {
                 if (m.sampleDescriptions.size() != 1) {
-                    throw new UnsupportedOperationException("not implemented for media with multiple sample descriptions.. " + trackIndex + " " + track.mediaType + " " + m + " " + m.sampleDescriptions);
+                    throw new UnsupportedOperationException("Can not read a track media with " + m.sampleDescriptions.size() + " sample descriptions. track=" + trackIndex + " track.mediaType=" + track.mediaType + " " + m + " " + m.sampleDescriptions);
                 }
                 SampleDescription desc = m.sampleDescriptions.get(0);
 
                 if (desc.videoDepth == 8) {
-                    if (0 <= desc.videoColorTableId && desc.videoColorTableId < this.colorTables.size()) {
-                        format = format.append(PaletteKey, this.colorTables.get(desc.videoColorTableId));
+                    if (desc.videoColorTable != null && desc.videoColorTable.getPixelSize() == 8) {
+                        format = format.append(PaletteKey, desc.videoColorTable);
                     } else {
                         format = format.append(PaletteKey, Colors.createMacColors());
                     }
@@ -280,7 +280,7 @@ public class QuickTimeMeta extends AbstractMovie {
             }
             case AUDIO: {
                 if (m.sampleDescriptions.size() != 1) {
-                    throw new UnsupportedOperationException("not implemented for media with multiple sample descriptions.. " + trackIndex + " " + track.mediaType + " " + m + " " + m.sampleDescriptions);
+                    throw new UnsupportedOperationException("Can not read a track media with " + m.sampleDescriptions.size() + " sample descriptions. track=" + trackIndex + " track.mediaType=" + track.mediaType + " " + m + " " + m.sampleDescriptions);
                 }
 
                 SampleDescription desc = m.sampleDescriptions.get(0);
@@ -295,14 +295,20 @@ public class QuickTimeMeta extends AbstractMovie {
                 break;
             }
             default: {
-                if (m.sampleDescriptions.size() != 1) {
-                    throw new UnsupportedOperationException("not implemented for media with multiple sample descriptions.. " + trackIndex + " " + track.mediaType + " " + m + " " + m.sampleDescriptions);
-                }
+                switch (m.sampleDescriptions.size()) {
+                    case 0 -> {
+                    }
+                    case 1 -> {
+                        SampleDescription desc = m.sampleDescriptions.get(0);
+                        format = format.append(
+                                EncodingKey, desc.dataFormat
+                        );
+                    }
+                    default -> {
+                        throw new UnsupportedOperationException("Can not read a track media with " + m.sampleDescriptions.size() + " sample descriptions. track=" + trackIndex + " track.mediaType=" + track.mediaType + " " + m + " " + m.sampleDescriptions);
 
-                SampleDescription desc = m.sampleDescriptions.get(0);
-                format = format.append(
-                        EncodingKey, desc.dataFormat
-                );
+                    }
+                }
                 break;
             }
         }
@@ -1393,7 +1399,7 @@ public class QuickTimeMeta extends AbstractMovie {
          * value -1 is used to mark unspecified depth.
          */
         protected int videoDepth = -1;
-        protected int videoColorTableId = -1;
+        protected IndexColorModel videoColorTable = null;
         protected byte[] extendData;
         // END Video Sample Description
         // BEGIN Sound Sample Description

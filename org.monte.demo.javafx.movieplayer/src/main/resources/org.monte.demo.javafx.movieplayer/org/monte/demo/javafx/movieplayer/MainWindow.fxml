@@ -15,6 +15,11 @@
       <menus>
         <Menu mnemonicParsing="false" text="%file.menu">
           <items>
+            <MenuItem mnemonicParsing="false" onAction="#newWindow" text="%file.new">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="N" control="UP" meta="DOWN" shift="UP" shortcut="UP"/>
+              </accelerator>
+            </MenuItem>
             <MenuItem mnemonicParsing="false" onAction="#open" text="%file.open">
               <accelerator>
                 <KeyCodeCombination alt="UP" code="O" control="UP" meta="DOWN" shift="UP" shortcut="UP"/>

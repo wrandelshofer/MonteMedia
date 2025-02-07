@@ -10,5 +10,5 @@ package org.monte.media.screenrecorder;
  */
 public enum State {
 
-    DONE, FAILED, RECORDING, FAILING
+    CREATED, RECORDING, DONE, FAILED;
 }

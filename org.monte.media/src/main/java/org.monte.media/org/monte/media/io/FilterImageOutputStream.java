@@ -16,7 +16,7 @@ import java.nio.ByteOrder;
  */
 public class FilterImageOutputStream extends ImageOutputStreamImpl {
 
-    private final ImageOutputStream out;
+    protected final ImageOutputStream out;
     private long maxStreamPos;
     private final long offset;
 
@@ -52,7 +52,7 @@ public class FilterImageOutputStream extends ImageOutputStreamImpl {
     public FilterImageOutputStream(ImageOutputStream out, long offset, ByteOrder bo, boolean forwardFlushAndClose) throws IOException {
         this.out = out;
         this.offset = offset;
-        this.maxStreamPos=offset;
+        this.maxStreamPos = offset;
         this.forwardFlushAndClose = forwardFlushAndClose;
         setByteOrder(bo);
         out.seek(offset);
@@ -147,13 +147,13 @@ public class FilterImageOutputStream extends ImageOutputStreamImpl {
     @Override
     public final void write(int b) throws IOException {
         out.write(b);
-        maxStreamPos=Math.max(maxStreamPos, out.getStreamPosition());
+        maxStreamPos = Math.max(maxStreamPos, out.getStreamPosition());
     }
 
     @Override
     public final void write(byte[] b, int off, int len) throws IOException {
         out.write(b, off, len);
-        maxStreamPos=Math.max(maxStreamPos,out.getStreamPosition());
+        maxStreamPos = Math.max(maxStreamPos, out.getStreamPosition());
     }
 
     public void dispose() throws IOException {

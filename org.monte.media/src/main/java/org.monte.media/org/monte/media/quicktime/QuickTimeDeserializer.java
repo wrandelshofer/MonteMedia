@@ -5,7 +5,9 @@
 package org.monte.media.quicktime;
 
 import org.monte.media.av.FormatKeys.MediaType;
+import org.monte.media.io.ByteArrayImageInputStream;
 import org.monte.media.io.UncachedImageInputStream;
+import org.monte.media.qtff.AtomInputStream;
 import org.monte.media.qtff.QTFFImageInputStream;
 import org.monte.media.util.MathUtil;
 
@@ -1036,11 +1038,48 @@ public class QuickTimeDeserializer {
             d.videoFrameCount = in.readUnsignedShort();
             d.videoCompressorName = in.readPString(32);
             d.videoDepth = in.readUnsignedShort();
-            d.videoColorTableId = in.readShort();
+            int videoColorTableId = in.readShort();
 
             d.extendData = new byte[size - 86];
             in.readFully(d.extendData);
+
+            // If the color table ID is set to 0, a color table is contained within the sample description itself. The color
+            //table immediately follows the color table ID field in the sample description. See “Color Table
+            //Atoms” (page 41) for a complete description of a color table.
+            if (videoColorTableId == 0) {
+                final AtomInputStream atomIn = new AtomInputStream(new ByteArrayImageInputStream(d.extendData));
+                while (atomIn.available() > 0) {
+                    String atomType = atomIn.openAtom();
+                    if (atomType.equals("ctab")) {
+                        d.videoColorTable = readVideoColorTable(atomIn);
+                    }
+                    atomIn.closeAtom(atomType);
+                }
+            }
         }
+    }
+
+    private IndexColorModel readVideoColorTable(AtomInputStream in) throws IOException {
+
+        in.readUnsignedInt(); // Color table seed. A 32-bit integer that must be set to 0.
+        in.readUnsignedShort(); // Color table flags. A 16-bit integer that must be set to 0x8000.
+        int colorTableSize = in.readUnsignedShort() + 1;
+        // Color table size. A 16-bit integer that indicates the number of
+        // colors in the following color array. This is a zero-relative value;
+        // setting this field to 0 means that there is one color in the array.
+        int[] rgbs = new int[Math.min(256, colorTableSize)];
+        for (int i = 0, n = colorTableSize; i < n; ++i) {
+            // An array of colors. Each color is made of four unsigned 16-bit integers.
+            // The first integer must be set to 0, the second is the red value,
+            // the third is the green value, and the fourth is the blue value.
+            in.readUnsignedShort();
+            int red = in.readUnsignedShort();
+            int green = in.readUnsignedShort();
+            int blue = in.readUnsignedShort();
+            int rgb = ((red & 0xff00) << 8) | (green & 0xff00) | ((blue & 0xff00) >>> 8);
+            if (i < rgbs.length) rgbs[i] = rgb;
+        }
+        return new IndexColorModel(8, rgbs.length, rgbs, 0, false, -1, DataBuffer.TYPE_BYTE);
     }
 
     /**

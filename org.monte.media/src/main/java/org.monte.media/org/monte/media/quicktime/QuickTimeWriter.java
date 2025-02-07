@@ -228,10 +228,13 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
         if (fmt.get(MediaTypeKey) == MediaType.VIDEO) {
             int t = addVideoTrack(fmt.get(EncodingKey),
                     fmt.get(CompressorNameKey, AbstractQTFFMovieStream.DEFAULT_COMPONENT_NAME),
-                    Math.min(6000, fmt.get(FrameRateKey).getNumerator() * fmt.get(FrameRateKey).getDenominator()),
-                    fmt.get(WidthKey), fmt.get(HeightKey), fmt.get(DepthKey, 24),
+                    Math.min(6000, fmt.get(FrameRateKey, Rational.valueOf(30, 0)).getNumerator() * fmt.get(FrameRateKey).getDenominator()),
+                    fmt.get(WidthKey, getFileFormat().get(WidthKey)),
+                    fmt.get(HeightKey, getFileFormat().get(HeightKey)),
+                    fmt.get(DepthKey, 24),
                     fmt.get(KeyFrameIntervalKey, fmt.get(FrameRateKey).floor(1).intValue()), fmt);
             setCompressionQuality(t, fmt.get(QualityKey, 1.0f));
+
             return t;
         } else if (fmt.get(MediaTypeKey) == MediaType.AUDIO) {
             // fill in unspecified values
@@ -262,7 +265,9 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
                     bo);
             //return addAudioTrack(AudioFormatKeys.toAudioFormat(fmt)); // FIXME Add direct support for AudioFormat
         } else {
-            throw new IOException("Unsupported media type:" + fmt.get(MediaTypeKey));
+            return addGenericTrack(fmt.get(WidthKey, getFileFormat().get(WidthKey)),
+                    fmt.get(HeightKey, getFileFormat().get(HeightKey)),
+                    fmt);
         }
     }
 
@@ -470,6 +475,9 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
             tre.codec.process(buf, outBuf);
         }
         if (outBuf.isFlag(DISCARD) || outBuf.sampleCount == 0) {
+            if (outBuf.exception != null) {
+                throw outBuf.exception instanceof IOException e ? e : new IOException(outBuf.exception);
+            }
             return;
         }
 

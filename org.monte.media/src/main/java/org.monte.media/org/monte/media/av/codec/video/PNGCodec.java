@@ -1,3 +1,4 @@
+
 /*
  * @(#)PNGCodec.java
  * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
@@ -55,53 +56,26 @@ public class PNGCodec extends AbstractVideoCodec {
         super(new Format[]{
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
                                 EncodingKey, ENCODING_BUFFERED_IMAGE), //
+
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                                DepthKey, 8,
                                 EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
+
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_ZIP,
-                                DepthKey, 8,
-                                EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
-                        //
-                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
-                                EncodingKey, ENCODING_BUFFERED_IMAGE), //
-                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_ZIP,
-                                DepthKey, 24,
-                                EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
-                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                                DepthKey, 24,
                                 EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
                         //
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-                                DepthKey, 8,
-                                EncodingKey, ENCODING_AVI_PNG, DataClassKey, byte[].class), //
-                        //
-                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-                                DepthKey, 24,
                                 EncodingKey, ENCODING_AVI_PNG, DataClassKey, byte[].class), //
                 },
                 new Format[]{
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
                                 EncodingKey, ENCODING_BUFFERED_IMAGE), //
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                                DepthKey, 24,
                                 EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_ZIP,
-                                DepthKey, 24,
                                 EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
                         //
-                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                                DepthKey, 8,
-                                EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
-                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_ZIP,
-                                DepthKey, 8,
-                                EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class), //
                         //
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-                                DepthKey, 24,
-                                EncodingKey, ENCODING_AVI_PNG, DataClassKey, byte[].class), //
-                        //
-                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
-                                DepthKey, 8,
                                 EncodingKey, ENCODING_AVI_PNG, DataClassKey, byte[].class), //
                 });
         name = "PNG Codec";

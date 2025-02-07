@@ -69,13 +69,16 @@ public class RawCodec extends AbstractVideoCodec {
                                 EncodingKey, ENCODING_BUFFERED_IMAGE), //
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
                                 EncodingKey, ENCODING_QUICKTIME_RAW, DataClassKey, byte[].class,
-                                FixedFrameRateKey, true, DepthKey, 16), //
-                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
-                                EncodingKey, ENCODING_QUICKTIME_RAW, DataClassKey, byte[].class,
                                 FixedFrameRateKey, true, DepthKey, 8), //
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
                                 EncodingKey, ENCODING_QUICKTIME_RAW, DataClassKey, byte[].class,
+                                FixedFrameRateKey, true, DepthKey, 16), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                                EncodingKey, ENCODING_QUICKTIME_RAW, DataClassKey, byte[].class,
                                 FixedFrameRateKey, true, DepthKey, 24), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                                EncodingKey, ENCODING_QUICKTIME_RAW, DataClassKey, byte[].class,
+                                FixedFrameRateKey, true, DepthKey, 32), //
                 },
                 new Format[]{
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
@@ -90,6 +93,7 @@ public class RawCodec extends AbstractVideoCodec {
                                 EncodingKey, ENCODING_QUICKTIME_RAW, DataClassKey, byte[].class, DepthKey, 32), //
                 });
     }
+
 
     @Override
     public Format setOutputFormat(Format f) {
@@ -192,6 +196,28 @@ public class RawCodec extends AbstractVideoCodec {
         }
     }
 
+    public void readKey32(byte[] in, int offset, int length, BufferedImage img) {
+        DataBufferInt buf = (DataBufferInt) img.getRaster().getDataBuffer();
+        WritableRaster raster = img.getRaster();
+        int scanlineStride = raster.getSampleModel().getWidth();
+        Rectangle r = raster.getBounds();
+        r.x -= raster.getSampleModelTranslateX();
+        r.y -= raster.getSampleModelTranslateY();
+
+        int h = img.getHeight();
+        int w = img.getWidth();
+        int i = offset;
+        int xy = 0;
+        int[] out = buf.getData();
+        for (int y = 0; y < h; y++) {
+            for (int k = 0, k2 = 0; k < w; k++, k2 += 4) {
+                out[xy + k] = ByteArrays.getIntBE(in, i + k2);
+            }
+            i += w * 4;
+            xy += scanlineStride;
+        }
+    }
+
     /**
      * Encodes a 16-bit key frame.
      *
@@ -252,7 +278,7 @@ public class RawCodec extends AbstractVideoCodec {
      * @param offset         The offset to the first pixel in the data array.
      * @param scanlineStride The number to append to offset to get to the next scanline.
      */
-    public void writeKey32(OutputStream out, int[] data, int width, int height, int offset, int scanlineStride)
+    public void writeKey32(ImageOutputStream out, int[] data, int width, int height, int offset, int scanlineStride)
             throws IOException {
 
         // Write the samples
@@ -292,7 +318,7 @@ public class RawCodec extends AbstractVideoCodec {
 
     @Override
     public int process(Buffer in, Buffer out) {
-        if (outputFormat.get(EncodingKey) == ENCODING_BUFFERED_IMAGE) {
+        if (outputFormat.get(EncodingKey).equals(ENCODING_BUFFERED_IMAGE)) {
             return decode(in, out);
         } else {
             return encode(in, out);
@@ -320,8 +346,12 @@ public class RawCodec extends AbstractVideoCodec {
                 cm = inputFormat.get(PaletteKey);
                 imgType = BufferedImage.TYPE_USHORT_555_RGB;
             }
+            case 32 -> {
+                cm = inputFormat.get(PaletteKey);
+                imgType = BufferedImage.TYPE_INT_ARGB;
+            }
             default -> {
-                cm = null;
+                cm = inputFormat.get(PaletteKey);
                 imgType = BufferedImage.TYPE_INT_RGB;
             }
         }
@@ -358,6 +388,9 @@ public class RawCodec extends AbstractVideoCodec {
             case 24:
             default:
                 readKey24((byte[]) in.data, in.offset, in.length, img);
+                break;
+            case 32:
+                readKey32((byte[]) in.data, in.offset, in.length, img);
                 break;
         }
         return CODEC_OK;
@@ -405,7 +438,7 @@ public class RawCodec extends AbstractVideoCodec {
                     break;
                 }
                 case 32: {
-                    writeKey24(tmp, getARGB32(in), r.width, r.height, r.x + r.y * scanlineStride, scanlineStride);
+                    writeKey32(tmp, getARGB32(in), r.width, r.height, r.x + r.y * scanlineStride, scanlineStride);
                     break;
                 }
                 default: {

@@ -754,6 +754,13 @@ public class AbstractQTFFMovieStream {
         }
     }
 
+    protected class GenericTrack extends Track {
+
+        public GenericTrack(MediaType mediaType) {
+            super(mediaType);
+        }
+    }
+
     protected class VideoTrack extends Track {
         // Video metadata
 

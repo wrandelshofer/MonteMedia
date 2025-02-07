@@ -5,80 +5,14 @@
 
 package org.monte.media.quicktime.codec.sprite;
 
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.SequencedMap;
+
 /**
  * Represents one sample of a sprite media.
- * <p>
- * A sample can either be a key frame or an overriding frame:
- * <dl>
- *     <dt>key frame</dt>
- *     <dd>A key frame contains a shared data atom of type 'dflt' and one or
- *         more sprite atoms of type 'sprt'.
- *      </dd>
- *      <dt>overriding frame</dt>
- *      <dd>An overriding frame contains one or more sprite atoms of type 'sprt'.</dd>
- * <p>
- * Atoms:
- * <p>
- * The shared data atom 'dflt' contains a sprite image container atom of type 'imct' and ID=1.
- * <p>
- * The sprite image container atom 'imct' stores one or more sprite image atoms of type 'imag'.
- * <p>
- * The sprite image atoms 'imag' should have ID numbers starting at 1 and counting consecutively upward.
- * <p>
- * Sprite atoms 'sprt' should have ID numbers start at 1 and count consecutively upward.
- * Each sprite atom contains a list of Sprite properties.
- * <pre>
- *     +----------------------+
- *     | dflt                 |
- *     +----------------------+
- *     | +------------------+ |
- *     | | imct             | |
- *     | +------------------+ |
- *     | | +----------+     | |
- *     | | | imag     | ... | |
- *     | | +----------+     | |
- *     | +------------------+ |
- *     |                      |
- *     | +--------------+     |
- *     | | sprt         | ... |
- *     | +--------------+     |
- *     +----------------------+
- *
- * Sprite properties:
- *     Property name                        Value   Leaf data type
- *     kSpritePropertyMatrix                    1   MatrixRecord
- *     kSpritePropertyVisible                   4   short
- *     kSpritePropertyLayer                     5   short
- *     kSpritePropertyGraphicsMode              6   ModifierTrackGraphicsModeRecord
- *     kSpritePropertyActionHandlingSpriteID    8   short
- *     kSpritePropertyImageIndex              100   short
- *
- * Sprite track properties:
- *     Atom type                                     Atom ID  Leaf data type
- *     kSpriteTrackPropertyBackgroundColor           1        RGBColor
- *     kSpriteTrackPropertyOffscreenBitDepth         1        unsigned short
- *     kSpriteTrackPropertySampleFormat              1        long
- *     kSpriteTrackPropertyHasActions                1        Boolean
- *     kSpriteTrackPropertyQTIdleEventsFrequency     1        UInt32
- *     kSpriteTrackPropertyVisible                   1        Boolean
- *     kSpriteTrackPropertyScaleSpritesToScaleWorld  1        Boolean
- *
- *  MatrixRecord:
- *    [ a c x ]
- *    [ b d y ]
- *    [ u v w ]
- *    stored in the sequence: a b u c d v x y w
- *     a    scale/rotate a, 32-bit fixed-point number divided as 16.16
- *     b    skew/rotate b,  32-bit fixed-point number divided as 16.16
- *     u    zero,           32-bit fixed-point number divided as 2.30
- *     c    skew/rotate c,  32-bit fixed-point number divided as 16.16
- *     d    scale/rotate d, 32-bit fixed-point number divided as 16.16
- *     v    zero,           32-bit fixed-point number divided as 2.30
- *     x    translate x,    32-bit fixed-point number divided as 16.16
- *     y    translate y,    32-bit fixed-point number divided as 16.16
- *     w    one,            32-bit fixed-point number divided as 2.30
- *
- * </pre>
  * <p>
  * References:
  * <dl>
@@ -91,6 +25,27 @@ package org.monte.media.quicktime.codec.sprite;
  *     </dd>
  * </dl>
  */
-public class SpriteSample {
+public class SpriteSample implements Cloneable {
+    /**
+     * Sprite images.
+     * <p>
+     * Images with ids 1,2,3,… are stored at indices 0,1,2,… .
+     */
+    public List<BufferedImage> images = new ArrayList<>();
+    /**
+     * Sprite properties.
+     */
+    public SequencedMap<Integer, Sprite> sprites = new LinkedHashMap<>();
 
+    @Override
+    protected SpriteSample clone() {
+        try {
+            SpriteSample that = (SpriteSample) super.clone();
+            that.images = new ArrayList<>(this.images);
+            that.sprites = new LinkedHashMap<>(this.sprites);
+            return that;
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

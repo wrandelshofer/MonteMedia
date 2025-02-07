@@ -39,7 +39,7 @@ import static java.lang.Math.max;
 import static org.monte.media.av.FormatKeys.DataClassKey;
 import static org.monte.media.av.FormatKeys.EncodingKey;
 import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
-import static org.monte.media.av.FormatKeys.MediaType;
+import static org.monte.media.av.FormatKeys.MediaType.AUDIO;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.FormatKeys.MimeTypeKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.ByteOrderKey;
@@ -48,6 +48,7 @@ import static org.monte.media.av.codec.audio.AudioFormatKeys.FrameSizeKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleRateKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleSizeInBitsKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.PaletteKey;
 
 /**
  * This class provides low-level support for writing already encoded audio and
@@ -166,7 +167,7 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
     public long getMovieDuration() {
         long duration = 0;
         for (Track t : tracks) {
-            duration = Math.max(duration, t.getTrackDuration(movieTimeScale));
+            duration = max(duration, t.getTrackDuration(movieTimeScale));
         }
         return duration;
     }
@@ -259,7 +260,18 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
         t.height = height;
         t.videoDepth = depth;
         t.syncInterval = syncInterval;
-        t.format = format.prepend(VideoFormatKeys.DataClassKey, byte[].class);
+        t.format = format.prepend(DataClassKey, byte[].class);
+        t.videoColorTable = format.get(PaletteKey) instanceof IndexColorModel icm ? icm : null;
+        tracks.add(t);
+        return tracks.size() - 1;
+    }
+
+    public int addGenericTrack(int width, int height, Format format) throws IOException {
+        ensureStarted();
+        GenericTrack t = new GenericTrack(format.get(MediaTypeKey));
+        t.format = format.prepend(DataClassKey, byte[].class);
+        t.width = width;
+        t.height = height;
         tracks.add(t);
         return tracks.size() - 1;
     }
@@ -328,7 +340,7 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
 
         t.format = new Format(
                 DataClassKey, byte[].class,
-                MediaTypeKey, MediaType.AUDIO,
+                MediaTypeKey, AUDIO,
                 MimeTypeKey, MIME_QUICKTIME,
                 EncodingKey, compressionType,
                 SampleRateKey, Rational.valueOf(sampleRate),
@@ -787,7 +799,6 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
     }
 
 
-
     /**
      * Returns true if the limit for media samples has been reached. If this
      * limit is reached, no more samples should be added to the movie. <p>
@@ -1019,20 +1030,15 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
         }
 
         // Optional color table atom
-        for (Track t : tracks) {
-            if (t instanceof VideoTrack) {
-                VideoTrack vt = (VideoTrack) t;
-                if (vt.videoColorTable != null) {
-                    writeVideoColorTableAtom(vt, moovAtom);
-                    break;
-                }
-            }
+        if (videoColorTable != null) {
+            writeVideoColorTableAtom(videoColorTable, moovAtom);
         }
 
 
         //
         moovAtom.finish();
     }
+
 
     protected void writeTrackAtoms(int trackIndex, CompositeAtom moovAtom, Instant modificationTime) throws IOException {
         Track t = tracks.get(trackIndex);
@@ -1137,7 +1143,7 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
         // based on such considerations as playback quality, language, or the
         // capabilities of the computer.
 
-        d.writeFixed8D8(t.mediaType == MediaType.AUDIO ? 1 : 0); // volume
+        d.writeFixed8D8(t.mediaType == AUDIO ? 1 : 0); // volume
         // A 16-bit fixed-point value that indicates how loudly this track’s
         // sound is to be played. A value of 1.0 indicates normal volume.
 
@@ -1161,14 +1167,13 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
         // See
         // https://developer.apple.com/documentation/quicktime-file-format/movie_header_atom/matrix_structure
 
-        d.writeFixed16D16(t.mediaType == MediaType.VIDEO ? t.width : 0); // width
+        d.writeFixed16D16(t.width); // width
         // A 32-bit fixed-point number that specifies the width of this track in pixels.
 
-        d.writeFixed16D16(t.mediaType == MediaType.VIDEO ? t.height : 0); // height
+        d.writeFixed16D16(t.height); // height
         // A 32-bit fixed-point number that indicates the height of this track in pixels.
 
-        if (t instanceof VideoTrack) {
-            VideoTrack vt = (VideoTrack) t;
+        if (t instanceof VideoTrack vt) {
             //writeTaptAtoms(trakAtom, vt);
         }
         writeEditAtoms(trakAtom, t);
@@ -1339,7 +1344,16 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
         // two values are valid for this field: 'mhlr' for media handlers and
         // 'dhlr' for data handlers.
 
-        d.writeType(t.mediaType == MediaType.VIDEO ? "vide" : "soun"); // componentSubtype
+        d.writeType(switch (t.mediaType) {
+                    case VIDEO -> "vide";
+                    case AUDIO -> "soun";
+                    case MIDI -> "midi";
+                    case TEXT -> "text";
+                    case META -> "meta";
+                    case SPRITE -> "sprt";
+                    default -> throw new IOException("Track " + trackIndex + " has an unsupported media type: " + t.mediaType);
+                }
+        ); // componentSubtype
         // A four-character code that identifies the type of the media handler
         // or data handler. For media handlers, this field defines the type of
         // data—for example, 'vide' for video data or 'soun' for sound data.
@@ -1349,10 +1363,10 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
 
         d.writeType(t.componentManufacturer);        // componentManufacturer
 
-        d.writeUInt(t.mediaType == MediaType.AUDIO ? 268435456L : 0); // componentFlags
+        d.writeUInt(t.mediaType == AUDIO ? 268435456L : 0); // componentFlags
         // Reserved. Set to 0.
 
-        d.writeUInt(t.mediaType == MediaType.AUDIO ? 65941 : 0); // componentFlagsMask
+        d.writeUInt(t.mediaType == AUDIO ? 65941 : 0); // componentFlagsMask
         // Reserved. Set to 0.
 
         d.writePString(t.componentName); // componentName (empty string)
@@ -1376,7 +1390,7 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
         switch (t.mediaType) {
             case VIDEO -> writeVideoMediaInformationHeaderAtom(trackIndex, minfAtom);
             case AUDIO -> writeSoundMediaInformationHeaderAtom(trackIndex, minfAtom);
-            default -> throw new UnsupportedOperationException("Media type " + t.mediaType + " not supported yet.");
+            default -> writeGenericMediaInformationHeaderAtom(trackIndex, minfAtom);
         }
 
 
@@ -1422,10 +1436,10 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
         d.writeType(t.componentManufacturer);        // componentManufacturer
 
 
-        d.writeUInt(t.mediaType == MediaType.AUDIO ? 268435457L : 0); // componentFlags
+        d.writeUInt(t.mediaType == AUDIO ? 268435457L : 0); // componentFlags
         // Reserved. Set to 0.
 
-        d.writeInt(t.mediaType == MediaType.AUDIO ? 65967 : 0); // componentFlagsMask
+        d.writeInt(t.mediaType == AUDIO ? 65967 : 0); // componentFlagsMask
         // Reserved. Set to 0.
 
         d.writePString(t.componentName); // componentName (can be an empty string)
@@ -1589,6 +1603,45 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
 
     }
 
+    protected void writeGenericMediaInformationHeaderAtom(int trackIndex, CompositeAtom minfAtom) throws IOException {
+        CompositeAtom composite;
+        DataAtom leaf;
+        QTFFImageOutputStream d;
+
+        /* Generic media information header atom -------- */
+        composite = new CompositeAtom("gmhd", out);
+        minfAtom.add(composite);
+        leaf = new DataAtom("gmin", out);
+        composite.add(leaf);
+            /*typedef struct {
+             byte version;
+             byte flag1;
+             byte flag2;
+             byte set vmhdFlags flag3;
+             short graphicsMode;
+             ushort[3] opcolor;
+             } videoMediaInformationHeaderAtom;*/
+        d = leaf.getOutputStream();
+        d.write(0); // version
+        // One byte that specifies the version of this header atom.
+
+        d.write(0); // flag[0]
+        d.write(0); // flag[1]
+        d.write(0); // flag[2]
+        // Three bytes of space for media header flags.
+
+        d.writeShort(0x40); // graphicsMode (0x40 = DitherCopy, 0x0 = Copy)
+
+        d.writeUShort(32768); // opcolor[0]
+        d.writeUShort(32768); // opcolor[1]
+        d.writeUShort(32768); // opcolor[2]
+        // Three 16-bit values that specify the red, green, and blue colors for
+        // the transfer mode operation indicated in the graphics mode field.
+
+        d.writeFixed8D8(0.0);//balance, fixed8d8
+        d.writeUShort(0);//reserved
+    }
+
     protected void writeSampleTableAtoms(int trackIndex, CompositeAtom minfAtom) throws IOException {
         Track t = tracks.get(trackIndex);
         DataAtom leaf;
@@ -1599,11 +1652,9 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
         minfAtom.add(stblAtom);
 
         /* Sample Description atom ------- */
-        if (Objects.requireNonNull(t) instanceof VideoTrack) {
-            VideoTrack vt = (VideoTrack) Objects.requireNonNull(t);
+        if (Objects.requireNonNull(t) instanceof VideoTrack vt) {
             writeVideoSampleDescriptionAtom(vt, stblAtom);
-        } else if (t instanceof AudioTrack) {
-            AudioTrack at = (AudioTrack) t;
+        } else if (t instanceof AudioTrack at) {
             writeAudioSampleDescriptionAtom(at, stblAtom);
         } else {
             writeGenericSampleDescriptionAtom(t, stblAtom);
@@ -1788,7 +1839,7 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
         d.write(0); // flag[2]
         // A 3-byte space for time-to-sample flags. Set this field to 0.
 
-        int sampleUnit = t.mediaType == MediaType.AUDIO//
+        int sampleUnit = t.mediaType == AUDIO//
                 && ((AudioTrack) t).soundCompressionId != -2 //
                 ? ((AudioTrack) t).soundSampleSize / 8 * ((AudioTrack) t).soundNumberOfChannels//
                 : 1;
@@ -1951,7 +2002,7 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
 
                     if (buf.size() > headerSize + freeSize && --maxIteration > 0) {
                         if (headerSize != 0) {
-                            freeSize = Math.max(freeSize, buf.size() - headerSize - freeSize);
+                            freeSize = max(freeSize, buf.size() - headerSize - freeSize);
                         }
                         headerSize = buf.size();
                     } else {
@@ -2149,6 +2200,13 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
         // per pixel, this indicates a standard Macintosh color table
         // for the specified depth. Depths of 16, 24, and 32 have no
         // color table.
+        // If the color table ID is set to 0, a color table is contained
+        // within the sample description itself. The color table immediately
+        // follows the color table ID field in the sample description.
+        // See “Color Table Atoms” (page 41) for a complete description of a color table.
+        if (t.videoColorTable != null) {
+            writeVideoColorTableAtom(t.videoColorTable, leaf);
+        }
 
         if (t.avcDecoderConfigurationRecord != null) {
             writeMandatoryAvcAtoms(t, leaf);
@@ -2290,10 +2348,10 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
      * 'ctab'. The color table atom contains a Macintosh color table data
      * structure.
      *
-     * @param stblAtom
+     * @param videoColorTable the video color table
      * @throws IOException
      */
-    protected void writeVideoColorTableAtom(VideoTrack t, CompositeAtom stblAtom) throws IOException {
+    protected void writeVideoColorTableAtom(IndexColorModel videoColorTable, CompositeAtom stblAtom) throws IOException {
         DataAtom leaf;
         QTFFImageOutputStream d;
         leaf = new DataAtom("ctab", out);
@@ -2303,7 +2361,6 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
 
         d.writeUInt(0); // Color table seed. A 32-bit integer that must be set to 0.
         d.writeUShort(0x8000); // Color table flags. A 16-bit integer that must be set to 0x8000.
-        IndexColorModel videoColorTable = t.videoColorTable;
         d.writeUShort(videoColorTable.getMapSize() - 1);
         // Color table size. A 16-bit integer that indicates the number of
         // colors in the following color array. This is a zero-relative value;
@@ -2478,5 +2535,16 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
         // Extensions must be atom-based fields
         // ------------------------------------
         d.write(t.stsdExtensions);
+    }
+
+
+    private IndexColorModel videoColorTable = null;
+
+    public IndexColorModel getVideoColorTable() {
+        return videoColorTable;
+    }
+
+    public void setVideoColorTable(IndexColorModel videoColorTable) {
+        this.videoColorTable = videoColorTable;
     }
 }

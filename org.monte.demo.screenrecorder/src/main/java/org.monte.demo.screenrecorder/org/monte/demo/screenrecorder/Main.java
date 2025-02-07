@@ -8,8 +8,10 @@ import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.math.Rational;
 import org.monte.media.screenrecorder.JRecordingAreaFrame;
-import org.monte.media.screenrecorder.MouseConfigs;
+import org.monte.media.screenrecorder.MouseFormatKeys;
 import org.monte.media.screenrecorder.ScreenRecorder;
+import org.monte.media.screenrecorder.ScreenRecorderConfig;
+import org.monte.media.screenrecorder.SimpleScreenRecorder;
 import org.monte.media.screenrecorder.State;
 import org.monte.media.swing.BackgroundTask;
 import org.monte.media.swing.JLabelHyperlinkHandler;
@@ -32,8 +34,6 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Component;
@@ -54,6 +54,7 @@ import java.net.URISyntaxException;
 import java.nio.ByteOrder;
 import java.util.Objects;
 import java.util.Vector;
+import java.util.function.BiConsumer;
 import java.util.prefs.Preferences;
 
 import static java.lang.Math.max;
@@ -114,12 +115,12 @@ public class Main extends javax.swing.JFrame {
     public static final String FMT_AVI = "AVI";
     public static final String FMT_QUICKTIME = "QuickTime";
 
-    private class Handler implements ChangeListener {
+    private class Handler implements BiConsumer<State, State> {
 
         @Override
-        public void stateChanged(ChangeEvent e) {
+        public void accept(State oldState, State newState) {
             ScreenRecorder r = screenRecorder;
-            if (r != null && r.getState() == State.FAILED) {
+            if (r != null && newState == State.FAILED) {
                 recordingFailed();
             }
         }
@@ -285,10 +286,11 @@ public class Main extends javax.swing.JFrame {
 
         audioSourceChoice.setModel(new DefaultComboBoxModel<>(getAudioSources()));
         audioSource = MathUtil.clamp(prefs.getInt("ScreenRecording.audioSource", 0), 0, audioSourceChoice.getItemCount() - 1);
-        audioSourceChoice.setSelectedIndex(audioSource);
+        if (0 < audioSource && audioSource < audioSourceChoice.getItemCount()) {
+            audioSourceChoice.setSelectedIndex(audioSource);
+        }
         audioRate = prefs.get("AudioRate", audioRateChoice.getItemAt(0));
         audioRateChoice.setSelectedIndex(findIndex(audioRate, audioRateChoice.getModel()));
-
         Dimension customDim = new Dimension(prefs.getInt("ScreenRecording.customAreaWidth", 1024),
                 prefs.getInt("ScreenRecording.customAreaHeight", 768));
         Point customLoc = new Point(
@@ -592,6 +594,7 @@ public class Main extends javax.swing.JFrame {
     private class FormListener implements java.awt.event.ActionListener, java.awt.event.WindowListener {
         FormListener() {
         }
+
         public void actionPerformed(java.awt.event.ActionEvent evt) {
             if (evt.getSource() == formatChoice) {
                 Main.this.formatChoicePerformed(evt);
@@ -797,16 +800,25 @@ public class Main extends javax.swing.JFrame {
             boolean audioSigned;
             {
                 AudioSourceItem src = (AudioSourceItem) audioSourceChoice.getItemAt(this.audioSource);
-                mixerInfo = src.mixerInfo;
-                AudioFormat srcFormat = src.format;
-                audioRate = (int) srcFormat.getSampleRate();
-                if (audioRate <= 0) {
-                    audioRate = Integer.parseInt((String) audioRateChoice.getSelectedItem());
+                if (src != null) {
+                    mixerInfo = src.mixerInfo;
+                    AudioFormat srcFormat = src.format;
+                    audioRate = (int) srcFormat.getSampleRate();
+                    if (audioRate <= 0) {
+                        audioRate = Integer.parseInt((String) audioRateChoice.getSelectedItem());
+                    }
+                    audioBitsPerSample = srcFormat.getSampleSizeInBits();
+                    audioChannels = srcFormat.getChannels();
+                    audioByteOrder = srcFormat.isBigEndian() ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN;
+                    audioSigned = srcFormat.getEncoding() == AudioFormat.Encoding.PCM_SIGNED;
+                } else {
+                    audioRate = 0;
+                    audioBitsPerSample = 0;
+                    audioChannels = 0;
+                    audioByteOrder = null;
+                    audioSigned = false;
+                    mixerInfo = null;
                 }
-                audioBitsPerSample = srcFormat.getSampleSizeInBits();
-                audioChannels = srcFormat.getChannels();
-                audioByteOrder = srcFormat.isBigEndian() ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN;
-                audioSigned = srcFormat.getEncoding() == AudioFormat.Encoding.PCM_SIGNED;
             }
 
             String crsr;
@@ -816,10 +828,10 @@ public class Main extends javax.swing.JFrame {
                     crsr = null;
                     break;
                 case 1:
-                    crsr = MouseConfigs.ENCODING_BLACK_CURSOR;
+                    crsr = MouseFormatKeys.ENCODING_BLACK_CURSOR;
                     break;
                 case 2:
-                    crsr = MouseConfigs.ENCODING_WHITE_CURSOR;
+                    crsr = MouseFormatKeys.ENCODING_WHITE_CURSOR;
                     break;
             }
             GraphicsConfiguration cfg = getGraphicsConfiguration();
@@ -832,7 +844,7 @@ public class Main extends javax.swing.JFrame {
                 outputDimension = areaRect.getSize();
             }
 
-            screenRecorder = new ScreenRecorder(cfg, areaRect,
+            screenRecorder = new SimpleScreenRecorder(new ScreenRecorderConfig(cfg.getDevice(), areaRect,
                     // the file format:
                     new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, mimeType),
                     //
@@ -849,6 +861,8 @@ public class Main extends javax.swing.JFrame {
                     // the output format for mouse capture:
                     crsr == null ? null : new Format(MediaTypeKey, MediaType.VIDEO, EncodingKey, crsr,
                             FrameRateKey, Rational.valueOf(mouseRate)),
+
+                    mixerInfo == null ? null : AudioSystem.getMixer(mixerInfo),
                     //
                     // the output format for audio capture:
                     audioRate == 0 ? null : new Format(MediaTypeKey, MediaType.AUDIO,
@@ -860,11 +874,8 @@ public class Main extends javax.swing.JFrame {
                     ),
                     //
                     // the storage location of the movie
-                    movieFolder);
+                    movieFolder));
 
-            if (mixerInfo != null) {
-                screenRecorder.setAudioMixer(AudioSystem.getMixer(mixerInfo));
-            }
             startStopButton.setText("Stop");
             screenRecorder.addChangeListener(handler);
             screenRecorder.start();

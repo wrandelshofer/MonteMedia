@@ -214,8 +214,8 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
         flushBits();
 
         // This test also covers pos < 0
-        if (pos < flushedPos) {
-            throw new IndexOutOfBoundsException("pos < flushedPos!");
+        if (pos < 0) {
+            throw new IndexOutOfBoundsException("pos < 0!");
         }
 
         this.streamPos = pos + arrayOffset;
