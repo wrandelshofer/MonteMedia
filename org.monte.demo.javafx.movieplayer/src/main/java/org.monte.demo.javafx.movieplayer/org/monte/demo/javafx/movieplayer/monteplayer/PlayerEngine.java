@@ -235,7 +235,7 @@ class PlayerEngine extends AbstractPlayer {
                 vTrack.setRenderedStartTime(outBuf.timeStamp);
                 vTrack.setRenderedEndTime(outBuf.timeStamp.add(outBuf.sampleDuration));
             } else {
-                throw new IOException("Could not decode the video track.");
+                throw new IOException("Could not decode the video track.", outBuf.exception);
             }
         }
         return vTrack;

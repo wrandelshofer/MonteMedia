@@ -4,6 +4,7 @@
  */
 package org.monte.media.color;
 
+import java.awt.Transparency;
 import java.awt.image.IndexColorModel;
 
 /**
@@ -91,23 +92,43 @@ public class Colors {
         System.out.print(Integer.toHexString(r[i]&0xff)+","+Integer.toHexString(g[i]&0xff)+","+Integer.toHexString(b[i]&0xff));
         }*/
 
-        IndexColorModel icm = new IndexColorModel(8, 256, r, g, b);
-        return icm;
+        return new IndexColorModel(8, 256, r, g, b);
     }
 
-    public static IndexColorModel createGrayColors() {
-        byte[] r = new byte[256];
-        byte[] g = new byte[256];
-        byte[] b = new byte[256];
+    /**
+     * Gray colors from dark to bright
+     *
+     * @param pixelSize should be 2, 4, or 8 (or at least enough to fit the number of colors)
+     * @param numColors number of bits 2=4, 4=16, or 8=256
+     * @return IndexColorModel
+     */
+    public static IndexColorModel createGrayColorsDarkToBright(int pixelSize, int numColors) {
+        byte[] r = new byte[numColors];
 
-        // Generate color cube with 216 colors
-        for (int i = 0; i < 256; i++) {
-            r[i] = (byte) i;
-            g[i] = (byte) i;
-            b[i] = (byte) i;
+        // Generate gray ramp
+        int step = numColors == 1 ? 255 : 255 / (numColors - 1);
+        for (int i = 0; i < numColors; i++) {
+            r[i] = (byte) (i * step);
         }
-        IndexColorModel icm = new IndexColorModel(8, 256, r, g, b);
-        return icm;
+        return new IndexColorModel(pixelSize, numColors, r, r, r, Transparency.OPAQUE);
+    }
+
+    /**
+     * Gray colors from bright to dark
+     *
+     * @param pixelSize should be 2, 4, or 8 (or at least enough to fit the number of colors)
+     * @param numColors number of bits 2=4, 4=16, or 8=256
+     * @return IndexColorModel
+     */
+    public static IndexColorModel createGrayColorsBrightToDark(int pixelSize, int numColors) {
+        byte[] r = new byte[numColors];
+
+        // Generate gray ramp
+        int step = numColors == 1 ? 255 : 255 / (numColors - 1);
+        for (int i = 0; i < numColors; i++) {
+            r[numColors - i - 1] = (byte) (i * step);
+        }
+        return new IndexColorModel(pixelSize, numColors, r, r, r, Transparency.OPAQUE);
     }
 
 }

@@ -255,8 +255,8 @@ public class QuickTimeMeta extends AbstractMovie {
                 }
                 SampleDescription desc = m.sampleDescriptions.get(0);
 
-                if (desc.videoDepth == 8) {
-                    if (desc.videoColorTable != null && desc.videoColorTable.getPixelSize() == 8) {
+                if (desc.videoDepth <= 8) {
+                    if (desc.videoColorTable != null && desc.videoColorTable.getPixelSize() <= 8) {
                         format = format.append(PaletteKey, desc.videoColorTable);
                     } else {
                         format = format.append(PaletteKey, Colors.createMacColors());

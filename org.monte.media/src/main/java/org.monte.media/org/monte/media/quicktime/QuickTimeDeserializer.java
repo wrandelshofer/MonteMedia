@@ -5,6 +5,7 @@
 package org.monte.media.quicktime;
 
 import org.monte.media.av.FormatKeys.MediaType;
+import org.monte.media.color.Colors;
 import org.monte.media.io.ByteArrayImageInputStream;
 import org.monte.media.qtff.AtomInputStream;
 import org.monte.media.qtff.QTFFImageInputStream;
@@ -1047,6 +1048,24 @@ public class QuickTimeDeserializer {
             d.videoFrameCount = in.readUnsignedShort();
             d.videoCompressorName = in.readPString(32);
             d.videoDepth = in.readUnsignedShort();
+            //Values of 34, 36, and 40 indicate 2-, 4-,
+            // and 8-bit grayscale, respectively, for grayscale
+            // images.
+            switch (d.videoDepth) {
+                case 34 -> {
+                    d.videoDepth = 2;
+                    d.videoColorTable = Colors.createGrayColorsBrightToDark(2, 1 << 2);
+                }
+                case 36 -> {
+                    d.videoDepth = 4;
+                    d.videoColorTable = Colors.createGrayColorsBrightToDark(4, 1 << 4);
+                }
+                case 40 -> {
+                    d.videoDepth = 8;
+                    d.videoColorTable = Colors.createGrayColorsBrightToDark(8, 1 << 8);
+                }
+            }
+
             int videoColorTableId = in.readShort();
 
             d.extendData = new byte[size - 86];

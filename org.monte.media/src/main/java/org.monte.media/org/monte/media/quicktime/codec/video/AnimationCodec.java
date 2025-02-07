@@ -9,6 +9,7 @@ import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.av.codec.video.AbstractVideoCodec;
 import org.monte.media.av.codec.video.AbstractVideoCodecCore;
+import org.monte.media.color.Colors;
 import org.monte.media.io.ByteArrayImageInputStream;
 import org.monte.media.io.ByteArrayImageOutputStream;
 import org.monte.media.util.ArrayUtil;
@@ -19,12 +20,10 @@ import javax.imageio.stream.ImageOutputStream;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
-import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
 import java.awt.image.DataBufferUShort;
 import java.awt.image.DirectColorModel;
-import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 import java.io.EOFException;
 import java.io.IOException;
@@ -175,6 +174,10 @@ public class AnimationCodec extends AbstractVideoCodec {
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
                                 EncodingKey, ENCODING_BUFFERED_IMAGE), //
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                                EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 2), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                                EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 4), //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
                                 EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 8), //
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
                                 EncodingKey, ENCODING_QUICKTIME_ANIMATION, DataClassKey, byte[].class, DepthKey, 16), //
@@ -240,29 +243,29 @@ public class AnimationCodec extends AbstractVideoCodec {
         int inputDepth = inputFormat.get(DepthKey);
         int outputDepth = outputFormat.get(DepthKey, inputDepth);
 
-        boolean isKeyFrame;
         try {
 
             switch (inputDepth) {
-                case 8:
+                case 2, 4, 8 -> {
                     newPixels = ArrayUtil.reuseByteArray(newPixels, width * height);
-                    isKeyFrame = decode8((byte[]) in.data, in.offset, in.length, (byte[]) newPixels, (byte[]) newPixels, width, height, false);
-                    break;
-                case 16:
+                    decode8((byte[]) in.data, in.offset, in.length, (byte[]) newPixels, (byte[]) newPixels, width, height);
+                }
+                case 16 -> {
                     newPixels = ArrayUtil.reuseShortArray(newPixels, width * height);
-                    isKeyFrame = decode16((byte[]) in.data, in.offset, in.length, (short[]) newPixels, (short[]) newPixels, width, height, false);
-                    break;
-                case 24:
+                    decode16((byte[]) in.data, in.offset, in.length, (short[]) newPixels, (short[]) newPixels, width, height, false);
+                }
+                case 24 -> {
                     newPixels = ArrayUtil.reuseIntArray(newPixels, width * height);
-                    isKeyFrame = decode24((byte[]) in.data, in.offset, in.length, (int[]) newPixels, (int[]) newPixels, width, height, false);
-                    break;
-                case 32:
+                    decode24((byte[]) in.data, in.offset, in.length, (int[]) newPixels, (int[]) newPixels, width, height, false);
+                }
+                case 32 -> {
                     newPixels = ArrayUtil.reuseIntArray(newPixels, width * height);
-                    isKeyFrame = decode32((byte[]) in.data, in.offset, in.length, (int[]) newPixels, (int[]) newPixels, width, height, false);
-                    break;
-                default:
+                    decode32((byte[]) in.data, in.offset, in.length, (int[]) newPixels, (int[]) newPixels, width, height, false);
+                }
+                default -> {
                     out.setFlag(DISCARD);
                     return CODEC_FAILED;
+                }
             }
         } catch (IOException e) {
             out.exception = e;
@@ -273,12 +276,46 @@ public class AnimationCodec extends AbstractVideoCodec {
         BufferedImage img = (out.data instanceof BufferedImage) ? (BufferedImage) out.data : null;
 
         switch (outputDepth) {
-            case 8: {
+            case 2 -> {
                 int imgType = BufferedImage.TYPE_BYTE_INDEXED;
                 if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
                     ColorModel cm = getColorModel(in);
                     if (cm == null) {
-                        cm = new IndexColorModel(8, 256, new int[256], 0, false, -1, DataBuffer.TYPE_BYTE);
+                        cm = Colors.createMacColors();
+                    }
+                    img = new BufferedImage(cm, cm.createCompatibleWritableRaster(width, height), false, null);
+                } else {
+                    BufferedImage oldImg = img;
+                    img = new BufferedImage(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
+                }
+                byte[] pixels = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
+                for (int y = 0; y < height; y++) {
+                    System.arraycopy((byte[]) newPixels, y * width, pixels, y * width / 4, width / 4);
+                }
+            }
+            case 4 -> {
+                int imgType = BufferedImage.TYPE_BYTE_INDEXED;
+                if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
+                    ColorModel cm = getColorModel(in);
+                    if (cm == null) {
+                        cm = Colors.createMacColors();
+                    }
+                    img = new BufferedImage(cm, cm.createCompatibleWritableRaster(width, height), false, null);
+                } else {
+                    BufferedImage oldImg = img;
+                    img = new BufferedImage(oldImg.getColorModel(), oldImg.getRaster(), oldImg.isAlphaPremultiplied(), null);
+                }
+                byte[] pixels = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
+                for (int y = 0; y < height; y++) {
+                    System.arraycopy((byte[]) newPixels, y * width, pixels, y * width / 2, width / 2);
+                }
+            }
+            case 8 -> {
+                int imgType = BufferedImage.TYPE_BYTE_INDEXED;
+                if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
+                    ColorModel cm = getColorModel(in);
+                    if (cm == null) {
+                        cm = Colors.createMacColors();
                     }
                     img = new BufferedImage(cm, cm.createCompatibleWritableRaster(width, height), false, null);
                 } else {
@@ -288,9 +325,7 @@ public class AnimationCodec extends AbstractVideoCodec {
                 byte[] pixels = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
                 System.arraycopy((byte[]) newPixels, 0, pixels, 0, width * height);
             }
-            break;
-            case 16:
-            case 15: {
+            case 16, 15 -> {
                 int imgType = BufferedImage.TYPE_USHORT_555_RGB;
                 if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
                     ColorModel palette = outputFormat.get(PaletteKey);
@@ -303,9 +338,7 @@ public class AnimationCodec extends AbstractVideoCodec {
                 short[] pixels = ((DataBufferUShort) img.getRaster().getDataBuffer()).getData();
                 System.arraycopy((short[]) newPixels, 0, pixels, 0, width * height);
             }
-            break;
-
-            case 24: {
+            case 24 -> {
                 int imgType = BufferedImage.TYPE_INT_RGB;
                 if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
                     DirectColorModel cm = new DirectColorModel(24, 0xff << 16, 0xff << 8, 0xff);
@@ -317,12 +350,9 @@ public class AnimationCodec extends AbstractVideoCodec {
                 int[] pixels = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
                 System.arraycopy((int[]) newPixels, 0, pixels, 0, width * height);
             }
-            break;
-            default:
-                throw new UnsupportedOperationException("Unsupported depth:" + outputDepth);
+            default -> throw new UnsupportedOperationException("Unsupported depth:" + outputDepth);
         }
 
-        out.setFlag(KEYFRAME, isKeyFrame);
 
         out.data = img;
         return CODEC_OK;
@@ -1198,7 +1228,8 @@ public class AnimationCodec extends AbstractVideoCodec {
         out.seek(pos);
     }
 
-    public boolean decode8(byte[] inArray, int off, int length, byte[] out, byte[] prev, int width, int height, boolean onlyDecodeIfKeyframe) throws IOException {
+
+    public void decode8(byte[] inArray, int off, int length, byte[] out, byte[] prev, int width, int height) throws IOException {
         if (prev != out) {
             System.arraycopy(prev, 0, out, 0, width * height);
         }
@@ -1207,14 +1238,14 @@ public class AnimationCodec extends AbstractVideoCodec {
         // -----------------
         long chunkSize = in.readUnsignedInt();
         if (chunkSize <= 8) {
-            return false;
+            return;
         }
         if (in.length() != chunkSize) {
-            throw new IOException("Illegal chunk size:" + chunkSize + " expected:" + in.length());
+            //we may still be able to decode the chunk
+            //throw new IOException("Illegal chunk size:" + chunkSize + " expected:" + in.length());
         }
         // Decode header
         // -----------------
-        boolean isKeyFrame = true;
         int header = in.readUnsignedShort();
         int startingLine;
         int numberOfLines;
@@ -1234,12 +1265,11 @@ public class AnimationCodec extends AbstractVideoCodec {
             if (reserved2 != 0) {
                 throw new IOException("Illegal value in reserved2 0x" + Integer.toHexString(reserved2));
             }
-            isKeyFrame = startingLine == 0 && numberOfLines == height;
         } else {
             throw new IOException("Unknown header 0x" + Integer.toHexString(header));
         }
         if (startingLine > height || numberOfLines == 0) {
-            return isKeyFrame;
+            return;
         }
         if (startingLine + numberOfLines - 1 > height) {
             throw new IOException("Illegal startingLine or numberOfLines, startingLine=" + startingLine + ", numberOfLines=" + numberOfLines);
@@ -1249,15 +1279,14 @@ public class AnimationCodec extends AbstractVideoCodec {
         // -----------------
         int offset = 0;
         int scanlineStride = width;
+        int multiplier = 4;
         for (int l = 0; l < numberOfLines; l++) {
             int i = offset + (startingLine + l) * scanlineStride;
             int skipCode = in.readUnsignedByte() - 1;
             if (skipCode == EOL_CODE) {
-                isKeyFrame &= l == numberOfLines - 1;
                 break; // end of image code
             } else if (skipCode > 0) {
-                isKeyFrame = false;
-                i += skipCode * 4;
+                i += skipCode * multiplier;
             }
             int x = 0;
             while (true) {
@@ -1265,33 +1294,31 @@ public class AnimationCodec extends AbstractVideoCodec {
                 if (opCode == SKIP_CODE) {// skip op
                     skipCode = in.readUnsignedByte() - 1;
                     if (skipCode > 0) {
-                        i += skipCode * 4;
-                        x += skipCode * 4;
+                        i += skipCode * multiplier;
+                        x += skipCode * multiplier;
                     }
                 } else if (opCode > SKIP_CODE) { // run of data op
-                    in.readFully(out, i, opCode * 4);
-                    i += opCode * 4;
-                    x += opCode * 4;
+                    in.readFully(out, i, opCode * multiplier);
+                    i += opCode * multiplier;
+                    x += opCode * multiplier;
                 } else if (opCode == EOL_CODE) { // end of line op
-                    isKeyFrame &= x == width;
                     break;
                 } else { // repeat op
                     int d = in.readInt();
-                    int end = i - opCode * 4;
+                    int end = i - opCode * multiplier;
                     while (i < end) {
                         ByteArrays.setIntBE(out, i, d);
-                        i += 4;
+                        i += multiplier;
                     }
-                    x -= opCode * 4;
+                    x += opCode * multiplier;
                 }
             }
             assert i <= offset + (startingLine + l + 1) * scanlineStride;
         }
         assert in.getStreamPosition() == in.length();
-        return isKeyFrame;
     }
 
-    public boolean decode16(byte[] inArray, int off, int length, short[] out, short[] prev, int width, int height, boolean onlyDecodeIfKeyframe) throws IOException {
+    public void decode16(byte[] inArray, int off, int length, short[] out, short[] prev, int width, int height, boolean onlyDecodeIfKeyframe) throws IOException {
         if (prev != out) {
             System.arraycopy(prev, 0, out, 0, width * height);
         }
@@ -1300,7 +1327,7 @@ public class AnimationCodec extends AbstractVideoCodec {
         // -----------------
         long chunkSize = in.readUnsignedInt();
         if (chunkSize <= 8) {
-            return false;
+            return;
         }
         if (in.length() != chunkSize) {
             // sometimes the chunk size is wrong, but we can still decode the input
@@ -1308,7 +1335,6 @@ public class AnimationCodec extends AbstractVideoCodec {
         }
         // Decode header
         // -----------------
-        boolean isKeyFrame = true;
         int header = in.readUnsignedShort();
         int startingLine;
         int numberOfLines;
@@ -1328,12 +1354,11 @@ public class AnimationCodec extends AbstractVideoCodec {
             if (reserved2 != 0) {
                 throw new IOException("Illegal value in reserved2 0x" + Integer.toHexString(reserved2));
             }
-            isKeyFrame = startingLine == 0 && numberOfLines == height;
         } else {
             throw new IOException("Unknown header 0x" + Integer.toHexString(header));
         }
         if (startingLine > height || numberOfLines == 0) {
-            return isKeyFrame;
+            return;
         }
         if (startingLine + numberOfLines - 1 > height) {
             throw new IOException("Illegal startingLine or numberOfLines, startingLine=" + startingLine + ", numberOfLines=" + numberOfLines);
@@ -1347,35 +1372,28 @@ public class AnimationCodec extends AbstractVideoCodec {
             int i = offset + (startingLine + l) * scanlineStride;
             int skipCode = in.readUnsignedByte() - 1;
             if (skipCode == EOL_CODE) {
-                isKeyFrame &= l == numberOfLines - 1;
                 break; // end of image code
             } else if (skipCode > 0) {
-                isKeyFrame = false;
                 i += skipCode;
             }
 
-            int x = 0;
             while (true) {
                 int opCode = in.readByte();
                 if (opCode == SKIP_CODE) {// skip op
                     skipCode = in.readUnsignedByte() - 1;
                     if (skipCode > 0) {
                         i += skipCode;
-                        x += skipCode;
                     }
                 } else if (opCode > SKIP_CODE) { // run of data op
                     in.readFully(out, i, opCode);
                     i += opCode;
-                    x += opCode;
                 } else if (opCode == EOL_CODE) { // end of line op
-                    isKeyFrame &= x == width;
                     break;
                 } else { // repeat op
                     short d = in.readShort();
                     int end = i - opCode;
                     Arrays.fill(out, i, end, d);
                     i = end;
-                    x -= opCode;
                 }
             }
             assert i <= offset + (startingLine + l + 1) * scanlineStride;
@@ -1383,10 +1401,9 @@ public class AnimationCodec extends AbstractVideoCodec {
         if (in.getStreamPosition() == in.length()) {
             throw new IOException("did not consume all bytes of stream. consumed=" + in.getStreamPosition() + " stream length: " + in.length());
         }
-        return isKeyFrame;
     }
 
-    public boolean decode24(byte[] inArray, int off, int length, int[] out, int[] prev, int width, int height, boolean onlyDecodeIfKeyframe) throws IOException {
+    public void decode24(byte[] inArray, int off, int length, int[] out, int[] prev, int width, int height, boolean onlyDecodeIfKeyframe) throws IOException {
         if (prev != out) {
             System.arraycopy(prev, 0, out, 0, width * height);
         }
@@ -1395,14 +1412,13 @@ public class AnimationCodec extends AbstractVideoCodec {
         // -----------------
         long chunkSize = in.readUnsignedInt();
         if (chunkSize <= 8) {
-            return false;
+            return;
         }
         if (in.length() != chunkSize) {
             throw new IOException("Illegal chunk size:" + chunkSize + " expected:" + in.length());
         }
         // Decode header
         // -----------------
-        boolean isKeyFrame = true;
         int header = in.readUnsignedShort();
         int startingLine;
         int numberOfLines;
@@ -1422,12 +1438,11 @@ public class AnimationCodec extends AbstractVideoCodec {
             if (reserved2 != 0) {
                 throw new IOException("Illegal value in reserved2 0x" + Integer.toHexString(reserved2));
             }
-            isKeyFrame = startingLine == 0 && numberOfLines == height;
         } else {
             throw new IOException("Unknown header 0x" + Integer.toHexString(header));
         }
         if (startingLine > height || numberOfLines == 0) {
-            return isKeyFrame;
+            return;
         }
         if (startingLine + numberOfLines - 1 > height) {
             throw new IOException("Illegal startingLine or numberOfLines, startingLine=" + startingLine + ", numberOfLines=" + numberOfLines);
@@ -1441,44 +1456,36 @@ public class AnimationCodec extends AbstractVideoCodec {
             int i = offset + (startingLine + l) * scanlineStride;
             int skipCode = in.readUnsignedByte() - 1;
             if (skipCode == EOL_CODE) {
-                isKeyFrame &= l == numberOfLines - 1;
                 break; // end of image code
             } else if (skipCode > 0) {
-                isKeyFrame = false;
                 i += skipCode;
             }
-            int x = 0;
             while (true) {
                 int opCode = in.readByte();
                 if (opCode == SKIP_CODE) {// skip op
                     skipCode = in.readUnsignedByte() - 1;
                     if (skipCode > 0) {
                         i += skipCode;
-                        x += skipCode;
                     }
                 } else if (opCode > SKIP_CODE) { // run of data op
                     AbstractVideoCodecCore.readInts24BE(in, out, i, opCode, byteBuf);
                     i += opCode;
-                    x += opCode;
                 } else if (opCode == EOL_CODE) { // end of line op
-                    isKeyFrame &= x == width;
                     break;
                 } else { // repeat op
                     int d = AbstractVideoCodecCore.readInt24BE(in, byteBuf);
                     int end = i - opCode;
                     Arrays.fill(out, i, end, d);
                     i = end;
-                    x -= opCode;
                 }
             }
             assert i <= offset + (startingLine + l + 1) * scanlineStride;
         }
         assert in.getStreamPosition() == in.length();
-        return isKeyFrame;
     }
 
 
-    public boolean decode32(byte[] inArray, int off, int length, int[] out, int[] prev, int width, int height, boolean onlyDecodeIfKeyframe) throws IOException {
+    public void decode32(byte[] inArray, int off, int length, int[] out, int[] prev, int width, int height, boolean onlyDecodeIfKeyframe) throws IOException {
         if (prev != out) {
             System.arraycopy(prev, 0, out, 0, width * height);
         }
@@ -1487,14 +1494,13 @@ public class AnimationCodec extends AbstractVideoCodec {
         // -----------------
         long chunkSize = in.readUnsignedInt();
         if (chunkSize <= 8) {
-            return false;
+            return;
         }
         if (in.length() != chunkSize) {
             throw new IOException("Illegal chunk size:" + chunkSize + " expected:" + in.length());
         }
         // Decode header
         // -----------------
-        boolean isKeyFrame = true;
         int header = in.readUnsignedShort();
         int startingLine;
         int numberOfLines;
@@ -1514,12 +1520,11 @@ public class AnimationCodec extends AbstractVideoCodec {
             if (reserved2 != 0) {
                 throw new IOException("Illegal value in reserved2 0x" + Integer.toHexString(reserved2));
             }
-            isKeyFrame = startingLine == 0 && numberOfLines == height;
         } else {
             throw new IOException("Unknown header 0x" + Integer.toHexString(header));
         }
         if (startingLine > height || numberOfLines == 0) {
-            return isKeyFrame;
+            return;
         }
         if (startingLine + numberOfLines - 1 > height) {
             throw new IOException("Illegal startingLine or numberOfLines, startingLine=" + startingLine + ", numberOfLines=" + numberOfLines);
@@ -1533,40 +1538,32 @@ public class AnimationCodec extends AbstractVideoCodec {
             int i = offset + (startingLine + l) * scanlineStride;
             int skipCode = in.readUnsignedByte() - 1;
             if (skipCode == EOL_CODE) {
-                isKeyFrame &= l == numberOfLines - 1;
                 break; // end of image code
             } else if (skipCode > 0) {
-                isKeyFrame = false;
                 i += skipCode;
             }
-            int x = 0;
             while (true) {
                 int opCode = in.readByte();
                 if (opCode == SKIP_CODE) {// skip op
                     skipCode = in.readUnsignedByte() - 1;
                     if (skipCode > 0) {
                         i += skipCode;
-                        x += skipCode;
                     }
                 } else if (opCode > SKIP_CODE) { // run of data op
                     in.readFully(out, i, opCode);
                     i += opCode;
-                    x += opCode;
                 } else if (opCode == EOL_CODE) { // end of line op
-                    isKeyFrame &= x == width;
                     break;
                 } else { // repeat op
                     int d = in.readInt();
                     int end = i - opCode;
                     Arrays.fill(out, i, end, d);
                     i = end;
-                    x -= opCode;
                 }
             }
             assert i <= offset + (startingLine + l + 1) * scanlineStride;
         }
         assert in.getStreamPosition() == in.length();
-        return isKeyFrame;
     }
 
     /**
