@@ -168,7 +168,9 @@ public class DefaultRegistry extends Registry {
         }
         for (MovieWriterSpi spi : getWriterSpis()) {
             if (spi.getFileFormat().matches(fileFormat)) {
-                return spi.create(file);
+                MovieWriter movieWriter = spi.create(file);
+                movieWriter.setFileFormat(fileFormat);
+                return movieWriter;
             }
         }
         return null;

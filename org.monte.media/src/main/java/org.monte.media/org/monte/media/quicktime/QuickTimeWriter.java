@@ -187,6 +187,7 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
             MimeTypeKey, MIME_QUICKTIME,
             EncodingKey, ENCODING_QUICKTIME_PNG, //
             CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_PNG);
+    private Format fileFormat = QUICKTIME;
 
     /**
      * Creates a new QuickTime writer.
@@ -209,7 +210,13 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
 
     @Override
     public Format getFileFormat() throws IOException {
-        return QUICKTIME;
+        return fileFormat;
+    }
+
+    @Override
+    public void setFileFormat(Format newValue) throws IOException {
+        fileFormat = QUICKTIME.append(newValue);
+        setVideoColorTable(fileFormat.get(PaletteKey, getVideoColorTable()));
     }
 
     @Override

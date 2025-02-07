@@ -7,7 +7,6 @@ package org.monte.media.quicktime;
 import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.color.Colors;
 import org.monte.media.io.ByteArrayImageInputStream;
-import org.monte.media.qtff.AtomInputStream;
 import org.monte.media.qtff.QTFFImageInputStream;
 import org.monte.media.util.MathUtil;
 
@@ -209,7 +208,7 @@ public class QuickTimeDeserializer {
                                     parseSoundSampleDescription(in, atom.size - atom.headerSize, media);
                                     break;
                                 case VIDEO:
-                                    parseVideoSampleDescription(in, atom.size - atom.headerSize, media);
+                                    parseVideoSampleDescription(in, atom.size - atom.headerSize, m, media);
                                     break;
                                 default:
                                     parseGenericSampleDescription(in, atom.size - atom.headerSize, media);
@@ -1015,7 +1014,7 @@ public class QuickTimeDeserializer {
      * } soundSampleDescriptionAtom;
      * </pre>
      */
-    protected void parseVideoSampleDescription(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
+    protected void parseVideoSampleDescription(QTFFImageInputStream in, long remainingSize, QuickTimeMeta meta, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
         if (version != 0) throw new IOException("unsupported stsd version=" + version);
         in.skipBytes(3);
@@ -1066,28 +1065,18 @@ public class QuickTimeDeserializer {
                 }
             }
 
-            int videoColorTableId = in.readShort();
-
-            d.extendData = new byte[size - 86];
-            in.readFully(d.extendData);
+            d.videoColorTableId = in.readShort();
 
             // If the color table ID is set to 0, a color table is contained within the sample description itself. The color
             //table immediately follows the color table ID field in the sample description. See “Color Table
             //Atoms” (page 41) for a complete description of a color table.
-            if (videoColorTableId == 0) {
-                final AtomInputStream atomIn = new AtomInputStream(new ByteArrayImageInputStream(d.extendData));
-                while (atomIn.available() > 0) {
-                    String atomType = atomIn.openAtom();
-                    if (atomType.equals("ctab")) {
-                        d.videoColorTable = readVideoColorTable(atomIn);
-                    }
-                    atomIn.closeAtom(atomType);
-                }
+            if (d.videoColorTableId == 0) {
+                d.videoColorTable = readVideoColorTable(in);
             }
         }
     }
 
-    private IndexColorModel readVideoColorTable(AtomInputStream in) throws IOException {
+    private IndexColorModel readVideoColorTable(QTFFImageInputStream in) throws IOException {
 
         in.readUnsignedInt(); // Color table seed. A 32-bit integer that must be set to 0.
         in.readUnsignedShort(); // Color table flags. A 16-bit integer that must be set to 0x8000.
@@ -1375,6 +1364,14 @@ public class QuickTimeDeserializer {
             int blue = in.readUnsignedShort();
             cmap[i] = ((red & 0xff00) << 8) | (green & 0xff00) | ((blue & 0xff00) >>> 8);
         }
-        meta.colorTables.add(new IndexColorModel(8, colorTableSize, cmap, 0, false, -1, DataBuffer.TYPE_BYTE));
+        IndexColorModel icm = new IndexColorModel(8, colorTableSize, cmap, 0, false, -1, DataBuffer.TYPE_BYTE);
+        meta.colorTables.add(icm);
+        for (var t : meta.tracks) {
+            for (var d : t.media.getSampleDescriptions()) {
+                if (d.videoColorTableId > 0 && d.videoColorTable == null) {
+                    d.videoColorTable = new IndexColorModel(d.videoDepth, colorTableSize, cmap, 0, false, -1, DataBuffer.TYPE_BYTE);
+                }
+            }
+        }
     }
 }

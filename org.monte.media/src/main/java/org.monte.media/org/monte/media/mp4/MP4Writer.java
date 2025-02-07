@@ -96,6 +96,11 @@ public class MP4Writer extends MP4OutputStream implements MovieWriter {
     }
 
     @Override
+    public void setFileFormat(Format newValue) throws IOException {
+        // ignore
+    }
+
+    @Override
     public Format getFormat(int track) {
         return tracks.get(track).format;
     }

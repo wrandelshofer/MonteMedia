@@ -430,19 +430,22 @@ public class AnimationCodec extends AbstractVideoCodec {
                     break;
                 }
                 case 24: {
-                    int[] pixels = getRGB24(in);
-                    if (pixels == null) {
+                    WritableRaster raster = getPackedRgb24Raster(in);
+                    if (raster == null) {
+                        out.setFlag(DISCARD);
                         return CODEC_FAILED;
-//                      throw new UnsupportedOperationException("Unable to process buffer " + in);
                     }
+                    scanlineStride = raster.getSampleModel().getWidth();
+                    int offset = raster.getDataBuffer().getOffset();
+                    int[] pixels = (((DataBufferInt) raster.getDataBuffer()).getData());
 
                     // FIXME - Support sub-images
                     if (isKeyframe //
                             || previousPixels == null) {
-                        encodeKey24(tmp, pixels, r.width, r.height, r.x + r.y * scanlineStride, scanlineStride);
+                        encodeKey24(tmp, pixels, r.width, r.height, offset, scanlineStride);
                         out.setFlag(KEYFRAME, true);
                     } else {
-                        encodeDelta24(tmp, pixels, (int[]) previousPixels, r.width, r.height, r.x + r.y * scanlineStride, scanlineStride);
+                        encodeDelta24(tmp, pixels, (int[]) previousPixels, r.width, r.height, offset, scanlineStride);
                         out.setFlag(KEYFRAME, false);
                     }
                     if (previousPixels == null) {
@@ -453,12 +456,14 @@ public class AnimationCodec extends AbstractVideoCodec {
                     break;
                 }
                 case 32: {
-                    int[] pixels = getARGB32(in);
-                    if (pixels == null) {
+                    WritableRaster raster = getPackedArgb32Raster(in);
+                    if (raster == null) {
                         out.setFlag(DISCARD);
                         return CODEC_FAILED;
-//                        return;
                     }
+                    scanlineStride = raster.getSampleModel().getWidth();
+                    int offset = raster.getDataBuffer().getOffset();
+                    int[] pixels = (((DataBufferInt) raster.getDataBuffer()).getData());
 
                     // FIXME - Support sub-images
                     if (in.isFlag(KEYFRAME) //

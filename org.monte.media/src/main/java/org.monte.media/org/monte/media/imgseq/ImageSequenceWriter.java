@@ -61,6 +61,11 @@ public class ImageSequenceWriter implements MovieWriter {
     }
 
     @Override
+    public void setFileFormat(Format newValue) throws IOException {
+        // ignore
+    }
+
+    @Override
     public int getTrackCount() {
         return 1;
     }

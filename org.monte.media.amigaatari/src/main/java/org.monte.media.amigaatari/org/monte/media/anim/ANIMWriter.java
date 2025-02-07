@@ -39,6 +39,11 @@ public class ANIMWriter extends ANIMMultiplexer implements MovieWriter {
     }
 
     @Override
+    public void setFileFormat(Format newValue) throws IOException {
+        //ignore
+    }
+
+    @Override
     public Rational getDuration(int track) {
         throw new UnsupportedOperationException("Not supported yet.");
     }

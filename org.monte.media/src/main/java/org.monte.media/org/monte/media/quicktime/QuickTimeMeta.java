@@ -1270,6 +1270,10 @@ public class QuickTimeMeta extends AbstractMovie {
             sampleDescriptions.add(d);
         }
 
+        public List<SampleDescription> getSampleDescriptions() {
+            return sampleDescriptions;
+        }
+
         /*
                 public void addSample(Sample sample, int sampleDescriptionId, boolean isSyncSample) {
                     mediaDuration += sample.duration;
@@ -1376,6 +1380,7 @@ public class QuickTimeMeta extends AbstractMovie {
      */
     protected static class SampleDescription {
 
+        public int videoColorTableId;
         /**
          * The media type.
          */

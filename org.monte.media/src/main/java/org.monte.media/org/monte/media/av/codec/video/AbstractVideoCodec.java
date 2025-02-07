@@ -10,6 +10,7 @@ import org.monte.media.av.Format;
 
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.DataBufferByte;
@@ -130,6 +131,8 @@ public abstract class AbstractVideoCodec extends AbstractCodec {
 
     /**
      * Gets 24-bit RGB pixels from a buffer. Returns null if conversion failed.
+     * <p>
+     * FIXME this does not work with sub-images use {@link #getPackedRgb24Raster(Buffer)} instead.
      */
     protected int[] getRGB24(Buffer buf) {
         if (buf.data instanceof int[]) {
@@ -153,7 +156,66 @@ public abstract class AbstractVideoCodec extends AbstractCodec {
     }
 
     /**
+     * Gets 24-bit RGB pixels from a buffer. Returns null if conversion failed.
+     */
+    protected WritableRaster getPackedRgb24Raster(Buffer buf) {
+        if (buf.data instanceof int[]) {
+            return null;
+        }
+        if (buf.data instanceof BufferedImage) {
+            BufferedImage image = (BufferedImage) buf.data;
+            if (image.getColorModel() instanceof DirectColorModel) {
+                DirectColorModel dcm = (DirectColorModel) image.getColorModel();
+                if (dcm.getBlueMask() == 0xff && dcm.getGreenMask() == 0xff00 && dcm.getRedMask() == 0xff0000) {
+                    if (image.getRaster().getDataBuffer() instanceof DataBufferInt) {
+                        return image.getRaster();
+                    }
+                }
+            }
+            Integer w = outputFormat.get(WidthKey);
+            Integer h = outputFormat.get(HeightKey);
+            int[] rgb = image.getRGB(0, 0, //
+                    w, h, //
+                    null, 0, w);
+            return WritableRaster.createPackedRaster(new DataBufferInt(rgb, rgb.length),
+                    w, h, w, new int[]{0xff0000, 0x00ff00, 0x0000ff}, new Point(0, 0));
+        }
+        return null;
+    }
+
+    /**
+     * Gets 24-bit ARGB pixels from a buffer. Returns null if conversion failed.
+     */
+    protected WritableRaster getPackedArgb32Raster(Buffer buf) {
+        if (buf.data instanceof int[]) {
+            return null;
+        }
+        if (buf.data instanceof BufferedImage) {
+            BufferedImage image = (BufferedImage) buf.data;
+            if (image.getColorModel() instanceof DirectColorModel) {
+                DirectColorModel dcm = (DirectColorModel) image.getColorModel();
+                if (dcm.getBlueMask() == 0xff && dcm.getGreenMask() == 0xff00
+                        && dcm.getRedMask() == 0xff0000 && dcm.getAlphaMask() == 0xff000000) {
+                    if (image.getRaster().getDataBuffer() instanceof DataBufferInt) {
+                        return image.getRaster();
+                    }
+                }
+            }
+            Integer w = outputFormat.get(WidthKey);
+            Integer h = outputFormat.get(HeightKey);
+            int[] rgb = image.getRGB(0, 0, //
+                    w, h, //
+                    null, 0, w);
+            return WritableRaster.createPackedRaster(new DataBufferInt(rgb, rgb.length),
+                    w, h, w, new int[]{0xff0000, 0x00ff00, 0x0000ff, 0xff000000}, new Point(0, 0));
+        }
+        return null;
+    }
+
+    /**
      * Gets 32-bit ARGB pixels from a buffer. Returns null if conversion failed.
+     * <p>
+     * FIXME this does not work with sub-images use {@link #getPackedArgb32Raster(Buffer)} instead.
      */
     protected int[] getARGB32(Buffer buf) {
         if (buf.data instanceof int[]) {

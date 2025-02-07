@@ -88,6 +88,11 @@ public class ZipMovieWriter implements MovieWriter {
     }
 
     @Override
+    public void setFileFormat(Format newValue) throws IOException {
+        // ignore
+    }
+
+    @Override
     public int addTrack(Format format) throws IOException {
         Track tr = new Track(tracks.size(), format.prepend(EncodingKey, VideoFormatKeys.ENCODING_QUICKTIME_PNG));
         tr.quality = format.get(QualityKey, 1f);

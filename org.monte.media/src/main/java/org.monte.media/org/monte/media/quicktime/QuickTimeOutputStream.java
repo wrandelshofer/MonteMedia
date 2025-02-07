@@ -1030,8 +1030,8 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
         }
 
         // Optional color table atom
-        if (videoColorTable != null) {
-            writeVideoColorTableAtom(videoColorTable, moovAtom);
+        if (movieVideoColorTable instanceof IndexColorModel icm) {
+            writeVideoColorTableAtom(icm, moovAtom);
         }
 
 
@@ -2193,7 +2193,8 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
         // 34, 36, and 40 indicate 2-, 4-, and 8-bit grayscale,
         // respectively, for grayscale images.
 
-        d.writeShort(t.videoColorTable == null ? -1 : 0); // sampleDescriptionTable.videoSampleDescription.colorTableID
+        int colorTableId = t.videoColorTable == null ? (movieVideoColorTable == null ? -1 : 1) : 0;
+        d.writeShort(colorTableId); // sampleDescriptionTable.videoSampleDescription.colorTableID
         // A 16-bit integer that identifies which color table to use.
         // If this field is set to –1, the default color table should be
         // used for the specified depth. For all depths below 16 bits
@@ -2204,8 +2205,8 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
         // within the sample description itself. The color table immediately
         // follows the color table ID field in the sample description.
         // See “Color Table Atoms” (page 41) for a complete description of a color table.
-        if (t.videoColorTable != null) {
-            writeVideoColorTableAtom(t.videoColorTable, leaf);
+        if (colorTableId == 0) {
+            writeVideoColorTable(t.videoColorTable, leaf);
         }
 
         if (t.avcDecoderConfigurationRecord != null) {
@@ -2353,9 +2354,13 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
      */
     protected void writeVideoColorTableAtom(IndexColorModel videoColorTable, CompositeAtom stblAtom) throws IOException {
         DataAtom leaf;
-        QTFFImageOutputStream d;
         leaf = new DataAtom("ctab", out);
         stblAtom.add(leaf);
+        writeVideoColorTable(videoColorTable, leaf);
+    }
+
+    protected void writeVideoColorTable(IndexColorModel videoColorTable, DataAtom leaf) throws IOException {
+        QTFFImageOutputStream d;
 
         d = leaf.getOutputStream();
 
@@ -2365,17 +2370,17 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
         // Color table size. A 16-bit integer that indicates the number of
         // colors in the following color array. This is a zero-relative value;
         // setting this field to 0 means that there is one color in the array.
-
         for (int i = 0, n = videoColorTable.getMapSize(); i < n; ++i) {
             // An array of colors. Each color is made of four unsigned 16-bit integers.
             // The first integer must be set to 0, the second is the red value,
             // the third is the green value, and the fourth is the blue value.
-            d.writeUShort(0);
+            d.writeUShort(0);//alpha
             d.writeUShort((videoColorTable.getRed(i) << 8) | videoColorTable.getRed(i));
             d.writeUShort((videoColorTable.getGreen(i) << 8) | videoColorTable.getGreen(i));
             d.writeUShort((videoColorTable.getBlue(i) << 8) | videoColorTable.getBlue(i));
         }
     }
+
 
     protected void writeAudioSampleDescriptionAtom(AudioTrack t, CompositeAtom stblAtom) throws IOException {
         // TO DO
@@ -2538,13 +2543,13 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
     }
 
 
-    private IndexColorModel videoColorTable = null;
+    private ColorModel movieVideoColorTable = null;
 
-    public IndexColorModel getVideoColorTable() {
-        return videoColorTable;
+    public ColorModel getVideoColorTable() {
+        return movieVideoColorTable;
     }
 
-    public void setVideoColorTable(IndexColorModel videoColorTable) {
-        this.videoColorTable = videoColorTable;
+    public void setVideoColorTable(ColorModel videoColorTable) {
+        this.movieVideoColorTable = videoColorTable;
     }
 }
