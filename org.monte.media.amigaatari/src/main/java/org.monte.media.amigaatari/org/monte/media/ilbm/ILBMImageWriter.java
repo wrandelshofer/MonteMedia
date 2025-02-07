@@ -19,8 +19,8 @@ import java.io.File;
 import java.io.IOException;
 
 public class ILBMImageWriter extends ImageWriter {
-    protected ILBMImageWriter(ImageWriterSpi originatingProvider) {
-        super(originatingProvider);
+    protected ILBMImageWriter(ImageWriterSpi originator) {
+        super(originator);
     }
 
     @Override
