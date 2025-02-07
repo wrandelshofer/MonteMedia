@@ -21,6 +21,7 @@ public class AmigaHAMColorModel extends DirectColorModel {
     protected int map_size;
     protected boolean opaque;
     protected int[] rgb;
+    protected boolean isOCS;
 
     /**
      * Creates a new HAM Color model using the specified base colors.
@@ -38,6 +39,7 @@ public class AmigaHAMColorModel extends DirectColorModel {
             throw new IllegalArgumentException("Unknown HAM Type: " + aHAMType);
         }
         HAMType = aHAMType;
+        this.isOCS = isOCS;
         if (isOCS) {
             byte[] r8 = new byte[size];
             byte[] g8 = new byte[size];
@@ -51,6 +53,10 @@ public class AmigaHAMColorModel extends DirectColorModel {
         } else {
             setRGBs(size, r, g, b, null);
         }
+    }
+
+    public boolean isOCS() {
+        return isOCS;
     }
 
     /**

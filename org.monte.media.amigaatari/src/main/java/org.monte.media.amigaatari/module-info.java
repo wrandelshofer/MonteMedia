@@ -65,4 +65,6 @@ module org.monte.media.amigaatari {
     provides javax.imageio.spi.ImageReaderSpi with
             org.monte.media.pbm.PBMImageReaderSpi,
             org.monte.media.ilbm.ILBMImageReaderSpi;
+    provides javax.imageio.spi.ImageWriterSpi with
+            org.monte.media.ilbm.ILBMImageWriterSpi;
 }

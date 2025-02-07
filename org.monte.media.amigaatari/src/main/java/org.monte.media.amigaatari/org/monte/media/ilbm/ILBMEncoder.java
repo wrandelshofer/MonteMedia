@@ -5,12 +5,18 @@
 package org.monte.media.ilbm;
 
 import org.monte.media.amigabitmap.AmigaBitmapImage;
+import org.monte.media.amigabitmap.AmigaDisplayInfo;
+import org.monte.media.amigabitmap.AmigaHAMColorModel;
 import org.monte.media.iff.IFFOutputStream;
 
 import javax.imageio.stream.FileImageOutputStream;
+import javax.imageio.stream.ImageOutputStream;
+import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * {@code ILBMEncoder}.
@@ -22,21 +28,83 @@ public class ILBMEncoder {
     public ILBMEncoder() {
     }
 
-    public void write(File f, AmigaBitmapImage img, int camg) throws IOException {
-        IFFOutputStream out = null;
-        try {
-            out = new IFFOutputStream(new FileImageOutputStream(f));
+    private Integer guessCAMG(AmigaBitmapImage img, Integer camg) {
+        if (camg != null) return camg;
+        int width = img.getWidth();
+        int height = img.getHeight();
+        ColorModel cm = img.getPlanarColorModel();
+        boolean isHam = cm instanceof AmigaHAMColorModel hamc;
+        boolean isOcs = cm instanceof AmigaHAMColorModel hamc && hamc.isOCS()
+                || isOcs(cm);
+        List<AmigaDisplayInfo> candidates = new ArrayList<>();
+        for (AmigaDisplayInfo info : AmigaDisplayInfo.getAllInfos().values()) {
+            boolean minMaxSizeFits = info.maximalSizeWidth <= width && width <= info.maximalSizeWidth
+                    && info.minimalSizeHeight <= height && height <= info.maximalSizeHeight;
+            boolean textSizeFitsPerfectly = minMaxSizeFits && width == info.textOverscanWidth
+                    && height == info.textOverscanHeight;
+            boolean colorFits = info.isHAM() == isHam && info.isOCS() == isOcs
+                    && (info.colorRegisterDepth == 4 && cm.getPixelSize() <= 4)
+                    || (info.colorRegisterDepth == 8 && cm.getPixelSize() <= 8);
+            if (colorFits && minMaxSizeFits) {
+                if (textSizeFitsPerfectly) {
+                    return info.camg;
+                }
+                candidates.add(info);
+            }
+        }
+        for (AmigaDisplayInfo info : candidates) {
+            boolean textSizeTooSmall = width > info.textOverscanWidth
+                    && height > info.textOverscanHeight;
+            boolean overscanSizeFits = width <= info.maxOverscanWidth
+                    && height <= info.maxOverscanHeight;
+            if (textSizeTooSmall && overscanSizeFits) {
+                return info.camg;
+            }
+        }
+        return null;
+    }
 
+    private boolean isOcs(ColorModel cm) {
+        if (cm instanceof IndexColorModel icm) {
+            int[] rgbs = new int[icm.getMapSize()];
+            icm.getRGBs(rgbs);
+            for (int i = 0; i < rgbs.length; i++) {
+                int rgb = rgbs[i];
+                boolean isOcs = ((rgb & 0xf0f0f0f0) >> 4) == (rgb & 0x0f0f0f0f);
+                if (!isOcs) return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+
+    public void write(File f, AmigaBitmapImage img, Integer camg) throws IOException {
+        Integer guessedCamg = guessCAMG(img, camg);
+        try (IFFOutputStream out = new IFFOutputStream(new FileImageOutputStream(f))) {
             out.pushCompositeChunk("FORM", "ILBM");
             writeBMHD(out, img);
             writeCMAP(out, img);
-            writeCAMG(out, camg);
+            if (guessedCamg != null) {
+                writeCAMG(out, guessedCamg);
+            }
             writeBODY(out, img);
             out.popChunk();
-        } finally {
-            if (out != null) {
-                out.close();
+        }
+    }
+
+
+    public void write(ImageOutputStream f, AmigaBitmapImage img, Integer camg) throws IOException {
+        Integer guessedCamg = guessCAMG(img, camg);
+        try (IFFOutputStream out = new IFFOutputStream(f)) {
+            out.pushCompositeChunk("FORM", "ILBM");
+            writeBMHD(out, img);
+            writeCMAP(out, img);
+            if (guessedCamg != null) {
+                writeCAMG(out, guessedCamg);
             }
+            writeBODY(out, img);
+            out.popChunk();
         }
     }
 

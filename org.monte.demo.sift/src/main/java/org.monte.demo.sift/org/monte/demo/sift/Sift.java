@@ -10,6 +10,7 @@ import org.monte.media.exception.ParseException;
 import org.monte.media.iff.IFFChunk;
 import org.monte.media.iff.IFFParser;
 import org.monte.media.iff.IFFVisitor;
+import org.monte.media.util.HexDump;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,12 +31,12 @@ public class Sift {
         this.hexdump = hexdump;
     }
 
+
     public void sift(Path path) throws IOException, ParseException, AbortException {
         class MyVisitor implements IFFVisitor {
             private int index = 0;
             private int depth = 0;
             private int maxAddressDigits = 1;
-            private final static String hex = "0123456789abcdef";
 
             @Override
             public void enterGroup(IFFChunk group) throws ParseException, AbortException {
@@ -78,30 +79,10 @@ public class Sift {
             private void printHexdump(IFFChunk chunk) {
                 byte[] data = chunk.getData();
                 long scan = chunk.getScan();
-                StringBuilder buf = new StringBuilder();
-                for (int y = 0; y < data.length; y += 16) {
-                    buf.setLength(0);
-                    String address = Long.toHexString(scan + y);
-                    for (int i = 0; i + address.length() < maxAddressDigits; i++) {
-                        buf.append('0');
-                    }
-                    buf.append(address);
-                    buf.append(": ");
-
-                    for (int x = 0; x < 16 && x + y < data.length; x++) {
-                        byte b = data[x + y];
-                        buf.append(hex.charAt((b & 0xf0) >>> 4));
-                        buf.append(hex.charAt(b & 0xf));
-                        buf.append(' ');
-                    }
-                    while (buf.length() < maxAddressDigits + 51) {
-                        buf.append(' ');
-                    }
-                    for (int x = 0; x < 16 && x + y < data.length; x++) {
-                        char c = (char) (data[x + y] & 0xff);
-                        buf.append((Character.isISOControl(c) ? '.' : c));
-                    }
-                    System.out.println(buf);
+                try {
+                    new HexDump().formatHex(System.out, data, 0, (int) chunk.getSize(), scan, maxAddressDigits);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
             }
         }
@@ -110,4 +91,6 @@ public class Sift {
             new IFFParser().parse(in, visitor);
         }
     }
+
+
 }
