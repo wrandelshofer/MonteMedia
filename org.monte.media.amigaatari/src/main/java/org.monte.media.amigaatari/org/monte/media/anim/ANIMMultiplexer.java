@@ -12,6 +12,7 @@ import org.monte.media.av.Multiplexer;
 import org.monte.media.math.Rational;
 
 import javax.imageio.stream.ImageOutputStream;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -67,8 +68,21 @@ public class ANIMMultiplexer implements Multiplexer {
                     outputTime.add(new Rational(outputMediaDuration, jiffies));
             // System.out.println("ANIMMultiplexer #" + frameCount + " jiffies:"+jiffies+" movieT:" + outputTime + " inputT:" + inputTime+" diff:"+(outputTime.subtract(inputTime))+ " sampleDuration:" + outputMediaDuration + " == " + outputDuration+" ~= "+buf.sampleDuration);
 
-            out.writeFrame((AmigaBitmapImage) buf.data, outputMediaDuration);
+            out.writeFrame(toAmigaBitmap(trackIndex, buf), outputMediaDuration);
         }
+    }
+
+    private static AmigaBitmapImage toAmigaBitmap(int trackIndex, Buffer buf) throws IOException {
+        if (buf.data instanceof AmigaBitmapImage bmp) {
+            return bmp;
+        }
+        if (buf.data instanceof BufferedImage img) {
+            var bmp = new AmigaBitmapImage(img.getWidth(), img.getHeight(), img.getColorModel().getPixelSize(), img.getColorModel());
+            bmp.convertFromChunky(img);
+            return bmp;
+
+        }
+        throw new IOException("can not convert buffer to amiga bitmap, buf.data=" + buf.data);
     }
 
     @Override

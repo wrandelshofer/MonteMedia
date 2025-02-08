@@ -21,7 +21,7 @@ import java.util.Iterator;
 public class AmigaVideoFormatKeys extends VideoFormatKeys {
 
     /**
-     * The Amiga monitor id.
+     * The Amiga "CAMG" monitor id.
      */
     public final static FormatKey<Integer> MonitorIdKey = new FormatKey<>("monitorId", Integer.class);
     /**
