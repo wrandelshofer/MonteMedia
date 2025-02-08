@@ -130,6 +130,9 @@ public class AmigaVideoFormatKeys extends VideoFormatKeys {
     }
 
     private static void reduceListRational(Rational value, InfGetter<Rational> g, ArrayList<AmigaDisplayInfo> infs) {
+        if (infs.isEmpty()) {
+            return;
+        }
         ArrayList<AmigaDisplayInfo> bestInfs = new ArrayList<>();
         bestInfs.add(infs.get(0));
         float bestCost = g.get(infs.get(0)).subtract(value).floatValue();
@@ -155,6 +158,9 @@ public class AmigaVideoFormatKeys extends VideoFormatKeys {
     }
 
     private static void reduceListInteger(int value, InfGetter<Integer> g, ArrayList<AmigaDisplayInfo> infs) {
+        if (infs.isEmpty()) {
+            return;
+        }
         ArrayList<AmigaDisplayInfo> bestInfs = new ArrayList<>();
         bestInfs.add(infs.get(0));
         float bestCost = g.get(infs.get(0)) - value;
@@ -180,6 +186,9 @@ public class AmigaVideoFormatKeys extends VideoFormatKeys {
     }
 
     private static void reduceListIntegerOnlyTakeIfSmaller(int value, InfGetter<Integer> g, ArrayList<AmigaDisplayInfo> infs) {
+        if (infs.isEmpty()) {
+            return;
+        }
         reduceListInteger(value, g, infs);
         for (Iterator<AmigaDisplayInfo> i = infs.iterator(); i.hasNext(); ) {
             AmigaDisplayInfo inf = i.next();
@@ -191,6 +200,9 @@ public class AmigaVideoFormatKeys extends VideoFormatKeys {
     }
 
     private static void reduceListBoolean(boolean value, InfGetter<Boolean> g, ArrayList<AmigaDisplayInfo> infs) {
+        if (infs.isEmpty()) {
+            return;
+        }
         for (Iterator<AmigaDisplayInfo> i = infs.iterator(); i.hasNext(); ) {
             AmigaDisplayInfo inf = i.next();
             boolean iv = g.get(inf);
