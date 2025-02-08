@@ -106,4 +106,9 @@ public class ANIMMultiplexer implements Multiplexer {
     public void setCAMG(int newValue) {
         out.setCAMG(newValue);
     }
+
+    public int getCAMG() {
+        return out.getCAMG();
+    }
+
 }
