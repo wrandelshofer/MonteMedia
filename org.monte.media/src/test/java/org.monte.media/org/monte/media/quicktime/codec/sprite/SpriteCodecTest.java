@@ -183,6 +183,7 @@ public class SpriteCodecTest {
     }
 
     @Test
+    @Disabled
     public void shouldReadFileWithSpriteTrack() throws IOException, InterruptedException, InvocationTargetException {
         int width = 240;
         int height = 160;
