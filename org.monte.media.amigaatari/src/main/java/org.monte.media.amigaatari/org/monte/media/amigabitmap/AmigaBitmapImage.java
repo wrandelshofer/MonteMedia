@@ -1263,148 +1263,184 @@ public class AmigaBitmapImage
 
         switch (depth) {
             case 1:
-                if (true) throw new UnsupportedOperationException(depth + " not yet implemented");
                 for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
                     for (x = left; x < right; x++) {
-                        bytePixels[iPixel++] = (byte) (((bitmap[iScanline + (x >>> 3)] << (x & 7)) & 128) >>> 7);
+                        iBit = x & 7;
+                        iBitmap = iScanline + (x >>> 3);
+
+                        int px = bytePixels[iPixel++];
+                        b0 = (b0 << 1) | ((px) & 1);
+
+                        if (iBit == 7) {
+                            bitmap[iBitmap] = (byte) b0;
+                        }
                     }
+                    // FIXME - Add special treatment here when width is not a multiple of 8
+
                     iPixel += pixelLineStride;
                 }
                 break;
 
             case 2:
-                if (true) throw new UnsupportedOperationException(depth + " not yet implemented");
                 for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
                     for (x = left; x < right; x++) {
                         iBit = x & 7;
-                        bitMask = 128 >>> (iBit);
                         iBitmap = iScanline + (x >>> 3);
 
-                        bytePixels[iPixel++] = (byte) (((bitmap[iBitmap] & bitMask)
-                                | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1) >>> (7 - iBit));
+                        int px = bytePixels[iPixel++];
+                        b1 = (b1 << 1) | ((px >>> 1) & 1);
+                        b0 = (b0 << 1) | ((px) & 1);
+
+                        if (iBit == 7) {
+                            bitmap[iBitmap] = (byte) b0;
+                            bitmap[iBitmap + bitplaneStride] = (byte) b1;
+                        }
                     }
+                    // FIXME - Add special treatment here when width is not a multiple of 8
+
                     iPixel += pixelLineStride;
                 }
                 break;
 
             case 3:
-                if (true) throw new UnsupportedOperationException(depth + " not yet implemented");
                 for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
                     for (x = left; x < right; x++) {
                         iBit = x & 7;
-                        bitMask = 128 >>> (iBit);
                         iBitmap = iScanline + (x >>> 3);
 
-                        bytePixels[iPixel++] = (byte) (((bitmap[iBitmap] & bitMask)
-                                | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1
-                                | (bitmap[iBitmap + bitplaneStride2] & bitMask) << 2) >>> (7 - iBit));
+                        int px = bytePixels[iPixel++];
+                        b2 = (b2 << 1) | ((px >>> 2) & 1);
+                        b1 = (b1 << 1) | ((px >>> 1) & 1);
+                        b0 = (b0 << 1) | ((px) & 1);
+
+                        if (iBit == 7) {
+                            bitmap[iBitmap] = (byte) b0;
+                            bitmap[iBitmap + bitplaneStride] = (byte) b1;
+                            bitmap[iBitmap + bitplaneStride2] = (byte) b2;
+                        }
                     }
+                    // FIXME - Add special treatment here when width is not a multiple of 8
+
                     iPixel += pixelLineStride;
                 }
                 break;
 
             case 4:
-                if (true) throw new UnsupportedOperationException(depth + " not yet implemented");
                 for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
                     for (x = left; x < right; x++) {
                         iBit = x & 7;
                         bitMask = 128 >>> (iBit);
                         iBitmap = iScanline + (x >>> 3);
 
-                        bytePixels[iPixel++] = (byte) (((bitmap[iBitmap] & bitMask)
-                                | (bitmap[iBitmap + bitplaneStride1] & bitMask) << 1
-                                | (bitmap[iBitmap + bitplaneStride2] & bitMask) << 2
-                                | (bitmap[iBitmap + bitplaneStride3] & bitMask) << 3) >>> (7 - iBit));
-                    }
-                    iPixel += pixelLineStride;
-                }
-                break;
+                        int px = bytePixels[iPixel++];
+                        b3 = (b3 << 1) | ((px >>> 3) & 1);
+                        b2 = (b2 << 1) | ((px >>> 2) & 1);
+                        b1 = (b1 << 1) | ((px >>> 1) & 1);
+                        b0 = (b0 << 1) | ((px) & 1);
 
-            case 5:
-                if (true) throw new UnsupportedOperationException(depth + " not yet implemented");
-                for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
-                    for (x = left; x < right; x++) {
-                        iBit = x & 7;
-                        bitMask = 128 >>> (iBit);
-                        iBitmap = iScanline + (x >>> 3);
-                        if (iBit == 0) {
-                            b0 = bitmap[iBitmap];
-                            b1 = bitmap[iBitmap + bitplaneStride];
-                            b2 = bitmap[iBitmap + bitplaneStride2];
-                            b3 = bitmap[iBitmap + bitplaneStride3];
-                            b4 = bitmap[iBitmap + bitplaneStride4];
+                        if (iBit == 7) {
+                            bitmap[iBitmap] = (byte) b0;
+                            bitmap[iBitmap + bitplaneStride] = (byte) b1;
+                            bitmap[iBitmap + bitplaneStride2] = (byte) b2;
+                            bitmap[iBitmap + bitplaneStride3] = (byte) b3;
                         }
-                        bytePixels[iPixel++] = (byte) (((b0 & bitMask)
-                                | (b1 & bitMask) << 1
-                                | (b2 & bitMask) << 2
-                                | (b3 & bitMask) << 3
-                                | (b4 & bitMask) << 4) >>> (7 - iBit));
                     }
+                    // FIXME - Add special treatment here when width is not a multiple of 8
+
                     iPixel += pixelLineStride;
                 }
                 break;
+            case 5:
+                for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
+                    for (x = left; x < right; x++) {
+                        iBit = x & 7;
+                        iBitmap = iScanline + (x >>> 3);
+
+                        int px = bytePixels[iPixel++];
+                        b4 = (b4 << 1) | ((px >>> 4) & 1);
+                        b3 = (b3 << 1) | ((px >>> 3) & 1);
+                        b2 = (b2 << 1) | ((px >>> 2) & 1);
+                        b1 = (b1 << 1) | ((px >>> 1) & 1);
+                        b0 = (b0 << 1) | ((px) & 1);
+
+                        if (iBit == 7) {
+                            bitmap[iBitmap] = (byte) b0;
+                            bitmap[iBitmap + bitplaneStride] = (byte) b1;
+                            bitmap[iBitmap + bitplaneStride2] = (byte) b2;
+                            bitmap[iBitmap + bitplaneStride3] = (byte) b3;
+                            bitmap[iBitmap + bitplaneStride4] = (byte) b4;
+                        }
+                    }
+                    // FIXME - Add special treatment here when width is not a multiple of 8
+
+                    iPixel += pixelLineStride;
+                }
+                break;
+
 
             case 6:
-                if (true) throw new UnsupportedOperationException(depth + " not yet implemented");
                 for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
                     for (x = left; x < right; x++) {
                         iBit = x & 7;
-                        bitMask = 128 >>> (iBit);
                         iBitmap = iScanline + (x >>> 3);
 
-                        if (iBit == 0) {
-                            b0 = bitmap[iBitmap];
-                            b1 = bitmap[iBitmap + bitplaneStride];
-                            b2 = bitmap[iBitmap + bitplaneStride2];
-                            b3 = bitmap[iBitmap + bitplaneStride3];
-                            b4 = bitmap[iBitmap + bitplaneStride4];
-                            b5 = bitmap[iBitmap + bitplaneStride5];
+                        int px = bytePixels[iPixel++];
+                        b5 = (b5 << 1) | ((px >>> 5) & 1);
+                        b4 = (b4 << 1) | ((px >>> 4) & 1);
+                        b3 = (b3 << 1) | ((px >>> 3) & 1);
+                        b2 = (b2 << 1) | ((px >>> 2) & 1);
+                        b1 = (b1 << 1) | ((px >>> 1) & 1);
+                        b0 = (b0 << 1) | ((px) & 1);
+
+                        if (iBit == 7) {
+                            bitmap[iBitmap] = (byte) b0;
+                            bitmap[iBitmap + bitplaneStride] = (byte) b1;
+                            bitmap[iBitmap + bitplaneStride2] = (byte) b2;
+                            bitmap[iBitmap + bitplaneStride3] = (byte) b3;
+                            bitmap[iBitmap + bitplaneStride4] = (byte) b4;
+                            bitmap[iBitmap + bitplaneStride5] = (byte) b5;
                         }
-                        bytePixels[iPixel++] = (byte) (((b0 & bitMask)
-                                | (b1 & bitMask) << 1
-                                | (b2 & bitMask) << 2
-                                | (b3 & bitMask) << 3
-                                | (b4 & bitMask) << 4
-                                | (b5 & bitMask) << 5) >>> (7 - iBit));
                     }
+                    // FIXME - Add special treatment here when width is not a multiple of 8
+
                     iPixel += pixelLineStride;
                 }
                 break;
 
             case 7:
-                if (true) throw new UnsupportedOperationException(depth + " not yet implemented");
                 for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
                     for (x = left; x < right; x++) {
                         iBit = x & 7;
-                        bitMask = 128 >>> (iBit);
                         iBitmap = iScanline + (x >>> 3);
 
-                        if (iBit == 0) {
-                            b0 = bitmap[iBitmap];
-                            b1 = bitmap[iBitmap + bitplaneStride];
-                            b2 = bitmap[iBitmap + bitplaneStride2];
-                            b3 = bitmap[iBitmap + bitplaneStride3];
-                            b4 = bitmap[iBitmap + bitplaneStride4];
-                            b5 = bitmap[iBitmap + bitplaneStride5];
-                            b6 = bitmap[iBitmap + bitplaneStride6];
+                        int px = bytePixels[iPixel++];
+                        b6 = (b6 << 1) | ((px >>> 6) & 1);
+                        b5 = (b5 << 1) | ((px >>> 5) & 1);
+                        b4 = (b4 << 1) | ((px >>> 4) & 1);
+                        b3 = (b3 << 1) | ((px >>> 3) & 1);
+                        b2 = (b2 << 1) | ((px >>> 2) & 1);
+                        b1 = (b1 << 1) | ((px >>> 1) & 1);
+                        b0 = (b0 << 1) | ((px) & 1);
+
+                        if (iBit == 7) {
+                            bitmap[iBitmap] = (byte) b0;
+                            bitmap[iBitmap + bitplaneStride] = (byte) b1;
+                            bitmap[iBitmap + bitplaneStride2] = (byte) b2;
+                            bitmap[iBitmap + bitplaneStride3] = (byte) b3;
+                            bitmap[iBitmap + bitplaneStride4] = (byte) b4;
+                            bitmap[iBitmap + bitplaneStride5] = (byte) b5;
+                            bitmap[iBitmap + bitplaneStride6] = (byte) b6;
                         }
-                        bytePixels[iPixel++] = (byte) (((b0 & bitMask)
-                                | (b1 & bitMask) << 1
-                                | (b2 & bitMask) << 2
-                                | (b3 & bitMask) << 3
-                                | (b4 & bitMask) << 4
-                                | (b5 & bitMask) << 5
-                                | (b6 & bitMask) << 6) >>> (7 - iBit));
                     }
+                    // FIXME - Add special treatment here when width is not a multiple of 8
+
                     iPixel += pixelLineStride;
                 }
                 break;
-
             case 8:
                 for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
                     for (x = left; x < right; x++) {
                         iBit = x & 7;
-                        bitMask = 128 >>> (iBit);
                         iBitmap = iScanline + (x >>> 3);
 
                         int px = bytePixels[iPixel++];
@@ -1415,7 +1451,7 @@ public class AmigaBitmapImage
                         b3 = (b3 << 1) | ((px >>> 3) & 1);
                         b2 = (b2 << 1) | ((px >>> 2) & 1);
                         b1 = (b1 << 1) | ((px >>> 1) & 1);
-                        b0 = (b0 << 1) | ((px >>> 0) & 1);
+                        b0 = (b0 << 1) | ((px) & 1);
 
                         if (iBit == 7) {
                             bitmap[iBitmap] = (byte) b0;

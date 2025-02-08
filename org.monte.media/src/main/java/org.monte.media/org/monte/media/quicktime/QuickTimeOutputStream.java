@@ -66,7 +66,7 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
      */
     public QuickTimeOutputStream(File file) throws IOException {
         if (file.exists()) {
-            if (!file.delete()) throw new IOException("can not delete file");
+            if (!file.delete()) throw new IOException("can not delete file " + file);
         }
         this.out = new FileImageOutputStream(file);
         this.streamOffset = 0;

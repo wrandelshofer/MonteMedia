@@ -153,6 +153,9 @@ public class ANIMOutputStream {
     private States state = States.REALIZED;
 
     public ANIMOutputStream(File file) throws IOException {
+        if (file.exists()) {
+            if (!file.delete()) throw new IOException("can not delete file " + file);
+        }
         out = new IFFOutputStream(new FileImageOutputStream(file));
     }
 
@@ -532,7 +535,7 @@ public class ANIMOutputStream {
         int depth = img.getDepth();
 
         for (int p = 0; p < depth; ++p) {
-            buf.reset();
+            buf.clear();
 
             // Each column of the plane is compressed separately.
             for (int column = 0; column < widthInBytes; ++column) {
@@ -573,9 +576,7 @@ public class ANIMOutputStream {
             out.writeULONG(pPointers[p]);
         }
         // write deltas
-        for (int p = 0; p
-                < planes.length;
-             ++p) {
+        for (int p = 0; p < planes.length; ++p) {
             out.write(planes[p]);
         }
         out.popChunk();
@@ -601,7 +602,6 @@ public class ANIMOutputStream {
 
         // Start offset of the literal run
         int literalOffset = 0;
-
         int i;
         for (i = 0; i < length; i++) {
             // Count skips

@@ -4,6 +4,7 @@
  */
 package org.monte.media.anim;
 
+import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.av.MovieWriter;
@@ -93,7 +94,10 @@ public class ANIMWriter extends ANIMMultiplexer implements MovieWriter {
 
     @Override
     public void write(int track, BufferedImage image, long duration) throws IOException {
-        throw new UnsupportedOperationException("not implemented yet");
+        Buffer buf = new Buffer();
+        buf.data = image;
+        buf.sampleDuration = Rational.valueOf(duration, 1000);
+        write(track, buf);
     }
 
 

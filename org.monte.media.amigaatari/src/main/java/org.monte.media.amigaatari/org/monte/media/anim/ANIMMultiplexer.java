@@ -68,7 +68,8 @@ public class ANIMMultiplexer implements Multiplexer {
                     outputTime.add(new Rational(outputMediaDuration, jiffies));
             // System.out.println("ANIMMultiplexer #" + frameCount + " jiffies:"+jiffies+" movieT:" + outputTime + " inputT:" + inputTime+" diff:"+(outputTime.subtract(inputTime))+ " sampleDuration:" + outputMediaDuration + " == " + outputDuration+" ~= "+buf.sampleDuration);
 
-            out.writeFrame(toAmigaBitmap(trackIndex, buf), outputMediaDuration);
+            AmigaBitmapImage amigaBitmap = toAmigaBitmap(trackIndex, buf);
+            out.writeFrame(amigaBitmap, outputMediaDuration);
         }
     }
 
