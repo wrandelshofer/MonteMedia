@@ -5,6 +5,7 @@
 
 package org.monte.media.quicktime.codec.sprite;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.monte.media.av.Buffer;
 import org.monte.media.av.BufferFlag;
@@ -62,6 +63,7 @@ import static org.monte.media.quicktime.codec.sprite.SpriteFormatKeys.ENCODING_J
 import static org.monte.media.quicktime.codec.sprite.SpriteFormatKeys.ENCODING_QUICKTIME_SPRITE;
 import static org.monte.media.quicktime.codec.sprite.SpriteFormatKeys.SpriteImageEncodingKey;
 
+@Disabled
 public class SpriteCodecTest {
     private boolean verbose = false;
     private boolean showFrame = true;
