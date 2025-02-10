@@ -5,7 +5,6 @@
 
 package org.monte.media.quicktime.codec.sprite;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.monte.media.av.Buffer;
 import org.monte.media.av.BufferFlag;
@@ -56,21 +55,27 @@ import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.FormatKeys.MimeTypeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_ANIMATION;
+import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_PNG;
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 import static org.monte.media.quicktime.codec.sprite.SpriteFormatKeys.ENCODING_JAVA_SPRITE;
 import static org.monte.media.quicktime.codec.sprite.SpriteFormatKeys.ENCODING_QUICKTIME_SPRITE;
+import static org.monte.media.quicktime.codec.sprite.SpriteFormatKeys.SpriteImageEncodingKey;
 
 public class SpriteCodecTest {
+    private boolean verbose = false;
+    private boolean showFrame = true;
+
     @Test
-    @Disabled
+
     public void shouldEncodeSprite() throws IOException {
         SpriteCodec codec = new SpriteCodec();
         codec.setInputFormat(new Format(MediaTypeKey, FormatKeys.MediaType.SPRITE, MimeTypeKey, MIME_JAVA,
                 EncodingKey, ENCODING_JAVA_SPRITE, DataClassKey, SpriteSample.class));
         Format outputFormat = codec.setOutputFormat(
                 new Format(MediaTypeKey, FormatKeys.MediaType.SPRITE, MimeTypeKey, MIME_QUICKTIME,
-                        EncodingKey, ENCODING_QUICKTIME_SPRITE, DataClassKey, byte[].class));
+                        EncodingKey, ENCODING_QUICKTIME_SPRITE, DataClassKey, byte[].class,
+                        SpriteImageEncodingKey, ENCODING_QUICKTIME_PNG));
 
         // encode a key frame
         SpriteSample spriteSample = new SpriteSample();
@@ -80,37 +85,39 @@ public class SpriteCodecTest {
         var in = new Buffer();
         in.data = spriteSample;
         var out = new Buffer();
-        System.out.println("KeyFrame");
+        if (verbose) System.out.println("KeyFrame");
         doEncodeSprite(spriteSample, codec, in, out);
-        assertEquals(3633, out.length);
+        assertEquals(3719, out.length);
         assertEquals(outputFormat, out.format);
 
         // encode a delta frame
         spriteSample.sprites.put(1, new Sprite(1, 1, true, 1, AffineTransform.translate(20, 30)));
         in.data = spriteSample;
-        System.out.println("DeltaFrame");
+        if (verbose) System.out.println("DeltaFrame");
         doEncodeSprite(spriteSample, codec, in, out);
-        assertEquals(142, out.length);
+        assertEquals(96, out.length);
 
         // encode another delta frame
         spriteSample.sprites.put(1, new Sprite(1, 2, true, 1, AffineTransform.translate(20, 30)));
         in.data = spriteSample;
-        System.out.println("DeltaFrame");
+        if (verbose) System.out.println("DeltaFrame");
         doEncodeSprite(spriteSample, codec, in, out);
-        assertEquals(104, out.length);
+        assertEquals(62, out.length);
     }
 
-    private static void doEncodeSprite(SpriteSample spriteSample, SpriteCodec codec, Buffer in, Buffer out) {
+    private void doEncodeSprite(SpriteSample spriteSample, SpriteCodec codec, Buffer in, Buffer out) {
         var status = codec.process(in, out);
         assertEquals(Codec.CODEC_OK, status, "codec must not have failed");
-        HexDump hexDump = new HexDump();
-        String actual = hexDump.formatHex((byte[]) out.data, out.offset, out.length);
-        System.out.println(actual);
+        if (verbose) {
+            HexDump hexDump = new HexDump();
+            String actual = hexDump.formatHex((byte[]) out.data, out.offset, out.length);
+            System.out.println(actual);
+        }
 
     }
 
     @Test
-    @Disabled
+
     public void shouldWriteAndReadVideoWithSpriteTrack32Bit() throws IOException, InterruptedException, InvocationTargetException {
         int width = 640;
         int height = 480;
@@ -131,11 +138,11 @@ public class SpriteCodecTest {
         assertNotNull(cursorBlackPressed, cursorBlackPressedResource);
 
         doWrite(file, fileFormat, spriteTrackFormat, cursorBlack, cursorBlackPressed);
-        doRead(file, fileFormat, spriteTrackFormat, false);
+        doRead(file, fileFormat, spriteTrackFormat, showFrame);
     }
 
     @Test
-    @Disabled
+
     public void shouldWriteAndReadVideoWithSpriteTrack24Bit() throws IOException, InterruptedException, InvocationTargetException {
         int width = 640;
         int height = 480;
@@ -155,11 +162,11 @@ public class SpriteCodecTest {
         assertNotNull(cursorBlackPressed, cursorBlackPressedResource);
 
         doWrite(file, fileFormat, spriteTrackFormat, cursorBlack, cursorBlackPressed);
-        doRead(file, fileFormat, spriteTrackFormat, false);
+        doRead(file, fileFormat, spriteTrackFormat, showFrame);
     }
 
     @Test
-    @Disabled
+
     public void shouldWriteAndReadVideoWithSpriteTrack16Bit() throws IOException, InterruptedException, InvocationTargetException {
         int width = 640;
         int height = 480;
@@ -183,7 +190,6 @@ public class SpriteCodecTest {
     }
 
     @Test
-    @Disabled
     public void shouldReadFileWithSpriteTrack() throws IOException, InterruptedException, InvocationTargetException {
         int width = 240;
         int height = 160;
@@ -248,6 +254,7 @@ public class SpriteCodecTest {
                     for (GraphicsConfiguration configuration : screenDevice.getConfigurations()) {
                         if (configuration.getColorModel().getColorSpace().isCS_sRGB()) {
                             config = configuration;
+                            break;
                         }
                     }
 

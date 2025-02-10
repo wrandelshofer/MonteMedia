@@ -17,8 +17,15 @@ import static org.monte.media.impl.jcodec.codecs.h264.io.write.CAVLCWriter.write
 import static org.monte.media.impl.jcodec.common.model.ColorSpace.MONO;
 
 /**
- * This class is part of JCodec ( www.jcodec.org ) This software is distributed
- * under FreeBSD License
+ * References:
+ * <p>
+ * This code has been derived from JCodecProject.
+ * <dl>
+ *     <dt>JCodecProject. Copyright 2008-2019 JCodecProject.
+ *     <br><a href="https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE">BSD 2-Clause License.</a></dt>
+ *     <dd><a href="https://github.com/jcodec/jcodec">github.com</a></dd>
+ * </dl>
+ *
  * <p>
  * A writer for slice header data structure
  *
