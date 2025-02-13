@@ -302,7 +302,7 @@ public class QuickTimeDeserializer {
      *      uint32 sizeOfDecompressedData;
      *      byte[] compressedData;
      * } cmvdAtom.
-     * <p>
+     * </pre>
      */
     protected void parseCompressedMovieAtom(QTFFImageInputStream in, long remainingSize, QuickTimeMeta m) throws IOException {
         int sizeOfDecompressedData = remainingSize > 4 ? in.readInt() : -1;
