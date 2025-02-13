@@ -15,6 +15,8 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class Cta608PreambleCodeTest {
+    private boolean verbose = false;
+
     record PacData(short opCode, int channel, int row, PacToken.Attributes attributes, boolean underline) {
     }
 
@@ -23,8 +25,8 @@ class Cta608PreambleCodeTest {
     public void shouldEncodePac(PacData data) throws Exception {
         short code = data.opCode;
         PacToken encoded = new PacToken(data.channel, data.row, data.attributes, data.underline);
-        System.out.println("expected: " + Integer.toHexString(code & 0x7f7f));
-        System.out.println("actual  : " + Integer.toHexString(encoded.getCodeWithoutParity()));
+        if (verbose) System.out.println("expected: " + Integer.toHexString(code & 0x7f7f));
+        if (verbose) System.out.println("actual  : " + Integer.toHexString(encoded.getCodeWithoutParity()));
 
         assertEquals(Integer.toHexString(0x7f7f & code), Integer.toHexString(0x7f7f & encoded.getCodeWithoutParity()), "opCode");
         assertEquals(data.row(), encoded.getRow(), "row");
@@ -39,8 +41,8 @@ class Cta608PreambleCodeTest {
     public void shouldDecodePac(PacData data) throws Exception {
         short code = data.opCode;
         PacToken decoded = new PacToken(code);
-        System.out.println("expected: " + Integer.toHexString(code & 0x7f7f));
-        System.out.println("actual  : " + Integer.toHexString(decoded.getCodeWithoutParity()));
+        if (verbose) System.out.println("expected: " + Integer.toHexString(code & 0x7f7f));
+        if (verbose) System.out.println("actual  : " + Integer.toHexString(decoded.getCodeWithoutParity()));
 
         assertEquals(Integer.toHexString(0x7f7f & code), Integer.toHexString(0x7f7f & decoded.getCodeWithoutParity()), "opCode");
         assertEquals(data.row(), decoded.getRow(), "row");
@@ -53,7 +55,7 @@ class Cta608PreambleCodeTest {
     @ValueSource(ints = {1, 2})
     public void shouldEncodeChannel(int channel) throws Exception {
         PacToken actual = new PacToken(channel, 1, PacToken.Attributes.WHITE, false);
-        System.out.println(channel + " " + Integer.toHexString(actual.getCodeWithoutParity()));
+        if (verbose) System.out.println(channel + " " + Integer.toHexString(actual.getCodeWithoutParity()));
         assertEquals(channel, actual.getChannel());
     }
 
@@ -61,7 +63,7 @@ class Cta608PreambleCodeTest {
     @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15})
     public void shouldEncodeRow(int row) throws Exception {
         PacToken actual = new PacToken(1, row, PacToken.Attributes.WHITE, false);
-        System.out.println(row + " " + Integer.toHexString(actual.getCodeWithoutParity()));
+        if (verbose) System.out.println(row + " " + Integer.toHexString(actual.getCodeWithoutParity()));
         assertEquals(row, actual.getRow());
     }
 
@@ -70,7 +72,7 @@ class Cta608PreambleCodeTest {
     public void shouldEncodeTextAttributes(int ordinal) throws Exception {
         PacToken.Attributes attrs = PacToken.Attributes.values()[ordinal];
         PacToken actual = new PacToken(1, 1, attrs, false);
-        System.out.println(attrs + " " + Integer.toHexString(actual.getCodeWithoutParity()));
+        if (verbose) System.out.println(attrs + " " + Integer.toHexString(actual.getCodeWithoutParity()));
         assertEquals(attrs, actual.getTextAttributes());
     }
 

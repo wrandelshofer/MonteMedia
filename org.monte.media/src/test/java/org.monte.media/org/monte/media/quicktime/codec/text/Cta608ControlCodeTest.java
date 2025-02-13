@@ -15,6 +15,8 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class Cta608ControlCodeTest {
+    private boolean verbose = false;
+
     record ControlCodeData(short opCode, int channel, CmdToken.Command cc) {
     }
 
@@ -23,8 +25,8 @@ class Cta608ControlCodeTest {
     public void shouldEncodeControlCode(ControlCodeData data) throws Exception {
         short code = data.opCode;
         CmdToken encoded = new CmdToken(data.channel, data.cc);
-        System.out.println("expected: " + Integer.toHexString(code & 0x7f7f));
-        System.out.println("actual  : " + Integer.toHexString(encoded.getCodeWithoutParity()));
+        if (verbose) System.out.println("expected: " + Integer.toHexString(code & 0x7f7f));
+        if (verbose) System.out.println("actual  : " + Integer.toHexString(encoded.getCodeWithoutParity()));
 
         assertEquals(Integer.toHexString(0x7f7f & code), Integer.toHexString(0x7f7f & encoded.getCodeWithoutParity()), "opCode");
         assertEquals(data.channel(), encoded.getChannel(), "channel");
@@ -37,8 +39,8 @@ class Cta608ControlCodeTest {
     public void shouldDecodeControlCode(ControlCodeData data) throws Exception {
         short code = data.opCode;
         CmdToken decoded = new CmdToken(code);
-        System.out.println("expected: " + Integer.toHexString(code & 0x7f7f));
-        System.out.println("actual  : " + Integer.toHexString(decoded.getCodeWithoutParity()));
+        if (verbose) System.out.println("expected: " + Integer.toHexString(code & 0x7f7f));
+        if (verbose) System.out.println("actual  : " + Integer.toHexString(decoded.getCodeWithoutParity()));
 
         assertEquals(Integer.toHexString(0x7f7f & code), Integer.toHexString(0x7f7f & decoded.getCodeWithoutParity()), "opCode");
         assertEquals(data.cc(), decoded.getOperation(), "control opCode");
