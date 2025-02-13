@@ -23,7 +23,7 @@ https://search.maven.org/artifact/ch.randelshofer/org.monte.media
 <dependency>
    <groupId>ch.randelshofer</groupId>
    <artifactId>org.monte.media</artifactId>
-   <version>17.1</version>
+   <version>17.2</version>
 </dependency>
 ```
 
