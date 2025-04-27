@@ -306,7 +306,7 @@ public class MainWindowController {
             FXMediaPlayer p = new FXMediaPlayer(mediaPlayer);
             player.set(p);
             playerController.setPlayer(p);
-            mediaPlayer.setAutoPlay(true);
+            mediaPlayer.setAutoPlay(false);
             mediaView = new MediaView(mediaPlayer);
             mediaView.setManaged(false);
 
