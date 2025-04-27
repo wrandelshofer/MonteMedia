@@ -90,11 +90,12 @@ public abstract class AbstractPCMAudioCodec extends AbstractAudioCodec {
         }
 
         boolean fixSilenceBug = inFormat.get(SilenceBugKey, false);
-        
+
         byte[] inData = (byte[]) in.data;
         byte[] outData = ArrayUtil.reuseByteArray(out.data, inData.length);
-        if (outData.length < inData.length * outFormat.get(FrameSizeKey) / inFormat.get(FrameSizeKey)) {
-            outData = new byte[inData.length * outFormat.get(FrameSizeKey) / inFormat.get(FrameSizeKey)];
+        int frameSize = Math.max(1, inFormat.get(FrameSizeKey));
+        if (outData.length < inData.length * outFormat.get(FrameSizeKey) / frameSize) {
+            outData = new byte[inData.length * outFormat.get(FrameSizeKey) / frameSize];
         }
 
         // Fast array copy if formats are identical 
