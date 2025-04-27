@@ -174,7 +174,7 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
         switch (tr.mediaType) {
             case AUDIO -> {
                 Format af = tr.format;
-                buffer.sampleCount = buffer.length / af.get(FrameSizeKey);
+                buffer.sampleCount = buffer.length / Math.max(1, af.get(FrameSizeKey));
             }
             default -> buffer.sampleCount = 1;
         }
@@ -191,7 +191,6 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
         ensureRealized();
         throw new UnsupportedOperationException("nextTrack() not supported yet.");
     }
-
 
 
     @Override
