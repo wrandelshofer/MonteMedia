@@ -20,13 +20,11 @@
     -fx-shape: "M603.69-333.85 561.54-376l104-104-104-104 42.15-42.15 104 104 104-104L853.84-584l-104 104 104 104-42.15 42.15-104-104-104 104ZM146.16-380v-200h148.46l171.53-171.53v543.06L294.62-380H146.16Z";
 }
 .controls-panel {
-    -fx-background-color: rgba( 127 , 127 , 127 , 0.8 ) ;
-    -fx-background-radius: 12;
+    -fx-background-color: rgba( 127 , 127 , 127 , 1.0 ) ;
 }
 .time-label,
 .duration-label {
     -fx-text-fill: white;
-   /* -fx-effect:  dropshadow(one-pass-box , black , 3 , 3 , 0 , 0 );*/
     -fx-font-family: Monospaced;
     -fx-font-weight: bold;
 }

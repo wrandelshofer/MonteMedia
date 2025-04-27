@@ -6,7 +6,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <BorderPane fx:id="rootPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="120.0"
             minWidth="240.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.monte.demo.javafx.movieplayer.MainWindowController">
@@ -74,10 +74,12 @@
     </MenuBar>
   </top>
   <center>
-    <StackPane id="stackPane" fx:id="stackPane" styleClass=".background-pane">
+    <VBox fx:id="vBox">
       <children>
-        <Label text="%mainWindow.onboardingText" textAlignment="CENTER"/>
+        <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308"
+               maxWidth="1.7976931348623157E308" text="%mainWindow.onboardingText" textAlignment="CENTER"
+               wrapText="true" VBox.vgrow="ALWAYS"/>
       </children>
-    </StackPane>
+    </VBox>
   </center>
 </BorderPane>

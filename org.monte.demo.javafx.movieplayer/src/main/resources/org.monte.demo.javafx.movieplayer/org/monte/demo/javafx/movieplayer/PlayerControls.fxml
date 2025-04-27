@@ -1,54 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
-<fx:root fx:id="rootPane" minHeight="10.0" minWidth="10.0" prefHeight="240.0" prefWidth="320.0" type="AnchorPane"
-         xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1"
-         fx:controller="org.monte.demo.javafx.movieplayer.PlayerControlsController">
+<fx:root fx:id="rootPane" hgap="8.0" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" styleClass="controls-panel"
+         stylesheets="@controls.css" type="GridPane" vgap="4.0" xmlns="http://javafx.com/javafx/22"
+         xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.monte.demo.javafx.movieplayer.PlayerControlsController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="NEVER"/>
+    <ColumnConstraints hgrow="NEVER"/>
+    <ColumnConstraints hgrow="NEVER"/>
+    <ColumnConstraints hgrow="ALWAYS" minWidth="50.0" prefWidth="120.0"/>
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
+    <ColumnConstraints hgrow="NEVER"/>
+    <ColumnConstraints/>
+    <ColumnConstraints/>
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints maxHeight="-Infinity" minHeight="10.0" vgrow="SOMETIMES"/>
+  </rowConstraints>
   <children>
-    <GridPane fx:id="controllerPane" hgap="8.0" layoutX="4.0" layoutY="100.0" maxHeight="-Infinity" maxWidth="-Infinity"
-              minHeight="-Infinity" minWidth="-Infinity" styleClass="controls-panel" stylesheets="@controls.css"
-              vgap="4.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0">
-      <columnConstraints>
-        <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="24.0"/>
-        <ColumnConstraints hgrow="NEVER" minWidth="10.0"/>
-        <ColumnConstraints hgrow="NEVER" minWidth="10.0"/>
-        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="120.0"/>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
-        <ColumnConstraints hgrow="NEVER" minWidth="10.0"/>
-        <ColumnConstraints/>
-        <ColumnConstraints/>
-      </columnConstraints>
-      <rowConstraints>
-        <RowConstraints minHeight="10.0" prefHeight="24.0" vgrow="SOMETIMES"/>
-      </rowConstraints>
-      <children>
-        <Button fx:id="backwardButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-                minWidth="-Infinity" mnemonicParsing="false" onAction="#seekBackward" prefHeight="20.0" prefWidth="20.0"
-                styleClass="backward-button" GridPane.columnIndex="1" GridPane.halignment="RIGHT"/>
-        <ToggleButton fx:id="playButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-                      minWidth="-Infinity" mnemonicParsing="false" onAction="#togglePlayPause" prefHeight="20.0"
-                      prefWidth="20.0" styleClass="play-button" GridPane.halignment="CENTER"/>
-        <Button fx:id="forwardButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-                minWidth="-Infinity" mnemonicParsing="false" onAction="#seekForward" prefHeight="20.0" prefWidth="20.0"
-                styleClass="forward-button" GridPane.columnIndex="2"/>
-        <Label fx:id="timeLabel" styleClass="time-label" text="00:00:00.00" GridPane.columnIndex="4"
-               GridPane.halignment="CENTER"/>
-        <Slider fx:id="timeSlider" GridPane.columnIndex="3"/>
-        <ToggleButton fx:id="muteButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-                      minWidth="-Infinity" mnemonicParsing="false" prefHeight="20.0" prefWidth="20.0"
-                      styleClass="mute-button" GridPane.columnIndex="5" GridPane.halignment="LEFT"/>
-      </children>
-      <padding>
-        <Insets bottom="8.0" left="8.0" top="8.0"/>
-      </padding>
-    </GridPane>
+    <Button fx:id="backwardButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            mnemonicParsing="false" onAction="#seekBackward" prefHeight="20.0" prefWidth="20.0"
+            styleClass="backward-button" GridPane.columnIndex="1" GridPane.halignment="RIGHT"/>
+    <ToggleButton fx:id="playButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                  minWidth="-Infinity" mnemonicParsing="false" onAction="#togglePlayPause" prefHeight="20.0"
+                  prefWidth="20.0" styleClass="play-button" GridPane.halignment="CENTER">
+      <GridPane.margin>
+        <Insets/>
+      </GridPane.margin>
+    </ToggleButton>
+    <Button fx:id="forwardButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            mnemonicParsing="false" onAction="#seekForward" prefHeight="20.0" prefWidth="20.0"
+            styleClass="forward-button" GridPane.columnIndex="2"/>
+    <Label fx:id="timeLabel" ellipsisString="⋯" styleClass="time-label" text="00:00:00.00"
+           textOverrun="LEADING_ELLIPSIS" GridPane.columnIndex="4" GridPane.halignment="CENTER"/>
+    <Slider fx:id="timeSlider" GridPane.columnIndex="3"/>
+    <ToggleButton fx:id="muteButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                  minWidth="-Infinity" mnemonicParsing="false" prefHeight="24.0" prefWidth="24.0"
+                  styleClass="mute-button" GridPane.columnIndex="5" GridPane.halignment="LEFT">
+      <GridPane.margin>
+        <Insets/>
+      </GridPane.margin>
+    </ToggleButton>
   </children>
+  <padding>
+    <Insets bottom="12.0" left="16.0" top="12.0"/>
+  </padding>
 </fx:root>
