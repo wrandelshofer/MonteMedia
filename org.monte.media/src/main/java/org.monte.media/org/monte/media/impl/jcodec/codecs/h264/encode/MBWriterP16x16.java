@@ -132,8 +132,8 @@ public class MBWriterP16x16 {
 
     private static void luma(EncodingContext ctx, int[] pix, int mbX, int mbY, BitWriter out, int qp, int[] nc) {
         int[][] ac = new int[16][16];
-        for (int i = 0; i < ac.length; i++) {
-            for (int j = 0; j < H264Const.PIX_MAP_SPLIT_4x4[i].length; j++) {
+        for (int i = 0; i < 16; i++) {
+            for (int j = 0; j < 16; j++) {
                 ac[i][j] = pix[H264Const.PIX_MAP_SPLIT_4x4[i][j]];
             }
             CoeffTransformer.fdct4x4(ac[i]);
@@ -141,10 +141,10 @@ public class MBWriterP16x16 {
 
         writeAC(ctx, 0, mbX, out, mbX << 2, mbY << 2, ac, qp, nc);
 
-        for (int i = 0; i < ac.length; i++) {
+        for (int i = 0; i < 16; i++) {
             CoeffTransformer.dequantizeAC(ac[i], qp, null);
             CoeffTransformer.idct4x4(ac[i]);
-            for (int j = 0; j < H264Const.PIX_MAP_SPLIT_4x4[i].length; j++)
+            for (int j = 0; j < 16; j++)
                 pix[H264Const.PIX_MAP_SPLIT_4x4[i][j]] = ac[i][j];
         }
     }
@@ -153,23 +153,21 @@ public class MBWriterP16x16 {
                                int qp) {
         int[][] ac1 = new int[4][16];
         int[][] ac2 = new int[4][16];
-        for (int i = 0; i < ac1.length; i++) {
-            for (int j = 0; j < H264Const.PIX_MAP_SPLIT_2x2[i].length; j++)
-                ac1[i][j] = pix1[H264Const.PIX_MAP_SPLIT_2x2[i][j]];
-        }
-        for (int i = 0; i < ac2.length; i++) {
-            for (int j = 0; j < H264Const.PIX_MAP_SPLIT_2x2[i].length; j++)
-                ac2[i][j] = pix2[H264Const.PIX_MAP_SPLIT_2x2[i][j]];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 16; j++) {
+                int k = H264Const.PIX_MAP_SPLIT_2x2[i][j];
+                ac1[i][j] = pix1[k];
+                ac2[i][j] = pix2[k];
+            }
         }
         MBWriterI16x16.chromaResidual(mbX, mbY, out, qp, ac1, ac2, ctx.cavlc[1], ctx.cavlc[2], ctx.leftMBType, ctx.topMBType[mbX], P_16x16);
 
-        for (int i = 0; i < ac1.length; i++) {
-            for (int j = 0; j < H264Const.PIX_MAP_SPLIT_2x2[i].length; j++)
-                pix1[H264Const.PIX_MAP_SPLIT_2x2[i][j]] = ac1[i][j];
-        }
-        for (int i = 0; i < ac2.length; i++) {
-            for (int j = 0; j < H264Const.PIX_MAP_SPLIT_2x2[i].length; j++)
-                pix2[H264Const.PIX_MAP_SPLIT_2x2[i][j]] = ac2[i][j];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 16; j++) {
+                int k = H264Const.PIX_MAP_SPLIT_2x2[i][j];
+                pix1[k] = ac1[i][j];
+                pix2[k] = ac2[i][j];
+            }
         }
     }
 
