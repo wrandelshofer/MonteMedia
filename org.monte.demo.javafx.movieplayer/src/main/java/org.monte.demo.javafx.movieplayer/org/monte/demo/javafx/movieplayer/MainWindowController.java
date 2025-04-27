@@ -308,15 +308,9 @@ public class MainWindowController {
             playerController.setPlayer(p);
             mediaPlayer.setAutoPlay(true);
             mediaView = new MediaView(mediaPlayer);
-
-
-            mediaView.fitWidthProperty().bind(vBox.widthProperty());
-            mediaView.fitHeightProperty().bind(vBox.heightProperty());
             mediaView.setManaged(false);
 
             mediaView.setPreserveRatio(false);
-
-
             showPlayer(mediaView, p, new FXMedia(media), playerController);
 
             return p;
@@ -330,7 +324,10 @@ public class MainWindowController {
 
     private void showPlayer(Node mediaView, MediaPlayerInterface mediaPlayer, MediaInterface media, PlayerControlsController playerController) {
         mediaPane = mediaView instanceof Pane p ? p : new BorderPane(mediaView);
-
+        if (mediaView instanceof MediaView mv) {
+            mv.fitWidthProperty().bind(mediaPane.widthProperty());
+            mv.fitHeightProperty().bind(mediaPane.heightProperty());
+        }
         mediaPlayer.setOnReady(() -> {
             zoomTo(getZoomPower());
         });
