@@ -12,6 +12,12 @@
   ~
   ~ mvn clean source:jar package javadoc:jar gpg:sign repository:bundle-create - -batch-mode
   ~ mvn source:jar javadoc:jar package gpg:sign repository:bundle-create -pl org.monte.media.jmf -DskipNonModularJavaDoc=false - -batch-mode
+  ~
+  ~ Check for dependency updates:
+  ~ mvn versions:display-dependency-updates
+  ~
+  ~ Check for maven plugin updates:
+  ~ mvn versions:display-plugin-updates
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -40,7 +46,7 @@
   <description>The parent project of the Monte Media library.</description>
   <developers>
     <developer>
-      <id>wrandelshoer</id>
+      <id>wrandelshofer</id>
       <name>Werner Randelshofer</name>
       <email>werner.randelshofer@bluewin.ch</email>
       <organization>Werner Randelshofer</organization>
@@ -308,7 +314,7 @@
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava-testlib</artifactId>
-        <version>31.1-jre</version>
+        <version>33.4.8-jre</version>
       </dependency>
       <dependency>
         <groupId>ch.randelshofer</groupId>
@@ -456,42 +462,42 @@
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter</artifactId>
-        <version>5.8.2</version>
+        <version>5.12.2</version>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
-        <version>5.8.2</version>
+        <version>5.12.2</version>
       </dependency>
       <dependency>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-base</artifactId>
-        <version>22.0.2</version>
+        <version>24.0.1</version>
       </dependency>
       <dependency>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-fxml</artifactId>
-        <version>22.0.2</version>
+        <version>24.0.1</version>
       </dependency>
       <dependency>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-graphics</artifactId>
-        <version>22.0.2</version>
+        <version>24.0.1</version>
       </dependency>
       <dependency>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-media</artifactId>
-        <version>22.0.2</version>
+        <version>24.0.1</version>
       </dependency>
       <dependency>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-controls</artifactId>
-        <version>22.0.2</version>
+        <version>24.0.1</version>
       </dependency>
       <dependency>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-swing</artifactId>
-        <version>22.0.2</version>
+        <version>24.0.1</version>
       </dependency>
       <dependency>
         <groupId>org.openjdk.jmh</groupId>
