@@ -149,8 +149,7 @@ public class MBWriterP16x16 {
         }
     }
 
-    private static void chroma(EncodingContext ctx, int[] pix1, int[] pix2, int mbX, int mbY, BitWriter out,
-                               int qp) {
+    private static void chroma(EncodingContext ctx, int[] pix1, int[] pix2, int mbX, int mbY, BitWriter out, int qp) {
         int[][] ac1 = new int[4][16];
         int[][] ac2 = new int[4][16];
         for (int i = 0; i < 4; i++) {

@@ -48,7 +48,10 @@ import static org.monte.media.av.codec.audio.AudioFormatKeys.FrameSizeKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleRateKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleSizeInBitsKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.PaletteKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
 /**
  * This class provides low-level support for writing already encoded audio and
@@ -260,7 +263,7 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
         t.height = height;
         t.videoDepth = depth;
         t.syncInterval = syncInterval;
-        t.format = format.prepend(DataClassKey, byte[].class);
+        t.format = format.prepend(DataClassKey, byte[].class, WidthKey, width, HeightKey, height, DepthKey, depth);
         t.videoColorTable = format.get(PaletteKey) instanceof IndexColorModel icm ? icm : null;
         tracks.add(t);
         return tracks.size() - 1;
@@ -1968,7 +1971,9 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
 
     /**
      * Writes a version of the movie which is optimized for the web into the
-     * specified output file. <p> This method finishes the movie and then copies
+     * specified output file.
+     * <p>
+     * This method finishes the movie and then copies
      * its content into the specified file. The web-optimized file starts with
      * the movie header.
      *
@@ -1987,34 +1992,34 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
 
             if (compressHeader) {
                 ByteArrayImageOutputStream buf = new ByteArrayImageOutputStream();
-                int maxIteration = 5;
-                long compressionHeadersSize = 40 + 8;
+                long prologSize = 28;
+                long freeAtomHeaderSize = 8;
+                long mdatHeaderSize = 8;
+                long compressionHeadersSize = prologSize + 4 + freeAtomHeaderSize + mdatHeaderSize;
                 long headerSize = 0;
-                long freeSize = 0;
-                while (true) {
-                    mdatOffset = compressionHeadersSize + headerSize + freeSize;
-                    buf.reset();
+                boolean success = false;
+                mdatOffset = prologSize + compressionHeadersSize;
+                for (int i = 0; i < 10; i++) {
+                    buf.clear();
                     DeflaterOutputStream deflater = new DeflaterOutputStream(new ImageOutputStreamAdapter(buf));
                     out = new MemoryCacheImageOutputStream(deflater);
                     writeEpilog();
                     out.close();
                     deflater.close();
 
-                    if (buf.size() > headerSize + freeSize && --maxIteration > 0) {
-                        if (headerSize != 0) {
-                            freeSize = max(freeSize, buf.size() - headerSize - freeSize);
-                        }
-                        headerSize = buf.size();
-                    } else {
-                        freeSize = headerSize + freeSize - buf.size();
-                        headerSize = buf.size();
+                    headerSize = buf.size();
+                    long newMdatOffset = compressionHeadersSize + headerSize;
+                    if (mdatOffset >= newMdatOffset) {
+                        success = true;
                         break;
+                    } else {
+                        mdatOffset = newMdatOffset + (newMdatOffset & 1);
                     }
                 }
 
-                if (buf.size() == 0) {
+
+                if (!success) {
                     compressHeader = false;
-                    System.err.println("WARNING MP4Writer failed to compress header.");
                 } else {
                     out = new FileImageOutputStream(outputFile);
                     writeProlog();
@@ -2038,6 +2043,7 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
                     daos.write(buf.getBuffer(), 0, buf.size());
 
                     // 8 bytes "free" atom + free data
+                    long freeSize = mdatOffset - compressionHeadersSize - headerSize;
                     daos.writeUInt(freeSize + 8);
                     daos.writeType("free");
                     for (int i = 0; i < freeSize; i++) {

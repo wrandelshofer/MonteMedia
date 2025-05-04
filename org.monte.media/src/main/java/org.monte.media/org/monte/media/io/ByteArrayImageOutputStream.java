@@ -335,6 +335,8 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
     public void clear() {
         count = arrayOffset;
         streamPos = arrayOffset;
+        flushedPos = 0;
+        bitOffset = 0;
     }
 
     @Override

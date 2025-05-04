@@ -41,6 +41,7 @@ import static org.monte.media.av.codec.audio.AudioFormatKeys.FrameSizeKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleRateKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleSizeInBitsKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
+import static org.monte.media.av.codec.video.VideoFormatKeys.COMPRESSOR_NAME_H264;
 import static org.monte.media.av.codec.video.VideoFormatKeys.COMPRESSOR_NAME_QUICKTIME_ANIMATION;
 import static org.monte.media.av.codec.video.VideoFormatKeys.COMPRESSOR_NAME_QUICKTIME_JPEG;
 import static org.monte.media.av.codec.video.VideoFormatKeys.COMPRESSOR_NAME_QUICKTIME_PNG;
@@ -177,6 +178,11 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
             MimeTypeKey, MIME_QUICKTIME,
             EncodingKey, ENCODING_QUICKTIME_ANIMATION, //
             CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_ANIMATION);
+    public final static Format VIDEO_H264 = new Format(
+            MediaTypeKey, MediaType.VIDEO, //
+            MimeTypeKey, MIME_QUICKTIME,
+            EncodingKey, VideoFormatKeys.ENCODING_AVC1, //
+            CompressorNameKey, COMPRESSOR_NAME_H264);
     public final static Format VIDEO_JPEG = new Format(
             MediaTypeKey, MediaType.VIDEO,//
             MimeTypeKey, MIME_QUICKTIME,

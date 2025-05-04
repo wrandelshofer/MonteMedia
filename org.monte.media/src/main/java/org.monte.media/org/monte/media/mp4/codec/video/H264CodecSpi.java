@@ -15,8 +15,8 @@ import org.monte.media.av.CodecSpi;
 public class H264CodecSpi implements CodecSpi {
 
     @Override
-    public H264Codec create() {
-        return new H264Codec();
+    public H264Encoder create() {
+        return new H264Encoder();
     }
 
 }

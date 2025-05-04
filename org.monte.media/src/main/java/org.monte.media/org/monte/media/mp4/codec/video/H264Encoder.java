@@ -49,11 +49,12 @@ import static org.monte.media.mp4.codec.video.JCodecPictureCodec.ENCODING_PICTUR
 /**
  * Codec for {@link BufferedImage} or {@link Picture} to {@code H264} byte array.
  */
-public class H264Codec extends AbstractVideoCodec {
+public class H264Encoder extends AbstractVideoCodec {
     private VideoEncoder videoEncoder = null;
     private ByteBuffer byteBuffer;
     private int frameCounter;
-    public H264Codec() {
+
+    public H264Encoder() {
         super(new Format[]{
                         new Format(MediaTypeKey, FormatKeys.MediaType.VIDEO,
                                 EncodingKey, ENCODING_BUFFERED_IMAGE,

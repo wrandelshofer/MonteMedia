@@ -39,6 +39,7 @@ import java.util.LinkedList;
 import java.util.prefs.Preferences;
 
 import static java.lang.Math.min;
+import static org.monte.media.av.FormatKeys.FrameRateKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
@@ -191,7 +192,7 @@ public class Main extends javax.swing.JFrame {
         compressionLabel.setText("Compression:");
 
         compressionBox.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
-        compressionBox.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"None", "Animation", "JPEG", "PNG"}));
+        compressionBox.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"None", "Animation", "JPEG", "PNG", "H.264"}));
 
         fpsLabel.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
         fpsLabel.setText("FPS:");
@@ -421,6 +422,9 @@ public class Main extends javax.swing.JFrame {
                 break;
             case 2:
                 videoFormat = QuickTimeWriter.VIDEO_JPEG;
+                break;
+            case 4:
+                videoFormat = QuickTimeWriter.VIDEO_H264;
                 break;
             case 3:
             default:
@@ -761,11 +765,13 @@ public class Main extends javax.swing.JFrame {
             // Determine sampleDuration of a single sample
             int asDuration = (int) (audioFormat.getSampleRate() / audioFormat.getFrameRate());
             int vsDuration = 100;
+            videoFormat = videoFormat.prepend(FrameRateKey, Rational.valueOf((int) (fps * vsDuration), vsDuration));
             // Create writer
             qtOut = new QuickTimeWriter(tmpFile);
             int at = qtOut.addAudioTrack(audioFormat); // audio in track 0
             int vt = qtOut.addVideoTrack(videoFormat, (int) (fps * vsDuration), width, height);  // video in track 1
             qtOut.setCompressionQuality(vt, 0.95f);
+
 
             // Create audio buffer
             int asSize;
