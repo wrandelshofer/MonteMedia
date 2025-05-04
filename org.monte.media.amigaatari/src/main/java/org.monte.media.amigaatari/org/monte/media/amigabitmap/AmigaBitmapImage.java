@@ -2665,54 +2665,10 @@ public class AmigaBitmapImage
         b0 = b1 = b2 = b3 = b4 = b5 = 0;
         int iBit; // the index of the bit inside the byte at the current x-position
         int bitMask; // the mask for the bit inside the byte at the current x-position
-        /*
-        
-        for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
-        if (left == 0) {
-        lastPixel = 0xff000000;
-        } else {
-        lastPixel = intPixels_[iLastPixel];
-        iLastPixel += width;
-        }
-        for (x = left; x < right; x++) {
-        
-        bitShift = x % 8;
-        iBitmap = iScanline + x / 8;
-        pixel =
-        ((bitmap_[iBitmap] << bitShift) & 128) >>> 3
-        | ((bitmap_[iBitmap+bitplaneStride1] << bitShift) & 128) >>> 2
-        | ((bitmap_[iBitmap+bitplaneStride2] << bitShift) & 128) >>> 1
-        | ((bitmap_[iBitmap+bitplaneStride3] << bitShift) & 128)
-        ;
-        
-        switch (((bitmap_[iBitmap+bitplaneStride4] << bitShift) & 128) >>> 7
-        | ((bitmap_[iBitmap+bitplaneStride5] << bitShift) & 128) >>> 6) {
-        
-        case 0: // use indexed color
-        intPixels_[iPixel++] = lastPixel = HAMColors[pixel >>> 4];
-        break;
-        
-        case 1: // modifie blue
-        intPixels_[iPixel++] = lastPixel = lastPixel & 0xffffff00 | pixel | pixel >>> 4;
-        break;
-        
-        case 2:  // modify red
-        intPixels_[iPixel++] = lastPixel = lastPixel & 0xff00ffff | pixel << 16 | pixel << 12 & 0x000f0000;
-        break;
-        
-        default: // modify green
-        intPixels_[iPixel++] = lastPixel = lastPixel & 0xffff00ff | pixel << 8 | pixel << 4 & 0x0f00;
-        break;
-        }
-        }
-        iPixel += pixelLineStride;
-        }
-        iPixel = 0;
-        iLastPixel = top*width + left - 1;
-         */
+
         for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
             if (left == 0) {
-                lastPixel = 0xff000000;
+                lastPixel = HAMColors[0];
             } else {
                 lastPixel = intPixels[iLastPixel];
                 iLastPixel += width;
@@ -2810,56 +2766,10 @@ public class AmigaBitmapImage
 
         int iBit; // the index of the bit inside the byte at the current x-position
         int bitMask; // the mask for the bit inside the byte at the current x-position
-        /*
-        
-        for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
-        if (left == 0) {
-        lastPixel = 0xff000000;
-        } else {
-        lastPixel = intPixels_[iLastPixel];
-        iLastPixel += width;
-        }
-        for (x = left; x < right; x++) {
-        bitShift = x % 8;
-        iBitmap = iScanline + x / 8;
-        pixel =
-        ((bitmap_[iBitmap] << bitShift) & 128) >>> 5
-        | ((bitmap_[iBitmap+bitplaneStride1] << bitShift) & 128) >>> 4
-        | ((bitmap_[iBitmap+bitplaneStride2] << bitShift) & 128) >>> 3
-        | ((bitmap_[iBitmap+bitplaneStride3] << bitShift) & 128) >>> 2
-        | ((bitmap_[iBitmap+bitplaneStride4] << bitShift) & 128) >>> 1
-        | ((bitmap_[iBitmap+bitplaneStride5] << bitShift) & 128)
-        ;
-        
-        switch (((bitmap_[iBitmap+bitplaneStride6] << bitShift) & 128) >>> 7
-        | ((bitmap_[iBitmap+bitplaneStride7] << bitShift) & 128) >>> 6) {
-        
-        case 0: // use indexed color
-        intPixels_[iPixel++] = lastPixel = HAMColors[pixel >>> 2];
-        break;
-        
-        case 1: // modifie blue
-        intPixels_[iPixel++] = lastPixel = lastPixel & 0xffffff00 | pixel | pixel >>> 6;
-        break;
-        
-        case 2: // modify red
-        intPixels_[iPixel++] = lastPixel = lastPixel & 0xff00ffff | pixel << 16 | pixel << 10 & 0x030000;
-        break;
-        
-        default: // modify green
-        intPixels_[iPixel++] = lastPixel = lastPixel & 0xffff00ff | pixel << 8 | pixel << 2 & 0x0300;
-        break;
-        
-        }
-        }
-        iPixel += pixelLineStride;
-        }
-        iPixel = 0;
-        iLastPixel = top*width + left - 1;
-         */
+
         for (iScanline = top * scanlineStride; iScanline < bottomScanline; iScanline += scanlineStride) {
             if (left == 0) {
-                lastPixel = 0xff000000;
+                lastPixel = HAMColors[0];
             } else {
                 lastPixel = intPixels[iLastPixel];
                 iLastPixel += width;
