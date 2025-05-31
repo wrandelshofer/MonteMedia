@@ -154,7 +154,7 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
     public void read(int track, Buffer buffer) throws IOException {
         ensureRealized();
         QuickTimeMeta.Track tr = meta.tracks.get(track);
-        if (tr.readIndex >= tr.trackSamplesList.size()) {
+        if (tr.readIndex >= tr.trackSamplesList.size() || tr.trackSamplesList.isEmpty()) {
             buffer.setFlagsTo(END_OF_MEDIA, DISCARD);
             buffer.length = 0;
             return;

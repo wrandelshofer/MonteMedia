@@ -5,11 +5,20 @@
 
 package org.monte.media.screenrecorder;
 
+import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys;
+import org.monte.media.av.MovieWriter;
+import org.monte.media.av.codec.video.VideoFormatKeys;
 import org.monte.media.math.Rational;
+import org.monte.media.quicktime.QuickTimeWriter;
+import org.monte.media.quicktime.codec.sprite.SpriteFormatKeys;
 
 import javax.sound.sampled.Mixer;
+import java.awt.Point;
+import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashSet;
 import java.util.SequencedSet;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -21,7 +30,9 @@ public class SimpleScreenRecorder implements ScreenRecorder {
     private final CopyOnWriteArraySet<BiConsumer<State, State>> listeners = new CopyOnWriteArraySet<>();
     private AtomicReference<State> state = new AtomicReference<>(State.CREATED);
     private SequencedSet<Sampler> samplers;
-    private SampleProducer executor;
+    private SampleProducer producer;
+    private SampleConsumer consumer;
+    private MovieWriter w;
 
     public SimpleScreenRecorder(ScreenRecorderConfig config) {
         this.config = config;
@@ -77,9 +88,10 @@ public class SimpleScreenRecorder implements ScreenRecorder {
         }
         try {
             samplers = createSamplers();
-            executor = new SimpleSampleProducer(samplers);
-            executor.start();
-            ;
+            producer = new SimpleSampleProducer(samplers);
+            producer.start();
+            consumer = new SimpleSampleConsumer(producer.getSamples(), w);
+            consumer.start();
         } catch (IOException e) {
             tryToSetState(State.FAILED);
             throw new RuntimeException(e);
@@ -88,19 +100,43 @@ public class SimpleScreenRecorder implements ScreenRecorder {
 
     private SequencedSet<Sampler> createSamplers() throws IOException {
         var samplers = new LinkedHashSet<Sampler>();
+        w = new QuickTimeWriter(new File(config.movieFolder(), "Screen Recording " +
+                DateTimeFormatter.ofPattern("uuuu-MM-dd 'at' HH.mm.ss.SSS").format(LocalDateTime.now()) + ".mov"));
+        w.setFileFormat(config.fileCodecFormat().append(VideoFormatKeys.HeightKey, config.captureArea().height,
+                VideoFormatKeys.WidthKey, config.captureArea().width));
+
+
+        Sampler s;
         if (config.audioFormat() != null) {
-            samplers.add(new AudioSampler(config.mixer(), config.audioFormat(), samplers.size(), Rational.valueOf(1, 2)));
+            samplers.add(s = new AudioSampler(config.mixer(), config.audioFormat(), w.getTrackCount(), Rational.valueOf(1, 2), Rational.ZERO));
+            w.addTrack(s.getFormat());
         }
         if (config.screenFormat() != null) {
-            samplers.add(new ScreenSampler(config.captureArea(), config.graphicsDevice(), config.screenFormat(), samplers.size(),
-                    config.screenFormat().get(FormatKeys.FrameRateKey).inverse()));
+            Rational interval = config.screenFormat().get(FormatKeys.FrameRateKey).inverse();
+            Format screenFormat = config.screenFormat().append(VideoFormatKeys.HeightKey, config.captureArea().height,
+                    VideoFormatKeys.WidthKey, config.captureArea().width);
+            samplers.add(s = new ScreenSampler(config.captureArea(), config.graphicsDevice(),
+                    screenFormat, w.getTrackCount(),
+                    interval.multiply(4), Rational.ZERO));
+            samplers.add(s = new ScreenSampler(config.captureArea(), config.graphicsDevice(),
+                    screenFormat, w.getTrackCount(),
+                    interval.multiply(4), interval));
+            samplers.add(s = new ScreenSampler(config.captureArea(), config.graphicsDevice(),
+                    screenFormat, w.getTrackCount(),
+                    interval.multiply(4), interval.multiply(2)));
+            samplers.add(s = new ScreenSampler(config.captureArea(), config.graphicsDevice(),
+                    screenFormat, w.getTrackCount(),
+                    interval.multiply(4), interval.multiply(3)));
+            w.addTrack(s.getFormat());
         }
         if (config.mouseFormat() != null) {
-            samplers.add(new MouseSampler(config.captureArea(), config.graphicsDevice(), config.mouseFormat(), samplers.size(),
+            samplers.add(s = new MouseSampler(config.captureArea(), config.graphicsDevice(),
+                    config.mouseFormat().append(VideoFormatKeys.EncodingKey, SpriteFormatKeys.ENCODING_QUICKTIME_SPRITE), w.getTrackCount(),
                     config.mouseFormat().get(FormatKeys.FrameRateKey).inverse(),
                     config.mouseFormat().get(MouseFormatKeys.CURSOR_IMAGE_KEY),
                     config.mouseFormat().get(MouseFormatKeys.CURSOR_PRESSED_IMAGE_KEY),
-                    config.mouseFormat().get(MouseFormatKeys.CURSOR_OFFSET_KEY)));
+                    config.mouseFormat().get(MouseFormatKeys.CURSOR_OFFSET_KEY, new Point(0, 0)), Rational.ZERO));
+            w.addTrack(s.getFormat());
         }
         return samplers;
     }
@@ -116,9 +152,12 @@ public class SimpleScreenRecorder implements ScreenRecorder {
         if (!tryToSetState(State.DONE)) {
             return;
         }
-        if (executor == null) return;
-        executor.close();
-        if (samplers == null) return;
+        if (producer != null) {
+            producer.close();
+        }
+        if (consumer != null) {
+            consumer.close();
+        }
 
     }
 }

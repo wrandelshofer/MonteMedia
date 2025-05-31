@@ -1070,7 +1070,7 @@ public class QuickTimeDeserializer {
             // If the color table ID is set to 0, a color table is contained within the sample description itself. The color
             //table immediately follows the color table ID field in the sample description. See “Color Table
             //Atoms” (page 41) for a complete description of a color table.
-            if (d.videoColorTableId == 0) {
+            if (d.videoColorTableId == 0 && size > 86) {
                 d.videoColorTable = readVideoColorTable(in);
             }
         }
@@ -1078,14 +1078,14 @@ public class QuickTimeDeserializer {
 
     private IndexColorModel readVideoColorTable(QTFFImageInputStream in) throws IOException {
 
-        in.readUnsignedInt(); // Color table seed. A 32-bit integer that must be set to 0.
-        in.readUnsignedShort(); // Color table flags. A 16-bit integer that must be set to 0x8000.
+        long seed = in.readUnsignedInt(); // Color table seed. A 32-bit integer that must be set to 0.
+        int flags = in.readUnsignedShort(); // Color table flags. A 16-bit integer that must be set to 0x8000.
         int colorTableSize = in.readUnsignedShort() + 1;
         // Color table size. A 16-bit integer that indicates the number of
         // colors in the following color array. This is a zero-relative value;
         // setting this field to 0 means that there is one color in the array.
         int[] rgbs = new int[Math.min(256, colorTableSize)];
-        for (int i = 0, n = colorTableSize; i < n; ++i) {
+        for (int i = 0; i < colorTableSize; ++i) {
             // An array of colors. Each color is made of four unsigned 16-bit integers.
             // The first integer must be set to 0, the second is the red value,
             // the third is the green value, and the fourth is the blue value.

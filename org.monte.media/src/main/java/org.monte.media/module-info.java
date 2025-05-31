@@ -98,12 +98,14 @@ module org.monte.media {
     exports org.monte.media.av.codec.text;
     exports org.monte.media.qtff;
     exports org.monte.media.qtff.atom;
+    exports org.monte.media.quicktime.codec.sprite;
 
     uses org.monte.media.av.CodecSpi;
     uses org.monte.media.av.MovieWriterSpi;
     uses org.monte.media.av.MovieReaderSpi;
 
     provides org.monte.media.av.CodecSpi with
+            org.monte.media.quicktime.codec.sprite.SpriteCodecSpi,
             org.monte.media.av.codec.video.JPEGCodecSpi,
             org.monte.media.av.codec.video.PNGCodecSpi,
             org.monte.media.av.codec.video.TechSmithCodecSpi,

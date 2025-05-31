@@ -13,6 +13,7 @@ import org.monte.media.screenrecorder.ScreenRecorder;
 import org.monte.media.screenrecorder.ScreenRecorderConfig;
 import org.monte.media.screenrecorder.SimpleScreenRecorder;
 import org.monte.media.screenrecorder.State;
+import org.monte.media.screenrecorder.images.CursorImages;
 import org.monte.media.swing.BackgroundTask;
 import org.monte.media.swing.JLabelHyperlinkHandler;
 import org.monte.media.swing.datatransfer.DropFileTransferHandler;
@@ -91,6 +92,9 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.QualityKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
+import static org.monte.media.quicktime.codec.sprite.SpriteFormatKeys.ENCODING_QUICKTIME_SPRITE;
+import static org.monte.media.screenrecorder.MouseFormatKeys.CURSOR_IMAGE_KEY;
+import static org.monte.media.screenrecorder.MouseFormatKeys.CURSOR_PRESSED_IMAGE_KEY;
 
 /**
  * Main.
@@ -859,7 +863,9 @@ public class Main extends javax.swing.JFrame {
                     ),
                     //
                     // the output format for mouse capture:
-                    crsr == null ? null : new Format(MediaTypeKey, MediaType.VIDEO, EncodingKey, crsr,
+                    crsr == null ? null : new Format(MediaTypeKey, MediaType.SPRITE, EncodingKey, ENCODING_QUICKTIME_SPRITE,
+                            CURSOR_IMAGE_KEY, CursorImages.getImage(CursorImages.CURSOR_BLACK_PNG),
+                            CURSOR_PRESSED_IMAGE_KEY, CursorImages.getImage(CursorImages.CURSOR_BLACK_PRESSED_PNG),
                             FrameRateKey, Rational.valueOf(mouseRate)),
 
                     mixerInfo == null ? null : AudioSystem.getMixer(mixerInfo),

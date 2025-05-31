@@ -5,6 +5,7 @@
 package org.monte.media.quicktime;
 
 import org.monte.media.av.Buffer;
+import org.monte.media.av.BufferFlag;
 import org.monte.media.av.Codec;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys;
@@ -31,8 +32,10 @@ import static org.monte.media.av.FormatKeys.FrameRateKey;
 import static org.monte.media.av.FormatKeys.KeyFrameIntervalKey;
 import static org.monte.media.av.FormatKeys.MIME_JAVA;
 import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
+import static org.monte.media.av.FormatKeys.MediaTimeScale;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.FormatKeys.MimeTypeKey;
+import static org.monte.media.av.FormatKeys.MovieTimeScale;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.ByteOrderKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.ChannelsKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.ENCODING_PCM_SIGNED;
@@ -167,7 +170,7 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
 
     private List<TrackEncoder> trackEncoders = new ArrayList<>();
 
-    public final static Format QUICKTIME = new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_QUICKTIME);
+    public final static Format QUICKTIME = new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_QUICKTIME, MovieTimeScale, 600L);
     public final static Format VIDEO_RAW = new Format(
             MediaTypeKey, MediaType.VIDEO,//
             MimeTypeKey, MIME_QUICKTIME,
@@ -222,6 +225,7 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
     @Override
     public void setFileFormat(Format newValue) throws IOException {
         fileFormat = QUICKTIME.append(newValue);
+        setMovieTimeScale(newValue.get(MovieTimeScale, getMovieTimeScale()));
         setVideoColorTable(fileFormat.get(PaletteKey, getVideoColorTable()));
     }
 
@@ -241,7 +245,9 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
         if (fmt.get(MediaTypeKey) == MediaType.VIDEO) {
             int t = addVideoTrack(fmt.get(EncodingKey),
                     fmt.get(CompressorNameKey, AbstractQTFFMovieStream.DEFAULT_COMPONENT_NAME),
-                    Math.min(6000, fmt.get(FrameRateKey, Rational.valueOf(30, 0)).getNumerator() * fmt.get(FrameRateKey).getDenominator()),
+                    fmt.get(MediaTimeScale,
+                            fmt.get(FrameRateKey).getDenominator() * fmt.get(FrameRateKey).getNumerator())
+                    ,
                     fmt.get(WidthKey, getFileFormat().get(WidthKey)),
                     fmt.get(HeightKey, getFileFormat().get(HeightKey)),
                     fmt.get(DepthKey, 24),
@@ -318,7 +324,7 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
      */
     public int addVideoTrack(Format format, int width, int height, int depth, int syncInterval) throws IOException {
         int tr = addVideoTrack(format.get(EncodingKey), format.get(CompressorNameKey),
-                format.get(FrameRateKey).getDenominator() * format.get(FrameRateKey).getNumerator(), width, height, depth, syncInterval, format);
+                format.get(MediaTimeScale, format.get(FrameRateKey).getDenominator() * format.get(FrameRateKey).getNumerator()), width, height, depth, syncInterval, format);
         setVideoColorTable(tr, format.get(PaletteKey));
         return tr;
     }
@@ -484,7 +490,6 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
                     throw new UnsupportedOperationException("No codec for this format " + tr.format);
                 }
             }
-            //FIXME we assume a single-step encoding process
             tre.codec.process(buf, outBuf);
         }
         if (outBuf.isFlag(DISCARD) || outBuf.sampleCount == 0) {
@@ -494,9 +499,23 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
             return;
         }
 
-
         // Compute sample sampleDuration in media time scale
         long sampleDuration = Math.max(1, outBuf.sampleDuration.multiply(tr.mediaTimeScale).longValue());
+
+        // Adjust sample duration if we are drifting
+        if (buf.isFlag(BufferFlag.RELATIVE_TIME) && buf.sampleCount == 1) {
+            if (tr.sampleCount == 0) {
+                tr.timestampOfFirstSample = buf.timeStamp;
+            } else {
+                Rational driftedTimestamp = tr.timestampOfFirstSample.add(tr.mediaDuration, tr.mediaTimeScale);
+                Rational timeDifference = buf.timeStamp.subtract(driftedTimestamp);
+                long adjust = timeDifference.multiply(tr.mediaTimeScale).longValue();
+                if (sampleDuration + adjust > 0) {
+                    sampleDuration += adjust;
+                }
+            }
+        }
+
         writeSamples(track, outBuf.sampleCount, (byte[]) outBuf.data, outBuf.offset, outBuf.length,
                 sampleDuration, outBuf.isFlag(KEYFRAME));
 

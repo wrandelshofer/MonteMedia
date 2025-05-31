@@ -16,5 +16,6 @@ module org.monte.media.screenrecorder {
     requires java.logging;
 
     exports org.monte.media.screenrecorder;
+    exports org.monte.media.screenrecorder.images;
     opens org.monte.media.screenrecorder.images;
 }

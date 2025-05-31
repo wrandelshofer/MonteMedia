@@ -36,16 +36,29 @@ public class ScreenSampler implements Sampler {
      */
     private final Robot robot;
     private final Rectangle captureArea;
-    private final Rational delay;
+    private final Rational interval;
+    private final Rational initialDelay;
     private final Format screenFormat;
 
-    public ScreenSampler(Rectangle captureArea, GraphicsDevice captureDevice, Format screenFormat, int track, Rational delay) throws IOException {
+    public Format getFormat() {
+        return screenFormat;
+    }
+
+    @Override
+    public int getTrack() {
+        return track;
+    }
+
+    public ScreenSampler(Rectangle captureArea, GraphicsDevice captureDevice, Format screenFormat, int track, Rational interval, Rational initialDelay) throws IOException {
         this.captureArea = captureArea;
         this.track = track;
-        this.delay = delay;
-        this.screenFormat = screenFormat;
+        this.interval = interval;
+        this.initialDelay = initialDelay;
+        this.screenFormat = screenFormat.prepend(VideoFormatKeys.MediaTimeScale, 600L);
         try {
             this.robot = new Robot(captureDevice);
+            // create a screen capture to warm up the robot
+            robot.createScreenCapture(captureArea);
         } catch (AWTException e) {
             throw new IOException(e);
         }
@@ -61,9 +74,11 @@ public class ScreenSampler implements Sampler {
     public Buffer sample() {
         Buffer buf = new Buffer();
         buf.timeStamp = new Rational(System.nanoTime(), 1_000_000_000);
+        buf.setFlag(BufferFlag.RELATIVE_TIME);
         buf.track = track;
         buf.sequenceNumber = sequenceNumber++;
         buf.format = screenFormat;
+        buf.sampleDuration = interval;
 
         try {
             BufferedImage screenCapture = robot.createScreenCapture(captureArea);
@@ -78,7 +93,12 @@ public class ScreenSampler implements Sampler {
 
     @Override
     public Rational getInterval() {
-        return delay;
+        return interval;
+    }
+
+    @Override
+    public Rational getInitialDelay() {
+        return initialDelay;
     }
 
 

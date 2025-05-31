@@ -39,6 +39,7 @@ import static java.lang.Math.max;
 import static org.monte.media.av.FormatKeys.DataClassKey;
 import static org.monte.media.av.FormatKeys.EncodingKey;
 import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
+import static org.monte.media.av.FormatKeys.MediaTimeScale;
 import static org.monte.media.av.FormatKeys.MediaType.AUDIO;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.FormatKeys.MimeTypeKey;
@@ -275,6 +276,7 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
         t.format = format.prepend(DataClassKey, byte[].class);
         t.width = width;
         t.height = height;
+        t.mediaTimeScale = format.get(MediaTimeScale, 600L);
         tracks.add(t);
         return tracks.size() - 1;
     }

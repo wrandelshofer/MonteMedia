@@ -10,7 +10,7 @@ import org.monte.media.av.FormatKey;
 public class SpriteFormatKeys {
     public static final String ENCODING_JAVA_SPRITE = "javaSprite";
     public static final Class<?> DATA_CLASS_JAVA_SPRITE = SpriteSample.class;
-    public static final String ENCODING_QUICKTIME_SPRITE = "sprite";
+    public static final String ENCODING_QUICKTIME_SPRITE = "sprt";
     /**
      * The encoding of a sprite image.
      */

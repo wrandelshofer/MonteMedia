@@ -53,6 +53,14 @@ public class FormatKeys {
      * The number of frames per second.
      */
     public final static FormatKey<Rational> FrameRateKey = new FormatKey<>("frameRate", Rational.class);
+    /**
+     * The media timescale.
+     */
+    public final static FormatKey<Long> MediaTimeScale = new FormatKey<>("mediaTimescale", Long.class);
+    /**
+     * The movie timescale.
+     */
+    public final static FormatKey<Long> MovieTimeScale = new FormatKey<>("movieTimescale", Long.class);
 
     /**
      * The interval between key frames.

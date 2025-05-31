@@ -528,6 +528,12 @@ public class AbstractQTFFMovieStream {
         private final static int TrackInMovie = 0x2;// track in playback
         private final static int TrackInPreview = 0x4; // track in preview
         private final static int TrackInPoster = 0x8; // track in posterTrackEnable = 0x1, // enabled track
+
+        /**
+         * Start time of the track.
+         */
+        public Rational timestampOfFirstSample;
+
         /**
          * The media type of the track.
          */

@@ -34,6 +34,8 @@ public class AudioSampler implements Sampler {
     private final TargetDataLine line;
     private final int track;
     private final Rational interval;
+    private final Rational initialDelay;
+    private final Format audioFormat;
     private long totalSampleCount;
     private ScheduledFuture<?> future;
     private long sequenceNumber;
@@ -42,10 +44,15 @@ public class AudioSampler implements Sampler {
     private final AtomicLong stopTime = new AtomicLong(Long.MAX_VALUE);
     private Throwable exception;
 
-    public AudioSampler(final Mixer mixer, final Format audioFormat, final int audioTrack, Rational interval) throws IOException {
+    public Format getFormat() {
+        return audioFormat;
+    }
+
+    public AudioSampler(final Mixer mixer, final Format audioFormat, final int audioTrack, Rational interval, Rational initialDelay) throws IOException {
         this.track = audioTrack;
         this.interval = interval;
-
+        this.initialDelay = initialDelay;
+        this.audioFormat = audioFormat;
         DataLine.Info lineInfo = new DataLine.Info(TargetDataLine.class, AudioFormatKeys.toAudioFormat(audioFormat));
         try {
             line = initializeAudioLine(mixer, lineInfo);
@@ -82,8 +89,19 @@ public class AudioSampler implements Sampler {
     }
 
     @Override
+    public int getTrack() {
+        return track;
+    }
+
+
+    @Override
     public Rational getInterval() {
         return interval;
+    }
+
+    @Override
+    public Rational getInitialDelay() {
+        return initialDelay;
     }
 
     private void setBufferProperties(Buffer buf, AudioFormat lineFormat, int count) {
@@ -183,7 +201,7 @@ public class AudioSampler implements Sampler {
         for (int i = offset; i < length; i += stride) {
             int value = data[i];
 
-            // FIXME - The java audio system records silence as -128 instead of 0.
+            // FIXME - The java audio system records silence as -128 instead of 0. So this is unsigned?
             if (value != -128) {
                 sum += value * value;
             }

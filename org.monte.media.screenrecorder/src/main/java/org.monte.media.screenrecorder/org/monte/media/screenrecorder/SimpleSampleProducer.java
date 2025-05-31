@@ -27,17 +27,24 @@ public class SimpleSampleProducer implements SampleProducer {
 
     @Override
     public void close() {
+        if (executor == null) {
+            return;
+        }
         executor.close();
         executor.shutdown();
-        boolean terminated = false;
         try {
-            terminated = executor.awaitTermination(2, TimeUnit.SECONDS);
+            boolean success = executor.awaitTermination(2, TimeUnit.SECONDS);
+            if (!success) {
+                System.err.println("failed to await termination");
+            }
         } catch (InterruptedException e) {
-            terminated = false;
+            e.printStackTrace();
+            //bail
         }
         for (var s : samplers) {
-            close();
+            s.close();
         }
+        executor = null;
     }
 
     @Override
@@ -45,7 +52,10 @@ public class SimpleSampleProducer implements SampleProducer {
         close();
         executor = Executors.newScheduledThreadPool(samplers.size());
         for (var s : samplers) {
-            executor.scheduleAtFixedRate(() -> s.sample(), 0, s.getInterval().multiply(1_000).intValue(), TimeUnit.MILLISECONDS);
+            executor.scheduleAtFixedRate(() -> {
+                var b = s.sample();
+                queue.add(b);
+            }, s.getInitialDelay().multiply(1_000).intValue(), s.getInterval().multiply(1_000).intValue(), TimeUnit.MILLISECONDS);
         }
     }
 

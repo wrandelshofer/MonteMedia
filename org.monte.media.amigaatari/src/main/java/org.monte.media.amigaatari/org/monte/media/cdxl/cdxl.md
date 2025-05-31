@@ -95,4 +95,40 @@ Die Daten liegen immer in dieser Reihenfolge vor:
 #4  SOUNDDATA
 
 u.s.w. angeordnet.
-```    
+``` 
+
+# AGABlaster
+
+| Size  | Content                                    | Comment                                                                                                                  |
+|-------|--------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|
+| BYTE  | 	File type                                 | Supported file types: 0=Custom CDXL, 1=Standard CDXL.                                                                    |
+| BYTE  | 	Info byte                                 |                                                                                                                          |
+|       | bits 0-3: Video encoding                   | Supported video encodings: 0=RGB, 1=HAM.                                                                                 |
+|       | bit  4  : Audio mode (stereo flag)         | Supported audio modes: 0=mono, 1=stereo                                                                                  |
+|       | bits 5-7: Plane arrangement                | Supported plane arrangements: 0=bit planar                                                                               |
+| LONG	 | Current chunk size                         | = 32 + (Palette size + Palette Padding)                                                                                  |
+|       |                                            | + (Video width in bytes)*(Video height)*(Number of bitplanes)                                                            |
+|       |                                            | + Video padding + (Audio data size (twice as long if stereo) + Audio padding                                             |
+| LONG  | 	Previous chunk size                       | chunk size of previous frame                                                                                             |
+| LONG  | 	Current frame number                      | 1-4294967295                                                                                                             |
+| WORD  | 	Video width                               | Supported >= 128                                                                                                         |
+| WORD  | 	Video height                              | Supported >= 128. Overscan is supported.                                                                                 |
+| BYTE	 | reserved                                   | 0                                                                                                                        |
+| BYTE  | 	Number of bit planes                      | 0-8 (if 0, then only background color is displayed; allows for empty video frame data)                                   |
+| WORD  | 	Palette size in bytes                     | 0-768 (must be a multiple of 2 or 3)                                                                                     |
+| WORD  | 	Audio data size in bytes                  | 2-65534 (only even numbers; sample length; in stereo mode total audio size is twice as long; audio data must be present) |
+| WORD  | 	Frequency [extension]                     | Provided in Hz (0=unspecified)                                                                                           |
+| BYTE  | 	Frames per second [extension]             | 1-255 (0=unspecified)                                                                                                    |
+| BYTE  | 	Info byte 2 [extension]                   |                                                                                                                          |
+|       | bits 0-3: Resolution                       | Supported resolutions: 0=unspecified, 1=lores, 2=hires, 3=superhires                                                     |
+|       | bit  4  : Color mode                       | Supported color mode: 0=12 bit colors, 1=24 bit colors                                                                   |
+|       | bit  5  : Kill EHB                         | Kill EHB: 0=keep EHB mode, 1: kill EHB, use AGA6 [since V0.9.82, only required for 12-bit CDXL videos]                   |
+|       | bit  6  : Frame length mode (AGAConv 1.1+) | Frame length mode: 1=variable-length, 0=fixed-length                                                                     |
+|       | bit  7  : 0                                |                                                                                                                          |
+| WORD  | 	Padding [extension]                       |                                                                                                                          |
+|       | bits  0- 3: Audio padding                  | Audio padding: 0-15 (size of padding in number of bytes)                                                                 |
+|       | bits  4- 7: Video padding                  | Video padding: 0-15 (size of padding in number of bytes)                                                                 |                  
+|       | bits  8-11: Palette padding                | Palette padding: 0-15 (size of padding in number of bytes)                                                               |
+|       | bits 12-14: Padding mode                   | Padding modes: 0=unspecified, 1=no padding, 2=16 bit padding, 3=32 bit padding, 4=64 bit padding, 5=128 bit padding      |
+|       | bit     15: 0                              |                                                                                                                          |
+| WORD  | 	reserved                                  | 	0                                                                                                                       |

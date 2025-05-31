@@ -6,11 +6,16 @@
 package org.monte.media.screenrecorder;
 
 import org.monte.media.av.Buffer;
+import org.monte.media.av.BufferFlag;
 import org.monte.media.av.Format;
+import org.monte.media.av.codec.video.AffineTransform;
+import org.monte.media.av.codec.video.VideoFormatKeys;
 import org.monte.media.math.Rational;
+import org.monte.media.quicktime.codec.sprite.Sprite;
+import org.monte.media.quicktime.codec.sprite.SpriteFormatKeys;
+import org.monte.media.quicktime.codec.sprite.SpriteSample;
 
 import java.awt.AWTEvent;
-import java.awt.Graphics;
 import java.awt.GraphicsDevice;
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -27,6 +32,7 @@ import java.io.IOException;
  */
 public class MouseSampler implements Sampler {
     private final Rational interval;
+    private final Rational initialDelay;
     private final int track;
     private final Rectangle captureArea;
     private long sequenceNumber;
@@ -50,16 +56,27 @@ public class MouseSampler implements Sampler {
         }
     };
 
-    public MouseSampler(Rectangle captureArea, GraphicsDevice captureDevice, Format screenFormat, int track, Rational delay,
-                        BufferedImage cursorImage, BufferedImage cursorPressedImage, Point cursorOffset) throws IOException {
-        this.interval = delay;
+    @Override
+    public int getTrack() {
+        return track;
+    }
+
+
+    public Format getFormat() {
+        return screenFormat;
+    }
+
+    public MouseSampler(Rectangle captureArea, GraphicsDevice captureDevice, Format screenFormat, int track, Rational interval,
+                        BufferedImage cursorImage, BufferedImage cursorPressedImage, Point cursorOffset, Rational initialDelay) throws IOException {
+        this.interval = interval;
         this.captureArea = captureArea;
-        this.screenFormat = screenFormat;
+        this.screenFormat = screenFormat.prepend(VideoFormatKeys.MediaTimeScale, 600L);
         this.track = track;
         this.cursorImage = cursorImage;
         this.cursorPressedImage = cursorPressedImage;
         this.captureDevice = captureDevice;
         this.cursorOffset = cursorOffset;
+        this.initialDelay = initialDelay;
         Toolkit.getDefaultToolkit().addAWTEventListener(awtEventListener, AWTEvent.MOUSE_EVENT_MASK);
     }
 
@@ -72,22 +89,38 @@ public class MouseSampler implements Sampler {
     public Buffer sample() {
         Buffer buf = new Buffer();
         buf.timeStamp = new Rational(System.nanoTime(), 1_000_000_000);
+        buf.setFlag(BufferFlag.RELATIVE_TIME);
         buf.track = track;
         buf.sampleCount = 1;
-        buf.sampleDuration = interval.inverse();
+        buf.sampleDuration = interval;
         buf.sequenceNumber = sequenceNumber++;
 
         PointerInfo info = MouseInfo.getPointerInfo();
-        buf.format = screenFormat;
+        buf.format = screenFormat.prepend(VideoFormatKeys.EncodingKey, SpriteFormatKeys.ENCODING_JAVA_SPRITE);
+
+        /*
         BufferedImage img = new BufferedImage(captureArea.width, captureArea.height, cursorImage.getType());
         Graphics g = img.getGraphics();
         g.drawImage(mouseWasPressed ? cursorPressedImage : cursorImage, info.getLocation().x + cursorOffset.x, info.getLocation().y + cursorOffset.y, null);
         g.dispose();
 
         buf.data = img;
+        */
+        var ss = new SpriteSample();
+        ss.images.add(cursorImage);
+        ss.images.add(cursorPressedImage);
+        ss.sprites.put(0, new Sprite(0, mousePressed ? 0 : 1, true, 0,
+                AffineTransform.translate(info.getLocation().x - captureArea.x - cursorOffset.x,
+                        info.getLocation().y - captureArea.y - cursorOffset.y)));
+        buf.data = ss;
 
         mouseWasPressed = mousePressed;
         return buf;
+    }
+
+    @Override
+    public Rational getInitialDelay() {
+        return initialDelay;
     }
 
     @Override

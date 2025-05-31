@@ -1075,6 +1075,7 @@ public class QuickTimeMeta extends AbstractMovie {
 
             Media m = media;
             m.mediaSamples = new TreeMap<>();
+            /*
             if (m.sampleSizes.isEmpty()) {
                 throw new IOException("track " + trackId + ": 'mdia' atom does not contain an 'stsz' atom.");
             }
@@ -1086,7 +1087,7 @@ public class QuickTimeMeta extends AbstractMovie {
             }
             if (m.chunkOffsets.isEmpty()) {
                 throw new IOException("track " + trackId + ": 'mdia' atom does neither contain an 'stco' nor an 'co64' atom.");
-            }
+            }*/
 
             TreeMap<Integer, SampleSizeGroup> sampleSizeMap = new TreeMap<>();
             int sampleIndex = 0;
