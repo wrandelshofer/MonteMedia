@@ -631,6 +631,21 @@ public class H264Const {
     }
 
     public static final int[][] PIX_MAP_SPLIT_4x4 = buildPixSplitMap4x4();
+    public static final int[] PIX_MAP_SPLIT_4x4_FLATTENED = flatten(buildPixSplitMap4x4());
+
+    private static int[] flatten(int[][] a) {
+        int height = a.length;
+        int width = a[0].length;
+        int[] b = new int[width * height];
+        int k = 0;
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                b[k++] = a[i][j];
+            }
+        }
+        return b;
+    }
+
     public static final int[][] PIX_MAP_SPLIT_2x2 = buildPixSplitMap2x2();
 
     public static final int PROFILE_CAVLC_INTRA = 44;

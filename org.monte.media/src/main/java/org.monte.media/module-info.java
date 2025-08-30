@@ -2,6 +2,9 @@
  * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
  */
 
+import org.monte.media.avi.codec.video.ZMBVDecoderSpi;
+import org.monte.media.mp4.codec.video.H264EncoderSpi;
+
 /**
  * A library for processing still images, video, audio and meta-data.
  * <p>
@@ -105,19 +108,27 @@ module org.monte.media {
     uses org.monte.media.av.MovieReaderSpi;
 
     provides org.monte.media.av.CodecSpi with
-            org.monte.media.quicktime.codec.sprite.SpriteCodecSpi,
-            org.monte.media.av.codec.video.JPEGCodecSpi,
-            org.monte.media.av.codec.video.PNGCodecSpi,
-            org.monte.media.av.codec.video.TechSmithCodecSpi,
+            org.monte.media.quicktime.codec.sprite.SpriteDecoderSpi,
+            org.monte.media.quicktime.codec.sprite.SpriteEncoderSpi,
+            org.monte.media.av.codec.video.JPEGDecoderSpi,
+            org.monte.media.av.codec.video.JPEGEncoderSpi,
+            org.monte.media.av.codec.video.PNGDecoderSpi,
+            org.monte.media.av.codec.video.PNGEncoderSpi,
+            org.monte.media.av.codec.video.TechSmithDecoderSpi,
+            org.monte.media.av.codec.video.TechSmithEncoderSpi,
             org.monte.media.quicktime.codec.audio.QuickTimePCMAudioCodecSpi,
             org.monte.media.quicktime.codec.text.AppleClosedCaptionCodecSpi,
-            org.monte.media.quicktime.codec.video.AnimationCodecSpi,
-            org.monte.media.quicktime.codec.video.RawCodecSpi,
+            org.monte.media.quicktime.codec.video.AnimationDecoderSpi,
+            org.monte.media.quicktime.codec.video.AnimationEncoderSpi,
+            org.monte.media.quicktime.codec.video.RawEncoderSpi,
+            org.monte.media.quicktime.codec.video.RawDecoderSpi,
             org.monte.media.avi.codec.audio.AVIPCMAudioCodecSpi,
-            org.monte.media.avi.codec.video.DIBCodecSpi,
-            org.monte.media.avi.codec.video.RunLengthCodecSpi,
-            org.monte.media.avi.codec.video.ZMBVCodecSpi,
-            org.monte.media.mp4.codec.video.H264CodecSpi;
+            org.monte.media.avi.codec.video.DIBDecoderSpi,
+            org.monte.media.avi.codec.video.DIBEncoderSpi,
+            org.monte.media.avi.codec.video.RunLengthDecoderSpi,
+            org.monte.media.avi.codec.video.RunLengthEncoderSpi,
+            ZMBVDecoderSpi,
+            H264EncoderSpi;
 
     provides org.monte.media.av.MovieWriterSpi with
             org.monte.media.quicktime.QuickTimeWriterSpi,

@@ -6,6 +6,7 @@ import org.monte.media.impl.jcodec.common.io.BitWriter;
 import org.monte.media.impl.jcodec.common.model.ColorSpace;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 import static org.monte.media.impl.jcodec.codecs.h264.decode.CAVLCReader.readBool;
 import static org.monte.media.impl.jcodec.codecs.h264.decode.CAVLCReader.readNBit;
@@ -711,5 +712,49 @@ public class SeqParameterSet {
     public static int getPicHeightInMbs(SeqParameterSet sps) {
         int picHeightInMbs = (sps.picHeightInMapUnitsMinus1 + 1) << (sps.frameMbsOnlyFlag ? 0 : 1);
         return picHeightInMbs;
+    }
+
+    @Override
+    public String toString() {
+        return "SeqParameterSet{" +
+                "\n, profileIdc=" + profileIdc +
+                "\n, constraintSet0Flag=" + constraintSet0Flag +
+                "\n, constraintSet1Flag=" + constraintSet1Flag +
+                "\n, constraintSet2Flag=" + constraintSet2Flag +
+                "\n, constraintSet3Flag=" + constraintSet3Flag +
+                "\n, constraintSet4Flag=" + constraintSet4Flag +
+                "\n, constraintSet5Flag=" + constraintSet5Flag +
+                "\n, levelIdc=" + levelIdc +
+                "\n, seqParameterSetId=" + seqParameterSetId +
+                "\n, chromaFormatIdc=" + chromaFormatIdc +
+                "\n, separateColourPlaneFlag=" + separateColourPlaneFlag +
+                "\n, bitDepthLumaMinus8=" + bitDepthLumaMinus8 +
+                "\n, bitDepthChromaMinus8=" + bitDepthChromaMinus8 +
+                "\n, qpprimeYZeroTransformBypassFlag=" + qpprimeYZeroTransformBypassFlag +
+                "\n, scalingMatrix=" + Arrays.toString(scalingMatrix) +
+                "\n, log2MaxFrameNumMinus4=" + log2MaxFrameNumMinus4 +
+                "\n, picOrderCntType=" + picOrderCntType +
+                "\n, log2MaxPicOrderCntLsbMinus4=" + log2MaxPicOrderCntLsbMinus4 +
+                "\n, deltaPicOrderAlwaysZeroFlag=" + deltaPicOrderAlwaysZeroFlag +
+                "\n, offsetForNonRefPic=" + offsetForNonRefPic +
+                "\n, offsetForTopToBottomField=" + offsetForTopToBottomField +
+                "\n, offsetForRefFrame=" + Arrays.toString(offsetForRefFrame) +
+                "\n, numRefFrames=" + numRefFrames +
+                "\n, gapsInFrameNumValueAllowedFlag=" + gapsInFrameNumValueAllowedFlag +
+                "\n, picWidthInMbsMinus1=" + picWidthInMbsMinus1 +
+                "\n, picHeightInMapUnitsMinus1=" + picHeightInMapUnitsMinus1 +
+                "\n, frameMbsOnlyFlag=" + frameMbsOnlyFlag +
+                "\n, mbAdaptiveFrameFieldFlag=" + mbAdaptiveFrameFieldFlag +
+                "\n, direct8x8InferenceFlag=" + direct8x8InferenceFlag +
+                "\n, frameCroppingFlag=" + frameCroppingFlag +
+                "\n, frameCropLeftOffset=" + frameCropLeftOffset +
+                "\n, frameCropRightOffset=" + frameCropRightOffset +
+                "\n, frameCropTopOffset=" + frameCropTopOffset +
+                "\n, frameCropBottomOffset=" + frameCropBottomOffset +
+                "\n, vuiParams=" + vuiParams +
+
+                "\n, fieldPicFlag=" + fieldPicFlag +
+                "\n, numRefFramesInPicOrderCntCycle=" + numRefFramesInPicOrderCntCycle +
+                '}';
     }
 }

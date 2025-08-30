@@ -30,7 +30,7 @@ import static org.monte.media.util.MathUtil.clamp;
  *
  * @author Werner Randelshofer
  */
-public class ColorAdjustCodec extends AbstractVideoCodec {
+public class ColorAdjustCodec extends org.monte.media.av.AbstractCodec {
 
     private ColorAdjustModel model = new DefaultColorAdjustModel();
 

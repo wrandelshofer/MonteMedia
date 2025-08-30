@@ -19,10 +19,11 @@ import java.util.concurrent.TimeUnit;
 public class SimpleSampleProducer implements SampleProducer {
     private final SequencedSet<Sampler> samplers;
     private ScheduledExecutorService executor;
-    private BlockingQueue<Buffer> queue = new LinkedBlockingQueue<>();
+    private final BlockingQueue<Buffer> queue;
 
     public SimpleSampleProducer(Collection<Sampler> samplers) {
         this.samplers = new LinkedHashSet<>(samplers);
+        queue = new LinkedBlockingQueue<>(samplers.size());
     }
 
     @Override
@@ -54,7 +55,7 @@ public class SimpleSampleProducer implements SampleProducer {
         for (var s : samplers) {
             executor.scheduleAtFixedRate(() -> {
                 var b = s.sample();
-                queue.add(b);
+                queue.offer(b);
             }, s.getInitialDelay().multiply(1_000).intValue(), s.getInterval().multiply(1_000).intValue(), TimeUnit.MILLISECONDS);
         }
     }

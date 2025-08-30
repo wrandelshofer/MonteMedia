@@ -34,7 +34,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
  *
  * @author Werner Randelshofer
  */
-public class FFRtoVFRConverter extends AbstractVideoCodec {
+public class FFRtoVFRConverter extends org.monte.media.av.AbstractCodec {
 
     private Rational timeStamp;
     private Rational duration;

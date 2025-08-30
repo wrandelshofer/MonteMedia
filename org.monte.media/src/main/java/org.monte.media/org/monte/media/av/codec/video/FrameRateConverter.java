@@ -35,7 +35,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.FixedFrameRateKey;
  *
  * @author Werner Randelshofer
  */
-public class FrameRateConverter extends AbstractVideoCodec {
+public class FrameRateConverter extends org.monte.media.av.AbstractCodec {
 
     private Rational inputTime;
     private Rational outputTime;

@@ -9,7 +9,6 @@ import org.monte.media.amigabitmap.AmigaBitmapImageFactory;
 import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
-import org.monte.media.av.codec.video.AbstractVideoCodec;
 import org.monte.media.ilbm.ColorCyclingMemoryImageSource;
 import org.monte.media.ilbm.ILBMDecoder;
 import org.monte.media.pbm.PBMDecoder;
@@ -41,7 +40,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
  *
  * @author Werner Randelshofer
  */
-public class AmigaBitmapCodec extends AbstractVideoCodec {
+public class AmigaBitmapCodec extends org.monte.media.av.AbstractCodec {
     public AmigaBitmapCodec() {
         super(new Format[]{
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,

@@ -13,10 +13,11 @@ import org.monte.media.av.MovieWriterSpi;
 import org.monte.media.av.Registry;
 import org.monte.media.av.codec.video.VideoFormatKeys.PixelFormat;
 import org.monte.media.color.Colors;
+import org.monte.media.jcodec.h264.JCodecPictureCodecSpi;
 import org.monte.media.jcodec.mp4.JCodecMP4WriterSpi;
 import org.monte.media.math.Rational;
 import org.monte.media.mp4.MP4WriterSpi;
-import org.monte.media.mp4.codec.video.H264CodecSpi;
+import org.monte.media.mp4.codec.video.H264RawYuvEncoderSpi;
 
 import javax.imageio.ImageIO;
 import java.awt.BasicStroke;
@@ -25,12 +26,15 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static org.monte.media.av.FormatKeys.DataClassKey;
 import static org.monte.media.av.FormatKeys.EncodingKey;
@@ -92,13 +96,52 @@ public class Main {
         return img;
     }
 
-    private static void drawAnimationFrame(Graphics2D g, double second, int frameIndex, int frameCount) {
+    private static void drawAnimationFrame(Graphics2D g, double second, int frameIndex, int frameCount, BufferedImage backgroundImage, Random rng) {
         drawClock(g, 232, 240, 150, second);
+        drawVerticallyScrollingArea(g, 472, 251, 168, 108, second, backgroundImage);
+        drawHorizontallyScrollingArea(g, 472, 370, 168, 110, second, backgroundImage);
 
         g.setPaint(Color.WHITE);
         g.fillRect(472, 10, 168, 110);
         g.setPaint(Color.BLACK);
         g.drawString("Frame " + (frameIndex + 1) + " of " + frameCount, 473, 24);
+
+        drawRandomlyMovingBlock(g, 512, 48, 40, 40, 16, rng, backgroundImage, false);
+    }
+
+    private static void drawVerticallyScrollingArea(Graphics2D g, int x, int y, int width, int height, double second, BufferedImage backgroundImage) {
+        // draws the background image vertically offset by one pixel every 12-th of a second
+        int offset = (int) (second * 12) % height;
+        g.drawImage(backgroundImage, x, y, x + width, y + height - offset,
+                x, y + offset, x + width, y + height, null);
+
+        if (offset > 0) {
+            g.drawImage(backgroundImage, x, y + height - offset, x + width, y + height,
+                    x, y, x + width, y + offset, null);
+        }
+    }
+
+    private static void drawRandomlyMovingBlock(Graphics2D g, int x, int y, int width, int height, int distance, Random rng, BufferedImage backgroundImage, boolean erase) {
+        if (erase) {
+            g.drawImage(backgroundImage,
+                    x, y, x + width + distance, y + height + distance,
+                    x, y, x + width + distance, y + height + distance,
+                    null);
+        }
+        g.setPaint(Color.BLACK);
+        g.fillRect(x + rng.nextInt(distance), y + rng.nextInt(distance), width, height);
+    }
+
+    private static void drawHorizontallyScrollingArea(Graphics2D g, int x, int y, int width, int height, double second, BufferedImage backgroundImage) {
+        // draws the background image vertically offset by one pixel every 12-th of a second
+        int offset = (int) (second * 12) % width;
+        g.drawImage(backgroundImage, x, y, x + width - offset, y + height,
+                x + offset, y, x + width, y + height, null);
+
+        if (offset > 0) {
+            g.drawImage(backgroundImage, x + width - offset, y, x + width, y + height,
+                    x, y, x + offset, y + height, null);
+        }
     }
 
     private static void drawClock(Graphics2D g, int cx, int cy, int radius, double timeInSeconds) {
@@ -123,12 +166,11 @@ public class Main {
     private static void drawClockHand(Graphics2D g, int cx, int cy, int radius1, int radius2, Stroke stroke, Color color, double theta) {
         AffineTransform tx = new AffineTransform();
         tx.setToRotation(theta % (Math.PI * 2), cx, cy);
-        g.setTransform(tx);
         g.setColor(color);
         g.setStroke(stroke);
-        g.drawLine(cx, cy - radius1, cx, cy - radius2);
-        tx.setToIdentity();
-        g.setTransform(tx);
+        Point2D p1 = tx.transform(new Point2D.Double(cx, cy - radius1), new Point2D.Double());
+        Point2D p2 = tx.transform(new Point2D.Double(cx, cy - radius2), new Point2D.Double());
+        g.draw(new Line2D.Double(p1.getX(), p1.getY(), p2.getX(), p2.getY()));
     }
 
     /**
@@ -146,37 +188,42 @@ public class Main {
             float quality = 0.75f;
             Format baseFormat = new Format(QualityKey, quality, KeyFrameIntervalKey, 60);
             List<TestData> list = new ArrayList<>();
-            list.add(new TestData(new File("moviewriterdemo-rle8.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 8)));
-            list.add(new TestData(new File("moviewriterdemo-rle24.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 24)));
-            list.add(new TestData(new File("moviewriterdemo-rle16.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 16)));
-            list.add(new TestData(new File("moviewriterdemo-rle8.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_RLE8, DepthKey, 8)));
-            list.add(new TestData(new File("moviewriterdemo-raw16.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_RAW, DepthKey, 16)));
-            list.add(new TestData(new File("moviewriterdemo-h264-motion0-jcodec.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0), null, new JCodecMP4WriterSpi()));
-            list.add(new TestData(new File("moviewriterdemo-h264-motion16-jcodec.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 16), null, new JCodecMP4WriterSpi()));
-            list.add(new TestData(new File("moviewriterdemo-h264-motion0.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0), new H264CodecSpi(), new MP4WriterSpi()));
-            list.add(new TestData(new File("moviewriterdemo-h264-motion0.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0), new H264CodecSpi(), new MP4WriterSpi()));
-            list.add(new TestData(new File("moviewriterdemo-h264-motion0.mov"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0), new H264CodecSpi(), new MP4WriterSpi()));
-            list.add(new TestData(new File("moviewriterdemo-h264-motion16.mov"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 16), new H264CodecSpi(), new MP4WriterSpi()));
-            list.add(new TestData(new File("moviewriterdemo-h264-motion16.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 16), new H264CodecSpi(), new MP4WriterSpi()));
-            list.add(new TestData(new File("moviewriterdemo-jpg-q" + quality + ".avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_MJPG, DepthKey, 24)));
-            list.add(new TestData(new File("moviewriterdemo-jpg-q" + quality + ".mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_JPEG, DepthKey, 24)));
-            list.add(new TestData(new File("moviewriterdemo-png.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_PNG, DepthKey, 24)));
-            list.add(new TestData(new File("moviewriterdemo-png.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_PNG, DepthKey, 24)));
-            list.add(new TestData(new File("moviewriterdemo-png.zip"), baseFormat.prepend(EncodingKey, ENCODING_AVI_PNG, DepthKey, 24)));
-            list.add(new TestData(new File("moviewriterdemo-raw24.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_DIB, DepthKey, 24)));
-            list.add(new TestData(new File("moviewriterdemo-raw24.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_RAW, DepthKey, 24)));
-            list.add(new TestData(new File("moviewriterdemo-raw8.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_DIB, DepthKey, 8)));
-            list.add(new TestData(new File("moviewriterdemo-raw8.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_RAW, DepthKey, 8)));
-            list.add(new TestData(new File("moviewriterdemo-raw8gray.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_DIB, DepthKey, 8, PixelFormatKey, PixelFormat.GRAY)));
-            list.add(new TestData(new File("moviewriterdemo-rle8gray.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_RLE8, DepthKey, 8, PixelFormatKey, PixelFormat.GRAY)));
-            list.add(new TestData(new File("moviewriterdemo-tscc16.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 16)));
-            list.add(new TestData(new File("moviewriterdemo-tscc16.mov"), baseFormat.prepend(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 16)));
-            list.add(new TestData(new File("moviewriterdemo-tscc24.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 24)));
-            list.add(new TestData(new File("moviewriterdemo-tscc24.mov"), baseFormat.prepend(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 24)));
-            list.add(new TestData(new File("moviewriterdemo-tscc8.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8)));
-            list.add(new TestData(new File("moviewriterdemo-tscc8.mov"), baseFormat.prepend(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8)));
-            list.add(new TestData(new File("moviewriterdemo-tscc8gray.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8, PixelFormatKey, PixelFormat.GRAY)));
-            list.add(new TestData(new File("moviewriterdemo-tscc8gray.mov"), baseFormat.prepend(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8, PixelFormatKey, PixelFormat.GRAY)));
+            list.add(new TestData(new File("moviewriterdemo-h264raw.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24), new H264RawYuvEncoderSpi(), new MP4WriterSpi()));
+            if (false) {
+                list.add(new TestData(new File("moviewriterdemo-rle8.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 8)));
+                list.add(new TestData(new File("moviewriterdemo-rle16.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 16)));
+                list.add(new TestData(new File("moviewriterdemo-rle24.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 24)));
+                list.add(new TestData(new File("moviewriterdemo-h264-motion0-jcodec.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0), new JCodecPictureCodecSpi(), new JCodecMP4WriterSpi()));
+                list.add(new TestData(new File("moviewriterdemo-h264-motion0.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0)));
+                list.add(new TestData(new File("moviewriterdemo-h264-motion16.mov"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 16)));
+                list.add(new TestData(new File("moviewriterdemo-h264-motion4.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 4)));
+                list.add(new TestData(new File("moviewriterdemo-h264-motion16-jcodec.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 16), new JCodecPictureCodecSpi(), new JCodecMP4WriterSpi()));
+                list.add(new TestData(new File("moviewriterdemo-raw8.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_DIB, DepthKey, 8)));
+                list.add(new TestData(new File("moviewriterdemo-raw8.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_RAW, DepthKey, 8)));
+                list.add(new TestData(new File("moviewriterdemo-raw16.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_RAW, DepthKey, 16)));
+                list.add(new TestData(new File("moviewriterdemo-raw24.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_DIB, DepthKey, 24)));
+                list.add(new TestData(new File("moviewriterdemo-raw24.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_RAW, DepthKey, 24)));
+                list.add(new TestData(new File("moviewriterdemo-tscc8.mov"), baseFormat.prepend(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8)));
+                list.add(new TestData(new File("moviewriterdemo-h264-motion0-jcodec.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0), new JCodecPictureCodecSpi(), new JCodecMP4WriterSpi()));
+                list.add(new TestData(new File("moviewriterdemo-h264-motion16.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 16)));
+                list.add(new TestData(new File("moviewriterdemo-rle8.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_RLE8, DepthKey, 8)));
+                list.add(new TestData(new File("moviewriterdemo-h264-motion0.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0)));
+                list.add(new TestData(new File("moviewriterdemo-h264-motion0.mov"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0)));
+                list.add(new TestData(new File("moviewriterdemo-jpg-q" + quality + ".avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_MJPG, DepthKey, 24)));
+                list.add(new TestData(new File("moviewriterdemo-jpg-q" + quality + ".mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_JPEG, DepthKey, 24)));
+                list.add(new TestData(new File("moviewriterdemo-png.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_PNG, DepthKey, 24)));
+                list.add(new TestData(new File("moviewriterdemo-png.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_PNG, DepthKey, 24)));
+                list.add(new TestData(new File("moviewriterdemo-png.zip"), baseFormat.prepend(EncodingKey, ENCODING_AVI_PNG, DepthKey, 24)));
+                list.add(new TestData(new File("moviewriterdemo-raw8gray.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_DIB, DepthKey, 8, PixelFormatKey, PixelFormat.GRAY)));
+                list.add(new TestData(new File("moviewriterdemo-rle8gray.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_RLE8, DepthKey, 8, PixelFormatKey, PixelFormat.GRAY)));
+                list.add(new TestData(new File("moviewriterdemo-tscc16.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 16)));
+                list.add(new TestData(new File("moviewriterdemo-tscc16.mov"), baseFormat.prepend(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 16)));
+                list.add(new TestData(new File("moviewriterdemo-tscc24.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 24)));
+                list.add(new TestData(new File("moviewriterdemo-tscc24.mov"), baseFormat.prepend(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 24)));
+                list.add(new TestData(new File("moviewriterdemo-tscc8.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8)));
+                list.add(new TestData(new File("moviewriterdemo-tscc8gray.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8, PixelFormatKey, PixelFormat.GRAY)));
+                list.add(new TestData(new File("moviewriterdemo-tscc8gray.mov"), baseFormat.prepend(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8, PixelFormatKey, PixelFormat.GRAY)));
+            }
             for (TestData data : list) {
                 m.test(data.file, data.format, data.codecSpi, data.movieWriterSpi);
             }
@@ -196,17 +243,21 @@ public class Main {
         long startTime = System.nanoTime();
 
         // Make the format more specific
-        Rational frameRate = new Rational(10, 1);
+        Rational frameRate = new Rational(12, 1);
         format = format.prepend(MediaTypeKey, MediaType.VIDEO, //
                 FrameRateKey, frameRate,//
-                WidthKey, 640, //
-                HeightKey, 480);
+                WidthKey, 128, //
+                HeightKey, 96);
 
         // Create a buffered image for this format
         BufferedImage img = createImage(format);
         Graphics2D g = img.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        drawBackgroundImage(g);
+        var backgroundImage = ImageIO.read(Main.class.getResource("BackgroundImage.png"));
+        if (backgroundImage != null) {
+            g.translate(format.get(WidthKey) - backgroundImage.getWidth(), format.get(HeightKey) - backgroundImage.getHeight());
+            g.drawImage(backgroundImage, 0, 0, null);
+        }
 
         MovieWriter out = null;
         int n = frameRate.multiply(60).intValue();
@@ -226,9 +277,10 @@ public class Main {
             }
 
             // Draw the animation
+            Random rng = new Random(0);
             for (int i = 0; i < n; i++) {
                 double t = frameRate.divide(i).doubleValue() + 8 * 3600 + 25 * 60;
-                drawAnimationFrame(g, t, i, n);
+                drawAnimationFrame(g, t, i, n, backgroundImage, rng);
 
                 // write image to the writer
                 out.write(0, img, 1);
@@ -244,12 +296,5 @@ public class Main {
             g.dispose();
         }
         System.out.println(", " + (int) ((n * 1e9) / (System.nanoTime() - startTime)) + " fps");
-    }
-
-    private static void drawBackgroundImage(Graphics2D g) throws IOException {
-        var backgroundImage = ImageIO.read(Main.class.getResource("BackgroundImage.png"));
-        if (backgroundImage != null) {
-            g.drawImage(backgroundImage, 0, 0, null);
-        }
     }
 }

@@ -362,14 +362,15 @@ public class H264Encoder extends VideoEncoder {
                 EncodedMB outMB = new EncodedMB();
                 outMB.setPos(mbX, mbY);
                 BitWriter candidate;
-                EncodingContext fork;
+                EncodingContext fork = context;
                 do {
                     candidate = sliceData.fork();
-                    fork = context.fork();
                     rdMacroblock(fork, outMB, sliceType, pic, mbX, mbY, candidate, sliceQp, mbQp, params);
                     qpDelta = rc.accept(candidate.position() - sliceData.position());
-                    if (qpDelta != 0)
+                    if (qpDelta != 0) {
+                        fork = context.fork();
                         mbQp += qpDelta;
+                    }
                 } while (qpDelta != 0);
                 estimator.mvSave(mbX, mbY, new int[]{outMB.mx[0], outMB.my[0], outMB.mr[0]});
                 sliceData = candidate;

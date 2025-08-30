@@ -8,7 +8,6 @@ package org.monte.media.mp4.codec.video;
 import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys;
-import org.monte.media.av.codec.video.AbstractVideoCodec;
 import org.monte.media.impl.jcodec.api.transcode.PixelStore;
 import org.monte.media.impl.jcodec.api.transcode.VideoFrameWithPacket;
 import org.monte.media.impl.jcodec.codecs.h264.H264Utils;
@@ -44,15 +43,16 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_I
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.MotionSearchRangeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
-import static org.monte.media.mp4.codec.video.JCodecPictureCodec.ENCODING_PICTURE;
+import static org.monte.media.mp4.codec.video.PictureEncoder.ENCODING_PICTURE;
 
 /**
  * Codec for {@link BufferedImage} or {@link Picture} to {@code H264} byte array.
  */
-public class H264Encoder extends AbstractVideoCodec {
+public class H264Encoder extends org.monte.media.av.AbstractCodec {
     private VideoEncoder videoEncoder = null;
     private ByteBuffer byteBuffer;
     private int frameCounter;
+    private AvcDecoderConfigurationRecord header;
 
     public H264Encoder() {
         super(new Format[]{
@@ -70,7 +70,7 @@ public class H264Encoder extends AbstractVideoCodec {
                                 DataClassKey, byte[].class), //
                 }//
         );
-        name = "JCodec H264 Codec";
+        name = "H264 Encoder";
     }
 
     @Override
@@ -90,29 +90,13 @@ public class H264Encoder extends AbstractVideoCodec {
 
     @Override
     public int process(Buffer in, Buffer out) {
-        if (ENCODING_PICTURE.equals(outputFormat.get(EncodingKey))) {
-            return decode(in, out);
-        } else {
-            return encode(in, out);
-        }
-    }
-
-    public int decode(Buffer in, Buffer out) {
-        out.setMetaTo(in);
-        out.format = outputFormat;
-        if (in.isFlag(DISCARD)) {
-            return CODEC_OK;
-        }
-
-        out.setException(new UnsupportedOperationException("decoding is not supported"));
-        out.setFlag(DISCARD);
-        return CODEC_FAILED;
-
+        return encode(in, out);
     }
 
     @Override
     public void reset() {
         frameCounter = 0;
+        header = null;
     }
 
     public int encode(Buffer in, Buffer out) {
@@ -149,19 +133,21 @@ public class H264Encoder extends AbstractVideoCodec {
         outputVideoPacket.setFrameType(encodedFrame.isKeyFrame() ? Packet.FrameType.KEY : Packet.FrameType.INTER);
 
         // compute header
-        out.header = null;
-        if (encodedFrame.isKeyFrame()) {
+        if (this.header == null) {
+            //Sequence Parameter Set (SPS): Once per stream
             List<ByteBuffer> spsList = new ArrayList<>();
+            //Picture Parameter Set (PPS): Once per stream
             List<ByteBuffer> ppsList = new ArrayList<>();
             H264Utils.wipePSinplace(outputVideoPacket.data, spsList, ppsList);
             if (!spsList.isEmpty()) {
-                SeqParameterSet p = H264Utils.readSPS(spsList.get(0));
+                SeqParameterSet p = H264Utils.readSPS(spsList.getFirst());
                 Function<ByteBuffer, ByteArray> byteBufferFunction = b -> new ByteArray(ArrayUtil.copyOf(b.array(), b.arrayOffset(), b.remaining()));
-                out.header = new AvcDecoderConfigurationRecord(p.profileIdc, 0, p.levelIdc, 4,
+                this.header = new AvcDecoderConfigurationRecord(p.profileIdc, 0, p.levelIdc, 4,
                         spsList.stream().map(byteBufferFunction).collect(Collectors.toCollection(LinkedHashSet::new)),
                         ppsList.stream().map(byteBufferFunction).collect(Collectors.toCollection(LinkedHashSet::new)));
             }
         }
+        out.header = this.header;
         outputVideoPacket.data = H264Utils.encodeMOVPacket(outputVideoPacket.data);
 
         out.setFlag(KEYFRAME, encodedFrame.isKeyFrame());

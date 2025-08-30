@@ -114,7 +114,9 @@ public class SimpleScreenRecorder implements ScreenRecorder {
         if (config.screenFormat() != null) {
             Rational interval = config.screenFormat().get(FormatKeys.FrameRateKey).inverse();
             Format screenFormat = config.screenFormat().append(VideoFormatKeys.HeightKey, config.captureArea().height,
-                    VideoFormatKeys.WidthKey, config.captureArea().width);
+                    VideoFormatKeys.WidthKey, config.captureArea().width
+                    , VideoFormatKeys.MotionSearchRangeKey, 4
+            );
             samplers.add(s = new ScreenSampler(config.captureArea(), config.graphicsDevice(),
                     screenFormat, w.getTrackCount(),
                     interval.multiply(4), Rational.ZERO));
@@ -128,6 +130,11 @@ public class SimpleScreenRecorder implements ScreenRecorder {
                     screenFormat, w.getTrackCount(),
                     interval.multiply(4), interval.multiply(3)));
             w.addTrack(s.getFormat());
+            /*
+            JCodecH264Encoder second = new JCodecH264Encoder();
+            second.setOutputFormat(screenFormat);
+            w.setCodec(w.getTrackCount() - 1, new CodecChain(new JCodecPictureCodec(), second));
+             */
         }
         if (config.mouseFormat() != null) {
             samplers.add(s = new MouseSampler(config.captureArea(), config.graphicsDevice(),

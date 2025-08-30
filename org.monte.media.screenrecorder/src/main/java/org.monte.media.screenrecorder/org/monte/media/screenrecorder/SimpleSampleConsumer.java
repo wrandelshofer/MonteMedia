@@ -35,10 +35,10 @@ public class SimpleSampleConsumer implements SampleConsumer {
                     if (b != null) {
                         mux.write(b.track, b);
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    break;
                 } catch (InterruptedException e) {
+                    break;
+                } catch (Exception e) {
+                    e.printStackTrace();
                     break;
                 }
             }

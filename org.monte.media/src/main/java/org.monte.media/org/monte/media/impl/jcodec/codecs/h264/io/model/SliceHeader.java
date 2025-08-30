@@ -1,5 +1,7 @@
 package org.monte.media.impl.jcodec.codecs.h264.io.model;
 
+import java.util.Arrays;
+
 /**
  * References:
  * <p>
@@ -102,5 +104,37 @@ public class SliceHeader {
         this.numRefIdxActiveMinus1 = new int[2];
     }
 
+    @Override
+    public String toString() {
+        return "SliceHeader{" +
+                "\n, firstMbInSlice=" + firstMbInSlice +
+                "\n, sliceType=" + sliceType +
+                "\n, sliceTypeRestr=" + sliceTypeRestr +
+                "\n, picParameterSetId=" + picParameterSetId +
+                "\n, frameNum=" + frameNum +
+                "\n, fieldPicFlag=" + fieldPicFlag +
+                "\n, bottomFieldFlag=" + bottomFieldFlag +
+                "\n, idrPicId=" + idrPicId +
+                "\n, cabacInitIdc=" + cabacInitIdc +
+                "\n, sliceQpDelta=" + sliceQpDelta +
 
+                "\n, refPicMarkingNonIDR=" + refPicMarkingNonIDR +
+                "\n, refPicMarkingIDR=" + refPicMarkingIDR +
+                "\n, refPicReordering=" + Arrays.toString(refPicReordering) +
+                "\n, predWeightTable=" + predWeightTable +
+                "\n, picOrderCntLsb=" + picOrderCntLsb +
+                "\n, deltaPicOrderCntBottom=" + deltaPicOrderCntBottom +
+                "\n, deltaPicOrderCnt=" + Arrays.toString(deltaPicOrderCnt) +
+                "\n, redundantPicCnt=" + redundantPicCnt +
+                "\n, directSpatialMvPredFlag=" + directSpatialMvPredFlag +
+                "\n, numRefIdxActiveOverrideFlag=" + numRefIdxActiveOverrideFlag +
+                "\n, numRefIdxActiveMinus1=" + Arrays.toString(numRefIdxActiveMinus1) +
+                "\n, spForSwitchFlag=" + spForSwitchFlag +
+                "\n, sliceQsDelta=" + sliceQsDelta +
+                "\n, disableDeblockingFilterIdc=" + disableDeblockingFilterIdc +
+                "\n, sliceAlphaC0OffsetDiv2=" + sliceAlphaC0OffsetDiv2 +
+                "\n, sliceBetaOffsetDiv2=" + sliceBetaOffsetDiv2 +
+                "\n, sliceGroupChangeCycle=" + sliceGroupChangeCycle +
+                '}';
+    }
 }

@@ -7,7 +7,6 @@ package org.monte.demo.javafx.movieplayer.monteplayer;
 
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.WritableImage;
-import org.monte.media.av.AbstractCodec;
 import org.monte.media.av.Buffer;
 import org.monte.media.av.BufferFlag;
 import org.monte.media.av.Format;
@@ -23,7 +22,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_WRITABLE_IMAGE;
 
-public class WritableImageCodec extends AbstractCodec {
+public class WritableImageCodec extends org.monte.media.av.AbstractCodec {
     public WritableImageCodec() {
         super(new Format[]{
                         new Format(MediaTypeKey, FormatKeys.MediaType.VIDEO, MimeTypeKey, MIME_JAVA,

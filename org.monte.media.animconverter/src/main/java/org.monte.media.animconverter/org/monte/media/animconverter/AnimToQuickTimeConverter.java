@@ -16,7 +16,7 @@ import org.monte.media.av.CodecChain;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys;
 import org.monte.media.av.Track;
-import org.monte.media.av.codec.video.PNGCodec;
+import org.monte.media.av.codec.video.PNGEncoder;
 import org.monte.media.iff.MC68000InputStream;
 import org.monte.media.ilbm.ColorCyclingMemoryImageSource;
 import org.monte.media.math.Rational;
@@ -231,7 +231,7 @@ public class AnimToQuickTimeConverter {
                     videoTrack = track;
                     Format inputVideoFormat = track.getFormat();
                     AmigaBitmapCodec amigaBitmapCodec = new AmigaBitmapCodec();
-                    PNGCodec pngCodec = new PNGCodec();
+                    PNGEncoder pngCodec = new PNGEncoder();
                     pngCodec.setOutputFormat(
                             new Format(MediaTypeKey, FormatKeys.MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
                                     EncodingKey, ENCODING_QUICKTIME_PNG, DataClassKey, byte[].class

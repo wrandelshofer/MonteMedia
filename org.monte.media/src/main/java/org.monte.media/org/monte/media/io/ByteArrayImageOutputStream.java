@@ -364,6 +364,20 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
         count = newcount;
     }
 
+    /**
+     * Grows capacity if necessary, so that it can hold the given number of additional bytes.
+     *
+     * @param len the number of additional bytes
+     */
+    public void growSizeBy(int len) {
+        int newcount = max((int) streamPos + len, count);
+        if (newcount > buf.length) {
+            buf = Arrays.copyOf(buf, Math.max(buf.length << 1, newcount));
+        }
+        count = newcount;
+        streamPos += len;
+    }
+
 
     @Override
     public void writeInt(int v) throws IOException {

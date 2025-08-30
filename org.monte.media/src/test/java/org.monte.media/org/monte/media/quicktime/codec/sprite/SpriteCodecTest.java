@@ -71,7 +71,7 @@ public class SpriteCodecTest {
     @Test
 
     public void shouldEncodeSprite() throws IOException {
-        SpriteCodec codec = new SpriteCodec();
+        SpriteEncoder codec = new SpriteEncoder();
         codec.setInputFormat(new Format(MediaTypeKey, FormatKeys.MediaType.SPRITE, MimeTypeKey, MIME_JAVA,
                 EncodingKey, ENCODING_JAVA_SPRITE, DataClassKey, SpriteSample.class));
         Format outputFormat = codec.setOutputFormat(
@@ -107,7 +107,7 @@ public class SpriteCodecTest {
         assertEquals(62, out.length);
     }
 
-    private void doEncodeSprite(SpriteSample spriteSample, SpriteCodec codec, Buffer in, Buffer out) {
+    private void doEncodeSprite(SpriteSample spriteSample, SpriteEncoder codec, Buffer in, Buffer out) {
         var status = codec.process(in, out);
         assertEquals(Codec.CODEC_OK, status, "codec must not have failed");
         if (verbose) {
@@ -288,7 +288,7 @@ public class SpriteCodecTest {
                 }
             }
             assertNotEquals(-1, spriteTrack, "must have at least one sprite track");
-            SpriteCodec codec = new SpriteCodec();
+            SpriteEncoder codec = new SpriteEncoder();
             codec.setInputFormat(in.getFormat(spriteTrack));
             codec.setOutputFormat(spriteTrackFormat);
 
@@ -331,7 +331,7 @@ public class SpriteCodecTest {
         try (MovieWriter out = Registry.getInstance().getWriter(fileFormat, file)) {
             int spriteTrack = out.addTrack(spriteTrackFormat);
 
-            SpriteCodec codec = new SpriteCodec();
+            SpriteEncoder codec = new SpriteEncoder();
             Format inputFormat = new Format(MediaTypeKey, FormatKeys.MediaType.SPRITE, MimeTypeKey, MIME_JAVA,
                     EncodingKey, ENCODING_JAVA_SPRITE, DataClassKey, SpriteSample.class);
             codec.setInputFormat(inputFormat);

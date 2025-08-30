@@ -57,6 +57,15 @@ public class PictureParameterSet {
             // second_chroma_qp_index_offset
             return secondChromaQpIndexOffset;
         }
+
+        @Override
+        public String toString() {
+            return "PPSExt{" +
+                    "\nscalingMatrix=" + Arrays.toString(scalingMatrix) +
+                    "\n, transform8x8ModeFlag=" + transform8x8ModeFlag +
+                    "\n, secondChromaQpIndexOffset=" + secondChromaQpIndexOffset +
+                    '}';
+        }
     }
 
     // entropy_coding_mode_flag
@@ -422,5 +431,34 @@ public class PictureParameterSet {
 
     public PPSExt getExtended() {
         return extended;
+    }
+
+    @Override
+    public String toString() {
+        return "PictureParameterSet{" +
+                "\n, picParameterSetId=" + picParameterSetId +
+                "\n, seqParameterSetId=" + seqParameterSetId +
+                "\n, entropyCodingModeFlag=" + entropyCodingModeFlag +
+                "\n, picOrderPresentFlag=" + picOrderPresentFlag +
+                "\n, numSliceGroupsMinus1=" + numSliceGroupsMinus1 +
+                "\n, sliceGroupMapType=" + sliceGroupMapType +
+                "\n, sliceGroupChangeDirectionFlag=" + sliceGroupChangeDirectionFlag +
+                "\n, sliceGroupChangeRateMinus1=" + sliceGroupChangeRateMinus1 +
+                "\n, runLengthMinus1=" + Arrays.toString(runLengthMinus1) +
+                "\n, topLeft=" + Arrays.toString(topLeft) +
+                "\n, bottomRight=" + Arrays.toString(bottomRight) +
+                "\n, sliceGroupId=" + Arrays.toString(sliceGroupId) +
+                "\n, numRefIdxActiveMinus1=" + Arrays.toString(numRefIdxActiveMinus1) +
+                "\n, weightedPredFlag=" + weightedPredFlag +
+                "\n, weightedBipredIdc=" + weightedBipredIdc +
+                "\n, picInitQpMinus26=" + picInitQpMinus26 +
+                "\n, picInitQsMinus26=" + picInitQsMinus26 +
+                "\n, chromaQpIndexOffset=" + chromaQpIndexOffset +
+                "\n, deblockingFilterControlPresentFlag=" + deblockingFilterControlPresentFlag +
+                "\n, constrainedIntraPredFlag=" + constrainedIntraPredFlag +
+                "\n, redundantPicCntPresentFlag=" + redundantPicCntPresentFlag +
+                "\n, extended=" + extended +
+
+                '}';
     }
 }

@@ -95,6 +95,10 @@ public class EncodingContext {
 
     public EncodingContext fork() {
         EncodingContext ret = new EncodingContext(mbWidth, mbHeight);
+        return fork(ret);
+    }
+
+    public EncodingContext fork(EncodingContext ret) {
         ret.cavlc = new CAVLC[3];
         for (int i = 0; i < 3; i++) {
             System.arraycopy(leftRow[i], 0, ret.leftRow[i], 0, leftRow[i].length);

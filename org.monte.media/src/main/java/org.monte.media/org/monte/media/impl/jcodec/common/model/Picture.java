@@ -28,10 +28,10 @@ import static org.monte.media.impl.jcodec.common.model.ColorSpace.MAX_PLANES;
 public class Picture {
     private ColorSpace color;
 
-    private int width;
-    private int height;
+    private final int width;
+    private final int height;
 
-    private byte[][] data;
+    private final byte[][] data;
     private byte[][] lowBits;
     private int lowBitsNum;
 
