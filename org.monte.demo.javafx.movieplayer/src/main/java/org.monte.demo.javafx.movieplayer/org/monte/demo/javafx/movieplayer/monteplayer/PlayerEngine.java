@@ -53,7 +53,14 @@ import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
 
 class PlayerEngine extends AbstractPlayer {
+    /**
+     * 60 FPS
+     */
     private static final int PLAYER_RATE = 60;
+    /**
+     * 1000ms / 60 = 16ms
+     */
+    public static final int JIFFIE = 16;
     private final MonteMediaPlayer player;
     private final MonteMedia media;
     private SynchronizedMovieReader reader;
@@ -363,8 +370,8 @@ class PlayerEngine extends AbstractPlayer {
                 int elapsedMovieMillis = playTime.subtract(playStartTime).multiply(1000).intValue();
                 int elapsedSystemMillis = (int) ((System.nanoTime() - startNanoTime) / 1_000_000L);
                 int sleepMillis = (elapsedMovieMillis - elapsedSystemMillis);
-                if (sleepMillis > 0) {
-                    Thread.sleep(sleepMillis);
+                if (sleepMillis > JIFFIE) {
+                    Thread.sleep(sleepMillis - JIFFIE);
                 }
                 long currentNanoTime = System.nanoTime();
                 renderBuffers(playTime, !player.isMute(), currentNanoTime);
@@ -432,8 +439,8 @@ class PlayerEngine extends AbstractPlayer {
                             int elapsedSystemMillis = (int) ((System.nanoTime() - startNanoTime) / 1_000_000L);
                             try {
                                 int sleepMillis = (elapsedMovieMillis - elapsedSystemMillis);
-                                if (sleepMillis > 200) {
-                                    Thread.sleep(sleepMillis - 200);
+                                if (sleepMillis > JIFFIE) {
+                                    Thread.sleep(sleepMillis - JIFFIE);
                                 }
                                 Buffer outBuf = t.getOutBufferA();
                                 if (!player.isMute()) {
