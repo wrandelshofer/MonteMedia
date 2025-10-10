@@ -47,7 +47,7 @@ public class FXImages {
             }
 
             switch (bimg.getType()) {
-                case BufferedImage.TYPE_INT_RGB:
+                case BufferedImage.TYPE_INT_RGB -> {
                     // set Alpha value to 0xff on all pixels (make pixels opaque)
                     int[] o = new int[p.length];
                     for (int i = 0; i < o.length; i++) {
@@ -56,14 +56,17 @@ public class FXImages {
                     wimg.getPixelWriter().setPixels(0, 0, w, h, PixelFormat.getIntArgbInstance(),
                             o, 0, bimg.getWidth());
                     return wimg;
-                case BufferedImage.TYPE_INT_ARGB:
+                }
+                case BufferedImage.TYPE_INT_ARGB -> {
                     wimg.getPixelWriter().setPixels(0, 0, w, h, PixelFormat.getIntArgbInstance(),
                             p, 0, bimg.getWidth());
                     return wimg;
-                case BufferedImage.TYPE_INT_ARGB_PRE:
+                }
+                case BufferedImage.TYPE_INT_ARGB_PRE -> {
                     wimg.getPixelWriter().setPixels(0, 0, w, h, PixelFormat.getIntArgbPreInstance(),
                             p, 0, bimg.getWidth());
                     return wimg;
+                }
             }
         }
 

@@ -39,5 +39,14 @@ public enum BufferFlag {
      * Indicates that this buffer is known to have the same data as the previous
      * buffer. This may improve encoding performance.
      */
-    SAME_DATA;
+    SAME_DATA,
+    /**
+     * Indicates that the <CODE>Buffer</CODE> carries a time stamp that's
+     * in relative time units. This means that individual time stamps are
+     * not measured against any identifiable absolute origin--only the
+     * difference between the time stamps of two consecutive buffers
+     * carries useful information. (This is the time difference between the
+     * two packets.)
+     */
+    RELATIVE_TIME;
 }

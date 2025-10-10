@@ -16,7 +16,6 @@ import org.jcodec.common.model.Picture;
 import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys;
-import org.monte.media.av.codec.video.AbstractVideoCodec;
 import org.monte.media.jcodec.impl.AWTUtil;
 
 import java.awt.image.BufferedImage;
@@ -43,7 +42,7 @@ import static org.monte.media.jcodec.h264.JCodecPictureCodec.ENCODING_PICTURE;
 /**
  * Codec for {@link Picture} to {@code H264} byte array.
  */
-public class JCodecH264Codec extends AbstractVideoCodec {
+public class JCodecH264Codec extends org.monte.media.av.AbstractCodec {
     private VideoEncoder videoEncoder = null;
     private ByteBuffer byteBuffer;
 

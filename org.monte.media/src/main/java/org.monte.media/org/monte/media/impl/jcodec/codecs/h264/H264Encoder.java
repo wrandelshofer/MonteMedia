@@ -41,8 +41,15 @@ import java.util.List;
 import static org.monte.media.impl.jcodec.codecs.h264.H264Utils.escapeNAL;
 
 /**
- * This class is part of JCodec ( www.jcodec.org ) This software is distributed
- * under FreeBSD License
+ * References:
+ * <p>
+ * This code has been derived from JCodecProject.
+ * <dl>
+ *     <dt>JCodecProject. Copyright 2008-2019 JCodecProject.
+ *     <br><a href="https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE">BSD 2-Clause License.</a></dt>
+ *     <dd><a href="https://github.com/jcodec/jcodec">github.com</a></dd>
+ * </dl>
+ *
  * <p>
  * MPEG 4 AVC ( H.264 ) Encoder
  * <p>
@@ -355,14 +362,15 @@ public class H264Encoder extends VideoEncoder {
                 EncodedMB outMB = new EncodedMB();
                 outMB.setPos(mbX, mbY);
                 BitWriter candidate;
-                EncodingContext fork;
+                EncodingContext fork = context;
                 do {
                     candidate = sliceData.fork();
-                    fork = context.fork();
                     rdMacroblock(fork, outMB, sliceType, pic, mbX, mbY, candidate, sliceQp, mbQp, params);
                     qpDelta = rc.accept(candidate.position() - sliceData.position());
-                    if (qpDelta != 0)
+                    if (qpDelta != 0) {
+                        fork = context.fork();
                         mbQp += qpDelta;
+                    }
                 } while (qpDelta != 0);
                 estimator.mvSave(mbX, mbY, new int[]{outMB.mx[0], outMB.my[0], outMB.mr[0]});
                 sliceData = candidate;

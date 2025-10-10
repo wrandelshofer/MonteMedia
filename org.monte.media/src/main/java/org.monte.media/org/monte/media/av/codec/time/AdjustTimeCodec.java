@@ -4,7 +4,6 @@
  */
 package org.monte.media.av.codec.time;
 
-import org.monte.media.av.AbstractCodec;
 import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
 import org.monte.media.math.Rational;
@@ -14,7 +13,7 @@ import org.monte.media.math.Rational;
  *
  * @author Werner Randelshofer
  */
-public class AdjustTimeCodec extends AbstractCodec {
+public class AdjustTimeCodec extends org.monte.media.av.AbstractCodec {
 
     private Rational mediaTime = new Rational(0);
 

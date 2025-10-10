@@ -7,7 +7,6 @@ package org.monte.media.jcodec.h264;
 
 import org.jcodec.common.model.ColorSpace;
 import org.jcodec.common.model.Picture;
-import org.monte.media.av.AbstractCodec;
 import org.monte.media.av.Buffer;
 import org.monte.media.av.BufferFlag;
 import org.monte.media.av.Format;
@@ -24,7 +23,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_I
 /**
  * Codec for {@link BufferedImage} to/from {@link Picture}.
  */
-public class JCodecPictureCodec extends AbstractCodec {
+public class JCodecPictureCodec extends org.monte.media.av.AbstractCodec {
     public static final String ENCODING_PICTURE = "picture";
 
     public JCodecPictureCodec() {

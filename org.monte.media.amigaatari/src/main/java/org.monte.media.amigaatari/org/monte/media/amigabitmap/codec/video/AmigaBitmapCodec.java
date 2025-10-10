@@ -5,11 +5,10 @@
 package org.monte.media.amigabitmap.codec.video;
 
 import org.monte.media.amigabitmap.AmigaBitmapImage;
-import org.monte.media.amigabitmap.AmigaBitmapImageFactory;
+import org.monte.media.amigabitmap.AmigaBitmapImageConverter;
 import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
-import org.monte.media.av.codec.video.AbstractVideoCodec;
 import org.monte.media.ilbm.ColorCyclingMemoryImageSource;
 import org.monte.media.ilbm.ILBMDecoder;
 import org.monte.media.pbm.PBMDecoder;
@@ -41,7 +40,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
  *
  * @author Werner Randelshofer
  */
-public class AmigaBitmapCodec extends AbstractVideoCodec {
+public class AmigaBitmapCodec extends org.monte.media.av.AbstractCodec {
     public AmigaBitmapCodec() {
         super(new Format[]{
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
@@ -73,17 +72,17 @@ public class AmigaBitmapCodec extends AbstractVideoCodec {
 
     @Override
     public int process(Buffer in, Buffer out) {
-        if (outputFormat.get(EncodingKey) == ENCODING_BITMAP_IMAGE) {
-            return encodeToBitmapImage(in, out);
-        } else if (outputFormat.get(EncodingKey) == ENCODING_BUFFERED_IMAGE) {
-            return encodeToBufferedImage(in, out);
+        if (outputFormat.get(EncodingKey).equals(ENCODING_BITMAP_IMAGE)) {
+            return decodeToBitmapImage(in, out);
+        } else if (outputFormat.get(EncodingKey).equals(ENCODING_BUFFERED_IMAGE)) {
+            return decodeToBufferedImage(in, out);
         } else {
             out.setFlag(DISCARD);
             return CODEC_FAILED;
         }
     }
 
-    private int encodeToBitmapImage(Buffer in, Buffer out) {
+    private int decodeToBitmapImage(Buffer in, Buffer out) {
         out.setMetaTo(in);
         if (in.isFlag(DISCARD)) {
             return CODEC_OK;
@@ -96,8 +95,7 @@ public class AmigaBitmapCodec extends AbstractVideoCodec {
                 File f = (File) in.data;
                 boolean success;
                 {
-                    InputStream ins = new BufferedInputStream(new FileInputStream(f));
-                    try {
+                    try (InputStream ins = new BufferedInputStream(new FileInputStream(f))) {
                         ILBMDecoder d = new ILBMDecoder(ins);
                         ArrayList<AmigaBitmapImage> imgs = d.produceBitmaps();
                         AmigaBitmapImage img = imgs.get(0);
@@ -105,34 +103,29 @@ public class AmigaBitmapCodec extends AbstractVideoCodec {
                         success = true;
                     } catch (IOException e) {
                         success = false;
-                    } finally {
-                        ins.close();
                     }
                 }
                 if (!success) {
-                    InputStream ins = new BufferedInputStream(new FileInputStream(f));
-                    try {
+                    try (InputStream ins = new BufferedInputStream(new FileInputStream(f))) {
                         PBMDecoder d = new PBMDecoder(ins);
                         ArrayList<ColorCyclingMemoryImageSource> imgs = d.produce();
                         ColorCyclingMemoryImageSource mis = imgs.get(0);
 
-                        out.data = AmigaBitmapImageFactory.toBitmapImage(mis);
+                        out.data = AmigaBitmapImageConverter.newInstance().toBitmapImage(mis, null);
                         success = true;
                     } catch (IOException e) {
                         success = false;
-                    } finally {
-                        ins.close();
                     }
                 }
                 if (!success) {
                     BufferedImage img = ImageIO.read(f);
-                    out.data = AmigaBitmapImageFactory.toBitmapImage(img);
+                    out.data = AmigaBitmapImageConverter.newInstance().toBitmapImage(img, out.data instanceof AmigaBitmapImage i ? i : null);
                     success = true;
                 }
             } else if (in.data instanceof AmigaBitmapImage) {
                 out.data = in.data;
             } else if (in.data instanceof BufferedImage) {
-                out.data = AmigaBitmapImageFactory.toBitmapImage((BufferedImage) in.data);
+                out.data = AmigaBitmapImageConverter.newInstance().toBitmapImage((BufferedImage) in.data, out.data instanceof AmigaBitmapImage i ? i : null);
             }
             return CODEC_OK;
         } catch (IOException e) {
@@ -142,7 +135,7 @@ public class AmigaBitmapCodec extends AbstractVideoCodec {
         }
     }
 
-    private int encodeToBufferedImage(Buffer in, Buffer out) {
+    private int decodeToBufferedImage(Buffer in, Buffer out) {
         out.setMetaTo(in);
         if (in.isFlag(DISCARD)) {
             return CODEC_OK;
@@ -155,32 +148,26 @@ public class AmigaBitmapCodec extends AbstractVideoCodec {
                 File f = (File) in.data;
                 boolean success;
                 {
-                    InputStream ins = new BufferedInputStream(new FileInputStream(f));
-                    try {
+                    try (InputStream ins = new BufferedInputStream(new FileInputStream(f))) {
                         ILBMDecoder d = new ILBMDecoder(ins);
                         ArrayList<AmigaBitmapImage> imgs = d.produceBitmaps();
                         AmigaBitmapImage img = imgs.get(0);
-                        out.data = AmigaBitmapImageFactory.toBufferedImage(img);
+                        out.data = AmigaBitmapImageConverter.newInstance().toBufferedImage(img);
                         success = true;
                     } catch (IOException e) {
                         success = false;
-                    } finally {
-                        ins.close();
                     }
                 }
                 if (!success) {
-                    InputStream ins = new BufferedInputStream(new FileInputStream(f));
-                    try {
+                    try (InputStream ins = new BufferedInputStream(new FileInputStream(f))) {
                         PBMDecoder d = new PBMDecoder(ins);
                         ArrayList<ColorCyclingMemoryImageSource> imgs = d.produce();
                         ColorCyclingMemoryImageSource mis = imgs.get(0);
-                        out.data = AmigaBitmapImageFactory.toBufferedImage(
-                                AmigaBitmapImageFactory.toBitmapImage(mis));
+                        out.data = AmigaBitmapImageConverter.newInstance().toBufferedImage(
+                                AmigaBitmapImageConverter.newInstance().toBitmapImage(mis));
                         success = true;
                     } catch (IOException e) {
                         success = false;
-                    } finally {
-                        ins.close();
                     }
                 }
                 if (!success) {
@@ -189,7 +176,7 @@ public class AmigaBitmapCodec extends AbstractVideoCodec {
                     success = true;
                 }
             } else if (in.data instanceof AmigaBitmapImage) {
-                out.data = AmigaBitmapImageFactory.toBufferedImage(
+                out.data = AmigaBitmapImageConverter.newInstance().toBufferedImage(
                         (AmigaBitmapImage) in.data);
             } else if (in.data instanceof BufferedImage) {
                 out.data = in.data;

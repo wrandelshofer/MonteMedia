@@ -1,8 +1,17 @@
 package org.monte.media.impl.jcodec.codecs.h264.io.model;
 
+import java.util.Arrays;
+
 /**
- * This class is part of JCodec ( www.jcodec.org ) This software is distributed
- * under FreeBSD License
+ * References:
+ * <p>
+ * This code has been derived from JCodecProject.
+ * <dl>
+ *     <dt>JCodecProject. Copyright 2008-2019 JCodecProject.
+ *     <br><a href="https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE">BSD 2-Clause License.</a></dt>
+ *     <dd><a href="https://github.com/jcodec/jcodec">github.com</a></dd>
+ * </dl>
+ *
  * <p>
  * Slice header H264 bitstream entity
  * <p>
@@ -95,5 +104,37 @@ public class SliceHeader {
         this.numRefIdxActiveMinus1 = new int[2];
     }
 
+    @Override
+    public String toString() {
+        return "SliceHeader{" +
+                "\n, firstMbInSlice=" + firstMbInSlice +
+                "\n, sliceType=" + sliceType +
+                "\n, sliceTypeRestr=" + sliceTypeRestr +
+                "\n, picParameterSetId=" + picParameterSetId +
+                "\n, frameNum=" + frameNum +
+                "\n, fieldPicFlag=" + fieldPicFlag +
+                "\n, bottomFieldFlag=" + bottomFieldFlag +
+                "\n, idrPicId=" + idrPicId +
+                "\n, cabacInitIdc=" + cabacInitIdc +
+                "\n, sliceQpDelta=" + sliceQpDelta +
 
+                "\n, refPicMarkingNonIDR=" + refPicMarkingNonIDR +
+                "\n, refPicMarkingIDR=" + refPicMarkingIDR +
+                "\n, refPicReordering=" + Arrays.toString(refPicReordering) +
+                "\n, predWeightTable=" + predWeightTable +
+                "\n, picOrderCntLsb=" + picOrderCntLsb +
+                "\n, deltaPicOrderCntBottom=" + deltaPicOrderCntBottom +
+                "\n, deltaPicOrderCnt=" + Arrays.toString(deltaPicOrderCnt) +
+                "\n, redundantPicCnt=" + redundantPicCnt +
+                "\n, directSpatialMvPredFlag=" + directSpatialMvPredFlag +
+                "\n, numRefIdxActiveOverrideFlag=" + numRefIdxActiveOverrideFlag +
+                "\n, numRefIdxActiveMinus1=" + Arrays.toString(numRefIdxActiveMinus1) +
+                "\n, spForSwitchFlag=" + spForSwitchFlag +
+                "\n, sliceQsDelta=" + sliceQsDelta +
+                "\n, disableDeblockingFilterIdc=" + disableDeblockingFilterIdc +
+                "\n, sliceAlphaC0OffsetDiv2=" + sliceAlphaC0OffsetDiv2 +
+                "\n, sliceBetaOffsetDiv2=" + sliceBetaOffsetDiv2 +
+                "\n, sliceGroupChangeCycle=" + sliceGroupChangeCycle +
+                '}';
+    }
 }

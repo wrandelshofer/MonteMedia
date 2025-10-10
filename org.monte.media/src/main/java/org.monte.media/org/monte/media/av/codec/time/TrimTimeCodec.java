@@ -4,7 +4,6 @@
  */
 package org.monte.media.av.codec.time;
 
-import org.monte.media.av.AbstractCodec;
 import org.monte.media.av.Buffer;
 import org.monte.media.av.BufferFlag;
 import org.monte.media.av.Format;
@@ -15,7 +14,7 @@ import org.monte.media.math.Rational;
  *
  * @author Werner Randelshofer
  */
-public class TrimTimeCodec extends AbstractCodec {
+public class TrimTimeCodec extends org.monte.media.av.AbstractCodec {
 
     private Rational startTime;
     private Rational endTime;

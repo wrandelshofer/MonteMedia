@@ -153,6 +153,9 @@ public class ANIMOutputStream {
     private States state = States.REALIZED;
 
     public ANIMOutputStream(File file) throws IOException {
+        if (file.exists()) {
+            if (!file.delete()) throw new IOException("can not delete file " + file);
+        }
         out = new IFFOutputStream(new FileImageOutputStream(file));
     }
 
@@ -302,9 +305,9 @@ public class ANIMOutputStream {
         writeBODY(out, img);
         out.popChunk();
 
-        firstFrame = new AmigaBitmapImage(img.getWidth(), img.getHeight(), img.getDepth(), img.getPlanarColorModel());
-        oddPrev = new AmigaBitmapImage(img.getWidth(), img.getHeight(), img.getDepth(), img.getPlanarColorModel());
-        evenPrev = new AmigaBitmapImage(img.getWidth(), img.getHeight(), img.getDepth(), img.getPlanarColorModel());
+        firstFrame = new AmigaBitmapImage(img.getWidth(), img.getHeight(), img.getDepth(), img.getColorModel());
+        oddPrev = new AmigaBitmapImage(img.getWidth(), img.getHeight(), img.getDepth(), img.getColorModel());
+        evenPrev = new AmigaBitmapImage(img.getWidth(), img.getHeight(), img.getDepth(), img.getColorModel());
 
         System.arraycopy(img.getBitmap(), 0, firstFrame.getBitmap(), 0, img.getBitmap().length);
         System.arraycopy(img.getBitmap(), 0, oddPrev.getBitmap(), 0, img.getBitmap().length);
@@ -326,7 +329,7 @@ public class ANIMOutputStream {
         out.popChunk();
 
         System.arraycopy(img.getBitmap(), 0, prev.getBitmap(), 0, prev.getBitmap().length);
-        prev.setPlanarColorModel(img.getPlanarColorModel());
+        prev.setColorModel(img.getColorModel());
 
         absTime += duration;
         firstWrapupDuration = secondWrapupDuration = duration;
@@ -397,7 +400,7 @@ public class ANIMOutputStream {
     private void writeCMAP(IFFOutputStream out, AmigaBitmapImage img) throws IOException {
         out.pushDataChunk("CMAP");
 
-        IndexColorModel cm = (IndexColorModel) img.getPlanarColorModel();
+        IndexColorModel cm = (IndexColorModel) img.getColorModel();
         for (int i = 0, n = cm.getMapSize(); i < n; ++i) {
             out.writeUBYTE(cm.getRed(i));
             out.writeUBYTE(cm.getGreen(i));
@@ -412,8 +415,8 @@ public class ANIMOutputStream {
      * image.
      */
     private void writeCMAP(IFFOutputStream out, AmigaBitmapImage img, AmigaBitmapImage prev) throws IOException {
-        IndexColorModel cm = (IndexColorModel) img.getPlanarColorModel();
-        IndexColorModel prevCm = (IndexColorModel) prev.getPlanarColorModel();
+        IndexColorModel cm = (IndexColorModel) img.getColorModel();
+        IndexColorModel prevCm = (IndexColorModel) prev.getColorModel();
 
         boolean equals = true;
         for (int i = 0, n = cm.getMapSize(); i < n; ++i) {
@@ -532,7 +535,7 @@ public class ANIMOutputStream {
         int depth = img.getDepth();
 
         for (int p = 0; p < depth; ++p) {
-            buf.reset();
+            buf.clear();
 
             // Each column of the plane is compressed separately.
             for (int column = 0; column < widthInBytes; ++column) {
@@ -573,9 +576,7 @@ public class ANIMOutputStream {
             out.writeULONG(pPointers[p]);
         }
         // write deltas
-        for (int p = 0; p
-                < planes.length;
-             ++p) {
+        for (int p = 0; p < planes.length; ++p) {
             out.write(planes[p]);
         }
         out.popChunk();
@@ -601,7 +602,6 @@ public class ANIMOutputStream {
 
         // Start offset of the literal run
         int literalOffset = 0;
-
         int i;
         for (i = 0; i < length; i++) {
             // Count skips

@@ -24,10 +24,14 @@ public class AffineTransform {
     /**
      * Creates a new instance.
      *
-     * @param flatMatrix with values { m00 m10 m01 m11 m02 m12 }
+     * @param flatMatrix with values { 0:m00 1:m10 2:m01 3:m11 4:m02 5:m12 }
      */
     public AffineTransform(double... flatMatrix) {
         this.m = Arrays.copyOf(flatMatrix, 6);
+    }
+
+    public static AffineTransform translate(double x, double y) {
+        return new AffineTransform(1, 0, 0, 1, x, y);
     }
 
     /**
@@ -39,6 +43,17 @@ public class AffineTransform {
         return m.clone();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        AffineTransform that = (AffineTransform) o;
+        return Arrays.equals(m, that.m);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(m);
+    }
 
     public boolean isIdentity() {
         return m[0] == 1 && m[1] == 0 && m[2] == 0 && m[3] == 1 && m[4] == 0 && m[5] == 0;
@@ -66,4 +81,10 @@ public class AffineTransform {
         return new AffineTransform(flatmatrix);
     }
 
+    @Override
+    public String toString() {
+        return "AffineTransform{" +
+                Arrays.toString(m) +
+                '}';
+    }
 }

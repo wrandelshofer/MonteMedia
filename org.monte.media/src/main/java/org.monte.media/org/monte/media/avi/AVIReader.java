@@ -282,7 +282,6 @@ public class AVIReader extends AVIInputStream implements MovieReader {
     }
 
 
-
     @Override
     public Rational getMovieDuration() throws IOException {
         ensureRealized();
@@ -353,11 +352,17 @@ public class AVIReader extends AVIInputStream implements MovieReader {
     public void setMovieReadTime(Rational newValue) throws IOException {
         ensureRealized();
         for (int t = 0, n = tracks.size(); t < n; t++) {
-            AbstractAVIStream.Track tr = tracks.get(t);
-            int sample = (int) min(findSampleAtTime(t, newValue), tr.samples.size() - 1);
-            for (; sample > 0 && !tr.samples.get(sample).isKeyframe; sample--) ;
-            tr.readIndex = sample;
+            setTrackReadTime(t, newValue);
         }
+    }
+
+    @Override
+    public void setTrackReadTime(int t, Rational newValue) throws IOException {
+        ensureRealized();
+        AbstractAVIStream.Track tr = tracks.get(t);
+        int sample = (int) min(findSampleAtTime(t, newValue), tr.samples.size() - 1);
+        for (; sample > 0 && !tr.samples.get(sample).isKeyframe; sample--) ;
+        tr.readIndex = sample;
     }
 
 

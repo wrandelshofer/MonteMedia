@@ -94,6 +94,7 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
     public final static Format VIDEO_SCREEN_CAPTURE = new Format(
             MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
             EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_RAW);
+
     /**
      * Creates a new AVI writer.
      *
@@ -116,6 +117,11 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
     @Override
     public Format getFileFormat() throws IOException {
         return AVI;
+    }
+
+    @Override
+    public void setFileFormat(Format newValue) throws IOException {
+        // ignore
     }
 
     @Override

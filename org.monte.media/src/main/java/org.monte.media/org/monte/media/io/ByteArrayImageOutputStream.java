@@ -214,8 +214,8 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
         flushBits();
 
         // This test also covers pos < 0
-        if (pos < flushedPos) {
-            throw new IndexOutOfBoundsException("pos < flushedPos!");
+        if (pos < 0) {
+            throw new IndexOutOfBoundsException("pos < 0!");
         }
 
         this.streamPos = pos + arrayOffset;
@@ -335,6 +335,8 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
     public void clear() {
         count = arrayOffset;
         streamPos = arrayOffset;
+        flushedPos = 0;
+        bitOffset = 0;
     }
 
     @Override
@@ -360,6 +362,20 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
             buf = Arrays.copyOf(buf, Math.max(buf.length << 1, newcount));
         }
         count = newcount;
+    }
+
+    /**
+     * Grows capacity if necessary, so that it can hold the given number of additional bytes.
+     *
+     * @param len the number of additional bytes
+     */
+    public void growSizeBy(int len) {
+        int newcount = max((int) streamPos + len, count);
+        if (newcount > buf.length) {
+            buf = Arrays.copyOf(buf, Math.max(buf.length << 1, newcount));
+        }
+        count = newcount;
+        streamPos += len;
     }
 
 

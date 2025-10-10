@@ -4,7 +4,6 @@
  */
 package org.monte.media.av.codec.time;
 
-import org.monte.media.av.AbstractCodec;
 import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
 
@@ -13,7 +12,7 @@ import org.monte.media.av.Format;
  *
  * @author Werner Randelshofer
  */
-public class PassThroughCodec extends AbstractCodec {
+public class PassThroughCodec extends org.monte.media.av.AbstractCodec {
 
     public PassThroughCodec() {
         super(new Format[]{

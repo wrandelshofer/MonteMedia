@@ -5,6 +5,7 @@
 package org.monte.media.mp4;
 
 import org.monte.media.av.Buffer;
+import org.monte.media.av.BufferFlag;
 import org.monte.media.av.Codec;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys;
@@ -32,8 +33,10 @@ import static org.monte.media.av.FormatKeys.KeyFrameIntervalKey;
 import static org.monte.media.av.FormatKeys.MIME_JAVA;
 import static org.monte.media.av.FormatKeys.MIME_MP4;
 import static org.monte.media.av.FormatKeys.MIME_QUICKTIME;
+import static org.monte.media.av.FormatKeys.MediaTimeScale;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.FormatKeys.MimeTypeKey;
+import static org.monte.media.av.FormatKeys.MovieTimeScale;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.ByteOrderKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.ChannelsKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.ENCODING_PCM_SIGNED;
@@ -96,6 +99,11 @@ public class MP4Writer extends MP4OutputStream implements MovieWriter {
     }
 
     @Override
+    public void setFileFormat(Format newValue) throws IOException {
+        setMovieTimeScale(newValue.get(MovieTimeScale, getMovieTimeScale()));
+    }
+
+    @Override
     public Format getFormat(int track) {
         return tracks.get(track).format;
     }
@@ -111,8 +119,12 @@ public class MP4Writer extends MP4OutputStream implements MovieWriter {
         if (fmt.get(MediaTypeKey) == MediaType.VIDEO) {
             int t = addVideoTrack(fmt.get(EncodingKey),
                     fmt.get(CompressorNameKey, AbstractQTFFMovieStream.DEFAULT_COMPONENT_NAME),
-                    Math.min(6000, fmt.get(FrameRateKey).getNumerator() * fmt.get(FrameRateKey).getDenominator()),
-                    fmt.get(WidthKey), fmt.get(HeightKey), fmt.get(DepthKey, 24),
+                    fmt.get(MediaTimeScale,
+                            fmt.get(FrameRateKey).getDenominator() * fmt.get(FrameRateKey).getNumerator())
+                    ,
+                    fmt.get(WidthKey, getFileFormat().get(WidthKey)),
+                    fmt.get(HeightKey, getFileFormat().get(HeightKey)),
+                    fmt.get(DepthKey, 24),
                     fmt.get(KeyFrameIntervalKey, fmt.get(FrameRateKey).floor(1).intValue()), fmt);
             setCompressionQuality(t, fmt.get(QualityKey, 1.0f));
             return t;
@@ -182,7 +194,8 @@ public class MP4Writer extends MP4OutputStream implements MovieWriter {
      *                                  than 1.
      */
     public int addVideoTrack(Format format, int width, int height, int depth, int syncInterval) throws IOException {
-        int tr = addVideoTrack(format.get(EncodingKey), format.get(CompressorNameKey), format.get(FrameRateKey).getDenominator() * format.get(FrameRateKey).getNumerator(), width, height, depth, syncInterval, format);
+        int tr = addVideoTrack(format.get(EncodingKey), format.get(CompressorNameKey),
+                format.get(MediaTimeScale, format.get(FrameRateKey).getDenominator() * format.get(FrameRateKey).getNumerator()), width, height, depth, syncInterval, format);
         setVideoColorTable(tr, format.get(PaletteKey));
         return tr;
     }
@@ -355,12 +368,30 @@ public class MP4Writer extends MP4OutputStream implements MovieWriter {
                 tre.codec.process(buf, outBuf);
             }
             if (outBuf.isFlag(DISCARD) || outBuf.sampleCount == 0) {
+                if (outBuf.exception != null) {
+                    throw outBuf.exception instanceof IOException e ? e : new IOException(outBuf.exception);
+                }
                 return;
             }
 
 
             // Compute sample sampleDuration in media time scale
             long sampleDuration = Math.max(1, outBuf.sampleDuration.multiply(tr.mediaTimeScale).longValue());
+
+            // Adjust sample duration if we are drifting
+            if (buf.isFlag(BufferFlag.RELATIVE_TIME) && buf.sampleCount == 1) {
+                if (tr.sampleCount == 0) {
+                    tr.timestampOfFirstSample = buf.timeStamp;
+                } else {
+                    Rational driftedTimestamp = tr.timestampOfFirstSample.add(tr.mediaDuration, tr.mediaTimeScale);
+                    Rational timeDifference = buf.timeStamp.subtract(driftedTimestamp);
+                    long adjust = timeDifference.multiply(tr.mediaTimeScale).longValue();
+                    if (sampleDuration + adjust > 0) {
+                        sampleDuration += adjust;
+                    }
+                }
+            }
+
             writeSamples(track, outBuf.sampleCount, (byte[]) outBuf.data, outBuf.offset, outBuf.length,
                     sampleDuration, outBuf.isFlag(KEYFRAME));
 

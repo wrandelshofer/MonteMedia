@@ -18,6 +18,7 @@ import java.awt.image.ColorModel;
 public class VideoFormatKeys extends FormatKeys {
     public static final String COMPRESSOR_NAME_AVI_TECHSMITH_SCREEN_CAPTURE = "Techsmith Screen Capture";
     public static final String COMPRESSOR_NAME_QUICKTIME_ANIMATION = "Animation";
+    public static final String COMPRESSOR_NAME_H264 = "H.264";
     public static final String COMPRESSOR_NAME_QUICKTIME_CINEPAK = "Cinepak";
     public static final String COMPRESSOR_NAME_QUICKTIME_JPEG = "Photo - JPEG";
     public static final String COMPRESSOR_NAME_QUICKTIME_PNG = "PNG";

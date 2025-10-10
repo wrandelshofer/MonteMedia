@@ -5,7 +5,8 @@
 package org.monte.media.quicktime;
 
 import org.monte.media.av.FormatKeys.MediaType;
-import org.monte.media.io.UncachedImageInputStream;
+import org.monte.media.color.Colors;
+import org.monte.media.io.ByteArrayImageInputStream;
 import org.monte.media.qtff.QTFFImageInputStream;
 import org.monte.media.util.MathUtil;
 
@@ -207,7 +208,7 @@ public class QuickTimeDeserializer {
                                     parseSoundSampleDescription(in, atom.size - atom.headerSize, media);
                                     break;
                                 case VIDEO:
-                                    parseVideoSampleDescription(in, atom.size - atom.headerSize, media);
+                                    parseVideoSampleDescription(in, atom.size - atom.headerSize, m, media);
                                     break;
                                 default:
                                     parseGenericSampleDescription(in, atom.size - atom.headerSize, media);
@@ -301,7 +302,7 @@ public class QuickTimeDeserializer {
      *      uint32 sizeOfDecompressedData;
      *      byte[] compressedData;
      * } cmvdAtom.
-     * <p>
+     * </pre>
      */
     protected void parseCompressedMovieAtom(QTFFImageInputStream in, long remainingSize, QuickTimeMeta m) throws IOException {
         int sizeOfDecompressedData = remainingSize > 4 ? in.readInt() : -1;
@@ -309,7 +310,17 @@ public class QuickTimeDeserializer {
             // decompress the header into a byte array and then parse it
             byte[] compressed = new byte[(int) remainingSize - 4];
             in.readFully(compressed);
-            QTFFImageInputStream decompressed = new QTFFImageInputStream(new UncachedImageInputStream(new InflaterInputStream(new ByteArrayInputStream(compressed))));
+            var inflater = new InflaterInputStream(new ByteArrayInputStream(compressed));
+            byte[] decompressedBytes = new byte[sizeOfDecompressedData];
+            int remaining = decompressedBytes.length;
+            int off = 0;
+            while (remaining > 0) {
+                int read = inflater.read(decompressedBytes, off, remaining);
+                if (read < 0) break;
+                off += read;
+                remaining -= read;
+            }
+            QTFFImageInputStream decompressed = new QTFFImageInputStream(new ByteArrayImageInputStream(decompressedBytes));
             parseRecursively(decompressed, sizeOfDecompressedData, m);
         }
     }
@@ -1003,7 +1014,7 @@ public class QuickTimeDeserializer {
      * } soundSampleDescriptionAtom;
      * </pre>
      */
-    protected void parseVideoSampleDescription(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
+    protected void parseVideoSampleDescription(QTFFImageInputStream in, long remainingSize, QuickTimeMeta meta, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
         if (version != 0) throw new IOException("unsupported stsd version=" + version);
         in.skipBytes(3);
@@ -1036,11 +1047,56 @@ public class QuickTimeDeserializer {
             d.videoFrameCount = in.readUnsignedShort();
             d.videoCompressorName = in.readPString(32);
             d.videoDepth = in.readUnsignedShort();
+            //Values of 34, 36, and 40 indicate 2-, 4-,
+            // and 8-bit grayscale, respectively, for grayscale
+            // images.
+            switch (d.videoDepth) {
+                case 34 -> {
+                    d.videoDepth = 2;
+                    d.videoColorTable = Colors.createGrayColorsBrightToDark(2, 1 << 2);
+                }
+                case 36 -> {
+                    d.videoDepth = 4;
+                    d.videoColorTable = Colors.createGrayColorsBrightToDark(4, 1 << 4);
+                }
+                case 40 -> {
+                    d.videoDepth = 8;
+                    d.videoColorTable = Colors.createGrayColorsBrightToDark(8, 1 << 8);
+                }
+            }
+
             d.videoColorTableId = in.readShort();
 
-            d.extendData = new byte[size - 86];
-            in.readFully(d.extendData);
+            // If the color table ID is set to 0, a color table is contained within the sample description itself. The color
+            //table immediately follows the color table ID field in the sample description. See “Color Table
+            //Atoms” (page 41) for a complete description of a color table.
+            if (d.videoColorTableId == 0 && size > 86) {
+                d.videoColorTable = readVideoColorTable(in);
+            }
         }
+    }
+
+    private IndexColorModel readVideoColorTable(QTFFImageInputStream in) throws IOException {
+
+        long seed = in.readUnsignedInt(); // Color table seed. A 32-bit integer that must be set to 0.
+        int flags = in.readUnsignedShort(); // Color table flags. A 16-bit integer that must be set to 0x8000.
+        int colorTableSize = in.readUnsignedShort() + 1;
+        // Color table size. A 16-bit integer that indicates the number of
+        // colors in the following color array. This is a zero-relative value;
+        // setting this field to 0 means that there is one color in the array.
+        int[] rgbs = new int[Math.min(256, colorTableSize)];
+        for (int i = 0; i < colorTableSize; ++i) {
+            // An array of colors. Each color is made of four unsigned 16-bit integers.
+            // The first integer must be set to 0, the second is the red value,
+            // the third is the green value, and the fourth is the blue value.
+            in.readUnsignedShort();
+            int red = in.readUnsignedShort();
+            int green = in.readUnsignedShort();
+            int blue = in.readUnsignedShort();
+            int rgb = ((red & 0xff00) << 8) | (green & 0xff00) | ((blue & 0xff00) >>> 8);
+            if (i < rgbs.length) rgbs[i] = rgb;
+        }
+        return new IndexColorModel(8, rgbs.length, rgbs, 0, false, -1, DataBuffer.TYPE_BYTE);
     }
 
     /**
@@ -1308,6 +1364,14 @@ public class QuickTimeDeserializer {
             int blue = in.readUnsignedShort();
             cmap[i] = ((red & 0xff00) << 8) | (green & 0xff00) | ((blue & 0xff00) >>> 8);
         }
-        meta.colorTables.add(new IndexColorModel(8, colorTableSize, cmap, 0, false, -1, DataBuffer.TYPE_BYTE));
+        IndexColorModel icm = new IndexColorModel(8, colorTableSize, cmap, 0, false, -1, DataBuffer.TYPE_BYTE);
+        meta.colorTables.add(icm);
+        for (var t : meta.tracks) {
+            for (var d : t.media.getSampleDescriptions()) {
+                if (d.videoColorTableId > 0 && d.videoColorTable == null) {
+                    d.videoColorTable = new IndexColorModel(d.videoDepth, colorTableSize, cmap, 0, false, -1, DataBuffer.TYPE_BYTE);
+                }
+            }
+        }
     }
 }

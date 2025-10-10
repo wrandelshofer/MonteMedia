@@ -10,6 +10,7 @@ import java.io.EOFException;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
 /**
  * A MC 68000 input stream lets an application read primitive data types in the
@@ -158,8 +159,8 @@ public class MC68000InputStream
     /**
      * Marks the input stream.
      *
-     * @param    readlimit    The maximum limit of bytes that can be read before the
-     * mark position becomes invalid.
+     * @param readlimit The maximum limit of bytes that can be read before the
+     *                  mark position becomes invalid.
      */
     public void mark(int readlimit) {
         in.mark(readlimit);
@@ -222,7 +223,7 @@ public class MC68000InputStream
      *      Read the next source byte into n
      *      SELECT n FROM
      *          [0..127] ⇒ copy the next n+1 bytes literally
-     *          [-1..-127] ⇒ replicate the next byte -n+1 times
+     *          [-1..-127] ⇒ replicate the next byte -n+1 times (same as ~n times)
      *          -128    ⇒ no operation
      *      ENDCASE;
      *   ENDLOOP;
@@ -237,7 +238,6 @@ public class MC68000InputStream
         int iIn = 0; // input array index
         int n = 0; // The unpack command
         byte copyByte;
-
         try {
             while (iOut < out.length) {
                 n = in[iIn++];
@@ -249,9 +249,8 @@ public class MC68000InputStream
                 } else {
                     if (n != -128) {//[-1..-127] ⇒ replicate the next byte -n+1 times
                         copyByte = in[iIn++];
-                        for (; n < 1; n++) {
-                            out[iOut++] = copyByte;
-                        }
+                        Arrays.fill(out, iOut, iOut + -n + 1, copyByte);
+                        iOut += -n + 1;
                     }
                 }
             }

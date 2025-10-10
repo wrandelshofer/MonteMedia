@@ -5,6 +5,7 @@
 package org.monte.media.anim;
 
 import org.monte.media.amigabitmap.AmigaBitmapImage;
+import org.monte.media.amigabitmap.AmigaBitmapImageConverter;
 import org.monte.media.av.Buffer;
 import org.monte.media.av.Codec;
 import org.monte.media.av.Format;
@@ -12,6 +13,7 @@ import org.monte.media.av.Multiplexer;
 import org.monte.media.math.Rational;
 
 import javax.imageio.stream.ImageOutputStream;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -23,17 +25,16 @@ import static org.monte.media.av.BufferFlag.DISCARD;
  *
  * @author Werner Randelshofer
  */
-public class ANIMMultiplexer implements Multiplexer {
-    private final ANIMOutputStream out;
+public class ANIMMultiplexer extends ANIMOutputStream implements Multiplexer {
 
     protected Rational inputTime;
 
     public ANIMMultiplexer(File file) throws IOException {
-        this.out = new ANIMOutputStream(file);
+        super(file);
     }
 
     public ANIMMultiplexer(ImageOutputStream out) throws IOException {
-        this.out = new ANIMOutputStream(out);
+        super(out);
     }
 
     @Override
@@ -49,14 +50,14 @@ public class ANIMMultiplexer implements Multiplexer {
     @Override
     public void write(int trackIndex, Buffer buf) throws IOException {
         if (!buf.isFlag(DISCARD)) {
-            long jiffies = out.getJiffies();
+            long jiffies = getJiffies();
 
             if (inputTime == null) {
                 inputTime = new Rational(0, 1);
             }
             inputTime = inputTime.add(buf.sampleDuration.multiply(buf.sampleCount));
 
-            Rational outputTime = new Rational(out.getMovieTime(), jiffies);
+            Rational outputTime = new Rational(getMovieTime(), jiffies);
             Rational outputDuration = inputTime.subtract(outputTime);
 
 
@@ -67,13 +68,27 @@ public class ANIMMultiplexer implements Multiplexer {
                     outputTime.add(new Rational(outputMediaDuration, jiffies));
             // System.out.println("ANIMMultiplexer #" + frameCount + " jiffies:"+jiffies+" movieT:" + outputTime + " inputT:" + inputTime+" diff:"+(outputTime.subtract(inputTime))+ " sampleDuration:" + outputMediaDuration + " == " + outputDuration+" ~= "+buf.sampleDuration);
 
-            out.writeFrame((AmigaBitmapImage) buf.data, outputMediaDuration);
+            AmigaBitmapImage amigaBitmap = toAmigaBitmap(trackIndex, buf);
+            writeFrame(amigaBitmap, outputMediaDuration);
         }
+    }
+
+    private static AmigaBitmapImage toAmigaBitmap(int trackIndex, Buffer buf) throws IOException {
+        if (buf.data instanceof AmigaBitmapImage bmp) {
+            return bmp;
+        }
+        if (buf.data instanceof BufferedImage img) {
+            var bmp = new AmigaBitmapImage(img.getWidth(), img.getHeight(), img.getColorModel().getPixelSize(), img.getColorModel());
+            AmigaBitmapImageConverter factory = AmigaBitmapImageConverter.newInstance();
+            bmp = factory.toBitmapImage(img, bmp);
+            return bmp;
+        }
+        throw new IOException("can not convert buffer to amiga bitmap, buf.data=" + buf.data);
     }
 
     @Override
     public void close() throws IOException {
-        out.close();
+        close();
     }
 
     /**
@@ -89,6 +104,11 @@ public class ANIMMultiplexer implements Multiplexer {
      * Also sets the Jiffies for the Graphics Mode.
      */
     public void setCAMG(int newValue) {
-        out.setCAMG(newValue);
+        setCAMG(newValue);
     }
+
+    public int getCAMG() {
+        return getCAMG();
+    }
+
 }

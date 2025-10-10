@@ -21,8 +21,15 @@ import static org.monte.media.impl.jcodec.codecs.h264.io.write.CAVLCWriter.write
 import static org.monte.media.impl.jcodec.codecs.h264.io.write.CAVLCWriter.writeUEtrace;
 
 /**
- * This class is part of JCodec ( www.jcodec.org ) This software is distributed
- * under FreeBSD License
+ * References:
+ * <p>
+ * This code has been derived from JCodecProject.
+ * <dl>
+ *     <dt>JCodecProject. Copyright 2008-2019 JCodecProject.
+ *     <br><a href="https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE">BSD 2-Clause License.</a></dt>
+ *     <dd><a href="https://github.com/jcodec/jcodec">github.com</a></dd>
+ * </dl>
+ *
  * <p>
  * Picture Parameter Set entity of H264 bitstream
  * <p>
@@ -49,6 +56,15 @@ public class PictureParameterSet {
         public int getSecondChromaQpIndexOffset() {
             // second_chroma_qp_index_offset
             return secondChromaQpIndexOffset;
+        }
+
+        @Override
+        public String toString() {
+            return "PPSExt{" +
+                    "\nscalingMatrix=" + Arrays.toString(scalingMatrix) +
+                    "\n, transform8x8ModeFlag=" + transform8x8ModeFlag +
+                    "\n, secondChromaQpIndexOffset=" + secondChromaQpIndexOffset +
+                    '}';
         }
     }
 
@@ -415,5 +431,34 @@ public class PictureParameterSet {
 
     public PPSExt getExtended() {
         return extended;
+    }
+
+    @Override
+    public String toString() {
+        return "PictureParameterSet{" +
+                "\n, picParameterSetId=" + picParameterSetId +
+                "\n, seqParameterSetId=" + seqParameterSetId +
+                "\n, entropyCodingModeFlag=" + entropyCodingModeFlag +
+                "\n, picOrderPresentFlag=" + picOrderPresentFlag +
+                "\n, numSliceGroupsMinus1=" + numSliceGroupsMinus1 +
+                "\n, sliceGroupMapType=" + sliceGroupMapType +
+                "\n, sliceGroupChangeDirectionFlag=" + sliceGroupChangeDirectionFlag +
+                "\n, sliceGroupChangeRateMinus1=" + sliceGroupChangeRateMinus1 +
+                "\n, runLengthMinus1=" + Arrays.toString(runLengthMinus1) +
+                "\n, topLeft=" + Arrays.toString(topLeft) +
+                "\n, bottomRight=" + Arrays.toString(bottomRight) +
+                "\n, sliceGroupId=" + Arrays.toString(sliceGroupId) +
+                "\n, numRefIdxActiveMinus1=" + Arrays.toString(numRefIdxActiveMinus1) +
+                "\n, weightedPredFlag=" + weightedPredFlag +
+                "\n, weightedBipredIdc=" + weightedBipredIdc +
+                "\n, picInitQpMinus26=" + picInitQpMinus26 +
+                "\n, picInitQsMinus26=" + picInitQsMinus26 +
+                "\n, chromaQpIndexOffset=" + chromaQpIndexOffset +
+                "\n, deblockingFilterControlPresentFlag=" + deblockingFilterControlPresentFlag +
+                "\n, constrainedIntraPredFlag=" + constrainedIntraPredFlag +
+                "\n, redundantPicCntPresentFlag=" + redundantPicCntPresentFlag +
+                "\n, extended=" + extended +
+
+                '}';
     }
 }

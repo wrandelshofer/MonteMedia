@@ -19,8 +19,8 @@ import org.monte.media.av.Codec;
 import org.monte.media.av.CodecChain;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys;
-import org.monte.media.av.MovieReader;
 import org.monte.media.av.Registry;
+import org.monte.media.av.SynchronizedMovieReader;
 import org.monte.media.av.codec.audio.AudioFormatKeys;
 import org.monte.media.av.codec.video.VideoFormatKeys;
 import org.monte.media.math.Rational;
@@ -56,7 +56,7 @@ class PlayerEngine extends AbstractPlayer {
     private static final int PLAYER_RATE = 60;
     private final MonteMediaPlayer player;
     private final MonteMedia media;
-    private MovieReader reader;
+    private SynchronizedMovieReader reader;
     /**
      * Method {@link #seek(Rational)} sets the seek time to a non-null value.
      * <p>
@@ -114,7 +114,7 @@ class PlayerEngine extends AbstractPlayer {
             tmpReader.close();
         }
 
-        reader = Registry.getInstance().getReader(new File(new URI(media.getSource())));
+        reader = new SynchronizedMovieReader(Registry.getInstance().getReader(new File(new URI(media.getSource()))));
         List<TrackInterface> tracks = new ArrayList<>();
         int mediaWidth = 0, mediaHeight = 0;
         int trackWidth = 0, trackHeight = 0;
@@ -156,6 +156,7 @@ class PlayerEngine extends AbstractPlayer {
             media.setWidth(finalWidth);
             media.setHeight(finalHeight);
             player.setCurrentTime(Duration.millis(renderedTime.multiply(1000).doubleValue()));
+            player.setCurrentFrame(-1L);
             player.setCurrentCount(0);
             player.setCurrentRate(0.0);
             return null;
@@ -235,7 +236,7 @@ class PlayerEngine extends AbstractPlayer {
                 vTrack.setRenderedStartTime(outBuf.timeStamp);
                 vTrack.setRenderedEndTime(outBuf.timeStamp.add(outBuf.sampleDuration));
             } else {
-                throw new IOException("Could not decode the video track.");
+                throw new IOException("Could not decode the video track.", outBuf.exception);
             }
         }
         return vTrack;
@@ -323,7 +324,11 @@ class PlayerEngine extends AbstractPlayer {
         }
 
         reader.setMovieReadTime(playTime);
-        updateBuffers(playTime);
+        for (TrackInterface tr : media.getTracks()) {
+            if (tr instanceof VideoTrackInterface) {
+                updateBuffer(tr, playTime);
+            }
+        }
         renderBuffers(playTime, false, System.nanoTime());
     }
 
@@ -333,6 +338,7 @@ class PlayerEngine extends AbstractPlayer {
     @Override
     protected void doStarted() throws Exception {
         try {
+
             Rational playTime = seekTime.getAndSet(null);
             if (playTime == null) {
                 playTime = renderedTime;
@@ -344,10 +350,16 @@ class PlayerEngine extends AbstractPlayer {
             }
 
             reader.setMovieReadTime(playTime);
+
+            startAudio(playTime, playEndTime);
             Rational playStartTime = playTime;
             long startNanoTime = System.nanoTime();
             while (true) {
-                updateBuffers(playTime);
+                for (TrackInterface t : media.getTracks()) {
+                    if (t instanceof VideoTrackInterface) {
+                        updateBuffer(t, playTime);
+                    }
+                }
                 int elapsedMovieMillis = playTime.subtract(playStartTime).multiply(1000).intValue();
                 int elapsedSystemMillis = (int) ((System.nanoTime() - startNanoTime) / 1_000_000L);
                 int sleepMillis = (elapsedMovieMillis - elapsedSystemMillis);
@@ -365,7 +377,13 @@ class PlayerEngine extends AbstractPlayer {
                 Rational newTargetTime = seekTime.getAndSet(null);
                 if (newTargetTime != null) {
                     newTargetTime = Rational.clamp(newTargetTime, Rational.ZERO, playEndTime);
-                    reader.setMovieReadTime(newTargetTime);
+                    int index = 0;
+                    for (TrackInterface t : media.getTracks()) {
+                        if (t instanceof VideoTrackInterface) {
+                            reader.setTrackReadTime(index, newTargetTime);
+                        }
+                        index++;
+                    }
                     playStartTime = playTime = newTargetTime;
                     startNanoTime = currentNanoTime;
                 } else {
@@ -379,55 +397,95 @@ class PlayerEngine extends AbstractPlayer {
 
     private void stopAudio() {
         for (var t : media.getTracks()) {
-            if (t instanceof MonteAudioTrack) {
-                MonteAudioTrack mat = (MonteAudioTrack) t;
+            if (t instanceof MonteAudioTrack mat) {
                 mat.interruptWorker();
                 SourceDataLine sourceDataLine = mat.getSourceDataLine();
                 if (sourceDataLine != null) {
                     sourceDataLine.stop();
                     sourceDataLine.flush();
                 }
+                mat.setRenderedEndTime(Rational.ZERO);
+                mat.setRenderedStartTime(Rational.ZERO);
             }
         }
     }
 
-    private void updateBuffers(Rational playTime) throws IOException {
-        for (var track : media.getTracks()) {
-            if (!(track instanceof MonteTrackInterface) || ((MonteTrackInterface) track).getCodec() == null) {
-                continue;
-            }
-            MonteTrackInterface tr = (MonteTrackInterface) track;
-            Buffer outBuf = tr.getOutBufferA();
-            if (outBuf.timeStamp.compareTo(playTime) <= 0 &&
-                    playTime.compareTo(outBuf.getBufferEndTimestamp()) < 0) {
-                continue;
-            }
+    private void startAudio(Rational initialPlayStartTime, Rational playEndTime) throws Exception {
+        int index = 0;
+        for (var tr : media.getTracks()) {
+            if (tr instanceof MonteAudioTrack t) {
+                t.interruptWorker();
+                int trackIndex = index;
+                t.executeWorker(() -> {
+                    Rational playStartTime = initialPlayStartTime;
+                    SourceDataLine sourceDataLine = t.getSourceDataLine();
+                    if (sourceDataLine != null) {
+                        sourceDataLine.start();
+                    }
+                    try {
+                        Rational playTime = playStartTime;
+                        long startNanoTime = System.nanoTime();
+                        SourceDataLine sourceDataLine1 = t.getSourceDataLine();
+                        while (true) {
+                            updateBuffer(t, playTime);
+                            int elapsedMovieMillis = playTime.subtract(playStartTime).multiply(1000).intValue();
+                            int elapsedSystemMillis = (int) ((System.nanoTime() - startNanoTime) / 1_000_000L);
+                            try {
+                                int sleepMillis = (elapsedMovieMillis - elapsedSystemMillis);
+                                if (sleepMillis > 200) {
+                                    Thread.sleep(sleepMillis - 200);
+                                }
+                                Buffer outBuf = t.getOutBufferA();
+                                if (!player.isMute()) {
+                                    if (!outBuf.isFlag(BufferFlag.DISCARD) && outBuf.data instanceof byte[] byteArray) {
+                                        // Skip samples that are before render time
+                                        Rational bufferStartTime = outBuf.timeStamp;
+                                        int skipSamples;
+                                        skipSamples = Math.max(0, playTime.subtract(bufferStartTime).divide(outBuf.sampleDuration).intValue());
+                                        int remainingSamples = outBuf.sampleCount - skipSamples;
+                                        if (remainingSamples > 0) {
+                                            int sampleSize = outBuf.length / outBuf.sampleCount;
+                                            int samplesLength = sampleSize * remainingSamples;
+                                            int samplesOffset = outBuf.offset + skipSamples * sampleSize;
+                                            int written = sourceDataLine1.write(byteArray, samplesOffset, samplesLength);
+                                            //if (written != outBuf.length) {
+                                            //    System.err.println("sourceDataLine overrun. wrote " + written + " instead of " + outBuf.length);
+                                            //}
+                                        }
 
-            outBuf = tr.swapOutBuffers();
-            Buffer inBuf = tr.getInBuffer();
-            var codec = tr.getCodec();
-            int trackId = (int) tr.getTrackID();
-            int status;
-            do {
-                reader.read(trackId, inBuf);
-                do {
-                    status = codec.process(inBuf, outBuf);
-                } while (status == Codec.CODEC_OUTPUT_NOT_FILLED);
-            } while (status == Codec.CODEC_OK
-                    && outBuf.getBufferEndTimestamp().compareTo(playTime) <= 0
-                    && !outBuf.isFlag(BufferFlag.END_OF_MEDIA));
+                                    }
+                                    playTime = outBuf.getBufferEndTimestamp();
+                                }
+                            } catch (InterruptedException e) {
+                                // this happens when seeking and when the player is stopped
+                            }
+                            long currentNanoTime = System.nanoTime();
+                            if (!(playTime.compareTo(playEndTime) <= 0 && getTargetState() == PlayerEngine.STARTED)) {
+                                break;
+                            }
+
+                            // Compute the next play time
+                            Rational newTargetTime = t.seekTime().getAndSet(null);
+                            if (newTargetTime != null) {
+                                newTargetTime = Rational.clamp(newTargetTime, Rational.ZERO, playEndTime);
+                                reader.setTrackReadTime(trackIndex, newTargetTime);
+                                playStartTime = newTargetTime;
+                                sourceDataLine1.flush();
+                                playTime = newTargetTime;
+                                startNanoTime = currentNanoTime;
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+            index++;
         }
+
     }
 
-    private void renderBuffers(Rational renderTime, boolean playAudio, long currentNanoTime) throws IOException {
-        renderedTime = renderTime;
-        renderVideoBuffers(renderTime);
-        if (playAudio) {
-            renderAudioBuffers(renderTime, currentNanoTime);
-        }
-    }
-
-    private void renderAudioBuffers(Rational renderTime, long currentNanoTime) {
+    private void renderAudioBuffersOld(Rational renderTime, long currentNanoTime) {
         for (var track : media.getTracks()) {
             if (!(track instanceof MonteAudioTrack) || ((MonteAudioTrack) track).getCodec() == null) {
                 continue;
@@ -439,8 +497,7 @@ class PlayerEngine extends AbstractPlayer {
                 Rational bufferStartTime = outBuf.timeStamp;
                 Rational bufferEndTime = outBuf.getBufferEndTimestamp();
                 boolean bufferTimeIntersectsPlayTime = renderTime.isInRange(bufferStartTime, bufferEndTime);
-                if (bufferTimeIntersectsPlayTime && tr.getSourceDataLine() != null && outBuf.data instanceof byte[]) {
-                    byte[] byteArray = (byte[]) outBuf.data;
+                if (bufferTimeIntersectsPlayTime && tr.getSourceDataLine() != null && outBuf.data instanceof byte[] byteArray) {
                     boolean isRenderTimeValid = tr.renderedUntilNanoTime + (1_000_000_000L / PLAYER_RATE) > currentNanoTime;
                     int skipSamples;
 
@@ -455,19 +512,23 @@ class PlayerEngine extends AbstractPlayer {
                         } else {
                             skipSamples = Math.max(0, renderTime.subtract(bufferStartTime).divide(outBuf.sampleDuration).intValue());
                         }
-                        int skipRenderedSamples = new Rational(tr.renderedUntilNanoTime - currentNanoTime - 20_000_000, 1_000_000_000).divide(outBuf.sampleDuration).intValue();
+                        Rational divide = new Rational(tr.renderedUntilNanoTime - currentNanoTime - 20_000_000, 1_000_000_000).divide(outBuf.sampleDuration);
+                        int skipRenderedSamples = divide.isNegative() ? 0 : divide.intValue();
                         skipSamples = Math.max(skipRenderedSamples, skipSamples);
                     }
-                    if (skipSamples < outBuf.sampleCount) {
+                    int numSamplesToPlay = outBuf.sampleCount - skipSamples;
+                    if (numSamplesToPlay > 0) {
                         int sampleSize = outBuf.length / outBuf.sampleCount;
-                        int samplesLength = sampleSize * (outBuf.sampleCount - skipSamples);
+                        int samplesLength = sampleSize * numSamplesToPlay;
                         int samplesOffset = outBuf.offset + skipSamples * sampleSize;
-                        tr.executeWorker(() -> {
-                            SourceDataLine sourceDataLine = tr.getSourceDataLine();
-                            sourceDataLine.start();
-                            sourceDataLine.write(byteArray, samplesOffset, samplesLength);
-                        });
-                        Rational clippedBufferDuration = outBuf.sampleDuration.multiply(outBuf.sampleCount - skipSamples);
+
+                        SourceDataLine sourceDataLine = tr.getSourceDataLine();
+                        int written = sourceDataLine.write(byteArray, samplesOffset, samplesLength);
+                        if (written != samplesLength) {
+                            System.err.println("sourceDataLine overrun. wrote " + written + " instead of " + samplesLength);
+                        }
+
+                        Rational clippedBufferDuration = outBuf.sampleDuration.multiply(numSamplesToPlay);
                         tr.renderedUntilNanoTime = Math.max(tr.renderedUntilNanoTime, currentNanoTime) + (long) (clippedBufferDuration.doubleValue() * 1e9);
                         tr.setRenderedStartTime(bufferStartTime);
                         tr.setRenderedEndTime(bufferEndTime);
@@ -476,6 +537,38 @@ class PlayerEngine extends AbstractPlayer {
             }
         }
     }
+
+    private void updateBuffer(TrackInterface track, Rational playTime) throws IOException {
+        if (!(track instanceof MonteTrackInterface) || ((MonteTrackInterface) track).getCodec() == null) {
+            return;
+        }
+        MonteTrackInterface tr = (MonteTrackInterface) track;
+        Buffer outBuf = tr.getOutBufferA();
+        if (outBuf.timeStamp.compareTo(playTime) <= 0 &&
+                playTime.compareTo(outBuf.getBufferEndTimestamp()) < 0) {
+            return;
+        }
+
+        outBuf = tr.swapOutBuffers();
+        Buffer inBuf = tr.getInBuffer();
+        var codec = tr.getCodec();
+        int trackId = (int) tr.getTrackID();
+        int status;
+        do {
+            reader.read(trackId, inBuf);
+            do {
+                status = codec.process(inBuf, outBuf);
+            } while (status == Codec.CODEC_OUTPUT_NOT_FILLED);
+        } while (status == Codec.CODEC_OK
+                && outBuf.getBufferEndTimestamp().compareTo(playTime) <= 0
+                && !outBuf.isFlag(BufferFlag.END_OF_MEDIA));
+    }
+
+    private void renderBuffers(Rational renderTime, boolean playAudio, long currentNanoTime) throws IOException {
+        renderedTime = renderTime;
+        renderVideoBuffers(renderTime);
+    }
+
 
     private void renderVideoBuffers(Rational renderTime) {
         Platform.runLater(() -> {
@@ -488,11 +581,12 @@ class PlayerEngine extends AbstractPlayer {
                 MonteVideoTrack tr = (MonteVideoTrack) track;
                 Buffer outBuf = tr.getOutBufferA();
                 if (!outBuf.isFlag(BufferFlag.DISCARD)) {
+                    player.setCurrentFrame(outBuf.sequenceNumber);
                     Rational bufferStartTime = outBuf.timeStamp;
                     Rational bufferEndTime = outBuf.getBufferEndTimestamp();
-                    boolean bufferTimeIntersectsPlayTime = bufferStartTime.compareTo(renderTime) <= 0 &&
+                    boolean bufferTimeIntersectsRenderTime = bufferStartTime.compareTo(renderTime) <= 0 &&
                             renderTime.compareTo(bufferEndTime) < 0;
-                    if (bufferTimeIntersectsPlayTime
+                    if (bufferTimeIntersectsRenderTime
                             && tr instanceof MonteVideoTrack
                             && outBuf.data instanceof WritableImage) {
                         MonteVideoTrack mvt = tr;
@@ -509,6 +603,12 @@ class PlayerEngine extends AbstractPlayer {
 
     public void seek(Rational seconds) {
         seekTime.set(seconds);
+        for (var track : media.getTracks()) {
+            if (track instanceof MonteTrackInterface t) {
+                t.seekTime().set(seconds);
+                t.interruptWorker();
+            }
+        }
         prefetch();
     }
 }

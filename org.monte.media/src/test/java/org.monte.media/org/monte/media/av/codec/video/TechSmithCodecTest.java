@@ -207,15 +207,10 @@ public class TechSmithCodecTest {
     }
 
     private static int[] toRgb24(BufferedImage img, boolean clearAlphaBits) {
-        AbstractVideoCodec abstractVideoCodec = new AbstractVideoCodec(null, null) {
-            @Override
-            public int process(Buffer in, Buffer out) {
-                return 0;
-            }
-        };
+        ImageBufferToArray ibta = new ImageBufferToArray();
         Buffer buf = new Buffer();
         buf.data = img;
-        int[] rgb24 = abstractVideoCodec.getRGB24(buf);
+        int[] rgb24 = ibta.getRGB24(buf, img.getWidth(), img.getHeight());
         // Clear Alpha bits:
         if (clearAlphaBits) {
             for (int i = 0; i < rgb24.length; i++) {
@@ -227,38 +222,20 @@ public class TechSmithCodecTest {
 
     private static short[] toRgb16(BufferedImage img) {
         Format format = new Format(VideoFormatKeys.WidthKey, img.getWidth(), VideoFormatKeys.HeightKey, img.getHeight());
-        AbstractVideoCodec abstractVideoCodec = new AbstractVideoCodec(null, null) {
-            {
-                this.outputFormat = format;
-            }
-
-            @Override
-            public int process(Buffer in, Buffer out) {
-                return 0;
-            }
-        };
+        ImageBufferToArray ibta = new ImageBufferToArray();
         Buffer buf = new Buffer();
         buf.format = format;
         buf.data = img;
-        return abstractVideoCodec.getRGB16(buf);
+        return ibta.getRGB16(buf, img.getWidth(), img.getHeight());
     }
 
     private static byte[] toRgb8(BufferedImage img) {
         Format format = new Format(VideoFormatKeys.WidthKey, img.getWidth(), VideoFormatKeys.HeightKey, img.getHeight());
-        AbstractVideoCodec abstractVideoCodec = new AbstractVideoCodec(null, null) {
-            {
-                this.outputFormat = format;
-            }
-
-            @Override
-            public int process(Buffer in, Buffer out) {
-                return 0;
-            }
-        };
+        ImageBufferToArray ibta = new ImageBufferToArray();
         Buffer buf = new Buffer();
         buf.format = format;
         buf.data = img;
-        return abstractVideoCodec.getIndexed8(buf);
+        return ibta.getIndexed8(buf);
     }
 
     /**

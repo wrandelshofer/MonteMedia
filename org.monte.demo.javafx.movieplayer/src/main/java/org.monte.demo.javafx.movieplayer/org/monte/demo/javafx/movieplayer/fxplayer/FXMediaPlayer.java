@@ -8,10 +8,12 @@ package org.monte.demo.javafx.movieplayer.fxplayer;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.LongProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.event.EventHandler;
 import javafx.scene.media.AudioEqualizer;
 import javafx.scene.media.AudioSpectrumListener;
@@ -27,6 +29,7 @@ import org.monte.demo.javafx.movieplayer.model.MediaPlayerInterface;
 public class FXMediaPlayer implements MediaPlayerInterface {
     private final MediaPlayer player;
     private final MediaInterface media;
+    private final LongProperty currentFrameNumber = new SimpleLongProperty(-1L);
 
     public FXMediaPlayer(MediaPlayer player) {
         this.player = player;
@@ -145,6 +148,11 @@ public class FXMediaPlayer implements MediaPlayerInterface {
     }
 
     @Override
+    public LongProperty currentFrameNumberProperty() {
+        return currentFrameNumber;
+    }
+
+    @Override
     public DoubleProperty volumeProperty() {
         return player.volumeProperty();
     }
@@ -201,7 +209,7 @@ public class FXMediaPlayer implements MediaPlayerInterface {
 
     @Override
     public Duration getFrameBefore(Duration timestamp) {
-        return timestamp.subtract(Duration.seconds(5));
+        return timestamp.subtract(Duration.seconds(4));
     }
 
     @Override

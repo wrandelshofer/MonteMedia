@@ -154,7 +154,7 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
     public void read(int track, Buffer buffer) throws IOException {
         ensureRealized();
         QuickTimeMeta.Track tr = meta.tracks.get(track);
-        if (tr.readIndex >= tr.trackSamplesList.size()) {
+        if (tr.readIndex >= tr.trackSamplesList.size() || tr.trackSamplesList.isEmpty()) {
             buffer.setFlagsTo(END_OF_MEDIA, DISCARD);
             buffer.length = 0;
             return;
@@ -174,7 +174,7 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
         switch (tr.mediaType) {
             case AUDIO -> {
                 Format af = tr.format;
-                buffer.sampleCount = buffer.length / af.get(FrameSizeKey);
+                buffer.sampleCount = buffer.length / Math.max(1, af.get(FrameSizeKey));
             }
             default -> buffer.sampleCount = 1;
         }
@@ -193,16 +193,21 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
     }
 
 
-
     @Override
     public void setMovieReadTime(Rational newValue) throws IOException {
         ensureRealized();
         for (int t = 0, n = meta.tracks.size(); t < n; t++) {
-            QuickTimeMeta.Track tr = meta.tracks.get(t);
-            int sample = (int) min(findSampleAtTime(t, newValue), tr.media.sampleCount - 1);
-            for (; sample > 0 && !tr.trackSamplesList.get(sample).mediaSample.isKeyframe; sample--) ;
-            tr.readIndex = sample;
+            setTrackReadTime(t, newValue);
         }
+    }
+
+    @Override
+    public void setTrackReadTime(int t, Rational newValue) throws IOException {
+        ensureRealized();
+        QuickTimeMeta.Track tr = meta.tracks.get(t);
+        int sample = (int) min(findSampleAtTime(t, newValue), tr.media.sampleCount - 1);
+        for (; sample > 0 && !tr.trackSamplesList.get(sample).mediaSample.isKeyframe; sample--) ;
+        tr.readIndex = sample;
     }
 
     @Override

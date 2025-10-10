@@ -206,8 +206,8 @@ public class IFFOutputStream extends OutputStream {
          *
          * @param chunkType The chunkType of the chunk.
          */
-        public DataChunk(String name) throws IOException {
-            super(name);
+        public DataChunk(String chunkType) throws IOException {
+            super(chunkType);
             out.writeLong(0); // make room for the chunk header
         }
 

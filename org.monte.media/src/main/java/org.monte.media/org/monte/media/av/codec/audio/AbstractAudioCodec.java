@@ -5,7 +5,6 @@
 
 package org.monte.media.av.codec.audio;
 
-import org.monte.media.av.AbstractCodec;
 import org.monte.media.av.Format;
 
 /**
@@ -13,7 +12,7 @@ import org.monte.media.av.Format;
  *
  * @author Werner Randelshofer
  */
-public abstract class AbstractAudioCodec extends AbstractCodec {
+public abstract class AbstractAudioCodec extends org.monte.media.av.AbstractCodec {
 
     public AbstractAudioCodec(Format[] supportedInputFormats, Format[] supportedOutputFormats) {
         super(supportedInputFormats, supportedOutputFormats);

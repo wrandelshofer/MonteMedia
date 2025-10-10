@@ -5,6 +5,7 @@
 package org.monte.media.seq;
 
 import org.monte.media.amigabitmap.AmigaBitmapImage;
+import org.monte.media.amigabitmap.AmigaBitmapImageConverter;
 import org.monte.media.ilbm.ColorCycle;
 import org.monte.media.ilbm.ColorCyclingMemoryImageSource;
 import org.monte.media.io.BoundedRangeInputStream;
@@ -22,7 +23,10 @@ import java.awt.Component;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
+import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
 import java.awt.image.DirectColorModel;
 import java.awt.image.ImageProducer;
 import java.beans.PropertyChangeEvent;
@@ -519,8 +523,9 @@ public class SEQPlayer
         jiffieMillis = 1000f / (float) track.getJiffies();
 
         if (track.getColorCycles().isEmpty()) {
-            bitmapEven.setPreferredChunkyColorModel(preferredColorModel);
-            bitmapOdd.setPreferredChunkyColorModel(preferredColorModel);
+            //FIXME fix color models
+            //bitmapEven.setPreferredChunkyColorModel(preferredColorModel);
+            //bitmapOdd.setPreferredChunkyColorModel(preferredColorModel);
         }
 
         /*Hashtable*/
@@ -558,10 +563,13 @@ public class SEQPlayer
         properties.put("jiffies", "" + track.getJiffies());
         properties.put("colorCycling", "" + track.getColorCycles().size());
 
+        //FIXME fix colors
+        /*
         if (bitmapEven.isEnforceDirectColors()) {
             cm = (preferredColorModel instanceof DirectColorModel) ? preferredColorModel : new DirectColorModel(24, 0xff0000, 0xff00, 0xff);
             memoryImage = new ColorCyclingMemoryImageSource(width, height, cm, new int[width * height], 0, width, properties);
-        } else if (cm instanceof DirectColorModel) {
+        } else*/
+        if (cm instanceof DirectColorModel) {
             memoryImage = new ColorCyclingMemoryImageSource(width, height, cm, new int[width * height], 0, width, properties);
         } else {
             memoryImage = new ColorCyclingMemoryImageSource(width, height, cm, new byte[width * height], 0, width, properties);
@@ -580,7 +588,8 @@ public class SEQPlayer
         fetchedEven = fetchedOdd = Integer.MAX_VALUE;
         if (track.getFrameCount() > 0) {
             renderVideo(0);
-            properties.put("renderMode", bitmapEven.getChunkyColorModel());
+            //FIXME fix render mode
+            //properties.put("renderMode", bitmapEven.getChunkyColorModel());
         }
 
         // If the components of the player have been created before
@@ -921,10 +930,12 @@ public class SEQPlayer
         // Convert planar to chunky.
         SEQFrame frame = track.getFrame(index);
         ColorModel cm = frame.getColorModel();
-        bitmap.setPlanarColorModel(cm);
+        //FIXME fix the conversion
+        /*bitmap.setColorModel(cm);
         if (prepared == index - interleave && //
                 (bitmap.getPixelType() == AmigaBitmapImage.BYTE_PIXEL || //
                         cm == track.getFrame(prepared).getColorModel())) {
+            BufferedImage bufferedImage = new ParallelExtractAmigaBitmapFactory().bitmapToBufferedImage(bitmap, null);
             bitmap.convertToChunky(
                     frame.getTopBound(track),
                     frame.getLeftBound(track),
@@ -942,8 +953,11 @@ public class SEQPlayer
                     frame.getRightBound(track));
         } else {
             bitmap.convertToChunky();
-        }
+        }*/
+        bufferedImage = AmigaBitmapImageConverter.newInstance().toBufferedImage(bitmap, bufferedImage);
     }
+
+    private BufferedImage bufferedImage;
 
     /**
      * Prepare audio data for the specified frame index.
@@ -977,12 +991,20 @@ public class SEQPlayer
         }
 
         prepareVideo(index);
+        if (bufferedImage.getType() == BufferedImage.TYPE_BYTE_INDEXED) {
+            byte[] data = ((DataBufferByte) bufferedImage.getRaster().getDataBuffer()).getData();
+            memoryImage.newPixels(data, bufferedImage.getColorModel(), 0, track.getWidth());
+        } else {
+            int[] data = ((DataBufferInt) bufferedImage.getRaster().getDataBuffer()).getData();
+            memoryImage.newPixels(data, bufferedImage.getColorModel(), 0, track.getWidth());
+        }
+        /*
         ColorModel cm = bitmap.getChunkyColorModel();
         if (bitmap.getPixelType() == AmigaBitmapImage.INT_PIXEL) {
             memoryImage.newPixels(bitmap.getIntPixels(), cm, 0, track.getWidth());
         } else {
             memoryImage.newPixels(bitmap.getBytePixels(), cm, 0, track.getWidth());
-        }
+        }*/
         displayFrame = index;
 
         if (debug && visualComponent != null) {

@@ -8,15 +8,16 @@ package org.monte.media.eightsvx;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.DataLine;
 import javax.sound.sampled.FloatControl;
-import javax.sound.sampled.Line;
 import javax.sound.sampled.LineUnavailableException;
+import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * JDK13ShortAudioClip.
  *
- * @author Werner Randelshofer
+ * @author Werner Randelshofer, Switzerland
  */
 public class JDK13ShortAudioClip implements LoopableAudioClip {
     private Clip clip;
@@ -41,8 +42,10 @@ public class JDK13ShortAudioClip implements LoopableAudioClip {
      * (right channel  only). The default is 0.0 (centered).
      */
     private float pan;
-
+    private final int sampleCount;
     private AudioFormat audioFormat;
+    private static Timer TIMER;
+    private volatile TimerTask preventPopping;
 
     /**
      * Creates a new instance.
@@ -56,10 +59,12 @@ public class JDK13ShortAudioClip implements LoopableAudioClip {
      *                   (right channel  only). The default is 0.0 (centered).
      */
     public JDK13ShortAudioClip(byte[] samples, int sampleRate, int volume, float pan) {
-        this.samples = samples;
+        // Add 1 second worth of silence to prevent popping
+        this.samples = Arrays.copyOf(samples, samples.length + sampleRate);
         this.sampleRate = sampleRate;
         this.volume = volume;
         this.pan = pan;
+        this.sampleCount = samples.length;
     }
 
     public synchronized void loop() {
@@ -68,32 +73,57 @@ public class JDK13ShortAudioClip implements LoopableAudioClip {
 
     public synchronized void play() {
         stop();
+        getOrCreateClip();
+        if (clip.isControlSupported(FloatControl.Type.PAN)) {
+            FloatControl control = (FloatControl) clip.getControl(FloatControl.Type.PAN);
+            control.setValue(pan);
+        }
+        if (clip.isControlSupported(FloatControl.Type.VOLUME)) {
+            FloatControl control = (FloatControl) clip.getControl(FloatControl.Type.VOLUME);
+            control.setValue(volume / 64f);
+        }
+
+        clip.setFramePosition(0);
+
+        // This will start the clip with one second extra time
+        clip.start();
+
+        // We stop the clip before it has been completely played to prevent the popping sound
+        preventPopping = new TimerTask() {
+            @Override
+            public void run() {
+                if (preventPopping == this) {
+                    stop();
+                }
+            }
+        };
+        getTimer().schedule(preventPopping, 1000L * sampleCount / sampleRate);
+
+    }
+
+    private Timer getTimer() {
+        if (TIMER == null) {
+            TIMER = new Timer();
+        }
+        return TIMER;
+    }
+
+    private Clip getOrCreateClip() {
         if (clip == null) {
             try {
                 clip = createClip();
-                clip.open(getAudioFormat(), samples.clone(), 0, samples.length);
-                if (clip.isControlSupported(FloatControl.Type.PAN)) {
-                    FloatControl control = (FloatControl) clip.getControl(FloatControl.Type.PAN);
-                    control.setValue(pan);
-                }
-                if (clip.isControlSupported(FloatControl.Type.VOLUME)) {
-                    FloatControl control = (FloatControl) clip.getControl(FloatControl.Type.VOLUME);
-                    control.setValue(volume / 64f);
-                }
-
-                clip.start();
             } catch (LineUnavailableException e) {
                 e.printStackTrace();
-                throw new InternalError(e.getMessage());
+                throw new RuntimeException(e.getMessage());
             }
         }
+        return clip;
     }
 
     public synchronized void stop() {
         if (clip != null) {
             clip.stop();
-            clip.close();
-            clip = null;
+            preventPopping = null;
         }
     }
 
@@ -101,24 +131,18 @@ public class JDK13ShortAudioClip implements LoopableAudioClip {
         if (audioFormat == null) {
             audioFormat = new AudioFormat(
                     (float) sampleRate,
-                    8, //int�sampleSizeInBits
-                    1, //int�channels
-                    true, //boolean�signed,
-                    true //boolean�bigEndian
+                    8, //int sampleSizeInBits
+                    1, //int channels
+                    true, //boolean signed,
+                    true //boolean bigEndian
             );
         }
         return audioFormat;
     }
 
     private Clip createClip() throws LineUnavailableException {
-        Line.Info lineInfo = new DataLine.Info(Clip.class, getAudioFormat());
-        Clip c;
-        /*Mixer m = JDK13LongAudioClip.getMixer();
-        if (m != null) {
-        c = (Clip) m.getLine(lineInfo);
-        } else {*/
-        c = (Clip) AudioSystem.getLine(lineInfo);
-        //}
+        Clip c = AudioSystem.getClip();
+        c.open(getAudioFormat(), samples, 0, samples.length);
         return c;
     }
 
@@ -148,22 +172,18 @@ public class JDK13ShortAudioClip implements LoopableAudioClip {
      */
     public void loop(int count) {
         stop();
-        try {
-            clip = createClip();
-            clip.open(getAudioFormat(), samples.clone(), 0, samples.length);
-            if (clip.isControlSupported(FloatControl.Type.PAN)) {
-                FloatControl control = (FloatControl) clip.getControl(FloatControl.Type.PAN);
-                control.setValue(pan);
-            }
-            if (clip.isControlSupported(FloatControl.Type.VOLUME)) {
-                FloatControl control = (FloatControl) clip.getControl(FloatControl.Type.VOLUME);
-                control.setValue(volume / 64f);
-            }
-            clip.loop(count);
-        } catch (LineUnavailableException e) {
-            e.printStackTrace();
-            throw new InternalError(e.getMessage());
+        clip = getOrCreateClip();
+        if (clip.isControlSupported(FloatControl.Type.PAN)) {
+            FloatControl control = (FloatControl) clip.getControl(FloatControl.Type.PAN);
+            control.setValue(pan);
         }
+        if (clip.isControlSupported(FloatControl.Type.VOLUME)) {
+            FloatControl control = (FloatControl) clip.getControl(FloatControl.Type.VOLUME);
+            control.setValue(volume / 64f);
+        }
+        clip.setFramePosition(0);
+        clip.setLoopPoints(0, sampleCount);
+        clip.loop(count);
     }
 
 }

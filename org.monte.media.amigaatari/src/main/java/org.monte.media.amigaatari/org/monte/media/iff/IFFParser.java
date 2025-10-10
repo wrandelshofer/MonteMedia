@@ -161,8 +161,8 @@ import java.util.HashSet;
  * .	}
  * </pre>
  *
- * @see    IFFVisitor
  * @author Werner Randelshofer
+ * @see IFFVisitor
  */
 public class IFFParser
         extends Object {
@@ -261,8 +261,8 @@ public class IFFParser
      *
      * @throws ParseException Is thrown when an interpretation error occured.
      *                        The stream is positioned where the error occured.
-     * @exception AbortException Is thrown when the visitor decided to abort the
-     * interpretation.
+     * @throws AbortException Is thrown when the visitor decided to abort the
+     *                        interpretation.
      */
     public void parse(InputStream in, IFFVisitor v)
             throws ParseException, AbortException, IOException {
@@ -349,7 +349,6 @@ public class IFFParser
                             throw new ParseException("Invalid IFFChunk within FORM: " + idToString(id) + " at offset:" + idscan);
                         }
                 }
-                //            System.out.println("Found IFFChunk within Form:" + idToString(id)+" at offset:"+idscan);
 
                 in.align();
             }
@@ -667,10 +666,10 @@ public class IFFParser
      * Post condition<ul> <li>	Data chunk declared
      * </ul>
      *
-     * @param    type Type of the chunk. Must be formulated as a TypeID conforming
-     * to the method #isFormType.
-     * @param    id ID of the chunk. Must be formulated as a ChunkID conforming to
-     * the method #isLocalChunkID.
+     * @param type Type of the chunk. Must be formulated as a TypeID conforming
+     *             to the method #isFormType.
+     * @param id   ID of the chunk. Must be formulated as a ChunkID conforming to
+     *             the method #isLocalChunkID.
      */
     @SuppressWarnings("unchecked")
     public void declareDataChunk(int type, int id) {
@@ -708,10 +707,10 @@ public class IFFParser
      * <li>	Group chunk declared</li>
      * </ul>
      *
-     * @param    type Type of the chunk. Must be formulated as a TypeID conforming
-     * to the method #isFormType.
-     * @param    id ID of the chunk. Must be formulated as a ChunkID conforming to
-     * the method #isContentsType.
+     * @param type Type of the chunk. Must be formulated as a TypeID conforming
+     *             to the method #isFormType.
+     * @param id   ID of the chunk. Must be formulated as a ChunkID conforming to
+     *             the method #isContentsType.
      */
     public void declareGroupChunk(int type, int id) {
         //IFFChunk chunk = new IFFChunk(type, id);
@@ -746,10 +745,10 @@ public class IFFParser
      * Post condition <ul><li>	Group chunk declared
      * </ul>
      *
-     * @param    type Type of the chunk. Must be formulated as a TypeID conforming
-     * to the method #isFormType.
-     * @param    id ID of the chunk. Must be formulated as a ChunkID conforming to
-     * the method #isLocalChunkID.
+     * @param type Type of the chunk. Must be formulated as a TypeID conforming
+     *             to the method #isFormType.
+     * @param id   ID of the chunk. Must be formulated as a ChunkID conforming to
+     *             the method #isLocalChunkID.
      */
     public void declarePropertyChunk(int type, int id) {
         IFFChunk chunk = new IFFChunk(type, id);
@@ -785,10 +784,10 @@ public class IFFParser
      * <li>	Group chunk declared</li>
      * </ul>
      *
-     * @param    type Type of the chunk. Must be formulated as a TypeID conforming
-     * to the method #isFormType.
-     * @param    id ID of the chunk. Must be formulated as a ChunkID conforming to
-     * the method #isLocalChunkID.
+     * @param type Type of the chunk. Must be formulated as a TypeID conforming
+     *             to the method #isFormType.
+     * @param id   ID of the chunk. Must be formulated as a ChunkID conforming to
+     *             the method #isLocalChunkID.
      */
     public void declareCollectionChunk(int type, int id) {
         IFFChunk chunk = new IFFChunk(type, id);
@@ -816,7 +815,7 @@ public class IFFParser
      * PROP_ID.
      * </ul>
      *
-     * @param    id Chunk ID to be checked.
+     * @param id Chunk ID to be checked.
      * @return True when the chunk ID is a valid Group ID.
      */
     public static boolean isGroupID(int id) {
@@ -838,7 +837,7 @@ public class IFFParser
      * <li>	The id may not have leading spaces (unless the id is a NULL_ID).
      * </ul>
      *
-     * @param    id Chunk ID to be checked.
+     * @param id Chunk ID to be checked.
      * @return True when the ID is a valid IFF chunk ID.
      */
     public static boolean isID(int id) {
@@ -904,7 +903,7 @@ public class IFFParser
      * collide with GroupID.
      * </ul>
      *
-     * @param    id Chunk ID to be checked.
+     * @param id Chunk ID to be checked.
      * @return True when the chunk ID is a Form Type.
      */
     public static boolean isFormType(int id) {
@@ -939,7 +938,7 @@ public class IFFParser
      * <li>	The Content type is a FORM type ID or a NULL_ID</li>
      * </ul>
      *
-     * @param    id Chunk ID to be checked.
+     * @param id Chunk ID to be checked.
      * @return True when the chunk ID is a Contents Type.
      */
     public static boolean isContentType(int id) {
@@ -953,7 +952,7 @@ public class IFFParser
     /**
      * Convert an integer IFF identifier to String.
      *
-     * @param    anID ID to be converted.
+     * @param anID ID to be converted.
      * @return String representation of the ID.
      */
     public static String idToString(int anID) {
@@ -970,7 +969,7 @@ public class IFFParser
     /**
      * Converts the first four letters of the String into an IFF Identifier.
      *
-     * @param    aString String to be converted.
+     * @param aString String to be converted.
      * @return ID representation of the String.
      */
     public static int stringToID(String aString) {

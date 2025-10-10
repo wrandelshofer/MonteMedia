@@ -9,6 +9,7 @@ import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.LongProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyDoubleWrapper;
@@ -19,6 +20,7 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.EventHandler;
 import javafx.scene.media.AudioEqualizer;
@@ -41,15 +43,17 @@ public abstract class AbstractMediaPlayer implements MediaPlayerInterface {
     protected final ReadOnlyDoubleWrapper currentRate = new ReadOnlyDoubleWrapper();
     protected final ReadOnlyObjectWrapper<Duration> currentTime = new ReadOnlyObjectWrapper<>();
     protected final IntegerProperty cycleCount = new SimpleIntegerProperty();
+    protected final LongProperty currentFrameNumber = new SimpleLongProperty(-1L);
+
     protected final ReadOnlyObjectWrapper<Duration> cycleDuration = new ReadOnlyObjectWrapper<>();
     protected final ReadOnlyObjectWrapper<Throwable> error = new ReadOnlyObjectWrapper<>() {
         @Override
         protected void invalidated() {
             if (get() != null) {
-            Runnable r = getOnError();
-            if (r != null) {
-                Platform.runLater(r);
-            }
+                Runnable r = getOnError();
+                if (r != null) {
+                    Platform.runLater(r);
+                }
             }
         }
     };
@@ -247,5 +251,8 @@ public abstract class AbstractMediaPlayer implements MediaPlayerInterface {
         return null;
     }
 
-
+    @Override
+    public LongProperty currentFrameNumberProperty() {
+        return currentFrameNumber;
+    }
 }

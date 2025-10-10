@@ -90,6 +90,10 @@ public class MonteMediaPlayer extends AbstractMediaPlayer {
         currentTime.set(newValue);
     }
 
+    void setCurrentFrame(Long newValue) {
+        currentFrameNumber.set(newValue);
+    }
+
     void setCurrentCount(int newValue) {
         currentCount.set(newValue);
     }

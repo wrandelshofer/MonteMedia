@@ -9,8 +9,8 @@ import org.monte.media.av.Codec;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.av.MovieWriter;
-import org.monte.media.av.codec.video.JPEGCodec;
-import org.monte.media.av.codec.video.PNGCodec;
+import org.monte.media.av.codec.video.JPEGEncoder;
+import org.monte.media.av.codec.video.PNGEncoder;
 import org.monte.media.io.IOStreams;
 import org.monte.media.math.Rational;
 
@@ -58,6 +58,11 @@ public class ImageSequenceWriter implements MovieWriter {
     @Override
     public Format getFileFormat() throws IOException {
         return fileFormat;
+    }
+
+    @Override
+    public void setFileFormat(Format newValue) throws IOException {
+        // ignore
     }
 
     @Override
@@ -125,11 +130,11 @@ public class ImageSequenceWriter implements MovieWriter {
         if (enc.equals(ENCODING_AVI_MJPG)//
                 || enc.equals(ENCODING_QUICKTIME_JPEG)//
         ) {
-            vt.codec = new JPEGCodec();
+            vt.codec = new JPEGEncoder();
         } else if (enc.equals(ENCODING_AVI_PNG)//
                 || enc.equals(ENCODING_QUICKTIME_PNG)//
         ) {
-            vt.codec = new PNGCodec();
+            vt.codec = new PNGEncoder();
         }
 
         vt.codec.setInputFormat(fmt.prepend(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE, DataClassKey, BufferedImage.class));

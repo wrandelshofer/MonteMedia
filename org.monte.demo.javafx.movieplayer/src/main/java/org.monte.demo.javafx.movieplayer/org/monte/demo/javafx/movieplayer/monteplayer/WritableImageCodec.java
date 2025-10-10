@@ -7,7 +7,6 @@ package org.monte.demo.javafx.movieplayer.monteplayer;
 
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.WritableImage;
-import org.monte.media.av.AbstractCodec;
 import org.monte.media.av.Buffer;
 import org.monte.media.av.BufferFlag;
 import org.monte.media.av.Format;
@@ -23,7 +22,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_WRITABLE_IMAGE;
 
-public class WritableImageCodec extends AbstractCodec {
+public class WritableImageCodec extends org.monte.media.av.AbstractCodec {
     public WritableImageCodec() {
         super(new Format[]{
                         new Format(MediaTypeKey, FormatKeys.MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
@@ -34,7 +33,7 @@ public class WritableImageCodec extends AbstractCodec {
         );
     }
 
-    //private BufferedImage reuseRgbImage;
+    private BufferedImage reuseRgbImage;
 
     @Override
     public int process(Buffer in, Buffer out) {
@@ -48,8 +47,8 @@ public class WritableImageCodec extends AbstractCodec {
         }
         BufferedImage b = (BufferedImage) in.data;
 
-        // SwingFXUtils is slow if the image has an indexed color model
         /*
+        // SwingFXUtils is slow if the image has an indexed color model
         if (b.getColorModel() instanceof IndexColorModel) {
             BufferedImage rgbImage;
             int height = b.getHeight();
@@ -57,7 +56,7 @@ public class WritableImageCodec extends AbstractCodec {
             if (reuseRgbImage != null && reuseRgbImage.getWidth() == width && reuseRgbImage.getHeight() == height) {
                 rgbImage = reuseRgbImage;
             } else {
-                rgbImage = reuseRgbImage=new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+                rgbImage = reuseRgbImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
             }
             Graphics2D g = rgbImage.createGraphics();
             g.drawImage(b, 0, 0, null);
@@ -65,8 +64,8 @@ public class WritableImageCodec extends AbstractCodec {
             out.data = (out.data instanceof WritableImage w && w.getWidth() == width && w.getHeight() == height) ? w : new WritableImage(width, height);
             PixelWriter w = ((WritableImage) out.data).getPixelWriter();
             DataBufferInt dataBuffer = (DataBufferInt) rgbImage.getRaster().getDataBuffer();
-            w.setPixels(0,0,width,height, PixelFormat.getIntArgbInstance(),
-                    dataBuffer.getData(),0,width);
+            w.setPixels(0, 0, width, height, PixelFormat.getIntArgbInstance(),
+                    dataBuffer.getData(), 0, width);
             return WritableImageCodec.CODEC_OK;
         }*/
 

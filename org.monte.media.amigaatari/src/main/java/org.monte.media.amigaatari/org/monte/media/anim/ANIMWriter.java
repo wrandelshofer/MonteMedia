@@ -4,6 +4,7 @@
  */
 package org.monte.media.anim;
 
+import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.av.MovieWriter;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.monte.media.anim.AmigaVideoFormatKeys.ENCODING_ANIM_OP5;
+import static org.monte.media.anim.AmigaVideoFormatKeys.MonitorIdKey;
 import static org.monte.media.anim.AmigaVideoFormatKeys.toCAMG;
 import static org.monte.media.av.FormatKeys.EncodingKey;
 import static org.monte.media.av.FormatKeys.MIME_ANIM;
@@ -36,6 +38,11 @@ public class ANIMWriter extends ANIMMultiplexer implements MovieWriter {
     @Override
     public Format getFileFormat() throws IOException {
         return ANIM;
+    }
+
+    @Override
+    public void setFileFormat(Format newValue) throws IOException {
+        setCAMG(newValue.get(MonitorIdKey, getCAMG()));
     }
 
     @Override
@@ -88,7 +95,10 @@ public class ANIMWriter extends ANIMMultiplexer implements MovieWriter {
 
     @Override
     public void write(int track, BufferedImage image, long duration) throws IOException {
-        throw new UnsupportedOperationException("not implemented yet");
+        Buffer buf = new Buffer();
+        buf.data = image;
+        buf.sampleDuration = Rational.valueOf(duration, 1000);
+        write(track, buf);
     }
 
 

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/org.monte.demo.aviwriter/org.monte.demo.aviwriter.iml" filepath="$PROJECT_DIR$/org.monte.demo.aviwriter/org.monte.demo.aviwriter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.monte.demo.quicktimewriter/org.monte.demo.quicktimewriter.iml" filepath="$PROJECT_DIR$/org.monte.demo.quicktimewriter/org.monte.demo.quicktimewriter.iml" />
+    </modules>
+  </component>
+</project>

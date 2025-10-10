@@ -5,6 +5,7 @@
 package org.monte.media.anim;
 
 import org.monte.media.amigabitmap.AmigaBitmapImage;
+import org.monte.media.amigabitmap.AmigaBitmapImageConverter;
 import org.monte.media.ilbm.ColorCycle;
 import org.monte.media.ilbm.ColorCyclingMemoryImageSource;
 import org.monte.media.io.BoundedRangeInputStream;
@@ -22,7 +23,10 @@ import java.awt.Component;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
+import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
 import java.awt.image.DirectColorModel;
 import java.awt.image.ImageProducer;
 import java.beans.PropertyChangeEvent;
@@ -42,7 +46,7 @@ import static java.lang.Math.max;
 public class ANIMPlayer
         extends AbstractPlayer
         implements ColorCyclePlayer {
-
+    private final AmigaBitmapImageConverter factory = AmigaBitmapImageConverter.newInstance();
     /**
      * The memory image source handles the image
      * producer/consumer protocol.
@@ -75,6 +79,10 @@ public class ANIMPlayer
      * Two bitmaps are needed for double buffering.
      */
     private AmigaBitmapImage bitmapEven, bitmapOdd;
+    /**
+     * Two buffered images are needed for double buffering.
+     */
+    private BufferedImage imageEven, imageOdd;
     /**
      * Index of the frame, that has been prepared
      * in its even or odd bitmap buffer for display.
@@ -515,8 +523,8 @@ public class ANIMPlayer
         jiffieMillis = 1000f / (float) track.getJiffies();
 
         if (track.getColorCycles().isEmpty()) {
-            bitmapEven.setPreferredChunkyColorModel(preferredColorModel);
-            bitmapOdd.setPreferredChunkyColorModel(preferredColorModel);
+            //  bitmapEven.setPreferredChunkyColorModel(preferredColorModel);
+            //  bitmapOdd.setPreferredChunkyColorModel(preferredColorModel);
         }
 
         /*Hashtable*/
@@ -554,10 +562,11 @@ public class ANIMPlayer
         properties.put("jiffies", "" + track.getJiffies());
         properties.put("colorCycling", "" + track.getColorCycles().size());
 
-        if (bitmapEven.isEnforceDirectColors()) {
+        /*if (bitmapEven.isEnforceDirectColors()) {
             cm = (preferredColorModel instanceof DirectColorModel) ? preferredColorModel : new DirectColorModel(24, 0xff0000, 0xff00, 0xff);
             memoryImage = new ColorCyclingMemoryImageSource(width, height, cm, new int[width * height], 0, width, properties);
-        } else if (cm instanceof DirectColorModel) {
+        } else*/
+        if (cm instanceof DirectColorModel) {
             memoryImage = new ColorCyclingMemoryImageSource(width, height, cm, new int[width * height], 0, width, properties);
         } else {
             memoryImage = new ColorCyclingMemoryImageSource(width, height, cm, new byte[width * height], 0, width, properties);
@@ -576,7 +585,7 @@ public class ANIMPlayer
         fetchedEven = fetchedOdd = Integer.MAX_VALUE;
         if (track.getFrameCount() > 0) {
             renderVideo(0);
-            properties.put("renderMode", bitmapEven.getChunkyColorModel());
+            //properties.put("renderMode", bitmapEven.getChunkyColorModel());
         }
 
         // If the components of the player have been created before
@@ -633,7 +642,7 @@ public class ANIMPlayer
      */
     public void setDebug(boolean newValue) {
         this.debug = newValue;
-        if (newValue == false && visualComponent != null) {
+        if (!newValue && visualComponent != null) {
             visualComponent.setMessage(null);
         }
     }
@@ -913,10 +922,12 @@ public class ANIMPlayer
      */
     private void prepareVideo(int index) {
         AmigaBitmapImage bitmap;
+        BufferedImage image;
         int prepared;
         int interleave = track.getInterleave();
+        boolean isEven = interleave == 1 || (index & 1) == 0;
 
-        if (interleave == 1 || (index & 1) == 0) {
+        if (isEven) {
             // even?
             if (preparedEven == index) {
                 return;
@@ -924,6 +935,7 @@ public class ANIMPlayer
             prepared = preparedEven;
             preparedEven = index;
             bitmap = bitmapEven;
+            image = imageEven;
         } else {
             // odd?
             if (preparedOdd == index) {
@@ -932,6 +944,7 @@ public class ANIMPlayer
             prepared = preparedOdd;
             preparedOdd = index;
             bitmap = bitmapOdd;
+            image = imageOdd;
         }
 
         // Fetch the frame from the underlying storage system
@@ -941,7 +954,14 @@ public class ANIMPlayer
         // Convert planar to chunky.
         ANIMFrame frame = track.getFrame(index);
         ColorModel cm = frame.getColorModel();
-        bitmap.setPlanarColorModel(cm);
+        bitmap.setColorModel(cm);
+        BufferedImage convertedImage = factory.toBufferedImage(bitmap, image);
+        if (isEven) {
+            imageEven = convertedImage;
+        } else {
+            imageOdd = convertedImage;
+        }
+        /*
         if (prepared == index - interleave && //
                 (bitmap.getPixelType() == AmigaBitmapImage.BYTE_PIXEL || //
                         cm == track.getFrame(prepared).getColorModel())) {
@@ -962,7 +982,7 @@ public class ANIMPlayer
                     frame.getRightBound(track));
         } else {
             bitmap.convertToChunky();
-        }
+        }*/
     }
 
     /**
@@ -988,20 +1008,31 @@ public class ANIMPlayer
         int interleave = track.getInterleave();
 
         AmigaBitmapImage bitmap;
-        if (interleave == 1 || (index & 1) == 0) {
+        BufferedImage image;
+        boolean isEven = interleave == 1 || (index & 1) == 0;
+        if (isEven) {
             // even?
             bitmap = bitmapEven;
+            image = imageEven;
         } else {
             // odd?
             bitmap = bitmapOdd;
+            image = imageOdd;
         }
 
         prepareVideo(index);
+        ColorModel cm = image.getColorModel();
+        /*
         ColorModel cm = bitmap.getChunkyColorModel();
         if (bitmap.getPixelType() == AmigaBitmapImage.INT_PIXEL) {
             memoryImage.newPixels(bitmap.getIntPixels(), cm, 0, track.getWidth());
         } else {
             memoryImage.newPixels(bitmap.getBytePixels(), cm, 0, track.getWidth());
+        }*/
+        if (image.getType() == BufferedImage.TYPE_BYTE_INDEXED) {
+            memoryImage.newPixels(((DataBufferByte) image.getRaster().getDataBuffer()).getData(), cm, 0, image.getWidth());
+        } else {
+            memoryImage.newPixels(((DataBufferInt) image.getRaster().getDataBuffer()).getData(), cm, 0, image.getWidth());
         }
         displayFrame = index;
 

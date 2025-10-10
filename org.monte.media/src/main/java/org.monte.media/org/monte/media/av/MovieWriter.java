@@ -22,6 +22,11 @@ public interface MovieWriter extends Multiplexer, AutoCloseable {
     public Format getFileFormat() throws IOException;
 
     /**
+     * Sets the file format.
+     */
+    public void setFileFormat(Format newValue) throws IOException;
+
+    /**
      * Adds a track to the writer for a suggested input format.
      * <p>
      * The format should at least specify the desired
@@ -75,6 +80,7 @@ public interface MovieWriter extends Multiplexer, AutoCloseable {
      * @throws IOException if writing the sample data failed.
      */
     public void write(int track, BufferedImage image, long duration) throws IOException;
+
     /**
      * Closes the writer.
      */

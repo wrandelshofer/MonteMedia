@@ -105,6 +105,7 @@ public class CodecChain implements Codec {
 
         firstState = first.process(in, tmpBuf);
         if (firstState == CODEC_FAILED) {
+            out.exception = tmpBuf.exception;
             return firstState;
         }
         if (CODEC_OUTPUT_NOT_FILLED == (firstState & CODEC_OUTPUT_NOT_FILLED)) {

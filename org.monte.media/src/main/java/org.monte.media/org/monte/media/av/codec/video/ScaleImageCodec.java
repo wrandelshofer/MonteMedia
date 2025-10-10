@@ -8,7 +8,8 @@ import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
 
-import java.awt.*;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 
@@ -27,7 +28,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
  *
  * @author Werner Randelshofer
  */
-public class ScaleImageCodec extends AbstractVideoCodec {
+public class ScaleImageCodec extends org.monte.media.av.AbstractCodec {
 
     private Object interpolationRenderingHint = RenderingHints.VALUE_INTERPOLATION_BICUBIC;
 

@@ -4,40 +4,38 @@
 
 package org.monte.demo.javafx.movieplayer;
 
-import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 import org.monte.demo.javafx.movieplayer.model.AudioTrackInterface;
 import org.monte.demo.javafx.movieplayer.model.MediaPlayerInterface;
 import org.monte.demo.javafx.movieplayer.model.TrackInterface;
-import org.monte.media.util.MathUtil;
 
+import java.io.IOException;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
 
-public class PlayerControlsController extends AnchorPane {
+public class PlayerControlsController extends GridPane {
 
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -47,10 +45,6 @@ public class PlayerControlsController extends AnchorPane {
 
     @FXML // fx:id="backwardButton"
     private Button backwardButton; // Value injected by FXMLLoader
-
-    @FXML // fx:id="controllerPane"
-    private GridPane controllerPane; // Value injected by FXMLLoader
-
 
     @FXML // fx:id="forwardButton"
     private Button forwardButton; // Value injected by FXMLLoader
@@ -62,7 +56,7 @@ public class PlayerControlsController extends AnchorPane {
     private ToggleButton playButton; // Value injected by FXMLLoader
 
     @FXML // fx:id="rootPane"
-    private AnchorPane rootPane; // Value injected by FXMLLoader
+    private GridPane rootPane; // Value injected by FXMLLoader
 
     @FXML // fx:id="timeLabel"
     private Label timeLabel; // Value injected by FXMLLoader
@@ -132,7 +126,6 @@ public class PlayerControlsController extends AnchorPane {
         // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert backwardButton != null : "fx:id=\"backwardButton\" was not injected: check your FXML file 'PlayerControls.fxml'.";
-        assert controllerPane != null : "fx:id=\"controllerPane\" was not injected: check your FXML file 'PlayerControls.fxml'.";
         assert forwardButton != null : "fx:id=\"forwardButton\" was not injected: check your FXML file 'PlayerControls.fxml'.";
         assert muteButton != null : "fx:id=\"muteButton\" was not injected: check your FXML file 'PlayerControls.fxml'.";
         assert playButton != null : "fx:id=\"playButton\" was not injected: check your FXML file 'PlayerControls.fxml'.";
@@ -140,14 +133,17 @@ public class PlayerControlsController extends AnchorPane {
         assert timeLabel != null : "fx:id=\"timeLabel\" was not injected: check your FXML file 'PlayerControls.fxml'.";
         assert timeSlider != null : "fx:id=\"timeSlider\" was not injected: check your FXML file 'PlayerControls.fxml'.";
 
-        ControllerPaneMouseDraggedHandler dh = new ControllerPaneMouseDraggedHandler(this);
-
-        ControllerPaneVisibleHandler vh = new ControllerPaneVisibleHandler(this);
         player.addListener(this::playerChanged);
 
         muteButton.visibleProperty().bind(hasAudio);
 
         timeSlider.valueProperty().addListener(this::timeSliderChanged);
+
+        timeLabel.setOnMouseClicked(this::timeLabelClicked);
+    }
+
+    private void timeLabelClicked(MouseEvent mouseEvent) {
+        showFrameNumber.set(!showFrameNumber.get());
     }
 
     private void timeSliderChanged(Observable observable, Number oldValue, Number newValue) {
@@ -160,6 +156,7 @@ public class PlayerControlsController extends AnchorPane {
     private final ChangeListener<Duration> currentTimeHandler = this::currentTimeChanged;
     private ChangeListener<MediaPlayer.Status> statusChangeListener = (o, old, newv) -> playButton.setSelected(newv == MediaPlayer.Status.PLAYING);
     private final ReadOnlyBooleanWrapper hasAudio = new ReadOnlyBooleanWrapper();
+    private final BooleanProperty showFrameNumber = new SimpleBooleanProperty(false);
     private final ListChangeListener<TrackInterface> trackHandler = new ListChangeListener<TrackInterface>() {
         @Override
         public void onChanged(Change<? extends TrackInterface> c) {
@@ -194,9 +191,11 @@ public class PlayerControlsController extends AnchorPane {
         if (newValue != null) {
             timeSlider.maxProperty().bind(newValue.totalDurationProperty().map(duration -> duration == null ? 0.0 : duration.toMillis()));
             timeLabel.textProperty().bind(Bindings.createStringBinding(
-                    () -> this.toCurrentTimeString(newValue.getCurrentTime(), newValue.getTotalDuration()),
+                    () -> this.toCurrentTimeString(newValue.getCurrentTime(), newValue.getTotalDuration(), newValue.getCurrentFrameNumber()),
                     newValue.totalDurationProperty(),
-                    newValue.currentTimeProperty()
+                    newValue.currentTimeProperty(),
+                    newValue.currentFrameNumberProperty(),
+                    showFrameNumber
             ));
             newValue.currentTimeProperty().addListener(currentTimeHandler);
             newValue.statusProperty().addListener(statusChangeListener);
@@ -207,6 +206,7 @@ public class PlayerControlsController extends AnchorPane {
     }
 
     private final static NumberFormat fmt2Digits = NumberFormat.getNumberInstance(Locale.ENGLISH);
+    private final static NumberFormat fmt6Digits = NumberFormat.getNumberInstance(Locale.ENGLISH);
 
     private void currentTimeChanged(Observable observable, Duration oldValue, Duration newValue) {
         if (!timeSlider.isPressed() && newValue != null) {
@@ -218,15 +218,23 @@ public class PlayerControlsController extends AnchorPane {
         fmt2Digits.setMinimumIntegerDigits(2);
         fmt2Digits.setMaximumFractionDigits(0);
         fmt2Digits.setGroupingUsed(false);
+        fmt6Digits.setMinimumIntegerDigits(6);
+        fmt6Digits.setMaximumFractionDigits(0);
+        fmt6Digits.setGroupingUsed(false);
     }
 
-    private String toCurrentTimeString(Duration duration, Duration totalDuration) {
+    private String toCurrentTimeString(Duration duration, Duration totalDuration, long frameNumber) {
         if (duration == null || duration.isUnknown()) {
             return resources.getString("duration.unknown");
         }
         if (duration.isIndefinite()) {
             return resources.getString("duration.indefinite");
         }
+        if (showFrameNumber.get()) {
+            return frameNumber < 0 ? "#------" : "#" + fmt6Digits.format(frameNumber + 1);
+        }
+
+
         if (totalDuration == null || totalDuration.isUnknown() || totalDuration.isIndefinite()) {
             totalDuration = Duration.hours(99);
         }
@@ -254,161 +262,20 @@ public class PlayerControlsController extends AnchorPane {
     }
 
 
-    private class ControllerPaneVisibleHandler {
-        private Timer timer;
-
-        private class ShowHideTask extends TimerTask {
-            private final boolean show;
-            private volatile boolean cancelled;
-
-            private ShowHideTask(boolean show) {
-                this.show = show;
-            }
-
-            @Override
-            public boolean cancel() {
-                cancelled = true;
-                return super.cancel();
-            }
-
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                    if (!cancelled) {
-                        if (show) {
-                            show();
-                        } else {
-                            hide();
-                        }
-                    }
-                });
-            }
-
-            private void hide() {
-                rootPane.getChildren().remove(controllerPane);
-            }
-        }
-
-        private ShowHideTask currentTask;
-
-        public ControllerPaneVisibleHandler(PlayerControlsController controlsController) {
-            rootPane.setOnMouseEntered(this::rootPaneEntered);
-            rootPane.setOnMouseExited(this::rootPaneExited);
-            controllerPane.setOnMouseEntered(this::controllerPaneEntered);
-            rootPane.setOnMouseMoved(this::rootPaneMouseMoved);
-            controllerPane.setOnMouseMoved(this::controllerPaneMouseMoved);
-
-            rootPane.sceneProperty().addListener((o, oldv, newv) -> {
-                if (timer != null) {
-                    timer.cancel();
-                    timer = null;
-                }
-            });
-
-        }
-
-        private void controllerPaneMouseMoved(MouseEvent mouseEvent) {
-            mouseEvent.consume();
-        }
-
-        private void rootPaneMouseMoved(MouseEvent mouseEvent) {
-            mouseEvent.consume();
-            show();
-            schedule(false, 2000);
-        }
-
-        private void show() {
-            var b = controllerPane.getLayoutBounds();
-            double rw = rootPane.getWidth();
-            double rh = rootPane.getHeight();
-            if (b.getMinX() < 0 || b.getMinY() < 0 || b.getMaxX() > rh || b.getMaxY() > rw) {
-                controllerPane.relocate((rw - b.getWidth()) * 0.5, (rh - b.getHeight()) * 0.75);
-            }
-            ObservableList<Node> children = rootPane.getChildren();
-            if (!children.contains(controllerPane)) {
-                children.add(controllerPane);
-            }
-        }
-
-        private void cancelScheduled() {
-            if (currentTask != null) {
-                currentTask.cancel();
-                currentTask = null;
-            }
-        }
-
-        private void schedule(boolean show, int millis) {
-            cancelScheduled();
-            getOrCreateTimer().schedule(currentTask = new ShowHideTask(show), millis);
-        }
-
-        private Timer getOrCreateTimer() {
-            return timer == null ? timer = new Timer(PlayerControlsController.this + "-timer") : timer;
-        }
-
-        private void controllerPaneEntered(MouseEvent mouseEvent) {
-            mouseEvent.consume();
-            cancelScheduled();
-        }
-
-        private void rootPaneExited(MouseEvent mouseEvent) {
-            mouseEvent.consume();
-            schedule(false, 100);
-        }
-
-        private void rootPaneEntered(MouseEvent mouseEvent) {
-            mouseEvent.consume();
-            cancelScheduled();
-            show();
-        }
-    }
-
-    private class ControllerPaneMouseDraggedHandler {
-
-        private double prevMouseX, prevMouseY;
-
-        public ControllerPaneMouseDraggedHandler(PlayerControlsController controlsController) {
-            controllerPane.setOnMouseDragged(this::mouseDragged);
-            controllerPane.setOnMousePressed(this::mousePressed);
-
-        }
-
-        private void mousePressed(MouseEvent event) {
-            event.consume();
-            prevMouseX = event.getSceneX();
-            prevMouseY = event.getSceneY();
-        }
-
-        private void mouseDragged(MouseEvent event) {
-            event.consume();
-            double sceneX = event.getSceneX();
-            double dx = sceneX - prevMouseX;
-            double sceneY = event.getSceneY();
-            double dy = sceneY - prevMouseY;
-            double width = controllerPane.getWidth();
-            double height = controllerPane.getHeight();
-            double parentWidth = rootPane.getWidth();
-            double parentHeight = rootPane.getHeight();
-
-            double minimumHeightVisible = height;
-            double minimumWidthVisible = width;
-            double newX = MathUtil.clamp(controllerPane.getLayoutX() + dx, 0 - width + minimumWidthVisible, parentWidth - minimumHeightVisible);
-            double newY = MathUtil.clamp(controllerPane.getLayoutY() + dy, 0 - height + minimumHeightVisible, parentHeight - minimumHeightVisible);
-
-            AnchorPane.setLeftAnchor(controllerPane, null);
-            AnchorPane.setRightAnchor(controllerPane, null);
-            AnchorPane.setTopAnchor(controllerPane, null);
-            AnchorPane.setBottomAnchor(controllerPane, null);
-            AnchorPane.setLeftAnchor(controllerPane, newX);
-            //AnchorPane.setRightAnchor(controllerPane, rootPane.getWidth() - width - newX);
-            AnchorPane.setBottomAnchor(controllerPane, rootPane.getHeight() - height - newY);
-            prevMouseX = sceneX;
-            prevMouseY = sceneY;
-        }
-    }
-
     public Node getRoot() {
         return rootPane;
     }
 
+    public static PlayerControlsController createPlayerController() {
+        try {
+            FXMLLoader loader = new FXMLLoader(PlayerControlsController.class.getResource("PlayerControls.fxml"));
+            ResourceBundle labels = ResourceBundle.getBundle("org.monte.demo.javafx.movieplayer.Labels");
+            loader.setRoot(new GridPane());
+            loader.setResources(labels);
+            loader.load();
+            return loader.getController();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

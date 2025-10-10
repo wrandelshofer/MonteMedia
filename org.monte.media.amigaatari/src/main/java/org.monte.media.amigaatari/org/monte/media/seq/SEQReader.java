@@ -81,7 +81,7 @@ public class SEQReader {
         AmigaBitmapImage fetched = fetchFrame(index);
 
         System.arraycopy(fetched.getBitmap(), 0, image.getBitmap(), 0, fetched.getBitmap().length);
-        image.setPlanarColorModel(track.getFrame(index).getColorModel());
+        image.setColorModel(track.getFrame(index).getColorModel());
 
     }
 
@@ -160,7 +160,7 @@ public class SEQReader {
 
         SEQFrame f0 = track.getFrame(0);
         AmigaBitmapImage bmp = new AmigaBitmapImage(width, height, track.getNbPlanes(), f0.getColorModel());
-        bmp.setPreferredChunkyColorModel(f0.getColorModel());
+        //bmp.setPreferredChunkyColorModel(f0.getColorModel());
         byte[] previousBmp = new byte[bmp.getBitmap().length];
         int[] previousColors = new int[16];
         int[] colors = new int[16];

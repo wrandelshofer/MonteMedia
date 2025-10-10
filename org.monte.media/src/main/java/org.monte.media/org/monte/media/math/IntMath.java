@@ -314,11 +314,143 @@ public class IntMath {
 
     }
 
-    public static void main(String[] args) {
-        for (int i = 0; i < 8; i++) {
-            int a = 1 << i;
-            int b = reverseBits(a, 3);
-            System.out.println(a + " - " + b);
-        }
+    /**
+     * Maps the high-bits of a 32-bit number {@code word} into the
+     * range {@code [0,p)}.
+     * <p>
+     * This implementation uses the FastRange algorithm by Daniel Lemire.
+     * <p>
+     * <dl>
+     * <dt>Daniel Lemire (2016).
+     * A fast alternative to the modulo reduction.
+     * </dt>
+     * <dd><a href="https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/">lemire.me</a></dd>
+     * </dl>
+     *
+     * @param word a 32-bit word
+     * @param p    a range, must be {@literal > 0}.
+     * @return word in range {@code [0,p)}
+     */
+    public static int fastRange(int word, int p) {
+        return (int) (((0xffffffffL & word) * p) >>> 32);
+    }
+
+
+    /**
+     * Maps the low-bits of a 32-bit number {@code word} into the
+     * range {@code [0,p)}.
+     * <p>
+     * This implementation uses the 'Faster Remainder by Direct Computation'
+     * algorithm by Daniel Lemire, Owen Kaser, Nathan Kurz.
+     * <p>
+     * <dl>
+     * <dt>Daniel Lemire, Owen Kaser, Nathan Kurz (2018).
+     * Faster Remainder by Direct Computation.
+     * Applications to Compilers and Software Libraries.
+     * </dt>
+     * <dd><a href="https://arxiv.org/pdf/1902.01961.pdf">arxiv.org</a></dd>
+     * </dl>
+     *
+     * @param word a 32-bit word
+     * @param p    range, must be {@literal > 0}.
+     * @param invp 64-bit inverse of the range, see {@link #compute64BitInverse(int)}
+     * @return word in range {@code [0,p)}
+     */
+    public static int fastMod(int word, int p, long invp) {
+        long lowbits = invp * word;
+        int mod = (int) Math.multiplyHigh(lowbits, p);
+        return mod < 0 ? p + mod : mod;
+    }
+
+    /**
+     * Computes a division by multiplying the value with the inverse
+     * of the divisor.
+     * <p>
+     * <dl>
+     * <dt>Daniel Lemire, Owen Kaser, Nathan Kurz (2018).
+     * Faster Remainder by Direct Computation.
+     * Applications to Compilers and Software Libraries.
+     * </dt>
+     * <dd><a href="https://arxiv.org/pdf/1902.01961.pdf">arxiv.org</a></dd>
+     * </dl>
+     *
+     * @param word a 32-bit word
+     * @param invp 64-bit inverse of the range, see {@link #compute64BitInverse(int)}
+     * @return word in range {@code [0,p)}
+     */
+    public static int fastDiv(int word, long invp) {
+        return (int) Math.multiplyHigh(word, invp);
+    }
+
+    /**
+     * Computes the 64-bit inverse of the given value.
+     * <p>
+     * {@code ceil( (1<<64) / d )} = {@code Long.divideUnsigned(-1L , p) + 1}.
+     * <dl>
+     * <dt>Daniel Lemire, Owen Kaser, Nathan Kurz (2018).
+     * Faster Remainder by Direct Computation.
+     * Applications to Compilers and Software Libraries.
+     * </dt>
+     * <dd><a href="https://arxiv.org/pdf/1902.01961.pdf">arxiv.org</a></dd>
+     * </dl>
+     *
+     * @param p a value
+     * @return the 64-bit inverse
+     */
+    public static long compute64BitInverse(int p) {
+        return Long.divideUnsigned(-1L, p) + 1;
+    }
+
+    /**
+     * Maps the low-bits of a 32-bit number {@code word} into the
+     * range {@code [0,p)}.
+     * <p>
+     * This implementation uses the floorMod function.
+     *
+     * @param word a 32-bit word
+     * @param p    a range, must be {@literal > 0}.
+     * @return word in range {@code [0,p)}
+     */
+    public static int floorModRange(int word, int p) {
+        return Math.floorMod(word, p);
+    }
+
+    /**
+     * Maps the low-bits of a 32-bit number {@code word} into the
+     * range {@code [0,p)}.
+     * <p>
+     * This implementation uses the modulo-operator.
+     *
+     * @param word a 32-bit word
+     * @param p    a range, must be {@literal > 0}.
+     * @return word in range {@code [0,p)}
+     */
+    public static int moduloRange(int word, int p) {
+        return Math.abs(word % p);
+    }
+
+    /**
+     * Maps the low-bits of a 32-bit number {@code word} into the
+     * range {@code [0,p)}.
+     * <p>
+     * This implementation uses the bit-wise logical and-operator.
+     *
+     * @param word     a 32-bit word
+     * @param powerOf2 a range, must be {@literal > 0}, must be a power of 2.
+     * @return word in range {@code [0,p)}
+     */
+    public static int powerOf2Range(int word, int powerOf2) {
+        return word & (powerOf2 - 1);
+    }
+
+    /**
+     * Rounds the specified value up to a power of two, so that it
+     * can be used as a length with {@link #powerOf2Range(int, int)}.
+     *
+     * @param value a value
+     * @return the value rounded up to a power of two, clamped to {@literal [0, 1<<30]}.
+     */
+    public static int roundUpToPowerOf2(int value) {
+        return Math.min(1 << 30, Integer.highestOneBit(value + (value << 1)));
     }
 }

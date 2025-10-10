@@ -8,6 +8,7 @@ package org.monte.demo.javafx.movieplayer.model;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.LongProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -37,10 +38,20 @@ public interface MediaPlayerInterface {
 
     ReadOnlyObjectProperty<Duration> bufferProgressTimeProperty();
 
+    /**
+     * The number of completed playback cycles. On the first pass,
+     * the value should be 0.  On the second pass, the value should be 1 and
+     * so on.  It is incremented at the end of each cycle just prior to seeking
+     * back to {@link #startTimeProperty startTime}, i.e., when {@link #stopTimeProperty stopTime} or the
+     * end of media has been reached.
+     */
     ReadOnlyIntegerProperty currentCountProperty();
 
     ReadOnlyDoubleProperty currentRateProperty();
 
+    /**
+     * The current media time.
+     */
     ReadOnlyObjectProperty<Duration> currentTimeProperty();
 
     IntegerProperty cycleCountProperty();
@@ -80,6 +91,14 @@ public interface MediaPlayerInterface {
     ObjectProperty<Duration> stopTimeProperty();
 
     ReadOnlyObjectProperty<Duration> totalDurationProperty();
+
+    /**
+     * The current frame number.
+     * <p>
+     * A negative value indicates that the media does not have numbered frames.
+     * For example for life media.
+     */
+    LongProperty currentFrameNumberProperty();
 
     DoubleProperty volumeProperty();
 
@@ -185,6 +204,10 @@ public interface MediaPlayerInterface {
 
     default int getCurrentCount() {
         return currentCountProperty().get();
+    }
+
+    default long getCurrentFrameNumber() {
+        return currentFrameNumberProperty().get();
     }
 
     default double getCurrentRate() {

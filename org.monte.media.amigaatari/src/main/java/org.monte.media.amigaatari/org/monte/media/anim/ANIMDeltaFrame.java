@@ -37,7 +37,7 @@ public class ANIMDeltaFrame
             OP_Vertical8 = 8,
             OP_J = 74;
     /**
-     * Wether we already printed a warning about a broken encoding.
+     * Whether we already printed a warning about a broken encoding.
      */
     private boolean isWarningPrinted = false;
 

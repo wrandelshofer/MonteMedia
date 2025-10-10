@@ -57,12 +57,18 @@ module org.monte.media.amigaatari {
     exports org.monte.media.seq;
 
     provides org.monte.media.av.CodecSpi with
-            org.monte.media.amigabitmap.codec.video.AmigaBitmapCodecSpi;
+            org.monte.media.amigabitmap.codec.video.AmigaBitmapCodecSpi,
+            org.monte.media.cdxl.CDXLImageDecoderSpi;
 
     provides org.monte.media.av.MovieWriterSpi with
             org.monte.media.anim.ANIMWriterSpi;
 
+    provides org.monte.media.av.MovieReaderSpi with
+            org.monte.media.cdxl.CDXLMovieReaderSpi;
+
     provides javax.imageio.spi.ImageReaderSpi with
             org.monte.media.pbm.PBMImageReaderSpi,
             org.monte.media.ilbm.ILBMImageReaderSpi;
+    provides javax.imageio.spi.ImageWriterSpi with
+            org.monte.media.ilbm.ILBMImageWriterSpi;
 }

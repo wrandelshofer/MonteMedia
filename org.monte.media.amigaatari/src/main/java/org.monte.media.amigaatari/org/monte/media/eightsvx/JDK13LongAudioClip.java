@@ -336,7 +336,5 @@ public class JDK13LongAudioClip implements LoopableAudioClip, Runnable {
         // to free resources as soon as possible
         dataLine.stop();
         dataLine.close();
-        if (thread == null) System.out.println(this + " PRELIMINARY finish");
-        else System.out.println(this + " liberate finish");
     }
 }

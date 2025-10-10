@@ -16,9 +16,9 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Reads an image in the Amiga IFF Interleaved Bitmap image format (ILBM).
@@ -27,10 +27,14 @@ import java.util.LinkedList;
  */
 public class ILBMImageReader extends ImageReader implements AnimatedImageReader {
 
-    private ArrayList<ColorCyclingMemoryImageSource> images = null;
+    private List<ColorCyclingMemoryImageSource> images = null;
 
     public ILBMImageReader(ILBMImageReaderSpi originatingProvider) {
         super(originatingProvider);
+    }
+
+    public ILBMImageReader() {
+        super(new ILBMImageReaderSpi());
     }
 
     @Override

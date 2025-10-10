@@ -16,6 +16,7 @@ import org.monte.media.math.Rational;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class MonteVideoTrack extends AbstractVideoTrack implements MonteTrackInterface {
     protected Buffer inBuffer = new Buffer();
@@ -26,6 +27,7 @@ public class MonteVideoTrack extends AbstractVideoTrack implements MonteTrackInt
     private Rational renderedStartTIme = Rational.ZERO;
     private Rational renderedEndTime = Rational.ZERO;
     private Format format;
+    private final AtomicReference<Rational> seekTime = new AtomicReference<>();
 
     public MonteVideoTrack(Locale locale, long trackId, String name, Map<String, Object> metadata) {
         super(locale, trackId, name, metadata);
@@ -114,6 +116,16 @@ public class MonteVideoTrack extends AbstractVideoTrack implements MonteTrackInt
 
     @Override
     public void dispose() {
+
+    }
+
+    @Override
+    public AtomicReference<Rational> seekTime() {
+        return seekTime;
+    }
+
+    @Override
+    public void interruptWorker() {
 
     }
 }

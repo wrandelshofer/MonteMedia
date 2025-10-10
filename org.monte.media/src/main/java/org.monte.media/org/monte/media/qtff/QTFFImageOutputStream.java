@@ -11,13 +11,14 @@ import org.monte.media.util.ByteArrays;
 import javax.imageio.stream.ImageOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.GregorianCalendar;
 
 /**
- * This output stream filter supports common data types used inside
- * of a QuickTime Data Atom.
+ * This output stream filter supports common data types used in
+ * a QuickTime Data Atom.
  *
  * @author Werner Randelshofer
  */
@@ -27,7 +28,11 @@ public class QTFFImageOutputStream extends FilterImageOutputStream {
     private final byte[] byteBuffer = new byte[8];
 
     public QTFFImageOutputStream(ImageOutputStream out) throws IOException {
-        super(out);
+        this(out, false);
+    }
+
+    public QTFFImageOutputStream(ImageOutputStream out, boolean forwardFlushAndClose) throws IOException {
+        super(out, out.getStreamPosition(), ByteOrder.BIG_ENDIAN, forwardFlushAndClose);
     }
 
     /**
@@ -214,7 +219,6 @@ public class QTFFImageOutputStream extends FilterImageOutputStream {
             write(0);
         }
     }
-
 
 
     public void writeInt24(int v) throws IOException {

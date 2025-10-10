@@ -14,9 +14,9 @@ import java.io.IOException;
  */
 public class FilterImageInputStream extends ImageInputStreamImpl2 {
 
-    private final ImageInputStream in;
-    private final long offset;
-    private final long length;
+    protected final ImageInputStream in;
+    protected final long offset;
+    protected final long length;
 
     public FilterImageInputStream(ImageInputStream in) throws IOException {
         this(in, in.getStreamPosition(), in.length() - in.getStreamPosition());
@@ -33,7 +33,7 @@ public class FilterImageInputStream extends ImageInputStreamImpl2 {
         in.seek(offset);
     }
 
-    private long available() throws IOException {
+    protected long available() throws IOException {
         checkClosed();
         long pos = in.getStreamPosition();
         if (pos < offset) {

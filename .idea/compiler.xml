@@ -34,9 +34,10 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="org.monte.demo.aviwriter" target="17" />
       <module name="org.monte.demo.jmjavi" target="17" />
       <module name="org.monte.demo.jmjtsccdemo" target="17" />
-      <module name="org.monte.demo.quicktimewriter" target="21" />
+      <module name="org.monte.demo.quicktimewriter" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -11,6 +11,8 @@ import org.monte.media.av.Codec;
 import org.monte.media.av.Format;
 import org.monte.media.math.Rational;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 public interface MonteTrackInterface extends TrackInterface {
     Buffer getInBuffer();
 
@@ -40,4 +42,8 @@ public interface MonteTrackInterface extends TrackInterface {
     public void setRenderedStartTime(Rational seconds);
 
     void dispose();
+
+    AtomicReference<Rational> seekTime();
+
+    void interruptWorker();
 }

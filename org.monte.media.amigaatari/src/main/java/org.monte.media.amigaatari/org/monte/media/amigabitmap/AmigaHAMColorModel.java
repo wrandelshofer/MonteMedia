@@ -4,14 +4,34 @@
  */
 package org.monte.media.amigabitmap;
 
-import java.awt.image.DirectColorModel;
+import java.awt.image.ColorModel;
 
-/**
- * ColorModel for HAM compressed images.
- *
- * @author Werner Randelshofer
- */
-public class AmigaHAMColorModel extends DirectColorModel {
+/// ColorModel for images that use colors in hold-and-modify mode (HAM).
+///
+/// At the beginning of each scanline, the color output register is initialized
+/// with color 0 of the color palette.
+///
+/// On each consecutive pixel,
+/// the color output register can either be set to a color from the color palette,
+/// or it can be held, and one of its components (red, green, or blue) are modified.
+///
+/// Hold-and-modify works with 6, or 8 bitplanes. The two most significand bitplanes
+/// contain an op-code. The remaining bitplanes are used as an index into the color
+/// palette, or as component values.
+///
+/// Color selection in hold-and-modify mode with 6 bitplanes:
+///
+/// | Bitplane 6 | Bitplane 5 | Result                                     |
+/// |------------|------------|--------------------------------------------|
+/// | 0          | 0          | Select palette color, index = Bitplane 4-1 |
+/// | 0          | 1          | Hold and modify, blue = Bitplane 4-1       |
+/// | 1          | 0          | Hold and modify, red = Bitplane 4-1        |
+/// | 1          | 1          | Hold and modify, green = Bitplane 4-1      |
+///
+/// For more details refer to "Amiga Hardware Reference, 3rd Edition. Addison Wesley".
+///
+/// @author Werner Randelshofer
+public class AmigaHAMColorModel extends ColorModel {
     //insert class definition here
     public final static int
             HAM6 = 6,
@@ -21,6 +41,7 @@ public class AmigaHAMColorModel extends DirectColorModel {
     protected int map_size;
     protected boolean opaque;
     protected int[] rgb;
+    protected boolean isOCS;
 
     /**
      * Creates a new HAM Color model using the specified base colors.
@@ -33,11 +54,12 @@ public class AmigaHAMColorModel extends DirectColorModel {
      * @param isOCS    Set this to true if the colors are 4 bit values.
      */
     public AmigaHAMColorModel(int aHAMType, int size, byte r[], byte g[], byte b[], boolean isOCS) {
-        super(24, 0x00ff0000, 0x0000ff00, 0x000000ff);
+        super(aHAMType);
         if (aHAMType != HAM6 && aHAMType != HAM8) {
             throw new IllegalArgumentException("Unknown HAM Type: " + aHAMType);
         }
         HAMType = aHAMType;
+        this.isOCS = isOCS;
         if (isOCS) {
             byte[] r8 = new byte[size];
             byte[] g8 = new byte[size];
@@ -53,6 +75,30 @@ public class AmigaHAMColorModel extends DirectColorModel {
         }
     }
 
+    @Override
+    public int getRed(int pixel) {
+        return (rgb[pixel] >>> 12) & 0xff;
+    }
+
+    @Override
+    public int getGreen(int pixel) {
+        return (rgb[pixel] >>> 8) & 0xff;
+    }
+
+    @Override
+    public int getBlue(int pixel) {
+        return rgb[pixel] & 0xff;
+    }
+
+    @Override
+    public int getAlpha(int pixel) {
+        return rgb[pixel] >>> 24;
+    }
+
+    public boolean isOCS() {
+        return isOCS;
+    }
+
     /**
      * Creates a new HAM Color model using the specified base colors.
      *
@@ -62,7 +108,7 @@ public class AmigaHAMColorModel extends DirectColorModel {
      * @param isOCS    Set this to true if the colors are 12 bit precision only.
      */
     public AmigaHAMColorModel(int aHAMType, int size, int rgb[], boolean isOCS) {
-        super(24, 0x00ff0000, 0x0000ff00, 0x000000ff);
+        super(aHAMType);
         if (aHAMType != HAM6 && aHAMType != HAM8) {
             throw new IllegalArgumentException("Unknown HAM Type: " + aHAMType);
         }

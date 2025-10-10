@@ -13,8 +13,14 @@ import static org.monte.media.impl.jcodec.codecs.h264.H264Const.PartPred.L0;
 import static org.monte.media.impl.jcodec.codecs.h264.H264Const.PartPred.L1;
 
 /**
- * This class is part of JCodec ( www.jcodec.org ) This software is distributed
- * under FreeBSD License
+ * References:
+ * <p>
+ * This code has been derived from JCodecProject.
+ * <dl>
+ *     <dt>JCodecProject. Copyright 2008-2019 JCodecProject.
+ *     <br><a href="https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE">BSD 2-Clause License.</a></dt>
+ *     <dd><a href="https://github.com/jcodec/jcodec">github.com</a></dd>
+ * </dl>
  *
  * @author The JCodec project
  */
@@ -625,6 +631,21 @@ public class H264Const {
     }
 
     public static final int[][] PIX_MAP_SPLIT_4x4 = buildPixSplitMap4x4();
+    public static final int[] PIX_MAP_SPLIT_4x4_FLATTENED = flatten(buildPixSplitMap4x4());
+
+    private static int[] flatten(int[][] a) {
+        int height = a.length;
+        int width = a[0].length;
+        int[] b = new int[width * height];
+        int k = 0;
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                b[k++] = a[i][j];
+            }
+        }
+        return b;
+    }
+
     public static final int[][] PIX_MAP_SPLIT_2x2 = buildPixSplitMap2x2();
 
     public static final int PROFILE_CAVLC_INTRA = 44;

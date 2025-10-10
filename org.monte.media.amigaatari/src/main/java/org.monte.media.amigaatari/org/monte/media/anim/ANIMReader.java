@@ -86,7 +86,7 @@ public class ANIMReader {
         AmigaBitmapImage fetched = fetchFrame(index);
 
         System.arraycopy(fetched.getBitmap(), 0, image.getBitmap(), 0, fetched.getBitmap().length);
-        image.setPlanarColorModel(resources.getFrame(index).getColorModel());
+        image.setColorModel(resources.getFrame(index).getColorModel());
     }
 
     /**

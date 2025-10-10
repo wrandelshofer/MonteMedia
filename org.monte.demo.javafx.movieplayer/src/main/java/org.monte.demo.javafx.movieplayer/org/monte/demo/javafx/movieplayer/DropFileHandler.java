@@ -5,7 +5,6 @@
 
 package org.monte.demo.javafx.movieplayer;
 
-import javafx.application.Platform;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -13,6 +12,7 @@ import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 
 import java.io.File;
 import java.util.List;
@@ -53,7 +53,7 @@ public class DropFileHandler {
             List<File> files = db.getFiles();
             if (files != null && !files.isEmpty()) {
                 fileDroppedConsumer.accept(files.get(0));
-            success = true;
+                success = true;
             }
         }
         event.setDropCompleted(success);
@@ -62,7 +62,8 @@ public class DropFileHandler {
 
     private void dragEntered(DragEvent event) {
         if (event.getDragboard().hasFiles()) {
-            pane.setBorder(new Border(new BorderStroke(Platform.getPreferences().getAccentColor(), BorderStrokeStyle.SOLID, null, null)));
+            //pane.setBorder(new Border(new BorderStroke(Platform.getPreferences().getAccentColor(), BorderStrokeStyle.SOLID, null, null)));
+            pane.setBorder(new Border(new BorderStroke(Color.ALICEBLUE, BorderStrokeStyle.SOLID, null, null)));
         }
         event.consume();
     }

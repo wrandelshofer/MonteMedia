@@ -20,10 +20,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class MonteAudioTrack extends AbstractAudioTrack implements MonteTrackInterface {
     protected long renderedUntilNanoTime;
     private SourceDataLine sourceDataLine;
+    private final AtomicReference<Rational> seekTime = new AtomicReference<>();
     /**
      * The dispatcher.
      */
@@ -132,5 +134,10 @@ public class MonteAudioTrack extends AbstractAudioTrack implements MonteTrackInt
             sourceDataLine.close();
             sourceDataLine = null;
         }
+    }
+
+    @Override
+    public AtomicReference<Rational> seekTime() {
+        return seekTime;
     }
 }

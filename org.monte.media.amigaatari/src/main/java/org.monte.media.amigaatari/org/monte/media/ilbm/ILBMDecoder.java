@@ -5,6 +5,7 @@
 package org.monte.media.ilbm;
 
 import org.monte.media.amigabitmap.AmigaBitmapImage;
+import org.monte.media.amigabitmap.AmigaBitmapImageConverter;
 import org.monte.media.amigabitmap.AmigaHAMColorModel;
 import org.monte.media.exception.AbortException;
 import org.monte.media.exception.ParseException;
@@ -13,7 +14,10 @@ import org.monte.media.iff.IFFParser;
 import org.monte.media.iff.IFFVisitor;
 import org.monte.media.iff.MC68000InputStream;
 
+import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
+import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
 import java.awt.image.DirectColorModel;
 import java.awt.image.IndexColorModel;
 import java.io.ByteArrayInputStream;
@@ -22,6 +26,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Creates Image objects by reading an IFF ILBM stream.
@@ -51,6 +56,8 @@ import java.util.Hashtable;
  */
 public class ILBMDecoder
         implements IFFVisitor {
+    private boolean force8BitsPerChannel = true;
+
     /* ---- constants ---- */
 
     /**
@@ -181,7 +188,7 @@ public class ILBMDecoder
      *
      * @return A vector of java.awt.img.ColorCyclingMemoryImageSource.
      */
-    public ArrayList<ColorCyclingMemoryImageSource> produce()
+    public List<ColorCyclingMemoryImageSource> produce()
             throws IOException {
         InputStream in = null;
         sources = new ArrayList<>();
@@ -269,12 +276,20 @@ public class ILBMDecoder
     public void leaveGroup(IFFChunk chunk) {
     }
 
+    public boolean isForce8BitsPerChannel() {
+        return force8BitsPerChannel;
+    }
+
+    public void setForce8BitsPerChannel(boolean force8BitsPerChannel) {
+        this.force8BitsPerChannel = force8BitsPerChannel;
+    }
+
     @Override
     public void visitChunk(IFFChunk group, IFFChunk chunk)
             throws ParseException, AbortException {
         decodeBMHD(group.getPropertyChunk(BMHD_ID));
         decodeCAMG(group.getPropertyChunk(CAMG_ID));
-        boolean is4BitsPerChannel = (camg & MONITOR_ID_MASK) == DEFAULT_MONITOR_ID;
+        boolean is4BitsPerChannel = !force8BitsPerChannel && (camg & MONITOR_ID_MASK) == DEFAULT_MONITOR_ID;
         decodeCMAP(group.getPropertyChunk(CMAP_ID), is4BitsPerChannel);
         decodeBODY(chunk);
 
@@ -337,23 +352,26 @@ public class ILBMDecoder
             props.put("comment", comment.toString());
         }
 
-        bodyBitmap.setEnforceDirectColors(false);
 
         if (sources != null) {
             ColorCyclingMemoryImageSource mis;
-            if (bodyBitmap.convertToChunky() == AmigaBitmapImage.BYTE_PIXEL) {
+
+            AmigaBitmapImageConverter factory = AmigaBitmapImageConverter.newInstance();
+            BufferedImage bufferedImage = factory.toBufferedImage(bodyBitmap, null);
+            if (bufferedImage.getType() == BufferedImage.TYPE_BYTE_INDEXED) {
                 mis = new ColorCyclingMemoryImageSource(
                         bmhdWidth, bmhdHeight,
                         cmapColorModel,
-                        bodyBitmap.getBytePixels(), 0, bmhdWidth,
+                        ((DataBufferByte) bufferedImage.getRaster().getDataBuffer()).getData(), 0, bmhdWidth,
                         props);
             } else {
                 mis = new ColorCyclingMemoryImageSource(
                         bmhdWidth, bmhdHeight,
-                        bodyBitmap.getChunkyColorModel(),
-                        bodyBitmap.getIntPixels(), 0, bmhdWidth,
+                        bufferedImage.getColorModel(),
+                        ((DataBufferInt) bufferedImage.getRaster().getDataBuffer()).getData(), 0, bmhdWidth,
                         props);
             }
+
 
             // Process CCRT, CRNG and DRNG chunks in the sequence of their
             // location in the file.

@@ -64,7 +64,7 @@ public interface MovieReader extends AutoCloseable {
      *     intersects with the time.</dd>
      * </dl>
      *
-     * @param track the track number
+     * @param track   the track number
      * @param seconds the time in seconds
      * @return the sample number
      * @throws IOException on IO failure
@@ -78,7 +78,7 @@ public interface MovieReader extends AutoCloseable {
      * In this case, all except the last sample at this time are used
      * for prefetching.
      *
-     * @param track the track number
+     * @param track  the track number
      * @param sample the sample number
      * @return the sample time
      * @throws IOException on IO failure
@@ -88,7 +88,7 @@ public interface MovieReader extends AutoCloseable {
     /**
      * Returns the duration of the specified sample.
      *
-     * @param track the track number
+     * @param track  the track number
      * @param sample the sample number
      * @return the duration of the specified sample
      * @throws IOException on IO failure
@@ -132,6 +132,7 @@ public interface MovieReader extends AutoCloseable {
      * @throws IOException on IO failure
      */
     BufferedImage read(int track, BufferedImage img) throws IOException;
+
     /**
      * Returns the index of the next track in playback sequence.
      *
@@ -148,6 +149,15 @@ public interface MovieReader extends AutoCloseable {
      * @param newValue Time in seconds.
      */
     void setMovieReadTime(Rational newValue) throws IOException;
+
+    /**
+     * Sets the read time of the track to the closest sync sample before or
+     * at the specified time.
+     *
+     * @param track    The track number
+     * @param newValue Time in seconds.
+     */
+    void setTrackReadTime(int track, Rational newValue) throws IOException;
 
     /**
      * Returns the current time of the track.

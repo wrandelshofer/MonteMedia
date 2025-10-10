@@ -102,6 +102,11 @@ public class JCodecMP4Writer implements MovieWriter {
     }
 
     @Override
+    public void setFileFormat(Format newValue) throws IOException {
+        // ignore
+    }
+
+    @Override
     public int addTrack(Format format) throws IOException {
         switch (format.get(MediaTypeKey, FormatKeys.MediaType.VIDEO)) {
             case VIDEO:
