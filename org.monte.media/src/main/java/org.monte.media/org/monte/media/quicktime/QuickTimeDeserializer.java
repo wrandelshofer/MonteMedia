@@ -879,8 +879,6 @@ public class QuickTimeDeserializer {
                     continue;
                 }
                 String atomType = in.readType();
-                System.out.println("stsd  atom:" + atomType);
-                // FIXME Parse Atom
                 byte[] atomData = new byte[(int) (atomSize - 8)];
                 in.readFully(atomData);
 
