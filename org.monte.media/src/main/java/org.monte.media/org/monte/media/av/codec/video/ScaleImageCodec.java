@@ -1,12 +1,15 @@
 /*
  * @(#)ScaleImageCodec.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.av.codec.video;
 
 import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
+import org.monte.media.image.algo.NearestNeighbourResampleAlgoFloat;
+import org.monte.media.image.op.GaussianKernelFactory;
+import org.monte.media.image.op.ScaleOp;
 
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -25,6 +28,21 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
 /**
  * Scales a buffered image.
+ * <p>
+ * Usage:
+ * <pre>
+ *     var codec=new ScaleImageCodec();
+ *     codec.setOutputFormat(new Format(
+ *          VideoFormatKeys.WidthKey, 320,
+ *          VideoFormatKeys.HeightKey, 240
+ *     ));
+ *     var in=new Buffer();
+ *     var out=new Buffer();
+ *     in.data=ew BufferedImage(640,480,BufferedImage.TYPE_INT_RGB);
+ *     var result=codec.process(in,out);
+ *     if (result != Codec.CODEC_OK) throw new RuntimeException("cropping failed",out.exception);
+ *     return (BufferedImage) out.data;
+ * </pre>
  *
  * @author Werner Randelshofer
  */
@@ -85,17 +103,30 @@ public class ScaleImageCodec extends org.monte.media.av.AbstractCodec {
             }
 
         }
-        Graphics2D g = imgOut.createGraphics();
-        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, interpolationRenderingHint);
-        g.drawImage(imgIn, 0, 0, imgOut.getWidth() - 1, imgOut.getHeight() - 1, 0, 0, imgIn.getWidth() - 1, imgIn.getHeight() - 1, null);
-        g.dispose();
-
+        if (imgOut.getWidth() < imgIn.getWidth() && imgOut.getHeight() < imgIn.getHeight()) {
+            downscaleImage(imgIn, imgOut);
+        } else {
+            upscaleImage(imgIn, imgOut);
+        }
         out.data = imgOut;
 
         return CODEC_OK;
     }
 
-    public void setInterpolationRenderingHint(Object interpolationRenderingHint) {
-        this.interpolationRenderingHint = interpolationRenderingHint;
+    private void upscaleImage(BufferedImage src, BufferedImage dst) {
+        Graphics2D g = dst.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, interpolationRenderingHint);
+        g.drawImage(src, 0, 0, dst.getWidth(), dst.getHeight(), 0, 0, src.getWidth(), src.getHeight(), null);
+        g.dispose();
+    }
+
+    private void downscaleImage(BufferedImage src, BufferedImage dst) {
+        var scaleOp = new ScaleOp(src.getWidth(), src.getHeight(), dst.getWidth(), dst.getHeight(),
+                0.5f, new GaussianKernelFactory(), new NearestNeighbourResampleAlgoFloat());
+        BufferedImage tmp = scaleOp.filter(src, null);
+
+        var g = dst.createGraphics();
+        g.drawImage(tmp, 0, 0, null);
+        g.dispose();
     }
 }

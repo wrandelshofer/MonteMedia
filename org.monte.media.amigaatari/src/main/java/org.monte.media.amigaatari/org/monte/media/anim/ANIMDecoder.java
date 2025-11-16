@@ -1,6 +1,6 @@
 /*
  * @(#)ANIMDecoder.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.anim;
 
@@ -553,10 +553,10 @@ public class ANIMDecoder
             //return new IndexColorModel(track.getNbPlanes(),64,red,green,blue,-1);
 
             case ANIMMovieResources.MODE_HAM6:
-                return new AmigaHAMColorModel(AmigaHAMColorModel.HAM6, 16, red, green, blue, false);
+                return new AmigaHAMColorModel(AmigaHAMColorModel.Type.HAM6, red, green, blue);
 
             case ANIMMovieResources.MODE_HAM8:
-                return new AmigaHAMColorModel(AmigaHAMColorModel.HAM8, 64, red, green, blue, false);
+                return new AmigaHAMColorModel(AmigaHAMColorModel.Type.HAM8, red, green, blue);
 
             case ANIMMovieResources.MODE_INDEXED_COLORS:
                 // Should return the effective number of planes, but

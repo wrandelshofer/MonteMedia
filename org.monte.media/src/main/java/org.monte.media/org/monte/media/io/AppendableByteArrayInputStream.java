@@ -1,6 +1,6 @@
 /*
  * @(#)AppendableByteArrayInputStream.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.io;
 
@@ -131,26 +131,15 @@ public class AppendableByteArrayInputStream extends ByteArrayInputStream {
         }
         AppendableByteArrayInputStream in = new AppendableByteArrayInputStream(b);
 
-        for (int j = 0; j < 3; j++) {
-            System.out.println(in.read());
-        }
-
         b = new byte[4];
         for (int i = 0; i < b.length; i++) {
             b[i] = (byte) count++;
         }
         in.appendBuffer(b, 0, b.length, true);
-        for (int j = 0; j < 3; j++) {
-            System.out.println(in.read());
-        }
         b = new byte[6];
         for (int i = 0; i < b.length; i++) {
             b[i] = (byte) count++;
         }
         in.appendBuffer(b, 0, b.length, true);
-
-        for (int d = in.read(); d >= 0; d = in.read()) {
-            System.out.println(d);
-        }
     }
 }

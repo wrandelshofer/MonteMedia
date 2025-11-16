@@ -3,7 +3,8 @@
   ~ Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -16,6 +17,10 @@
 
   <name>Monte Media Demo CMYK Image Viewer</name>
   <description>A program that demonstrates how to read CMYK JPEG images with the Monte Media library.</description>
+  <properties>
+    <maven.compiler.target>25</maven.compiler.target>
+    <maven.compiler.source>25</maven.compiler.source>
+  </properties>
 
   <build>
     <sourceDirectory>${basedir}/src/main/java/org.monte.demo.cmykimageviewer</sourceDirectory>

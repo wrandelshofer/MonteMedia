@@ -1,3 +1,8 @@
+/*
+ * @(#)Intra8x8PredictionBuilder.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+ */
+
 package org.monte.media.impl.jcodec.codecs.h264.decode;
 
 import static org.monte.media.impl.jcodec.common.Preconditions.checkState;

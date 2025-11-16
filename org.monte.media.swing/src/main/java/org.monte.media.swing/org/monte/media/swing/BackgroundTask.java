@@ -1,10 +1,11 @@
 /*
  * @(#)BackgroundTask.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.swing;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 /**
  * This is an abstract class that you can subclass to

@@ -1,11 +1,11 @@
 /*
  * @(#)AnimToQuickTimeConverter.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.animconverter;
 
 import org.monte.media.amigabitmap.AmigaBitmapImage;
-import org.monte.media.amigabitmap.codec.video.AmigaBitmapCodec;
+import org.monte.media.amigabitmap.codec.video.AmigaBitmapDecoder;
 import org.monte.media.anim.ANIMDemultiplexer;
 import org.monte.media.anim.ANIMFrame;
 import org.monte.media.anim.ANIMMovieResources;
@@ -230,7 +230,7 @@ public class AnimToQuickTimeConverter {
                 case VIDEO: {
                     videoTrack = track;
                     Format inputVideoFormat = track.getFormat();
-                    AmigaBitmapCodec amigaBitmapCodec = new AmigaBitmapCodec();
+                    AmigaBitmapDecoder amigaBitmapCodec = new AmigaBitmapDecoder();
                     PNGEncoder pngCodec = new PNGEncoder();
                     pngCodec.setOutputFormat(
                             new Format(MediaTypeKey, FormatKeys.MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,

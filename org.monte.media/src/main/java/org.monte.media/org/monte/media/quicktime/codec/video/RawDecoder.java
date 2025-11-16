@@ -1,6 +1,6 @@
 /*
- * @(#)RawCodec.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * @(#)RawDecoder.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.quicktime.codec.video;
 

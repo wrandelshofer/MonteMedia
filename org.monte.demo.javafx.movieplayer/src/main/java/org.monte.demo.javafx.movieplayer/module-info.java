@@ -1,5 +1,6 @@
-/* @(#)module-info.java
- * Copyright © 2024 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)module-info.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 
 import org.monte.demo.javafx.movieplayer.monteplayer.WritableImageCodecSpi;

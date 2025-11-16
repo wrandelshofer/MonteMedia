@@ -1,1 +1,6 @@
+#
+# @(#)javax.imageio.spi.ImageWriterSpi
+# Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+#
+
 org.monte.media.ilbm.ILBMImageWriterSpi

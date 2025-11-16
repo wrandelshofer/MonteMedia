@@ -1,6 +1,6 @@
 /*
  * @(#)Rational.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.math;
 
@@ -266,17 +266,18 @@ public class Rational extends Number implements Comparable<Rational> {
             return ZERO;
         } else if (this.num % integer == 0) {
             return valueOf(
-                    this.den,
-                    this.num / integer);
-        } else if (abs(this.den) < Integer.MAX_VALUE
+                    this.num / integer,
+                    this.den);
+        } else if (abs(this.num) < Integer.MAX_VALUE
                 && abs(integer) < Integer.MAX_VALUE) {
             return valueOf(
-                    this.den * integer,
-                    this.num);
+                    this.num,
+                    this.den * integer);
         } else {
             return new Rational(
+                    BigInteger.valueOf(this.num),
                     BigInteger.valueOf(this.den).multiply(BigInteger.valueOf(integer)),
-                    BigInteger.valueOf(this.num), true);
+                    true);
         }
     }
 

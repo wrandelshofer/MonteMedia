@@ -1,6 +1,9 @@
-/* @(#)module-info.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)module-info.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
+
+import org.monte.media.amigabitmap.codec.video.AmigaBitmapDecoderSpi;
 
 /**
  * A library for processing Amiga and Atari still images, video, audio and meta-data.
@@ -57,7 +60,7 @@ module org.monte.media.amigaatari {
     exports org.monte.media.seq;
 
     provides org.monte.media.av.CodecSpi with
-            org.monte.media.amigabitmap.codec.video.AmigaBitmapCodecSpi,
+            AmigaBitmapDecoderSpi,
             org.monte.media.cdxl.CDXLImageDecoderSpi;
 
     provides org.monte.media.av.MovieWriterSpi with

@@ -19,8 +19,8 @@
   <description>A program that demonstrates how to play movies with the Monte Media library.</description>
 
   <properties>
-    <maven.compiler.target>21</maven.compiler.target>
-    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>25</maven.compiler.target>
+    <maven.compiler.source>25</maven.compiler.source>
   </properties>
 
   <build>

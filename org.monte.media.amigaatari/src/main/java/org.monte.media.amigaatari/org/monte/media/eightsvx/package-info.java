@@ -1,6 +1,6 @@
 /*
  * @(#)package-info.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 /**
  * Provides media handlers for the 8SVX file format.

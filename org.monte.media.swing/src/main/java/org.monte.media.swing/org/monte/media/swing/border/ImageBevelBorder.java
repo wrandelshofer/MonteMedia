@@ -1,6 +1,6 @@
 /*
  * @(#)ImageBevelBorder.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.swing.border;
@@ -8,7 +8,13 @@ package org.monte.media.swing.border;
 import org.monte.media.image.Images;
 
 import javax.swing.border.Border;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
 
 /**

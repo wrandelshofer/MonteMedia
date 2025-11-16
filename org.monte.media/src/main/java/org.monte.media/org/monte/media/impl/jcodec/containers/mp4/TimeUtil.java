@@ -1,3 +1,8 @@
+/*
+ * @(#)TimeUtil.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+ */
+
 package org.monte.media.impl.jcodec.containers.mp4;
 
 import java.util.Calendar;

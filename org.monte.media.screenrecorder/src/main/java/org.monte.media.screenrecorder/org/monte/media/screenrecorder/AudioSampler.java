@@ -1,6 +1,6 @@
 /*
- * @(#)AudioGrabber.java
- * Copyright © 2024 Werner Randelshofer, Switzerland. MIT License.
+ * @(#)AudioSampler.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.screenrecorder;

@@ -1,6 +1,6 @@
 /*
- * @(#)FXTrack.java
- * Copyright © 2024 Werner Randelshofer, Switzerland. MIT License.
+ * @(#)FXAudioTrack.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.demo.javafx.movieplayer.fxplayer;

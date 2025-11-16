@@ -1,3 +1,8 @@
+/*
+ * @(#)H264EncoderUtils.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+ */
+
 package org.monte.media.impl.jcodec.codecs.h264.encode;
 
 import static java.lang.Math.max;

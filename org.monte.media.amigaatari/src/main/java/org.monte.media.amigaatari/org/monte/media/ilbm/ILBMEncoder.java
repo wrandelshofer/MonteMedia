@@ -1,6 +1,6 @@
 /*
  * @(#)ILBMEncoder.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.ilbm;
 
@@ -33,8 +33,8 @@ public class ILBMEncoder {
         int width = img.getWidth();
         int height = img.getHeight();
         ColorModel cm = img.getColorModel();
-        boolean isHam = cm instanceof AmigaHAMColorModel hamc;
-        boolean isOcs = cm instanceof AmigaHAMColorModel hamc && hamc.isOCS()
+        boolean isHam = cm instanceof AmigaHAMColorModel;
+        boolean isOcs = cm instanceof AmigaHAMColorModel hamc && hamc.getType() == AmigaHAMColorModel.Type.HAM6
                 || isOcs(cm);
         List<AmigaDisplayInfo> candidates = new ArrayList<>();
         for (AmigaDisplayInfo info : AmigaDisplayInfo.getAllInfos().values()) {
@@ -43,9 +43,8 @@ public class ILBMEncoder {
             boolean textSizeFitsPerfectly = minMaxSizeFits && width == info.textOverscanWidth
                     && height == info.textOverscanHeight;
             boolean colorFits = info.isHAM() == isHam && info.isOCS() == isOcs
-                    && (info.colorRegisterDepth == 4 && cm.getPixelSize() <= 4)
-                    || (info.colorRegisterDepth == 8 && cm.getPixelSize() <= 8);
-            if (colorFits && minMaxSizeFits) {
+                    && cm.getPixelSize() <= 8;
+            if (colorFits) {
                 if (textSizeFitsPerfectly) {
                     return info.camg;
                 }
@@ -59,6 +58,15 @@ public class ILBMEncoder {
                     && height <= info.maxOverscanHeight;
             if (textSizeTooSmall && overscanSizeFits) {
                 return info.camg;
+            }
+        }
+        if (isHam) {
+            for (AmigaDisplayInfo info : candidates) {
+                boolean colorFits = info.isHAM() == isHam && info.isOCS() == isOcs
+                        && cm.getPixelSize() <= 8;
+                if (colorFits) {
+                    return info.camg;
+                }
             }
         }
         return null;
@@ -96,7 +104,10 @@ public class ILBMEncoder {
 
     public void write(ImageOutputStream f, AmigaBitmapImage img, Integer camg) throws IOException {
         Integer guessedCamg = guessCAMG(img, camg);
-        try (IFFOutputStream out = new IFFOutputStream(f)) {
+
+        // We must not close the underlying image output stream
+        IFFOutputStream out = new IFFOutputStream(f);
+        try {
             out.pushCompositeChunk("FORM", "ILBM");
             writeBMHD(out, img);
             writeCMAP(out, img);
@@ -105,6 +116,8 @@ public class ILBMEncoder {
             }
             writeBODY(out, img);
             out.popChunk();
+        } finally {
+            out.flush();
         }
     }
 

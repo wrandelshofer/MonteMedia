@@ -50,8 +50,8 @@ public class ILBMImageWriter extends ImageWriter {
         var sampleModel = input.getSampleModel();
         var colorModel = input.getColorModel();
 
-        AmigaBitmapImage bmp = new AmigaBitmapImage(input.getWidth(), input.getHeight(), colorModel.getPixelSize(), colorModel);
-        AmigaBitmapImageConverter.newInstance().toBitmapImage((BufferedImage) input, bmp);
+
+        AmigaBitmapImage bmp = AmigaBitmapImageConverter.newInstance().toBitmapImage((BufferedImage) input, null);
         Integer camg = null;
         if (streamMetadata instanceof ILBMMetadata m) {
             camg = m.getCamg();

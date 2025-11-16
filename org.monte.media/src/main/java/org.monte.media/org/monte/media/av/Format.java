@@ -1,12 +1,13 @@
 /*
  * @(#)Format.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.av;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -102,7 +103,7 @@ public class Format {
                 if (that.properties.containsKey(e.getKey())) {
                     Object a = e.getValue();
                     Object b = that.properties.get(e.getKey());
-                    if (a != b && a == null || !a.equals(b)) {
+                    if (!Objects.equals(a, b)) {
                         return false;
                     }
 
@@ -125,7 +126,7 @@ public class Format {
                     }
                     Object a = e.getValue();
                     Object b = that.properties.get(k);
-                    if (a != b && a == null || !a.equals(b)) {
+                    if (!Objects.equals(a, b)) {
                         return false;
                     }
 
@@ -167,7 +168,7 @@ public class Format {
         Map<FormatKey<?>, Object> m = new HashMap<>(this.properties);
         for (int i = 0; i < p.length; i += 2) {
             FormatKey<?> key = (FormatKey<?>) p[i];
-            if (!key.isAssignable(p[i + 1])) {
+            if (p[i + 1] != null && !key.isAssignable(p[i + 1])) {
                 throw new ClassCastException(key + ": " + p[i + 1] + " must be of type " + key.getValueClass());
             }
             m.putIfAbsent(key, p[i + 1]);
@@ -209,7 +210,7 @@ public class Format {
         Map<FormatKey<?>, Object> m = new HashMap<>(this.properties);
         for (int i = 0; i < p.length; i += 2) {
             FormatKey<?> key = (FormatKey<?>) p[i];
-            if (!key.isAssignable(p[i + 1])) {
+            if (p[i + 1] != null && !key.isAssignable(p[i + 1])) {
                 throw new ClassCastException(key + ": " + p[i + 1] + " must be of type " + key.getValueClass());
             }
             m.put(key, p[i + 1]);
@@ -294,19 +295,17 @@ public class Format {
         if (value == null) {
             stuffed.append("null");
         }
-        value = value.toString();
-        if (value instanceof String) {
-            for (char ch : ((String) value).toCharArray()) {
-                if (ch >= ' ') {
-                    stuffed.append(ch);
-                } else {
-                    String hex = Integer.toHexString(ch);
-                    stuffed.append("\\u");
-                    for (int i = hex.length(); i < 4; i++) {
-                        stuffed.append('0');
-                    }
-                    stuffed.append(hex);
+        String str = Objects.toString(value);
+        for (char ch : str.toCharArray()) {
+            if (ch >= ' ') {
+                stuffed.append(ch);
+            } else {
+                String hex = Integer.toHexString(ch);
+                stuffed.append("\\u");
+                for (int i = hex.length(); i < 4; i++) {
+                    stuffed.append('0');
                 }
+                stuffed.append(hex);
             }
         }
     }

@@ -1,2 +1,7 @@
+#
+# @(#)javax.imageio.spi.ImageReaderSpi
+# Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+#
+
 org.monte.media.pbm.PBMImageReaderSpi
 org.monte.media.ilbm.ILBMImageReaderSpi

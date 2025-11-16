@@ -102,7 +102,7 @@ public class CDXLImageDecoder extends AbstractCodec {
             }
             ColorModel colorModel;
             if (in.format.get(HamKey, Boolean.FALSE)) {
-                colorModel = new AmigaHAMColorModel(in.format.get(DepthKey), colors.length, colors, false);
+                colorModel = new AmigaHAMColorModel(in.format.get(DepthKey) == 6 ? AmigaHAMColorModel.Type.HAM6 : AmigaHAMColorModel.Type.HAM8, colors);
             } else {
                 colorModel = new IndexColorModel(8, colors.length, colors, 0, false, -1, DataBuffer.TYPE_BYTE);
             }
@@ -149,7 +149,7 @@ public class CDXLImageDecoder extends AbstractCodec {
         }
         ColorModel colorModel;
         if (format.get(HamKey, Boolean.FALSE)) {
-            colorModel = new AmigaHAMColorModel(depth, 1 << depth, new int[1 << depth], true);
+            colorModel = new AmigaHAMColorModel(depth == 6 ? AmigaHAMColorModel.Type.HAM6 : AmigaHAMColorModel.Type.HAM8, new int[1 << depth <= 6 ? 6 : 8]);
         } else {
             colorModel = new IndexColorModel(8, 1 << depth, new int[1 << depth], 0, false, -1, DataBuffer.TYPE_BYTE);
         }

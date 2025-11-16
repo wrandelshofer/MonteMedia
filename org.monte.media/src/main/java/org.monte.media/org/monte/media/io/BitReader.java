@@ -1,3 +1,8 @@
+/*
+ * @(#)BitReader.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+ */
+
 package org.monte.media.jcodec.common.io;
 
 import java.nio.ByteBuffer;

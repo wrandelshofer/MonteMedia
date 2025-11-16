@@ -1,3 +1,8 @@
+/*
+ * @(#)OutLogSink.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+ */
+
 package org.monte.media.impl.jcodec.common.logging;
 
 import org.monte.media.impl.jcodec.common.tools.MainUtils;

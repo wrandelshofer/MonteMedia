@@ -1,3 +1,8 @@
+/*
+ * @(#)MBWriterP16x16.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+ */
+
 package org.monte.media.impl.jcodec.codecs.h264.encode;
 
 import org.monte.media.impl.jcodec.codecs.h264.H264Const;

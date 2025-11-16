@@ -1,6 +1,6 @@
 /*
  * @(#)package-info.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 /**
  * Provides classes for reading PBM images with color cycling.

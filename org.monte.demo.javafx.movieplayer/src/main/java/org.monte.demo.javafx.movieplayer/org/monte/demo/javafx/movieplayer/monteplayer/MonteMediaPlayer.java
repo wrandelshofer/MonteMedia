@@ -1,6 +1,6 @@
 /*
  * @(#)MonteMediaPlayer.java
- * Copyright © 2024 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.demo.javafx.movieplayer.monteplayer;
@@ -56,25 +56,14 @@ public class MonteMediaPlayer extends AbstractMediaPlayer {
 
     @Override
     public Duration getFrameAfter(Duration timestamp) {
-        Rational t = engine.getFrameAfter(Rational.valueOf((long) timestamp.toMillis(), 1000));
-        Duration seconds = Duration.seconds(t.doubleValue());
-        if (Math.abs(timestamp.toMillis() - seconds.toMillis()) < 0.01) {
-            t = engine.getFrameAfter(t);
-            seconds = Duration.millis(t.multiply(1000).doubleValue());
-        }
-        return seconds;
+        Rational t = engine.getFrameAfter(Rational.valueOf((long) timestamp.toMillis()).divide(1000));
+        return Duration.millis(t.multiply(1000).longValue() + 1);
     }
 
     @Override
     public Duration getFrameBefore(Duration timestamp) {
-        Rational t = engine.getFrameBefore(Rational.valueOf((long) timestamp.toMillis(), 1000));
-        Duration seconds = Duration.seconds(t.doubleValue());
-        /*
-        if(Math.abs(timestamp.toMillis()-seconds.toMillis())<0.01){
-            t=engine.getFrameBefore(t);
-            seconds = Duration.millis(t.multiply(1000).doubleValue());
-        }*/
-        return seconds;
+        Rational t = engine.getFrameBefore(Rational.valueOf((long) timestamp.toMillis()).divide(1000));
+        return Duration.millis(t.multiply(1000).longValue() - 1);
     }
 
     /**

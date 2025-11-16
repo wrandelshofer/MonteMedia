@@ -1,5 +1,5 @@
 /*
- * @(#)UncompressedH264Encoder.java
+ * @(#)H264RawYuvEncoder.java
  * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 

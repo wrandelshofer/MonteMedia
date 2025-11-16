@@ -1,2 +1,7 @@
+#
+# @(#)org.monte.media.av.MovieReaderSpi
+# Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+#
+
 org.monte.media.avi.AVIReaderSpi
 org.monte.media.quicktime.QuickTimeReaderSpi

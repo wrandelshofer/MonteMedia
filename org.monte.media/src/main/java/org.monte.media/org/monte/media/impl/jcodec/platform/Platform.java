@@ -1,3 +1,8 @@
+/*
+ * @(#)Platform.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+ */
+
 package org.monte.media.impl.jcodec.platform;
 
 import java.io.File;

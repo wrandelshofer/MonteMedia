@@ -1,8 +1,10 @@
 /*
  * @(#)FormatKey.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.av;
+
+import java.util.Objects;
 
 /**
  * A <em>FormatKey</em> provides type-safe access to an attribute of
@@ -123,5 +125,17 @@ public class FormatKey<T> {
 
     public Class<T> getValueClass() {
         return clazz;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        FormatKey<?> formatKey = (FormatKey<?>) o;
+        return nullable == formatKey.nullable && Objects.equals(key, formatKey.key) && Objects.equals(name, formatKey.name) && Objects.equals(clazz, formatKey.clazz);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(key, name, clazz, nullable);
     }
 }

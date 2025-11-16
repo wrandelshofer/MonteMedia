@@ -1,11 +1,11 @@
 /*
  * @(#)PlayerControl.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.player;
 
-import java.awt.*;
+import java.awt.Component;
 
 /**
  * A @code PlayerControl} can be used to control a movie using a user interface.

@@ -1,3 +1,8 @@
+/*
+ * @(#)PlayerControlsController.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+ */
+
 /**
  * Sample Skeleton for 'PlayerControls.fxml' Controller Class
  */

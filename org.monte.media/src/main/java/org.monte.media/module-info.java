@@ -1,5 +1,6 @@
-/* @(#)module-info.java
- * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
+/*
+ * @(#)module-info.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 
 import org.monte.media.avi.codec.video.ZMBVDecoderSpi;
@@ -75,6 +76,9 @@ module org.monte.media {
     exports org.monte.media.avi.codec.audio;
     exports org.monte.media.avi.codec.video;
     exports org.monte.media.color;
+    exports org.monte.media.color.kmeans;
+    exports org.monte.media.color.kmeans.algo;
+    exports org.monte.media.color.dither;
     exports org.monte.media.exception;
     exports org.monte.media.exif;
     exports org.monte.media.image;
@@ -102,6 +106,9 @@ module org.monte.media {
     exports org.monte.media.qtff;
     exports org.monte.media.qtff.atom;
     exports org.monte.media.quicktime.codec.sprite;
+    exports org.monte.media.color.quant;
+    exports org.monte.media.image.op;
+    exports org.monte.media.image.algo;
 
     uses org.monte.media.av.CodecSpi;
     uses org.monte.media.av.MovieWriterSpi;

@@ -1,4 +1,9 @@
 /*
+ * @(#)JPEGImageIO.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+ */
+
+/*
  * @(#)JPEGImageIO.java  1.0.1  2010-10-10
  *
  * Copyright (c) 2008 Werner Randelshofer, Switzerland.

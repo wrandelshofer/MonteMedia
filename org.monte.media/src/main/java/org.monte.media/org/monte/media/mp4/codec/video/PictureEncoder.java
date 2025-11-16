@@ -1,6 +1,6 @@
 /*
- * @(#)JCodecPictureCodec.java
- * Copyright © 2024 Werner Randelshofer, Switzerland. MIT License.
+ * @(#)PictureEncoder.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.mp4.codec.video;

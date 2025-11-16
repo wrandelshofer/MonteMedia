@@ -1,5 +1,5 @@
 /*
- * @(#)ParallelExtractAmigaBitmapFactoryTest.java
+ * @(#)LongMultiplyAmigaBitmapImageConverterTest.java
  * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 

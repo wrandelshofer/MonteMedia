@@ -1,6 +1,6 @@
 /*
- * @(#)TestMovieWriters.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * @(#)Main.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.demo.moviewriter;
 
@@ -16,8 +16,6 @@ import org.monte.media.color.Colors;
 import org.monte.media.jcodec.h264.JCodecPictureCodecSpi;
 import org.monte.media.jcodec.mp4.JCodecMP4WriterSpi;
 import org.monte.media.math.Rational;
-import org.monte.media.mp4.MP4WriterSpi;
-import org.monte.media.mp4.codec.video.H264RawYuvEncoderSpi;
 
 import javax.imageio.ImageIO;
 import java.awt.BasicStroke;
@@ -188,13 +186,14 @@ public class Main {
             float quality = 0.75f;
             Format baseFormat = new Format(QualityKey, quality, KeyFrameIntervalKey, 60);
             List<TestData> list = new ArrayList<>();
-            list.add(new TestData(new File("moviewriterdemo-h264raw.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24), new H264RawYuvEncoderSpi(), new MP4WriterSpi()));
+            //   list.add(new TestData(new File("moviewriterdemo-h264raw.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24), new H264RawYuvEncoderSpi(), new MP4WriterSpi()));
+            list.add(new TestData(new File("moviewriterdemo-h264-motion0.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0)));
+            list.add(new TestData(new File("moviewriterdemo-h264-motion0-jcodec.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0), new JCodecPictureCodecSpi(), new JCodecMP4WriterSpi()));
             if (false) {
+                list.add(new TestData(new File("moviewriterdemo-raw24.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_RAW, DepthKey, 24)));
                 list.add(new TestData(new File("moviewriterdemo-rle8.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 8)));
                 list.add(new TestData(new File("moviewriterdemo-rle16.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 16)));
                 list.add(new TestData(new File("moviewriterdemo-rle24.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 24)));
-                list.add(new TestData(new File("moviewriterdemo-h264-motion0-jcodec.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0), new JCodecPictureCodecSpi(), new JCodecMP4WriterSpi()));
-                list.add(new TestData(new File("moviewriterdemo-h264-motion0.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0)));
                 list.add(new TestData(new File("moviewriterdemo-h264-motion16.mov"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 16)));
                 list.add(new TestData(new File("moviewriterdemo-h264-motion4.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 4)));
                 list.add(new TestData(new File("moviewriterdemo-h264-motion16-jcodec.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 16), new JCodecPictureCodecSpi(), new JCodecMP4WriterSpi()));
@@ -202,7 +201,6 @@ public class Main {
                 list.add(new TestData(new File("moviewriterdemo-raw8.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_RAW, DepthKey, 8)));
                 list.add(new TestData(new File("moviewriterdemo-raw16.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_RAW, DepthKey, 16)));
                 list.add(new TestData(new File("moviewriterdemo-raw24.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_DIB, DepthKey, 24)));
-                list.add(new TestData(new File("moviewriterdemo-raw24.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_RAW, DepthKey, 24)));
                 list.add(new TestData(new File("moviewriterdemo-tscc8.mov"), baseFormat.prepend(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8)));
                 list.add(new TestData(new File("moviewriterdemo-h264-motion0-jcodec.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0), new JCodecPictureCodecSpi(), new JCodecMP4WriterSpi()));
                 list.add(new TestData(new File("moviewriterdemo-h264-motion16.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 16)));
@@ -246,8 +244,8 @@ public class Main {
         Rational frameRate = new Rational(12, 1);
         format = format.prepend(MediaTypeKey, MediaType.VIDEO, //
                 FrameRateKey, frameRate,//
-                WidthKey, 128, //
-                HeightKey, 96);
+                WidthKey, 640, //
+                HeightKey, 480);
 
         // Create a buffered image for this format
         BufferedImage img = createImage(format);
@@ -279,7 +277,7 @@ public class Main {
             // Draw the animation
             Random rng = new Random(0);
             for (int i = 0; i < n; i++) {
-                double t = frameRate.divide(i).doubleValue() + 8 * 3600 + 25 * 60;
+                double t = frameRate.inverse().multiply(i).doubleValue() + 8 * 3600 + 25 * 60;
                 drawAnimationFrame(g, t, i, n, backgroundImage, rng);
 
                 // write image to the writer

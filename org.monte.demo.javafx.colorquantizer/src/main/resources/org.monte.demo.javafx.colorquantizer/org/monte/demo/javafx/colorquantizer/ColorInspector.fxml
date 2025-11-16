@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<GridPane fx:id="root" hgap="8.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+          vgap="8.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="org.monte.demo.javafx.colorquantizer.ColorInspectorController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="NEVER" minWidth="10.0"/>
+    <ColumnConstraints hgrow="NEVER" minWidth="-Infinity"/>
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+    <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
+    <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
+    <RowConstraints minHeight="10.0" vgrow="NEVER"/>
+    <RowConstraints minHeight="10.0" vgrow="NEVER"/>
+    <RowConstraints minHeight="10.0" vgrow="NEVER"/>
+    <RowConstraints minHeight="10.0" valignment="BASELINE" vgrow="NEVER"/>
+    <RowConstraints minHeight="10.0" vgrow="NEVER"/>
+    <RowConstraints minHeight="10.0" vgrow="ALWAYS"/>
+  </rowConstraints>
+  <children>
+    <Label text="Reference Image Colors:"/>
+    <Label text="Color Mode:" GridPane.rowIndex="1"/>
+    <ComboBox fx:id="colorModeComboBox" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+    <Label text="Dithering Method:" GridPane.rowIndex="2"/>
+    <ComboBox fx:id="ditheringMethodComboBox" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+    <Label text="Palette Mode:" GridPane.rowIndex="4"/>
+    <ComboBox fx:id="paletteModeComboBox" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+    <Label fx:id="paletteSizeLabel" text="Palette Size:" GridPane.rowIndex="5"/>
+    <TextField fx:id="paletteSizeField" alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity"
+               minHeight="-Infinity" minWidth="-Infinity" prefColumnCount="4" GridPane.columnIndex="1"
+               GridPane.rowIndex="5"/>
+    <Label fx:id="paletteLabel" text="Palette:" GridPane.rowIndex="6"/>
+    <HBox alignment="BASELINE_LEFT" spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+      <children>
+        <Button fx:id="loadPaletteButton" mnemonicParsing="false" onAction="#onLoadPalette" text="Load Palette ..."/>
+        <Button fx:id="computePaletteButton" mnemonicParsing="false" onAction="#onComputePalette"
+                text="Compute Palette"/>
+      </children>
+    </HBox>
+    <FlowPane fx:id="palettePane" prefHeight="256.0" prefWidth="256.0" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+    <Label fx:id="ditherIntensityLabel" text="Dither Intensity Factor:" GridPane.rowIndex="3"/>
+    <TextField fx:id="ditherIntensityField" alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity"
+               minHeight="-Infinity" minWidth="-Infinity" prefColumnCount="4" GridPane.columnIndex="1"
+               GridPane.rowIndex="3"/>
+    <Label fx:id="inputImageColorsLabel" text="x" GridPane.columnIndex="1"/>
+    <HBox alignment="BASELINE_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="7">
+      <children>
+        <CheckBox fx:id="lockPalette0CheckBox" mnemonicParsing="false" text="Lock palette index 0 to ">
+          <font>
+            <Font size="11.0"/>
+          </font>
+        </CheckBox>
+        <TextField fx:id="palette0ColorField" prefColumnCount="7">
+          <font>
+            <Font size="11.0"/>
+          </font>
+        </TextField>
+      </children>
+    </HBox>
+  </children>
+  <padding>
+    <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+  </padding>
+</GridPane>

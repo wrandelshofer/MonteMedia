@@ -1,6 +1,6 @@
 /*
  * @(#)ReadWriteDemoMain.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.demo.io;
 
@@ -272,7 +272,7 @@ public class ReadWriteDemoMain {
                     green[i] = (byte) rnd.nextInt(256);
                     blue[i] = (byte) rnd.nextInt(256);
                 }
-                rnd.setSeed(0); // set back to 0 for reproducable output
+                rnd.setSeed(0); // set back to 0 for reproducible output
                 IndexColorModel palette = new IndexColorModel(8, 256, red, green, blue);
                 img = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED, palette);
                 break;
@@ -286,7 +286,7 @@ public class ReadWriteDemoMain {
                     green[i] = (byte) rnd.nextInt(16);
                     blue[i] = (byte) rnd.nextInt(16);
                 }
-                rnd.setSeed(0); // set back to 0 for reproducable output
+                rnd.setSeed(0); // set back to 0 for reproducible output
                 IndexColorModel palette = new IndexColorModel(4, 16, red, green, blue);
                 img = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED, palette);
                 break;

@@ -23,13 +23,13 @@
     <Rectangle bounds="616 440 8 8"
                fill="linear-gradient(from 0 0 to 4 0, repeat, #ff0000 25%, #00ff00 25%, #00ff00 50%, #0000ff 50%, #0000ff 75%, #000000 75%)"
                id="gray-fill" stroke="none"/>
-    <Polygon id="polygon1" points="616 440, 616 360, 640 360, 640 440" stroke="none"/>
-    <Polygon fill="#ffff00" id="polygon2" points="592 440, 592 360, 616 360, 616 440" stroke="none"/>
-    <Polygon fill="#00ffff" id="polygon3" points="544 440, 544 360, 568 360, 568 436, 568 440" stroke="none"/>
-    <Polygon fill="#00ff00" id="polygon4" points="496 440, 496 360, 520 360, 520 436, 520 440" stroke="none"/>
-    <Polygon fill="#ff00ff" id="polygon5" points="568 440, 568 360, 592 360, 592 436, 592 440" stroke="none"/>
-    <Polygon fill="#ff0000" id="polygon6" points="472 440, 472 360, 496 360, 496 436, 496 440" stroke="none"/>
-    <Polygon fill="#0000ff" id="polygon7" points="520 440, 520 360, 544 360, 544 436, 544 440" stroke="none"/>
+    <Polygon id="polygon1" points="616 390, 616 370, 640 370, 640 390" stroke="none"/>
+    <Polygon fill="#ffff00" id="polygon2" points="592 390, 592 370, 616 370, 616 390" stroke="none"/>
+    <Polygon fill="#00ffff" id="polygon3" points="544 390, 544 370, 568 370, 568 389, 568 390" stroke="none"/>
+    <Polygon fill="#00ff00" id="polygon4" points="496 390, 496 370, 520 370, 520 389, 520 390" stroke="none"/>
+    <Polygon fill="#ff00ff" id="polygon5" points="568 390, 568 370, 592 370, 592 389, 592 390" stroke="none"/>
+    <Polygon fill="#ff0000" id="polygon6" points="472 390, 472 370, 496 370, 496 389, 496 390" stroke="none"/>
+    <Polygon fill="#0000ff" id="polygon7" points="520 390, 520 370, 544 370, 544 389, 544 390" stroke="none"/>
     <Ellipse blendMode="add" center="520 460"
              fill="linear-gradient(color(srgb 255 0 0 / 100%), color(srgb 255 0 0 / 0%))" id="ellipse1" radius="20 20"
              stroke="none"/>
@@ -144,5 +144,19 @@
     <Rectangle bounds="472 0 168 10" fill="#000000" id="rectangle20" stroke="none"/>
     <TextArea bounds="472 0 112 8" fill="none" font="8 Pixel Operator \38 " id="textarea14" lineSpacing="1"
               stroke="none" text="Video Frame" textFill="#ffffff"/>
+    <Polygon fill="#7f7f7f" id="polygon8" points="616 410, 616 390, 640 390, 640 410" stroke="none"/>
+    <Polygon fill="#7f7f00" id="polygon9" points="592 410, 592 390, 616 390, 616 410" stroke="none"/>
+    <Polygon fill="#007f7f" id="polygon10" points="544 410, 544 390, 568 390, 568 409, 568 410" stroke="none"/>
+    <Polygon fill="#007f00" id="polygon11" points="496 410, 496 390, 520 390, 520 409, 520 410" stroke="none"/>
+    <Polygon fill="#7f007f" id="polygon12" points="568 410, 568 390, 592 390, 592 409, 592 410" stroke="none"/>
+    <Polygon fill="#7f0000" id="polygon13" points="472 410, 472 390, 496 390, 496 409, 496 410" stroke="none"/>
+    <Polygon fill="#00007f" id="polygon14" points="520 410, 520 390, 544 390, 544 409, 544 410" stroke="none"/>
+    <Polygon fill="#3f3f3f" id="polygon15" points="616 430, 616 410, 640 410, 640 430" stroke="none"/>
+    <Polygon fill="#3f3f00" id="polygon16" points="592 430, 592 410, 616 410, 616 430" stroke="none"/>
+    <Polygon fill="#003f3f" id="polygon17" points="544 430, 544 410, 568 410, 568 429, 568 430" stroke="none"/>
+    <Polygon fill="#003f00" id="polygon18" points="496 430, 496 410, 520 410, 520 429, 520 430" stroke="none"/>
+    <Polygon fill="#3f003f" id="polygon19" points="568 430, 568 410, 592 410, 592 429, 592 430" stroke="none"/>
+    <Polygon fill="#3f0000" id="polygon20" points="472 430, 472 410, 496 410, 496 429, 496 430" stroke="none"/>
+    <Polygon fill="#00003f" id="polygon21" points="520 430, 520 410, 544 410, 544 429, 544 430" stroke="none"/>
   </Layer>
 </Drawing>

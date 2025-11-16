@@ -19,7 +19,7 @@ import java.util.List;
 
 public class CDXLInputStream extends AbstractCDXLStream implements Closeable {
     protected final static int HEADER_SIZE = 32;
-    protected int defaultAudioFrequency = 22050;//11025;
+    protected int defaultAudioFrequency = 11025;//8000;//11025;//22050;
     protected Rational defaultFrameDuration = new Rational(1, 24);
     /**
      * The image input stream.

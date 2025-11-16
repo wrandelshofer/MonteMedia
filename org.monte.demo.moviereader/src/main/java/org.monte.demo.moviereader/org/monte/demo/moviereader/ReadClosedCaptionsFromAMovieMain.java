@@ -1,6 +1,6 @@
 /*
- * @(#)Main.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * @(#)ReadClosedCaptionsFromAMovieMain.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.demo.moviereader;
 

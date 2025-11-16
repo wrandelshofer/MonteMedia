@@ -1,6 +1,6 @@
 /*
- * @(#)ZMBVCodec.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * @(#)ZMBVDecoder.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.avi.codec.video;
 

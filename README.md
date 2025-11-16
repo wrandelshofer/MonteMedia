@@ -19,6 +19,7 @@ Container formats:
 | MPO       | MultiPicture Object Format                 | Read        |
 | TIFF      | Tagged Image File Format                   | Read, Write |
 | IFF       | Electronic Arts Interchange File Format    | Read, Write |
+| CDXL      | Commodore CDXL Motion Video File Format    | Read, Write |
 
 Video encodings:
 

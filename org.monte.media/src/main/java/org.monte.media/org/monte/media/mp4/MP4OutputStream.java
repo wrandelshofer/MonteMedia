@@ -1,6 +1,6 @@
 /*
  * @(#)MP4OutputStream.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.mp4;
 
@@ -2113,6 +2113,8 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         d.write(t.videoDepth); // depth
         d.writeShort(-1); // predefined3
 
+        writeColrAtom(t, leaf);
+
         if (t.avcDecoderConfigurationRecord != null) {
             writeMandatoryAvcAtoms(t, leaf);
         }
@@ -2125,7 +2127,62 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
     }
 
     /**
-     * Writes the avcC atom.
+     * Writes the colr atom.
+     *
+     * @param t      the track
+     * @param parent the composite atom
+     * @throws IOException on IO failure
+     */
+    private void writeColrAtom(VideoTrack t, CompositeAtom parent) throws IOException {
+        /* colr atom */
+        /*---------*/
+        /*
+        typedef struct {
+            magic colorParameterType; // An unsigned 32-bit field.
+                                     // The currently defined types are 'nclc' for video, and 'prof' for print.
+            uint16 primariesIndex; // A 16-bit unsigned integer containing an index into a table specifying the
+                                   // CIE 1931 xy chromaticity coordinates of the white point and the red, green,
+                                   // and blue primaries.
+                                   //  Index 1
+                                   //      Recommendation ITU-R BT.709 white x = 0.3127 y = 0.3290 (CIE III. D65) red x = 0.640 y = 0.330 green x = 0.300 y = 0.600 blue x = 0.150 y = 0.060
+                                   //      sRGB uses the same primaries as BT.709
+
+            uint16 transferFunctionIndex; // A 16-bit unsigned integer containing an index into a table specifying the
+                                    // nonlinear transfer function coefficients used to translate between RGB color space
+                                    // values and Y´CbCr values.
+                                    //  Index 1
+                                    //      Recommendation ITU-R BT.709-2, SMPTE 274M-1995, 296M-1997, 293M-1996, 170M-1994 An image that shows two formulas for transfer functions for index 1. The first formula is E’ with subscript W is equal to four point five zero zero for zero is less than or equal to W is less than zero point zero one eight. The second formula is E’ with subscript W is equal to one point zero nine nine W raised to the power zero point four five, minus zero point zero nine nine for zero point zero one eight is less than or equal to W is less than or equal to one.
+                                    //  Index 8
+                                    //      linear
+                                    //  Index 13
+                                    //      sRGB Gamma, iec61966-2-1
+                                    // https://github.com/FFmpeg/FFmpeg/blob/643e2e10f980cf99c4e37da027b209dcdc1ac56f/libavutil/pixdesc.c#L3300
+
+            uint16 matrixIndex; // A 16-bit unsigned integer containing an index into a table specifying the
+                                // transformation matrix coefficients used to translate between RGB color space values
+                                 // and Y´CbCr values.
+                                 //  Index 1
+                                 //      Recommendation ITU-R BT.709-2 (1125/60/2:1 only), SMPTE 274M-1995, 296M-1997 An image that shows the formula for matrix index 1. The formula is E’ with subscript Y is equal to zero point seven one five two E’ with subscript G, plus zero point zero seven two two E’ with subscript B, plus zero point two one two six E’ with subscript R.
+                                 // https://developer.apple.com/documentation/quicktime-file-format/color_parameter_atom
+
+        } videoColrSampleDescriptionExtensionAtom;
+        */
+        DataAtom leaf = new DataAtom("colr", out);
+        parent.add(leaf);
+        QTFFImageOutputStream d = leaf.getOutputStream();
+        d.writeType("nclc");
+        d.writeUShort(1);//BT.709, sRGB
+        int transferFunctionIndex = (t.avcDecoderConfigurationRecord != null)
+                ? 1 // BT.709
+                : 13 // sRGB
+                ;
+        d.writeUShort(transferFunctionIndex);
+        d.writeUShort(1);//BT.709
+        leaf.finish();
+    }
+
+    /**
+     * Writes the avcC atom. Also requires that we write the colr atom.
      *
      * @param t      the track
      * @param parent the composite atom
@@ -2187,43 +2244,6 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
             d.writeByte((byte) 0x68);
             d.write(pps);
         }
-
-        /* colr atom */
-        /*---------*/
-        /*
-        typedef struct {
-            magic colorParameterType; // An unsigned 32-bit field.
-                                     // The currently defined types are 'nclc' for video, and 'prof' for print.
-            uint16 primariesIndex; // A 16-bit unsigned integer containing an index into a table specifying the
-                                   // CIE 1931 xy chromaticity coordinates of the white point and the red, green,
-                                   // and blue primaries.
-                                   //  Index 1
-                                   //      Recommendation ITU-R BT.709 white x = 0.3127 y = 0.3290 (CIE III. D65) red x = 0.640 y = 0.330 green x = 0.300 y = 0.600 blue x = 0.150 y = 0.060
-
-            uint16 transferFunctionIndex; // A 16-bit unsigned integer containing an index into a table specifying the
-                                    // nonlinear transfer function coefficients used to translate between RGB color space
-                                    // values and Y´CbCr values.
-                                    //  Index 1
-                                    //      Recommendation ITU-R BT.709-2, SMPTE 274M-1995, 296M-1997, 293M-1996, 170M-1994 An image that shows two formulas for transfer functions for index 1. The first formula is E’ with subscript W is equal to four point five zero zero for zero is less than or equal to W is less than zero point zero one eight. The second formula is E’ with subscript W is equal to one point zero nine nine W raised to the power zero point four five, minus zero point zero nine nine for zero point zero one eight is less than or equal to W is less than or equal to one.
-
-            uint16 matrixIndex; // A 16-bit unsigned integer containing an index into a table specifying the
-                                // transformation matrix coefficients used to translate between RGB color space values
-                                 // and Y´CbCr values.
-                                 //  Index 1
-                                 //      Recommendation ITU-R BT.709-2 (1125/60/2:1 only), SMPTE 274M-1995, 296M-1997 An image that shows the formula for matrix index 1. The formula is E’ with subscript Y is equal to zero point seven one five two E’ with subscript G, plus zero point zero seven two two E’ with subscript B, plus zero point two one two six E’ with subscript R.
-                                 // https://developer.apple.com/documentation/quicktime-file-format/color_parameter_atom
-
-        } videoColrSampleDescriptionExtensionAtom;
-        */
-        /*
-        leaf = new DataAtom("colr");
-        parent.add(leaf);
-        d = leaf.getOutputStream();
-        d.writeType("nclc");
-        d.writeUShort(1);
-        d.writeUShort(1);
-        d.writeUShort(1);
-         */
 
         /* pasp atom */
         /*---------*/

@@ -1,6 +1,6 @@
 /*
  * @(#)AbstractVideoTrack.java
- * Copyright © 2024 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.demo.javafx.movieplayer.model;

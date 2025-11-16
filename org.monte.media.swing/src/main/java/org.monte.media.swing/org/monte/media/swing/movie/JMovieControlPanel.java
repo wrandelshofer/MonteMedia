@@ -1,6 +1,6 @@
 /*
  * @(#)JMovieControlPanel.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.swing.movie;
 
@@ -10,9 +10,10 @@ import org.monte.media.math.Rational;
 import org.monte.media.swing.border.ImageBevelBorder;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.TransferHandler;
 import javax.swing.border.Border;
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.Insets;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

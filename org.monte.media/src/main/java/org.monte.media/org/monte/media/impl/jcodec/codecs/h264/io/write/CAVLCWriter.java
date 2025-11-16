@@ -1,3 +1,8 @@
+/*
+ * @(#)CAVLCWriter.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+ */
+
 package org.monte.media.impl.jcodec.codecs.h264.io.write;
 
 import org.monte.media.impl.jcodec.api.NotImplementedException;

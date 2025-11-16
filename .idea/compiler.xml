@@ -27,6 +27,7 @@
         <module name="org.monte.demo.mpoimagesplitter" />
         <module name="org.monte.media.javafx" />
         <module name="org.monte.media.amigaatari" />
+        <module name="org.monte.demo.javafx.colorquantizer" />
         <module name="org.monte.media.swing" />
         <module name="org.monte.demo.screenrecorder" />
         <module name="org.monte.demo.rationalnumber" />

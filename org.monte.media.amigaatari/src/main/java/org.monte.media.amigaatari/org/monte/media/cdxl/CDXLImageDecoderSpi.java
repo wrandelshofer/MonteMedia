@@ -1,6 +1,6 @@
 /*
- * @(#)AmigaBitmapCodecSpi.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * @(#)CDXLImageDecoderSpi.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.cdxl;

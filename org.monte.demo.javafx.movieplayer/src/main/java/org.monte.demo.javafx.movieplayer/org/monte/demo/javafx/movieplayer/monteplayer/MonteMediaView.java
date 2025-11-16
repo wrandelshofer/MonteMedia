@@ -1,3 +1,8 @@
+/*
+ * @(#)MonteMediaView.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+ */
+
 /**
  * Sample Skeleton for 'MonteMediaView.fxml' Controller Class
  */

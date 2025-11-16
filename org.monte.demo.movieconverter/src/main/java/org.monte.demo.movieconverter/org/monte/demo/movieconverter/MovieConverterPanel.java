@@ -1,6 +1,6 @@
 /*
  * @(#)MovieConverterPanel.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.demo.movieconverter;
 
@@ -9,7 +9,7 @@ import org.monte.media.av.Movie;
 import org.monte.media.math.Rational;
 import org.monte.media.swing.Worker;
 
-import javax.swing.*;
+import javax.swing.TransferHandler;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

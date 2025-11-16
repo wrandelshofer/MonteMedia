@@ -1,6 +1,6 @@
 /*
- * @(#)JPEGCodec.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * @(#)JPEGDecoder.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.av.codec.video;
 

@@ -1,6 +1,6 @@
 /*
- * @(#)JPEGCodecSpi.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * @(#)H264EncoderSpi.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.mp4.codec.video;

@@ -1,6 +1,6 @@
 /*
- * @(#)VideoFormatKeys.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * @(#)TextFormatKeys.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.av.codec.text;
 

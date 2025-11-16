@@ -1,6 +1,6 @@
 /*
  * @(#)ANIMAudioCommand.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.anim;

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<GridPane fx:id="root" hgap="8.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+          minHeight="-Infinity" minWidth="-Infinity" vgap="8.0" xmlns="http://javafx.com/javafx/23.0.1"
+          xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="org.monte.demo.javafx.colorquantizer.BatchInspectorController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0"/>
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
+    <RowConstraints vgrow="ALWAYS"/>
+    <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES"/>
+    <RowConstraints minHeight="10.0" valignment="BASELINE" vgrow="SOMETIMES"/>
+    <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES"/>
+    <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES"/>
+  </rowConstraints>
+  <children>
+    <ListView fx:id="inputFilesListView" GridPane.columnSpan="2147483647" GridPane.rowIndex="1"/>
+    <HBox alignment="BASELINE_RIGHT" spacing="8.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
+      <children>
+        <Button mnemonicParsing="false" onAction="#onAdd" text="Add ...">
+          <font>
+            <Font size="11.0"/>
+          </font>
+        </Button>
+        <Button mnemonicParsing="false" onAction="#onRemove" text="Remove">
+          <font>
+            <Font size="11.0"/>
+          </font>
+        </Button>
+        <Button mnemonicParsing="false" onAction="#onClear" text="Clear">
+          <font>
+            <Font size="11.0"/>
+          </font>
+        </Button>
+      </children>
+    </HBox>
+    <Label text="Input Files:" GridPane.columnSpan="2147483647"/>
+    <Label text="Output Directory:" GridPane.rowIndex="4">
+      <GridPane.margin>
+        <Insets/>
+      </GridPane.margin>
+    </Label>
+    <HBox alignment="BASELINE_LEFT" spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+      <GridPane.margin>
+        <Insets/>
+      </GridPane.margin>
+      <children>
+        <TextField fx:id="outputDirectoryField" editable="false" prefColumnCount="16"/>
+        <Button fx:id="onSelectOutputDirectory" mnemonicParsing="false" onAction="#onSelectOutputDirectory"
+                text="Select..."/>
+      </children>
+    </HBox>
+    <HBox GridPane.columnSpan="2147483647" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+      <GridPane.margin>
+        <Insets/>
+      </GridPane.margin>
+      <children>
+        <ProgressIndicator fx:id="progressIndicator" disable="true" progress="0.0" HBox.hgrow="NEVER"/>
+        <HBox alignment="BASELINE_LEFT" spacing="8.0" HBox.hgrow="ALWAYS">
+          <children>
+            <Label fx:id="progressLabel" disable="true" maxWidth="185.0" minWidth="30.0" text="No batch in progress"
+                   wrapText="true" HBox.hgrow="ALWAYS">
+              <font>
+                <Font size="11.0"/>
+              </font>
+            </Label>
+            <Button fx:id="stopBatchButton" disable="true" mnemonicParsing="false" onAction="#onStopBatch"
+                    text="Stop Batch"/>
+            <Button fx:id="startBatchButton" mnemonicParsing="false" onAction="#onStartBatch" text="Start Batch"/>
+          </children>
+        </HBox>
+      </children>
+      <padding>
+        <Insets top="16.0"/>
+      </padding>
+    </HBox>
+    <Label text="Output Format:" GridPane.rowIndex="3">
+      <GridPane.margin>
+        <Insets top="16.0"/>
+      </GridPane.margin>
+    </Label>
+    <ComboBox fx:id="outputFormatBox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="3">
+      <GridPane.margin>
+        <Insets top="16.0"/>
+      </GridPane.margin>
+    </ComboBox>
+  </children>
+  <padding>
+    <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+  </padding>
+</GridPane>

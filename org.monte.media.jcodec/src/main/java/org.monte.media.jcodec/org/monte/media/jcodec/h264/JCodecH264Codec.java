@@ -1,6 +1,6 @@
 /*
- * @(#)H264Codec.java
- * Copyright © 2024 Werner Randelshofer, Switzerland. MIT License.
+ * @(#)JCodecH264Codec.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.jcodec.h264;

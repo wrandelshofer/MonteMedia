@@ -1,6 +1,6 @@
 /*
  * @(#)PlayerEngine.java
- * Copyright © 2024 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.demo.javafx.movieplayer.monteplayer;
@@ -266,6 +266,11 @@ class PlayerEngine extends AbstractPlayer {
             long sample = reader.findSampleAtTime(trackID, seconds);
             Rational time = reader.getSampleTime(trackID, sample);
             Rational duration = reader.getSampleDuration(trackID, sample);
+            if (time.compareTo(seconds) < 0 && sample < reader.getSampleCount(trackID)) {
+                sample++;
+                time = reader.getSampleTime(trackID, sample);
+                duration = reader.getSampleDuration(trackID, sample);
+            }
             Rational sampleEndTime = time.add(duration);
             if (sampleEndTime.compareTo(seconds) <= 0 && sample == reader.getSampleCount(trackID) - 1) {
                 return reader.getMovieDuration();

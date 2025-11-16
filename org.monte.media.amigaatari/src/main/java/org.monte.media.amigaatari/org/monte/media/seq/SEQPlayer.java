@@ -1,6 +1,6 @@
 /*
  * @(#)SEQPlayer.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.seq;
 
@@ -935,7 +935,7 @@ public class SEQPlayer
         if (prepared == index - interleave && //
                 (bitmap.getPixelType() == AmigaBitmapImage.BYTE_PIXEL || //
                         cm == track.getFrame(prepared).getColorModel())) {
-            BufferedImage bufferedImage = new ParallelExtractAmigaBitmapFactory().bitmapToBufferedImage(bitmap, null);
+            BufferedImage bufferedImage = new ParallelExtractAmigaBitmapConverter().bitmapToBufferedImage(bitmap, null);
             bitmap.convertToChunky(
                     frame.getTopBound(track),
                     frame.getLeftBound(track),

@@ -1,6 +1,6 @@
 /*
  * @(#)ILBMDecoder.java
- * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.ilbm;
 
@@ -634,10 +634,10 @@ public class ILBMDecoder
                 }
                 break;
             case MODE_HAM6:
-                cmapColorModel = new AmigaHAMColorModel(AmigaHAMColorModel.HAM6, 16, red, green, blue, false);
+                cmapColorModel = new AmigaHAMColorModel(AmigaHAMColorModel.Type.HAM6, red, green, blue);
                 break;
             case MODE_HAM8:
-                cmapColorModel = new AmigaHAMColorModel(AmigaHAMColorModel.HAM8, 64, red, green, blue, false);
+                cmapColorModel = new AmigaHAMColorModel(AmigaHAMColorModel.Type.HAM8, red, green, blue);
                 break;
             case MODE_INDEXED_COLORS:
                 if ((bmhdMasking & MSK_HAS_MASK) != 0) {

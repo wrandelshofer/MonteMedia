@@ -1,6 +1,6 @@
 /*
- * @(#)IntGcdJmh.java
- * Copyright © 2024 Werner Randelshofer, Switzerland. MIT License.
+ * @(#)BigIntegerGcdJmh.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 
 package org.monte.media.math;
