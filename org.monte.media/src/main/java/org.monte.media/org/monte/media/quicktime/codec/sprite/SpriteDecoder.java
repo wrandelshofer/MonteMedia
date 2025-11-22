@@ -37,154 +37,152 @@ import static org.monte.media.quicktime.codec.sprite.SpriteFormatKeys.DATA_CLASS
 import static org.monte.media.quicktime.codec.sprite.SpriteFormatKeys.ENCODING_JAVA_SPRITE;
 import static org.monte.media.quicktime.codec.sprite.SpriteFormatKeys.ENCODING_QUICKTIME_SPRITE;
 
-/**
- * Codec for {@link SpriteSample}s.
- * <p>
- * <p>
- * A sample can either be a key frame or an overriding frame:
- * <dl>
- *     <dt>key frame</dt>
- *     <dd>A key frame contains a shared data atom of type 'dflt' and one or
- *         more sprite atoms of type 'sprt'.
- *      </dd>
- *      <dt>differenced frame</dt>
- *      <dd>An differenced frame contains one or more sprite atoms of type 'sprt'.</dd>
- * <p>
- * Atoms:
- * <p>
- * The shared data atom 'dflt' contains a sprite image container atom of type 'imct' and ID=1.
- * <p>
- * The sprite image container atom 'imct' stores one or more sprite image atoms of type 'imag'.
- * <p>
- * The sprite image atoms 'imag' should have ID numbers starting at 1 and counting consecutively upward.
- * Each sprite image atom contains an image sample description
- * immediately followed by the sprite’s compressed image data.
- * <p>
- * Sprite atoms 'sprt' should have ID numbers start at 1 and count consecutively upward.
- * Each sprite atom contains a list of Sprite properties.
- * In a key frame, the following properties are required: Image index, Matrix, Layer, and Visibility.
- * In a differenced frame, those sprite properties that change need to be specified.
- * If none of a sprite's properties change in a given frame, then the sprite does not need an atom in the
- * differenced frame.
- * <pre>
- * +------------------------------------------------------+
- * | 'sean' Atom                                          |
- * +------------------------------------------------------+
- * | struct header                                        |
- * |   +-------------------------------------------+      |
- * |   | 'dflt' Atom                               |      |
- * |   +-------------------------------------------+      |
- * |   | struct header                             |      |
- * |   | +---------------------------------------+ |      |
- * |   | | 'imct' Atom                           | |      |
- * |   | +---------------------------------------+ |      |
- * |   | | struct header                         | |      |
- * |   | | +-------------------------------+     | |      |
- * |   | | | 'imag' Atom                   | …   | |      |
- * |   | | +-------------------------------+     | |      |
- * |   | | | struct header                 |     | |      |
- * |   | | | +---------------------------+ |     | |      |
- * |   | | | | 'imda' Atom               | |     | |      |
- * |   | | | +---------------------------+ |     | |      |
- * |   | | | | struct imageDescription   | |     | |      |
- * |   | | | | +-----------------------+ | |     | |      |
- * |   | | | | | 'idat' Atom           | | |     | |      |
- * |   | | | | +-----------------------+ | |     | |      |
- * |   | | | | | byte[] imageData      | | |     | |      |
- * |   | | | | +-----------------------+ | |     | |      |
- * |   | | | +---------------------------+ |     | |      |
- * |   | | +-------------------------------+     | |      |
- * |   | +---------------------------------------+ |      |
- * |   +------------------------------------------+       |
- * |                                                      |
- * |   +--------------------------------------------+     |
- * |   | 'sprt' Atom                                | …   |
- * |   +--------------------------------------------+     |
- * |   | struct header                              |     |
- * |   | +------------------------------------+     |     |
- * |   | | property                           | …   |     |
- * |   | +------------------------------------+     |     |
- * |   +--------------------------------------------+     |
- * |                                                      |
- * +------------------------------------------------------+
- *
- * typedef struct {
- *     uint32 id;
- *     uint16 reserved, set to 0;
- *     uint16 childCount;
- *     uint32 reserved, set to 0;
- * } header;
- *
- * typedef struct {
- *     uint32 image description size, set to 86 bytes;
- *     magic4 Compressor identifier, 'jpeg'
- *     uint32 reserved, set to 0;
- *     uint16 reserved, set to 0;
- *     uint16 reserved, set to 0;
- *     uint16 Major version of this data, 0 if not applicable
- *     uint16 Minor version of this data, 0 if not applicable
- *     magic4 Vendor who compressed this data, 'appl'
- *     uint32 Temporal quality, 0 (no temporal compression)
- *     uint32 Spatial quality, codecNormalQuality 0x000002000 'codecNormalQuality'
- *     uint16 imageWidth
- *     uint16 imageHeight
- *     fixed1616 horizontal resolution, 72 dpi
- *     fixed1616 vertical resolution, 72 dpi
- *     uint32 data size, (use 0 if unknown)
- *     uint16 frameCount, 1
- *     pascal32 fCompressor name, "Photo - JPEG" (32-byte Pascal string)
- *     uint16 Image bit depth, 24
- *     int16 Color lookup table ID, -1 (none)
- * } imageDescription;
- *
- * Sprite properties:
- *     Property name                        Value   Leaf data type
- *     kSpritePropertyMatrix                    1   struct TransformationMatrix
- *     kSpritePropertyVisible                   4   short
- *     kSpritePropertyLayer                     5   short
- *     kSpritePropertyGraphicsMode              6   ModifierTrackGraphicsModeRecord
- *     kSpritePropertyActionHandlingSpriteID    8   short
- *     kSpritePropertyImageIndex              100   short
- *
- * Sprite track properties:
- *     Atom type                                     Atom ID  Leaf data type
- *     kSpriteTrackPropertyBackgroundColor           1        RGBColor
- *     kSpriteTrackPropertyOffscreenBitDepth         1        unsigned short
- *     kSpriteTrackPropertySampleFormat              1        long
- *     kSpriteTrackPropertyHasActions                1        Boolean
- *     kSpriteTrackPropertyQTIdleEventsFrequency     1        UInt32
- *     kSpriteTrackPropertyVisible                   1        Boolean
- *     kSpriteTrackPropertyScaleSpritesToScaleWorld  1        Boolean
- *
- *  TransformationMatrix:
- *    The transformation matrix [a,b,u;c,d,v;x,y,w].
- *               [a b u;
- *    [x y 1] *   c d v; = [x' y' 1]
- *                x y w]
- *    stored in the sequence: a b u c d v x y w
- *     a    scale/rotate a, 32-bit fixed-point number divided as 16.16
- *     b    skew/rotate b,  32-bit fixed-point number divided as 16.16
- *     u    zero,           32-bit fixed-point number divided as 2.30
- *     c    skew/rotate c,  32-bit fixed-point number divided as 16.16
- *     d    scale/rotate d, 32-bit fixed-point number divided as 16.16
- *     v    zero,           32-bit fixed-point number divided as 2.30
- *     x    translate x,    32-bit fixed-point number divided as 16.16
- *     y    translate y,    32-bit fixed-point number divided as 16.16
- *     w    one,            32-bit fixed-point number divided as 2.30
- *
- * </pre>
- * <p>
- * References:
- * <dl>
- *     <dt>Sprite Sample Data</dt>
- *     <dd>
- *         "QuickTime File Format Specification", Apple Inc. 2010-08-03. (qtff)
- *          <a href="http://developer.apple.com/library/mac/documentation/QuickTime/QTFF/qtff.pdf/">
- *          http://developer.apple.com/library/mac/documentation/QuickTime/QTFF/qtff.pdf
- *          </a>
- *     </dd>
- * </dl>
- */
+/// Codec for [SpriteSample]s.
+///
+///
+/// A sample can either be a key frame or an overriding frame:
+/// <dl>
+///     <dt>key frame</dt>
+///     <dd>A key frame contains a shared data atom of type 'dflt' and one or
+///         more sprite atoms of type 'sprt'.
+///      </dd>
+///      <dt>differenced frame</dt>
+///      <dd>An differenced frame contains one or more sprite atoms of type 'sprt'.</dd>
+///
+/// Atoms:
+///
+/// The shared data atom 'dflt' contains a sprite image container atom of type 'imct' and ID=1.
+///
+/// The sprite image container atom 'imct' stores one or more sprite image atoms of type 'imag'.
+///
+/// The sprite image atoms 'imag' should have ID numbers starting at 1 and counting consecutively upward.
+/// Each sprite image atom contains an image sample description
+/// immediately followed by the sprite’s compressed image data.
+///
+/// Sprite atoms 'sprt' should have ID numbers start at 1 and count consecutively upward.
+/// Each sprite atom contains a list of Sprite properties.
+/// In a key frame, the following properties are required: Image index, Matrix, Layer, and Visibility.
+/// In a differenced frame, those sprite properties that change need to be specified.
+/// If none of a sprite's properties change in a given frame, then the sprite does not need an atom in the
+/// differenced frame.
+/// <pre>
+/// +------------------------------------------------------+
+/// | 'sean' Atom                                          |
+/// +------------------------------------------------------+
+/// | struct header                                        |
+/// |   +-------------------------------------------+      |
+/// |   | 'dflt' Atom                               |      |
+/// |   +-------------------------------------------+      |
+/// |   | struct header                             |      |
+/// |   | +---------------------------------------+ |      |
+/// |   | | 'imct' Atom                           | |      |
+/// |   | +---------------------------------------+ |      |
+/// |   | | struct header                         | |      |
+/// |   | | +-------------------------------+     | |      |
+/// |   | | | 'imag' Atom                   | …   | |      |
+/// |   | | +-------------------------------+     | |      |
+/// |   | | | struct header                 |     | |      |
+/// |   | | | +---------------------------+ |     | |      |
+/// |   | | | | 'imda' Atom               | |     | |      |
+/// |   | | | +---------------------------+ |     | |      |
+/// |   | | | | struct imageDescription   | |     | |      |
+/// |   | | | | +-----------------------+ | |     | |      |
+/// |   | | | | | 'idat' Atom           | | |     | |      |
+/// |   | | | | +-----------------------+ | |     | |      |
+/// |   | | | | | byte[] imageData      | | |     | |      |
+/// |   | | | | +-----------------------+ | |     | |      |
+/// |   | | | +---------------------------+ |     | |      |
+/// |   | | +-------------------------------+     | |      |
+/// |   | +---------------------------------------+ |      |
+/// |   +------------------------------------------+       |
+/// |                                                      |
+/// |   +--------------------------------------------+     |
+/// |   | 'sprt' Atom                                | …   |
+/// |   +--------------------------------------------+     |
+/// |   | struct header                              |     |
+/// |   | +------------------------------------+     |     |
+/// |   | | property                           | …   |     |
+/// |   | +------------------------------------+     |     |
+/// |   +--------------------------------------------+     |
+/// |                                                      |
+/// +------------------------------------------------------+
+///
+/// typedef struct {
+///     uint32 id;
+///     uint16 reserved, set to 0;
+///     uint16 childCount;
+///     uint32 reserved, set to 0;
+/// } header;
+///
+/// typedef struct {
+///     uint32 image description size, set to 86 bytes;
+///     magic4 Compressor identifier, 'jpeg'
+///     uint32 reserved, set to 0;
+///     uint16 reserved, set to 0;
+///     uint16 reserved, set to 0;
+///     uint16 Major version of this data, 0 if not applicable
+///     uint16 Minor version of this data, 0 if not applicable
+///     magic4 Vendor who compressed this data, 'appl'
+///     uint32 Temporal quality, 0 (no temporal compression)
+///     uint32 Spatial quality, codecNormalQuality 0x000002000 'codecNormalQuality'
+///     uint16 imageWidth
+///     uint16 imageHeight
+///     fixed1616 horizontal resolution, 72 dpi
+///     fixed1616 vertical resolution, 72 dpi
+///     uint32 data size, (use 0 if unknown)
+///     uint16 frameCount, 1
+///     pascal32 fCompressor name, "Photo - JPEG" (32-byte Pascal string)
+///     uint16 Image bit depth, 24
+///     int16 Color lookup table ID, -1 (none)
+/// } imageDescription;
+///
+/// Sprite properties:
+///     Property name                        Value   Leaf data type
+///     kSpritePropertyMatrix                    1   struct TransformationMatrix
+///     kSpritePropertyVisible                   4   short
+///     kSpritePropertyLayer                     5   short
+///     kSpritePropertyGraphicsMode              6   ModifierTrackGraphicsModeRecord
+///     kSpritePropertyActionHandlingSpriteID    8   short
+///     kSpritePropertyImageIndex              100   short
+///
+/// Sprite track properties:
+///     Atom type                                     Atom ID  Leaf data type
+///     kSpriteTrackPropertyBackgroundColor           1        RGBColor
+///     kSpriteTrackPropertyOffscreenBitDepth         1        unsigned short
+///     kSpriteTrackPropertySampleFormat              1        long
+///     kSpriteTrackPropertyHasActions                1        Boolean
+///     kSpriteTrackPropertyQTIdleEventsFrequency     1        UInt32
+///     kSpriteTrackPropertyVisible                   1        Boolean
+///     kSpriteTrackPropertyScaleSpritesToScaleWorld  1        Boolean
+///
+///  TransformationMatrix:
+///    The transformation matrix [a,b,u;c,d,v;x,y,w].
+///               [a b u;
+///    [x y 1] *   c d v; = [x' y'1]
+///                x y w]
+///    stored in the sequence: a b u c d v x y w
+///     a    scale/rotate a, 32-bit fixed-point number divided as 16.16
+///     b    skew/rotate b,  32-bit fixed-point number divided as 16.16
+///     u    zero,           32-bit fixed-point number divided as 2.30
+///     c    skew/rotate c,  32-bit fixed-point number divided as 16.16
+///     d    scale/rotate d, 32-bit fixed-point number divided as 16.16
+///     v    zero,           32-bit fixed-point number divided as 2.30
+///     x    translate x,    32-bit fixed-point number divided as 16.16
+///     y    translate y,    32-bit fixed-point number divided as 16.16
+///     w    one,            32-bit fixed-point number divided as 2.30
+///
+/// </pre>
+///
+/// References:
+///
+/// Sprite Sample Data
+/// :
+///         "QuickTime File Format Specification", Apple Inc. 2010-08-03. (qtff)
+///          [
+///          http://developer.apple.com/library/mac/documentation/QuickTime/QTFF/qtff.pdf
+///          ](http://developer.apple.com/library/mac/documentation/QuickTime/QTFF/qtff.pdf/)
+///
+///
 public class SpriteDecoder extends org.monte.media.av.AbstractCodec {
     private static final String SPRITE_PROPERTY_MATRIX_TYPE = "\0\0\0\u0001";
     private static final String SPRITE_PROPERTY_VISIBLE_TYPE = "\0\0\0\u0004";
@@ -235,13 +233,11 @@ public class SpriteDecoder extends org.monte.media.av.AbstractCodec {
         }
     }
 
-    /**
-     * Decode byte array to {@link SpriteSample}.
-     *
-     * @param inBuf input buffer
-     * @param out   output buffer
-     * @return status code
-     */
+    /// Decode byte array to [SpriteSample].
+    ///
+    /// @param inBuf input buffer
+    /// @param out   output buffer
+    /// @return status code
     private int decodeSprite(Buffer inBuf, Buffer out) throws IOException {
         try (var in = new AtomInputStream(new ByteArrayImageInputStream(inBuf.data instanceof byte[] b ? b : new byte[0]))) {
             // Skip leading zero words
@@ -485,13 +481,11 @@ public class SpriteDecoder extends org.monte.media.av.AbstractCodec {
         }
     }
 
-    /**
-     * Decode byte array to {@link BufferedImage}.
-     *
-     * @param in  input buffer
-     * @param out output buffer
-     * @return status code
-     */
+    /// Decode byte array to [BufferedImage].
+    ///
+    /// @param in  input buffer
+    /// @param out output buffer
+    /// @return status code
     private int decodeImage(Buffer in, Buffer out) {
 
         return CODEC_OK;

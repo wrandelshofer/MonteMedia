@@ -9,11 +9,9 @@ import org.monte.media.math.Rational;
 
 import java.net.URI;
 
-/**
- * {@code AbstractMovie}.
- *
- * @author Werner Randelshofer
- */
+/// `AbstractMovie`.
+///
+/// @author Werner Randelshofer
 public abstract class AbstractMovie extends AbstractBean implements Movie {
     private URI uri;
     private Rational playhead;

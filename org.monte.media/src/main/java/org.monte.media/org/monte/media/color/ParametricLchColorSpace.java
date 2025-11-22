@@ -9,21 +9,18 @@ import java.io.Serial;
 
 import static java.lang.Math.PI;
 
-/**
- * A parametric LCH color space based on a LAB color space.
- * <p>
- * The {@code L*} coordinate of an object is the lightness intensity as measured on a
- * scale from 0 to 100, where 0 represents black and 100 represents white.
- * <p>
- * The {@code C} and {@code H} coordinates are projections of the
- * {@code a*} and {@code b*} colors of the CIE
- * {@code L*a*b*} color space into polar coordinates.
- * <pre>
- * a = C * cos(H)
- * b = C * sin(H)
- * </pre>
- *
- */
+/// A parametric LCH color space based on a LAB color space.
+///
+/// The `L*` coordinate of an object is the lightness intensity as measured on a
+/// scale from 0 to 100, where 0 represents black and 100 represents white.
+///
+/// The `C` and `H` coordinates are projections of the
+/// `a*` and `b*` colors of the CIE
+/// `L*a*b*` color space into polar coordinates.
+/// <pre>
+/// a = C * cos(H)
+/// b = C * sin(H)
+/// </pre>
 public class ParametricLchColorSpace extends AbstractNamedColorSpace {
 
     @Serial
@@ -38,12 +35,10 @@ public class ParametricLchColorSpace extends AbstractNamedColorSpace {
         this.labColorSpace = labColorSpace;
     }
 
-    /**
-     * LCH to XYZ.
-     *
-     * @param colorvalue LCH color value.
-     * @return CIEXYZ color value.
-     */
+    /// LCH to XYZ.
+    ///
+    /// @param colorvalue LCH color value.
+    /// @return CIEXYZ color value.
     @Override
     public float[] toCIEXYZ(float[] colorvalue, float[] xyz) {
         return labColorSpace.toCIEXYZ(lchToLab(colorvalue, xyz), xyz);
@@ -62,12 +57,10 @@ public class ParametricLchColorSpace extends AbstractNamedColorSpace {
         return lab;
     }
 
-    /**
-     * XYZ to LCH.
-     *
-     * @param lch CIEXYZ color value.
-     * @return LCH color value.
-     */
+    /// XYZ to LCH.
+    ///
+    /// @param lch CIEXYZ color value.
+    /// @return LCH color value.
     @Override
     public float[] fromCIEXYZ(float[] xyz, float[] lch) {
         return labToLch(labColorSpace.fromCIEXYZ(xyz, lch), lch);

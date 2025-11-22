@@ -6,11 +6,9 @@ package org.monte.media.av.codec.text;
 
 import org.monte.media.av.Format;
 
-/**
- * {@code AbstractTextCodec}.
- *
- * @author Werner Randelshofer
- */
+/// `AbstractTextCodec`.
+///
+/// @author Werner Randelshofer
 public abstract class AbstractTextCodec extends org.monte.media.av.AbstractCodec {
 
     public AbstractTextCodec(Format[] supportedInputFormats, Format[] supportedOutputFormats) {

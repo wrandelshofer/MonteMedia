@@ -8,40 +8,35 @@ package org.monte.media.quicktime.codec.text.cta608;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * CTA-608 Control command.
- *
- * <pre>
- *     control command
- *     15     12 11     8   7     4   3     0
- *     +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
- *     |P|0|0|1| |C|c|c|c| |P|0|c|c| |c|c|c|c|
- *     +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
- *
- *     bits   interpretation
- *     15     odd parity bit of bits 8-19 (shown as 'P')
- *     14-13  always 0 (shown as '00').
- *     12     always 1 (shown as '1').
- *     11     channel (shown as 'C')
- *     7      odd parity bit of bits 0-7 (shown as 'P')
- *     6      always 0 (shown as '0')
- *     10-8,5-0 control code (9 bits)
- * </pre>
- * <p>
- * References:
- * <dl>
- *     <dt>ANSI/CTA Standard. Line 21 Data Services. ANSI/CTA-608-E S-2019. April 2008.</dt>
- *     <dd><a href="https://shop.cta.tech/products/line-21-data-services">ANSI-CTA-608-E-S-2019-Final.pdf</a></dd>
- * </dl>
- */
+/// CTA-608 Control command.
+/// <pre>
+///     control command
+///     15     12 11     8   7     4   3     0
+///     +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
+///     |P|0|0|1| |C|c|c|c| |P|0|c|c| |c|c|c|c|
+///     +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
+///
+///     bits   interpretation
+///     15     odd parity bit of bits 8-19 (shown as 'P')
+///     14-13  always 0 (shown as '00').
+///     12     always 1 (shown as '1').
+///     11     channel (shown as 'C')
+///     7      odd parity bit of bits 0-7 (shown as 'P')
+///     6      always 0 (shown as '0')
+///     10-8,5-0 control code (9 bits)
+/// </pre>
+///
+/// References:
+/// <dl>
+///     <dt>ANSI/CTA Standard. Line 21 Data Services. ANSI/CTA-608-E S-2019. April 2008.</dt>
+///     <dd>[ANSI-CTA-608-E-S-2019-Final.pdf](https://shop.cta.tech/products/line-21-data-services)</dd>
+/// </dl>
 public final class CmdToken implements Cta608Token {
     private final short code;
 
-    /**
-     * Constructs a new instance.
-     *
-     * @param code a control code
-     */
+    /// Constructs a new instance.
+    ///
+    /// @param code a control code
     public CmdToken(short code) {
         if ((code & 0b0111_0000_0100_0000) != 0b0001_0000_0000_0000)
             throw new IllegalArgumentException("code=" + Integer.toHexString(code));
@@ -49,12 +44,10 @@ public final class CmdToken implements Cta608Token {
         this.code = Cta608Token.fixParityBits(code);
     }
 
-    /**
-     * Constructs a new instance.
-     *
-     * @param channel data channel in the range [1,2]
-     * @param command a control code
-     */
+    /// Constructs a new instance.
+    ///
+    /// @param channel data channel in the range [1,2]
+    /// @param command a control code
     public CmdToken(int channel, Command command) {
         if (channel < 1 || channel > 2) throw new IllegalArgumentException("channel=" + channel);
         if (command == null) throw new IllegalArgumentException("operation is null");
@@ -68,16 +61,12 @@ public final class CmdToken implements Cta608Token {
         return ((code & 0b0000_1000_0000_0000) >> 11) + 1;
     }
 
-    /**
-     * Gets the code with parity bits.
-     */
+    /// Gets the code with parity bits.
     public short getCode() {
         return code;
     }
 
-    /**
-     * Gets the code without parity bits.
-     */
+    /// Gets the code without parity bits.
     public short getCodeWithoutParity() {
         return (short) (code & 0x7f7f);
     }
@@ -89,9 +78,7 @@ public final class CmdToken implements Cta608Token {
         return Command.valueOf(opCode);
     }
 
-    /**
-     * The sequence (ordinal) of this enum is not significant.
-     */
+    /// The sequence (ordinal) of this enum is not significant.
     public enum Command {
         // Table 3 Background and Foreground Attribute Codes
         // Each Background Attribute Code appears in the display as if a standard space had been received. Such
@@ -103,140 +90,84 @@ public final class CmdToken implements Cta608Token {
         // Each Foreground Attribute Code incorporates an automatic BS for backward compatibility with standard
         // decoders. The captioning service provider shall precede each Foreground Attribute Code with a standard space.
 
-        /**
-         * Background White, Opaque.
-         */
+        /// Background White, Opaque.
         BWO(0x20),
 
-        /**
-         * Background White, Semi-transparent.
-         */
+        /// Background White, Semi-transparent.
         BWS(0x21),
 
-        /**
-         * Background Green, Opaque.
-         */
+        /// Background Green, Opaque.
         BGO(0x22),
 
-        /**
-         * Background Green, Semi-transparent.
-         */
+        /// Background Green, Semi-transparent.
         BGS(0x23),
 
-        /**
-         * Background Blue, Opaque.
-         */
+        /// Background Blue, Opaque.
         BBO(0x24),
 
-        /**
-         * Background Blue, Semi-transparent.
-         */
+        /// Background Blue, Semi-transparent.
         BBS(0x25),
 
-        /**
-         * Background Cyan, Opaque.
-         */
+        /// Background Cyan, Opaque.
         BCO(0x26),
 
-        /**
-         * Background Cyan, Semi-transparent.
-         */
+        /// Background Cyan, Semi-transparent.
         BCS(0x27),
 
-        /**
-         * Background Red, Opaque.
-         */
+        /// Background Red, Opaque.
         BRO(0x28),
 
-        /**
-         * Background Red, Semi-transparent.
-         */
+        /// Background Red, Semi-transparent.
         BRS(0x29),
 
-        /**
-         * Background Yellow, Opaque.
-         */
+        /// Background Yellow, Opaque.
         BYO(0x2a),
 
-        /**
-         * Background Yellow, Semi-transparent.
-         */
+        /// Background Yellow, Semi-transparent.
         BYS(0x2b),
 
-        /**
-         * Background Magenta, Opaque.
-         */
+        /// Background Magenta, Opaque.
         BMO(0x2c),
 
-        /**
-         * Background Magenta, Semi-transparent.
-         */
+        /// Background Magenta, Semi-transparent.
         BMS(0x2d),
 
-        /**
-         * Background Black, Opaque.
-         */
+        /// Background Black, Opaque.
         BAO(0x2e),
 
-        /**
-         * Background Black, Semi-transparent.
-         */
+        /// Background Black, Semi-transparent.
         BAS(0x2f),
 
-        /**
-         * Background Transparent.
-         */
+        /// Background Transparent.
         BT(0x1ed),
 
-        /**
-         * Foreground Black.
-         */
+        /// Foreground Black.
         FA(0x1ee),
 
-        /**
-         * Foreground Black Underline.
-         */
+        /// Foreground Black Underline.
         FAU(0x1ef),
 
         // Table 4 Special Assignments
-        /**
-         * Select the standard line 21 character set in normal size.
-         */
+        /// Select the standard line 21 character set in normal size.
         CHARSET_STANDARD(0x0),
-        /**
-         * Select the standard line 21 character set in double size.
-         */
+        /// Select the standard line 21 character set in double size.
         CHARSET_STANDARD_DOUBLE_SIZE(0x0),
-        /**
-         * Select the first private character set.
-         */
+        /// Select the first private character set.
         CHARSET_PRIVATE_1(0x0),
-        /**
-         * Select the second private character set.
-         */
+        /// Select the second private character set.
         CHARSET_PRIVATE_2(0x0),
-        /**
-         * Select the People's Republic of China character set: GB 2312-80.
-         */
+        /// Select the People's Republic of China character set: GB 2312-80.
         CHARSET_CHINESE(0x0),
-        /**
-         * Select the Korean Standard character set: KSC 5601-1987.
-         */
+        /// Select the Korean Standard character set: KSC 5601-1987.
         CHARSET_KOREAN(0x0),
-        /**
-         * Select the first registered character set.
-         */
+        /// Select the first registered character set.
         CHARSET_REGISTERED_1(0x0),
 
 
         // Table 51 Mid-Row Codes
-        /**
-         * Foreground White.
-         */
+        /// Foreground White.
         WHITE(0x60),
-        /**
-         * Foreground White, underline.
-         */
+        /// Foreground White, underline.
         WHITE_UNDERLINE(0x61),
         GREEN(0x62),
         GREEN_UNDERLINE(0x63),
@@ -254,84 +185,46 @@ public final class CmdToken implements Cta608Token {
         ITALICS_UNDERLINE(0x6f),
 
         // Table 52 Miscellaneous Control Codes
-        /**
-         * Resume caption loading. (To select pop-on style).
-         */
+        /// Resume caption loading. (To select pop-on style).
         RCL(0x120),
-        /**
-         * Backspace.
-         * <p>
-         * Receipt of a BS shall move the cursor one column to the left, erasing the character or Mid-Row Code
-         * occupying that location.
-         */
+        /// Backspace.
+        ///
+        /// Receipt of a BS shall move the cursor one column to the left, erasing the character or Mid-Row Code
+        /// occupying that location.
         BS(0x121),
-        /**
-         * Reserved (formerly Alarm Off)
-         */
+        /// Reserved (formerly Alarm Off)
         AOF(0x122),
-        /**
-         * Reserved (formerly Alarm On)
-         */
+        /// Reserved (formerly Alarm On)
         AON(0x123),
-        /**
-         * Delete to End of Row
-         */
+        /// Delete to End of Row
         DER(0x124),
-        /**
-         * Roll-Up Captions-2 Rows
-         */
+        /// Roll-Up Captions-2 Rows
         RU2(0x125),
-        /**
-         * Roll-Up Captions-3 Rows
-         */
+        /// Roll-Up Captions-3 Rows
         RU3(0x126),
-        /**
-         * Roll-Up Captions-4 Rows
-         */
+        /// Roll-Up Captions-4 Rows
         RU4(0x127),
-        /**
-         * Flash On
-         */
+        /// Flash On
         FON(0x128),
-        /**
-         * Resume Direct Captioning. (To select paint-on style).
-         */
+        /// Resume Direct Captioning. (To select paint-on style).
         RDC(0x129),
-        /**
-         * Text Restart
-         */
+        /// Text Restart
         TR(0x12a),
-        /**
-         * Resume Text Display
-         */
+        /// Resume Text Display
         RTD(0x12b),
-        /**
-         * Erase Displayed Memory
-         */
+        /// Erase Displayed Memory
         EDM(0x12c),
-        /**
-         * Carriage Return
-         */
+        /// Carriage Return
         CR(0x12d),
-        /**
-         * Erase Non-Displayed Memory
-         */
+        /// Erase Non-Displayed Memory
         ENM(0x12e),
-        /**
-         * End of Caption (Flip Memories)
-         */
+        /// End of Caption (Flip Memories)
         EOC(0x12f),
-        /**
-         * Tab Offset 1 Column
-         */
+        /// Tab Offset 1 Column
         TO1(0x1e1),
-        /**
-         * Tab Offset 2 Columns
-         */
+        /// Tab Offset 2 Columns
         TO2(0x1e2),
-        /**
-         * Tab Offset 3 Columns
-         */
+        /// Tab Offset 3 Columns
         TO3(0x1e3),
 
         ;

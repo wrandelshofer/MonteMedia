@@ -21,28 +21,24 @@ import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.FormatKeys.MimeTypeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
 
-/**
- * Crops a buffered image.
- * <p>
- * Usage:
- * <pre>
- *     var codec=new CropImageCodec();
- *     codec.setOutputFormat(new Format(CropImageCodec.CropImageKey, new Rectangle(10,10,620,460)));
- *     var in=new Buffer();
- *     var out=new Buffer();
- *     in.data=ew BufferedImage(640,480,BufferedImage.TYPE_INT_RGB);
- *     var result=codec.process(in,out);
- *     if (result != Codec.CODEC_OK) throw new RuntimeException("cropping failed",out.exception);
- *     return (BufferedImage) out.data;
- * </pre>
- *
- * @author Werner Randelshofer
- */
+/// Crops a buffered image.
+///
+/// Usage:
+/// <pre>
+///     var codec=new CropImageCodec();
+///     codec.setOutputFormat(new Format(CropImageCodec.CropImageKey, new Rectangle(10,10,620,460)));
+///     var in=new Buffer();
+///     var out=new Buffer();
+///     in.data=ew BufferedImage(640,480,BufferedImage.TYPE_INT_RGB);
+///     var result=codec.process(in,out);
+///     if (result != Codec.CODEC_OK) throw new RuntimeException("cropping failed",out.exception);
+///     return (BufferedImage) out.data;
+/// </pre>
+///
+/// @author Werner Randelshofer
 public class CropImageCodec extends org.monte.media.av.AbstractCodec {
 
-    /**
-     * The cropping of the media.
-     */
+    /// The cropping of the media.
     public final static FormatKey<Rectangle> CropImageKey = new FormatKey<>("cropImage", Rectangle.class);
 
     public CropImageCodec() {

@@ -47,54 +47,45 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.FixedFrameRateKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
-/**
- * Provides low-level support for writing already encoded audio and video
- * samples into an AVI 1.0 file. <p> The length of an AVI 1.0 file is limited to
- * 1 GB. This class supports lengths of up to 4 GB, but such files may not work
- * on all players. <p> For detailed information about the AVI 1.0 file format
- * see:<br> <a
- * href="http://msdn.microsoft.com/en-us/library/ms779636.aspx">msdn.microsoft.com
- * AVI RIFF</a><br> <a
- * href="http://www.microsoft.com/whdc/archive/fourcc.mspx">www.microsoft.com
- * FOURCC for Video Compression</a><br> <a
- * href="http://www.saettler.com/RIFFMCI/riffmci.html">www.saettler.com
- * RIFF</a><br>
- *
- * @author Werner Randelshofer
- */
+/// Provides low-level support for writing already encoded audio and video
+/// samples into an AVI 1.0 file.
+///  The length of an AVI 1.0 file is limited to
+/// 1 GB. This class supports lengths of up to 4 GB, but such files may not work
+/// on all players.
+///  For detailed information about the AVI 1.0 file format
+/// see:
+/// <a
+/// href="http://msdn.microsoft.com/en-us/library/ms779636.aspx">msdn.microsoft.com
+/// AVI RIFF</a>
+/// <a
+/// href="http://www.microsoft.com/whdc/archive/fourcc.mspx">www.microsoft.com
+/// FOURCC for Video Compression</a>
+/// <a
+/// href="http://www.saettler.com/RIFFMCI/riffmci.html">www.saettler.com
+/// RIFF</a>
+///
+/// @author Werner Randelshofer
 public class AVIOutputStream extends AbstractAVIStream {
 
-    /**
-     * The states of the movie output stream.
-     */
+    /// The states of the movie output stream.
     protected enum States {
 
         STARTED, FINISHED, CLOSED
     }
 
-    /**
-     * The current state of the movie output stream.
-     */
+    /// The current state of the movie output stream.
     protected States state = States.FINISHED;
-    /**
-     * This chunk holds the whole AVI content.
-     */
+    /// This chunk holds the whole AVI content.
     protected CompositeChunk aviChunk;
-    /**
-     * This chunk holds the movie frames.
-     */
+    /// This chunk holds the movie frames.
     protected CompositeChunk moviChunk;
-    /**
-     * This chunk holds the AVI Main Header.
-     */
+    /// This chunk holds the AVI Main Header.
     protected FixedSizeDataChunk avihChunk;
     ArrayList<Sample> idx1 = new ArrayList<>();
 
-    /**
-     * Creates a new instance.
-     *
-     * @param file the output file
-     */
+    /// Creates a new instance.
+    ///
+    /// @param file the output file
     public AVIOutputStream(File file) throws IOException {
         if (file.exists()) {
             file.delete();
@@ -104,33 +95,29 @@ public class AVIOutputStream extends AbstractAVIStream {
         this.streamOffset = 0;
     }
 
-    /**
-     * Creates a new instance.
-     *
-     * @param out the output stream.
-     */
+    /// Creates a new instance.
+    ///
+    /// @param out the output stream.
     public AVIOutputStream(ImageOutputStream out) throws IOException {
         this.out = out;
         this.streamOffset = out.getStreamPosition();
         out.setByteOrder(ByteOrder.LITTLE_ENDIAN);
     }
 
-    /**
-     * Adds a video track.
-     *
-     * @param fccHandler   The 4-character code of the format.
-     * @param scale        The numerator of the sample rate.
-     * @param rate         The denominator of the sample rate.
-     * @param width        The width of a video image. Must be greater than 0.
-     * @param height       The height of a video image. Must be greater than 0.
-     * @param depth        The number of bits per pixel. Must be greater than 0.
-     * @param syncInterval Interval for sync-samples. 0=automatic. 1=all frames
-     *                     are keyframes. Values larger than 1 specify that for every n-th frame is
-     *                     a keyframe.
-     * @return Returns the track index.
-     * @throws IllegalArgumentException if the width or the height is smaller
-     *                                  than 1.
-     */
+    /// Adds a video track.
+    ///
+    /// @param fccHandler   The 4-character code of the format.
+    /// @param scale        The numerator of the sample rate.
+    /// @param rate         The denominator of the sample rate.
+    /// @param width        The width of a video image. Must be greater than 0.
+    /// @param height       The height of a video image. Must be greater than 0.
+    /// @param depth        The number of bits per pixel. Must be greater than 0.
+    /// @param syncInterval Interval for sync-samples. 0=automatic. 1=all frames
+    ///                                                             are keyframes. Values larger than 1 specify that for every n-th frame is
+    ///                                                             a keyframe.
+    /// @return Returns the track index.
+    /// @throws IllegalArgumentException if the width or the height is smaller
+    ///                                                                                                    than 1.
     public int addVideoTrack(String fccHandler, long scale, long rate, int width, int height, int depth, int syncInterval) throws IOException {
         ensureFinished();
         if (fccHandler == null || fccHandler.length() != 4) {
@@ -174,28 +161,26 @@ public class AVIOutputStream extends AbstractAVIStream {
         return tracks.size() - 1;
     }
 
-    /**
-     * Adds an audio track.
-     *
-     * @param waveFormatTag    The format of the audio stream given in MMREG.H, for
-     *                         example 0x0001 for WAVE_FORMAT_PCM.
-     * @param scale            The numerator of the sample rate.
-     * @param rate             The denominator of the sample rate.
-     * @param numberOfChannels The number of channels: 1 for mono, 2 for stereo.
-     * @param sampleSizeInBits The number of bits in a sample: 8 or 16.
-     * @param isCompressed     Whether the sound is compressed.
-     * @param frameDuration    The frame duration, expressed in the media’s
-     *                         timescale, where the timescale is equal to the sample rate. For
-     *                         uncompressed formats, this field is always 1.
-     * @param frameSize        For uncompressed audio, the number of bytes in a sample
-     *                         for a single channel (sampleSize divided by 8). For compressed audio, the
-     *                         number of bytes in a frame.
-     * @return Returns the track index.
-     * @throws IllegalArgumentException if the format is not 4 characters long,
-     *                                  if the time scale is not between 1 and 2^32, if the integer portion of
-     *                                  the sampleRate is not equal to the scale, if numberOfChannels is not 1 or
-     *                                  2.
-     */
+    /// Adds an audio track.
+    ///
+    /// @param waveFormatTag    The format of the audio stream given in MMREG.H, for
+    ///                                                 example 0x0001 for WAVE_FORMAT_PCM.
+    /// @param scale            The numerator of the sample rate.
+    /// @param rate             The denominator of the sample rate.
+    /// @param numberOfChannels The number of channels: 1 for mono, 2 for stereo.
+    /// @param sampleSizeInBits The number of bits in a sample: 8 or 16.
+    /// @param isCompressed     Whether the sound is compressed.
+    /// @param frameDuration    The frame duration, expressed in the media’s
+    ///                                                 timescale, where the timescale is equal to the sample rate. For
+    ///                                                 uncompressed formats, this field is always 1.
+    /// @param frameSize        For uncompressed audio, the number of bytes in a sample
+    ///                                                 for a single channel (sampleSize divided by 8). For compressed audio, the
+    ///                                                 number of bytes in a frame.
+    /// @return Returns the track index.
+    /// @throws IllegalArgumentException if the format is not 4 characters long,
+    ///                                                                   if the time scale is not between 1 and 2^32, if the integer portion of
+    ///                                                                   the sampleRate is not equal to the scale, if numberOfChannels is not 1 or
+    ///                                                                   2.
     public int addAudioTrack(int waveFormatTag, //
                              long scale, long rate, //
                              int numberOfChannels, int sampleSizeInBits, //
@@ -240,9 +225,7 @@ public class AVIOutputStream extends AbstractAVIStream {
         return tracks.size() - 1;
     }
 
-    /**
-     * Sets the global color palette.
-     */
+    /// Sets the global color palette.
     public void setPalette(int track, ColorModel palette) {
         if (palette instanceof IndexColorModel) {
             VideoTrack vtr = (VideoTrack) tracks.get(track);
@@ -251,9 +234,7 @@ public class AVIOutputStream extends AbstractAVIStream {
         }
     }
 
-    /**
-     * Gets the dimension of a track.
-     */
+    /// Gets the dimension of a track.
     public Dimension getVideoDimension(int track) {
         Track tr = tracks.get(track);
         if (tr instanceof VideoTrack) {
@@ -265,16 +246,15 @@ public class AVIOutputStream extends AbstractAVIStream {
         }
     }
 
-    /**
-     * Returns the contents of the extra track header. Returns null if the
-     * header is not present. <p> Note: this method can only be performed before
-     * media data has been written into the tracks.
-     *
-     * @param track
-     * @param fourcc
-     * @param data   the extra header as a byte array
-     * @throws IOException
-     */
+    /// Returns the contents of the extra track header. Returns null if the
+    /// header is not present.
+    ///  Note: this method can only be performed before
+    /// media data has been written into the tracks.
+    ///
+    /// @param track
+    /// @param fourcc
+    /// @param data   the extra header as a byte array
+    /// @throws IOException
     public void putExtraHeader(int track, String fourcc, byte[] data) throws IOException {
         if (state == States.STARTED) {
             throw new IllegalStateException("Stream headers have already been written!");
@@ -294,13 +274,11 @@ public class AVIOutputStream extends AbstractAVIStream {
         tr.extraHeaders.add(chunk);
     }
 
-    /**
-     * Returns the fourcc's of all extra stream headers.
-     *
-     * @param track
-     * @return An array of fourcc's of all extra stream headers.
-     * @throws IOException
-     */
+    /// Returns the fourcc's of all extra stream headers.
+    ///
+    /// @param track
+    /// @return An array of fourcc's of all extra stream headers.
+    /// @throws IOException
     public String[] getExtraHeaderFourCCs(int track) throws IOException {
         Track tr = tracks.get(track);
         String[] fourccs = new String[tr.extraHeaders.size()];
@@ -314,27 +292,27 @@ public class AVIOutputStream extends AbstractAVIStream {
         tracks.get(track).name = name;
     }
 
-    /**
-     * Sets the compression quality of a track. <p> A value of 0 stands for
-     * "high compression is important" a value of 1 for "high image quality is
-     * important". <p> Changing this value affects the encoding of video frames
-     * which are subsequently written into the track. Frames which have already
-     * been written are not changed. <p> This value has no effect on videos
-     * encoded with lossless encoders such as the PNG format. <p> The default
-     * value is 0.97.
-     *
-     * @param newValue
-     */
+    /// Sets the compression quality of a track.
+    ///  A value of 0 stands for
+    /// "high compression is important" a value of 1 for "high image quality is
+    /// important".
+    ///  Changing this value affects the encoding of video frames
+    /// which are subsequently written into the track. Frames which have already
+    /// been written are not changed.
+    ///  This value has no effect on videos
+    /// encoded with lossless encoders such as the PNG format.
+    ///  The default
+    /// value is 0.97.
+    ///
+    /// @param newValue
     public void setCompressionQuality(int track, float newValue) {
         Track t = tracks.get(track);
         t.quality = MathUtil.clamp((int) (newValue * 10_000f), 0, 10_000);
     }
 
-    /**
-     * Returns the compression quality of a track.
-     *
-     * @return compression quality
-     */
+    /// Returns the compression quality of a track.
+    ///
+    /// @return compression quality
     public float getCompressionQuality(int track) {
         Track t = tracks.get(track);
         return t.quality == -1 ? 0.97f : MathUtil.clamp(t.quality / 10_000f, 0f, 1f);
@@ -350,10 +328,9 @@ public class AVIOutputStream extends AbstractAVIStream {
         return t.motionSearchRange;
     }
 
-    /**
-     * Sets the state of the QuickTimeOutpuStream to started. <p> If the state
-     * is changed by this method, the prolog is written.
-     */
+    /// Sets the state of the QuickTimeOutpuStream to started.
+    ///  If the state
+    /// is changed by this method, the prolog is written.
     protected void ensureStarted() throws IOException {
         if (state != States.STARTED) {
             writeProlog();
@@ -361,25 +338,23 @@ public class AVIOutputStream extends AbstractAVIStream {
         }
     }
 
-    /**
-     * Sets the state of the QuickTimeOutpuStream to finished. <p> If the state
-     * is changed by this method, the prolog is written.
-     */
+    /// Sets the state of the QuickTimeOutpuStream to finished.
+    ///  If the state
+    /// is changed by this method, the prolog is written.
     protected void ensureFinished() throws IOException {
         if (state != States.FINISHED) {
             throw new IllegalStateException("Writer is in illegal state for this operation.");
         }
     }
 
-    /**
-     * Writes an already encoded palette change into the specified track. <p> If
-     * a track contains palette changes, then all key frames must be immediately
-     * preceeded by a palette change chunk which also is a key frame. If a key
-     * frame is not preceeded by a key frame palette change chunk, it will be
-     * downgraded to a delta frame.
-     *
-     * @throws IllegalArgumentException if the track is not a video track.
-     */
+    /// Writes an already encoded palette change into the specified track.
+    ///  If
+    /// a track contains palette changes, then all key frames must be immediately
+    /// preceeded by a palette change chunk which also is a key frame. If a key
+    /// frame is not preceeded by a key frame palette change chunk, it will be
+    /// downgraded to a delta frame.
+    ///
+    /// @throws IllegalArgumentException if the track is not a video track.
     public void writePalette(int track, byte[] data, int off, int len, boolean isKeyframe) throws IOException {
         Track tr = tracks.get(track);
         if (!(tr instanceof VideoTrack)) {
@@ -406,18 +381,17 @@ public class AVIOutputStream extends AbstractAVIStream {
         offset = getRelativeStreamPosition();
     }
 
-    /**
-     * Writes an already encoded sample from a file to the specified track. <p>
-     * This method does not inspect the contents of the file. For example, Its
-     * your responsibility to only append JPG files if you have chosen the JPEG
-     * video format. <p> If you append all frames from files or from input
-     * streams, then you have to explicitly set the dimension of the video track
-     * before you call finish() or close().
-     *
-     * @param file The file which holds the sample data.
-     * @throws IllegalStateException if the duration is less than 1.
-     * @throws IOException           if writing the sample data failed.
-     */
+    /// Writes an already encoded sample from a file to the specified track.
+    /// This method does not inspect the contents of the file. For example, Its
+    /// your responsibility to only append JPG files if you have chosen the JPEG
+    /// video format.
+    ///  If you append all frames from files or from input
+    /// streams, then you have to explicitly set the dimension of the video track
+    /// before you call finish() or close().
+    ///
+    /// @param file The file which holds the sample data.
+    /// @throws IllegalStateException if the duration is less than 1.
+    /// @throws IOException           if writing the sample data failed.
     public void writeSample(int track, File file, boolean isKeyframe) throws IOException {
         FileInputStream in = null;
         try {
@@ -430,20 +404,20 @@ public class AVIOutputStream extends AbstractAVIStream {
         }
     }
 
-    /**
-     * Writes an already encoded sample from an input stream to the specified
-     * track. <p> This method does not inspect the contents of the file. For
-     * example, its your responsibility to only append JPG files if you have
-     * chosen the JPEG video format. <p> If you append all frames from files or
-     * from input streams, then you have to explicitly set the dimension of the
-     * video track before you call finish() or close().
-     *
-     * @param track      The track number.
-     * @param in         The input stream which holds the sample data.
-     * @param isKeyframe True if the sample is a key frame.
-     * @throws IllegalArgumentException if the duration is less than 1.
-     * @throws IOException              if writing the sample data failed.
-     */
+    /// Writes an already encoded sample from an input stream to the specified
+    /// track.
+    ///  This method does not inspect the contents of the file. For
+    /// example, its your responsibility to only append JPG files if you have
+    /// chosen the JPEG video format.
+    ///  If you append all frames from files or
+    /// from input streams, then you have to explicitly set the dimension of the
+    /// video track before you call finish() or close().
+    ///
+    /// @param track      The track number.
+    /// @param in         The input stream which holds the sample data.
+    /// @param isKeyframe True if the sample is a key frame.
+    /// @throws IllegalArgumentException if the duration is less than 1.
+    /// @throws IOException              if writing the sample data failed.
     public void writeSample(int track, InputStream in, boolean isKeyframe) throws IOException {
         ensureStarted();
 
@@ -484,24 +458,22 @@ public class AVIOutputStream extends AbstractAVIStream {
         }
     }
 
-    /**
-     * Writes an already encoded sample from a byte array into a track.
-     * <p>
-     * This method does not inspect the contents of the samples. The content has to
-     * match the format and dimensions of the media in this track.
-     * <p>
-     * If a track contains palette changes, then all key frames must be immediately
-     * preceded by a palette change chunk. If a key frame is not preceded by a
-     * palette change chunk, it will be downgraded to a delta frame.
-     *
-     * @param track      The track index.
-     * @param data       The encoded sample data.
-     * @param off        The startTime offset in the data.
-     * @param len        The number of bytes to write.
-     * @param isKeyframe Whether the sample is a sync sample (keyframe).
-     * @throws IllegalArgumentException if the duration is less than 1.
-     * @throws IOException              if writing the sample data failed.
-     */
+    /// Writes an already encoded sample from a byte array into a track.
+    ///
+    /// This method does not inspect the contents of the samples. The content has to
+    /// match the format and dimensions of the media in this track.
+    ///
+    /// If a track contains palette changes, then all key frames must be immediately
+    /// preceded by a palette change chunk. If a key frame is not preceded by a
+    /// palette change chunk, it will be downgraded to a delta frame.
+    ///
+    /// @param track      The track index.
+    /// @param data       The encoded sample data.
+    /// @param off        The startTime offset in the data.
+    /// @param len        The number of bytes to write.
+    /// @param isKeyframe Whether the sample is a sync sample (keyframe).
+    /// @throws IllegalArgumentException if the duration is less than 1.
+    /// @throws IOException              if writing the sample data failed.
     public void writeSample(int track, byte[] data, int off, int len, boolean isKeyframe) throws IOException {
         ensureStarted();
         Track tr = tracks.get(track);
@@ -532,22 +504,21 @@ public class AVIOutputStream extends AbstractAVIStream {
         }
     }
 
-    /**
-     * Writes multiple already encoded samples from a byte array into a track.
-     * <p> This method does not inspect the contents of the data. The contents
-     * has to match the format and dimensions of the media in this track.
-     *
-     * @param track       The track index.
-     * @param sampleCount The number of samples.
-     * @param data        The encoded sample data.
-     * @param off         The startTime offset in the data.
-     * @param len         The number of bytes to write. Must be dividable by
-     *                    sampleCount.
-     * @param isKeyframe  Whether the samples are sync samples. All samples must
-     *                    either be sync samples or non-sync samples.
-     * @throws IllegalArgumentException if the duration is less than 1.
-     * @throws IOException              if writing the sample data failed.
-     */
+    /// Writes multiple already encoded samples from a byte array into a track.
+    ///
+    ///  This method does not inspect the contents of the data. The contents
+    /// has to match the format and dimensions of the media in this track.
+    ///
+    /// @param track       The track index.
+    /// @param sampleCount The number of samples.
+    /// @param data        The encoded sample data.
+    /// @param off         The startTime offset in the data.
+    /// @param len         The number of bytes to write. Must be dividable by
+    ///                                       sampleCount.
+    /// @param isKeyframe  Whether the samples are sync samples. All samples must
+    ///                                       either be sync samples or non-sync samples.
+    /// @throws IllegalArgumentException if the duration is less than 1.
+    /// @throws IOException              if writing the sample data failed.
     public void writeSamples(int track, int sampleCount, byte[] data, int off, int len, boolean isKeyframe) throws IOException {
         ensureStarted();
         Track tr = tracks.get(track);
@@ -574,12 +545,10 @@ public class AVIOutputStream extends AbstractAVIStream {
         }
     }
 
-    /**
-     * Returns the duration of the track in media time scale units.
-     *
-     * @param track track number
-     * @return duration in time scale units
-     */
+    /// Returns the duration of the track in media time scale units.
+    ///
+    /// @param track track number
+    /// @return duration in time scale units
     public long getMediaDuration(int track) {
         Track tr = tracks.get(track);
 
@@ -591,11 +560,9 @@ public class AVIOutputStream extends AbstractAVIStream {
         return duration;
     }
 
-    /**
-     * Closes the stream.
-     *
-     * @throws IOException if an I/O error has occurred
-     */
+    /// Closes the stream.
+    ///
+    /// @throws IOException if an I/O error has occurred
     public void close() throws IOException {
         if (state == States.STARTED) {
             finish();
@@ -606,15 +573,13 @@ public class AVIOutputStream extends AbstractAVIStream {
         }
     }
 
-    /**
-     * Finishes writing the contents of the AVI output stream without closing
-     * the underlying stream. Use this method when applying multiple filters in
-     * succession to the same output stream.
-     *
-     * @throws IllegalStateException if the dimension of the video track has
-     *                               not been specified or determined yet.
-     * @throws IOException           if an I/O exception has occurred
-     */
+    /// Finishes writing the contents of the AVI output stream without closing
+    /// the underlying stream. Use this method when applying multiple filters in
+    /// succession to the same output stream.
+    ///
+    /// @throws IllegalStateException if the dimension of the video track has
+    ///                                                             not been specified or determined yet.
+    /// @throws IOException           if an I/O exception has occurred
     public void finish() throws IOException {
         ensureOpen();
         if (state != States.FINISHED) {
@@ -624,21 +589,18 @@ public class AVIOutputStream extends AbstractAVIStream {
         }
     }
 
-    /**
-     * Check to make sure that this stream has not been closed
-     */
+    /// Check to make sure that this stream has not been closed
     private void ensureOpen() throws IOException {
         if (state == States.CLOSED) {
             throw new IOException("Stream closed");
         }
     }
 
-    /**
-     * Returns true if the limit for media samples has been reached. If this
-     * limit is reached, no more samples should be added to the movie. <p> AVI
-     * 1.0 files have a file size limit of 2 GB. This method returns true if a
-     * file size of 1.8 GB has been reached.
-     */
+    /// Returns true if the limit for media samples has been reached. If this
+    /// limit is reached, no more samples should be added to the movie.
+    ///  AVI
+    /// 1.0 files have a file size limit of 2 GB. This method returns true if a
+    /// file size of 1.8 GB has been reached.
     public boolean isDataLimitReached() {
         try {
             return getRelativeStreamPosition() > (long) (1.8 * 1024 * 1024 * 1024);

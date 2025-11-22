@@ -10,37 +10,36 @@ import java.util.Random;
 
 import static java.lang.Math.fma;
 
-/**
- * Implements a K-Means clustering algorithm.
- * <pre>
- * This implementation only works with 3-dimensional data.
- * <pre>
- * input : X= {x1, x2, . . . , xN } ∈ D (N × D input data set)
- * output: C= {c1, c2, . . . , cK } ∈ D (K cluster centers)
- * Select a random subset C of X as the initial set of cluster centers;
- * while termination criterion is not met do
- * |  for (i = 1; i ≤ N ; i= i + 1) do
- * |  |  Assign xi to the nearest cluster;
- * |  |  m[i] = argmin k∈{1,2,...,K} ∥xi− ck ∥^2 ;
- * |  end
- * |  Recalculate the cluster centers;
- * |  for (k = 1; k ≤ K; k= k + 1) do
- * |  |  Cluster Sk contains the set of points xi that are nearest to the center ck ;
- * |  |  Sk = {xi |m[i] = k };
- * |  |  Calculate the new center ck as the mean of the points that belong to Sk ;
- * |  |  ck = 1/|Sk| ∑ xi∈Sk * xi;
- * |  end
- * end
- * </pre>
- * References:
- * <dl>
- * <dt>M. Emre Celebi. Department of Computer Science.
- *       Louisiana State University, Shreveport, LA, USA (2024).
- *        Improving the Performance of K-Means for Color Quantization.</dt>
- *  <dd><a href="https://ui.adsabs.harvard.edu/abs/2011arXiv1101.0395E/abstract">harvard.edu</a>
- *     <br><a href="https://arxiv.org/pdf/1101.0395">arxiv.org</a></a></dd>
- * </dl>
- */
+/// Implements a K-Means clustering algorithm.
+/// <pre>
+/// This implementation only works with 3-dimensional data.
+/// <pre>
+/// input : X= {x1, x2, . . . , xN } ∈ D (N × D input data set)
+/// output: C= {c1, c2, . . . , cK } ∈ D (K cluster centers)
+/// Select a random subset C of X as the initial set of cluster centers;
+/// while termination criterion is not met do
+/// |  for (i = 1; i ≤ N ; i= i + 1) do
+/// |  |  Assign xi to the nearest cluster;
+/// |  |  m[i] = argmin k∈{1,2,...,K} ∥xi− ck ∥^2 ;
+/// |  end
+/// |  Recalculate the cluster centers;
+/// |  for (k = 1; k ≤ K; k= k + 1) do
+/// |  |  Cluster Sk contains the set of points xi that are nearest to the center ck ;
+/// |  |  Sk = {xi |m[i] = k };
+/// |  |  Calculate the new center ck as the mean of the points that belong to Sk ;
+/// |  |  ck = 1/|Sk| ∑ xi∈Sk * xi;
+/// |  end
+/// end
+/// </pre>
+/// References:
+/// <dl>
+/// <dt>M. Emre Celebi. Department of Computer Science.
+///       Louisiana State University, Shreveport, LA, USA (2024).
+///        Improving the Performance of K-Means for Color Quantization.</dt>
+///  <dd>[harvard.edu](https://ui.adsabs.harvard.edu/abs/2011arXiv1101.0395E/abstract)
+///
+/// [arxiv.org](https://arxiv.org/pdf/1101.0395)</a></dd>
+/// </dl>
 public class Naive3DKMeansClusteringAlgo {
     private Random rng = new Random();
 
@@ -49,16 +48,14 @@ public class Naive3DKMeansClusteringAlgo {
 
     }
 
-    /**
-     * Compute kMeans.
-     *
-     * @param X             the input data set with float[N][D] data elements. D must be 3.
-     * @param xWeights      the weights of the data elements
-     * @param K             the number of clusters
-     * @param numIterations the number of iterations
-     * @param initMethod    algorithm for selecting the initial cluster positions
-     * @return C the K cluster centers
-     */
+    /// Compute kMeans.
+    ///
+    /// @param X             the input data set with float[N][D] data elements. D must be 3.
+    /// @param xWeights      the weights of the data elements
+    /// @param K             the number of clusters
+    /// @param numIterations the number of iterations
+    /// @param initMethod    algorithm for selecting the initial cluster positions
+    /// @return C the K cluster centers
     public KMeans computeKMeans(float[][] X, float[] xWeights, int K, int numIterations, KMeansInitAlgo initMethod) {
         int N = X.length;
         int[] assignments = new int[N];

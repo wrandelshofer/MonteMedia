@@ -13,23 +13,19 @@ import javax.sound.sampled.AudioSystem;
 import java.io.IOException;
 import java.util.Arrays;
 
-/**
- * Mixes multiple audio tracks into a single 16-bit PCM stereo audio track.
- */
+/// Mixes multiple audio tracks into a single 16-bit PCM stereo audio track.
 public class AudioMixer {
-    /**
-     * The data array holds the mixed audio track.
-     * <p>
-     * The 16-bit samples are stored in 32-bit integers, so that the mixer
-     * can handle intermediate results which are too loud for play-back.
-     * <p>
-     * Two data elements represent one stereo audio sample.
-     * <p>
-     * A data element at an even index contains an audio samples for the
-     * left channel.
-     * A data element at an odd index contains audio samples for the right
-     * channel.
-     */
+    /// The data array holds the mixed audio track.
+    ///
+    /// The 16-bit samples are stored in 32-bit integers, so that the mixer
+    /// can handle intermediate results which are too loud for play-back.
+    ///
+    /// Two data elements represent one stereo audio sample.
+    ///
+    /// A data element at an even index contains an audio samples for the
+    /// left channel.
+    /// A data element at an odd index contains audio samples for the right
+    /// channel.
     private int[] data = new int[0];
 
     private final static AudioFormat stereoFormat = new AudioFormat(
@@ -41,18 +37,16 @@ public class AudioMixer {
             16,
             1, true, true);
 
-    /**
-     * Adds the provided audio samples to the audio track of the mixer.
-     *
-     * @param in        the audio samples to be added
-     * @param startTime the start time in seconds at which the audio samples
-     *                  are to be added to the audio track
-     * @param repeats   the number of repeats
-     * @param volume    the desired audio volume.
-     *                  The valid range of values is 0.0 to Float.MAX_VALUE.
-     * @param pan       the desired stereo pan (or balance).
-     *                  Supported values are -1: left only, 0: left and right,
-     */
+    /// Adds the provided audio samples to the audio track of the mixer.
+    ///
+    /// @param in        the audio samples to be added
+    /// @param startTime the start time in seconds at which the audio samples
+    ///                                                    are to be added to the audio track
+    /// @param repeats   the number of repeats
+    /// @param volume    the desired audio volume.
+    ///                                                    The valid range of values is 0.0 to Float.MAX_VALUE.
+    /// @param pan       the desired stereo pan (or balance).
+    ///                                                    Supported values are -1: left only, 0: left and right,
     public void add(AudioInputStream in, Rational startTime, int repeats, float volume, int pan) throws IOException {
         if (!(volume >= 0f && !Float.isNaN(volume))) {
             throw new IllegalArgumentException("volume: " + volume);
@@ -111,9 +105,7 @@ public class AudioMixer {
         }
     }
 
-    /**
-     * Ensures capacity for the specified number of stereo samples.
-     */
+    /// Ensures capacity for the specified number of stereo samples.
     private void ensureCapacity(int size) {
         if (data.length < size * 2) {
             data = Arrays.copyOf(data, size * 2);

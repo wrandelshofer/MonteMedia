@@ -13,71 +13,56 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 
-/**
- * JFIFInputStream.
- * <p>
- * This InputStream uses two special marker values which do not exist
- * in the JFIF stream:
- * <ul>
- * <li><b>-1</b>: marks junk data at the beginning of the file.</li>
- * <li><b>0</b>: marks entropy encoded image data.</li>
- * </ul>
- * <p>
- * The junk data at the beginning of the file can be accessed by calling the
- * read-methods immediately after opening the stream. Call nextSegment()
- * immediately after opening the stream if you are not interested into this
- * junk data.
- * <p>
- * Junk data at the end of the file is delivered as part of the EOI_MARKER segment.
- * Finish reading after encountering the EOI_MARKER segment if you are not interested
- * in this junk data.
- *
- * <p>
- * References:<br>
- * JPEG File Interchange Format Version 1.02<br>
- * <a href="http://www.jpeg.org/public/jfif.pdf">http://www.jpeg.org/public/jfif.pdf</a>
- * <p>
- *   Pennebaker, W., Mitchell, J. (1993).<br>
- *   JPEG Still Image Data Compression Standard.<br>
- *   Chapmann &amp; Hall, New York.<br>
- *   ISBN 0-442-01272-1<br>
- *
- * @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau
- */
+/// JFIFInputStream.
+///
+/// This InputStream uses two special marker values which do not exist
+/// in the JFIF stream:
+///
+///   - **-1**: marks junk data at the beginning of the file.
+///   - **0**: marks entropy encoded image data.
+///
+///
+/// The junk data at the beginning of the file can be accessed by calling the
+/// read-methods immediately after opening the stream. Call nextSegment()
+/// immediately after opening the stream if you are not interested into this
+/// junk data.
+///
+/// Junk data at the end of the file is delivered as part of the EOI_MARKER segment.
+/// Finish reading after encountering the EOI_MARKER segment if you are not interested
+/// in this junk data.
+///
+/// References:
+/// JPEG File Interchange Format Version 1.02
+/// [http://www.jpeg.org/public/jfif.pdf](http://www.jpeg.org/public/jfif.pdf)
+///
+///   Pennebaker, W., Mitchell, J. (1993).
+///   JPEG Still Image Data Compression Standard.
+///   Chapmann &amp; Hall, New York.
+///   ISBN 0-442-01272-1
+///
+/// @author Werner Randelshofer, Hausmatt 10, CH-6405 Goldau
 public class JFIFInputStream extends FilterInputStream {
 
-    /**
-     * This hash set holds the ids of markers which stand alone,
-     * respectively do not have a data segment.
-     */
+    /// This hash set holds the ids of markers which stand alone,
+    /// respectively do not have a data segment.
     private final HashSet<Integer> standaloneMarkers = new HashSet<>();
-    /**
-     * This hash set holds the Id's of markers which have a data
-     * segment followed by a entropy-coded data segment.
-     */
+    /// This hash set holds the Id's of markers which have a data
+    /// segment followed by a entropy-coded data segment.
     private final HashSet<Integer> doubleSegMarkers = new HashSet<>();
 
-    /**
-     * Represents a segment within a JFIF File.
-     */
+    /// Represents a segment within a JFIF File.
     public static class Segment {
 
-        /**
-         * Holds the marker code.
-         * A marker is an unsigned short between 0xff01 and 0xfffe.
-         */
+        /// Holds the marker code.
+        /// A marker is an unsigned short between 0xff01 and 0xfffe.
         public final int marker;
-        /**
-         * Holds the offset of the first data byte to the beginning
-         * of the stream.
-         */
+        /// Holds the offset of the first data byte to the beginning
+        /// of the stream.
         public final long offset;
-        /**
-         * If the marker starts a marker segment, holds the length
-         * of the data in the data segment.
-         * If the marker starts a entropy-coded data segment, holds
-         * the value -1.
-         */
+        /// If the marker starts a marker segment, holds the length
+        /// of the data in the data segment.
+        /// If the marker starts a entropy-coded data segment, holds
+        /// the value -1.
         public final int length;
 
         public Segment(int marker, long offset, int length) {
@@ -97,45 +82,27 @@ public class JFIFInputStream extends FilterInputStream {
     }
 
     private Segment segment;
-    /**
-     * This variable is set to true, if a 0xff byte has been found in
-     * entropy-code data.
-     */
+    /// This variable is set to true, if a 0xff byte has been found in
+    /// entropy-code data.
     private boolean markerFound;
     private int marker = JUNK_MARKER;
     private long offset = 0;
     private boolean isStuffed0xff = false;
-    /**
-     * JUNK_MARKER Marker (for data which is not part of the JFIF stream.
-     */
+    /// JUNK_MARKER Marker (for data which is not part of the JFIF stream.
     public final static int JUNK_MARKER = -1;
-    /**
-     * Start of image
-     */
+    /// Start of image
     public final static int SOI_MARKER = 0xffd8;
-    /**
-     * End of image
-     */
+    /// End of image
     public final static int EOI_MARKER = 0xffd9;
-    /**
-     * Temporary private use in arithmetic coding
-     */
+    /// Temporary private use in arithmetic coding
     public final static int TEM_MARKER = 0xff01;
-    /**
-     * Start of scan
-     */
+    /// Start of scan
     public final static int SOS_MARKER = 0xffda;
-    /**
-     * APP1_MARKER Reserved for application use
-     */
+    /// APP1_MARKER Reserved for application use
     public final static int APP1_MARKER = 0xffe1;
-    /**
-     * APP2_MARKER Reserved for application use
-     */
+    /// APP2_MARKER Reserved for application use
     public final static int APP2_MARKER = 0xffe2;
-    /**
-     * Reserved for JPEG extensions
-     */
+    /// Reserved for JPEG extensions
     public final static int JPG0_MARKER = 0xfff0;
     public final static int JPG1_MARKER = 0xfff1;
     public final static int JPG2_MARKER = 0xfff2;
@@ -150,9 +117,7 @@ public class JFIFInputStream extends FilterInputStream {
     public final static int JPGB_MARKER = 0xfffB;
     public final static int JPGC_MARKER = 0xfffC;
     public final static int JPGD_MARKER = 0xfffD;
-    /**
-     * Start of frame markers
-     */
+    /// Start of frame markers
     public final static int SOF0_MARKER = 0xffc0;//nondifferential Huffman-coding frames with baseline DCT.
     public final static int SOF1_MARKER = 0xffc1;//nondifferential Huffman-coding frames with extended sequential DCT.
     public final static int SOF2_MARKER = 0xffc2;//nondifferential Huffman-coding frames with progressive DCT.
@@ -216,24 +181,20 @@ public class JFIFInputStream extends FilterInputStream {
         segment = new Segment(-1, 0, -1);
     }
 
-    /**
-     * Gets the current segment from the input stream.
-     *
-     * @return The current segment. Returns null, if we encountered
-     * the end of the stream.
-     * @throws java.io.IOException
-     */
+    /// Gets the current segment from the input stream.
+    ///
+    /// @return The current segment. Returns null, if we encountered
+    /// the end of the stream.
+    /// @throws java.io.IOException
     public Segment getSegment() throws IOException {
         return segment;
     }
 
-    /**
-     * Gets the next segment from the input stream.
-     *
-     * @return The next segment. Returns null, if we encountered
-     * the end of the stream.
-     * @throws java.io.IOException
-     */
+    /// Gets the next segment from the input stream.
+    ///
+    /// @return The next segment. Returns null, if we encountered
+    /// the end of the stream.
+    /// @throws java.io.IOException
     public Segment getNextSegment() throws IOException {
         // If we are inside of a marker segment, skip the
         // marker
@@ -318,23 +279,21 @@ public class JFIFInputStream extends FilterInputStream {
         return b;
     }
 
-    /**
-     * Reads the next byte of data from this input stream. The value
-     * byte is returned as an <code>int</code> in the range
-     * <code>0</code> to <code>255</code>. If no byte is available
-     * because the end of the stream has been reached, the value
-     * <code>-1</code> is returned. This method blocks until input data
-     * is available, the end of the stream is detected, or an exception
-     * is thrown.
-     * <p>
-     * This method
-     * simply performs <code>in.read()</code> and returns the result.
-     *
-     * @return the next byte of data, or <code>-1</code> if the end of the
-     * stream is reached.
-     * @throws IOException if an I/O error occurs.
-     * @see java.io.FilterInputStream#in
-     */
+    /// Reads the next byte of data from this input stream. The value
+    /// byte is returned as an `int` in the range
+    /// `0` to `255`. If no byte is available
+    /// because the end of the stream has been reached, the value
+    /// `-1` is returned. This method blocks until input data
+    /// is available, the end of the stream is detected, or an exception
+    /// is thrown.
+    ///
+    /// This method
+    /// simply performs `in.read()` and returns the result.
+    ///
+    /// @return the next byte of data, or `-1` if the end of the
+    /// stream is reached.
+    /// @throws IOException if an I/O error occurs.
+    /// @see java.io.FilterInputStream#in
     @Override
     public int read() throws IOException {
         if (markerFound) {
@@ -368,23 +327,21 @@ public class JFIFInputStream extends FilterInputStream {
         return b;
     }
 
-    /**
-     * Reads up to <code>len</code> b of data from this input stream
-     * into an array of b. This method blocks until some input is
-     * available.
-     * <p>
-     * This method simply performs <code>in.read(b, off, len)</code>
-     * and returns the result.
-     *
-     * @param b   the buffer into which the data is read.
-     * @param off the start offset of the data.
-     * @param len the maximum number of b read.
-     * @return the total number of b read into the buffer, or
-     * <code>-1</code> if there is no more data because the end of
-     * the stream has been reached.
-     * @throws IOException if an I/O error occurs.
-     * @see java.io.FilterInputStream#in
-     */
+    /// Reads up to `len` b of data from this input stream
+    /// into an array of b. This method blocks until some input is
+    /// available.
+    ///
+    /// This method simply performs `in.read(b, off, len)`
+    /// and returns the result.
+    ///
+    /// @param b   the buffer into which the data is read.
+    /// @param off the start offset of the data.
+    /// @param len the maximum number of b read.
+    /// @return the total number of b read into the buffer, or
+    /// `-1` if there is no more data because the end of
+    /// the stream has been reached.
+    /// @throws IOException if an I/O error occurs.
+    /// @see java.io.FilterInputStream#in
     @Override
     public int read(byte b[], int off, int len) throws IOException {
         if (markerFound) {
@@ -418,9 +375,7 @@ public class JFIFInputStream extends FilterInputStream {
         return count;
     }
 
-    /**
-     * Fully skips the specified number of bytes.
-     */
+    /// Fully skips the specified number of bytes.
     public final void skipFully(long n) throws IOException {
         long total = 0;
         long cur = 0;
@@ -434,20 +389,18 @@ public class JFIFInputStream extends FilterInputStream {
         }
     }
 
-    /**
-     * Skips over and discards <code>n</code> b of data from the
-     * input stream. The <code>skip</code> method may, for a variety of
-     * reasons, end up skipping over some smaller number of b,
-     * possibly <code>0</code>. The actual number of b skipped is
-     * returned.
-     * <p>
-     * This method
-     * simply performs <code>in.skip(n)</code>.
-     *
-     * @param n the number of b to be skipped.
-     * @return the actual number of b skipped.
-     * @throws IOException if an I/O error occurs.
-     */
+    /// Skips over and discards `n` b of data from the
+    /// input stream. The `skip` method may, for a variety of
+    /// reasons, end up skipping over some smaller number of b,
+    /// possibly `0`. The actual number of b skipped is
+    /// returned.
+    ///
+    /// This method
+    /// simply performs `in.skip(n)`.
+    ///
+    /// @param n the number of b to be skipped.
+    /// @return the actual number of b skipped.
+    /// @throws IOException if an I/O error occurs.
     @Override
     public long skip(long n) throws IOException {
         if (markerFound) {
@@ -475,66 +428,60 @@ public class JFIFInputStream extends FilterInputStream {
         return count;
     }
 
-    /**
-     * Marks the current position in this input stream. A subsequent
-     * call to the <code>reset</code> method repositions this stream at
-     * the last marked position so that subsequent reads re-read the same b.
-     * <p>
-     * The <code>readlimit</code> argument tells this input stream to
-     * allow that many b to be read before the mark position gets
-     * invalidated.
-     * <p>
-     * This method simply performs <code>in.mark(readlimit)</code>.
-     *
-     * @param readlimit the maximum limit of b that can be read before
-     *                  the mark position becomes invalid.
-     * @see java.io.FilterInputStream#in
-     * @see java.io.FilterInputStream#reset()
-     */
+    /// Marks the current position in this input stream. A subsequent
+    /// call to the `reset` method repositions this stream at
+    /// the last marked position so that subsequent reads re-read the same b.
+    ///
+    /// The `readlimit` argument tells this input stream to
+    /// allow that many b to be read before the mark position gets
+    /// invalidated.
+    ///
+    /// This method simply performs `in.mark(readlimit)`.
+    ///
+    /// @param readlimit the maximum limit of b that can be read before
+    ///                                                                                      the mark position becomes invalid.
+    /// @see java.io.FilterInputStream#in
+    /// @see java.io.FilterInputStream#reset()
     @Override
     public synchronized void mark(int readlimit) {
         // do nothing, since we don't support marking
     }
 
-    /**
-     * Repositions this stream to the position at the time the
-     * <code>mark</code> method was last called on this input stream.
-     * <p>
-     * This method
-     * simply performs <code>in.reset()</code>.
-     * <p>
-     * Stream marks are intended to be used in
-     * situations where you need to read ahead a little to see what's in
-     * the stream. Often this is most easily done by invoking some
-     * general parser. If the stream is of the type handled by the
-     * parse, it just chugs along happily. If the stream is not of
-     * that type, the parser should toss an exception when it fails.
-     * If this happens within readlimit b, it allows the outer
-     * code to reset the stream and try another parser.
-     *
-     * @throws IOException if the stream has not been marked or if the
-     *                     mark has been invalidated.
-     * @see java.io.FilterInputStream#in
-     * @see java.io.FilterInputStream#mark(int)
-     */
+    /// Repositions this stream to the position at the time the
+    /// `mark` method was last called on this input stream.
+    ///
+    /// This method
+    /// simply performs `in.reset()`.
+    ///
+    /// Stream marks are intended to be used in
+    /// situations where you need to read ahead a little to see what's in
+    /// the stream. Often this is most easily done by invoking some
+    /// general parser. If the stream is of the type handled by the
+    /// parse, it just chugs along happily. If the stream is not of
+    /// that type, the parser should toss an exception when it fails.
+    /// If this happens within readlimit b, it allows the outer
+    /// code to reset the stream and try another parser.
+    ///
+    /// @throws IOException if the stream has not been marked or if the
+    ///                                                                                 mark has been invalidated.
+    /// @see java.io.FilterInputStream#in
+    /// @see java.io.FilterInputStream#mark(int)
     @Override
     public synchronized void reset() throws IOException {
         throw new IOException("Reset not supported");
     }
 
-    /**
-     * Tests if this input stream supports the <code>mark</code>
-     * and <code>reset</code> methods.
-     * This method
-     * simply performs <code>in.markSupported()</code>.
-     *
-     * @return <code>true</code> if this stream type supports the
-     * <code>mark</code> and <code>reset</code> method;
-     * <code>false</code> otherwise.
-     * @see java.io.FilterInputStream#in
-     * @see java.io.InputStream#mark(int)
-     * @see java.io.InputStream#reset()
-     */
+    /// Tests if this input stream supports the `mark`
+    /// and `reset` methods.
+    /// This method
+    /// simply performs `in.markSupported()`.
+    ///
+    /// @return `true` if this stream type supports the
+    /// `mark` and `reset` method;
+    /// `false` otherwise.
+    /// @see java.io.FilterInputStream#in
+    /// @see java.io.InputStream#mark(int)
+    /// @see java.io.InputStream#reset()
     @Override
     public boolean markSupported() {
         return false;

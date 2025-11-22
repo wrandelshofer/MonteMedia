@@ -13,26 +13,24 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-/**
- * Demonstrates how to concatenate multiple movie files without re-encoding the
- * media data. <p> Caveat: If an input file has multiple tracks of different
- * durations, then the audio/video sync of subsequent input file will drift. On
- * the upside this allows to merge a file which only contains video with a file
- * that only contains audio.
- *
- * @author Werner Randelshofer
- */
+/// Demonstrates how to concatenate multiple movie files without re-encoding the
+/// media data.
+///  Caveat: If an input file has multiple tracks of different
+/// durations, then the audio/video sync of subsequent input file will drift. On
+/// the upside this allows to merge a file which only contains video with a file
+/// that only contains audio.
+///
+/// @author Werner Randelshofer
 public class ConcatDemoMain {
 
-    /**
-     * Main function. <p> Takes one output file and one or more input files as
-     * arguments. Concatenates all input files into the output file.
-     * <pre>
-     * ConcatDemo [-o outputfile] [-i inputfile ...]
-     * </pre>
-     *
-     * @param args the command line arguments
-     */
+    /// Main function.
+    ///  Takes one output file and one or more input files as
+    /// arguments. Concatenates all input files into the output file.
+    /// <pre>
+    /// ConcatDemo [-o outputfile] [-i inputfile...]
+    /// </pre>
+    ///
+    /// @param args the command line arguments
     public static void main(String[] args) {
         // Use hardcoded arguments for debugging
         /*

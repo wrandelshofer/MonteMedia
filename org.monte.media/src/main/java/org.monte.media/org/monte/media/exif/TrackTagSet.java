@@ -8,11 +8,9 @@ package org.monte.media.exif;
 import org.monte.media.tiff.TIFFTag;
 import org.monte.media.tiff.TagSet;
 
-/**
- * TrackTagSet.
- *
- * @author Werner Randelshofer
- */
+/// TrackTagSet.
+///
+/// @author Werner Randelshofer
 public class TrackTagSet extends TagSet {
     private static TrackTagSet instance;
 

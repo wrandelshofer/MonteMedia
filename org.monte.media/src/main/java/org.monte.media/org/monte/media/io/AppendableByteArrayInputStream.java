@@ -6,11 +6,9 @@ package org.monte.media.io;
 
 import java.io.ByteArrayInputStream;
 
-/**
- * A {@code ByteArrayInputStream} which allows to replace the byte buffer underneath.
- *
- * @author Werner Randelshofer
- */
+/// A `ByteArrayInputStream` which allows to replace the byte buffer underneath.
+///
+/// @author Werner Randelshofer
 public class AppendableByteArrayInputStream extends ByteArrayInputStream {
 
     public AppendableByteArrayInputStream(byte[] buf, int offset, int length) {
@@ -50,14 +48,12 @@ public class AppendableByteArrayInputStream extends ByteArrayInputStream {
         return count;
     }
 
-    /**
-     * Appends new data to the buffer.
-     *
-     * @param buf     Data.
-     * @param offset  Offset in the data.
-     * @param length  Length of the data.
-     * @param discard True if data which has already been read can be discarded.
-     */
+    /// Appends new data to the buffer.
+    ///
+    /// @param buf     Data.
+    /// @param offset  Offset in the data.
+    /// @param length  Length of the data.
+    /// @param discard True if data which has already been read can be discarded.
     public void appendBuffer(byte[] buf, int offset, int length, boolean discard) {
         if (discard) {
             if (this.buf.length >= count - pos + length) {
@@ -95,15 +91,13 @@ public class AppendableByteArrayInputStream extends ByteArrayInputStream {
         //System.out.println("AppendableByteArrayInputStream.appendBuffer   pos="+pos+" count="+count);
     }
 
-    /**
-     * Sets the buffer and resets the stream.
-     * This will overwrite the data array in the buffer, if it is large enough.
-     * Otherwise it will create a new data array and copy the data into it.
-     *
-     * @param buf    Data.
-     * @param offset Offset in the data.
-     * @param length Length of the data.
-     */
+    /// Sets the buffer and resets the stream.
+    /// This will overwrite the data array in the buffer, if it is large enough.
+    /// Otherwise it will create a new data array and copy the data into it.
+    ///
+    /// @param buf    Data.
+    /// @param offset Offset in the data.
+    /// @param length Length of the data.
     public void setBuffer(byte[] buf, int offset, int length) {
         if (this.buf.length >= length) {
             // => the buffer has enough space for the existing data and the new data

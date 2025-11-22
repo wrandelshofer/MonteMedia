@@ -9,9 +9,7 @@ import org.monte.media.math.FloatFunction;
 
 import java.awt.color.ColorSpace;
 
-/**
- * Adds a non-linear transfer function to a linear {@code RGB} color space.
- */
+/// Adds a non-linear transfer function to a linear `RGB` color space.
 public class ParametricNonLinearRgbColorSpace extends AbstractNamedColorSpace {
     private final FloatFunction fromLinear;
     private final NamedColorSpace linearCS;

@@ -26,9 +26,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SilenceBugKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.fromAudioFormat;
 
-/**
- * Samples audio in fixed intervals .
- */
+/// Samples audio in fixed intervals .
 public class AudioSampler implements Sampler {
 
     private final TargetDataLine line;
@@ -114,18 +112,16 @@ public class AudioSampler implements Sampler {
         buf.track = track;
     }
 
-    /**
-     * Calculates the root-mean-square average of continuous samples. For
-     * four samples, the formula looks like this:
-     * <pre>
-     * rms = sqrt( (x0^2 + x1^2 + x2^2 + x3^2) / 4)
-     * </pre> Resources:
-     * <a href="http://www.jsresources.org/faq_audio.html#calculate_power">jsresources.org</a>
-     *
-     * @param data   an array with audio data samples
-     * @param length the number of bytes in data that contain samples
-     * @param format the format of the samples
-     */
+    /// Calculates the root-mean-square average of continuous samples. For
+    /// four samples, the formula looks like this:
+    /// <pre>
+    /// rms = sqrt( (x0^2 + x1^2 + x2^2 + x3^2) / 4)
+    /// </pre> Resources:
+    /// [jsresources.org](http://www.jsresources.org/faq_audio.html#calculate_power)
+    ///
+    /// @param data   an array with audio data samples
+    /// @param length the number of bytes in data that contain samples
+    /// @param format the format of the samples
     private void computeAudioLevel(byte[] data, int length, AudioFormat format) {
         audioLevelLeft = audioLevelRight = AudioSystem.NOT_SPECIFIED;
         if (format.getEncoding().equals(AudioFormat.Encoding.PCM_SIGNED)) {

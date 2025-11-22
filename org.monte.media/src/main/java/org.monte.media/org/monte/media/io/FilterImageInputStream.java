@@ -7,11 +7,9 @@ package org.monte.media.io;
 import javax.imageio.stream.ImageInputStream;
 import java.io.IOException;
 
-/**
- * FilterImageInputStream.
- *
- * @author Werner Randelshofer
- */
+/// FilterImageInputStream.
+///
+/// @author Werner Randelshofer
 public class FilterImageInputStream extends ImageInputStreamImpl2 {
 
     protected final ImageInputStream in;
@@ -82,19 +80,15 @@ public class FilterImageInputStream extends ImageInputStreamImpl2 {
         return in.getFlushedPosition() - offset;
     }
 
-    /**
-     * Default implementation returns false.  Subclasses should
-     * override this if they cache data.
-     */
+    /// Default implementation returns false.  Subclasses should
+    /// override this if they cache data.
     @Override
     public boolean isCached() {
         return in.isCached();
     }
 
-    /**
-     * Default implementation returns false.  Subclasses should
-     * override this if they cache data in main memory.
-     */
+    /// Default implementation returns false.  Subclasses should
+    /// override this if they cache data in main memory.
     @Override
     public boolean isCachedMemory() {
         return in.isCachedMemory();

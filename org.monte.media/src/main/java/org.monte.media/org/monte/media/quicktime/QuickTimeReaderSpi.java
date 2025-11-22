@@ -12,11 +12,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * QuickTimeReaderSpi.
- *
- * @author Werner Randelshofer
- */
+/// QuickTimeReaderSpi.
+///
+/// @author Werner Randelshofer
 public class QuickTimeReaderSpi implements MovieReaderSpi {
 
     private final static List<String> extensions = List.of(new String[]{"mov"});

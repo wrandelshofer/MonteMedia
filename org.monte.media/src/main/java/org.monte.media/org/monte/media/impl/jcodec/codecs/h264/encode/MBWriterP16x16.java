@@ -22,21 +22,16 @@ import static org.monte.media.impl.jcodec.codecs.h264.H264Const.MB_DISP_OFF_TOP;
 import static org.monte.media.impl.jcodec.codecs.h264.encode.H264EncoderUtils.median;
 import static org.monte.media.impl.jcodec.codecs.h264.io.model.MBType.P_16x16;
 
-/**
- * References:
- * <p>
- * This code has been derived from JCodecProject.
- * <dl>
- *     <dt>JCodecProject. Copyright 2008-2019 JCodecProject.
- *     <br><a href="https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE">BSD 2-Clause License.</a></dt>
- *     <dd><a href="https://github.com/jcodec/jcodec">github.com</a></dd>
- * </dl>
- *
- * <p>
- * Encodes macroblock as P16x16
- *
- * @author Stanislav Vitvitskyy
- */
+/// References:
+///
+/// JCodecProject. Copyright 2008-2019 JCodecProject.
+/// : [BSD 2-Clause License.](https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE)
+/// : [github.com](https://github.com/jcodec/jcodec)
+///
+///
+/// Encodes macroblock as P16x16
+///
+/// @author Stanislav Vitvitskyy
 public class MBWriterP16x16 {
     private SeqParameterSet sps;
     private Picture ref;
@@ -126,11 +121,9 @@ public class MBWriterP16x16 {
         return 47;
     }
 
-    /**
-     * Decides which reference to use
-     *
-     * @return
-     */
+    /// Decides which reference to use
+    ///
+    /// @return
     private int decideRef() {
         return 0;
     }

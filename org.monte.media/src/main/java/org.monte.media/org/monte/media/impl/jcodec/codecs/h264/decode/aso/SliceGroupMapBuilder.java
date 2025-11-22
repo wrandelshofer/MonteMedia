@@ -5,33 +5,26 @@
 
 package org.monte.media.impl.jcodec.codecs.h264.decode.aso;
 
-/**
- * References:
- * <p>
- * This code has been derived from JCodecProject.
- * <dl>
- *     <dt>JCodecProject. Copyright 2008-2019 JCodecProject.
- *     <br><a href="https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE">BSD 2-Clause License.</a></dt>
- *     <dd><a href="https://github.com/jcodec/jcodec">github.com</a></dd>
- * </dl>
- *
- * <p>
- * A helper class that builds macroblock to slice group maps needed by ASO
- * (Arbitrary Slice Order)
- *
- * @author The JCodec project
- */
+/// References:
+///
+/// JCodecProject. Copyright 2008-2019 JCodecProject.
+/// : [BSD 2-Clause License.](https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE)
+/// : [github.com](https://github.com/jcodec/jcodec)
+///
+///
+/// A helper class that builds macroblock to slice group maps needed by ASO
+/// (Arbitrary Slice Order)
+///
+/// @author The JCodec project
 public class SliceGroupMapBuilder {
 
-    /**
-     * Interleaved slice group map. Each slice group fills a number of cells
-     * equal to the appropriate run length, then followed by the next slice
-     * group.
-     * <p>
-     * Example:
-     * <p>
-     * 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1,
-     */
+    /// Interleaved slice group map. Each slice group fills a number of cells
+    /// equal to the appropriate run length, then followed by the next slice
+    /// group.
+    ///
+    /// Example:
+    ///
+    /// 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1,
     public static int[] buildInterleavedMap(int picWidthInMbs, int picHeightInMbs, int[] runLength) {
 
         int numSliceGroups = runLength.length;
@@ -50,16 +43,14 @@ public class SliceGroupMapBuilder {
         return groups;
     }
 
-    /**
-     * A dispersed map. Every odd line starts from the (N / 2)th group
-     * <p>
-     * Example:
-     * <p>
-     * 0, 1, 2, 3, 0, 1, 2, 3 2, 3, 0, 1, 2, 3, 0, 1 0, 1, 2, 3, 0, 1, 2, 3 2,
-     * 3, 0, 1, 2, 3, 0, 1 0, 1, 2, 3, 0, 1, 2, 3 2, 3, 0, 1, 2, 3, 0, 1 0, 1,
-     * 2, 3, 0, 1, 2, 3 2, 3, 0, 1, 2, 3, 0, 1 0, 1, 2, 3, 0, 1, 2, 3 2, 3, 0,
-     * 1, 2, 3, 0, 1
-     */
+    /// A dispersed map. Every odd line starts from the (N / 2)th group
+    ///
+    /// Example:
+    ///
+    /// 0, 1, 2, 3, 0, 1, 2, 3 2, 3, 0, 1, 2, 3, 0, 1 0, 1, 2, 3, 0, 1, 2, 3 2,
+    /// 3, 0, 1, 2, 3, 0, 1 0, 1, 2, 3, 0, 1, 2, 3 2, 3, 0, 1, 2, 3, 0, 1 0, 1,
+    /// 2, 3, 0, 1, 2, 3 2, 3, 0, 1, 2, 3, 0, 1 0, 1, 2, 3, 0, 1, 2, 3 2, 3, 0,
+    /// 1, 2, 3, 0, 1
     public static int[] buildDispersedMap(int picWidthInMbs, int picHeightInMbs, int numSliceGroups) {
 
         int picSizeInMbs = picWidthInMbs * picHeightInMbs;
@@ -73,21 +64,19 @@ public class SliceGroupMapBuilder {
         return groups;
     }
 
-    /**
-     * A foreground macroblock to slice group map. Macroblocks of the last slice
-     * group are the background, all the others represent rectangles covering
-     * areas with top-left corner specified by topLeftAddr[group] and bottom
-     * right corner specified by bottomRightAddr[group].
-     *
-     * @param picWidthInMbs
-     * @param picHeightInMbs
-     * @param numSliceGroups  Total number of slice groups
-     * @param topLeftAddr     Addresses of macroblocks that are top-left corners of
-     *                        respective slice groups
-     * @param bottomRightAddr Addresses macroblocks that are bottom-right corners of
-     *                        respective slice groups
-     * @return
-     */
+    /// A foreground macroblock to slice group map. Macroblocks of the last slice
+    /// group are the background, all the others represent rectangles covering
+    /// areas with top-left corner specified by topLeftAddr[group] and bottom
+    /// right corner specified by bottomRightAddr[group].
+    ///
+    /// @param picWidthInMbs
+    /// @param picHeightInMbs
+    /// @param numSliceGroups  Total number of slice groups
+    /// @param topLeftAddr     Addresses of macroblocks that are top-left corners of
+    ///                                                                                                                                                                  respective slice groups
+    /// @param bottomRightAddr Addresses macroblocks that are bottom-right corners of
+    ///                                                                                                                                                                  respective slice groups
+    /// @return
     public static int[] buildForegroundMap(int picWidthInMbs, int picHeightInMbs, int numSliceGroups,
                                            int[] topLeftAddr, int[] bottomRightAddr) {
 
@@ -119,17 +108,15 @@ public class SliceGroupMapBuilder {
         return groups;
     }
 
-    /**
-     * A boxout macroblock to slice group mapping. Only applicable when there's
-     * exactly 2 slice groups. Slice group 1 is a background, while slice group
-     * 0 is a box in the middle of the frame.
-     *
-     * @param picWidthInMbs
-     * @param picHeightInMbs
-     * @param changeDirection
-     * @param numberOfMbsInBox number of macroblocks in slice group 0
-     * @return
-     */
+    /// A boxout macroblock to slice group mapping. Only applicable when there's
+    /// exactly 2 slice groups. Slice group 1 is a background, while slice group
+    /// 0 is a box in the middle of the frame.
+    ///
+    /// @param picWidthInMbs
+    /// @param picHeightInMbs
+    /// @param changeDirection
+    /// @param numberOfMbsInBox number of macroblocks in slice group 0
+    /// @return
     public static int[] buildBoxOutMap(int picWidthInMbs, int picHeightInMbs, boolean changeDirection,
                                        int numberOfMbsInBox) {
 
@@ -193,15 +180,13 @@ public class SliceGroupMapBuilder {
         return i > j ? i : j;
     }
 
-    /**
-     * A macroblock to slice group map that fills frame in raster scan.
-     *
-     * @param picWidthInMbs
-     * @param picHeightInMbs
-     * @param sizeOfUpperLeftGroup
-     * @param changeDirection
-     * @return
-     */
+    /// A macroblock to slice group map that fills frame in raster scan.
+    ///
+    /// @param picWidthInMbs
+    /// @param picHeightInMbs
+    /// @param sizeOfUpperLeftGroup
+    /// @param changeDirection
+    /// @return
     public static int[] buildRasterScanMap(int picWidthInMbs, int picHeightInMbs, int sizeOfUpperLeftGroup,
                                            boolean changeDirection) {
 
@@ -221,15 +206,13 @@ public class SliceGroupMapBuilder {
         return groups;
     }
 
-    /**
-     * A macroblock to slice group map that fills frame column by column
-     *
-     * @param picWidthInMbs
-     * @param picHeightInMbs
-     * @param sizeOfUpperLeftGroup
-     * @param changeDirection
-     * @return
-     */
+    /// A macroblock to slice group map that fills frame column by column
+    ///
+    /// @param picWidthInMbs
+    /// @param picHeightInMbs
+    /// @param sizeOfUpperLeftGroup
+    /// @param changeDirection
+    /// @return
     public static int[] buildWipeMap(int picWidthInMbs, int picHeightInMbs, int sizeOfUpperLeftGroup,
                                      boolean changeDirection) {
 

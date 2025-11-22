@@ -9,9 +9,7 @@ import org.monte.media.math.Matrix3;
 
 import java.awt.color.ColorSpace;
 
-/**
- * An XYZ color space with a linear transformation matrix from/to XYZ D50.
- */
+/// An XYZ color space with a linear transformation matrix from/to XYZ D50.
 public class ParametricXyzColorSpace extends AbstractNamedColorSpace {
     private final static SrgbColorSpace SRGB_COLOR_SPACE = new SrgbColorSpace();
 

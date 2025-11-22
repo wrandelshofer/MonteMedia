@@ -7,12 +7,10 @@ package org.monte.media.iff;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/**
- * IFF Chunks form the building blocks of an IFF file. This class is made for
- * reading purposes only. See MutableIFFChunk for writing purposes.
- *
- * @author Werner Randelshofer
- */
+/// IFF Chunks form the building blocks of an IFF file. This class is made for
+/// reading purposes only. See MutableIFFChunk for writing purposes.
+///
+/// @author Werner Randelshofer
 public class IFFChunk {
 
     private int id;
@@ -53,30 +51,22 @@ public class IFFChunk {
         }
     }
 
-    /**
-     * @return ID of chunk.
-     */
+    /// @return ID of chunk.
     public int getID() {
         return id;
     }
 
-    /**
-     * @return Type of chunk.
-     */
+    /// @return Type of chunk.
     public int getType() {
         return type;
     }
 
-    /**
-     * @return Size of chunk.
-     */
+    /// @return Size of chunk.
     public long getSize() {
         return size;
     }
 
-    /**
-     * @return Scan position of chunk within the file.
-     */
+    /// @return Scan position of chunk within the file.
     public long getScan() {
         return scan;
     }
@@ -137,16 +127,12 @@ public class IFFChunk {
         return collectionChunks;
     }
 
-    /**
-     * Sets the data. Note: The array will not be cloned.
-     */
+    /// Sets the data. Note: The array will not be cloned.
     public void setData(byte[] data) {
         this.data = data;
     }
 
-    /**
-     * Gets the data. Note: The array will not be cloned.
-     */
+    /// Gets the data. Note: The array will not be cloned.
     public byte[] getData() {
         return data;
     }

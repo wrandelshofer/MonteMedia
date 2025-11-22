@@ -36,11 +36,9 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
-/**
- * {@code ImageSequenceWriter}.
- *
- * @author Werner Randelshofer
- */
+/// `ImageSequenceWriter`.
+///
+/// @author Werner Randelshofer
 public class ImageSequenceWriter implements MovieWriter {
 
     private final Format fileFormat = new Format(MediaTypeKey, MediaType.FILE);
@@ -99,18 +97,16 @@ public class ImageSequenceWriter implements MovieWriter {
 
     private final ArrayList<VideoTrack> tracks = new ArrayList<>();
 
-    /**
-     * Adds a video track.
-     *
-     * @param dir               The output directory.
-     * @param filenameFormatter a format string for a filename with a number,
-     *                          for example "frame_%d0000$.png";
-     * @param width             the image width
-     * @param height            the image height
-     * @return Returns the track index.
-     * @throws IllegalArgumentException if the width or the height is smaller
-     *                                  than 1.
-     */
+    /// Adds a video track.
+    ///
+    /// @param dir               The output directory.
+    /// @param filenameFormatter a format string for a filename with a number,
+    ///                                                                            for example "frame_%d0000$.png";
+    /// @param width             the image width
+    /// @param height            the image height
+    /// @return Returns the track index.
+    /// @throws IllegalArgumentException if the width or the height is smaller
+    ///                                                                                                    than 1.
     public int addVideoTrack(File dir, String filenameFormatter, int width, int height) {
         VideoTrack t;
         Format fmt = filenameFormatter.toLowerCase().endsWith(".png")//
@@ -225,9 +221,7 @@ public class ImageSequenceWriter implements MovieWriter {
         return false;
     }
 
-    /**
-     * Returns the sampleDuration of the track in seconds.
-     */
+    /// Returns the sampleDuration of the track in seconds.
     @Override
     public Rational getDuration(int track) {
         VideoTrack tr = tracks.get(track);

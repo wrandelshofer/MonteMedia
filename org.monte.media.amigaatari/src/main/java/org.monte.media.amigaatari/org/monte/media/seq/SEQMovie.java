@@ -9,13 +9,11 @@ import org.monte.media.av.Format;
 import org.monte.media.av.MovieReader;
 import org.monte.media.math.Rational;
 
-/**
- * {@code SEQMovie}.
- * <p>
- * FIXME - Implement me.
- *
- * @author Werner Randelshofer
- */
+/// `SEQMovie`.
+///
+/// FIXME - Implement me.
+///
+/// @author Werner Randelshofer
 public class SEQMovie extends AbstractMovie {
     private final static long serialVersionUID = 1L;
 

@@ -31,20 +31,16 @@ public class MonteMedia extends AbstractMedia {
         }
     }
 
-    /**
-     * Package private method for {@link PlayerEngine}
-     *
-     * @param newValue the new value
-     */
+    /// Package private method for [PlayerEngine]
+    ///
+    /// @param newValue the new value
     void setError(Throwable newValue) {
         error.set(newValue);
     }
 
-    /**
-     * Package private method for {@link PlayerEngine}
-     *
-     * @param newValue the new value
-     */
+    /// Package private method for [PlayerEngine]
+    ///
+    /// @param newValue the new value
     void setDuration(Duration newValue) {
         duration.set(newValue);
     }

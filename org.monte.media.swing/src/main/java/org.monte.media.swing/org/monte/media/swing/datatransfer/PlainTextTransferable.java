@@ -13,14 +13,12 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 
-/**
- * PlainTextTransferable.
- * <p>
- * Note: This transferable should (almost) always be used in conjunction with
- * PlainTextTransferable.
- *
- * @author Werner Randelshofer
- */
+/// PlainTextTransferable.
+///
+/// Note: This transferable should (almost) always be used in conjunction with
+/// PlainTextTransferable.
+///
+/// @author Werner Randelshofer
 public class PlainTextTransferable extends AbstractTransferable {
     private String plainText;
 

@@ -6,63 +6,61 @@
 import org.monte.media.avi.codec.video.ZMBVDecoderSpi;
 import org.monte.media.mp4.codec.video.H264EncoderSpi;
 
-/**
- * A library for processing still images, video, audio and meta-data.
- * <p>
- * Supports the following container formats:
- * <table><caption>Supported container formats.</caption>
- * <tr><td>RIFF</td><td>Microsoft Resource Interchange File
- * Format</td><td>Read</td></tr>
- * <tr><td>AVI</td><td>Microsoft Audio Video Interchange</td><td>Read,
- * Write</td></tr>
- * <tr><td>MOV</td><td>Apple QuickTime</td><td>Write</td></tr>
- * <tr><td>JFIF</td><td>JPEG File Interchange Format</td><td>Read,
- * Write</td></tr>
- * <tr><td>MP3</td><td>MP3 Elementary Stream</td><td>Read</td></tr>
- * <tr><td>MPO</td><td>MultiPicture Object Format</td><td>Read</td></tr>
- * <tr><td>TIFF</td><td>Tagged Image File Format</td><td>Read, Write</td></tr>
- * </table>
- * <p>
- * Supports the following video encodings:
- * <table><caption>Supported video encodings.</caption>
- * <tr><td>PNG</td><td>AVI, MOV</td><td>Portable Networks
- * Graphics</td><td>Decode, Encode</td></tr>
- * <tr><td>DIB</td><td>AVI</td><td>Microsoft Device Independent
- * Bitmap</td><td>Encode</td></tr>
- * <tr><td>Run Length</td><td>AVI</td><td>Run Length
- * Encoding</td><td>Encode</td></tr>
- * <tr><td>ZMBV</td><td>AVI</td><td>DosBox Capture
- * Codec</td><td>Decode</td></tr>
- * <tr><td>TSCC</td><td>AVI, MOV</td><td>TechSmith Screen Capture
- * Codec</td><td>Decode, Encode</td></tr>
- * <tr><td>MJPG</td><td>AVI, MOV</td><td>Motion JPEG</td><td>Decode,
- * Encode</td></tr>
- * <tr><td>Animation</td><td>MOV</td><td>QuickTime Animation</td><td>Encode</td></tr>
- * <tr><td>Raw</td><td>MOV</td><td>QuickTime RAW</td><td>Encode</td></tr>
- * </table>
- * <p>
- * Supports the following audio encodings:
- * <table><caption>Supported audio encodings.</caption>
- * <tr><td>PCM</td><td>AVI, MOV</td><td>Pulse Code Modulation</td><td>Decode,
- * Encode</td></tr>
- * </table>
- * <p>
- * Provides the following image encodings to javax.imageio:
- * <table><caption>Supported image encodings.</caption>
- * <tr><td>PGM</td><td>PGM</td><td>Netpbm grayscale
- * image</td><td>Decode</td></tr>
- * <tr><td>CMYK</td><td>JPEG</td><td>JPEG CMYK Image</td><td>Decode</td></tr>
- * <tr><td>MPO</td><td>MPO</td><td>MultiPicture Object Format</td><td>Decode</td></tr>
- * </table>
- * <p>
- * Supports the following meta-data encodings:
- * <table><caption>Supported meta-data encodings.</caption>
- * <tr><td>EXIF</td><td>AVI, JPEG, MPO</td><td>Exchangeable Image File
- * Format</td><td>Decode</td></tr>
- * </table>
- *
- * @author Werner Randelshofer
- */
+/// A library for processing still images, video, audio and meta-data.
+///
+/// Supports the following container formats:
+/// <table><caption>Supported container formats.</caption>
+/// <tr><td>RIFF</td><td>Microsoft Resource Interchange File
+/// Format</td><td>Read</td></tr>
+/// <tr><td>AVI</td><td>Microsoft Audio Video Interchange</td><td>Read,
+/// Write</td></tr>
+/// <tr><td>MOV</td><td>Apple QuickTime</td><td>Write</td></tr>
+/// <tr><td>JFIF</td><td>JPEG File Interchange Format</td><td>Read,
+/// Write</td></tr>
+/// <tr><td>MP3</td><td>MP3 Elementary Stream</td><td>Read</td></tr>
+/// <tr><td>MPO</td><td>MultiPicture Object Format</td><td>Read</td></tr>
+/// <tr><td>TIFF</td><td>Tagged Image File Format</td><td>Read, Write</td></tr>
+/// </table>
+///
+/// Supports the following video encodings:
+/// <table><caption>Supported video encodings.</caption>
+/// <tr><td>PNG</td><td>AVI, MOV</td><td>Portable Networks
+/// Graphics</td><td>Decode, Encode</td></tr>
+/// <tr><td>DIB</td><td>AVI</td><td>Microsoft Device Independent
+/// Bitmap</td><td>Encode</td></tr>
+/// <tr><td>Run Length</td><td>AVI</td><td>Run Length
+/// Encoding</td><td>Encode</td></tr>
+/// <tr><td>ZMBV</td><td>AVI</td><td>DosBox Capture
+/// Codec</td><td>Decode</td></tr>
+/// <tr><td>TSCC</td><td>AVI, MOV</td><td>TechSmith Screen Capture
+/// Codec</td><td>Decode, Encode</td></tr>
+/// <tr><td>MJPG</td><td>AVI, MOV</td><td>Motion JPEG</td><td>Decode,
+/// Encode</td></tr>
+/// <tr><td>Animation</td><td>MOV</td><td>QuickTime Animation</td><td>Encode</td></tr>
+/// <tr><td>Raw</td><td>MOV</td><td>QuickTime RAW</td><td>Encode</td></tr>
+/// </table>
+///
+/// Supports the following audio encodings:
+/// <table><caption>Supported audio encodings.</caption>
+/// <tr><td>PCM</td><td>AVI, MOV</td><td>Pulse Code Modulation</td><td>Decode,
+/// Encode</td></tr>
+/// </table>
+///
+/// Provides the following image encodings to javax.imageio:
+/// <table><caption>Supported image encodings.</caption>
+/// <tr><td>PGM</td><td>PGM</td><td>Netpbm grayscale
+/// image</td><td>Decode</td></tr>
+/// <tr><td>CMYK</td><td>JPEG</td><td>JPEG CMYK Image</td><td>Decode</td></tr>
+/// <tr><td>MPO</td><td>MPO</td><td>MultiPicture Object Format</td><td>Decode</td></tr>
+/// </table>
+///
+/// Supports the following meta-data encodings:
+/// <table><caption>Supported meta-data encodings.</caption>
+/// <tr><td>EXIF</td><td>AVI, JPEG, MPO</td><td>Exchangeable Image File
+/// Format</td><td>Decode</td></tr>
+/// </table>
+///
+/// @author Werner Randelshofer
 module org.monte.media {
     requires java.desktop;
     requires java.prefs;

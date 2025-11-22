@@ -8,31 +8,35 @@ package org.monte.media.color;
 
 import java.awt.color.ColorSpace;
 
-/**
- * The OK HLS Color Space.
- * <p>
- * Components:
- * <dl>
- *     <dt>hue</dt><dd>0 to 360 degrees</dd>
- *     <dt>lightness</dt><dd>0 to 1 percentage</dd>
- *     <dt>saturation</dt><dd>0 to 1 percentage</dd>
- * </dl>
- * <p>
- * References:
- * <dl>
- *     <dt>Börn Ottosson, Okhsv and Okhsl. Two new color spaces for color picking.
- *     <a href="https://github.com/bottosson/bottosson.github.io/blob/3d3f17644d7f346e1ce1ca08eb8b01782eea97af/misc/colorpicker/License.txt">MIT License</a></dt>
- *     <dd><a href="https://bottosson.github.io/posts/colorpicker/">github.io</a></dd>
- * </dl>
- * <dl>
- *     <dt>Börn Ottosson, ok_color.h/dt>
- *     <a href="https://github.com/bottosson/bottosson.github.io/blob/3d3f17644d7f346e1ce1ca08eb8b01782eea97af/misc/colorpicker/License.txt">MIT License</a></dt>
- *     <dd><a href="http://bottosson.github.io/misc/ok_color.h">github.io</a></dd>
- * </dl>
- *
- */
+/// The OK HLS Color Space.
+///
+/// Components:
+/// <dl>
+///     <dt>hue</dt><dd>0 to 360 degrees</dd>
+///     <dt>lightness</dt><dd>0 to 1 percentage</dd>
+///     <dt>saturation</dt><dd>0 to 1 percentage</dd>
+/// </dl>
+///
+/// References:
+/// <dl>
+///     <dt>Börn Ottosson, Okhsv and Okhsl. Two new color spaces for color picking.
+///     [MIT License](https://github.com/bottosson/bottosson.github.io/blob/3d3f17644d7f346e1ce1ca08eb8b01782eea97af/misc/colorpicker/License.txt)</dt>
+///     <dd>[github.io](https://bottosson.github.io/posts/colorpicker/)</dd>
+/// </dl>
+/// <dl>
+///     <dt>Börn Ottosson, ok_color.h/dt>
+///     [MIT License](https://github.com/bottosson/bottosson.github.io/blob/3d3f17644d7f346e1ce1ca08eb8b01782eea97af/misc/colorpicker/License.txt)</dt>
+///     <dd>[github.io](http://bottosson.github.io/misc/ok_color.h)</dd>
+/// </dl>
 public class OKHlsColorSpace extends AbstractNamedColorSpace {
-    public final static OKHlsColorSpace INSTANCE = new OKHlsColorSpace();
+    public static OKHlsColorSpace getInstance() {
+        class Holder {
+            private static final OKHlsColorSpace INSTANCE = new OKHlsColorSpace();
+        }
+        return Holder.INSTANCE;
+    }
+
+
     private final static OKLabColorSpace oklab = new OKLabColorSpace();
 
     public OKHlsColorSpace() {
@@ -111,11 +115,9 @@ public class OKHlsColorSpace extends AbstractNamedColorSpace {
     }
 
 
-    /**
-     * Alternative representation of (L_cusp, C_cusp)
-     * Encoded so S = C_cusp/L_cusp and T = C_cusp/(1-L_cusp)
-     * The maximum value for C in the triangle is then found as fmin(S*L, T*(1-L)), for a given L
-     */
+    /// Alternative representation of (L_cusp, C_cusp)
+    /// Encoded so S = C_cusp/L_cusp and T = C_cusp/(1-L_cusp)
+    /// The maximum value for C in the triangle is then found as fmin(S*L, T*(1-L)), for a given L
     record ST(double S, double T) {
     }
 
@@ -162,10 +164,8 @@ public class OKHlsColorSpace extends AbstractNamedColorSpace {
     }
 
 
-    /**
-     * finds L_cusp and C_cusp for a given hue
-     * a and b must be normalized so a^2 + b^2 == 1
-     */
+    /// finds L_cusp and C_cusp for a given hue
+    /// a and b must be normalized so a^2 + b^2 == 1
     private static LC find_cusp(double a, double b) {
         // First, find the maximum saturation (saturation S = C/L)
         double S_cusp = compute_max_saturation(a, b);
@@ -178,11 +178,9 @@ public class OKHlsColorSpace extends AbstractNamedColorSpace {
         return new LC(L_cusp, C_cusp);
     }
 
-    /**
-     * Finds the maximum saturation possible for a given hue that fits in sRGB
-     * Saturation here is defined as S = C/L
-     * a and b must be normalized so a^2 + b^2 == 1
-     */
+    /// Finds the maximum saturation possible for a given hue that fits in sRGB
+    /// Saturation here is defined as S = C/L
+    /// a and b must be normalized so a^2 + b^2 == 1
     private static double compute_max_saturation(double a, double b) {
         // Max saturation will be when one of r, g or b goes below zero.
 
@@ -308,12 +306,10 @@ public class OKHlsColorSpace extends AbstractNamedColorSpace {
 
     }
 
-    /**
-     * Finds intersection of the line defined by
-     * L = L0 * (1 - t) + t * L1;
-     * C = t * C1;
-     * a and b must be normalized so a^2 + b^2 == 1
-     */
+    /// Finds intersection of the line defined by
+    /// L = L0 * (1 - t) + t * L1;
+    /// C = t * C1;
+    /// a and b must be normalized so a^2 + b^2 == 1
     private static double find_gamut_intersection(double a, double b, double L1, double C1, double L0, LC cusp) {
         // Find the intersection for upper and lower half seprately
         double t;
@@ -395,11 +391,9 @@ public class OKHlsColorSpace extends AbstractNamedColorSpace {
         return t;
     }
 
-    /**
-     * Returns a smooth approximation of the location of the cusp
-     * This polynomial was created by an optimization process
-     * It has been designed so that S_mid < S_max and T_mid < T_max
-     */
+    /// Returns a smooth approximation of the location of the cusp
+    /// This polynomial was created by an optimization process
+    /// It has been designed so that S_mid < S_max and T_mid < T_max
     private static ST get_ST_mid(double a_, double b_) {
         double S = 0.11516993 + 1.0 / (
                 7.44778970 + 4.15901240 * b_

@@ -43,176 +43,173 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVC1;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
 import static org.monte.media.mp4.codec.video.PictureEncoder.ENCODING_PICTURE;
 
-/**
- * This code has been derived from "World's Smallest h.264 Encoder".
- * <p>
- * Stream format:
- * <pre>
- * +-----------------------------------+
- * | sequence parameter set (SPS)      |
- * +-----------------------------------+
- * | picture parameter set (PPS)       |
- * +-----------------------------------+
- * | video frames:                     |
- * |   +-----------------------------+ |
- * |   | slice header                | |
- * |   +-----------------------------+ |
- * |   | macroblocks:                | |
- * |   |   +-----------------------+ | |
- * |   |   | macroblock header     | | |
- * |   |   +-----------------------+ | |
- * |   |   | Y[16][16] array       | | |
- * |   |   +-----------------------+ | |
- * |   |   | Cb[8][8] array        | | |
- * |   |   +-----------------------+ | |
- * |   |   | Cr[8][8] array        | | |
- * |   |   +-----------------------+ | |
- * |   +-----------------------------+ |
- * |   | slice stop bit              | |
- * |   +-----------------------------+ |
- * +-----------------------------------+
- * </pre>
- * Structs:
- * <p>
- * The type {@code u(n)} indicates an unsigned integer of n bits,
- * and {@code ue(v)} indicates an unsigned exponential-Golomb-coded value of a variable number of bits.
- * ///
- * <pre>
- * Sequence Parameter Set (SPS)
- *
- * |Parameter Name               |Type |Value|Comments                             |
- * |-----------------------------|:---:|:---:|-------------------------------------|
- * |nal_marker                   |u(32)|   1 |Must be set to 1.                    |
- * |forbidden_zero_bit           | u(1)|   0 |Must be set to 0.                    |
- * |nal_ref_idc                  | u(2)|   3 |3 means it is “important”.           |
- * |nal_unit_type                | u(5)|   7 |Indicates this is a SPS.             |
- * |                             |     |     |                                     |
- * |profile_idc                  | u(8)|  66 |Baseline profile.                    |
- * |constraint_set0_flag         | u(1)|   0 |We’re not going to honor constraints.|
- * |constraint_set1_flag         | u(1)|   0 |We’re not going to honor constraints.|
- * |constraint_set2_flag         | u(1)|   0 |We’re not going to honor constraints.|
- * |constraint_set3_flag         | u(1)|   0 |We’re not going to honor constraints.|
- * |constraint_set4_flag         | u(1)|   0 |We’re not going to honor constraints.|
- * |constraint_set5_flag         | u(1)|   0 |We’re not going to honor constraints.|
- * |reserved_zero_2bits          | u(2)|   0 |Better set them to zero.             |
- * |level_idc                    | u(8)|  10 |Level 1, sec A.3.1.                  |
- * |seq_parameter_set_id         |ue(v)|   0 |We’ll just use id 0.                 |
- * |chroma_format_idc            |ue(v)|null |Only present in a higher level_idc.  |
- * |separate_colour_plane_flag   | u(1)|null |Only present in a higher level_idc.  |
- * |log2_max_frame_num_minus4    |ue(v)|   0 |Let’s have as few frame numbers as   |
- * |                             |     |     |possible.                            |
- * |pic_order_cnt_type           |ue(v)|   0 |Keep things simple.                  |
- * |log2_max_pic_order_cnt_lsb_minus4|ue(v)|0|Fewer is better.                     |
- * |num_ref_frames               |ue(v)|   0 |We will only send I-slices.          |
- * |gaps_in_frame_num_value_allowed_flag|u(1)|0|We will have no gaps.              |
- * |pic_width_in_mbs_minus_1     |ue(v)|   7 |128px width = 8 macroblocks wide.    |
- * |pic_height_in_map_units_minus_1|ue(v)| 5 |92px height = 6 macroblocks high.    |
- * |frame_mbs_only_flag          | u(1)|   1 |We will not do field/frame encoding. |
- * |direct_8x8_inference_flag    | u(1)|   0 |Used for B slices. We will not send  |
- * |                             |     |     |B slices.                            |
- * |frame_cropping_flag          | u(1)|   0 |We will not do frame cropping.       |
- * |vui_parameters_present_flag  | u(1)|   0 |We will not send VUI data.           |
- * |rbsp_stop_one_bit            | u(1)|   1 |Stop bit.                            |
- * </pre>
- * <pre>
- * Picture Parameter Set (PPS)
- *
- * |Parameter Name               |Type |Value|Comments                             |
- * |-----------------------------|:---:|:---:|-------------------------------------|
- * |nal_marker                   |u(32)|   1 |Must be set to 1.                    |
- * |forbidden_zero_bit           | u(1)|   0 |Must be set to 0.                    |
- * |nal_ref_idc                  | u(2)|   3 |3 means it is “important”.           |
- * |nal_unit_type                | u(5)|   8 |Indicates this is a PPS.             |
- * |                             |     |     |                                     |
- * |pic_parameter_set_id         |ue(v)|   0 |                                     |
- * |seq_parameter_set_id         |ue(v)|   0 |                                     |
- * |entropy_coding_mode_flag     | u(1)|   0 |                                     |
- * |bottom_field_pic_order_in_frame_present_flag|u(1)|0|                           |
- * |num_slice_groups_minus1      |ue(v)|   0 |                                     |
- * |.slice_group_map_type        | u(1)|   0 |                                     |
- * |.run_length_minus1           | u(8)|   0 |                                     |
- * |.top_left                    |ue(v)|   0 |                                     |
- * |.bottom_right                |ue(v)|   0 |                                     |
- * |.slice_group_change_direction_flag|u(1)|0|                                     |
- * |.slice_group_change_rate_minus1|u(2)|  0 |                                     |
- * |.pic_size_in_map_units_minus1|ue(v)[]| 0 |                                     |
- * |.slice_group_id              |u(v)[]|null|                                     |
- * |num_ref_idx_l0_default_active_minus1|ue(v)|0|                                  |
- * |num_ref_idx_l2_default_active_minus1|ue(v)|0|                                  |
- * |weighted_pred_flag           |ue(v)|   0 |                                     |
- * |weighted_bipred_idc          |ue(v)|   0 |                                     |
- * |pic_init_qp_minus26          |u(1) |   0 |                                     |
- * |pic_init_qs_minus26          |ue(v)|   7 |                                     |
- * |chroma_qp_index_offset       |ue(v)|   5 |                                     |
- * |deblocking_filter_control_present_flag|u(1)|1|                                 |
- * |constrained_intra_pred_flag  | u(1)|   0 |                                     |
- * |redundant_pic_cnt_present_flag|u(1)|   0 |                                     |
- * |transform_8x8_mode_flag      | u(1)|   0 |                                     |
- * |pic_scaling_matrix_present_flag|u(1)|  0 |                                     |
- * |pic_scaling_list_present_flag[i]|u(1)| 0 |                                     |
- * |second_chroma_qp_index_offset| u(1)|   0 |                                     |
- * </pre>
- * <pre>
- * Slice Header
- *
- * |Parameter Name               |Type |Value|Comments                             |
- * |-----------------------------|:---:|:---:|-------------------------------------|
- * |nal_marker                   |u(32)|   1 |Must be set to 1.                    |
- * |forbidden_zero_bit           | u(1)|   0 |Must be set to 0.                    |
- * |nal_ref_idc                  | u(2)|   0 |0 means it is not “important”.       |
- * |nal_unit_type                | u(5)|   5 |Indicates this is an Intra Slice.    |
- * |                             |     |     |                                     |
- * |first_mb_in_slice            |ue(v)|   0 |Address of first macroblock in slice.|
- * |slice_type                   |ue(v)|   2 |Indicates an I slice                 |
- * |pic_parameter_set_id         |ue(v)|   0 |Id of picture parameter set in use.  |
- * |colour_plane_id              | u(2)|null |Only present in a higher level_idc.  |
- * |frame_num                    | u(v)|   0 |0 for IDR picture.                   |
- * |field_pic_flag               | u(1)|null |1 indicates slice of a coded field.  |
- * |bottom_field_flag            | u(1)|   0 |1 indicates slice of a bottom field. |
- * |idr_pic_id                   |ue(v)|   0 |Identifies an IDR picture. The value |
- * |                             |     |     |is in range 0 to 65535, inclusive.   |
- * |pic_order_cnt_lsb            | u(v)|   0 |                                     |
- * |delta_pic_order_cnt_bottom   |se(v)|   0 |                                     |
- * |delta_pic_order_cnt[0]       |se(v)|   0 |                                     |
- * |delta_pic_order_cnt[1]       |se(v)|   0 |                                     |
- * |redundant_pic_cnt            |ue(v)|   0 |                                     |
- * |direct_spatial_mv_pred_flag  | u(1)|   0 |                                     |
- * |num_ref_idx_active_override_flag|u(1)| 0 |                                     |
- * |num_ref_idx_l0_active_minus1 |ue(v)|   0 |                                     |
- * |num_ref_idx_l1_active_minus1 |ue(v)|   0 |                                     |
- * |cabac_init_idc               |ue(v)|   0 |                                     |
- * |slice_qp_delta               |se(v)|   0 |                                     |
- * |sp_for_switch_flag           | u(1)|   0 |                                     |
- * |slice_qs_delta               |se(v)|   0 |                                     |
- * |disable_deblocking_filter_idc|ue(v)|   0 |                                     |
- * |slice_alpha_c0_offset_div2   |se(v)|   0 |                                     |
- * |slice_beta_offset_div2       |se(v)|   0 |                                     |
- * |slice_group_change_cycle     | u(v)|   0 |                                     |
- * |ref_pic_list_modification_flag_l0|u(1)|   0 |                                     |
- * |modification_of_pic_nums_idc |ue(v)|   0 |                                     |
- * |abs_diff_pic_num_minus1      |ue(v)|   0 |                                     |
- * |long_term_pic_num            |ue(v)|   0 |                                     |
- * |ref_pic_list_modification_flag_l1|u(1)|   0 |                                     |
- * |modification_of_pic_nums_idc |ue(v)|   0 |                                     |
- * |abs_diff_pic_num_minus1      |ue(v)|   0 |                                     |
- * |long_term_pic_num            |ue(v)|   0 |                                     |
- * </pre>
- * References:
- * <p>
- * <dl>
- *     <dt>Ben Mesander. World's Smallest h.264 Encoder.
- *     <a href="https://www.cardinalpeak.com/downloads/hello264.c">BSD 2-Clause License.</a></dt>
- *     <dd><a href="https://www.cardinalpeak.com/blog/worlds-smallest-h-264-encoder">cardinalpeak.com</a></dd>
- *
- *     <dt>Alex Izvorski. h264bitstream.
- *     <a href="https://github.com/aizvorski/h264bitstream/blob/master/LICENSE">GNU Lesser General Public License.</a>
- *     <br>Note: We have not used code from this project. We only used the binaries from that project to verify our output.
- *     </dt>
- *     <dd><a href="https://github.com/aizvorski/h264bitstream/blob/master/h264_stream.h">github.com</a></dd>
- *
- *     <dt>ITU-T Recommendation H.264, "Advanced video coding for generic audiovisual services", May 2003.</dt>
- * </dl>
- */
+/// This code has been derived from "World's Smallest h.264 Encoder".
+///
+/// Stream format:
+/// <pre>
+/// +-----------------------------------+
+/// | sequence parameter set (SPS)      |
+/// +-----------------------------------+
+/// | picture parameter set (PPS)       |
+/// +-----------------------------------+
+/// | video frames:                     |
+/// |   +-----------------------------+ |
+/// |   | slice header                | |
+/// |   +-----------------------------+ |
+/// |   | macroblocks:                | |
+/// |   |   +-----------------------+ | |
+/// |   |   | macroblock header     | | |
+/// |   |   +-----------------------+ | |
+/// |   |   | Y[16][16] array       | | |
+/// |   |   +-----------------------+ | |
+/// |   |   | Cb[8][8] array        | | |
+/// |   |   +-----------------------+ | |
+/// |   |   | Cr[8][8] array        | | |
+/// |   |   +-----------------------+ | |
+/// |   +-----------------------------+ |
+/// |   | slice stop bit              | |
+/// |   +-----------------------------+ |
+/// +-----------------------------------+
+/// </pre>
+/// Structs:
+///
+/// The type `u(n)` indicates an unsigned integer of n bits,
+/// and `ue(v)` indicates an unsigned exponential-Golomb-coded value of a variable number of bits.
+/// ///
+/// <pre>
+/// Sequence Parameter Set (SPS)
+///
+/// |Parameter Name               |Type |Value|Comments                             |
+/// |-----------------------------|:---:|:---:|-------------------------------------|
+/// |nal_marker                   |u(32)|   1 |Must be set to 1.                    |
+/// |forbidden_zero_bit           | u(1)|   0 |Must be set to 0.                    |
+/// |nal_ref_idc                  | u(2)|   3 |3 means it is “important”.           |
+/// |nal_unit_type                | u(5)|   7 |Indicates this is a SPS.             |
+/// |                             |     |     |                                     |
+/// |profile_idc                  | u(8)|  66 |Baseline profile.                    |
+/// |constraint_set0_flag         | u(1)|   0 |We’re not going to honor constraints.|
+/// |constraint_set1_flag         | u(1)|   0 |We’re not going to honor constraints.|
+/// |constraint_set2_flag         | u(1)|   0 |We’re not going to honor constraints.|
+/// |constraint_set3_flag         | u(1)|   0 |We’re not going to honor constraints.|
+/// |constraint_set4_flag         | u(1)|   0 |We’re not going to honor constraints.|
+/// |constraint_set5_flag         | u(1)|   0 |We’re not going to honor constraints.|
+/// |reserved_zero_2bits          | u(2)|   0 |Better set them to zero.             |
+/// |level_idc                    | u(8)|  10 |Level 1, sec A.3.1.                  |
+/// |seq_parameter_set_id         |ue(v)|   0 |We’ll just use id 0.                 |
+/// |chroma_format_idc            |ue(v)|null |Only present in a higher level_idc.  |
+/// |separate_colour_plane_flag   | u(1)|null |Only present in a higher level_idc.  |
+/// |log2_max_frame_num_minus4    |ue(v)|   0 |Let’s have as few frame numbers as   |
+/// |                             |     |     |possible.                            |
+/// |pic_order_cnt_type           |ue(v)|   0 |Keep things simple.                  |
+/// |log2_max_pic_order_cnt_lsb_minus4|ue(v)|0|Fewer is better.                     |
+/// |num_ref_frames               |ue(v)|   0 |We will only send I-slices.          |
+/// |gaps_in_frame_num_value_allowed_flag|u(1)|0|We will have no gaps.              |
+/// |pic_width_in_mbs_minus_1     |ue(v)|   7 |128px width = 8 macroblocks wide.    |
+/// |pic_height_in_map_units_minus_1|ue(v)| 5 |92px height = 6 macroblocks high.    |
+/// |frame_mbs_only_flag          | u(1)|   1 |We will not do field/frame encoding. |
+/// |direct_8x8_inference_flag    | u(1)|   0 |Used for B slices. We will not send  |
+/// |                             |     |     |B slices.                            |
+/// |frame_cropping_flag          | u(1)|   0 |We will not do frame cropping.       |
+/// |vui_parameters_present_flag  | u(1)|   0 |We will not send VUI data.           |
+/// |rbsp_stop_one_bit            | u(1)|   1 |Stop bit.                            |
+/// </pre>
+/// <pre>
+/// Picture Parameter Set (PPS)
+///
+/// |Parameter Name               |Type |Value|Comments                             |
+/// |-----------------------------|:---:|:---:|-------------------------------------|
+/// |nal_marker                   |u(32)|   1 |Must be set to 1.                    |
+/// |forbidden_zero_bit           | u(1)|   0 |Must be set to 0.                    |
+/// |nal_ref_idc                  | u(2)|   3 |3 means it is “important”.           |
+/// |nal_unit_type                | u(5)|   8 |Indicates this is a PPS.             |
+/// |                             |     |     |                                     |
+/// |pic_parameter_set_id         |ue(v)|   0 |                                     |
+/// |seq_parameter_set_id         |ue(v)|   0 |                                     |
+/// |entropy_coding_mode_flag     | u(1)|   0 |                                     |
+/// |bottom_field_pic_order_in_frame_present_flag|u(1)|0|                           |
+/// |num_slice_groups_minus1      |ue(v)|   0 |                                     |
+/// |.slice_group_map_type        | u(1)|   0 |                                     |
+/// |.run_length_minus1           | u(8)|   0 |                                     |
+/// |.top_left                    |ue(v)|   0 |                                     |
+/// |.bottom_right                |ue(v)|   0 |                                     |
+/// |.slice_group_change_direction_flag|u(1)|0|                                     |
+/// |.slice_group_change_rate_minus1|u(2)|  0 |                                     |
+/// |.pic_size_in_map_units_minus1|ue(v)[]| 0 |                                     |
+/// |.slice_group_id              |u(v)[]|null|                                     |
+/// |num_ref_idx_l0_default_active_minus1|ue(v)|0|                                  |
+/// |num_ref_idx_l2_default_active_minus1|ue(v)|0|                                  |
+/// |weighted_pred_flag           |ue(v)|   0 |                                     |
+/// |weighted_bipred_idc          |ue(v)|   0 |                                     |
+/// |pic_init_qp_minus26          |u(1) |   0 |                                     |
+/// |pic_init_qs_minus26          |ue(v)|   7 |                                     |
+/// |chroma_qp_index_offset       |ue(v)|   5 |                                     |
+/// |deblocking_filter_control_present_flag|u(1)|1|                                 |
+/// |constrained_intra_pred_flag  | u(1)|   0 |                                     |
+/// |redundant_pic_cnt_present_flag|u(1)|   0 |                                     |
+/// |transform_8x8_mode_flag      | u(1)|   0 |                                     |
+/// |pic_scaling_matrix_present_flag|u(1)|  0 |                                     |
+/// |pic_scaling_list_present_flag[i]|u(1)| 0 |                                     |
+/// |second_chroma_qp_index_offset| u(1)|   0 |                                     |
+/// </pre>
+/// <pre>
+/// Slice Header
+///
+/// |Parameter Name               |Type |Value|Comments                             |
+/// |-----------------------------|:---:|:---:|-------------------------------------|
+/// |nal_marker                   |u(32)|   1 |Must be set to 1.                    |
+/// |forbidden_zero_bit           | u(1)|   0 |Must be set to 0.                    |
+/// |nal_ref_idc                  | u(2)|   0 |0 means it is not “important”.       |
+/// |nal_unit_type                | u(5)|   5 |Indicates this is an Intra Slice.    |
+/// |                             |     |     |                                     |
+/// |first_mb_in_slice            |ue(v)|   0 |Address of first macroblock in slice.|
+/// |slice_type                   |ue(v)|   2 |Indicates an I slice                 |
+/// |pic_parameter_set_id         |ue(v)|   0 |Id of picture parameter set in use.  |
+/// |colour_plane_id              | u(2)|null |Only present in a higher level_idc.  |
+/// |frame_num                    | u(v)|   0 |0 for IDR picture.                   |
+/// |field_pic_flag               | u(1)|null |1 indicates slice of a coded field.  |
+/// |bottom_field_flag            | u(1)|   0 |1 indicates slice of a bottom field. |
+/// |idr_pic_id                   |ue(v)|   0 |Identifies an IDR picture. The value |
+/// |                             |     |     |is in range 0 to 65535, inclusive.   |
+/// |pic_order_cnt_lsb            | u(v)|   0 |                                     |
+/// |delta_pic_order_cnt_bottom   |se(v)|   0 |                                     |
+/// |delta_pic_order_cnt[0]       |se(v)|   0 |                                     |
+/// |delta_pic_order_cnt[1]       |se(v)|   0 |                                     |
+/// |redundant_pic_cnt            |ue(v)|   0 |                                     |
+/// |direct_spatial_mv_pred_flag  | u(1)|   0 |                                     |
+/// |num_ref_idx_active_override_flag|u(1)| 0 |                                     |
+/// |num_ref_idx_l0_active_minus1 |ue(v)|   0 |                                     |
+/// |num_ref_idx_l1_active_minus1 |ue(v)|   0 |                                     |
+/// |cabac_init_idc               |ue(v)|   0 |                                     |
+/// |slice_qp_delta               |se(v)|   0 |                                     |
+/// |sp_for_switch_flag           | u(1)|   0 |                                     |
+/// |slice_qs_delta               |se(v)|   0 |                                     |
+/// |disable_deblocking_filter_idc|ue(v)|   0 |                                     |
+/// |slice_alpha_c0_offset_div2   |se(v)|   0 |                                     |
+/// |slice_beta_offset_div2       |se(v)|   0 |                                     |
+/// |slice_group_change_cycle     | u(v)|   0 |                                     |
+/// |ref_pic_list_modification_flag_l0|u(1)|   0 |                                     |
+/// |modification_of_pic_nums_idc |ue(v)|   0 |                                     |
+/// |abs_diff_pic_num_minus1      |ue(v)|   0 |                                     |
+/// |long_term_pic_num            |ue(v)|   0 |                                     |
+/// |ref_pic_list_modification_flag_l1|u(1)|   0 |                                     |
+/// |modification_of_pic_nums_idc |ue(v)|   0 |                                     |
+/// |abs_diff_pic_num_minus1      |ue(v)|   0 |                                     |
+/// |long_term_pic_num            |ue(v)|   0 |                                     |
+/// </pre>
+/// References:
+///
+/// <dl>
+///     <dt>Ben Mesander. World's Smallest h.264 Encoder.
+///     [BSD 2-Clause License.](https://www.cardinalpeak.com/downloads/hello264.c)</dt>
+///     <dd>[cardinalpeak.com](https://www.cardinalpeak.com/blog/worlds-smallest-h-264-encoder)</dd>
+///     <dt>Alex Izvorski. h264bitstream.
+///     [GNU Lesser General Public License.](https://github.com/aizvorski/h264bitstream/blob/master/LICENSE)
+///
+/// Note: We have not used code from this project. We only used the binaries from that project to verify our output.
+///     </dt>
+///     <dd>[github.com](https://github.com/aizvorski/h264bitstream/blob/master/h264_stream.h)</dd>
+///     <dt>ITU-T Recommendation H.264, "Advanced video coding for generic audiovisual services", May 2003.</dt>
+/// </dl>
 public class H264RawYuvEncoder extends org.monte.media.av.AbstractCodec {
     int sequenceNumber = 0;
     private PictureParameterSet picParameterSet;

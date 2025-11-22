@@ -14,22 +14,17 @@ import java.util.Arrays;
 import static java.lang.System.arraycopy;
 import static org.monte.media.impl.jcodec.common.model.ColorSpace.MAX_PLANES;
 
-/**
- * References:
- * <p>
- * This code has been derived from JCodecProject.
- * <dl>
- *     <dt>JCodecProject. Copyright 2008-2019 JCodecProject.
- *     <br><a href="https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE">BSD 2-Clause License.</a></dt>
- *     <dd><a href="https://github.com/jcodec/jcodec">github.com</a></dd>
- * </dl>
- *
- * <p>
- * The data is -128 shifted, so 0 is represented by -128 and 255 is represented
- * by +127
- *
- * @author The JCodec project
- */
+/// References:
+///
+/// JCodecProject. Copyright 2008-2019 JCodecProject.
+/// : [BSD 2-Clause License.](https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE)
+/// : [github.com](https://github.com/jcodec/jcodec)
+///
+///
+/// The data is -128 shifted, so 0 is represented by -128 and 255 is represented
+/// by +127
+///
+/// @author The JCodec project
 public class Picture {
     private ColorSpace color;
 
@@ -192,11 +187,9 @@ public class Picture {
         }
     }
 
-    /**
-     * Creates a cropped clone of this picture.
-     *
-     * @return
-     */
+    /// Creates a cropped clone of this picture.
+    ///
+    /// @return
     public Picture cloneCropped() {
         if (cropNeeded()) {
             return cropped();

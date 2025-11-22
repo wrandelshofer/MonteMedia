@@ -20,16 +20,12 @@ import java.awt.image.WritableRaster;
 
 import static org.monte.media.av.codec.video.VideoFormatKeys.PaletteKey;
 
-/**
- * Extracts pixel data from a {@link Buffer} that contains an image.
- */
+/// Extracts pixel data from a [Buffer] that contains an image.
 public class ImageBufferToArray {
 
     private BufferedImage imgConverter;
 
-    /**
-     * Gets a buffered image from a buffer. Returns null if conversion failed.
-     */
+    /// Gets a buffered image from a buffer. Returns null if conversion failed.
     public BufferedImage getBufferedImage(Buffer buf) {
         if (buf.data instanceof BufferedImage) {
             return (BufferedImage) buf.data;
@@ -37,9 +33,7 @@ public class ImageBufferToArray {
         return null;
     }
 
-    /**
-     * Gets 8-bit indexed pixels from a buffer. Returns null if conversion failed.
-     */
+    /// Gets 8-bit indexed pixels from a buffer. Returns null if conversion failed.
     public byte[] getIndexed8(Buffer buf) {
         if (buf.data instanceof byte[]) {
             return (byte[]) buf.data;
@@ -53,9 +47,7 @@ public class ImageBufferToArray {
         return null;
     }
 
-    /**
-     * Gets 15-bit RGB pixels from a buffer. Returns null if conversion failed.
-     */
+    /// Gets 15-bit RGB pixels from a buffer. Returns null if conversion failed.
     public short[] getRGB15(Buffer buf, int width, int height) {
         if (buf.data instanceof int[]) {
             return (short[]) buf.data;
@@ -82,9 +74,7 @@ public class ImageBufferToArray {
         return null;
     }
 
-    /**
-     * Gets 16-bit RGB-5-6-5 pixels from a buffer. Returns null if conversion failed.
-     */
+    /// Gets 16-bit RGB-5-6-5 pixels from a buffer. Returns null if conversion failed.
     public short[] getRGB16(Buffer buf, int width, int height) {
         if (buf.data instanceof int[]) {
             return (short[]) buf.data;
@@ -113,11 +103,9 @@ public class ImageBufferToArray {
     }
 
 
-    /**
-     * Gets 24-bit RGB pixels from a buffer. Returns null if conversion failed.
-     * <p>
-     * FIXME this does not work with sub-images use {@link #getPackedRgb24Raster(Buffer, int, int)} instead.
-     */
+    /// Gets 24-bit RGB pixels from a buffer. Returns null if conversion failed.
+    ///
+    /// FIXME this does not work with sub-images use [#getPackedRgb24Raster(Buffer,int,int)] instead.
     public int[] getRGB24(Buffer buf, int width, int height) {
         if (buf.data instanceof int[]) {
             return (int[]) buf.data;
@@ -139,9 +127,7 @@ public class ImageBufferToArray {
         return null;
     }
 
-    /**
-     * Gets 24-bit RGB pixels from a buffer. Returns null if conversion failed.
-     */
+    /// Gets 24-bit RGB pixels from a buffer. Returns null if conversion failed.
     public WritableRaster getPackedRgb24Raster(Buffer buf, int w, int h) {
         if (buf.data instanceof int[]) {
             return null;
@@ -165,9 +151,7 @@ public class ImageBufferToArray {
         return null;
     }
 
-    /**
-     * Gets 24-bit ARGB pixels from a buffer. Returns null if conversion failed.
-     */
+    /// Gets 24-bit ARGB pixels from a buffer. Returns null if conversion failed.
     public WritableRaster getPackedArgb32Raster(Buffer buf, int w, int h) {
         if (buf.data instanceof int[]) {
             return null;
@@ -192,11 +176,9 @@ public class ImageBufferToArray {
         return null;
     }
 
-    /**
-     * Gets 32-bit ARGB pixels from a buffer. Returns null if conversion failed.
-     * <p>
-     * FIXME this does not work with sub-images use {@link #getPackedArgb32Raster(Buffer, int, int)} instead.
-     */
+    /// Gets 32-bit ARGB pixels from a buffer. Returns null if conversion failed.
+    ///
+    /// FIXME this does not work with sub-images use [#getPackedArgb32Raster(Buffer,int,int)] instead.
     public int[] getARGB32(Buffer buf, int width, int height) {
         if (buf.data instanceof int[]) {
             return (int[]) buf.data;

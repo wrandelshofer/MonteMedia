@@ -4,19 +4,16 @@
  */
 package org.monte.media.tiff;
 
-/**
- * A class defining the notion of a TIFF tag. A TIFF tag is a key that may
- * appear in an Image File Directory (IFD). In the IFD each tag has some data
- * associated with it, which may consist of zero or more values of a given data
- * type. The combination of a tag and a value is known as an IFD Entry or TIFF
- * Field.
- * <p>
- * The actual tag values used in the root IFD of a standard ("baseline") tiff
- * stream are defined in the {@link BaselineTagSet} class.
- * <p>
- *
- * @author Werner Randelshofer
- */
+/// A class defining the notion of a TIFF tag. A TIFF tag is a key that may
+/// appear in an Image File Directory (IFD). In the IFD each tag has some data
+/// associated with it, which may consist of zero or more values of a given data
+/// type. The combination of a tag and a value is known as an IFD Entry or TIFF
+/// Field.
+///
+/// The actual tag values used in the root IFD of a standard ("baseline") tiff
+/// stream are defined in the [BaselineTagSet] class.
+///
+/// @author Werner Randelshofer
 public class TIFFTag {
 
     public final static int ASCII_MASK = 1 << IFDDataType.ASCII.getTypeNumber();
@@ -24,13 +21,9 @@ public class TIFFTag {
     public final static int DOUBLE_MASK = 1 << IFDDataType.DOUBLE.getTypeNumber();
     public final static int FLOAT_MASK = 1 << IFDDataType.FLOAT.getTypeNumber();
     public final static int IFD_MASK = 1 << IFDDataType.IFD.getTypeNumber();
-    /**
-     * int32u
-     */
+    /// int32u
     public final static int LONG_MASK = 1 << IFDDataType.LONG.getTypeNumber();
-    /**
-     * int16u
-     */
+    /// int16u
     public final static int SHORT_MASK = 1 << IFDDataType.SHORT.getTypeNumber();
     public final static int RATIONAL_MASK = 1 << IFDDataType.RATIONAL.getTypeNumber();
     public final static int SBYTE_MASK = 1 << IFDDataType.BYTE.getTypeNumber();
@@ -45,24 +38,22 @@ public class TIFFTag {
     private TagSet tagSet;
     private final ValueFormatter formatter;
 
-    /**
-     * Constructs a TIFFTag with a given name, tag number, set of legal data types,
-     * and TagSet to which it refers. The tagSet parameter will generally be
-     * non-null only if this TIFFTag corresponds to a pointer to a TIFF IFD. In this
-     * case tagSet will represent the set of TIFFTags which appear in the IFD
-     * pointed to. A TIFFTag represents an IFD pointer if and only if tagSet is
-     * non-null or the data type TIFF_IFD_POINTER is legal.
-     * <p>
-     * If there are mnemonic names to be associated with the legal data values for the
-     * tag, addValueName() should be called on the new instance for each name.
-     * <p>
-     * See the documentation for getDataTypes() for an explanation of how the set of data types is to be converted into a bit mask.
-     *
-     * @param name      the name of the tag; may be null.
-     * @param number    the number used to represent the tag.
-     * @param dataTypes a bit mask indicating the set of legal data types for this tag.
-     * @param formatter a ValueFormatter for formatting data values.
-     */
+    /// Constructs a TIFFTag with a given name, tag number, set of legal data types,
+    /// and TagSet to which it refers. The tagSet parameter will generally be
+    /// non-null only if this TIFFTag corresponds to a pointer to a TIFF IFD. In this
+    /// case tagSet will represent the set of TIFFTags which appear in the IFD
+    /// pointed to. A TIFFTag represents an IFD pointer if and only if tagSet is
+    /// non-null or the data type TIFF_IFD_POINTER is legal.
+    ///
+    /// If there are mnemonic names to be associated with the legal data values for the
+    /// tag, addValueName() should be called on the new instance for each name.
+    ///
+    /// See the documentation for getDataTypes() for an explanation of how the set of data types is to be converted into a bit mask.
+    ///
+    /// @param name      the name of the tag; may be null.
+    /// @param number    the number used to represent the tag.
+    /// @param dataTypes a bit mask indicating the set of legal data types for this tag.
+    /// @param formatter a ValueFormatter for formatting data values.
     public TIFFTag(String name,
                    int number,
                    int dataTypes,
@@ -73,46 +64,38 @@ public class TIFFTag {
         this.formatter = formatter;
     }
 
-    /**
-     * Constructs a TIFFTag with a given name, tag number, set of legal data types,
-     * and TagSet to which it refers. The tagSet parameter will generally be
-     * non-null only if this TIFFTag corresponds to a pointer to a TIFF IFD. In this
-     * case tagSet will represent the set of TIFFTags which appear in the IFD
-     * pointed to. A TIFFTag represents an IFD pointer if and only if tagSet is
-     * non-null or the data type TIFF_IFD_POINTER is legal.
-     * <p>
-     * If there are mnemonic names to be associated with the legal data values for the
-     * tag, addValueName() should be called on the new instance for each name.
-     * <p>
-     * See the documentation for getDataTypes() for an explanation of how the set of data types is to be converted into a bit mask.
-     *
-     * @param name      the name of the tag; may be null.
-     * @param number    the number used to represent the tag.
-     * @param dataTypes a bit mask indicating the set of legal data types for this tag.
-     */
+    /// Constructs a TIFFTag with a given name, tag number, set of legal data types,
+    /// and TagSet to which it refers. The tagSet parameter will generally be
+    /// non-null only if this TIFFTag corresponds to a pointer to a TIFF IFD. In this
+    /// case tagSet will represent the set of TIFFTags which appear in the IFD
+    /// pointed to. A TIFFTag represents an IFD pointer if and only if tagSet is
+    /// non-null or the data type TIFF_IFD_POINTER is legal.
+    ///
+    /// If there are mnemonic names to be associated with the legal data values for the
+    /// tag, addValueName() should be called on the new instance for each name.
+    ///
+    /// See the documentation for getDataTypes() for an explanation of how the set of data types is to be converted into a bit mask.
+    ///
+    /// @param name      the name of the tag; may be null.
+    /// @param number    the number used to represent the tag.
+    /// @param dataTypes a bit mask indicating the set of legal data types for this tag.
     public TIFFTag(String name,
                    int number,
                    int dataTypes) {
         this(name, number, dataTypes, null);
     }
 
-    /**
-     * @param tagSet the TagSet to which this tag belongs; may be null.
-     */
+    /// @param tagSet the TagSet to which this tag belongs; may be null.
     /* package */ void setTagSet(TagSet tagSet) {
         this.tagSet = tagSet;
     }
 
-    /**
-     * Returns the integer used to represent the tag.
-     */
+    /// Returns the integer used to represent the tag.
     public int getNumber() {
         return number;
     }
 
-    /**
-     * Returns the name of the tag, or null if the name is not known.
-     */
+    /// Returns the name of the tag, or null if the name is not known.
     public String getName() {
         return name;
     }

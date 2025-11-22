@@ -6,46 +6,43 @@ package org.monte.media.ilbm;
 
 import java.util.Arrays;
 
-/**
- * Implements DRNG color cycling for an IFF ILBM image.
- *
- * <pre>
- * ILBM DRNG DPaint IV enhanced color cycle chunk
- * --------------------------------------------
- *
- * set {
- *     active=1,DPReserved=4
- * } drngFlags;
- *
- * /* True color cell * /
- * typedef struct {
- *     UBYTE cell;
- *     UBYTE r;
- *     UBYTE g;
- *     UBYTE b;
- * } ilbmDRNGDColor;
- *
- * /* Color register cell * /
- * typedef struct {
- *     UBYTE cell;
- *     UBYTE index;
- * } ilbmDRNGDIndex;
- *
- * /* DRNG chunk. * /
- * typedef struct {
- *     UBYTE min; /* min cell value * /
- *     UBYTE max; /* max cell value * /
- *     UWORD rate; /* color cycling rate, 16384 = 60 steps/second * /
- *     UWORD set drngFlags flags; /* 1=RNG_ACTIVE, 4=RNG_DP_RESERVED * /
- *     UBYTE ntrue; /* number of DColorCell structs to follow * /
- *     UBYTE ntregs; /* number of DIndexCell structs to follow * /
- *     ilbmDRNGDColor[ntrue] trueColorCells;
- *     ilbmDRNGDIndex[ntregs] colorRegisterCells;
- * } ilbmDRangeChunk;
- * </pre>
- *
- * @author Werner Randelshofer
- */
+/// Implements DRNG color cycling for an IFF ILBM image.
+/// <pre>
+/// ILBM DRNG DPaint IV enhanced color cycle chunk
+/// --------------------------------------------
+///
+/// set {
+///     active=1,DPReserved=4
+/// } drngFlags;
+///
+/// /* True color cell * /
+/// typedef struct {
+///     UBYTE cell;
+///     UBYTE r;
+///     UBYTE g;
+///     UBYTE b;
+/// } ilbmDRNGDColor;
+///
+/// /* Color register cell * /
+/// typedef struct {
+///     UBYTE cell;
+///     UBYTE index;
+/// } ilbmDRNGDIndex;
+///
+/// /* DRNG chunk. * /
+/// typedef struct {
+///     UBYTE min; /* min cell value * /
+///     UBYTE max; /* max cell value * /
+///     UWORD rate; /* color cycling rate, 16384 = 60 steps/second * /
+///     UWORD set drngFlags flags; /* 1=RNG_ACTIVE, 4=RNG_DP_RESERVED * /
+///     UBYTE ntrue; /* number of DColorCell structs to follow * /
+///     UBYTE ntregs; /* number of DIndexCell structs to follow * /
+///     ilbmDRNGDColor[ntrue] trueColorCells;
+///     ilbmDRNGDIndex[ntregs] colorRegisterCells;
+/// } ilbmDRangeChunk;
+/// </pre>
+///
+/// @author Werner Randelshofer
 public class DRNGColorCycle extends ColorCycle {
 
     public abstract static class Cell implements Comparable<Cell> {
@@ -57,19 +54,15 @@ public class DRNGColorCycle extends ColorCycle {
             this.cell = cell;
         }
 
-        /**
-         * Reads the initial value of the cell which is either taken
-         * from the rgb palette or from an rgb value stored by the cell.
-         *
-         * @param rgbs         the palette.
-         * @param isHalfbright whether the halfbright value shall be taken.
-         */
+        /// Reads the initial value of the cell which is either taken
+        /// from the rgb palette or from an rgb value stored by the cell.
+        ///
+        /// @param rgbs         the palette.
+        /// @param isHalfbright whether the halfbright value shall be taken.
         public abstract void readValue(int[] rgbs, boolean isHalfbright);
 
-        /**
-         * Writes the final value of the cell into the color palette - or
-         * does nothing
-         */
+        /// Writes the final value of the cell into the color palette - or
+        /// does nothing
         public abstract void writeValue(int[] rgbs, boolean isHalfbright);
 
         @Override
@@ -92,9 +85,7 @@ public class DRNGColorCycle extends ColorCycle {
         }
     }
 
-    /**
-     * True color cell.
-     */
+    /// True color cell.
     public static class DColorCell extends Cell {
 
         private int rgb;
@@ -104,26 +95,20 @@ public class DRNGColorCycle extends ColorCycle {
             this.rgb = rgb;
         }
 
-        /**
-         * Sets the initial value of the cell from its rgb instance variable.
-         */
+        /// Sets the initial value of the cell from its rgb instance variable.
         @Override
         public void readValue(int[] rgbs, boolean isHalfbright) {
             value = isHalfbright ? rgb & 0x0f0f0f : rgb;
         }
 
-        /**
-         * Does nothing.
-         */
+        /// Does nothing.
         @Override
         public void writeValue(int[] rgbs, boolean isHalfbright) {
             // nothing to do
         }
     }
 
-    /**
-     * Color register cell.
-     */
+    /// Color register cell.
     public static class DIndexCell extends Cell {
 
         private int index;
@@ -133,54 +118,38 @@ public class DRNGColorCycle extends ColorCycle {
             this.index = index;
         }
 
-        /**
-         * Sets the initial value of the cell from the rgb palette.
-         */
+        /// Sets the initial value of the cell from the rgb palette.
         @Override
         public void readValue(int[] rgbs, boolean isHalfbright) {
             value = isHalfbright ? rgbs[index + 32] : rgbs[index];
         }
 
-        /**
-         * Writes the final value of the cell into the color palette.
-         */
+        /// Writes the final value of the cell into the color palette.
         @Override
         public void writeValue(int[] rgbs, boolean isHalfbright) {
             rgbs[isHalfbright ? index + 32 : index] = value;
         }
     }
 
-    /**
-     * Lowest color register of the range.
-     */
+    /// Lowest color register of the range.
     private int min;
-    /**
-     * Highest color register of the range.
-     */
+    /// Highest color register of the range.
     private int max;
-    /**
-     * Whether the image is in EHB mode.
-     */
+    /// Whether the image is in EHB mode.
     private boolean isEHB;
-    /**
-     * List with interpolated cells.
-     */
+    /// List with interpolated cells.
     private Cell[] ic;
-    /**
-     * Actual cells with values.
-     */
+    /// Actual cells with values.
     private Cell[] cells;
     private boolean isReverse;
 
-    /**
-     * @param rate
-     * @param timeScale
-     * @param min
-     * @param max
-     * @param isActive
-     * @param isEHB
-     * @param cells
-     */
+    /// @param rate
+    /// @param timeScale
+    /// @param min
+    /// @param max
+    /// @param isActive
+    /// @param isEHB
+    /// @param cells
     public DRNGColorCycle(int rate, int timeScale, int min, int max, boolean isActive, boolean isEHB, Cell[] cells) {
         super(rate, timeScale, isActive);
         this.min = min;

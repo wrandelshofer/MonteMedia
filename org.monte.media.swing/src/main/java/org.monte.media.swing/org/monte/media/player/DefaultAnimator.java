@@ -12,57 +12,43 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 import java.util.ArrayList;
 
-/**
- * DefaultAnimator.
- *
- * @author Werner Randelshofer
- *  @version $Id$
- */
+/// DefaultAnimator.
+///
+/// @author Werner Randelshofer
+///  @version $Id$
 public class DefaultAnimator implements Animator {
     protected EventListenerList listenerList = new EventListenerList();
-    /**
-     * List of active interpolators.
-     * Implementation note: This vector is only accessed by the animationThread.
-     */
+    /// List of active interpolators.
+    /// Implementation note: This vector is only accessed by the animationThread.
     private final ArrayList<Interpolator> activeInterpolators;
-    /**
-     * List of new interpolators.
-     * Implementation note: The dispatcher thread adds items to this list, the
-     * animationThread removes items.
-     * This queue is used to synchronize the dispatcher thread with the animation
-     * thread.
-     * Note: the dispatcher thread is not necesseraly the  Event Dispatcher
-     * thread. The dispatcher thread is any thread which dispatches interpolators.
-     */
+    /// List of new interpolators.
+    /// Implementation note: The dispatcher thread adds items to this list, the
+    /// animationThread removes items.
+    /// This queue is used to synchronize the dispatcher thread with the animation
+    /// thread.
+    /// Note: the dispatcher thread is not necesseraly the  Event Dispatcher
+    /// thread. The dispatcher thread is any thread which dispatches interpolators.
     private final ArrayList<Interpolator> newInterpolators;
 
-    /**
-     * We keep a reference to the animationThread to be able to stop it and
-     * to be able to wait until it is finished.
-     */
+    /// We keep a reference to the animationThread to be able to stop it and
+    /// to be able to wait until it is finished.
     private Thread animationThread;
     private boolean isAnimating;
     private Object lock = new Object();
     protected ChangeEvent changeEvent;
 
-    /**
-     * The sleep time controls the framerate of the animator.
-     * A value of 33 is approximately 30 frames per second.
-     */
+    /// The sleep time controls the framerate of the animator.
+    /// A value of 33 is approximately 30 frames per second.
     private int sleep = 33;
 
-    /**
-     * Creates a new instance.
-     */
+    /// Creates a new instance.
     public DefaultAnimator() {
         activeInterpolators = new ArrayList<>();
         newInterpolators = new ArrayList<>();
     }
 
-    /**
-     * Set the lock object, on which the animator synchronizes while
-     * animating the interpolators.
-     */
+    /// Set the lock object, on which the animator synchronizes while
+    /// animating the interpolators.
     public void setLock(Object lock) {
         this.lock = lock;
     }
@@ -89,10 +75,8 @@ public class DefaultAnimator implements Animator {
         }
     }
 
-    /**
-     * Dispatches an interpolator for the animation thread.
-     * This will launch the animation thread if it is not already active.
-     */
+    /// Dispatches an interpolator for the animation thread.
+    /// This will launch the animation thread if it is not already active.
     public void dispatch(Interpolator interpolator) {
         synchronized (newInterpolators) {
             newInterpolators.add(interpolator);
@@ -213,10 +197,8 @@ public class DefaultAnimator implements Animator {
         listenerList.remove(ChangeListener.class, listener);
     }
 
-    /**
-     * Notify all listeners that have registered interest for
-     * notification on this event type.
-     */
+    /// Notify all listeners that have registered interest for
+    /// notification on this event type.
     protected void fireStateChanged() {
         // Guaranteed to return a non-null array
         Object[] listeners = listenerList.getListenerList();

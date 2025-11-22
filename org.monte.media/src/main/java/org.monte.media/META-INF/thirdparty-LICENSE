@@ -1,6 +1,7 @@
 ----
 Third party license for
-JCodecProject
+JCodec Project
+https://github.com/jcodec/jcodec/blob/4ba922aca445c4df59f99e183c79d0538e5cb53f/LICENSE
 
 Copyright 2008-2019 JCodecProject
 
@@ -26,6 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ----
 Third party license for
 World's Smallest h.264 Encoder, by Ben Mesander.
+https://www.cardinalpeak.com/blog/worlds-smallest-h-264-encoder
 
 Copyright (c) 2010, Cardinal Peak, LLC.  http://cardinalpeak.com
 
@@ -60,6 +62,7 @@ SUCH DAMAGE.
 ----
 Third party license for
 JH Labs Image Processing Classes
+http://www.jhlabs.com/ip/filters/download.html
 
 Copyright 2025 Jerry Huxtable
 
@@ -75,4 +78,25 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS 
 OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+-----
+Third party license for
+ICC color profiles
+https://www.color.org/profiles2.xalter
+
+Licensing
+
+The copyright owner and terms of use of an ICC profile are normally identified
+in the Creator field in the profile header and in the Copyright tag. Where ICC
+is the copyright owner, the following license terms apply:
+
+"This profile is made available by the International Color Consortium, and may
+be copied, distributed, embedded, made, used, and sold without restriction.
+Altered versions of this profile shall have the original identification and
+copyright information removed and shall not be misrepresented as the original
+profile."
+
+ICC recommends that other profile creators and copyright owners adopt a similar
+wording for profiles that are intended to be freely distributed. See the Profile
+Registration page for more details.
 

@@ -79,15 +79,13 @@ public class EXIFTagSet extends TagSet {
     public final static TIFFTag ISOSpeedRatings = new TIFFTag("ISOSpeedRatings", 34855, SHORT_MASK);
     public final static TIFFTag OECF = new TIFFTag("OECF", 0x8828/*=34856*/, UNDEFINED_MASK);
 
-    /**
-     * The SensitivityType tag indicates PhotographicSensitivity tag. which one
-     * of the parameters of ISO12232 is the Although it is an optional tag, it
-     * should be recorded when a PhotographicSensitivity tag is recorded.
-     * Value = 4, 5, 6, or 7 may be used in case that the values of plural
-     * parameters are the same.
-     * <p>
-     * Description taken from www.exiv2.org. Copyright (c) Andreas Huggel.
-     */
+    /// The SensitivityType tag indicates PhotographicSensitivity tag. which one
+    /// of the parameters of ISO12232 is the Although it is an optional tag, it
+    /// should be recorded when a PhotographicSensitivity tag is recorded.
+    /// Value = 4, 5, 6, or 7 may be used in case that the values of plural
+    /// parameters are the same.
+    ///
+    /// Description taken from www.exiv2.org. Copyright (c) Andreas Huggel.
     public final static TIFFTag SensitivityType = new TIFFTag("SensitivityType", 0x8830/*=34864*/, SHORT_MASK, new EnumValueFormatter(
             "unknown", 0,//
             "standardOutputSensitivity", 1,//
@@ -246,9 +244,7 @@ public class EXIFTagSet extends TagSet {
         Enum<?> x;
     }
 
-    /**
-     * Returns a shared instance of a BaselineTIFFTagSet.
-     */
+    /// Returns a shared instance of a BaselineTIFFTagSet.
     public static EXIFTagSet getInstance() {
         if (instance == null) {
             Field[] fields = EXIFTagSet.class.getDeclaredFields();

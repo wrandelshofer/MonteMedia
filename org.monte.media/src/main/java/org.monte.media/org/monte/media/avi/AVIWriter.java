@@ -60,17 +60,13 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.PaletteKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.QualityKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
-/**
- * Provides high-level support for encoding and writing audio and video samples
- * into an AVI 1.0 file.
- *
- * @author Werner Randelshofer
- */
+/// Provides high-level support for encoding and writing audio and video samples
+/// into an AVI 1.0 file.
+///
+/// @author Werner Randelshofer
 public class AVIWriter extends AVIOutputStream implements MovieWriter {
     private static class TrackEncoder {
-        /**
-         * The codec.
-         */
+        /// The codec.
         public Codec codec;
         public Buffer outputBuffer;
         public Buffer inputBuffer;
@@ -95,20 +91,16 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
             MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
             EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_RAW);
 
-    /**
-     * Creates a new AVI writer.
-     *
-     * @param file the output file
-     */
+    /// Creates a new AVI writer.
+    ///
+    /// @param file the output file
     public AVIWriter(File file) throws IOException {
         super(file);
     }
 
-    /**
-     * Creates a new AVI writer.
-     *
-     * @param out the output stream.
-     */
+    /// Creates a new AVI writer.
+    ///
+    /// @param out the output stream.
     public AVIWriter(ImageOutputStream out) throws IOException {
         super(out);
     }
@@ -129,9 +121,7 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
         return tracks.get(track).format;
     }
 
-    /**
-     * Returns the media duration of the track in seconds.
-     */
+    /// Returns the media duration of the track in seconds.
     @Override
     public Rational getDuration(int track) {
         AVIOutputStream.Track tr = tracks.get(track);
@@ -139,12 +129,10 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
         return new Rational(duration * tr.scale, tr.rate);
     }
 
-    /**
-     * Adds a track.
-     *
-     * @param format The format of the track.
-     * @return The track number.
-     */
+    /// Adds a track.
+    ///
+    /// @param format The format of the track.
+    /// @return The track number.
     @Override
     public int addTrack(Format format) throws IOException {
         switch (format.get(MediaTypeKey, MediaType.VIDEO)) {
@@ -158,12 +146,10 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
         }
     }
 
-    /**
-     * Adds a video track.
-     *
-     * @param vf The format of the track.
-     * @return The track number.
-     */
+    /// Adds a video track.
+    ///
+    /// @param vf The format of the track.
+    /// @return The track number.
     private int addVideoTrack(Format vf) throws IOException {
         vf.requireKeys(EncodingKey, FrameRateKey, WidthKey, HeightKey);
         int tr = addVideoTrack(vf.get(EncodingKey),
@@ -177,12 +163,10 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
         return tr;
     }
 
-    /**
-     * Adds an audio track.
-     *
-     * @param format The format of the track.
-     * @return The track number.
-     */
+    /// Adds an audio track.
+    ///
+    /// @param format The format of the track.
+    /// @return The track number.
     private int addAudioTrack(Format format) throws IOException {
         int waveFormatTag = 0x0001; // WAVE_FORMAT_PCM
 
@@ -218,16 +202,12 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
                 frameDuration, frameSize);
     }
 
-    /**
-     * Returns the codec of the specified track.
-     */
+    /// Returns the codec of the specified track.
     public Codec getCodec(int track) {
         return getTrackEncoder(track).codec;
     }
 
-    /**
-     * Sets the codec for the specified track.
-     */
+    /// Sets the codec for the specified track.
     public void setCodec(int track, Codec codec) {
         getTrackEncoder(track).codec = codec;
     }
@@ -237,15 +217,13 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
         return tracks.size();
     }
 
-    /**
-     * Encodes the provided image and writes its sample data into the specified
-     * track.
-     *
-     * @param track    The track index.
-     * @param image    The image of the video frame.
-     * @param duration Duration given in media time units (=number of frames to be written).
-     * @throws IOException if writing the sample data failed.
-     */
+    /// Encodes the provided image and writes its sample data into the specified
+    /// track.
+    ///
+    /// @param track    The track index.
+    /// @param image    The image of the video frame.
+    /// @param duration Duration given in media time units (=number of frames to be written).
+    /// @throws IOException if writing the sample data failed.
     public void write(int track, BufferedImage image, long duration) throws IOException {
         ensureStarted();
 
@@ -276,16 +254,14 @@ public class AVIWriter extends AVIOutputStream implements MovieWriter {
         write(track, inputBuffer);
     }
 
-    /**
-     * Encodes the data provided in the buffer and then writes it into the
-     * specified track.
-     * <p>
-     * Does nothing if the discard-flag in the buffer is set to true.
-     *
-     * @param track The track number.
-     * @param buf   The buffer containing a data sample. The duration of the buffer must match the
-     *              sample rate of the track.
-     */
+    /// Encodes the data provided in the buffer and then writes it into the
+    /// specified track.
+    ///
+    /// Does nothing if the discard-flag in the buffer is set to true.
+    ///
+    /// @param track The track number.
+    /// @param buf   The buffer containing a data sample. The duration of the buffer must match the
+    ///                                                     sample rate of the track.
     @Override
     public void write(int track, Buffer buf) throws IOException {
         ensureStarted();

@@ -12,26 +12,22 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-/**
- * Utility methods for {@code MPOFiles}.
- *
- * @author Werner Randelshofer
- */
+/// Utility methods for `MPOFiles`.
+///
+/// @author Werner Randelshofer
 public class MPOFiles {
 
     private MPOFiles() {
     }
 
-    /**
-     * Splits a MPO file into two JPEG files.
-     * <p>
-     * A MPO file consists of two or more concatenated JPEG files with
-     * multi-picture file meta-data in APP2 segments which start with the
-     * character sequence "MPF\0".
-     * <p>
-     * This method writes each JPEG file into a separate file and strips
-     * the multi-picture meta-data.
-     */
+    /// Splits a MPO file into two JPEG files.
+    ///
+    /// A MPO file consists of two or more concatenated JPEG files with
+    /// multi-picture file meta-data in APP2 segments which start with the
+    /// character sequence "MPF\0".
+    ///
+    /// This method writes each JPEG file into a separate file and strips
+    /// the multi-picture meta-data.
     public static ArrayList<File> splitMPOFile(File f) throws IOException {
         int imgCount = 0;
         ArrayList<File> splittedFiles = new ArrayList<>();

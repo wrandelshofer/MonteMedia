@@ -40,20 +40,15 @@ import static org.monte.media.impl.jcodec.codecs.h264.io.model.MBType.I_16x16;
 import static org.monte.media.impl.jcodec.codecs.h264.io.model.MBType.P_8x8;
 import static org.monte.media.impl.jcodec.common.model.ColorSpace.MONO;
 
-/**
- * Contains methods for reading high-level symbols out of H.264 bitstream
- * <p>
- * References:
- * <p>
- * This code has been derived from JCodecProject.
- * <dl>
- *     <dt>JCodecProject. Copyright 2008-2019 JCodecProject.
- *     <br><a href="https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE">BSD 2-Clause License.</a></dt>
- *     <dd><a href="https://github.com/jcodec/jcodec">github.com</a></dd>
- * </dl>
- *
- * @author The JCodec Project
- */
+/// Contains methods for reading high-level symbols out of H.264 bitstream
+///
+/// References:
+///
+/// JCodecProject. Copyright 2008-2019 JCodecProject.
+/// : [BSD 2-Clause License.](https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE)
+/// : [github.com](https://github.com/jcodec/jcodec)
+///
+/// @author The JCodec Project
 public class SliceReader {
 
     private PictureParameterSet activePps;
@@ -302,12 +297,10 @@ public class SliceReader {
         }
     }
 
-    /**
-     * Reads AC block of macroblock encoded as I_16x16, returns number of
-     * non-zero coefficients
-     *
-     * @return
-     */
+    /// Reads AC block of macroblock encoded as I_16x16, returns number of
+    /// non-zero coefficients
+    ///
+    /// @return
     int read16x16AC(boolean leftAvailable, boolean topAvailable, int mbX, int cbpLuma, int[] ac, int blkOffLeft,
                     int blkOffTop, int blkX, int blkY) {
         if (!activePps.entropyCodingModeFlag) {
@@ -323,11 +316,9 @@ public class SliceReader {
         return 0;
     }
 
-    /**
-     * Reads AC block of a macroblock, return number of non-zero coefficients
-     *
-     * @return
-     */
+    /// Reads AC block of a macroblock, return number of non-zero coefficients
+    ///
+    /// @return
     int readResidualAC(boolean leftAvailable, boolean topAvailable, int mbX, MBType curMbType, int cbpLuma,
                        int blkOffLeft, int blkOffTop, int blkX, int blkY, int[] ac) {
         if (!activePps.entropyCodingModeFlag) {
@@ -361,12 +352,10 @@ public class SliceReader {
                 blkOffTop == 0 ? topMBType[mbX] : curMbType, 0, 16, H264Const.identityMapping16);
     }
 
-    /**
-     * Reads luma AC coeffiecients for 8x8 blocks, returns number of non-zero
-     * coefficients
-     *
-     * @return
-     */
+    /// Reads luma AC coeffiecients for 8x8 blocks, returns number of non-zero
+    /// coefficients
+    ///
+    /// @return
     public int readLumaAC8x8(int blkX, int blkY, int[] ac) {
         int readCoeffs = cabac.readCoeffs(mDecoder, BlockType.LUMA_64, ac, 0, 64, CoeffTransformer.zigzag8x8,
                 sig_coeff_map_8x8, last_sig_coeff_map_8x8);

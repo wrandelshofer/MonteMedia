@@ -7,11 +7,9 @@ package org.monte.media.quicktime.codec.video;
 
 import org.monte.media.av.CodecSpi;
 
-/**
- * AnimationCodecSpi.
- *
- * @author Werner Randelshofer
- */
+/// AnimationCodecSpi.
+///
+/// @author Werner Randelshofer
 public class AnimationEncoderSpi implements CodecSpi {
 
     @Override

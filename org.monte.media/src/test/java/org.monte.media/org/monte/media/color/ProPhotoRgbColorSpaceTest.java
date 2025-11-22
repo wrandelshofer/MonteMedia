@@ -19,16 +19,13 @@ public class ProPhotoRgbColorSpaceTest extends AbstractNamedColorSpaceTest {
         return new ProPhotoRgbColorSpace();
     }
 
-    /**
-     * References:
-     * <dl>
-     *     <dt>CSS Color Module Level 4. The Predefined ProPhoto RGB Color Space: the prophoto-rgb keyword.</dt>
-     *     <dd><a href="https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#predefined-prophoto-rgb">w3.org</a></dd>
-     *
-     *     <dt>CSS Color Module Level 4. Sample code for Color Conversions.</dt>
-     *     <dd><a href="https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#color-conversion-code">w3.org</a></dd>
-     * </dl>
-     */
+    /// References:
+    /// <dl>
+    ///     <dt>CSS Color Module Level 4. The Predefined ProPhoto RGB Color Space: the prophoto-rgb keyword.</dt>
+    ///     <dd>[w3.org](https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#predefined-prophoto-rgb)</dd>
+    ///     <dt>CSS Color Module Level 4. Sample code for Color Conversions.</dt>
+    ///     <dd>[w3.org](https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#color-conversion-code)</dd>
+    /// </dl>
     @Test
     public void shouldHaveExpectedMatrix() {
         ParametricLinearRgbColorSpace instance = (ParametricLinearRgbColorSpace) getInstance().getLinearColorSpace();

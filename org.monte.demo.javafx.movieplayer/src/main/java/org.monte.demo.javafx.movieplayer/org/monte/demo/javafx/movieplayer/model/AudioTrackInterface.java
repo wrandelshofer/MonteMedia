@@ -5,8 +5,6 @@
 
 package org.monte.demo.javafx.movieplayer.model;
 
-/**
- * An interface for {@link javafx.scene.media.AudioTrack}.
- */
+/// An interface for [javafx.scene.media.AudioTrack].
 public interface AudioTrackInterface extends TrackInterface {
 }

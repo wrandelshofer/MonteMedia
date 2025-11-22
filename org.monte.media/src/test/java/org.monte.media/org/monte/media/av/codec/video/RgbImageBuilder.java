@@ -9,9 +9,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.Arrays;
 
-/**
- * Helper for creating test images.
- */
+/// Helper for creating test images.
 public class RgbImageBuilder {
     private int width;
     private int height;

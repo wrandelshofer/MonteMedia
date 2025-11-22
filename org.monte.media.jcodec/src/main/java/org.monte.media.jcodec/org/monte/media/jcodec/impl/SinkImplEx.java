@@ -58,12 +58,10 @@ import static org.jcodec.common.Format.WAV;
 import static org.jcodec.common.Format.Y4M;
 import static org.jcodec.common.io.NIOUtils.writableFileChannel;
 
-/**
- * The sink that consumes the uncompressed frames and stores them into a
- * compressed file.
- *
- * @author Stanislav Vitvitskiy
- */
+/// The sink that consumes the uncompressed frames and stores them into a
+/// compressed file.
+///
+/// @author Stanislav Vitvitskiy
 public class SinkImplEx implements Sink, PacketSink {
     private String destName;
     private SeekableByteChannel destStream;

@@ -10,24 +10,22 @@ import org.monte.media.tiff.TagSet;
 
 import static org.monte.media.tiff.TIFFTag.SHORT_MASK;
 
-/**
- * Enumeration of Interoperation EXIF tags.
- * <p>
- * Sources:
- * <p>
- * Exchangeable image file format for digital still cameras: EXIF Version 2.2.
- * (April, 2002). Standard of Japan Electronics and Information Technology
- * Industries Association. JEITA CP-3451.
- * <a href="http://www.exif.org/Exif2-2.PDF">http://www.exif.org/Exif2-2.PDF</a>
- * <p>
- * Multi-Picture Format
- * (February 4, 2009). Standard of the Camera &amp; Imaging Products Association.
- * CIPA DC-007-Translation-2009.
- * <a href="http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf">
- * http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf</a>
- *
- * @author Werner Randelshofer
- */
+/// Enumeration of Interoperation EXIF tags.
+///
+/// Sources:
+///
+/// Exchangeable image file format for digital still cameras: EXIF Version 2.2.
+/// (April, 2002). Standard of Japan Electronics and Information Technology
+/// Industries Association. JEITA CP-3451.
+/// [http://www.exif.org/Exif2-2.PDF](http://www.exif.org/Exif2-2.PDF)
+///
+/// Multi-Picture Format
+/// (February 4, 2009). Standard of the Camera &amp; Imaging Products Association.
+/// CIPA DC-007-Translation-2009.
+/// [
+/// http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf](http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf)
+///
+/// @author Werner Randelshofer
 public class InteroperabilityTagSet extends TagSet {
 
     private static InteroperabilityTagSet instance;
@@ -36,9 +34,7 @@ public class InteroperabilityTagSet extends TagSet {
         super("Interoperability", tags);
     }
 
-    /**
-     * Returns a shared instance of a BaselineTIFFTagSet.
-     */
+    /// Returns a shared instance of a BaselineTIFFTagSet.
     public static InteroperabilityTagSet getInstance() {
         if (instance == null) {
             TIFFTag[] tags = {//

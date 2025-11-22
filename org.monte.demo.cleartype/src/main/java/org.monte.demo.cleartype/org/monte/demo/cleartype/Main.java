@@ -105,9 +105,7 @@ public class Main {
         });
     }
 
-    /**
-     * Adds one third of b to a
-     */
+    /// Adds one third of b to a
     private static int fuzz(int a, int b) {
         int red = ((b >> 16) & 0xff) / 3 + ((a >> 16) & 0xff);
         int green = ((b >> 8) & 0xff) / 3 + ((a >> 8) & 0xff);
@@ -127,10 +125,8 @@ public class Main {
         return pixels;
     }
 
-    /**
-     * Renders an image with clear type. Note the width of the image must be
-     * divideable by 3.
-     */
+    /// Renders an image with clear type. Note the width of the image must be
+    /// divideable by 3.
     public static void drawClearType(Graphics g, Image img, int x, int y, int superY, ImageObserver observer) {
         int width = img.getWidth(null);
         int height = img.getHeight(null);

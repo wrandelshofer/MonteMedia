@@ -62,19 +62,15 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.PixelFormatKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.QualityKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
-/**
- * Demonstrates the use of {@link AVIReader} and {@link AVIWriter}.
- *
- * @author Werner Randelshofer
- */
+/// Demonstrates the use of [AVIReader] and [AVIWriter].
+///
+/// @author Werner Randelshofer
 public class TestMovieWriters {
 
     private final static boolean INTERACTIVE = false;
     private static final int CLOCK_START_TIME = 8 * 3600 + 25 * 60;
 
-    /**
-     * Creates a buffered image of the specified format.
-     */
+    /// Creates a buffered image of the specified format.
     private static BufferedImage createImage(Format format) {
         int depth = format.get(DepthKey);
         int width = format.get(WidthKey);
@@ -277,20 +273,18 @@ public class TestMovieWriters {
         System.out.println("  " + (System.nanoTime() - startTime) / 1e9 + " seconds for " + count + " frames");
     }
 
-    /**
-     * Compares two images.
-     * <p>
-     * Returns the following results:
-     * <dl>
-     *     <dt>-1</dt><dd>The images are equal</dd>
-     *     <dt>-2</dt><dd>Comparison failed</dd>
-     *     <dt>≥ 0</dt><dd>Index of the first mismatching pixel</dd>
-     * </dl>
-     *
-     * @param expectedImage expected image
-     * @param actualImage   actual image
-     * @return diffImage or null if images are equal
-     */
+    /// Compares two images.
+    ///
+    /// Returns the following results:
+    /// <dl>
+    ///     <dt>-1</dt><dd>The images are equal</dd>
+    ///     <dt>-2</dt><dd>Comparison failed</dd>
+    ///     <dt>≥ 0</dt><dd>Index of the first mismatching pixel</dd>
+    /// </dl>
+    ///
+    /// @param expectedImage expected image
+    /// @param actualImage   actual image
+    /// @return diffImage or null if images are equal
     private static BufferedImage compareImages(BufferedImage expectedImage, BufferedImage actualImage) {
         if (expectedImage.getRaster().getDataBuffer() instanceof DataBufferInt) {
             return compareImagesInt(expectedImage, actualImage);

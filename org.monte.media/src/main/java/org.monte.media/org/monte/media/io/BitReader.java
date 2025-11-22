@@ -7,13 +7,10 @@ package org.monte.media.jcodec.common.io;
 
 import java.nio.ByteBuffer;
 
-/**
- * This class is part of JCodec ( www.jcodec.org ) This software is distributed
- * under FreeBSD License
- *
- * @author The JCodec project
- *
- */
+/// This class is part of JCodec ( www.jcodec.org ) This software is distributed
+/// under FreeBSD License
+///
+/// @author The JCodec project
 public class BitReader {
     public static BitReader createBitReader(ByteBuffer bb) {
         BitReader r = new BitReader(bb);
@@ -232,10 +229,8 @@ public class BitReader {
         return ((((java.nio.Buffer) bb).position() - initPos - 4) << 3) + deficit;
     }
 
-    /**
-     * Stops this bit reader. Returns underlying ByteBuffer pointer to the next
-     * byte unread byte
-     */
+    /// Stops this bit reader. Returns underlying ByteBuffer pointer to the next
+    /// byte unread byte
     public void stop() {
         ((java.nio.Buffer) bb).position(((java.nio.Buffer) bb).position() - ((32 - deficit) >> 3));
     }

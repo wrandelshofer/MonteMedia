@@ -5,16 +5,13 @@
 
 package org.monte.media.color.dither;
 
-/**
- * Bayer ordered dithering.
- *
- * <p>
- * References:
- * <dl>
- *     <dt>Wikipedia (2025). Ordered dithering.</dt>
- *     <dd><a href="https://en.wikipedia.org/wiki/Ordered_dithering">wikipedia.com</a></dd>
- * </dl>
- */
+/// Bayer ordered dithering.
+///
+/// References:
+///
+/// Wikipedia (2025). Ordered dithering.
+/// : [wikipedia.com](https://en.wikipedia.org/wiki/Ordered_dithering)
+///
 public class BayerDither implements Dither {
     @SuppressWarnings("PointlessArithmeticExpression")
     private static float[][] DATA_4 = {
@@ -36,12 +33,10 @@ public class BayerDither implements Dither {
     };
     private final float[][] data;
 
-    /**
-     * Creates a new {@link BayerDither}.
-     *
-     * @param size   The size of the bayer matrix: 4 or 8.
-     * @param spread the multiplication factor applied to the matrix values. With spread=1 the values are in the range [-1,+1].
-     */
+    /// Creates a new [BayerDither].
+    ///
+    /// @param size   The size of the bayer matrix: 4 or 8.
+    /// @param spread the multiplication factor applied to the matrix values. With spread=1 the values are in the range [-1,+1].
     public BayerDither(int size, float spread) {
         if (size != 4 && size != 8)
             throw new IllegalArgumentException("illegal size=" + size);

@@ -7,11 +7,9 @@ package org.monte.media.avi.codec.video;
 
 import org.monte.media.av.CodecSpi;
 
-/**
- * DIBCodecSpi.
- *
- * @author Werner Randelshofer
- */
+/// DIBCodecSpi.
+///
+/// @author Werner Randelshofer
 public class DIBEncoderSpi implements CodecSpi {
 
     @Override

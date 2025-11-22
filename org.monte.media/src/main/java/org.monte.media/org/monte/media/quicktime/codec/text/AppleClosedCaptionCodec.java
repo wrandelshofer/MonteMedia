@@ -31,29 +31,27 @@ import static org.monte.media.av.codec.text.TextFormatKeys.ENCODING_HTML;
 import static org.monte.media.av.codec.text.TextFormatKeys.ENCODING_STRING;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
 
-/**
- * Implements the Apple Closed Caption codec.
- * <p>
- * Each sample consists of a {@code cdat} chunk.
- * <pre>
- * typedef struct {
- *     uint32 size;
- *     uint8[4] type;           // Must contain the ASCII characters "cdat".
- *     byte[size - 8] caption;  // ANSI/CTA-608-E S-2019 encoded String
- * } cdatChunk;
- * </pre>
- * <p>
- * References:
- * <dl>
- *     <dt>ANSI/CTA Standard. Line 21 Data Services. ANSI/CTA-608-E S-2019. April 2008.</dt>
- *     <dd><a href="https://shop.cta.tech/products/line-21-data-services">ANSI-CTA-608-E-S-2019-Final.pdf</a></dd>
- * </dl>
- * <dl>
- *     <dt>ANSI/CTA Standard. Digital Television (DTV) Closed Captioning. CTA-708-E S-2023. August 2013.</dt>
- *     <dd><a href="https://shop.cta.tech/collections/standards/products/digital-television-dtv-closed-captioning">
- *         ANSI CTA-708-E S-2023 + Errata Letter and Replacement Pages FINAL.pdf</a></dd>
- * </dl>
- */
+/// Implements the Apple Closed Caption codec.
+///
+/// Each sample consists of a `cdat` chunk.
+/// <pre>
+/// typedef struct {
+///     uint32 size;
+///     uint8[4] type;           // Must contain the ASCII characters "cdat".
+///     byte[size-8] caption;  // ANSI/CTA-608-E S-2019 encoded String
+/// } cdatChunk;
+/// </pre>
+///
+/// References:
+/// <dl>
+///     <dt>ANSI/CTA Standard. Line 21 Data Services. ANSI/CTA-608-E S-2019. April 2008.</dt>
+///     <dd>[ANSI-CTA-608-E-S-2019-Final.pdf](https://shop.cta.tech/products/line-21-data-services)</dd>
+/// </dl>
+/// <dl>
+///     <dt>ANSI/CTA Standard. Digital Television (DTV) Closed Captioning. CTA-708-E S-2023. August 2013.</dt>
+///     <dd>[
+///         ANSI CTA-708-E S-2023 + Errata Letter and Replacement Pages FINAL.pdf](https://shop.cta.tech/collections/standards/products/digital-television-dtv-closed-captioning)</dd>
+/// </dl>
 public class AppleClosedCaptionCodec extends AbstractTextCodec {
 
     private Cta608Memory cta608Memory = new Cta608Memory();
@@ -82,9 +80,7 @@ public class AppleClosedCaptionCodec extends AbstractTextCodec {
         }
     }
 
-    /**
-     * Decodes a byte array to an HTML String.
-     */
+    /// Decodes a byte array to an HTML String.
     public int decode(Buffer in, Buffer out) {
         out.setMetaTo(in);
         out.format = outputFormat;
@@ -135,11 +131,9 @@ public class AppleClosedCaptionCodec extends AbstractTextCodec {
     }
 
 
-    /**
-     * Encodes a String to a byte array.
-     * <p>
-     * FIXME The encoder is currently not implemented!
-     */
+    /// Encodes a String to a byte array.
+    ///
+    /// FIXME The encoder is currently not implemented!
     public int encode(Buffer in, Buffer out) {
         out.setMetaTo(in);
         out.format = outputFormat;

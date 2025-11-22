@@ -28,14 +28,12 @@ import static org.monte.media.av.codec.audio.AudioFormatKeys.ENCODING_QUICKTIME_
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleSizeInBitsKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
 
-/**
- * {@code AbstractPCMAudioCodec} performs sign conversion, endian conversion and
- * quantization conversion of PCM audio data.
- * <p>
- * Does not perform sampling rate conversion or channel conversion.
- *
- * @author Werner Randelshofer
- */
+/// `AbstractPCMAudioCodec` performs sign conversion, endian conversion and
+/// quantization conversion of PCM audio data.
+///
+/// Does not perform sampling rate conversion or channel conversion.
+///
+/// @author Werner Randelshofer
 public class QuickTimePCMAudioCodec extends AbstractPCMAudioCodec {
 
     private final static HashSet<String> signedEncodings = new HashSet<>(

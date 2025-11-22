@@ -7,11 +7,9 @@ package org.monte.media.cdxl;
 
 import org.monte.media.av.CodecSpi;
 
-/**
- * AmigaBitmapCodecSpi.
- *
- * @author Werner Randelshofer
- */
+/// AmigaBitmapCodecSpi.
+///
+/// @author Werner Randelshofer
 public class CDXLImageDecoderSpi implements CodecSpi {
 
     @Override

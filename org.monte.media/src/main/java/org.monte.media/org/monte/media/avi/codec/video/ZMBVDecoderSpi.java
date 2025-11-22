@@ -7,11 +7,9 @@ package org.monte.media.avi.codec.video;
 
 import org.monte.media.av.CodecSpi;
 
-/**
- * ZMBVCodecSpi.
- *
- * @author Werner Randelshofer
- */
+/// ZMBVCodecSpi.
+///
+/// @author Werner Randelshofer
 public class ZMBVDecoderSpi implements CodecSpi {
 
     @Override

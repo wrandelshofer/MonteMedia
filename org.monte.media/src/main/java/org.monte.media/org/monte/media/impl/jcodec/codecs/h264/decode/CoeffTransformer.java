@@ -9,21 +9,16 @@ import org.monte.media.impl.jcodec.common.ArrayUtil;
 
 import java.util.Arrays;
 
-/**
- * References:
- * <p>
- * This code has been derived from JCodecProject.
- * <dl>
- *     <dt>JCodecProject. Copyright 2008-2019 JCodecProject.
- *     <br><a href="https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE">BSD 2-Clause License.</a></dt>
- *     <dd><a href="https://github.com/jcodec/jcodec">github.com</a></dd>
- * </dl>
- *
- * <p>
- * Integer DCT 4x4 base implementation
- *
- * @author The JCodec project
- */
+/// References:
+///
+/// JCodecProject. Copyright 2008-2019 JCodecProject.
+/// : [BSD 2-Clause License.](https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE)
+/// : [github.com](https://github.com/jcodec/jcodec)
+///
+///
+/// Integer DCT 4x4 base implementation
+///
+/// @author The JCodec project
 public class CoeffTransformer {
 
     public static int[] zigzag4x4 = {0, 1, 4, 8, 5, 2, 3, 6, 9, 12, 13, 10, 7, 11, 14, 15};
@@ -91,12 +86,10 @@ public class CoeffTransformer {
         }
     }
 
-    /**
-     * Inverce integer DCT transform for 4x4 block
-     *
-     * @param block
-     * @return
-     */
+    /// Inverce integer DCT transform for 4x4 block
+    ///
+    /// @param block
+    /// @return
     public final static void idct4x4(int[] block) {
         _idct4x4(block, block);
     }
@@ -161,11 +154,9 @@ public class CoeffTransformer {
         }
     }
 
-    /**
-     * Inverse Hadamard transform
-     *
-     * @param scaled
-     */
+    /// Inverse Hadamard transform
+    ///
+    /// @param scaled
     public static void invDC4x4(int[] scaled) {
         // Horisontal
         for (int i = 0; i < 16; i += 4) {
@@ -193,11 +184,9 @@ public class CoeffTransformer {
         }
     }
 
-    /**
-     * Forward Hadamard transform
-     *
-     * @param scaled
-     */
+    /// Forward Hadamard transform
+    ///
+    /// @param scaled
     public static void fvdDC4x4(int[] scaled) {
         // Horizontal
         for (int i = 0; i < 16; i += 4) {
@@ -315,11 +304,9 @@ public class CoeffTransformer {
         }
     }
 
-    /**
-     * Inverse Hadamard 2x2
-     *
-     * @param block
-     */
+    /// Inverse Hadamard 2x2
+    ///
+    /// @param block
     public static void invDC2x2(int[] block) {
         int t0, t1, t2, t3;
 
@@ -334,11 +321,9 @@ public class CoeffTransformer {
         block[3] = (t1 - t3);
     }
 
-    /**
-     * Forward Hadamard 2x2
-     *
-     * @param dc2
-     */
+    /// Forward Hadamard 2x2
+    ///
+    /// @param dc2
     public static void fvdDC2x2(int[] block) {
         invDC2x2(block);
     }
@@ -416,12 +401,10 @@ public class CoeffTransformer {
 
     }
 
-    /**
-     * Coefficients are <<4 on exit
-     *
-     * @param coeffs
-     * @param qp
-     */
+    /// Coefficients are <<4 on exit
+    ///
+    /// @param coeffs
+    /// @param qp
     public static void dequantizeAC8x8(int[] coeffs, int qp, int[] scalingList) {
         int group = qp % 6;
 

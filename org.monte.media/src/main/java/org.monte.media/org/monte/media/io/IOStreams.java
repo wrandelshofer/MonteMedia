@@ -11,32 +11,26 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
-/**
- * IOStreams.
- *
- * @author Werner Randelshofer
- */
+/// IOStreams.
+///
+/// @author Werner Randelshofer
 public class IOStreams {
-    /**
-     * Copies the source file into the provided target file.
-     *
-     * @param source the source file
-     * @param target the target file
-     * @throws IOException if an I/O error occurs
-     */
+    /// Copies the source file into the provided target file.
+    ///
+    /// @param source the source file
+    /// @param target the target file
+    /// @throws IOException if an I/O error occurs
     public static void copy(File source, File target) throws IOException {
         Files.copy(source.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
     }
 
-    /**
-     * Copies the remainder of the source stream into the provided target
-     * stream.
-     *
-     * @param source the source stream
-     * @param target the target stream
-     * @return number of copied bytes
-     * @throws IOException if an I/O error occurs
-     */
+    /// Copies the remainder of the source stream into the provided target
+    /// stream.
+    ///
+    /// @param source the source stream
+    /// @param target the target stream
+    /// @return number of copied bytes
+    /// @throws IOException if an I/O error occurs
     public static long copy(InputStream source, ImageOutputStream target) throws IOException {
         long count = 0L;
         byte[] b = new byte[8192];
@@ -47,16 +41,14 @@ public class IOStreams {
         return count;
     }
 
-    /**
-     * Copies up to the specified number of bytes from the remainder of the source stream into the provided target
-     * stream.
-     *
-     * @param source the source stream
-     * @param target the target stream
-     * @param n      the maximal number of bytes to copy
-     * @return actual number of copied bytes
-     * @throws IOException if an I/O error occurs
-     */
+    /// Copies up to the specified number of bytes from the remainder of the source stream into the provided target
+    /// stream.
+    ///
+    /// @param source the source stream
+    /// @param target the target stream
+    /// @param n      the maximal number of bytes to copy
+    /// @return actual number of copied bytes
+    /// @throws IOException if an I/O error occurs
     public static long copy(InputStream source, ImageOutputStream target, long n) throws IOException {
         long count = 0L;
         byte[] b = new byte[8192];

@@ -19,16 +19,13 @@ public class DisplayP3ColorSpaceTest extends AbstractNamedColorSpaceTest {
         return new DisplayP3ColorSpace();
     }
 
-    /**
-     * References:
-     * <dl>
-     *     <dt>CSS Color Module Level 4. The Predefined Display P3 Color Space: the display-p3 keyword.</dt>
-     *     <dd><a href="https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#predefined-display-p3">w3.org</a></dd>
-     *
-     *     <dt>CSS Color Module Level 4. The Predefined Linear-light sRGB Color Space: the srgb-linear keyword.</dt>
-     *     <dd><a href="https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#predefined-sRGB-linear">w3.org</a></dd>
-     * </dl>
-     */
+    /// References:
+    /// <dl>
+    ///     <dt>CSS Color Module Level 4. The Predefined Display P3 Color Space: the display-p3 keyword.</dt>
+    ///     <dd>[w3.org](https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#predefined-display-p3)</dd>
+    ///     <dt>CSS Color Module Level 4. The Predefined Linear-light sRGB Color Space: the srgb-linear keyword.</dt>
+    ///     <dd>[w3.org](https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#predefined-sRGB-linear)</dd>
+    /// </dl>
     @Test
     public void shouldHaveExpectedMatrix() {
         ParametricLinearRgbColorSpace instance = (ParametricLinearRgbColorSpace) getInstance().getLinearColorSpace();

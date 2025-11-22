@@ -9,24 +9,26 @@ import org.monte.media.math.Point2D;
 
 import static org.monte.media.color.ParametricLinearRgbColorSpace.ILLUMINANT_D65_XYZ;
 
-/**
- * Display P3 Color Space.
- * <p>
- * P3 is an RGB color space. DCI-P3 (Digital Cinema Initiative) is used with digital theatrical motion picture
- * distribution. Display P3 is a variant developed by Apple Inc. for wide-gamut displays.
- * <dl>
- *     <dt>Wikipedia: DCI-P3.</dt>
- *     <dd><a href="https://en.wikipedia.org/wiki/DCI-P3">wikipedia</a></dd>
- *
- *     <dt>CSS Color Module Level 4. The Predefined Display P3 Color Space: the display-p3 keyword.</dt>
- *     <dd><a href="https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#predefined-display-p3">w3.org</a></dd>
- *
- *     <dt>CSS Color Module Level 4. Sample code for Color Conversions.</dt>
- *     <dd><a href="https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#color-conversion-code">w3.org</a></dd>
- * </dl>
- */
+/// Display P3 Color Space.
+///
+/// P3 is an RGB color space. DCI-P3 (Digital Cinema Initiative) is used with digital theatrical motion picture
+/// distribution. Display P3 is a variant developed by Apple Inc. for wide-gamut displays.
+/// <dl>
+///     <dt>Wikipedia: DCI-P3.</dt>
+///     <dd>[wikipedia](https://en.wikipedia.org/wiki/DCI-P3)</dd>
+///     <dt>CSS Color Module Level 4. The Predefined Display P3 Color Space: the display-p3 keyword.</dt>
+///     <dd>[w3.org](https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#predefined-display-p3)</dd>
+///     <dt>CSS Color Module Level 4. Sample code for Color Conversions.</dt>
+///     <dd>[w3.org](https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#color-conversion-code)</dd>
+/// </dl>
 public class DisplayP3ColorSpace extends ParametricNonLinearRgbColorSpace {
-    public final static DisplayP3ColorSpace INSTANCE = new DisplayP3ColorSpace();
+    public static DisplayP3ColorSpace getInstance() {
+        class Holder {
+            private static final DisplayP3ColorSpace INSTANCE = new DisplayP3ColorSpace();
+        }
+        return Holder.INSTANCE;
+    }
+
 
     public DisplayP3ColorSpace() {
         super("Display P3", new ParametricLinearRgbColorSpace("Linear Display P3",

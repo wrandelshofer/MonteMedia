@@ -22,23 +22,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Main.
- *
- * @author Werner Randelshofer
- */
+/// Main.
+///
+/// @author Werner Randelshofer
 public class Main extends javax.swing.JPanel {
     private final static long serialVersionUID = 1L;
 
     private class Handler implements DropTargetListener {
 
-        /**
-         * Called when a drag operation has
-         * encountered the <code>DropTarget</code>.
-         * <p>
-         *
-         * @param dtde the <code>DropTargetDragEvent</code>
-         */
+        /// Called when a drag operation has
+        /// encountered the `DropTarget`.
+        ///
+        /// @param dtde the `DropTargetDragEvent`
         @Override
         public void dragEnter(DropTargetDragEvent event) {
             if (event.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
@@ -48,25 +43,19 @@ public class Main extends javax.swing.JPanel {
             }
         }
 
-        /**
-         * The drag operation has departed
-         * the <code>DropTarget</code> without dropping.
-         * <p>
-         *
-         * @param dte the <code>DropTargetEvent</code>
-         */
+        /// The drag operation has departed
+        /// the `DropTarget` without dropping.
+        ///
+        /// @param dte the `DropTargetEvent`
         @Override
         public void dragExit(DropTargetEvent event) {
             // Nothing to do
         }
 
-        /**
-         * Called when a drag operation is ongoing
-         * on the <code>DropTarget</code>.
-         * <p>
-         *
-         * @param dtde the <code>DropTargetDragEvent</code>
-         */
+        /// Called when a drag operation is ongoing
+        /// on the `DropTarget`.
+        ///
+        /// @param dtde the `DropTargetDragEvent`
         @Override
         public void dragOver(DropTargetDragEvent event) {
             if (event.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
@@ -76,39 +65,36 @@ public class Main extends javax.swing.JPanel {
             }
         }
 
-        /**
-         * The drag operation has terminated
-         * with a drop on this <code>DropTarget</code>.
-         * This method is responsible for undertaking
-         * the transfer of the data associated with the
-         * gesture. The <code>DropTargetDropEvent</code>
-         * provides a means to obtain a <code>Transferable</code>
-         * object that represents the data object(s) to
-         * be transfered.<P>
-         * From this method, the <code>DropTargetListener</code>
-         * shall accept or reject the drop via the
-         * acceptDrop(int dropAction) or rejectDrop() methods of the
-         * <code>DropTargetDropEvent</code> parameter.
-         * <p>
-         * Subsequent to acceptDrop(), but not before,
-         * <code>DropTargetDropEvent</code>'s getTransferable()
-         * method may be invoked, and data transfer may be
-         * performed via the returned <code>Transferable</code>'s
-         * getTransferData() method.
-         * <p>
-         * At the completion of a drop, an implementation
-         * of this method is required to signal the success/failure
-         * of the drop by passing an appropriate
-         * <code>boolean</code> to the <code>DropTargetDropEvent</code>'s
-         * dropComplete(boolean success) method.
-         * <p>
-         * Note: The actual processing of the data transfer is not
-         * required to finish before this method returns. It may be
-         * deferred until later.
-         * <p>
-         *
-         * @param dtde the <code>DropTargetDropEvent</code>
-         */
+        /// The drag operation has terminated
+        /// with a drop on this `DropTarget`.
+        /// This method is responsible for undertaking
+        /// the transfer of the data associated with the
+        /// gesture. The `DropTargetDropEvent`
+        /// provides a means to obtain a `Transferable`
+        /// object that represents the data object(s) to
+        /// be transfered.
+        /// From this method, the `DropTargetListener`
+        /// shall accept or reject the drop via the
+        /// acceptDrop(int dropAction) or rejectDrop() methods of the
+        /// `DropTargetDropEvent` parameter.
+        ///
+        /// Subsequent to acceptDrop(), but not before,
+        /// `DropTargetDropEvent`'s getTransferable()
+        /// method may be invoked, and data transfer may be
+        /// performed via the returned `Transferable`'s
+        /// getTransferData() method.
+        ///
+        /// At the completion of a drop, an implementation
+        /// of this method is required to signal the success/failure
+        /// of the drop by passing an appropriate
+        /// `boolean` to the `DropTargetDropEvent`'s
+        /// dropComplete(boolean success) method.
+        ///
+        /// Note: The actual processing of the data transfer is not
+        /// required to finish before this method returns. It may be
+        /// deferred until later.
+        ///
+        /// @param dtde the `DropTargetDropEvent`
         @Override
         @SuppressWarnings("unchecked")
         public void drop(DropTargetDropEvent event) {
@@ -136,13 +122,10 @@ public class Main extends javax.swing.JPanel {
             }
         }
 
-        /**
-         * Called if the user has modified
-         * the current drop gesture.
-         * <p>
-         *
-         * @param dtde the <code>DropTargetDragEvent</code>
-         */
+        /// Called if the user has modified
+        /// the current drop gesture.
+        ///
+        /// @param dtde the `DropTargetDragEvent`
         @Override
         public void dropActionChanged(DropTargetDragEvent event) {
             // Nothing to do
@@ -151,9 +134,7 @@ public class Main extends javax.swing.JPanel {
 
     private Handler handler = new Handler();
 
-    /**
-     * Creates new form MPOImageSplitter
-     */
+    /// Creates new form MPOImageSplitter
     public Main() {
         initComponents();
         new DropTarget(this, handler);
@@ -178,12 +159,10 @@ public class Main extends javax.swing.JPanel {
         }.start();
     }
 
-    /**
-     * This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
+    /// This method is called from within the constructor to
+    /// initialize the form.
+    /// WARNING: Do NOT modify this code. The content of this method is
+    /// always regenerated by the Form Editor.
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

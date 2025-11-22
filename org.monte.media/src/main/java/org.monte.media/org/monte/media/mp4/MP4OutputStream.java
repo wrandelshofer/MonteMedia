@@ -50,19 +50,15 @@ import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleRateKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SampleSizeInBitsKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
 
-/**
- * This class provides low-level support for writing already encoded audio and
- * video samples into a MP4 file.
- *
- * @author Werner Randelshofer
- */
+/// This class provides low-level support for writing already encoded audio and
+/// video samples into a MP4 file.
+///
+/// @author Werner Randelshofer
 public class MP4OutputStream extends AbstractQTFFMovieStream {
 
-    /**
-     * Creates a new instance.
-     *
-     * @param file the output file
-     */
+    /// Creates a new instance.
+    ///
+    /// @param file the output file
     public MP4OutputStream(File file) throws IOException {
         if (file.exists()) {
             if (!file.delete()) throw new IOException("can not delete file");
@@ -72,11 +68,9 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         init();
     }
 
-    /**
-     * Creates a new instance.
-     *
-     * @param out the output stream.
-     */
+    /// Creates a new instance.
+    ///
+    /// @param out the output stream.
     public MP4OutputStream(ImageOutputStream out) throws IOException {
         this.out = out;
         this.streamOffset = out.getStreamPosition();
@@ -87,13 +81,12 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         creationTime = modificationTime = Instant.ofEpochMilli(0);
     }
 
-    /**
-     * Sets the time scale for this movie, that is, the number of time units
-     * that pass per second in its time coordinate system. <p> The default value
-     * is 600.
-     *
-     * @param timeScale
-     */
+    /// Sets the time scale for this movie, that is, the number of time units
+    /// that pass per second in its time coordinate system.
+    ///  The default value
+    /// is 600.
+    ///
+    /// @param timeScale
     public void setMovieTimeScale(long timeScale) {
         if (timeScale < 1 || timeScale > (2L << 32)) {
             throw new IllegalArgumentException("timeScale must be between 1 and 2^32:" + timeScale);
@@ -101,68 +94,59 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         this.movieTimeScale = timeScale;
     }
 
-    /**
-     * Returns the time scale of the movie.
-     *
-     * @return time scale
-     * @see #setMovieTimeScale(long)
-     */
+    /// Returns the time scale of the movie.
+    ///
+    /// @return time scale
+    /// @see #setMovieTimeScale(long)
     public long getMovieTimeScale() {
         return movieTimeScale;
     }
 
-    /**
-     * Returns the time scale of the media in a track.
-     *
-     * @param track Track index.
-     * @return time scale
-     * @see #setMovieTimeScale(long)
-     */
+    /// Returns the time scale of the media in a track.
+    ///
+    /// @param track Track index.
+    /// @return time scale
+    /// @see #setMovieTimeScale(long)
     public long getMediaTimeScale(int track) {
         return tracks.get(track).mediaTimeScale;
     }
 
-    /**
-     * Returns the media duration of a track in the media's time scale.
-     *
-     * @param track Track index.
-     * @return media duration
-     */
+    /// Returns the media duration of a track in the media's time scale.
+    ///
+    /// @param track Track index.
+    /// @return media duration
     public long getMediaDuration(int track) {
         return tracks.get(track).mediaDuration;
     }
 
-    /**
-     * Returns the track duration in the movie's time scale without taking the
-     * edit list into account. <p> The returned value is the media duration of
-     * the track in the movies's time scale.
-     *
-     * @param track Track index.
-     * @return unedited track duration
-     */
+    /// Returns the track duration in the movie's time scale without taking the
+    /// edit list into account.
+    ///  The returned value is the media duration of
+    /// the track in the movies's time scale.
+    ///
+    /// @param track Track index.
+    /// @return unedited track duration
     public long getUneditedTrackDuration(int track) {
         Track t = tracks.get(track);
         return t.mediaDuration * t.mediaTimeScale / movieTimeScale;
     }
 
-    /**
-     * Returns the track duration in the movie's time scale. <p> If the track
-     * has an edit-list, the track duration is the sum of all edit durations.
-     * <p> If the track does not have an edit-list, then this method returns the
-     * media duration of the track in the movie's time scale.
-     *
-     * @param track Track index.
-     * @return track duration
-     */
+    /// Returns the track duration in the movie's time scale.
+    ///  If the track
+    /// has an edit-list, the track duration is the sum of all edit durations.
+    ///
+    ///  If the track does not have an edit-list, then this method returns the
+    /// media duration of the track in the movie's time scale.
+    ///
+    /// @param track Track index.
+    /// @return track duration
     public long getTrackDuration(int track) {
         return tracks.get(track).getTrackDuration(movieTimeScale);
     }
 
-    /**
-     * Returns the total duration of the movie in the movie's time scale.
-     *
-     * @return media duration
-     */
+    /// Returns the total duration of the movie in the movie's time scale.
+    ///
+    /// @return media duration
     public long getMovieDuration() {
         long duration = 0;
         for (Track t : tracks) {
@@ -171,13 +155,11 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         return duration;
     }
 
-    /**
-     * Sets the color table for videos with indexed color models.
-     *
-     * @param track The track number.
-     * @param icm   IndexColorModel. Specify null to use the standard Macintosh
-     *              color table.
-     */
+    /// Sets the color table for videos with indexed color models.
+    ///
+    /// @param track The track number.
+    /// @param icm   IndexColorModel. Specify null to use the standard Macintosh
+    ///                                        color table.
     public void setVideoColorTable(int track, ColorModel icm) {
         if (icm instanceof IndexColorModel) {
             VideoTrack t = (VideoTrack) tracks.get(track);
@@ -185,27 +167,24 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         }
     }
 
-    /**
-     * Gets the preferred color table for displaying the movie on devices that
-     * support only 256 colors.
-     *
-     * @param track The track number.
-     * @return The color table or null, if the video uses the standard Macintosh
-     * color table.
-     */
+    /// Gets the preferred color table for displaying the movie on devices that
+    /// support only 256 colors.
+    ///
+    /// @param track The track number.
+    /// @return The color table or null, if the video uses the standard Macintosh
+    /// color table.
     public IndexColorModel getVideoColorTable(int track) {
         VideoTrack t = (VideoTrack) tracks.get(track);
         return t.videoColorTable;
     }
 
-    /**
-     * Sets the edit list for the specified track. <p> In the absence of an edit
-     * list, the presentation of the track starts immediately. An empty edit is
-     * used to offset the start time of a track. <p>
-     *
-     * @throws IllegalArgumentException If the edit list ends with an empty
-     *                                  edit.
-     */
+    /// Sets the edit list for the specified track.
+    ///  In the absence of an edit
+    /// list, the presentation of the track starts immediately. An empty edit is
+    /// used to offset the start time of a track.
+    ///
+    /// @throws IllegalArgumentException If the edit list ends with an empty
+    ///                                                                   edit.
     public void setEditList(int track, Edit[] editList) {
         if (editList != null && editList.length > 0 && editList[editList.length - 1].mediaTime == -1) {
             throw new IllegalArgumentException("Edit list must not end with empty edit.");
@@ -213,29 +192,27 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         tracks.get(track).editList = editList;
     }
 
-    /**
-     * Adds a video track.
-     *
-     * @param compressionType The QuickTime "image compression format"
-     *                        4-Character code. A list of supported 4-Character codes is given in qtff,
-     *                        table 3-1, page 96.
-     * @param compressorName  The QuickTime compressor name. Can be up to 32
-     *                        characters long.
-     * @param timeScale       The media time scale between 1 and 2^32.
-     * @param width           The width of a video frame.
-     * @param height          The height of a video frame.
-     * @param depth           The number of bits per pixel.
-     * @param syncInterval    Interval for sync-samples. 0=automatic. 1=all frames
-     *                        are keyframes. Values larger than 1 specify that for every n-th frame is
-     *                        a keyframe. Apple's QuickTime will not work properly if there is not at
-     *                        least one keyframe every second.
-     * @param format
-     * @return Returns the track index.
-     * @throws IllegalArgumentException if {@code width} or {@code height} is
-     *                                  smaller than 1, if the length of {@code compressionType} is not equal to
-     *                                  4, if the length of the {@code compressorName} is not between 1 and 32,
-     *                                  if the tiimeScale is not between 1 and 2^32.
-     */
+    /// Adds a video track.
+    ///
+    /// @param compressionType The QuickTime "image compression format"
+    ///                                               4-Character code. A list of supported 4-Character codes is given in qtff,
+    ///                                               table 3-1, page 96.
+    /// @param compressorName  The QuickTime compressor name. Can be up to 32
+    ///                                               characters long.
+    /// @param timeScale       The media time scale between 1 and 2^32.
+    /// @param width           The width of a video frame.
+    /// @param height          The height of a video frame.
+    /// @param depth           The number of bits per pixel.
+    /// @param syncInterval    Interval for sync-samples. 0=automatic. 1=all frames
+    ///                                               are keyframes. Values larger than 1 specify that for every n-th frame is
+    ///                                               a keyframe. Apple's QuickTime will not work properly if there is not at
+    ///                                               least one keyframe every second.
+    /// @param format
+    /// @return Returns the track index.
+    /// @throws IllegalArgumentException if `width` or `height` is
+    ///                                                                   smaller than 1, if the length of `compressionType` is not equal to
+    ///                                                                   4, if the length of the `compressorName` is not between 1 and 32,
+    ///                                                                   if the tiimeScale is not between 1 and 2^32.
     public int addVideoTrack(String compressionType, String compressorName, long timeScale, int width, int height, int depth, int syncInterval, Format format) throws IOException {
         ensureStarted();
         if (compressionType == null || compressionType.length() != 4) {
@@ -264,29 +241,27 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         return tracks.size() - 1;
     }
 
-    /**
-     * Adds an audio track.
-     *
-     * @param compressionType     The QuickTime 4-character code. A list of
-     *                            supported 4-Character codes is given in qtff, table 3-7, page 113.
-     * @param timeScale           The media time scale between 1 and 2^32.
-     * @param sampleRate          The sample rate. The integer portion must match the
-     *                            {@code timeScale}.
-     * @param numberOfChannels    The number of channels: 1 for mono, 2 for stereo.
-     * @param sampleSizeInBits    The number of bits in a sample: 8 or 16.
-     * @param isCompressed        Whether the sound is compressed.
-     * @param frameDuration       The frame duration, expressed in the media’s
-     *                            timescale, where the timescale is equal to the sample rate. For
-     *                            uncompressed formats, this field is always 1.
-     * @param soundBytesPerPacket For uncompressed audio, the number of bytes in a sample
-     *                            for a single channel (sampleSize divided by 8). For compressed audio, the
-     *                            number of bytes in a frame.
-     * @return Returns the track index.
-     * @throws IllegalArgumentException if the audioFormat is not 4 characters
-     *                                  long, if the time scale is not between 1 and 2^32, if the integer portion
-     *                                  of the sampleRate is not equal to the timeScale, if numberOfChannels is
-     *                                  not 1 or 2.
-     */
+    /// Adds an audio track.
+    ///
+    /// @param compressionType     The QuickTime 4-character code. A list of
+    ///                                                       supported 4-Character codes is given in qtff, table 3-7, page 113.
+    /// @param timeScale           The media time scale between 1 and 2^32.
+    /// @param sampleRate          The sample rate. The integer portion must match the
+    ///                                                       `timeScale`.
+    /// @param numberOfChannels    The number of channels: 1 for mono, 2 for stereo.
+    /// @param sampleSizeInBits    The number of bits in a sample: 8 or 16.
+    /// @param isCompressed        Whether the sound is compressed.
+    /// @param frameDuration       The frame duration, expressed in the media’s
+    ///                                                       timescale, where the timescale is equal to the sample rate. For
+    ///                                                       uncompressed formats, this field is always 1.
+    /// @param soundBytesPerPacket For uncompressed audio, the number of bytes in a sample
+    ///                                                       for a single channel (sampleSize divided by 8). For compressed audio, the
+    ///                                                       number of bytes in a frame.
+    /// @return Returns the track index.
+    /// @throws IllegalArgumentException if the audioFormat is not 4 characters
+    ///                                                                   long, if the time scale is not between 1 and 2^32, if the integer portion
+    ///                                                                   of the sampleRate is not equal to the timeScale, if numberOfChannels is
+    ///                                                                   not 1 or 2.
     public int addAudioTrack(String compressionType, //
                              long timeScale, double sampleRate, //
                              int numberOfChannels, int sampleSizeInBits, //
@@ -342,206 +317,160 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         return tracks.size() - 1;
     }
 
-    /**
-     * Sets the compression quality of a track. <p> A value of 0 stands for
-     * "high compression is important" a value of 1 for "high image quality is
-     * important". <p> Changing this value affects the encoding of video frames
-     * which are subsequently written into the track. Frames which have already
-     * been written are not changed. <p> This value has no effect on videos
-     * encoded with lossless encoders such as the PNG format. <p> The default
-     * value is 0.97.
-     *
-     * @param newValue the new value
-     */
+    /// Sets the compression quality of a track.
+    ///  A value of 0 stands for
+    /// "high compression is important" a value of 1 for "high image quality is
+    /// important".
+    ///  Changing this value affects the encoding of video frames
+    /// which are subsequently written into the track. Frames which have already
+    /// been written are not changed.
+    ///  This value has no effect on videos
+    /// encoded with lossless encoders such as the PNG format.
+    ///  The default
+    /// value is 0.97.
+    ///
+    /// @param newValue the new value
     public void setCompressionQuality(int track, float newValue) {
         VideoTrack vt = (VideoTrack) tracks.get(track);
         vt.videoQuality = newValue;
     }
 
-    /**
-     * Returns the compression quality of a track.
-     *
-     * @return compression quality
-     */
+    /// Returns the compression quality of a track.
+    ///
+    /// @return compression quality
     public float getCompressionQuality(int track) {
         return ((VideoTrack) tracks.get(track)).videoQuality;
     }
 
-    /**
-     * Sets the sync interval for the specified video track.
-     *
-     * @param track The track number.
-     * @param i     Interval between sync samples (keyframes). 0 = automatic. 1 =
-     *              write all samples as sync samples. n = sync every n-th sample.
-     */
+    /// Sets the sync interval for the specified video track.
+    ///
+    /// @param track The track number.
+    /// @param i     Interval between sync samples (keyframes). 0 = automatic. 1 =
+    ///                           write all samples as sync samples. n = sync every n-th sample.
     public void setSyncInterval(int track, int i) {
         tracks.get(track).syncInterval = i;
     }
 
-    /**
-     * Gets the sync interval from the specified video track.
-     */
+    /// Gets the sync interval from the specified video track.
     public int getSyncInterval(int track) {
         return tracks.get(track).syncInterval;
     }
 
-    /**
-     * Sets the creation time of the movie.
-     */
+    /// Sets the creation time of the movie.
     public void setCreationTime(Instant creationTime) {
         this.creationTime = creationTime;
     }
 
-    /**
-     * Gets the creation time of the movie.
-     */
+    /// Gets the creation time of the movie.
     public Instant getCreationTime() {
         return creationTime;
     }
 
-    /**
-     * Sets the modification time of the movie.
-     */
+    /// Sets the modification time of the movie.
     public void setModificationTime(Instant modificationTime) {
         this.modificationTime = modificationTime;
     }
 
-    /**
-     * Gets the modification time of the movie.
-     */
+    /// Gets the modification time of the movie.
     public Instant getModificationTime() {
         return modificationTime;
     }
 
-    /**
-     * Gets the preferred rate at which to play this movie. A value of 1.0
-     * indicates normal rate.
-     */
+    /// Gets the preferred rate at which to play this movie. A value of 1.0
+    /// indicates normal rate.
     public double getPreferredRate() {
         return preferredRate;
     }
 
-    /**
-     * Sets the preferred rate at which to play this movie. A value of 1.0
-     * indicates normal rate.
-     */
+    /// Sets the preferred rate at which to play this movie. A value of 1.0
+    /// indicates normal rate.
     public void setPreferredRate(double preferredRate) {
         this.preferredRate = preferredRate;
     }
 
-    /**
-     * Gets the preferred volume of this movie’s sound. A value of 1.0 indicates
-     * full volume.
-     */
+    /// Gets the preferred volume of this movie’s sound. A value of 1.0 indicates
+    /// full volume.
     public double getPreferredVolume() {
         return preferredVolume;
     }
 
-    /**
-     * Sets the preferred volume of this movie’s sound. A value of 1.0 indicates
-     * full volume.
-     */
+    /// Sets the preferred volume of this movie’s sound. A value of 1.0 indicates
+    /// full volume.
     public void setPreferredVolume(double preferredVolume) {
         this.preferredVolume = preferredVolume;
     }
 
-    /**
-     * Gets the time value for current time position within the movie.
-     */
+    /// Gets the time value for current time position within the movie.
     public long getCurrentTime() {
         return currentTime;
     }
 
-    /**
-     * Sets the time value for current time position within the movie.
-     */
+    /// Sets the time value for current time position within the movie.
     public void setCurrentTime(long currentTime) {
         this.currentTime = currentTime;
     }
 
-    /**
-     * Gets the time value of the time of the movie poster.
-     */
+    /// Gets the time value of the time of the movie poster.
     public long getPosterTime() {
         return posterTime;
     }
 
-    /**
-     * Sets the time value of the time of the movie poster.
-     */
+    /// Sets the time value of the time of the movie poster.
     public void setPosterTime(long posterTime) {
         this.posterTime = posterTime;
     }
 
-    /**
-     * Gets the duration of the movie preview in movie time scale units.
-     */
+    /// Gets the duration of the movie preview in movie time scale units.
     public long getPreviewDuration() {
         return previewDuration;
     }
 
-    /**
-     * Gets the duration of the movie preview in movie time scale units.
-     */
+    /// Gets the duration of the movie preview in movie time scale units.
     public void setPreviewDuration(long previewDuration) {
         this.previewDuration = previewDuration;
     }
 
-    /**
-     * Gets the time value in the movie at which the preview begins.
-     */
+    /// Gets the time value in the movie at which the preview begins.
     public long getPreviewTime() {
         return previewTime;
     }
 
-    /**
-     * The time value in the movie at which the preview begins.
-     */
+    /// The time value in the movie at which the preview begins.
     public void setPreviewTime(long previewTime) {
         this.previewTime = previewTime;
     }
 
-    /**
-     * The duration of the current selection in movie time scale units.
-     */
+    /// The duration of the current selection in movie time scale units.
     public long getSelectionDuration() {
         return selectionDuration;
     }
 
-    /**
-     * The duration of the current selection in movie time scale units.
-     */
+    /// The duration of the current selection in movie time scale units.
     public void setSelectionDuration(long selectionDuration) {
         this.selectionDuration = selectionDuration;
     }
 
-    /**
-     * The time value for the start time of the current selection.
-     */
+    /// The time value for the start time of the current selection.
     public long getSelectionTime() {
         return selectionTime;
     }
 
-    /**
-     * The time value for the start time of the current selection.
-     */
+    /// The time value for the start time of the current selection.
     public void setSelectionTime(long selectionTime) {
         this.selectionTime = selectionTime;
     }
 
-    /**
-     * Sets the transformation matrix of the entire movie.
-     * <pre>
-     * {a, b, u,
-     *  c, d, v,
-     *  tx,ty,w} // X- and Y-Translation
-     *
-     *           [ a  b  u
-     * [x y 1] *   c  d  v   = [x' y' 1]
-     * </pre> tx ty w ]
-     *
-     * @param matrix The transformation matrix.
-     */
+    /// Sets the transformation matrix of the entire movie.
+    /// <pre>
+    /// {a, b, u,
+    ///  c, d, v,
+    ///  tx,ty,w} // X- and Y-Translation
+    ///
+    ///           [ a  b  u
+    /// [x y 1] *   c  d  v   = [x' y'1]
+    /// </pre> tx ty w ]
+    ///
+    /// @param matrix The transformation matrix.
     public void setMovieTransformationMatrix(double[] matrix) {
         if (matrix.length != 9) {
             throw new IllegalArgumentException("matrix must have 9 elements, matrix.length=" + matrix.length);
@@ -550,29 +479,25 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         System.arraycopy(matrix, 0, movieMatrix, 0, 9);
     }
 
-    /**
-     * Gets the transformation matrix of the entire movie.
-     *
-     * @return The transformation matrix.
-     */
+    /// Gets the transformation matrix of the entire movie.
+    ///
+    /// @return The transformation matrix.
     public double[] getMovieTransformationMatrix() {
         return movieMatrix.clone();
     }
 
-    /**
-     * Sets the transformation matrix of the specified track.
-     * <pre>
-     * {a, b, u,
-     *  c, d, v,
-     *  tx,ty,w} // X- and Y-Translation
-     *
-     *           [ a  b  u
-     * [x y 1] *   c  d  v   = [x' y' 1]
-     * </pre> tx ty w ]
-     *
-     * @param track  The track number.
-     * @param matrix The transformation matrix.
-     */
+    /// Sets the transformation matrix of the specified track.
+    /// <pre>
+    /// {a, b, u,
+    ///  c, d, v,
+    ///  tx,ty,w} // X- and Y-Translation
+    ///
+    ///           [ a  b  u
+    /// [x y 1] *   c  d  v   = [x' y'1]
+    /// </pre> tx ty w ]
+    ///
+    /// @param track  The track number.
+    /// @param matrix The transformation matrix.
     public void setTransformationMatrix(int track, double[] matrix) {
         if (matrix.length != 9) {
             throw new IllegalArgumentException("matrix must have 9 elements, matrix.length=" + matrix.length);
@@ -581,20 +506,17 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         System.arraycopy(matrix, 0, tracks.get(track).matrix, 0, 9);
     }
 
-    /**
-     * Gets the transformation matrix of the specified track.
-     *
-     * @param track The track number.
-     * @return The transformation matrix.
-     */
+    /// Gets the transformation matrix of the specified track.
+    ///
+    /// @param track The track number.
+    /// @return The transformation matrix.
     public double[] getTransformationMatrix(int track) {
         return tracks.get(track).matrix.clone();
     }
 
-    /**
-     * Sets the state of the MP4Writer to started. <p> If the state is
-     * changed by this method, the prolog is written.
-     */
+    /// Sets the state of the MP4Writer to started.
+    ///  If the state is
+    /// changed by this method, the prolog is written.
     protected void ensureStarted() throws IOException {
         ensureOpen();
         if (state == States.FINISHED) {
@@ -608,17 +530,16 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
     }
 
 
-    /**
-     * Writes an already encoded sample from a file into a track. <p> This
-     * method does not inspect the contents of the samples. The contents has to
-     * match the format and dimensions of the media in this track.
-     *
-     * @param track    The track index.
-     * @param file     The file which holds the encoded data sample.
-     * @param duration The duration of the sample in media time scale units.
-     * @param isSync   whether the sample is a sync sample (key frame).
-     * @throws IOException if writing the sample data failed.
-     */
+    /// Writes an already encoded sample from a file into a track.
+    ///  This
+    /// method does not inspect the contents of the samples. The contents has to
+    /// match the format and dimensions of the media in this track.
+    ///
+    /// @param track    The track index.
+    /// @param file     The file which holds the encoded data sample.
+    /// @param duration The duration of the sample in media time scale units.
+    /// @param isSync   whether the sample is a sync sample (key frame).
+    /// @throws IOException if writing the sample data failed.
     public void writeSample(int track, File file, long duration, boolean isSync) throws IOException {
         ensureStarted();
         FileInputStream in = null;
@@ -632,19 +553,17 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         }
     }
 
-    /**
-     * Writes an already encoded sample from an input stream into a track. <p>
-     * This method does not inspect the contents of the samples. The contents
-     * have to match the format and dimensions of the media in this track.
-     *
-     * @param track    The track index.
-     * @param in       The input stream which holds the encoded sample data.
-     * @param duration The duration of the video frame in media time scale
-     *                 units.
-     * @param isSync   Whether the sample is a sync sample (keyframe).
-     * @throws IllegalArgumentException if the duration is less than 1.
-     * @throws IOException              if writing the sample data failed.
-     */
+    /// Writes an already encoded sample from an input stream into a track.
+    /// This method does not inspect the contents of the samples. The contents
+    /// have to match the format and dimensions of the media in this track.
+    ///
+    /// @param track    The track index.
+    /// @param in       The input stream which holds the encoded sample data.
+    /// @param duration The duration of the video frame in media time scale
+    ///                                 units.
+    /// @param isSync   Whether the sample is a sync sample (keyframe).
+    /// @throws IllegalArgumentException if the duration is less than 1.
+    /// @throws IOException              if writing the sample data failed.
     public void writeSample(int track, InputStream in, long duration, boolean isSync) throws IOException {
         ensureStarted();
         if (duration <= 0) {
@@ -660,36 +579,34 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         t.addSample(new Sample(duration, offset, length), 1, isSync);
     }
 
-    /**
-     * Writes an already encoded sample from a byte array into a track. <p> This
-     * method does not inspect the contents of the samples. The contents has to
-     * match the format and dimensions of the media in this track.
-     *
-     * @param track    The track index.
-     * @param data     The encoded sample data.
-     * @param duration The duration of the sample in media time scale units.
-     * @param isSync   Whether the sample is a sync sample.
-     * @throws IllegalArgumentException if the duration is less than 1.
-     * @throws IOException              if writing the sample data failed.
-     */
+    /// Writes an already encoded sample from a byte array into a track.
+    ///  This
+    /// method does not inspect the contents of the samples. The contents has to
+    /// match the format and dimensions of the media in this track.
+    ///
+    /// @param track    The track index.
+    /// @param data     The encoded sample data.
+    /// @param duration The duration of the sample in media time scale units.
+    /// @param isSync   Whether the sample is a sync sample.
+    /// @throws IllegalArgumentException if the duration is less than 1.
+    /// @throws IOException              if writing the sample data failed.
     public void writeSample(int track, byte[] data, long duration, boolean isSync) throws IOException {
         writeSample(track, data, 0, data.length, duration, isSync);
     }
 
-    /**
-     * Writes an already encoded sample from a byte array into a track. <p> This
-     * method does not inspect the contents of the samples. The contents has to
-     * match the format and dimensions of the media in this track.
-     *
-     * @param track    The track index.
-     * @param data     The encoded sample data.
-     * @param off      The start offset in the data.
-     * @param len      The number of bytes to write.
-     * @param duration The duration of the sample in media time scale units.
-     * @param isSync   Whether the sample is a sync sample (keyframe).
-     * @throws IllegalArgumentException if the duration is less than 1.
-     * @throws IOException              if writing the sample data failed.
-     */
+    /// Writes an already encoded sample from a byte array into a track.
+    ///  This
+    /// method does not inspect the contents of the samples. The contents has to
+    /// match the format and dimensions of the media in this track.
+    ///
+    /// @param track    The track index.
+    /// @param data     The encoded sample data.
+    /// @param off      The start offset in the data.
+    /// @param len      The number of bytes to write.
+    /// @param duration The duration of the sample in media time scale units.
+    /// @param isSync   Whether the sample is a sync sample (keyframe).
+    /// @throws IllegalArgumentException if the duration is less than 1.
+    /// @throws IOException              if writing the sample data failed.
     public void writeSample(int track, byte[] data, int off, int len, long duration, boolean isSync) throws IOException {
         ensureStarted();
         if (duration <= 0) {
@@ -713,63 +630,60 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         return null;
     }
 
-    /**
-     * Writes multiple sync samples from a byte array into a track. <p> This
-     * method does not inspect the contents of the samples. The contents has to
-     * match the format and dimensions of the media in this track.
-     *
-     * @param track          The track index.
-     * @param sampleCount    The number of samples.
-     * @param data           The encoded sample data. The length of data must be dividable
-     *                       by sampleCount.
-     * @param sampleDuration The duration of a sample. All samples must have the
-     *                       same duration.
-     * @throws IllegalArgumentException if {@code sampleDuration} is less than 1
-     *                                  or if the length of {@code data} is not dividable by {@code sampleCount}.
-     * @throws IOException              if writing the chunk failed.
-     */
+    /// Writes multiple sync samples from a byte array into a track.
+    ///  This
+    /// method does not inspect the contents of the samples. The contents has to
+    /// match the format and dimensions of the media in this track.
+    ///
+    /// @param track          The track index.
+    /// @param sampleCount    The number of samples.
+    /// @param data           The encoded sample data. The length of data must be dividable
+    ///                                             by sampleCount.
+    /// @param sampleDuration The duration of a sample. All samples must have the
+    ///                                             same duration.
+    /// @throws IllegalArgumentException if `sampleDuration` is less than 1
+    ///                                                                   or if the length of `data` is not dividable by `sampleCount`.
+    /// @throws IOException              if writing the chunk failed.
     public void writeSamples(int track, int sampleCount, byte[] data, long sampleDuration, boolean isSync) throws IOException {
         writeSamples(track, sampleCount, data, 0, data.length, sampleDuration, isSync);
     }
 
-    /**
-     * Writes multiple sync samples from a byte array into a track. <p> This
-     * method does not inspect the contents of the samples. The contents has to
-     * match the format and dimensions of the media in this track.
-     *
-     * @param track          The track index.
-     * @param sampleCount    The number of samples.
-     * @param data           The encoded sample data.
-     * @param off            The start offset in the data.
-     * @param len            The number of bytes to write. Must be dividable by
-     *                       sampleCount.
-     * @param sampleDuration The duration of a sample. All samples must have the
-     *                       same duration.
-     * @throws IllegalArgumentException if the duration is less than 1.
-     * @throws IOException              if writing the sample data failed.
-     */
+    /// Writes multiple sync samples from a byte array into a track.
+    ///  This
+    /// method does not inspect the contents of the samples. The contents has to
+    /// match the format and dimensions of the media in this track.
+    ///
+    /// @param track          The track index.
+    /// @param sampleCount    The number of samples.
+    /// @param data           The encoded sample data.
+    /// @param off            The start offset in the data.
+    /// @param len            The number of bytes to write. Must be dividable by
+    ///                                             sampleCount.
+    /// @param sampleDuration The duration of a sample. All samples must have the
+    ///                                             same duration.
+    /// @throws IllegalArgumentException if the duration is less than 1.
+    /// @throws IOException              if writing the sample data failed.
     public void writeSamples(int track, int sampleCount, byte[] data, int off, int len, long sampleDuration) throws IOException {
         writeSamples(track, sampleCount, data, off, len, sampleDuration, true);
     }
 
-    /**
-     * Writes multiple samples from a byte array into a track. <p> This method
-     * does not inspect the contents of the data. The contents has to match the
-     * format and dimensions of the media in this track.
-     *
-     * @param track          The track index.
-     * @param sampleCount    The number of samples.
-     * @param data           The encoded sample data.
-     * @param off            The start offset in the data.
-     * @param len            The number of bytes to write. Must be dividable by
-     *                       sampleCount.
-     * @param sampleDuration The duration of a sample. All samples must have the
-     *                       same duration.
-     * @param isSync         Whether the samples are sync samples. All samples must
-     *                       either be sync samples or non-sync samples.
-     * @throws IllegalArgumentException if the duration is less than 1.
-     * @throws IOException              if writing the sample data failed.
-     */
+    /// Writes multiple samples from a byte array into a track.
+    ///  This method
+    /// does not inspect the contents of the data. The contents has to match the
+    /// format and dimensions of the media in this track.
+    ///
+    /// @param track          The track index.
+    /// @param sampleCount    The number of samples.
+    /// @param data           The encoded sample data.
+    /// @param off            The start offset in the data.
+    /// @param len            The number of bytes to write. Must be dividable by
+    ///                                             sampleCount.
+    /// @param sampleDuration The duration of a sample. All samples must have the
+    ///                                             same duration.
+    /// @param isSync         Whether the samples are sync samples. All samples must
+    ///                                             either be sync samples or non-sync samples.
+    /// @throws IllegalArgumentException if the duration is less than 1.
+    /// @throws IOException              if writing the sample data failed.
     public void writeSamples(int track, int sampleCount, byte[] data, int off, int len, long sampleDuration, boolean isSync) throws IOException {
         ensureStarted();
         if (sampleDuration <= 0) {
@@ -795,14 +709,12 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         t.addChunk(new Chunk(first, last, sampleCount, 1), isSync);
     }
 
-    /**
-     * Returns true if the limit for media samples has been reached. If this
-     * limit is reached, no more samples should be added to the movie. <p>
-     * QuickTime files can be up to 64 TB long, but there are other values that
-     * may overflow before this size is reached. This method returns true when
-     * the files size exceeds 2^60 or when the media duration value of a track
-     * exceeds 2^61.
-     */
+    /// Returns true if the limit for media samples has been reached. If this
+    /// limit is reached, no more samples should be added to the movie.
+    /// QuickTime files can be up to 64 TB long, but there are other values that
+    /// may overflow before this size is reached. This method returns true when
+    /// the files size exceeds 2^60 or when the media duration value of a track
+    /// exceeds 2^61.
     public boolean isDataLimitReached() {
         try {
             long maxMediaDuration = 0;
@@ -817,11 +729,9 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         }
     }
 
-    /**
-     * Closes the movie file as well as the stream being filtered.
-     *
-     * @throws IOException if an I/O error has occurred
-     */
+    /// Closes the movie file as well as the stream being filtered.
+    ///
+    /// @throws IOException if an I/O error has occurred
     public void close() throws IOException {
         try {
             if (state == States.STARTED) {
@@ -835,15 +745,13 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         }
     }
 
-    /**
-     * Finishes writing the contents of the QuickTime output stream without
-     * closing the underlying stream. Use this method when applying multiple
-     * filters in succession to the same output stream.
-     *
-     * @throws IllegalStateException if the dimension of the video track has
-     *                               not been specified or determined yet.
-     * @throws IOException           if an I/O exception has occurred
-     */
+    /// Finishes writing the contents of the QuickTime output stream without
+    /// closing the underlying stream. Use this method when applying multiple
+    /// filters in succession to the same output stream.
+    ///
+    /// @throws IllegalStateException if the dimension of the video track has
+    ///                                                             not been specified or determined yet.
+    /// @throws IOException           if an I/O exception has occurred
     public void finish() throws IOException {
         ensureOpen();
         if (state != States.FINISHED) {
@@ -862,18 +770,14 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         }
     }
 
-    /**
-     * Check to make sure that this stream has not been closed
-     */
+    /// Check to make sure that this stream has not been closed
     protected void ensureOpen() throws IOException {
         if (state == States.CLOSED) {
             throw new IOException("Stream closed");
         }
     }
 
-    /**
-     * Writes the stream prolog.
-     */
+    /// Writes the stream prolog.
     private void writeProlog() throws IOException {
         /* File type atom
          *
@@ -1926,15 +1830,14 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         // empty, for now
     }
 
-    /**
-     * Writes a version of the movie which is optimized for the web into the
-     * specified output file. <p> This method finishes the movie and then copies
-     * its content into the specified file. The web-optimized file starts with
-     * the movie header.
-     *
-     * @param outputFile     The output file
-     * @param compressHeader Whether the movie header shall be compressed.
-     */
+    /// Writes a version of the movie which is optimized for the web into the
+    /// specified output file.
+    ///  This method finishes the movie and then copies
+    /// its content into the specified file. The web-optimized file starts with
+    /// the movie header.
+    ///
+    /// @param outputFile     The output file
+    /// @param compressHeader Whether the movie header shall be compressed.
     public void toWebOptimizedMovie(File outputFile, boolean compressHeader) throws IOException {
         finish();
         long originalMdatOffset = mdatAtom.getOffset();
@@ -2126,13 +2029,11 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         d.reset();
     }
 
-    /**
-     * Writes the colr atom.
-     *
-     * @param t      the track
-     * @param parent the composite atom
-     * @throws IOException on IO failure
-     */
+    /// Writes the colr atom.
+    ///
+    /// @param t      the track
+    /// @param parent the composite atom
+    /// @throws IOException on IO failure
     private void writeColrAtom(VideoTrack t, CompositeAtom parent) throws IOException {
         /* colr atom */
         /*---------*/
@@ -2181,13 +2082,11 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         leaf.finish();
     }
 
-    /**
-     * Writes the avcC atom. Also requires that we write the colr atom.
-     *
-     * @param t      the track
-     * @param parent the composite atom
-     * @throws IOException on IO failure
-     */
+    /// Writes the avcC atom. Also requires that we write the colr atom.
+    ///
+    /// @param t      the track
+    /// @param parent the composite atom
+    /// @throws IOException on IO failure
     private void writeMandatoryAvcAtoms(VideoTrack t, CompositeAtom parent) throws IOException {
         DataAtom leaf = new DataAtom("avcC", out);
         parent.add(leaf);
@@ -2266,16 +2165,14 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         }
     }
 
-    /**
-     * Color table atoms define a list of preferred colors for displaying
-     * the movie on devices that support only 256 colors. The list may
-     * contain up to 256 colors. These optional atoms have a type value of
-     * 'ctab'. The color table atom contains a Macintosh color table data
-     * structure.
-     *
-     * @param stblAtom
-     * @throws IOException
-     */
+    /// Color table atoms define a list of preferred colors for displaying
+    /// the movie on devices that support only 256 colors. The list may
+    /// contain up to 256 colors. These optional atoms have a type value of
+    /// 'ctab'. The color table atom contains a Macintosh color table data
+    /// structure.
+    ///
+    /// @param stblAtom
+    /// @throws IOException
     protected void writeVideoColorTableAtom(VideoTrack t, CompositeAtom stblAtom) throws IOException {
         DataAtom leaf;
         QTFFImageOutputStream d;

@@ -9,11 +9,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Service provider interface for {@link MovieReader}.
- *
- * @author Werner Randelshofer
- */
+/// Service provider interface for [MovieReader].
+///
+/// @author Werner Randelshofer
 public interface MovieReaderSpi {
 
     MovieReader create(File file) throws IOException;

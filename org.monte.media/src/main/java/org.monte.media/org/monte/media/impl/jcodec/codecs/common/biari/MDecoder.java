@@ -8,21 +8,16 @@ package org.monte.media.impl.jcodec.codecs.common.biari;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-/**
- * References:
- * <p>
- * This code has been derived from JCodecProject.
- * <dl>
- *     <dt>JCodecProject. Copyright 2008-2019 JCodecProject.
- *     <br><a href="https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE">BSD 2-Clause License.</a></dt>
- *     <dd><a href="https://github.com/jcodec/jcodec">github.com</a></dd>
- * </dl>
- *
- * <p>
- * H264 CABAC M-Coder ( decoder module )
- *
- * @author The JCodec project
- */
+/// References:
+///
+/// JCodecProject. Copyright 2008-2019 JCodecProject.
+/// : [BSD 2-Clause License.](https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE)
+/// : [github.com](https://github.com/jcodec/jcodec)
+///
+///
+/// H264 CABAC M-Coder ( decoder module )
+///
+/// @author The JCodec project
 public class MDecoder {
 
     private ByteBuffer _in;
@@ -39,13 +34,11 @@ public class MDecoder {
         initCodeRegister();
     }
 
-    /**
-     * Initializes code register. Loads 9 bits from the stream into working area
-     * of code register ( bits 8 - 16) leaving 7 bits in the pending area of
-     * code register (bits 0 - 7)
-     *
-     * @throws IOException
-     */
+    /// Initializes code register. Loads 9 bits from the stream into working area
+    /// of code register ( bits 8 - 16) leaving 7 bits in the pending area of
+    /// code register (bits 0 - 7)
+    ///
+    /// @throws IOException
     protected void initCodeRegister() {
         readOneByte();
         if (nBitsPending != 8)
@@ -64,14 +57,12 @@ public class MDecoder {
         nBitsPending += 8;
     }
 
-    /**
-     * Decodes one bin from arithmetice code word
-     * <p>
-     * //@param cm
-     *
-     * @return
-     * @throws IOException
-     */
+    /// Decodes one bin from arithmetice code word
+    ///
+    /// //@param cm
+    ///
+    /// @return
+    /// @throws IOException
     public int decodeBin(int m) {
         int bin;
 
@@ -107,14 +98,12 @@ public class MDecoder {
         return bin;
     }
 
-    /**
-     * Special decoding process for 'end of slice' flag. Uses probability state
-     * 63.
-     *
-     * @param cm
-     * @return
-     * @throws IOException
-     */
+    /// Special decoding process for 'end of slice' flag. Uses probability state
+    /// 63.
+    ///
+    /// @param cm
+    /// @return
+    /// @throws IOException
     public int decodeFinalBin() {
         range -= 2;
 
@@ -128,12 +117,10 @@ public class MDecoder {
         }
     }
 
-    /**
-     * Special decoding process for symbols with uniform distribution
-     *
-     * @return
-     * @throws IOException
-     */
+    /// Special decoding process for symbols with uniform distribution
+    ///
+    /// @return
+    /// @throws IOException
     public int decodeBinBypass() {
         code <<= 1;
 
@@ -152,15 +139,13 @@ public class MDecoder {
         }
     }
 
-    /**
-     * Shifts the current interval to either 1/2 or 0 (code = (code << 1) &
-     * 0x1ffff) and scales it by 2 (range << 1).
-     * <p>
-     * Reads new byte from the input stream into code value if there are no more
-     * bits pending
-     *
-     * @throws IOException
-     */
+    /// Shifts the current interval to either 1/2 or 0 (code = (code << 1) &
+    /// 0x1ffff) and scales it by 2 (range << 1).
+    ///
+    /// Reads new byte from the input stream into code value if there are no more
+    /// bits pending
+    ///
+    /// @throws IOException
     private void renormalize() {
         while (range < 256) {
             range <<= 1;

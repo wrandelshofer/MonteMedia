@@ -5,11 +5,9 @@
 
 import org.monte.demo.javafx.movieplayer.monteplayer.WritableImageCodecSpi;
 
-/**
- * A program that demonstrates how to play movies with the Monte Media library.
- *
- * @author Werner Randelshofer
- */
+/// A program that demonstrates how to play movies with the Monte Media library.
+///
+/// @author Werner Randelshofer
 module org.monte.demo.javafx.movieplayer {
     requires javafx.graphics;
     requires javafx.controls;

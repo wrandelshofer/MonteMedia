@@ -5,18 +5,13 @@
 
 package org.monte.media.impl.jcodec.common.model;
 
-/**
- * References:
- * <p>
- * This code has been derived from JCodecProject.
- * <dl>
- *     <dt>JCodecProject. Copyright 2008-2019 JCodecProject.
- *     <br><a href="https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE">BSD 2-Clause License.</a></dt>
- *     <dd><a href="https://github.com/jcodec/jcodec">github.com</a></dd>
- * </dl>
- *
- * @author The JCodec project
- */
+/// References:
+///
+/// JCodecProject. Copyright 2008-2019 JCodecProject.
+/// : [BSD 2-Clause License.](https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE)
+/// : [github.com](https://github.com/jcodec/jcodec)
+///
+/// @author The JCodec project
 public final class ColorSpace {
     public static final int MAX_PLANES = 4;
 
@@ -65,14 +60,12 @@ public final class ColorSpace {
         return ~(nComp > 1 ? compHeight[1] : 0);
     }
 
-    /**
-     * Determines if two colors match. Aside from simply comparing the objects
-     * this function also takes into account lables ANY, ANY_INTERLEAVED, ANY
-     * PLANAR.
-     *
-     * @param inputColor
-     * @return True if the color is the same or matches the label.
-     */
+    /// Determines if two colors match. Aside from simply comparing the objects
+    /// this function also takes into account lables ANY, ANY_INTERLEAVED, ANY
+    /// PLANAR.
+    ///
+    /// @param inputColor
+    /// @return True if the color is the same or matches the label.
     public boolean matches(ColorSpace inputColor) {
         if (inputColor == this)
             return true;
@@ -84,12 +77,10 @@ public final class ColorSpace {
         return false;
     }
 
-    /**
-     * Calculates the component size based on the fullt size and color subsampling of the given component index.
-     *
-     * @param size
-     * @return Component size
-     */
+    /// Calculates the component size based on the fullt size and color subsampling of the given component index.
+    ///
+    /// @param size
+    /// @return Component size
     public Size compSize(Size size, int comp) {
         if (compWidth[comp] == 0 && compHeight[comp] == 0)
             return size;
@@ -112,24 +103,16 @@ public final class ColorSpace {
     public final static ColorSpace MONO = new ColorSpace("MONO", 1, _000, _000, _000, true);
     public final static ColorSpace YUV444_10 = new ColorSpace("YUV444_10", 3, _012, _000, _000, true);
 
-    /**
-     * Any color space, used in the cases where any color space will do.
-     */
+    /// Any color space, used in the cases where any color space will do.
     public final static ColorSpace ANY = new ColorSpace("ANY", 0, null, null, null, true);
 
-    /**
-     * Any planar color space, used in the cases where any planar color space will do.
-     */
+    /// Any planar color space, used in the cases where any planar color space will do.
     public final static ColorSpace ANY_PLANAR = new ColorSpace("ANY_PLANAR", 0, null, null, null, true);
 
-    /**
-     * Any interleaved color space, used in the cases where any interleaved color space will do.
-     */
+    /// Any interleaved color space, used in the cases where any interleaved color space will do.
     public final static ColorSpace ANY_INTERLEAVED = new ColorSpace("ANY_INTERLEAVED", 0, null, null, null, false);
 
-    /**
-     * Same color, used in filters to declare that the color stays unchanged.
-     */
+    /// Same color, used in filters to declare that the color stays unchanged.
     public final static ColorSpace SAME = new ColorSpace("SAME", 0, null, null, null, false);
 
 }

@@ -16,11 +16,9 @@ import java.io.IOException;
 
 import static org.monte.media.av.BufferFlag.DISCARD;
 
-/**
- * Multiplexes samples into individual files.
- *
- * @author Werner Randelshofer
- */
+/// Multiplexes samples into individual files.
+///
+/// @author Werner Randelshofer
 public class FileMultiplexer implements Multiplexer {
 
     private final File dir;

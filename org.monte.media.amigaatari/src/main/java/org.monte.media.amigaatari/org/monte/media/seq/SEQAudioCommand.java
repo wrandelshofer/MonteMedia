@@ -9,53 +9,33 @@ import org.monte.media.eightsvx.EightSVXAudioClip;
 import org.monte.media.eightsvx.LoopableAudioClip;
 
 
-/**
- * An SEQAudioCommand handles an audio command that is associated to
- * a single frame of a SEQMovieTrack. This class is currently unused.
- *
- * @author Werner Randelshofer
- */
+/// An SEQAudioCommand handles an audio command that is associated to
+/// a single frame of a SEQMovieTrack. This class is currently unused.
+///
+/// @author Werner Randelshofer
 public class SEQAudioCommand {
-    /**
-     * Start playing a sound.
-     */
+    /// Start playing a sound.
     public final static int COMMAND_PLAY_SOUND = 1;
-    /**
-     * Stop the sound in a given channelMask.
-     */
+    /// Stop the sound in a given channelMask.
     public final static int COMMAND_STOP_SOUND = 2;
-    /**
-     * Change frequency/volume for a channelMask.
-     */
+    /// Change frequency/volume for a channelMask.
     public final static int COMMAND_SET_FREQVOL = 3;
 
-    /**
-     * Play the sound, but only if
-     * the channelMask isn't in use.
-     */
+    /// Play the sound, but only if
+    /// the channelMask isn't in use.
     public final static int FLAG_NO_INTERRUPT = 1;
-    /**
-     * What to do.
-     */
+    /// What to do.
     private int command;
-    /**
-     * Volume 0..64
-     */
+    /// Volume 0..64
     private int volume;
-    /**
-     * Sound number (one based).
-     */
+    /// Sound number (one based).
     private int sound;
-    /**
-     * Number of times to play the sound.
-     */
+    /// Number of times to play the sound.
     private int repeats;
-    /**
-     * Channel(s) to use for playing (bit mask).
-     * The channel mask tells which channel(s) we want.
-     * The code is 1=channel0 (left), 2=channel1 (right), 4=channel2 (left),
-     * 8=channel3 (right). If you want more than one channel, add the codes up.
-     */
+    /// Channel(s) to use for playing (bit mask).
+    /// The channel mask tells which channel(s) we want.
+    /// The code is 1=channel0 (left), 2=channel1 (right), 4=channel2 (left),
+    /// 8=channel3 (right). If you want more than one channel, add the codes up.
     private int channelMask;
 
     private final static int CHANNEL0_MASK = 1, CHANNEL1_MASK = 2, CHANNEL2_MASK = 4,
@@ -63,29 +43,19 @@ public class SEQAudioCommand {
     private final static int CHANNEL_LEFT_MASK = CHANNEL0_MASK | CHANNEL2_MASK;
     private final static int CHANNEL_RIGHT_MASK = CHANNEL1_MASK | CHANNEL3_MASK;
 
-    /**
-     * If non-zero, overrides the VHDR value.
-     */
+    /// If non-zero, overrides the VHDR value.
     private int frequency;
-    /**
-     * Flags, see above.
-     */
+    /// Flags, see above.
     private int flags;
 
-    /**
-     * Channel(s) that are in use now for playing (bit mask).
-     * If this mask is != zero, then this audio command is playing sound.
-     */
+    /// Channel(s) that are in use now for playing (bit mask).
+    /// If this mask is != zero, then this audio command is playing sound.
     private int activeChannelMask;
 
-    /**
-     * The prepared audio data.
-     */
+    /// The prepared audio data.
     private LoopableAudioClip audioClip;
 
-    /**
-     * Creates a new instance.
-     */
+    /// Creates a new instance.
     public SEQAudioCommand(int command, int volume, int sound, int repeats, int channelMask, int frequency, int flags) {
         this.command = command;
         this.volume = volume;
@@ -157,9 +127,7 @@ public class SEQAudioCommand {
         }
     }
 
-    /**
-     * Stops playback of this audio command on the specified channels.
-     */
+    /// Stops playback of this audio command on the specified channels.
     public void stop(SEQMovieTrack track, int channelMask) {
         activeChannelMask &= ~channelMask;
         if (activeChannelMask == 0) {

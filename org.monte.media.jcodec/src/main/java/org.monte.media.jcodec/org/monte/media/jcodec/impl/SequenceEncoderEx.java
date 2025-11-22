@@ -29,14 +29,12 @@ import java.io.IOException;
 import static org.jcodec.common.Codec.H264;
 import static org.jcodec.common.Format.MOV;
 
-/**
- * This class is part of JCodec ( www.jcodec.org ) This software is distributed
- * under FreeBSD License
- * <p>
- * Encodes a sequence of images as a video.
- *
- * @author The JCodec project
- */
+/// This class is part of JCodec ( www.jcodec.org ) This software is distributed
+/// under FreeBSD License
+///
+/// Encodes a sequence of images as a video.
+///
+/// @author The JCodec project
 public class SequenceEncoderEx {
 
     private Transform transform;
@@ -98,12 +96,10 @@ public class SequenceEncoderEx {
         }
     }
 
-    /**
-     * Encodes a frame into a movie.
-     *
-     * @param pic
-     * @throws IOException
-     */
+    /// Encodes a frame into a movie.
+    ///
+    /// @param pic
+    /// @throws IOException
     public void encodeNativeFrame(Picture pic) throws IOException {
         if (pic.getColor() != ColorSpace.RGB)
             throw new IllegalArgumentException("The input images is expected in RGB color.");

@@ -14,24 +14,21 @@ import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static org.monte.media.util.MathUtil.clamp;
 
-/**
- * {@code WhiteBalance}.
- * <p>
- * References:<br>
- * [Ken09] Kenfack, Pierre Marie (2009). Implementierung und Vergleich
- * verschiedener Algorithmen zur Bildsensorkalibrierung. Fraunhofer ITWM.
- * <a href="http://www.itwm.fraunhofer.de/fileadmin/ITWM-Media/Abteilungen/BV/Pdf/Diplomarbeit_Kenfack.pdf">Diplomarbeit_Kenfack.pdf</a>
- *
- * <p>
- * [Lam05] Edmund Lam, Combining gray world and retinex theory for automatic
- * white balance in	digital photography, Consumer Electronics, 2005.
- * (ISCE 2005). Proceedings of the Ninth International Symposium on (2005), pp.134–139.
- * <p>
- * [Huo05] Huo Yun-yan, Chang Yi-lin, Wang Jing, Wei Xiao-xia. (2005). Robust
- * Automatic White 	Balance Algorithm using Gray Color Points in Images.
- *
- * @author Werner Randelshofer
- */
+/// `WhiteBalance`.
+///
+/// References:
+/// [Ken09] Kenfack, Pierre Marie (2009). Implementierung und Vergleich
+/// verschiedener Algorithmen zur Bildsensorkalibrierung. Fraunhofer ITWM.
+/// [Diplomarbeit_Kenfack.pdf](http://www.itwm.fraunhofer.de/fileadmin/ITWM-Media/Abteilungen/BV/Pdf/Diplomarbeit_Kenfack.pdf)
+///
+/// [Lam05] Edmund Lam, Combining gray world and retinex theory for automatic
+/// white balance in	digital photography, Consumer Electronics, 2005.
+/// (ISCE 2005). Proceedings of the Ninth International Symposium on (2005), pp.134–139.
+///
+/// [Huo05] Huo Yun-yan, Chang Yi-lin, Wang Jing, Wei Xiao-xia. (2005). Robust
+/// Automatic White 	Balance Algorithm using Gray Color Points in Images.
+///
+/// @author Werner Randelshofer
 public class WhiteBalance {
 
     private WhiteBalance() {
@@ -39,10 +36,8 @@ public class WhiteBalance {
 
     ;
 
-    /**
-     * Performs white balance adjustment using the "grey world" assumption
-     * as described in [Ken09].
-     */
+    /// Performs white balance adjustment using the "grey world" assumption
+    /// as described in [Ken09].
     public static BufferedImage whiteBalanceGreyworld(BufferedImage img) {
         img = Images.toIntImage(img);
         Histogram hist = new Histogram();
@@ -70,10 +65,8 @@ public class WhiteBalance {
         return out;
     }
 
-    /**
-     * Performs white balance adjustment using the "grey world" assumption
-     * as described in [Huo05], but using the YCbCr color space instead of YUV.
-     */
+    /// Performs white balance adjustment using the "grey world" assumption
+    /// as described in [Huo05], but using the YCbCr color space instead of YUV.
     public static BufferedImage whiteBalanceGreyworldYCC(BufferedImage img, float[] ccAdjust, boolean all) {
         img = Images.toIntImage(img);
         Histogram hist = new Histogram();
@@ -145,10 +138,8 @@ public class WhiteBalance {
         }
     }
 
-    /**
-     * Performs white balance adjustment using the "grey world" assumption
-     * as described in [Huo05].
-     */
+    /// Performs white balance adjustment using the "grey world" assumption
+    /// as described in [Huo05].
     public static BufferedImage whiteBalanceGreyworldYUV(BufferedImage img, float[] uvAdjust, boolean all) {
         img = Images.toIntImage(img);
         Histogram hist = new Histogram();
@@ -276,25 +267,22 @@ public class WhiteBalance {
         return out;
     }
 
-    /**
-     * Computes the white balance of an image using the Greyworld algorithm.
-     * <p>
-     * The Greyworld algorithm assumes that the average color of an image
-     * should be a neutral gray: avg(R)=avg(G)=avg(B).
-     * <p>
-     * References:<br>
-     * Edmund Lam, Combining gray world and retinex theory for automatic white
-     * balance in digital photography, Consumer Electronics, 2005. (ISCE 2005).
-     * Proceedings of the Ninth International Symposium on (2005), pp.134–139.
-     * <p>
-     * Kenfack, Pierre Marie. (2009). Implementierung und Vergleich verschiedener
-     * Algorithmen zur 	Bildsensorkalibrierung. Fraunhofer ITWM.
-     * http://www.itwm.fraunhofer.de/fileadmin/ITWM
-     * <p>
-     *
-     * @param rgbHist
-     * @return a 3x3 matrix which performs the color correction matrix*[R,G,B].
-     */
+    /// Computes the white balance of an image using the Greyworld algorithm.
+    ///
+    /// The Greyworld algorithm assumes that the average color of an image
+    /// should be a neutral gray: avg(R)=avg(G)=avg(B).
+    ///
+    /// References:
+    /// Edmund Lam, Combining gray world and retinex theory for automatic white
+    /// balance in digital photography, Consumer Electronics, 2005. (ISCE 2005).
+    /// Proceedings of the Ninth International Symposium on (2005), pp.134–139.
+    ///
+    /// Kenfack, Pierre Marie. (2009). Implementierung und Vergleich verschiedener
+    /// Algorithmen zur 	Bildsensorkalibrierung. Fraunhofer ITWM.
+    /// http://www.itwm.fraunhofer.de/fileadmin/ITWM
+    ///
+    /// @param rgbHist
+    /// @return a 3x3 matrix which performs the color correction matrix*[R,G,B].
     public static double[] whiteBalanceGreyworld(Histogram rgbHist) {
         double[] mean_ = rgbHist.getMean();
         double Rmean = mean_[0],
@@ -328,22 +316,19 @@ public class WhiteBalance {
                 0, 0, fb};
     }
 
-    /**
-     * Computes the white balance of an image using the Retinex algorithm.
-     * <p>
-     * References:<br>
-     * Edmund Lam, Combining gray world and retinex theory for automatic white
-     * balance in digital photography, Consumer Electronics, 2005. (ISCE 2005).
-     * Proceedings of the Ninth International Symposium on (2005), pp.134–139.
-     * <p>
-     * Kenfack, Pierre Marie. (2009). Implementierung und Vergleich verschiedener
-     * Algorithmen zur 	Bildsensorkalibrierung. Fraunhofer ITWM.
-     * http://www.itwm.fraunhofer.de/fileadmin/ITWM
-     * <p>
-     *
-     * @param rgbHist
-     * @return a 3x3 matrix which performs the color correction matrix*[R,G,B].
-     */
+    /// Computes the white balance of an image using the Retinex algorithm.
+    ///
+    /// References:
+    /// Edmund Lam, Combining gray world and retinex theory for automatic white
+    /// balance in digital photography, Consumer Electronics, 2005. (ISCE 2005).
+    /// Proceedings of the Ninth International Symposium on (2005), pp.134–139.
+    ///
+    /// Kenfack, Pierre Marie. (2009). Implementierung und Vergleich verschiedener
+    /// Algorithmen zur 	Bildsensorkalibrierung. Fraunhofer ITWM.
+    /// http://www.itwm.fraunhofer.de/fileadmin/ITWM
+    ///
+    /// @param rgbHist
+    /// @return a 3x3 matrix which performs the color correction matrix*[R,G,B].
     public static double[] whiteBalanceRetinex(Histogram rgbHist) {
         double[] mean_ = rgbHist.getMean();
         double Rmean = mean_[0],
@@ -374,36 +359,34 @@ public class WhiteBalance {
 
     }
 
-    /**
-     * Computes the white balance of an image using the Quadratic Mapping (QM)
-     * algorithm. QM is a combination of the Greyworld and the Retinex algorithm.
-     * And usually gives better results.
-     * <p>
-     * References:<br>
-     * Edmund Lam, Combining gray world and retinex theory for automatic white
-     * balance in digital photography, Consumer Electronics, 2005. (ISCE 2005).
-     * Proceedings of the Ninth International Symposium on (2005), pp.134–139.
-     * <p>
-     * Kenfack, Pierre Marie. (2009). Implementierung und Vergleich verschiedener
-     * Algorithmen zur 	Bildsensorkalibrierung. Fraunhofer ITWM.
-     * http://www.itwm.fraunhofer.de/fileadmin/ITWM
-     * <p>
-     * <p>
-     * Returns a vector with 4 values: Rmu, Rnu, Bmu, Bnu.
-     * These values can be put into a 3x6 matrix as shown below:
-     * <pre>
-     *
-     *                                     [ R
-     *                                       G
-     *                                       B
-     * [R'    [ Rnu  0   0  Rmu  0   0       R^2
-     *  G'  =    0   1   0   0   0   0    *  G^2
-     *  B']      0   0  Bnu  0   0  Bmu ]    B^2 ]
-     * </pre>
-     *
-     * @param rgbHist
-     * @return a vector with the values {Rmu, Rnu, Bmu, Bnu}.
-     */
+    /// Computes the white balance of an image using the Quadratic Mapping (QM)
+    /// algorithm. QM is a combination of the Greyworld and the Retinex algorithm.
+    /// And usually gives better results.
+    ///
+    /// References:
+    /// Edmund Lam, Combining gray world and retinex theory for automatic white
+    /// balance in digital photography, Consumer Electronics, 2005. (ISCE 2005).
+    /// Proceedings of the Ninth International Symposium on (2005), pp.134–139.
+    ///
+    /// Kenfack, Pierre Marie. (2009). Implementierung und Vergleich verschiedener
+    /// Algorithmen zur 	Bildsensorkalibrierung. Fraunhofer ITWM.
+    /// http://www.itwm.fraunhofer.de/fileadmin/ITWM
+    ///
+    ///
+    /// Returns a vector with 4 values: Rmu, Rnu, Bmu, Bnu.
+    /// These values can be put into a 3x6 matrix as shown below:
+    /// <pre>
+    ///
+    ///                                     [ R
+    ///                                       G
+    ///                                       B
+    /// [R'    [Rnu 0 0Rmu 0 0R^2
+    ///  G'  =    0   1   0   0   0   0    *  G^2
+    ///  B']      0   0  Bnu  0   0  Bmu ]    B^2 ]
+    /// </pre>
+    ///
+    /// @param rgbHist
+    /// @return a vector with the values {Rmu, Rnu, Bmu, Bnu}.
     public static double[] whiteBalanceQM(Histogram rgbHist) {
         double[] max_ = rgbHist.getHighValue();
         double Rmax = max_[0],

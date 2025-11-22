@@ -22,20 +22,14 @@ import static org.monte.media.math.Scalars.almostEqual;
 
 
 public abstract class AbstractNamedColorSpaceTest {
-    /**
-     * Number of precision bits (used by most tests in this class).
-     */
+    /// Number of precision bits (used by most tests in this class).
     static final float EPSILON = 0x1p-12f;
-    /**
-     * Smaller epsilon for component->XYZ->component round-trips.
-     * <p>
-     * The worst offender is {@link ParametricScaledColorSpace}.
-     */
+    /// Smaller epsilon for component->XYZ->component round-trips.
+    ///
+    /// The worst offender is [ParametricScaledColorSpace].
     static final float MINI_EPSILON = 0x1p-13f;
-    /**
-     * Number of precision bits (used for comparing the Java sRGB-ColorSpace implementation
-     * with the test instance).
-     */
+    /// Number of precision bits (used for comparing the Java sRGB-ColorSpace implementation
+    /// with the test instance).
     private static final float EPSILON_EXPECTED_XYZ = 0x1p-10f;
 
     protected abstract NamedColorSpace getInstance();

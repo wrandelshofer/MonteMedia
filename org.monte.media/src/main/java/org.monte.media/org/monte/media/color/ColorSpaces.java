@@ -8,11 +8,9 @@ import java.awt.color.ColorSpace;
 import java.awt.color.ICC_ColorSpace;
 import java.awt.color.ICC_Profile;
 
-/**
- * ColorSpaces.
- *
- * @author Werner Randelshofer
- */
+/// ColorSpaces.
+///
+/// @author Werner Randelshofer
 public class ColorSpaces {
 
     public static String toString(ColorSpace cs) {

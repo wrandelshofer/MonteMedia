@@ -5,25 +5,23 @@
 
 package org.monte.media.image.algo;
 
-/**
- * Resamples an image by averaging 4 pixels of the source image.
- * <pre>
- *               │(⌊x⌋,⌊y⌋)    │(⌊x+1,⌊y⌋)    │
- *              ─┼─────────────┼──────────────┼─
- *               │        ╎β   │              │
- *               │        ╎    │              │
- *               │  (x,y) ↓    │              │
- *               │╌╌╌╌╌╌╌→XXXXX│XXXXXXXX      │
- *               │ɑ       XXXXX│XXXXXXXX      │
- *              ─┼─────────────┼──────────────┼
- *               │(⌊x⌋,⌊y+1⌋)  │(⌊x+1⌋,⌊y+1⌋) │
- *               │        XXXXX│XXXXXXXX      │
- *               │        XXXXX│XXXXXXXX      │
- *               │        XXXXX│XXXXXXXX      │
- *               │             │              │
- *              ─┼─────────────┼──────────────┼
- * </pre>
- */
+/// Resamples an image by averaging 4 pixels of the source image.
+/// <pre>
+///               │(⌊x⌋,⌊y⌋)    │(⌊x+1,⌊y⌋)    │
+///              ─┼─────────────┼──────────────┼─
+///               │        ╎β   │              │
+///               │        ╎    │              │
+///               │  (x,y) ↓    │              │
+///               │╌╌╌╌╌╌╌→XXXXX│XXXXXXXX      │
+///               │ɑ       XXXXX│XXXXXXXX      │
+///              ─┼─────────────┼──────────────┼
+///               │(⌊x⌋,⌊y+1⌋)  │(⌊x+1⌋,⌊y+1⌋) │
+///               │        XXXXX│XXXXXXXX      │
+///               │        XXXXX│XXXXXXXX      │
+///               │        XXXXX│XXXXXXXX      │
+///               │             │              │
+///              ─┼─────────────┼──────────────┼
+/// </pre>
 public class BilinearInterpolationResampleAlgoFloat implements ResampleAlgoFloat {
     @Override
     public void resample(float[] srcPixels, int srcWidth, int srcHeight, int srcOffset, int srcScanline, float[] dstPixels, int dstWidth, int dstHeight, int dstOffset, int dstScanline) {

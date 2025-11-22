@@ -3,10 +3,7 @@
  * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 
-/**
- * Sample Skeleton for 'ColorInspector.fxml' Controller Class
- */
-
+/// Sample Skeleton for 'ColorInspector.fxml' Controller Class
 package org.monte.demo.javafx.colorquantizer;
 
 import javafx.beans.Observable;
@@ -41,7 +38,10 @@ import org.monte.demo.javafx.colorquantizer.model.ColorMode;
 import org.monte.demo.javafx.colorquantizer.model.ColorQuantizerMainModel;
 import org.monte.demo.javafx.colorquantizer.model.DitheringMethod;
 import org.monte.demo.javafx.colorquantizer.model.PaletteMode;
+import org.monte.media.color.Rec709ColorSpace;
 
+import java.awt.color.ColorSpace;
+import java.awt.color.ICC_ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.IOException;
@@ -67,6 +67,8 @@ public class ColorInspectorController {
 
     @FXML // URL location of the FXML file that was given to the FXMLLoader
     private URL location;
+    @FXML // fx:id="colorSpaceComboBox"
+    private ComboBox<ColorSpace> colorSpaceComboBox; // Value injected by FXMLLoader
 
     @FXML // fx:id="colorModeComboBox"
     private ComboBox<ColorMode> colorModeComboBox; // Value injected by FXMLLoader
@@ -82,6 +84,9 @@ public class ColorInspectorController {
 
     @FXML // fx:id="ditheringMethodComboBox"
     private ComboBox<DitheringMethod> ditheringMethodComboBox; // Value injected by FXMLLoader
+
+    @FXML // fx:id="inputImageColorSpaceLabel"
+    private Label inputImageColorSpaceLabel; // Value injected by FXMLLoader
 
     @FXML // fx:id="inputImageColorsLabel"
     private Label inputImageColorsLabel; // Value injected by FXMLLoader
@@ -150,14 +155,16 @@ public class ColorInspectorController {
         // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert colorModeComboBox != null : "fx:id=\"colorModeComboBox\" was not injected: check your FXML file 'ColorInspector.fxml'.";
+        assert colorSpaceComboBox != null : "fx:id=\"colorSpaceComboBox\" was not injected: check your FXML file 'ColorInspector.fxml'.";
         assert computePaletteButton != null : "fx:id=\"computePaletteButton\" was not injected: check your FXML file 'ColorInspector.fxml'.";
         assert ditherIntensityField != null : "fx:id=\"ditherIntensityField\" was not injected: check your FXML file 'ColorInspector.fxml'.";
         assert ditherIntensityLabel != null : "fx:id=\"ditherIntensityLabel\" was not injected: check your FXML file 'ColorInspector.fxml'.";
         assert ditheringMethodComboBox != null : "fx:id=\"ditheringMethodComboBox\" was not injected: check your FXML file 'ColorInspector.fxml'.";
+        assert inputImageColorSpaceLabel != null : "fx:id=\"inputImageColorSpaceLabel\" was not injected: check your FXML file 'ColorInspector.fxml'.";
         assert inputImageColorsLabel != null : "fx:id=\"inputImageColorsLabel\" was not injected: check your FXML file 'ColorInspector.fxml'.";
         assert loadPaletteButton != null : "fx:id=\"loadPaletteButton\" was not injected: check your FXML file 'ColorInspector.fxml'.";
         assert lockPalette0CheckBox != null : "fx:id=\"lockPalette0CheckBox\" was not injected: check your FXML file 'ColorInspector.fxml'.";
-        assert palette0ColorField != null : "fx:id=\"paletteIndex0ColorField\" was not injected: check your FXML file 'ColorInspector.fxml'.";
+        assert palette0ColorField != null : "fx:id=\"palette0ColorField\" was not injected: check your FXML file 'ColorInspector.fxml'.";
         assert paletteSizeField != null : "fx:id=\"paletteSizeField\" was not injected: check your FXML file 'ColorInspector.fxml'.";
         assert paletteSizeLabel != null : "fx:id=\"paletteSizeLabel\" was not injected: check your FXML file 'ColorInspector.fxml'.";
         assert paletteLabel != null : "fx:id=\"paletteLabel\" was not injected: check your FXML file 'ColorInspector.fxml'.";
@@ -172,33 +179,50 @@ public class ColorInspectorController {
         model.addListener(this::modelChanged);
         modelChanged(model, null, model.get());
         updateEnabledStates(null, null, null);
+        colorSpaceComboBox.itemsProperty().set(FXCollections.observableArrayList(
+                null,
+                ColorSpace.getInstance(ColorSpace.CS_sRGB),
+                Rec709ColorSpace.getInstance()
+        ));
+        colorSpaceComboBox.setConverter(new StringConverter<ColorSpace>() {
+            @Override
+            public String toString(ColorSpace cs) {
+                return cs == null ? "as specified in image" : cs.isCS_sRGB() ? "sRGB" : cs.toString();
+            }
+
+            @Override
+            public ColorSpace fromString(String string) {
+                return null;
+            }
+        });
 
         palette.addListener((ListChangeListener<Color>) c -> {
             ObservableList<Node> children = palettePane.getChildren();
             while (c.next()) {
+                /*
                 if (c.wasPermutated()) {
                     for (int i = c.getFrom(); i < c.getTo(); ++i) {
                         //permutate
                     }
                 } else if (c.wasUpdated()) {
                     //update item
-                } else {
-                    if (c.wasRemoved()) {
-                        children.remove(c.getFrom(), c.getFrom() + c.getRemovedSize());
-                    }
-                    if (c.wasAdded()) {
-                        List<? extends Color> added = c.getAddedSubList();
-                        int index = c.getFrom();
-                        for (Color a : added) {
-                            var r = new Region();
-                            r.setBackground(new Background(new BackgroundFill(a, null, null)));
-                            r.setPrefSize(16, 16);
-                            var l = new Label(null, r);
-                            l.setTooltip(new Tooltip("#" + a.toString().substring(2, 8)));
-                            children.add(index++, l);
-                        }
+                } else {*/
+                if (c.wasRemoved()) {
+                    children.remove(c.getFrom(), c.getFrom() + c.getRemovedSize());
+                }
+                if (c.wasAdded()) {
+                    List<? extends Color> added = c.getAddedSubList();
+                    int index = c.getFrom();
+                    for (Color a : added) {
+                        var r = new Region();
+                        r.setBackground(new Background(new BackgroundFill(a, null, null)));
+                        r.setPrefSize(16, 16);
+                        var l = new Label(null, r);
+                        l.setTooltip(new Tooltip("#" + a.toString().substring(2, 8)));
+                        children.add(index++, l);
                     }
                 }
+                //}
             }
         });
     }
@@ -245,6 +269,7 @@ public class ColorInspectorController {
             oldv, ColorQuantizerMainModel newv) {
         if (oldv != null) {
             inputImageColorsLabel.textProperty().unbind();
+            inputImageColorSpaceLabel.textProperty().unbind();
             colorModeComboBox.valueProperty().unbindBidirectional(oldv.colorModeProperty());
             paletteModeComboBox.valueProperty().unbindBidirectional(oldv.paletteModeProperty());
             ditheringMethodComboBox.valueProperty().unbindBidirectional(oldv.ditheringMethodProperty());
@@ -253,11 +278,23 @@ public class ColorInspectorController {
             oldv.indexColorModelProperty().removeListener((ChangeListener<? super IndexColorModel>) colorModelListener);
             palette0ColorField.textProperty().unbindBidirectional(oldv.palette0ColorProperty());
             lockPalette0CheckBox.selectedProperty().unbindBidirectional(oldv.lockPaletteIndex0Property());
+            colorSpaceComboBox.valueProperty().unbindBidirectional(oldv.referenceImageColorSpaceProperty());
         }
         if (newv != null) {
-            inputImageColorsLabel.textProperty().bind(newv.referenceImageProperty().map(
-                    img -> switch (img.getType()) {
+            inputImageColorSpaceLabel.textProperty().bind(newv.rawReferenceImageProperty().map(
+                    img -> {
+                        if (img == null) return "no image";
+                        if (img.getColorModel().getColorSpace() instanceof ICC_ColorSpace iccColorSpace) {
+                            return iccColorSpace.getProfile().toString();
+                        } else {
+                            return img.getColorModel().getColorSpace().toString();
+                        }
+                    })
+            );
+            inputImageColorsLabel.textProperty().bind(newv.rawReferenceImageProperty().map(
 
+                    img -> switch (img == null ? null : img.getType()) {
+                        case null -> "no image";
                         case BufferedImage.TYPE_INT_RGB -> "24 bit RGB, int";
                         case BufferedImage.TYPE_INT_ARGB -> "32 bit ARGB, int";
                         case BufferedImage.TYPE_INT_ARGB_PRE -> "32 bit ARGB premultiplied, int";
@@ -275,6 +312,7 @@ public class ColorInspectorController {
                         default -> "type=" + img.getType();
                     }
             ));
+            colorSpaceComboBox.valueProperty().bindBidirectional(newv.referenceImageColorSpaceProperty());
             colorModeComboBox.valueProperty().bindBidirectional(newv.colorModeProperty());
             paletteModeComboBox.valueProperty().bindBidirectional(newv.paletteModeProperty());
             ditheringMethodComboBox.valueProperty().bindBidirectional(newv.ditheringMethodProperty());

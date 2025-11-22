@@ -34,17 +34,14 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
 
-/**
- * Implements the DosBox Capture Codec {@code "ZMBV"}.
- * <p>
- * This codec currently only supports decoding from the file format into
- * a {@code BufferedImage}. Encoding support may be added in the future.
- * <p>
- * For details seee {@link ZMBVCodecCore}.
- * </p>
- *
- * @author Werner Randelshofer
- */
+/// Implements the DosBox Capture Codec `"ZMBV"`.
+///
+/// This codec currently only supports decoding from the file format into
+/// a `BufferedImage`. Encoding support may be added in the future.
+///
+/// For details seee [ZMBVCodecCore].
+///
+/// @author Werner Randelshofer
 public class ZMBVDecoder extends org.monte.media.av.AbstractCodec {
 
     private ZMBVCodecCore state;

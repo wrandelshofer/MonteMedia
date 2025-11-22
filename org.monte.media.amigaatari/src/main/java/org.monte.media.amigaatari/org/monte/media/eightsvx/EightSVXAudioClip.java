@@ -8,29 +8,35 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 
-/**
- * Represents an audio sample of type IFF 8SVX.
- * <p>
- * <b>Supported audio formats:</b>
- * <br>8 bit linear and fibonacci encoded data samples.
- * <br>All sample rates
- * <br>Stereo and Mono
- * <p>
- * <b>Unsupported features:</b>
- * <br>Attack and Release information is ignored.
- * <br>Multi octave samples are not handled.
- * <p>
- * <b>Known Issues</b>
- * <br>This class has been implemented with JDK 1.1 in mind. JDK 1.1 does not
- * have a public API for Sound. This class will thus work only on a small number
- * of Java VMS.
- * <br>Poor sound qualitiy: All data is being converted to U-Law 8000 Hertz,
- * since this is the only kind of audio data that JDK 1.1 supports (As far as I know).
- * <br>Stereo sound is converted to mono. As far as I know there is now stereo
- * support built in JDK 1.1.
- *
- * @author Werner Randelshofer
- */
+/// Represents an audio sample of type IFF 8SVX.
+///
+/// **Supported audio formats:**
+///
+/// 8 bit linear and fibonacci encoded data samples.
+///
+/// All sample rates
+///
+/// Stereo and Mono
+///
+/// **Unsupported features:**
+///
+/// Attack and Release information is ignored.
+///
+/// Multi octave samples are not handled.
+///
+/// **Known Issues**
+///
+/// This class has been implemented with JDK 1.1 in mind. JDK 1.1 does not
+/// have a public API for Sound. This class will thus work only on a small number
+/// of Java VMS.
+///
+/// Poor sound qualitiy: All data is being converted to U-Law 8000 Hertz,
+/// since this is the only kind of audio data that JDK 1.1 supports (As far as I know).
+///
+/// Stereo sound is converted to mono. As far as I know there is now stereo
+/// support built in JDK 1.1.
+///
+/// @author Werner Randelshofer
 public class EightSVXAudioClip
         implements LoopableAudioClip {
     /* Instance variables */
@@ -213,11 +219,9 @@ public class EightSVXAudioClip
         return clip;
     }
 
-    /**
-     * Gets the audio data in 8-bit linear PCM.
-     *
-     * @return the audio data as 8-bit linear PCM
-     */
+    /// Gets the audio data in 8-bit linear PCM.
+    ///
+    /// @return the audio data as 8-bit linear PCM
     public byte[] to8BitLinearPcm() {
         // Decompress the sound data
         if (sCompression_ == S_CMP_FIB_DELTA) {
@@ -278,9 +282,7 @@ public class EightSVXAudioClip
         }
     }
 
-    /**
-     * Make this clip ready for playback.
-     */
+    /// Make this clip ready for playback.
     public void prepare() {
         if (cachedAudioClip_ == null) {
             cachedAudioClip_ = createAudioClip();
@@ -289,20 +291,18 @@ public class EightSVXAudioClip
 
     /* Class methods */
 
-    /**
-     * This finds the volume correction needed when converting
-     * this stereo sample to mono.
-     *
-     * @param stereo Stereo data linear 8. The first half of the
-     *               array contains the sound for the left speaker,
-     *               the second half the sound for the right speaker.
-     * @return volumeCorrection
-     * Combining the two channels into one increases the
-     * sound volume. This can exceed the maximum volume
-     * that can be represented by the linear8 sample model.
-     * To avoid this, the volume must be corrected to fit
-     * into the sample model.
-     */
+    /// This finds the volume correction needed when converting
+    /// this stereo sample to mono.
+    ///
+    /// @param stereo Stereo data linear 8. The first half of the
+    ///                                                         array contains the sound for the left speaker,
+    ///                                                         the second half the sound for the right speaker.
+    /// @return volumeCorrection
+    /// Combining the two channels into one increases the
+    /// sound volume. This can exceed the maximum volume
+    /// that can be represented by the linear8 sample model.
+    /// To avoid this, the volume must be corrected to fit
+    /// into the sample model.
     public static double computeStereoVolumeCorrection(byte[] stereo) {
         int half = stereo.length / 2;
         int max = 0;
@@ -316,18 +316,16 @@ public class EightSVXAudioClip
         }
     }
 
-    /**
-     * This converts a stereo sample to mono.
-     *
-     * @param stereo           Stereo data linear 8. The first half of the
-     *                         array contains the sound for the left speaker,
-     *                         the second half the sound for the right speaker.
-     * @param volumeCorrection Combining the two channels into one increases the
-     *                         sound volume. This can exceed the maximum volume
-     *                         that can be represented by the linear8 sample model.
-     *                         To avoid this, the volume must be corrected to fit
-     *                         into the sample model.
-     */
+    /// This converts a stereo sample to mono.
+    ///
+    /// @param stereo           Stereo data linear 8. The first half of the
+    ///                                                                         array contains the sound for the left speaker,
+    ///                                                                         the second half the sound for the right speaker.
+    /// @param volumeCorrection Combining the two channels into one increases the
+    ///                                                                         sound volume. This can exceed the maximum volume
+    ///                                                                         that can be represented by the linear8 sample model.
+    ///                                                                         To avoid this, the volume must be corrected to fit
+    ///                                                                         into the sample model.
     public static byte[] linear8StereoToMono(byte[] stereo, double volumeCorrection) {
         int half = stereo.length / 2;
         byte[] mono = new byte[half];
@@ -337,15 +335,13 @@ public class EightSVXAudioClip
         return mono;
     }
 
-    /**
-     * Resamples audio data to match the given sample rate and applies
-     * a lowpass filter if necessary.
-     *
-     * @param input            Linear8 encoded audio data.
-     * @param inputSampleRate  The sample rate of the input data
-     * @param outputSampleRate The sample rate of the output data.
-     * @return Linear8 encoded audio data.
-     */
+    /// Resamples audio data to match the given sample rate and applies
+    /// a lowpass filter if necessary.
+    ///
+    /// @param input            Linear8 encoded audio data.
+    /// @param inputSampleRate  The sample rate of the input data
+    /// @param outputSampleRate The sample rate of the output data.
+    /// @return Linear8 encoded audio data.
     public static byte[] resample(byte[] input, int inputSampleRate, int outputSampleRate) {
         if (inputSampleRate == outputSampleRate) {
 
@@ -380,12 +376,10 @@ public class EightSVXAudioClip
         }
     }
 
-    /**
-     * Converts a buffer of signed 8bit samples to uLaw.
-     * The uLaw bytes overwrite the original 8 bit values.
-     * The first byte-offset of the uLaw bytes is byteOffset.
-     * It will be written sampleCount bytes.
-     */
+    /// Converts a buffer of signed 8bit samples to uLaw.
+    /// The uLaw bytes overwrite the original 8 bit values.
+    /// The first byte-offset of the uLaw bytes is byteOffset.
+    /// It will be written sampleCount bytes.
     public static byte[] linear8ToULaw(byte[] linear8) {
         byte[] ulaw = new byte[linear8.length];
 
@@ -396,12 +390,10 @@ public class EightSVXAudioClip
         return ulaw;
     }
 
-    /**
-     * Converts a buffer of signed 8bit samples to uLaw.
-     * The uLaw bytes overwrite the original 8 bit values.
-     * The first byte-offset of the uLaw bytes is byteOffset.
-     * It will be written sampleCount bytes.
-     */
+    /// Converts a buffer of signed 8bit samples to uLaw.
+    /// The uLaw bytes overwrite the original 8 bit values.
+    /// The first byte-offset of the uLaw bytes is byteOffset.
+    /// It will be written sampleCount bytes.
     public static byte[] linear16ToULaw(int[] linear16) {
         byte[] ulaw = new byte[linear16.length];
 
@@ -416,32 +408,25 @@ public class EightSVXAudioClip
      * The following section of this software is
      * Copyright 1989 by Steve Hayes
      */
-    /**
-     * This is Steve Hayes' Fibonacci Delta sound compression technique.
-     * It's like the traditional delta encoding but encodes each delta
-     * in a mere 4 bits. The compressed data is half the size of the
-     * original data plus a 2-byte overhead for the initial value.
-     * This much compression introduces some distortion, so try it out
-     * and use it with discretion.
-     *
-     * To achieve a reasonable slew rate, this algorithm looks up each
-     * stored 4-bit value in a table of Fibonacci numbers. So very small
-     * deltas are encoded precisely while larger deltas are approximated.
-     * When it has to make approximations, the compressor should adjust
-     * all the values (forwards and backwards in time) for minimal overall
-     * distortion.
-     */
-    /**
-     * Fibonacci delta encoding for sound data.
-     */
+    /// This is Steve Hayes' Fibonacci Delta sound compression technique.
+    /// It's like the traditional delta encoding but encodes each delta
+    /// in a mere 4 bits. The compressed data is half the size of the
+    /// original data plus a 2-byte overhead for the initial value.
+    /// This much compression introduces some distortion, so try it out
+    /// and use it with discretion.
+    /// To achieve a reasonable slew rate, this algorithm looks up each
+    /// stored 4-bit value in a table of Fibonacci numbers. So very small
+    /// deltas are encoded precisely while larger deltas are approximated.
+    /// When it has to make approximations, the compressor should adjust
+    /// all the values (forwards and backwards in time) for minimal overall
+    /// distortion.
+    /// Fibonacci delta encoding for sound data.
     private final static byte[] CODE_TO_DELTA = {-34, -21, -13, -8, -5, -3, -2, -1, 0, 1, 2, 3, 5, 8, 13, 21};
 
-    /**
-     * Unpack Fibonacci-delta encoded data from n byte source buffer
-     * into 2*(n-2) byte dest buffer. Source buffer has a pad byte, an 8-bit
-     * initial value, followed by n bytes comprising 2*(n) 4-bit
-     * encoded samples.
-     */
+    /// Unpack Fibonacci-delta encoded data from n byte source buffer
+    /// into 2*(n-2) byte dest buffer. Source buffer has a pad byte, an 8-bit
+    /// initial value, followed by n bytes comprising 2*(n) 4-bit
+    /// encoded samples.
     public static byte[] unpackFibonacciDeltaCompression(byte[] source) {
         /* Original algorithm by Steve Hayes
         int n = source.length - 2;
@@ -499,11 +484,9 @@ public class EightSVXAudioClip
      * Copyright © 1989 by Rich Gopstein and Harris Corporation
      */
 
-    /**
-     * Write a "standard" sun header.
-     *
-     * @param sampleType Specify STEREO, LEFT or RIGHT.
-     */
+    /// Write a "standard" sun header.
+    ///
+    /// @param sampleType Specify STEREO, LEFT or RIGHT.
     public static void writeSunAudioHeader(OutputStream outfile, int dataSize, int sampleRate, int sampleType)
             throws IOException {
         wrulong(outfile, 0x2e736e64);  // Sun magic = ".snd"
@@ -517,9 +500,7 @@ public class EightSVXAudioClip
         wrulong(outfile, sampleType == STEREO ? 2 : 1);
     }
 
-    /**
-     * Write an unsigned long (Motorola 68000 CPU format).
-     */
+    /// Write an unsigned long (Motorola 68000 CPU format).
     public static void wrulong(OutputStream outfile, int ulong)
             throws IOException {
         outfile.write(ulong >> 24 & 0xff);
@@ -556,14 +537,13 @@ public class EightSVXAudioClip
     };
 
 
-    /**
-     * Converts a linear signed 16bit sample to a uLaw byte.
-     * Ported to Java by fb.
-     * <BR>Originally by:<BR>
-     * Craig Reese: IDA/Supercomputing Research Center <BR>
-     * Joe Campbell: Department of Defense <BR>
-     * 29 September 1989 <BR>
-     */
+    /// Converts a linear signed 16bit sample to a uLaw byte.
+    /// Ported to Java by fb.
+    ///
+    /// Originally by:
+    /// Craig Reese: IDA/Supercomputing Research Center
+    /// Joe Campbell: Department of Defense
+    /// 29 September 1989
     private static byte linear16ToULaw(int sample) {
         int sign, exponent, mantissa, ulawbyte;
 
@@ -594,30 +574,28 @@ public class EightSVXAudioClip
         return ((byte) ulawbyte);
     }
 
-    /**
-     * Starts looping playback from the current position.   Playback will
-     * continue to the loop's end point, then loop back to the loop start point
-     * <code>count</code> times, and finally continue playback to the end of
-     * the clip.
-     * <p>
-     * If the current position when this method is invoked is greater than the
-     * loop end point, playback simply continues to the
-     * end of the clip without looping.
-     * <p>
-     * A <code>count</code> value of 0 indicates that any current looping should
-     * cease and playback should continue to the end of the clip.  The behavior
-     * is undefined when this method is invoked with any other value during a
-     * loop operation.
-     * <p>
-     * If playback is stopped during looping, the current loop status is
-     * cleared; the behavior of subsequent loop and start requests is not
-     * affected by an interrupted loop operation.
-     *
-     * @param count the number of times playback should loop back from the
-     *              loop's end position to the loop's  start position, or
-     *              <code>{@link #LOOP_CONTINUOUSLY}</code> to indicate that looping should
-     *              continue until interrupted
-     */
+    /// Starts looping playback from the current position.   Playback will
+    /// continue to the loop's end point, then loop back to the loop start point
+    /// `count` times, and finally continue playback to the end of
+    /// the clip.
+    ///
+    /// If the current position when this method is invoked is greater than the
+    /// loop end point, playback simply continues to the
+    /// end of the clip without looping.
+    ///
+    /// A `count` value of 0 indicates that any current looping should
+    /// cease and playback should continue to the end of the clip.  The behavior
+    /// is undefined when this method is invoked with any other value during a
+    /// loop operation.
+    ///
+    /// If playback is stopped during looping, the current loop status is
+    /// cleared; the behavior of subsequent loop and start requests is not
+    /// affected by an interrupted loop operation.
+    ///
+    /// @param count the number of times playback should loop back from the
+    ///                                        loop's end position to the loop's  start position, or
+    ///                                        `[#LOOP_CONTINUOUSLY]` to indicate that looping should
+    ///                                        continue until interrupted
     public void loop(int count) {
         stop();
         if (cachedAudioClip_ == null) {

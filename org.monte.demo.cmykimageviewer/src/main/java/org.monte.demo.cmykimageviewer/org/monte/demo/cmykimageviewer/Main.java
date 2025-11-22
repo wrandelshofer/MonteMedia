@@ -32,11 +32,9 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
-/**
- * Main.
- *
- * @author Werner Randelshofer
- */
+/// Main.
+///
+/// @author Werner Randelshofer
 public class Main extends Application {
 
     private ImageView imageView;
@@ -58,9 +56,7 @@ public class Main extends Application {
         }
     }
 
-    /**
-     * Resizable image view.
-     */
+    /// Resizable image view.
     private static class ResizableImageView extends ImageView {
 
         public ResizableImageView() {
@@ -131,11 +127,9 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    /**
-     * Handles drag events.
-     *
-     * @param event a drag event
-     */
+    /// Handles drag events.
+    ///
+    /// @param event a drag event
     private void onDragEvent(DragEvent event) {
         EventType<DragEvent> type = event.getEventType();
         if (type == DragEvent.DRAG_EXITED) {
@@ -162,11 +156,9 @@ public class Main extends Application {
         }
     }
 
-    /**
-     * Loads an image and displays it.
-     *
-     * @param file a file
-     */
+    /// Loads an image and displays it.
+    ///
+    /// @param file a file
     private void loadAndDisplayImage(File file) {
         stage.setTitle(file.getName());
         root.setCenter(dropLabel);
@@ -261,9 +253,7 @@ public class Main extends Application {
         }
     }
 
-    /**
-     * @param args the command line arguments
-     */
+    /// @param args the command line arguments
     public static void main(String[] args) {
         launch(args);
     }

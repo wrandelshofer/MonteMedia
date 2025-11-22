@@ -28,16 +28,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-/**
- * {@code ReadAVIDemo}.
- *
- * @author Werner Randelshofer
- */
+/// `ReadAVIDemo`.
+///
+/// @author Werner Randelshofer
 public class ReadAVIDemo {
 
-    /**
-     * @param args the command line arguments
-     */
+    /// @param args the command line arguments
     public static void main(String[] args) throws IOException {
         final ArrayList<BufferedImage> frames = new ArrayList<>();
         final File f = new File("/Users/Shared/Developer/Java/MonteMedia/current/trunk/MonteMedia/avidemo-tscc8.avi");

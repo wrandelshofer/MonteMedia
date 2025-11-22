@@ -2,11 +2,9 @@
  * Copyright © 2021 Werner Randelshofer, Switzerland. MIT License.
  */
 
-/**
- * A converter for ANIM Amiga Cell Animation files.
- *
- * @author Werner Randelshofer
- */
+/// A converter for ANIM Amiga Cell Animation files.
+///
+/// @author Werner Randelshofer
 module org.monte.media.animconverter {
     requires java.desktop;
 

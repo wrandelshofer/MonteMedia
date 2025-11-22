@@ -14,13 +14,11 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.nio.ByteOrder;
 
-/**
- * {@link AmigaBitmapImageConverter} optimised for processors that provide
- * PDEP (Parallel Deposit/Expand) and PEXT (Parallel Extract) instructions.
- * <p>
- * This class performs well on AMD and Intel processors with BMI1 (Bit Manipulation Instructions) set,
- * but does not perform well on Apple M processors.
- */
+/// [AmigaBitmapImageConverter] optimised for processors that provide
+/// PDEP (Parallel Deposit/Expand) and PEXT (Parallel Extract) instructions.
+///
+/// This class performs well on AMD and Intel processors with BMI1 (Bit Manipulation Instructions) set,
+/// but does not perform well on Apple M processors.
 public class ParallelExtractAmigaBitmapImageConverter implements AmigaBitmapImageConverter {
     private static final VarHandle LONG_BE = MethodHandles.byteArrayViewVarHandle(long[].class, ByteOrder.BIG_ENDIAN);
 

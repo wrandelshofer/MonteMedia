@@ -6,12 +6,10 @@
 package org.monte.media.qtff;
 
 public class QTFFParser {
-    /**
-     * Convert an integer QTFF type to String.
-     *
-     * @param type type to be converted.
-     * @return String representation of the ID.
-     */
+    /// Convert an integer QTFF type to String.
+    ///
+    /// @param type type to be converted.
+    /// @return String representation of the ID.
     public static String typeToString(int type) {
         byte[] bytes = new byte[4];
 
@@ -23,12 +21,10 @@ public class QTFFParser {
         return new String(bytes);
     }
 
-    /**
-     * Converts the first four letters of the String into a QTFF type.
-     *
-     * @param aString String to be converted.
-     * @return ID representation of the String.
-     */
+    /// Converts the first four letters of the String into a QTFF type.
+    ///
+    /// @param aString String to be converted.
+    /// @return ID representation of the String.
     public static int stringToType(String aString) {
         byte[] bytes = aString.getBytes();
 

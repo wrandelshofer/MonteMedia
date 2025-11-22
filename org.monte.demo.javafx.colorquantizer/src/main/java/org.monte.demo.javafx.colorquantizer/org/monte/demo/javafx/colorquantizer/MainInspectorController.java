@@ -3,22 +3,17 @@
  * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 
-/**
- * Sample Skeleton for 'Untitled' Controller Class
- */
-
+/// Sample Skeleton for 'Untitled' Controller Class
 package org.monte.demo.javafx.colorquantizer;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
@@ -26,13 +21,10 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.Dragboard;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import javafx.util.StringConverter;
 import org.monte.demo.javafx.colorquantizer.model.ColorQuantizerMainModel;
-import org.monte.media.color.Rec709ColorSpace;
 
 import javax.imageio.spi.IIORegistry;
 import javax.imageio.spi.ImageWriterSpi;
-import java.awt.color.ColorSpace;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -51,9 +43,6 @@ public class MainInspectorController {
     private ResourceBundle resources;
     @FXML // URL location of the FXML file that was given to the FXMLLoader
     private URL location;
-
-    @FXML // fx:id="colorSpaceComboBox"
-    private ComboBox<ColorSpace> colorSpaceComboBox; // Value injected by FXMLLoader
 
     @FXML // fx:id="fileField"
     private TextField fileField; // Value injected by FXMLLoader
@@ -92,7 +81,6 @@ public class MainInspectorController {
     @FXML
         // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
-        assert colorSpaceComboBox != null : "fx:id=\"colorSpaceComboBox\" was not injected: check your FXML file 'MainInspector.fxml'.";
         assert fileField != null : "fx:id=\"fileField\" was not injected: check your FXML file 'MainInspector.fxml'.";
         assert root != null : "fx:id=\"root\" was not injected: check your FXML file 'MainInspector.fxml'.";
         assert tabPane != null : "fx:id=\"tabPane\" was not injected: check your FXML file 'MainInspector.fxml'.";
@@ -103,22 +91,6 @@ public class MainInspectorController {
         tabPane.getTabs().add(new Tab("Size", resizeInspector.getRoot()));
         tabPane.getTabs().add(new Tab("Color", colorInspector.getRoot()));
         tabPane.getTabs().add(new Tab("Batch", batchInspector.getRoot()));
-        colorSpaceComboBox.itemsProperty().set(FXCollections.observableArrayList(
-                null,
-                ColorSpace.getInstance(ColorSpace.CS_sRGB),
-                Rec709ColorSpace.INSTANCE
-        ));
-        colorSpaceComboBox.setConverter(new StringConverter<ColorSpace>() {
-            @Override
-            public String toString(ColorSpace cs) {
-                return cs == null ? "as specified in image" : cs.isCS_sRGB() ? "sRGB" : cs.toString();
-            }
-
-            @Override
-            public ColorSpace fromString(String string) {
-                return null;
-            }
-        });
         resizeInspector.modelProperty().bind(model);
         colorInspector.modelProperty().bind(model);
         batchInspector.modelProperty().bind(model);
@@ -144,11 +116,9 @@ public class MainInspectorController {
     private void modelChanged(ObservableValue<? extends ColorQuantizerMainModel> o, ColorQuantizerMainModel oldv, ColorQuantizerMainModel newv) {
         if (oldv != null) {
             fileField.textProperty().unbind();
-            colorSpaceComboBox.valueProperty().unbindBidirectional(oldv.referenceImageColorSpaceProperty());
         }
         if (newv != null) {
             fileField.textProperty().bind(newv.referenceFileProperty().map(p -> p == null ? null : p.getFileName().toString()));
-            colorSpaceComboBox.valueProperty().bindBidirectional(newv.referenceImageColorSpaceProperty());
         }
     }
 

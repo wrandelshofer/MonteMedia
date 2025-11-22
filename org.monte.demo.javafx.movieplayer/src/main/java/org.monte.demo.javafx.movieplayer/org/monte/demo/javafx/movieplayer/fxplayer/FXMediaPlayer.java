@@ -23,9 +23,7 @@ import javafx.util.Duration;
 import org.monte.demo.javafx.movieplayer.model.MediaInterface;
 import org.monte.demo.javafx.movieplayer.model.MediaPlayerInterface;
 
-/**
- * Adapter for JavaFX {@link MediaPlayer}.
- */
+/// Adapter for JavaFX [MediaPlayer].
 public class FXMediaPlayer implements MediaPlayerInterface {
     private final MediaPlayer player;
     private final MediaInterface media;

@@ -20,11 +20,9 @@ import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.FormatKeys.MimeTypeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
 
-/**
- * {@code SEQTrack}.
- *
- * @author Werner Randelshofer
- */
+/// `SEQTrack`.
+///
+/// @author Werner Randelshofer
 public class SEQTrack implements Track {
     private SEQDemultiplexer demux;
     private long position;

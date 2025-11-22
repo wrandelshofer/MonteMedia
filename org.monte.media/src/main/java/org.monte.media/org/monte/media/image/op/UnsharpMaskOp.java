@@ -24,9 +24,7 @@ import java.awt.image.Raster;
 import java.awt.image.SampleModel;
 
 
-/**
- * Sharpens an image by subtracting a gaussian blur from the image.
- */
+/// Sharpens an image by subtracting a gaussian blur from the image.
 public class UnsharpMaskOp implements BufferedImageOp {
     private final ConvolveOp convolveH;
     private final ConvolveOp convolveV;
@@ -74,19 +72,17 @@ public class UnsharpMaskOp implements BufferedImageOp {
         return clampMax;
     }
 
-    /**
-     * Transforms the source {@link BufferedImage} and stores the result
-     * in the destination {@link BufferedImage}.
-     * <p>
-     * If the color models for the two images do not match, a color conversion
-     * into the destination color model is performed.
-     *
-     * @param src The {@code BufferedImage} to be filtered
-     * @param dst The {@code BufferedImage} in which to store the results
-     * @return the filtered image
-     * @throws IllegalArgumentException if {@code src} and{@code dst} are the same
-     *                                  or if {@code dst} does not have a buffer of type {@link DataBufferFloat}.
-     */
+    /// Transforms the source [BufferedImage] and stores the result
+    /// in the destination [BufferedImage].
+    ///
+    /// If the color models for the two images do not match, a color conversion
+    /// into the destination color model is performed.
+    ///
+    /// @param src The `BufferedImage` to be filtered
+    /// @param dst The `BufferedImage` in which to store the results
+    /// @return the filtered image
+    /// @throws IllegalArgumentException if `src` and`dst` are the same
+    ///                                                                                                    or if `dst` does not have a buffer of type [DataBufferFloat].
     @Override
     public BufferedImage filter(BufferedImage src, BufferedImage dst) {
         if (src == null) {
@@ -118,7 +114,8 @@ public class UnsharpMaskOp implements BufferedImageOp {
     }
 
     private void blend(float[] inPixels, float[] blurredPixels, float[] outPixels, float amount, float threshold) {
-        float a = 4 * amount + 1;
+        //float a = 4 * amount + 1;
+        float a = amount;
         for (int i = 0; i < Math.min(blurredPixels.length, outPixels.length); i++) {
             float diff = inPixels[i] - blurredPixels[i];
             if (Math.abs(diff) >= threshold) {

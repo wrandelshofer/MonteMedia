@@ -39,12 +39,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ResourceBundle;
 
-/**
- * The MovieControlAqua contains an audio on/off button, a start/stop button,
- * a slider, a forward and a rewind button, and a color cycling on/off button.
- *
- * @author Werner Randelshofer
- */
+/// The MovieControlAqua contains an audio on/off button, a start/stop button,
+/// a slider, a forward and a rewind button, and a color cycling on/off button.
+///
+/// @author Werner Randelshofer
 public class JPlayerControlAqua extends JComponent
         implements PlayerControl, ActionListener, ChangeListener, PropertyChangeListener {
     private final static long serialVersionUID = 1L;
@@ -321,15 +319,11 @@ public class JPlayerControlAqua extends JComponent
         return this;
     }
 
-    /**
-     * Listener for scrolling events initiated in the
-     * forward and backward buttons.
-     */
+    /// Listener for scrolling events initiated in the
+    /// forward and backward buttons.
     protected class ScrollHandler extends MouseAdapter implements ActionListener {
 
-        /**
-         * The scroll direction. 1 for forward scrolling, -1 for backward scrolling.
-         */
+        /// The scroll direction. 1 for forward scrolling, -1 for backward scrolling.
         private JButton button;
 
         public ScrollHandler() {

@@ -21,9 +21,7 @@ public class SonyMakerNoteTagSet extends TagSet {
         super("SonyMakerNote", tags);
     }
 
-    /**
-     * Returns a shared instance of a BaselineTIFFTagSet.
-     */
+    /// Returns a shared instance of a BaselineTIFFTagSet.
     public static SonyMakerNoteTagSet getInstance() {
         if (instance == null) {
             TIFFTag[] tags = {//

@@ -2,10 +2,8 @@
  * @(#)package-info.java
  * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
-/**
- * Provides utility classes for processing colors.
- *
- * @author Werner Randelshofer
- */
+/// Provides utility classes for processing colors.
+///
+/// @author Werner Randelshofer
 package org.monte.media.color;
 

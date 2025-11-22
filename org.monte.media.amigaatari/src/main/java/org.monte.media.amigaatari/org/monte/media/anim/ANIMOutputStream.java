@@ -6,6 +6,7 @@ package org.monte.media.anim;
 
 import org.monte.media.amigabitmap.AmigaBitmapImage;
 import org.monte.media.amigabitmap.AmigaDisplayInfo;
+import org.monte.media.amigabitmap.AmigaDisplayInfoDatabase;
 import org.monte.media.iff.IFFOutputStream;
 import org.monte.media.io.ByteArrayImageOutputStream;
 
@@ -18,138 +19,82 @@ import java.util.Arrays;
 
 import static java.lang.Math.max;
 
-/**
- * {@code ANIMOutputStream}.
- * <p>
- * Reference:<br>
- * Commodore-Amiga, Inc. (1991) Amiga ROM Kernel Reference Manual. Devices.
- * Third Edition. Reading: Addison-Wesley.
- *
- * @author Werner Randelshofer
- */
+/// `ANIMOutputStream`.
+///
+/// Reference:
+/// Commodore-Amiga, Inc. (1991) Amiga ROM Kernel Reference Manual. Devices.
+/// Third Edition. Reading: Addison-Wesley.
+///
+/// @author Werner Randelshofer
 public class ANIMOutputStream {
 
-    /**
-     * CAMG monitor ID mask.
-     */
+    /// CAMG monitor ID mask.
     public final static int MONITOR_ID_MASK = 0xffff1000;
-    /**
-     * Default ID chooses a system dependent screen mode. We always fall back to
-     * NTSC OCS with 60fps.
-     * <p>
-     * The default monitor ID triggers OCS mode! OCS stands for "Original Chip
-     * Set". The OCS chip set only had 4 bits per color register. All later chip
-     * sets hat 8 bits per color register.
-     */
+    /// Default ID chooses a system dependent screen mode. We always fall back to
+    /// NTSC OCS with 60fps.
+    ///
+    /// The default monitor ID triggers OCS mode! OCS stands for "Original Chip
+    /// Set". The OCS chip set only had 4 bits per color register. All later chip
+    /// sets hat 8 bits per color register.
     public final static int DEFAULT_MONITOR_ID = 0x00000000;
-    /**
-     * NTSC, 60fps, 44:52.
-     */
+    /// NTSC, 60fps, 44:52.
     public final static int NTSC_MONITOR_ID = 0x00011000;
-    /**
-     * PAL, 50fps, 44:44.
-     */
+    /// PAL, 50fps, 44:44.
     public final static int PAL_MONITOR_ID = 0x00021000;
-    /**
-     * MULTISCAN (VGA), 58fps, 44:44.
-     */
+    /// MULTISCAN (VGA), 58fps, 44:44.
     public final static int MULTISCAN_MONITOR_ID = 0x00031000;
-    /**
-     * A2024, 60fps (I don't know the real value).
-     */
+    /// A2024, 60fps (I don't know the real value).
     public final static int A2024_MONITOR_ID = 0x00041000;
-    /**
-     * PROTO, 60fps (I don't know the real value).
-     */
+    /// PROTO, 60fps (I don't know the real value).
     public final static int PROTO_MONITOR_ID = 0x00051000;
-    /**
-     * EURO72, 69fps, 44:44.
-     */
+    /// EURO72, 69fps, 44:44.
     public final static int EURO72_MONITOR_ID = 0x00061000;
-    /**
-     * EURO36, 73fps, 44:44.
-     */
+    /// EURO36, 73fps, 44:44.
     public final static int EURO36_MONITOR_ID = 0x00071000;
-    /**
-     * SUPER72, 71fps, 34:40.
-     */
+    /// SUPER72, 71fps, 34:40.
     public final static int SUPER72_MONITOR_ID = 0x00081000;
-    /**
-     * DBLNTSC, 58fps, 44:52.
-     */
+    /// DBLNTSC, 58fps, 44:52.
     public final static int DBLNTSC_MONITOR_ID = 0x00091000;
-    /**
-     * DBLPAL, 48fps, 44:44.
-     */
+    /// DBLPAL, 48fps, 44:44.
     public final static int DBLPAL_MONITOR_ID = 0x00001000;
 
-    /**
-     * CAMG Mode mask.
-     */
+    /// CAMG Mode mask.
     public final static int MODE_MASK = 0x00000880;
-    /**
-     * CAMG HAM mode.
-     */
+    /// CAMG HAM mode.
     public final static int HAM_MODE = 0x00000800;
-    /**
-     * CAMG EHB mode.
-     */
+    /// CAMG EHB mode.
     public final static int EHB_MODE = 0x00000080;
 
-    /**
-     * "jiffies" defines the time base of the movie.
-     */
+    /// "jiffies" defines the time base of the movie.
     private int jiffies = 60;
-    /**
-     * Commodore Amiga graphics mode.
-     */
+    /// Commodore Amiga graphics mode.
     private int camg;
     private boolean debug = false;
     private IFFOutputStream out = null;
-    /**
-     * Frame count.
-     */
+    /// Frame count.
     protected int frameCount = 0;
-    /**
-     * Current absolute frame time.
-     */
+    /// Current absolute frame time.
     protected int absTime = 0;
-    /**
-     * double buffering previous frame for odd frames.
-     */
+    /// double buffering previous frame for odd frames.
     private AmigaBitmapImage oddPrev;
-    /**
-     * double buffering previous frame for even frames.
-     */
+    /// double buffering previous frame for even frames.
     private AmigaBitmapImage evenPrev;
-    /**
-     * store first frame so that we can write wrap up frame.
-     */
+    /// store first frame so that we can write wrap up frame.
     private AmigaBitmapImage firstFrame;
-    /**
-     * Duration of the first wrapup frame.
-     */
+    /// Duration of the first wrapup frame.
     private int firstWrapupDuration = 1;
-    /**
-     * Duration of the second wrapup frame.
-     */
+    /// Duration of the second wrapup frame.
     private int secondWrapupDuration = 1;
-    /**
-     * Offset of the DPAN chunk.
-     */
+    /// Offset of the DPAN chunk.
     private long numberOfFramesOffset = -1;
 
-    /**
-     * The states of the movie output stream.
-     */
+    /// The states of the movie output stream.
     private static enum States {
 
         REALIZED, STARTED, FINISHED, CLOSED;
     }
 
-    /**
-     * The current state of the movie output stream.
-     */
+    /// The current state of the movie output stream.
     private States state = States.REALIZED;
 
     public ANIMOutputStream(File file) throws IOException {
@@ -163,61 +108,49 @@ public class ANIMOutputStream {
         this.out = new IFFOutputStream(out);
     }
 
-    /**
-     * Sets the time base of the movie. The default value is 60.
-     */
+    /// Sets the time base of the movie. The default value is 60.
     public void setJiffies(int newValue) {
         this.jiffies = newValue;
     }
 
-    /**
-     * Gets the time base of the movie. The default value is 60.
-     */
+    /// Gets the time base of the movie. The default value is 60.
     public int getJiffies() {
         return this.jiffies;
     }
 
-    /**
-     * Sets the Commodore Amiga Graphics Mode. The default value is 0.
-     * <p>
-     * The graphics mode is an or-combination of the monitor ID and the mode ID.
-     * <p>
-     * Example:
-     * <pre>
-     * setCAMG(PAL_MONITOR_ID|HAM_MODE);
-     * </pre>
-     * <p>
-     * Also sets the Jiffies for the Graphics Mode.
-     */
+    /// Sets the Commodore Amiga Graphics Mode. The default value is 0.
+    ///
+    /// The graphics mode is an or-combination of the monitor ID and the mode ID.
+    ///
+    /// Example:
+    /// <pre>
+    /// setCAMG(PAL_MONITOR_ID|HAM_MODE);
+    /// </pre>
+    ///
+    /// Also sets the Jiffies for the Graphics Mode.
     public void setCAMG(int newValue) {
         this.camg = newValue;
-        AmigaDisplayInfo info = AmigaDisplayInfo.getInfo(newValue);
+        AmigaDisplayInfo info = AmigaDisplayInfoDatabase.getInfo(newValue);
         if (info != null) {
-            this.jiffies = info.fps;
+            this.jiffies = info.fps();
         }
     }
 
-    /**
-     * Gets the Commodore Amiga Graphics Mode. The default value is 0.
-     */
+    /// Gets the Commodore Amiga Graphics Mode. The default value is 0.
     public int getCAMG() {
         return this.camg;
     }
 
-    /**
-     * Check to make sure that this stream has not been closed
-     */
+    /// Check to make sure that this stream has not been closed
     private void ensureOpen() throws IOException {
         if (state == States.CLOSED) {
             throw new IOException("Stream closed");
         }
     }
 
-    /**
-     * Sets the state of the MP4Writer to started.
-     * <p>
-     * If the state is changed by this method, the prolog is written.
-     */
+    /// Sets the state of the MP4Writer to started.
+    ///
+    /// If the state is changed by this method, the prolog is written.
     private void ensureStarted() throws IOException {
         ensureOpen();
         if (state == States.FINISHED) {
@@ -229,15 +162,13 @@ public class ANIMOutputStream {
         }
     }
 
-    /**
-     * Finishes writing the contents of the QuickTime output stream without
-     * closing the underlying stream. Use this method when applying multiple
-     * filters in succession to the same output stream.
-     *
-     * @throws IllegalStateException if the dimension of the video track has
-     *                               not been specified or determined yet.
-     * @throws IOException           if an I/O exception has occurred
-     */
+    /// Finishes writing the contents of the QuickTime output stream without
+    /// closing the underlying stream. Use this method when applying multiple
+    /// filters in succession to the same output stream.
+    ///
+    /// @throws IllegalStateException if the dimension of the video track has
+    ///                                                                                                                                                       not been specified or determined yet.
+    /// @throws IOException           if an I/O exception has occurred
     public void finish() throws IOException {
         ensureOpen();
         if (state != States.FINISHED) {
@@ -247,11 +178,9 @@ public class ANIMOutputStream {
         }
     }
 
-    /**
-     * Closes the movie file as well as the stream being filtered.
-     *
-     * @throws IOException if an I/O error has occurred
-     */
+    /// Closes the movie file as well as the stream being filtered.
+    ///
+    /// @throws IOException if an I/O error has occurred
     public void close() throws IOException {
         try {
             if (state == States.STARTED) {
@@ -340,41 +269,38 @@ public class ANIMOutputStream {
         return absTime;
     }
 
-    /**
-     * Writes the bitmap header (ILBM BMHD).
-     *
-     * <pre>
-     * typedef UBYTE Masking; // Choice of masking technique
-     *
-     * #define mskNone                 0
-     * #define mskHasMask              1
-     * #define mskHasTransparentColor  2
-     * #define mskLasso                3
-     *
-     * typedef UBYTE Compression; // Choice of compression algorithm
-     *     // applied to the rows of all source and mask planes.
-     *     // "cmpByteRun1" is the byte run encoding. Do not compress
-     *     // accross rows!
-     * #define cmpNone      0
-     * #define cmpByteRun1  1
-     *
-     * typedef struct {
-     *   UWORD       w, h; // raster width & height in pixels
-     *   WORD        x, y; // pixel position for this image
-     *   UBYTE       nbPlanes; // # source bitplanes
-     *   Masking     masking;
-     *   Compression compression;
-     *   UBYTE       pad1;     // unused; ignore on read, write as 0
-     *   UWORD       transparentColor; // transparent "color number" (sort of)
-     *   UBYTE       xAspect, yAspect; // pixel aspect, a ratio width : height
-     *   UWORD       pageWidth, pageHeight; // source "page" size in pixels
-     *   } BitmapHeader;
-     * </pre>
-     */
+    /// Writes the bitmap header (ILBM BMHD).
+    /// <pre>
+    /// typedef UBYTE Masking; // Choice of masking technique
+    ///
+    /// #define mskNone                 0
+    /// #define mskHasMask              1
+    /// #define mskHasTransparentColor  2
+    /// #define mskLasso                3
+    ///
+    /// typedef UBYTE Compression; // Choice of compression algorithm
+    ///     // applied to the rows of all source and mask planes.
+    ///     // "cmpByteRun1" is the byte run encoding. Do not compress
+    ///     // accross rows!
+    /// #define cmpNone      0
+    /// #define cmpByteRun1  1
+    ///
+    /// typedef struct {
+    ///   UWORD       w, h; // raster width & height in pixels
+    ///   WORD        x, y; // pixel position for this image
+    ///   UBYTE       nbPlanes; // # source bitplanes
+    ///   Masking     masking;
+    ///   Compression compression;
+    ///   UBYTE       pad1;     // unused; ignore on read, write as 0
+    ///   UWORD       transparentColor; // transparent "color number" (sort of)
+    ///   UBYTE       xAspect, yAspect; // pixel aspect, a ratio width : height
+    ///   UWORD       pageWidth, pageHeight; // source "page" size in pixels
+    ///   } BitmapHeader;
+    /// </pre>
     private void writeBMHD(IFFOutputStream out, AmigaBitmapImage img) throws IOException {
-        AmigaDisplayInfo info = AmigaDisplayInfo.getInfo(camg);
+        AmigaDisplayInfo info = AmigaDisplayInfoDatabase.getInfo(camg);
         if (info == null) {
-            info = AmigaDisplayInfo.getInfo(AmigaDisplayInfo.DEFAULT_MONITOR_ID);
+            info = AmigaDisplayInfoDatabase.getInfo(AmigaDisplayInfoDatabase.DEFAULT_MONITOR_ID);
         }
 
         out.pushDataChunk("BMHD");
@@ -387,16 +313,14 @@ public class ANIMOutputStream {
         out.writeUBYTE(1); // cmpByteRun1
         out.writeUBYTE(0);
         out.writeUWORD(0);
-        out.writeUBYTE(info.resolutionX);
-        out.writeUBYTE(info.resolutionY);
+        out.writeUBYTE(info.resolutionX());
+        out.writeUBYTE(info.resolutionY());
         out.writeUWORD(img.getWidth());
         out.writeUWORD(img.getHeight());
         out.popChunk();
     }
 
-    /**
-     * Writes the color map (ILBM CMAP).
-     */
+    /// Writes the color map (ILBM CMAP).
     private void writeCMAP(IFFOutputStream out, AmigaBitmapImage img) throws IOException {
         out.pushDataChunk("CMAP");
 
@@ -410,10 +334,8 @@ public class ANIMOutputStream {
         out.popChunk();
     }
 
-    /**
-     * Writes the color map (ILBM CMAP) if it is different from the previous
-     * image.
-     */
+    /// Writes the color map (ILBM CMAP) if it is different from the previous
+    /// image.
     private void writeCMAP(IFFOutputStream out, AmigaBitmapImage img, AmigaBitmapImage prev) throws IOException {
         IndexColorModel cm = (IndexColorModel) img.getColorModel();
         IndexColorModel prevCm = (IndexColorModel) prev.getColorModel();
@@ -430,23 +352,19 @@ public class ANIMOutputStream {
         }
     }
 
-    /**
-     * Writes the color Amiga viewport mode display id (ILBM CAMG).
-     */
+    /// Writes the color Amiga viewport mode display id (ILBM CAMG).
     private void writeCAMG(IFFOutputStream out, int camg) throws IOException {
         out.pushDataChunk("CAMG");
         out.writeLONG(camg);
         out.popChunk();
     }
 
-    /**
-     * Writes the DPAN (Deluxe Paint Animation) chunk. We can fill in the value
-     * for numberOfFrames only after we have written all frames.
-     * <p>
-     * typedef struct { UWORD version; // current version=4 UWORD
-     * numberOfFrames; // number of frames in the animation. ULONG flags; // Not
-     * used } animDPAnimChunk;
-     */
+    /// Writes the DPAN (Deluxe Paint Animation) chunk. We can fill in the value
+    /// for numberOfFrames only after we have written all frames.
+    ///
+    /// typedef struct { UWORD version; // current version=4 UWORD
+    /// numberOfFrames; // number of frames in the animation. ULONG flags; // Not
+    /// used } animDPAnimChunk;
     private void writeDPAN(IFFOutputStream out) throws IOException {
         out.pushDataChunk("DPAN");
         out.writeUWORD(4);
@@ -456,9 +374,7 @@ public class ANIMOutputStream {
         out.popChunk();
     }
 
-    /**
-     * Writes the body (ILBM BODY).
-     */
+    /// Writes the body (ILBM BODY).
     private void writeBODY(IFFOutputStream out, AmigaBitmapImage img) throws IOException {
         out.pushDataChunk("BODY");
         int widthInBytes = (img.getWidth() + 7) / 8;
@@ -476,45 +392,42 @@ public class ANIMOutputStream {
         out.popChunk();
     }
 
-    /**
-     * Writes a delta frame (ILBM DLTA) with "byte vertical" (method 5).
-     *
-     * <p>
-     * The DLTA chunk for method 5 has 16 long pointers at the start. The first
-     * 8 are pointers to the start of the data for each of the bitplanes (up to
-     * a max of 8 planes). The second set of 8 are not used.
-     * <p>
-     * Compression/decompression is performed on a plane-by-plane basis. Each
-     * column is compressed separately. A 320x200 bitplane would have 40 columns
-     * of 200 bytes each. Each column starts with an op-count followed by a
-     * number of ops. If the op-count is zero, that's ok, it just means there's
-     * no change in this column from the last frame. If there is only one list
-     * of pointers ops for all planes, then the pointer to that list is repeated
-     * in all positions so the playback code need not even be aware of it.In
-     * fact, one could get fancy and have some bitplanes share lists while
-     * others have different lists, or no lists (the problem in these schemes
-     * lie in the generation, not in the playback).
-     * <p>
-     * The ops are of three classes, and followed by a varying amount of data
-     * depending on which class:
-     * <ol>
-     * <li>Skip ops - this is a byte whith the hi bit clear that says how many
-     * rows to move the "dest" pointer forward, ie to skip. It is non-zero.</li>
-     * <li>Uniq ops - this is a byte with the hi bit set. The hi bit is masked
-     * down and the remainder is a count of the number of bytes of data to copy
-     * literally. It's followed by the data to copy.</li>
-     * <li>Same ops - this is a 0 byte followed by a count byte, followed by a
-     * byte value to repeat count times.</li>
-     * </ol>
-     * <p>
-     * Do bear in mind that the data is compressed vertically rather than
-     * horizontally, so to get to the next byte in the destination we add the
-     * number of bytes per row instead of one.
-     * <p>
-     * Reference:<br>
-     * Commodore-Amiga, Inc. (1991) Amiga ROM Kernel Reference Manual. Devices.
-     * Third Edition. Reading: Addison-Wesley. Pages 445 - 449.
-     */
+    /// Writes a delta frame (ILBM DLTA) with "byte vertical" (method 5).
+    ///
+    /// The DLTA chunk for method 5 has 16 long pointers at the start. The first
+    /// 8 are pointers to the start of the data for each of the bitplanes (up to
+    /// a max of 8 planes). The second set of 8 are not used.
+    ///
+    /// Compression/decompression is performed on a plane-by-plane basis. Each
+    /// column is compressed separately. A 320x200 bitplane would have 40 columns
+    /// of 200 bytes each. Each column starts with an op-count followed by a
+    /// number of ops. If the op-count is zero, that's ok, it just means there's
+    /// no change in this column from the last frame. If there is only one list
+    /// of pointers ops for all planes, then the pointer to that list is repeated
+    /// in all positions so the playback code need not even be aware of it.In
+    /// fact, one could get fancy and have some bitplanes share lists while
+    /// others have different lists, or no lists (the problem in these schemes
+    /// lie in the generation, not in the playback).
+    ///
+    /// The ops are of three classes, and followed by a varying amount of data
+    /// depending on which class:
+    /// <ol>
+    ///   - Skip ops - this is a byte whith the hi bit clear that says how many
+    ///     rows to move the "dest" pointer forward, ie to skip. It is non-zero.
+    ///   - Uniq ops - this is a byte with the hi bit set. The hi bit is masked
+    ///     down and the remainder is a count of the number of bytes of data to copy
+    ///     literally. It's followed by the data to copy.
+    ///   - Same ops - this is a 0 byte followed by a count byte, followed by a
+    ///     byte value to repeat count times.
+    /// </ol>
+    ///
+    /// Do bear in mind that the data is compressed vertically rather than
+    /// horizontally, so to get to the next byte in the destination we add the
+    /// number of bytes per row instead of one.
+    ///
+    /// Reference:
+    /// Commodore-Amiga, Inc. (1991) Amiga ROM Kernel Reference Manual. Devices.
+    /// Third Edition. Reading: Addison-Wesley. Pages 445 - 449.
     private void writeDLTA(IFFOutputStream out, AmigaBitmapImage img, AmigaBitmapImage prev) throws IOException {
         out.pushDataChunk("DLTA");
 
@@ -582,17 +495,15 @@ public class ANIMOutputStream {
         out.popChunk();
     }
 
-    /**
-     * Encodes a column of an image with the "byte vertical" method (method 5).
-     *
-     * @param out
-     * @param data
-     * @param prev
-     * @param offset
-     * @param length
-     * @param step
-     * @throws IOException
-     */
+    /// Encodes a column of an image with the "byte vertical" method (method 5).
+    ///
+    /// @param out
+    /// @param data
+    /// @param prev
+    /// @param offset
+    /// @param length
+    /// @param step
+    /// @throws IOException
     private void writeByteVertical(ImageOutputStream out, byte[] data, byte[] prev, int offset, int length, int step) throws IOException {
         int opCount = 0;
 
@@ -711,78 +622,75 @@ public class ANIMOutputStream {
         out.seek(pos);
     }
 
-    /**
-     * Writes the anim header (ILBM ANHD).
-     *
-     * <pre>
-     * typedef UBYTE Operation; // Choice of compression algorithm.
-     *
-     * #define opDirect        0  // set directly (normal ILBM BODY)
-     * #define opXOR           1  // XOR ILBM mode
-     * #define opLongDelta     2  // Long Delta mode
-     * #define opShortDelta    3  // Short Delta Mode
-     * #define opGeneralDelta  4  // Generalized short/long Delta mode
-     * #define opByteVertical  5  // Byte Vertical Delta mode
-     * #define opStereoDelta   6  // Stereo op 5 (third party)
-     * #define opVertical7     7  // Short/Long Vertical Delta mode (opcodes and data stored separately)
-     * #define opVertical8     8  // Short/Long Vertical Delta mode (opcodes and data combined)
-     * #define opJ            74  // (ascii 'J') reserved for Eric Graham's compression technique
-     *
-     * typedef struct {
-     * Operation   operation; // The compression method.
-     * UBYTE       mask;      // XOR mode only - plane mask where each
-     *                        // bit is set =1 if there is data and =0
-     *                        // if not.
-     * UWORD       w,h;       // XOR mode only - width and height of the
-     *                        // area represented by the BODY to eliminate
-     *                        // unnecessary un-changed data.
-     * UWORD        x,y;      // XOR mode only - position of rectangular
-     *                        // area represented by the BODY.
-     * ULONG       abstime;   // currently unused - timing for a frame
-     *                        // relative to the time the first frame
-     *                        // was displayed - in jiffies (1/60 sec).
-     * ULONG       reltime;   // timing for frame relative to time
-     *                        // previous frame was displayed - in
-     *                        // jiffies (1/60 sec).
-     * UBYTE       interleave;// unused so far - indicates how many frames
-     *                        // back this data is to modify. =0 defaults
-     *                        // to indicate two frames back (for double
-     *                        // buffering). =n indicates n frames back.
-     *                        // The main intent here is to allow values
-     *                        // of =1 for special applications where
-     *                        // frame data would modify the immediately
-     *                        // previous frame.
-     * UBYTE        pad0;     // Pad byte, not used at present.
-     * ULONG        bits;     // 32 option bits used by opGeneralDelta,
-     *                        // opByteVertical, opVertical7 and opVertical8.
-     *                        // At present only 6 are identified, but the
-     *                        // rest are set =0 so they can be used to
-     *                        // implement future ideas. These are defined
-     *                        // for opGeneralData only at this point. It is
-     *                        // recommended that all bits be set =0 for
-     *                        // opByteVertical and that any bit settings used in
-     *                        // the future (such as for XOR mode) be compatible
-     *                        // with the opGeneralData settings. Player code
-     *                        // should check undefined bits in opGeneralData and
-     *                        // opByteVertical to assure they are zero.
-     *                        //
-     *                        // The six bits for current use are:
-     *                        //
-     *                        // bit #    set =0          set =1
-     *                        // =======================================
-     *                        // 0        short data          long data
-     *                        // 1        set                 XOR
-     *                        // 2        separate info       one info list
-     *                        //          for each plane      for all planes
-     *                        // 3        not RLC             RLC (run length coded)
-     *                        // 4        horizontal          vertical
-     *                        // 5        short info offsets  long info offsets
-     *
-     * UBYTE        pad[16];  // This is a pad for future use for future
-     *                        // compression modes.
-     * } AnimHeader;
-     * </pre>
-     */
+    /// Writes the anim header (ILBM ANHD).
+    /// <pre>
+    /// typedef UBYTE Operation; // Choice of compression algorithm.
+    ///
+    /// #define opDirect        0  // set directly (normal ILBM BODY)
+    /// #define opXOR           1  // XOR ILBM mode
+    /// #define opLongDelta     2  // Long Delta mode
+    /// #define opShortDelta    3  // Short Delta Mode
+    /// #define opGeneralDelta  4  // Generalized short/long Delta mode
+    /// #define opByteVertical  5  // Byte Vertical Delta mode
+    /// #define opStereoDelta   6  // Stereo op 5 (third party)
+    /// #define opVertical7     7  // Short/Long Vertical Delta mode (opcodes and data stored separately)
+    /// #define opVertical8     8  // Short/Long Vertical Delta mode (opcodes and data combined)
+    /// #define opJ            74  // (ascii 'J') reserved for Eric Graham's compression technique
+    ///
+    /// typedef struct {
+    /// Operation   operation; // The compression method.
+    /// UBYTE       mask;      // XOR mode only - plane mask where each
+    ///                        // bit is set =1 if there is data and =0
+    ///                        // if not.
+    /// UWORD       w,h;       // XOR mode only - width and height of the
+    ///                        // area represented by the BODY to eliminate
+    ///                        // unnecessary un-changed data.
+    /// UWORD        x,y;      // XOR mode only - position of rectangular
+    ///                        // area represented by the BODY.
+    /// ULONG       abstime;   // currently unused - timing for a frame
+    ///                        // relative to the time the first frame
+    ///                        // was displayed - in jiffies (1/60 sec).
+    /// ULONG       reltime;   // timing for frame relative to time
+    ///                        // previous frame was displayed - in
+    ///                        // jiffies (1/60 sec).
+    /// UBYTE       interleave;// unused so far - indicates how many frames
+    ///                        // back this data is to modify. =0 defaults
+    ///                        // to indicate two frames back (for double
+    ///                        // buffering). =n indicates n frames back.
+    ///                        // The main intent here is to allow values
+    ///                        // of =1 for special applications where
+    ///                        // frame data would modify the immediately
+    ///                        // previous frame.
+    /// UBYTE        pad0;     // Pad byte, not used at present.
+    /// ULONG        bits;     // 32 option bits used by opGeneralDelta,
+    ///                        // opByteVertical, opVertical7 and opVertical8.
+    ///                        // At present only 6 are identified, but the
+    ///                        // rest are set =0 so they can be used to
+    ///                        // implement future ideas. These are defined
+    ///                        // for opGeneralData only at this point. It is
+    ///                        // recommended that all bits be set =0 for
+    ///                        // opByteVertical and that any bit settings used in
+    ///                        // the future (such as for XOR mode) be compatible
+    ///                        // with the opGeneralData settings. Player code
+    ///                        // should check undefined bits in opGeneralData and
+    ///                        // opByteVertical to assure they are zero.
+    ///                        //
+    ///                        // The six bits for current use are:
+    ///                        //
+    ///                        // bit #    set =0          set =1
+    ///                        // =======================================
+    ///                        // 0        short data          long data
+    ///                        // 1        set                 XOR
+    ///                        // 2        separate info       one info list
+    ///                        //          for each plane      for all planes
+    ///                        // 3        not RLC             RLC (run length coded)
+    ///                        // 4        horizontal          vertical
+    ///                        // 5        short info offsets  long info offsets
+    ///
+    /// UBYTE        pad[16];  // This is a pad for future use for future
+    ///                        // compression modes.
+    /// } AnimHeader;
+    /// </pre>
     private void writeANHD(IFFOutputStream out, int width, int height, int compressionMode, int absTime, int relTime) throws IOException {
         out.pushDataChunk("ANHD");
 

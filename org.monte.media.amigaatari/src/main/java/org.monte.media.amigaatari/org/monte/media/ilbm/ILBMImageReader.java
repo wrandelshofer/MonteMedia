@@ -20,11 +20,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Reads an image in the Amiga IFF Interleaved Bitmap image format (ILBM).
- *
- * @author Werner Randelshofer
- */
+/// Reads an image in the Amiga IFF Interleaved Bitmap image format (ILBM).
+///
+/// @author Werner Randelshofer
 public class ILBMImageReader extends ImageReader implements AnimatedImageReader {
 
     private List<ColorCyclingMemoryImageSource> images = null;
@@ -68,25 +66,22 @@ public class ILBMImageReader extends ImageReader implements AnimatedImageReader 
         return l.iterator();
     }
 
-    /**
-     * Returns the aspect ratio of the given image (that is, its width divided
-     * by its height) as a <code>float</code>. For images that are inherently
-     * resizable, this method provides a way to determine the appropriate width
-     * given a deired height, or vice versa. For non-resizable images, the true
-     * width and height are used.
-     *
-     * <p>
-     * The default implementation simply returns
-     * <code>(float)getWidth(imageIndex)/getHeight(imageIndex)</code>.
-     *
-     * @param imageIndex the index of the image to be queried.
-     * @return a <code>float</code> indicating the aspect ratio of the given
-     * image.
-     * @throws IllegalStateException     if the input source has not been set.
-     * @throws IndexOutOfBoundsException if the supplied index is out of
-     *                                   bounds.
-     * @throws IOException               if an error occurs during reading.
-     */
+    /// Returns the aspect ratio of the given image (that is, its width divided
+    /// by its height) as a `float`. For images that are inherently
+    /// resizable, this method provides a way to determine the appropriate width
+    /// given a deired height, or vice versa. For non-resizable images, the true
+    /// width and height are used.
+    ///
+    /// The default implementation simply returns
+    /// `(float)getWidth(imageIndex)/getHeight(imageIndex)`.
+    ///
+    /// @param imageIndex the index of the image to be queried.
+    /// @return a `float` indicating the aspect ratio of the given
+    /// image.
+    /// @throws IllegalStateException     if the input source has not been set.
+    /// @throws IndexOutOfBoundsException if the supplied index is out of
+    ///                                                                                                                                         bounds.
+    /// @throws IOException               if an error occurs during reading.
     @Override
     public float getAspectRatio(int imageIndex) throws IOException {
         readImages();

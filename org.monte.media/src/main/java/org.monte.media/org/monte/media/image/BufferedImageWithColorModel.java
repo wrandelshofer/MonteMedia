@@ -11,11 +11,9 @@ import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 import java.util.Hashtable;
 
-/**
- * BufferedImageWithColorModel.
- *
- * @author Werner Randelshofer
- */
+/// BufferedImageWithColorModel.
+///
+/// @author Werner Randelshofer
 public class BufferedImageWithColorModel extends BufferedImage {
 
     private ColorModel colorModel;

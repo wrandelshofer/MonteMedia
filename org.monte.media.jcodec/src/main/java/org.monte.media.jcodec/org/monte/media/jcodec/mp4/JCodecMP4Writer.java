@@ -124,12 +124,10 @@ public class JCodecMP4Writer implements MovieWriter {
         tracks.get(trackIndex).codec = codec;
     }
 
-    /**
-     * Adds a video track.
-     *
-     * @param fmt The format of the track.
-     * @return The track number.
-     */
+    /// Adds a video track.
+    ///
+    /// @param fmt The format of the track.
+    /// @return The track number.
     private int addVideoTrack(Format fmt) throws IOException {
         fmt.requireKeys(FrameRateKey, WidthKey, HeightKey);
         fmt = fmt.prepend(MediaTypeKey, FormatKeys.MediaType.VIDEO)
@@ -166,12 +164,10 @@ public class JCodecMP4Writer implements MovieWriter {
         return tracks.size() - 1;
     }
 
-    /**
-     * Adds an audio track.
-     *
-     * @param fmt The format of the track.
-     * @return The track number.
-     */
+    /// Adds an audio track.
+    ///
+    /// @param fmt The format of the track.
+    /// @return The track number.
     private int addAudioTrack(Format fmt) throws IOException {
         fmt.requireKeys(SampleRateKey, SampleSizeInBitsKey, ChannelsKey);
         Track tr = new Track();
@@ -311,11 +307,9 @@ public class JCodecMP4Writer implements MovieWriter {
         }
     }
 
-    /**
-     * Returns the compression quality of a track.
-     *
-     * @return compression quality
-     */
+    /// Returns the compression quality of a track.
+    ///
+    /// @return compression quality
     public float getCompressionQuality(int track) {
         return tracks.get(track).format.get(QualityKey);
     }

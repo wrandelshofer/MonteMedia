@@ -6,17 +6,15 @@ package org.monte.media.tiff;
 
 import java.util.HashMap;
 
-/**
- * A class representing a set of TIFF tags. Each tag in the set must have a
- * unique number (this is a limitation of the TIFF specification itself).
- * <p>
- * This class and its subclasses are responsible for mapping between raw tag
- * numbers and TIFFTag objects, which contain additional information about each
- * tag, such as the tag's name, legal data types, and mnemonic names for some or
- * all of its data values.
- *
- * @author Werner Randelshofer
- */
+/// A class representing a set of TIFF tags. Each tag in the set must have a
+/// unique number (this is a limitation of the TIFF specification itself).
+///
+/// This class and its subclasses are responsible for mapping between raw tag
+/// numbers and TIFFTag objects, which contain additional information about each
+/// tag, such as the tag's name, legal data types, and mnemonic names for some or
+/// all of its data values.
+///
+/// @author Werner Randelshofer
 public abstract class TagSet {
 
     private final HashMap<Integer, TIFFTag> tagsByNumber = new HashMap<>();
@@ -30,20 +28,16 @@ public abstract class TagSet {
         }
     }
 
-    /**
-     * Returns the TIFFTag from this set that is associated with the given
-     * tag number.
-     * <br>
-     * Returns a TIFFTag with name "unknown" if the tag is not defined.
-     */
+    /// Returns the TIFFTag from this set that is associated with the given
+    /// tag number.
+    ///
+    /// Returns a TIFFTag with name "unknown" if the tag is not defined.
     public TIFFTag getTag(int tagNumber) {
         TIFFTag tag = tagsByNumber.get(tagNumber);
         return (tag == null) ? new TIFFTag("unknown", tagNumber, TIFFTag.ALL_MASK, null) : tag;
     }
 
-    /**
-     * @return the name
-     */
+    /// @return the name
     public String getName() {
         return name;
     }

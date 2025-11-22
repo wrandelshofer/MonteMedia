@@ -12,12 +12,10 @@ import java.util.function.DoubleConsumer;
 import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
 
-/**
- * Interface for classes that implement both the {@link BareEnumerator} and
- * the {@link Spliterator} interface.
- *
- * @param <E> the element type
- */
+/// Interface for classes that implement both the [BareEnumerator] and
+/// the [Spliterator] interface.
+///
+/// @param <E> the element type
 public interface Enumerator<E> extends BareEnumerator<E>, Spliterator<E> {
     @Override
     default boolean tryAdvance(Consumer<? super E> action) {
@@ -28,34 +26,26 @@ public interface Enumerator<E> extends BareEnumerator<E>, Spliterator<E> {
         return false;
     }
 
-    /**
-     * An object for enumerating primitive long-valued elements of a collection.
-     * <p>
-     * The protocol for accessing elements via a {@code Enumerator} imposes smaller per-element overhead than
-     * {@link Iterator}, and avoids the inherent race involved in having separate methods for
-     * {@code hasNext()} and {@code next()}.
-     */
+    /// An object for enumerating primitive long-valued elements of a collection.
+    ///
+    /// The protocol for accessing elements via a `Enumerator` imposes smaller per-element overhead than
+    /// [Iterator], and avoids the inherent race involved in having separate methods for
+    /// `hasNext()` and `next()`.
     interface OfLong extends Enumerator<Long>, Spliterator.OfLong {
 
-        /**
-         * {@inheritDoc}
-         */
+        /// {@inheritDoc}
         @Override
         default Long current() {
             return currentAsLong();
         }
 
-        /**
-         * Returns the current value.
-         *
-         * @return current
-         * @see Enumerator#current()
-         */
+        /// Returns the current value.
+        ///
+        /// @return current
+        /// @see Enumerator#current()
         long currentAsLong();
 
-        /**
-         * {@inheritDoc}
-         */
+        /// {@inheritDoc}
         @Override
         default boolean tryAdvance(LongConsumer action) {
             if (moveNext()) {
@@ -65,9 +55,7 @@ public interface Enumerator<E> extends BareEnumerator<E>, Spliterator<E> {
             return false;
         }
 
-        /**
-         * {@inheritDoc}
-         */
+        /// {@inheritDoc}
         @Override
         default boolean tryAdvance(Consumer<? super Long> action) {
             return Enumerator.super.tryAdvance(action);
@@ -75,30 +63,22 @@ public interface Enumerator<E> extends BareEnumerator<E>, Spliterator<E> {
 
     }
 
-    /**
-     * An object for enumerating primitive double-valued elements of a collection.
-     */
+    /// An object for enumerating primitive double-valued elements of a collection.
     interface OfDouble extends Enumerator<Double>, Spliterator.OfDouble {
 
-        /**
-         * {@inheritDoc}
-         */
+        /// {@inheritDoc}
         @Override
         default Double current() {
             return currentAsDouble();
         }
 
-        /**
-         * Returns the current value.
-         *
-         * @return current
-         * @see Enumerator#current()
-         */
+        /// Returns the current value.
+        ///
+        /// @return current
+        /// @see Enumerator#current()
         double currentAsDouble();
 
-        /**
-         * {@inheritDoc}
-         */
+        /// {@inheritDoc}
         @Override
         default boolean tryAdvance(DoubleConsumer action) {
             if (moveNext()) {
@@ -108,9 +88,7 @@ public interface Enumerator<E> extends BareEnumerator<E>, Spliterator<E> {
             return false;
         }
 
-        /**
-         * {@inheritDoc}
-         */
+        /// {@inheritDoc}
         @Override
         default boolean tryAdvance(Consumer<? super Double> action) {
             return Enumerator.super.tryAdvance(action);
@@ -118,30 +96,22 @@ public interface Enumerator<E> extends BareEnumerator<E>, Spliterator<E> {
 
     }
 
-    /**
-     * An object for enumerating primitive int-valued elements of a collection.
-     */
+    /// An object for enumerating primitive int-valued elements of a collection.
     interface OfInt extends Enumerator<Integer>, Spliterator.OfInt {
 
-        /**
-         * {@inheritDoc}
-         */
+        /// {@inheritDoc}
         @Override
         default Integer current() {
             return currentAsInt();
         }
 
-        /**
-         * Returns the current value.
-         *
-         * @return current
-         * @see Enumerator#current()
-         */
+        /// Returns the current value.
+        ///
+        /// @return current
+        /// @see Enumerator#current()
         int currentAsInt();
 
-        /**
-         * {@inheritDoc}
-         */
+        /// {@inheritDoc}
         @Override
         default boolean tryAdvance(IntConsumer action) {
             if (moveNext()) {
@@ -151,9 +121,7 @@ public interface Enumerator<E> extends BareEnumerator<E>, Spliterator<E> {
             return false;
         }
 
-        /**
-         * {@inheritDoc}
-         */
+        /// {@inheritDoc}
         @Override
         default boolean tryAdvance(Consumer<? super Integer> action) {
             return Enumerator.super.tryAdvance(action);

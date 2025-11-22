@@ -14,31 +14,23 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-/**
- * Abstract base class for a media player.
- */
+/// Abstract base class for a media player.
 public abstract class AbstractPlayer implements Player {
     private final ReentrantLock lock = new ReentrantLock();
     private final Condition lockCondition = lock.newCondition();
-    /**
-     * The dispatcher.
-     */
+    /// The dispatcher.
     protected ExecutorService dispatcher = Executors.newSingleThreadExecutor(new ThreadFactory() {
         @Override
         public Thread newThread(Runnable r) {
             return new Thread(r, AbstractPlayer.this + "-worker");
         }
     });
-    /**
-     * Current state of the player.
-     * Note: Only method run() may change the value of
-     * this variable.
-     */
+    /// Current state of the player.
+    /// Note: Only method run() may change the value of
+    /// this variable.
     private volatile int state = Player.UNREALIZED;
 
-    /**
-     * Target state of the player.
-     */
+    /// Target state of the player.
     private volatile int targetState = Player.UNREALIZED;
 
     @Override
@@ -163,20 +155,16 @@ public abstract class AbstractPlayer implements Player {
 
     }
 
-    /**
-     * Notifies all registered state listeners and
-     * all registered change listeners.
-     */
+    /// Notifies all registered state listeners and
+    /// all registered change listeners.
     protected abstract void fireStateChanged(int oldState, int newState);
 
     protected abstract void fireErrorHappened(Throwable error);
 
-    /**
-     * This method performs the desired state.
-     * <p>
-     * If the current state is not the same, transitions the state machine until
-     * it reaches the desired state.
-     */
+    /// This method performs the desired state.
+    ///
+    /// If the current state is not the same, transitions the state machine until
+    /// it reaches the desired state.
     private void performRequestedState(int requestedState) {
         boolean error = false;
         do {
@@ -232,38 +220,24 @@ public abstract class AbstractPlayer implements Player {
         } while (state != requestedState && !error);
     }
 
-    /**
-     * Does the work for the closed state.
-     */
+    /// Does the work for the closed state.
     abstract protected void doClosed() throws Exception;
 
-    /**
-     * Does the work for the unrealized state.
-     */
+    /// Does the work for the unrealized state.
     abstract protected void doUnrealized() throws Exception;
 
-    /**
-     * Does the work for the realizing state.
-     */
+    /// Does the work for the realizing state.
     abstract protected void doRealizing() throws Exception;
 
-    /**
-     * Does the work for the realized state.
-     */
+    /// Does the work for the realized state.
     abstract protected void doRealized() throws Exception;
 
-    /**
-     * Does the work for the prefetching state.
-     */
+    /// Does the work for the prefetching state.
     abstract protected void doPrefetching() throws Exception;
 
-    /**
-     * Does the work for the prefetched state.
-     */
+    /// Does the work for the prefetched state.
     abstract protected void doPrefetched() throws Exception;
 
-    /**
-     * Does the work for the started state.
-     */
+    /// Does the work for the started state.
     abstract protected void doStarted() throws Exception;
 }

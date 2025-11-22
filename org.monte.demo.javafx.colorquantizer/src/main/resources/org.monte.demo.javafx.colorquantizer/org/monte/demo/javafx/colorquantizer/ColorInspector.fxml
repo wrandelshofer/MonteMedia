@@ -20,6 +20,9 @@
     <ColumnConstraints hgrow="NEVER" minWidth="-Infinity"/>
   </columnConstraints>
   <rowConstraints>
+    <RowConstraints minHeight="10.0" vgrow="NEVER"/>
+    <RowConstraints minHeight="10.0" vgrow="NEVER"/>
+    <RowConstraints minHeight="10.0" vgrow="NEVER"/>
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
     <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
     <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
@@ -31,32 +34,32 @@
     <RowConstraints minHeight="10.0" vgrow="ALWAYS"/>
   </rowConstraints>
   <children>
-    <Label text="Reference Image Colors:"/>
-    <Label text="Color Mode:" GridPane.rowIndex="1"/>
-    <ComboBox fx:id="colorModeComboBox" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-    <Label text="Dithering Method:" GridPane.rowIndex="2"/>
-    <ComboBox fx:id="ditheringMethodComboBox" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-    <Label text="Palette Mode:" GridPane.rowIndex="4"/>
-    <ComboBox fx:id="paletteModeComboBox" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-    <Label fx:id="paletteSizeLabel" text="Palette Size:" GridPane.rowIndex="5"/>
+    <Label text="Reference Image Colors:" GridPane.rowIndex="2"/>
+    <Label text="Color Mode:" GridPane.rowIndex="4"/>
+    <ComboBox fx:id="colorModeComboBox" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+    <Label text="Dithering Method:" GridPane.rowIndex="5"/>
+    <ComboBox fx:id="ditheringMethodComboBox" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+    <Label text="Palette Mode:" GridPane.rowIndex="7"/>
+    <ComboBox fx:id="paletteModeComboBox" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+    <Label fx:id="paletteSizeLabel" text="Palette Size:" GridPane.rowIndex="8"/>
     <TextField fx:id="paletteSizeField" alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity"
                minHeight="-Infinity" minWidth="-Infinity" prefColumnCount="4" GridPane.columnIndex="1"
-               GridPane.rowIndex="5"/>
-    <Label fx:id="paletteLabel" text="Palette:" GridPane.rowIndex="6"/>
-    <HBox alignment="BASELINE_LEFT" spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+               GridPane.rowIndex="8"/>
+    <Label fx:id="paletteLabel" text="Palette:" GridPane.rowIndex="9"/>
+    <HBox alignment="BASELINE_LEFT" spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
       <children>
         <Button fx:id="loadPaletteButton" mnemonicParsing="false" onAction="#onLoadPalette" text="Load Palette ..."/>
         <Button fx:id="computePaletteButton" mnemonicParsing="false" onAction="#onComputePalette"
                 text="Compute Palette"/>
       </children>
     </HBox>
-    <FlowPane fx:id="palettePane" prefHeight="256.0" prefWidth="256.0" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
-    <Label fx:id="ditherIntensityLabel" text="Dither Intensity Factor:" GridPane.rowIndex="3"/>
+    <FlowPane fx:id="palettePane" prefHeight="256.0" prefWidth="256.0" GridPane.columnIndex="1" GridPane.rowIndex="11"/>
+    <Label fx:id="ditherIntensityLabel" text="Dither Intensity Factor:" GridPane.rowIndex="6"/>
     <TextField fx:id="ditherIntensityField" alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity"
                minHeight="-Infinity" minWidth="-Infinity" prefColumnCount="4" GridPane.columnIndex="1"
-               GridPane.rowIndex="3"/>
-    <Label fx:id="inputImageColorsLabel" text="x" GridPane.columnIndex="1"/>
-    <HBox alignment="BASELINE_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="7">
+               GridPane.rowIndex="6"/>
+    <Label fx:id="inputImageColorsLabel" text="12345" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+    <HBox alignment="BASELINE_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="10">
       <children>
         <CheckBox fx:id="lockPalette0CheckBox" mnemonicParsing="false" text="Lock palette index 0 to ">
           <font>
@@ -70,6 +73,11 @@
         </TextField>
       </children>
     </HBox>
+    <Label text="Reference Image Color Space:"/>
+    <Label fx:id="inputImageColorSpaceLabel" text="sRGB" GridPane.columnIndex="1"/>
+    <ComboBox fx:id="colorSpaceComboBox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"
+              GridPane.rowIndex="1"/>
+    <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
   </children>
   <padding>
     <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>

@@ -25,11 +25,9 @@ import static org.monte.media.av.FormatKeys.MimeTypeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
 import static org.monte.media.util.MathUtil.clamp;
 
-/**
- * Adjusts the colors of a buffered image.
- *
- * @author Werner Randelshofer
- */
+/// Adjusts the colors of a buffered image.
+///
+/// @author Werner Randelshofer
 public class ColorAdjustCodec extends org.monte.media.av.AbstractCodec {
 
     private ColorAdjustModel model = new DefaultColorAdjustModel();

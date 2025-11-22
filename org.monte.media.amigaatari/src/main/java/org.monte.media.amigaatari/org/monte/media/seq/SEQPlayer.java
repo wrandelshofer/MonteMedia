@@ -38,158 +38,98 @@ import java.util.Hashtable;
 import static java.lang.Math.max;
 
 
-/**
- * Player for Cyberpaint Sequence animations (*.SEQ).
- * <p>
- * Reference:<br>
- * <a href="http://www.atari-forum.com/wiki/index.php/ST_Picture_Formats"
- * >http://www.atari-forum.com/wiki/index.php/ST_Picture_Formats</a>
- *
- * @author Werner Randelshofer
- */
+/// Player for Cyberpaint Sequence animations (*.SEQ).
+///
+/// Reference:
+/// <a href="http://www.atari-forum.com/wiki/index.php/ST_Picture_Formats"
+/// >http://www.atari-forum.com/wiki/index.php/ST_Picture_Formats</a>
+///
+/// @author Werner Randelshofer
 public class SEQPlayer
         extends AbstractPlayer
         implements ColorCyclePlayer {
 
-    /**
-     * The memory image source handles the image
-     * producer/consumer protocol.
-     */
+    /// The memory image source handles the image
+    /// producer/consumer protocol.
     private ColorCyclingMemoryImageSource memoryImage;
-    /**
-     * Bounded range indicates the number of frames and the
-     * index of the current frame.
-     */
+    /// Bounded range indicates the number of frames and the
+    /// index of the current frame.
     private BoundedRangeModel timeModel;
-    /**
-     * Bounded range indicates the amount of data being
-     * fetched from the data source.
-     */
+    /// Bounded range indicates the amount of data being
+    /// fetched from the data source.
     private BoundedRangeInputStream cachingControlModel;
-    /**
-     * The Input stream containing the movie data.
-     */
+    /// The Input stream containing the movie data.
     private InputStream in;
-    /**
-     * The size of the input file. If the size is not known then
-     * this attribute is set to -1.
-     */
+    /// The size of the input file. If the size is not known then
+    /// this attribute is set to -1.
     private int inputFileSize = -1;
-    /**
-     * The movie track built from the movie data.
-     */
+    /// The movie track built from the movie data.
     private SEQMovieTrack track;
-    /**
-     * Two bitmaps are needed for double buffering.
-     */
+    /// Two bitmaps are needed for double buffering.
     private AmigaBitmapImage bitmapEven, bitmapOdd;
-    /**
-     * Index of the frame, that has been prepared
-     * in its even or odd bitmap buffer for display.
-     */
+    /// Index of the frame, that has been prepared
+    /// in its even or odd bitmap buffer for display.
     private int preparedEven, preparedOdd;
-    /**
-     * Index of the frame which has been delta
-     * decoded in its even or odd bitmap buffer.
-     */
+    /// Index of the frame which has been delta
+    /// decoded in its even or odd bitmap buffer.
     private int fetchedEven, fetchedOdd;
-    /**
-     * Index of the frame currently being displayed.
-     */
+    /// Index of the frame currently being displayed.
     private int displayFrame = -1;
-    /**
-     * Indicates wether frames may be skipped or not.
-     */
+    /// Indicates wether frames may be skipped or not.
     private boolean isPlayEveryFrame = false;
-    /**
-     * Indicates wether playback shall loop or not.
-     */
+    /// Indicates wether playback shall loop or not.
     private volatile boolean isLoop = true;
-    /** Indicates wether the player is in pause mode. */
+    /// Indicates wether the player is in pause mode.
     //private volatile boolean isPaused = true;
-    /**
-     * Jiffies are used be IFF ANIM's for timing.
-     * Jiffies is the number of frames or fields per second.
-     * The variable jiffieMillis is a conversion of Jiffies into milliseconds.
-     */
+    /// Jiffies are used be IFF ANIM's for timing.
+    /// Jiffies is the number of frames or fields per second.
+    /// The variable jiffieMillis is a conversion of Jiffies into milliseconds.
     private float jiffieMillis = 1000f / 60f;
-    /**
-     * Setting the global frame duration overrides all
-     * frame duration settings in the frames of the the movie track.
-     * <p>
-     * Frame Duration in Jiffies. Set this to
-     * -1 if you do not want to override the frame durations in
-     * the frames of the movie track.
-     */
+    /// Setting the global frame duration overrides all
+    /// frame duration settings in the frames of the the movie track.
+    ///
+    /// Frame Duration in Jiffies. Set this to
+    /// -1 if you do not want to override the frame durations in
+    /// the frames of the movie track.
     private int globalFrameDuration = -1;
-    /**
-     * The visual component contains the display area
-     * for movie images.
-     */
+    /// The visual component contains the display area
+    /// for movie images.
     private ImagePanel /*ImagePanelAWT*/ visualComponent;
-    /**
-     * The visual component contains control elements
-     * for starting and stopping the movie.
-     */
+    /// The visual component contains control elements
+    /// for starting and stopping the movie.
     private PlayerControl controlComponent;
-    /**
-     * This lock is being used to coordinate the
-     * decoder with the player.
-     */
+    /// This lock is being used to coordinate the
+    /// decoder with the player.
     private Object decoderLock = new Object();
-    /**
-     * The preferred color model for this player.
-     */
+    /// The preferred color model for this player.
     private ColorModel preferredColorModel = null;
-    /**
-     * Indicates wether all data has been cached.
-     * Acts like a latch: Once set to true never changes
-     * its value anymore.
-     */
+    /// Indicates wether all data has been cached.
+    /// Acts like a latch: Once set to true never changes
+    /// its value anymore.
     private volatile boolean isCached = false;
-    /**
-     * The amiga has four audio channels.
-     * There can be only four active audio commands at all times.
-     */
+    /// The amiga has four audio channels.
+    /// There can be only four active audio commands at all times.
     private SEQAudioCommand[] audioChannels = new SEQAudioCommand[4];
-    /**
-     * Turns audio on or off.
-     */
+    /// Turns audio on or off.
     private boolean isAudioEnabled = true;
-    /**
-     * Determines whether audio is being loaded or not.
-     */
+    /// Determines whether audio is being loaded or not.
     private boolean isLoadAudio;
-    /**
-     *
-     */
+    ///
     private boolean debug = false;
-    /**
-     *
-     */
+    ///
     private Hashtable<String, Object> properties;
-    /**
-     * This variable is set to true when during decoding of the
-     * input stream at least one audio clip is detected.
-     */
+    /// This variable is set to true when during decoding of the
+    /// input stream at least one audio clip is detected.
     private boolean isAudioAvailable;
-    /**
-     * This variable is set to true when during decoding of the
-     * input stream at least one color cycle is detected.
-     */
+    /// This variable is set to true when during decoding of the
+    /// input stream at least one color cycle is detected.
     private boolean isColorCyclingAvailable;
-    /**
-     * Whether color cycling is started.
-     */
+    /// Whether color cycling is started.
     private boolean isColorCyclingStarted;
-    /**
-     * Set this to true, if the delta frames of the animation can be decoded
-     * relative to the previous frame and relative to the subsequent frame.
-     */
+    /// Set this to true, if the delta frames of the animation can be decoded
+    /// relative to the previous frame and relative to the subsequent frame.
     private boolean isPingPong = true;
-    /**
-     * Direction of the play head: +1 for forward playing, -1 for backward playing.
-     */
+    /// Direction of the play head: +1 for forward playing, -1 for backward playing.
     private int playDirection = 1;
 
     private class Handler implements MouseListener, PropertyChangeListener, ChangeListener {
@@ -276,48 +216,40 @@ public class SEQPlayer
         this(in, -1, true);
     }
 
-    /**
-     * Creates a new instance.
-     *
-     * @param in            InputStream containing an IFF ANIM file.
-     * @param inputFileSize The size of the input file. Provide the value -1
-     *                      if this is not known.
-     * @param loadAudio     Provide value false if this player should not load audio
-     *                      data.
-     */
+    /// Creates a new instance.
+    ///
+    /// @param in            InputStream containing an IFF ANIM file.
+    /// @param inputFileSize The size of the input file. Provide the value -1
+    ///                                                                if this is not known.
+    /// @param loadAudio     Provide value false if this player should not load audio
+    ///                                                                data.
     public SEQPlayer(InputStream in, int inputFileSize, boolean loadAudio) {
         this.in = in;
         this.inputFileSize = inputFileSize;
         this.isLoadAudio = loadAudio;
     }
 
-    /**
-     * Sets the preferred color model.
-     * If this color model is the same as the one used by the
-     * screen device showing the animation, then this may considerably
-     * improve the performance of the player.
-     * Setting this to null will let the player choose a color model
-     * that best suits the media being played.
-     * Calling this method has no effect, if the player is already realized.
-     */
+    /// Sets the preferred color model.
+    /// If this color model is the same as the one used by the
+    /// screen device showing the animation, then this may considerably
+    /// improve the performance of the player.
+    /// Setting this to null will let the player choose a color model
+    /// that best suits the media being played.
+    /// Calling this method has no effect, if the player is already realized.
     public void setPreferredColorModel(ColorModel cm) {
         if (bitmapEven == null) {
             preferredColorModel = cm;
         }
     }
 
-    /**
-     * Returns the bounded range model that represents
-     * the time line of the player.
-     */
+    /// Returns the bounded range model that represents
+    /// the time line of the player.
     @Override
     public BoundedRangeModel getTimeModel() {
         return timeModel;
     }
 
-    /**
-     * Enables or disables audio playback.
-     */
+    /// Enables or disables audio playback.
     @Override
     public void setAudioEnabled(boolean newValue) {
         boolean oldValue = isAudioEnabled;
@@ -327,17 +259,13 @@ public class SEQPlayer
                 (newValue) ? Boolean.TRUE : Boolean.FALSE);
     }
 
-    /**
-     * Returns true if audio playback is enabled.
-     */
+    /// Returns true if audio playback is enabled.
     @Override
     public boolean isAudioEnabled() {
         return isAudioEnabled;
     }
 
-    /**
-     * Swaps left and right speakers if set to true.
-     */
+    /// Swaps left and right speakers if set to true.
     public void setSwapSpeakers(boolean newValue) {
         boolean oldValue = track.isSwapSpeakers();
         track.setSwapSpeakers(newValue);
@@ -346,45 +274,35 @@ public class SEQPlayer
                 (newValue) ? Boolean.TRUE : Boolean.FALSE);
     }
 
-    /**
-     * Returns true if left and right speakers are swapped.
-     */
+    /// Returns true if left and right speakers are swapped.
     public boolean isSwapSpeakers() {
         return track.isSwapSpeakers();
     }
 
-    /**
-     * Returns the bounded range model that represents
-     * the amount of data being fetched from the file
-     * the movie is stored in.
-     */
+    /// Returns the bounded range model that represents
+    /// the amount of data being fetched from the file
+    /// the movie is stored in.
     @Override
     public BoundedRangeModel getCachingModel() {
         return cachingControlModel;
     }
 
-    /**
-     * Returns the image producer that produces
-     * the animation frames.
-     */
+    /// Returns the image producer that produces
+    /// the animation frames.
     protected ImageProducer getImageProducer() {
         return memoryImage;
     }
 
-    /**
-     * Returns the movie track.
-     */
+    /// Returns the movie track.
     public SEQMovieTrack getMovieTrack() {
         return track;
     }
 
-    /**
-     * Obtain the display Component for this Player.
-     * The display Component is where visual media is rendered.
-     * If this Player has no visual component, getVisualComponent
-     * returns null. For example, getVisualComponent might return
-     * null if the Player only plays audio.
-     */
+    /// Obtain the display Component for this Player.
+    /// The display Component is where visual media is rendered.
+    /// If this Player has no visual component, getVisualComponent
+    /// returns null. For example, getVisualComponent might return
+    /// null if the Player only plays audio.
     @Override
     public synchronized Component getVisualComponent() {
         if (visualComponent == null) {
@@ -397,12 +315,10 @@ public class SEQPlayer
         return visualComponent;
     }
 
-    /**
-     * Obtain the Component that provides the default user
-     * interface for controlling this Player. If this Player
-     * has no default control panel, getControlPanelComponent
-     * returns null.
-     */
+    /// Obtain the Component that provides the default user
+    /// interface for controlling this Player. If this Player
+    /// has no default control panel, getControlPanelComponent
+    /// returns null.
     @Override
     public synchronized Component getControlPanelComponent() {
         if (controlComponent == null) {
@@ -412,16 +328,12 @@ public class SEQPlayer
         return controlComponent.getComponent();
     }
 
-    /**
-     * Does the unrealized state.
-     */
+    /// Does the unrealized state.
     @Override
     protected void doUnrealized() {
     }
 
-    /**
-     * Does the realizing state.
-     */
+    /// Does the realizing state.
     @Override
     protected void doRealizing() {
         timeModel = new DefaultBoundedRangeModel(0, 0, 0, 0);
@@ -602,25 +514,19 @@ public class SEQPlayer
         }
     }
 
-    /**
-     * Does the realized state.
-     */
+    /// Does the realized state.
     @Override
     protected void doRealized() {
         // Free resources being achieved during prefetch.
     }
 
-    /**
-     * Does the prefetching state.
-     */
+    /// Does the prefetching state.
     @Override
     protected void doPrefetching() {
         renderVideo(timeModel.getValue());
     }
 
-    /**
-     * Does the prefetched state.
-     */
+    /// Does the prefetched state.
     @Override
     protected void doPrefetched() {
     }
@@ -629,22 +535,17 @@ public class SEQPlayer
         isPlayEveryFrame = newValue;
     }
 
-    /**
-     * Set this to true to treat the two wrapup frames at the end of the
-     * animation like regular frames.
-     * /
-     public void setPlayWrapupFrames(boolean newValue) {
-     track.setPlayWrapupFrames(newValue);
-
-     int count = track.getFrameCount();
-     System.out.println("SEQPLayer.setPlayWrapupFrames count="+count);
-     timeModel.setMaximum(count > 0 ? count - 1 : 0);
-     }*/
-
-    /**
-     * Set this to true to treat the two wrapup frames at the end of the
-     * animation like regular frames.
-     */
+    /// Set this to true to treat the two wrapup frames at the end of the
+    /// animation like regular frames.
+    /// /
+    /// public void setPlayWrapupFrames(boolean newValue) {
+    /// track.setPlayWrapupFrames(newValue);
+    /// int count = track.getFrameCount();
+    /// System.out.println("SEQPLayer.setPlayWrapupFrames count="+count);
+    /// timeModel.setMaximum(count > 0 ? count - 1 : 0);
+    /// }
+    /// Set this to true to treat the two wrapup frames at the end of the
+    /// animation like regular frames.
     public void setDebug(boolean newValue) {
         this.debug = newValue;
         if (newValue == false && visualComponent != null) {
@@ -652,22 +553,18 @@ public class SEQPlayer
         }
     }
 
-    /**
-     * Always returns true.
-     */
+    /// Always returns true.
     public boolean isPlayWrapupFrames() {
         return true;
         //return track.isPlayWrapupFrames();
     }
 
-    /**
-     * Setting frames per second overrides all
-     * frame duration settings in the frames of the the movie track.
-     *
-     * @param framesPerSecond Frames per section. Set this to
-     *                        0f if you do not want to override the frame durations in
-     *                        the frames of the movie track.
-     */
+    /// Setting frames per second overrides all
+    /// frame duration settings in the frames of the the movie track.
+    ///
+    /// @param framesPerSecond Frames per section. Set this to
+    ///                                               0f if you do not want to override the frame durations in
+    ///                                               the frames of the movie track.
     public void setFramesPerSecond(float framesPerSecond) {
         if (framesPerSecond <= 0f) {
             setGlobalFrameDuration(-1);
@@ -676,14 +573,12 @@ public class SEQPlayer
         }
     }
 
-    /**
-     * Setting the global frame duration overrides all
-     * frame duration settings in the frames of the the movie track.
-     *
-     * @param frameDuration Frame Duration in milliseconds. Set this to
-     *                      -1 if you do not want to override the frame durations in
-     *                      the frames of the movie track.
-     */
+    /// Setting the global frame duration overrides all
+    /// frame duration settings in the frames of the the movie track.
+    ///
+    /// @param frameDuration Frame Duration in milliseconds. Set this to
+    ///                                           -1 if you do not want to override the frame durations in
+    ///                                           the frames of the movie track.
     public void setGlobalFrameDuration(int frameDuration) {
         this.globalFrameDuration = frameDuration;
     }
@@ -719,12 +614,10 @@ public class SEQPlayer
         return s + " OP(" + op + ")";
     }
 
-    /**
-     * Does the started state.
-     * Is called by run().
-     * Does not change the value of targetState but may
-     * change state in case of an error.
-     */
+    /// Does the started state.
+    /// Is called by run().
+    /// Does not change the value of targetState but may
+    /// change state in case of an error.
     @Override
     protected void doStarted() {
         long mediaTime = (System.nanoTime() / 1_000_000) + (long) jiffieMillis;
@@ -834,9 +727,7 @@ public class SEQPlayer
         }
     }
 
-    /**
-     * Closes the player.
-     */
+    /// Closes the player.
     @Override
     protected void doClosed() {
         try {
@@ -897,9 +788,7 @@ public class SEQPlayer
         }
     }
 
-    /**
-     * Prepare video data for the specified frame index.
-     */
+    /// Prepare video data for the specified frame index.
     private void prepareVideo(int index) {
         AmigaBitmapImage bitmap;
         int prepared;
@@ -959,9 +848,7 @@ public class SEQPlayer
 
     private BufferedImage bufferedImage;
 
-    /**
-     * Prepare audio data for the specified frame index.
-     */
+    /// Prepare audio data for the specified frame index.
     private void prepareAudio(int index) {
         SEQFrame frame = track.getFrame(index);
         SEQAudioCommand[] audioCommands = frame.getAudioCommands();
@@ -972,9 +859,7 @@ public class SEQPlayer
         }
     }
 
-    /**
-     * Show the video data for the specified frame index.
-     */
+    /// Show the video data for the specified frame index.
     private void renderVideo(int index) {
         if (displayFrame == index) {
             return;
@@ -1061,9 +946,7 @@ public class SEQPlayer
         }
     }
 
-    /**
-     * Show the audio data for the specified frame index.
-     */
+    /// Show the audio data for the specified frame index.
     private synchronized void renderAudio(int index) {
         prepareAudio(index);
 
@@ -1080,9 +963,7 @@ public class SEQPlayer
         }
     }
 
-    /**
-     * Returns the total duration in milliseconds.
-     */
+    /// Returns the total duration in milliseconds.
     @Override
     public long getTotalDuration() {
         if (globalFrameDuration == -1) {
@@ -1092,19 +973,15 @@ public class SEQPlayer
         }
     }
 
-    /**
-     * Returns true when the player has completely cached all movie data.
-     * This player informs all property change listeners, when the value of this
-     * property changes. The name of the property is 'cached'.
-     */
+    /// Returns true when the player has completely cached all movie data.
+    /// This player informs all property change listeners, when the value of this
+    /// property changes. The name of the property is 'cached'.
     @Override
     public boolean isCached() {
         return isCached;
     }
 
-    /**
-     * Returns true if audio is available.
-     */
+    /// Returns true if audio is available.
     @Override
     public boolean isAudioAvailable() {
         return isAudioAvailable;
@@ -1135,17 +1012,13 @@ public class SEQPlayer
         propertyChangeSupport.firePropertyChange("colorCyclingAvailable", oldValue, newValue);
     }
 
-    /**
-     * Returns true if color cycling is available in the movie track.
-     */
+    /// Returns true if color cycling is available in the movie track.
     @Override
     public boolean isColorCyclingStarted() {
         return isColorCyclingStarted;
     }
 
-    /**
-     * Starts or stops color cycling.
-     */
+    /// Starts or stops color cycling.
     @Override
     public void setColorCyclingStarted(boolean newValue) {
         boolean oldValue = isColorCyclingStarted;
@@ -1156,17 +1029,13 @@ public class SEQPlayer
         }
     }
 
-    /**
-     * Starts or stops color cycling.
-     */
+    /// Starts or stops color cycling.
     @Override
     public boolean isColorCyclingAvailable() {
         return isColorCyclingAvailable;
     }
 
-    /**
-     * Sets whether colors are blended during color cycling.
-     */
+    /// Sets whether colors are blended during color cycling.
     @Override
     public void setBlendedColorCycling(boolean newValue) {
         if (memoryImage != null) {
@@ -1176,9 +1045,7 @@ public class SEQPlayer
         }
     }
 
-    /**
-     * Returns true if colors are blended during color cycling.
-     */
+    /// Returns true if colors are blended during color cycling.
     @Override
     public boolean isBlendedColorCycling() {
         return memoryImage == null ? false : memoryImage.isBlendedColorCycling();

@@ -3,10 +3,7 @@
  * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 
-/**
- * Sample Skeleton for 'PlayerControls.fxml' Controller Class
- */
-
+/// Sample Skeleton for 'PlayerControls.fxml' Controller Class
 package org.monte.demo.javafx.movieplayer;
 
 import javafx.beans.Observable;

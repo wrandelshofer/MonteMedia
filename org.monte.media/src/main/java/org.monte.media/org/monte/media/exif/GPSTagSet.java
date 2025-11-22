@@ -22,9 +22,7 @@ public class GPSTagSet extends TagSet {
         super("GPS", tags);
     }
 
-    /**
-     * Returns a shared instance of a BaselineTIFFTagSet.
-     */
+    /// Returns a shared instance of a BaselineTIFFTagSet.
     public static GPSTagSet getInstance() {
         if (instance == null) {
             TIFFTag[] tags = {//
@@ -55,10 +53,9 @@ public class GPSTagSet extends TagSet {
                             "2-dimensionalMeasurement", "2",//
                             "3-dimensionalMeasurement", "3"//
                     )),
-                    /** Data degree of precision.
-                     * An HDOP value is written during two-dimensional measurement,
-                     * and PDOP during three-dimensional measurement.
-                    */
+                    /// Data degree of precision.
+                    /// An HDOP value is written during two-dimensional measurement,
+                    /// and PDOP during three-dimensional measurement.
                     new TIFFTag("GPSDOP", 0x000b, RATIONAL_MASK),
                     new TIFFTag("GPSSpeedRef", 0x000c, ASCII_MASK, new SetValueFormatter(//
                             "kmh", "K",//

@@ -3,10 +3,7 @@
  * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 
-/**
- * Sample Skeleton for 'BatchInspector.fxml' Controller Class
- */
-
+/// Sample Skeleton for 'BatchInspector.fxml' Controller Class
 package org.monte.demo.javafx.colorquantizer;
 
 import javafx.application.Platform;

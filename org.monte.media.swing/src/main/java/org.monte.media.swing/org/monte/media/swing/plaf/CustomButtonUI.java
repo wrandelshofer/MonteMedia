@@ -21,19 +21,17 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.FocusEvent;
 
-/**
- * CustomButtonUI draws a BackdropBorder in the background of the button.
- * This allows for easy visual customization of buttons.
- * <p>
- * Usage:
- * <pre>
- * JButton b = new JButton();
- * b.setUI((ButtonUI) CustomButtonUI.createUI(b));
- * b.setBorder(new BackdropBorder(....));
- * </pre>
- *
- * @author Werner Randelshofer
- */
+/// CustomButtonUI draws a BackdropBorder in the background of the button.
+/// This allows for easy visual customization of buttons.
+///
+/// Usage:
+/// <pre>
+/// JButton b = new JButton();
+/// b.setUI((ButtonUI) CustomButtonUI.createUI(b));
+/// b.setBorder(new BackdropBorder(....));
+/// </pre>
+///
+/// @author Werner Randelshofer
 public class CustomButtonUI
         extends BasicButtonUI
         implements PlafConstants {
@@ -146,29 +144,25 @@ public class CustomButtonUI
     protected void paintFocus(Graphics g, AbstractButton b,
                               Rectangle viewRect, Rectangle textRect, Rectangle iconRect) {
         // We don't paint focus
-        /**
-         * Rectangle focusRect = new Rectangle();
-         * String text = b.getText();
-         * boolean isIcon = b.getIcon() != null;
-         *
-         * // If there is text
-         * if ( text != null && !text.equals( "" ) ) {
-         * if ( !isIcon ) {
-         * focusRect.setBounds( textRect );
-         * }
-         * else {
-         * focusRect.setBounds( iconRect.union( textRect ) );
-         * }
-         * }
-         * // If there is an icon and no text
-         * else if ( isIcon ) {
-         * focusRect.setBounds( iconRect );
-         * }
-         *
-         * g.setColor(getFocusColor());
-         * g.drawRect((focusRect.x-1), (focusRect.y-1),
-         * focusRect.width+1, focusRect.height+1);
-         */
+        /// Rectangle focusRect = new Rectangle();
+        /// String text = b.getText();
+        /// boolean isIcon = b.getIcon() != null;
+        /// // If there is text
+        /// if ( text != null && !text.equals( "" ) ) {
+        /// if ( !isIcon ) {
+        /// focusRect.setBounds( textRect );
+        /// }
+        /// else {
+        /// focusRect.setBounds( iconRect.union( textRect ) );
+        /// }
+        /// }
+        /// // If there is an icon and no text
+        /// else if ( isIcon ) {
+        /// focusRect.setBounds( iconRect );
+        /// }
+        /// g.setColor(getFocusColor());
+        /// g.drawRect((focusRect.x-1), (focusRect.y-1),
+        /// focusRect.width+1, focusRect.height+1);
     }
 
 
@@ -180,13 +174,13 @@ public class CustomButtonUI
 
         /* Draw the Text */
         if (model.isEnabled()) {
-            /*** paint the text normally */
+            ///* paint the text normally
             g.setColor(b.getForeground());
             BasicGraphicsUtils.drawString(g, text, model.getMnemonic(),
                     textRect.x,
                     textRect.y + fm.getAscent());
         } else {
-            /*** paint the text disabled ***/
+            ///* paint the text disabled
             //     g.setColor(getDisabledTextColor());
             g.setColor(b.getForeground().brighter());
             BasicGraphicsUtils.drawString(g, text, model.getMnemonic(),

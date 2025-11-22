@@ -21,33 +21,25 @@ public class CDXLInputStream extends AbstractCDXLStream implements Closeable {
     protected final static int HEADER_SIZE = 32;
     protected int defaultAudioFrequency = 11025;//8000;//11025;//22050;
     protected Rational defaultFrameDuration = new Rational(1, 24);
-    /**
-     * The image input stream.
-     */
+    /// The image input stream.
     protected final ImageInputStream in;
     protected PanFrame header;
     protected List<PanFrame> frames;
-    /**
-     * This variable is set to true when all meta-data has been read from the
-     * file.
-     */
+    /// This variable is set to true when all meta-data has been read from the
+    /// file.
     private boolean isRealized = false;
 
-    /**
-     * Creates a new instance.
-     *
-     * @param file the input file
-     */
+    /// Creates a new instance.
+    ///
+    /// @param file the input file
     public CDXLInputStream(File file) throws IOException {
         this.in = new FileImageInputStream(file);
         in.setByteOrder(ByteOrder.BIG_ENDIAN);
     }
 
-    /**
-     * Creates a new instance.
-     *
-     * @param in the input stream.
-     */
+    /// Creates a new instance.
+    ///
+    /// @param in the input stream.
     public CDXLInputStream(ImageInputStream in) {
         this.in = in;
         in.setByteOrder(ByteOrder.BIG_ENDIAN);
@@ -58,9 +50,7 @@ public class CDXLInputStream extends AbstractCDXLStream implements Closeable {
         in.close();
     }
 
-    /**
-     * Ensures that all meta-data has been read from the file.
-     */
+    /// Ensures that all meta-data has been read from the file.
     protected void ensureRealized() throws IOException {
         if (!isRealized) {
             isRealized = true;
@@ -68,16 +58,12 @@ public class CDXLInputStream extends AbstractCDXLStream implements Closeable {
         }
     }
 
-    /**
-     * Discards the meta-data that has been read from the file.
-     */
+    /// Discards the meta-data that has been read from the file.
     protected void unrealize() {
         isRealized = true;
     }
 
-    /**
-     * Reads all metadata of the file.
-     */
+    /// Reads all metadata of the file.
     protected void realize() throws IOException {
         in.seek(0);
         long length = in.length();
@@ -98,12 +84,10 @@ public class CDXLInputStream extends AbstractCDXLStream implements Closeable {
         header = frames.getFirst();
     }
 
-    /**
-     * Reads a PanFrame at the current stream position and returns a PanFrame object.
-     *
-     * @return PanFrame object
-     * @throws IOException if the frame does not match with the header
-     */
+    /// Reads a PanFrame at the current stream position and returns a PanFrame object.
+    ///
+    /// @return PanFrame object
+    /// @throws IOException if the frame does not match with the header
     private PanFrame readFrame(Rational time) throws IOException {
         long streamPosition = in.getStreamPosition();
 
@@ -167,18 +151,15 @@ public class CDXLInputStream extends AbstractCDXLStream implements Closeable {
         return defaultAudioFrequency;
     }
 
-    /**
-     * Sets the default audio frequency.
-     * <p>
-     * The default audio frequency is used to determine the
-     * audio frequency of a video frame that has no specified
-     * audio frequency.
-     * <p>
-     * Setting this value unrealizes the movie.
-     *
-     * @param defaultAudioFrequency new value
-     */
-
+    /// Sets the default audio frequency.
+    ///
+    /// The default audio frequency is used to determine the
+    /// audio frequency of a video frame that has no specified
+    /// audio frequency.
+    ///
+    /// Setting this value unrealizes the movie.
+    ///
+    /// @param defaultAudioFrequency new value
     public void setDefaultAudioFrequency(int defaultAudioFrequency) {
         this.defaultAudioFrequency = defaultAudioFrequency;
         unrealize();
@@ -188,17 +169,15 @@ public class CDXLInputStream extends AbstractCDXLStream implements Closeable {
         return defaultFrameDuration;
     }
 
-    /**
-     * Sets the default frame duration.
-     * <p>
-     * The default frame duration is used to determine the duration
-     * of a video frame that has neither audio data, nor a
-     * specified duration.
-     * <p>
-     * Setting this value unrealizes the movie.
-     *
-     * @param defaultFrameDuration new value
-     */
+    /// Sets the default frame duration.
+    ///
+    /// The default frame duration is used to determine the duration
+    /// of a video frame that has neither audio data, nor a
+    /// specified duration.
+    ///
+    /// Setting this value unrealizes the movie.
+    ///
+    /// @param defaultFrameDuration new value
     public void setDefaultFrameDuration(Rational defaultFrameDuration) {
         this.defaultFrameDuration = defaultFrameDuration;
         unrealize();

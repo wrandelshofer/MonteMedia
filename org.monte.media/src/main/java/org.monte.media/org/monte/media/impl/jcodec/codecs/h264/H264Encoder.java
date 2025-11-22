@@ -45,23 +45,18 @@ import java.util.List;
 
 import static org.monte.media.impl.jcodec.codecs.h264.H264Utils.escapeNAL;
 
-/**
- * References:
- * <p>
- * This code has been derived from JCodecProject.
- * <dl>
- *     <dt>JCodecProject. Copyright 2008-2019 JCodecProject.
- *     <br><a href="https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE">BSD 2-Clause License.</a></dt>
- *     <dd><a href="https://github.com/jcodec/jcodec">github.com</a></dd>
- * </dl>
- *
- * <p>
- * MPEG 4 AVC ( H.264 ) Encoder
- * <p>
- * Conforms to H.264 ( ISO/IEC 14496-10 ) specifications
- *
- * @author The JCodec project
- */
+/// References:
+///
+/// JCodecProject. Copyright 2008-2019 JCodecProject.
+/// : [BSD 2-Clause License.](https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE)
+/// : [github.com](https://github.com/jcodec/jcodec)
+///
+///
+/// MPEG 4 AVC ( H.264 ) Encoder
+///
+/// Conforms to H.264 ( ISO/IEC 14496-10 ) specifications
+///
+/// @author The JCodec project
 public class H264Encoder extends VideoEncoder {
 
     // private static final int QP = 20;
@@ -146,9 +141,7 @@ public class H264Encoder extends VideoEncoder {
         this.decodedDump = decodedDump;
     }
 
-    /**
-     * Encode this picture into h.264 frame. Frame type will be selected by encoder.
-     */
+    /// Encode this picture into h.264 frame. Frame type will be selected by encoder.
     public EncodedFrame encodeFrame(Picture pic, ByteBuffer _out) {
         if (pic.getColor() != ColorSpace.YUV420J)
             throw new IllegalArgumentException("Input picture color is not supported: " + pic.getColor());
@@ -203,28 +196,24 @@ public class H264Encoder extends VideoEncoder {
         return 10 * Math.log10((255 * 255) / mse);
     }
 
-    /**
-     * Encode this picture as an IDR frame. IDR frame starts a new independently
-     * decodeable video sequence
-     *
-     * @param pic
-     * @param _out
-     * @return
-     */
+    /// Encode this picture as an IDR frame. IDR frame starts a new independently
+    /// decodeable video sequence
+    ///
+    /// @param pic
+    /// @param _out
+    /// @return
     public ByteBuffer encodeIDRFrame(Picture pic, ByteBuffer _out) {
         frameNumber = 0;
         return doEncodeFrame(pic, _out, true, frameNumber, SliceType.I);
     }
 
-    /**
-     * Encode this picture as a P-frame. P-frame is an frame predicted from one or
-     * more of the previosly decoded frame and is usually 10x less in size then the
-     * IDR frame.
-     *
-     * @param pic
-     * @param _out
-     * @return
-     */
+    /// Encode this picture as a P-frame. P-frame is an frame predicted from one or
+    /// more of the previosly decoded frame and is usually 10x less in size then the
+    /// IDR frame.
+    ///
+    /// @param pic
+    /// @param _out
+    /// @return
     public ByteBuffer encodePFrame(Picture pic, ByteBuffer _out) {
         frameNumber++;
         return doEncodeFrame(pic, _out, true, frameNumber, SliceType.P);

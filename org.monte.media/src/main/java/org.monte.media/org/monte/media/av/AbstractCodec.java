@@ -6,11 +6,9 @@ package org.monte.media.av;
 
 import java.util.ArrayList;
 
-/**
- * {@code AbstractCodec}.
- *
- * @author Werner Randelshofer
- */
+/// `AbstractCodec`.
+///
+/// @author Werner Randelshofer
 public abstract class AbstractCodec implements Codec {
 
     protected Format[] inputFormats;
@@ -82,9 +80,7 @@ public abstract class AbstractCodec implements Codec {
         return name;
     }
 
-    /**
-     * Empty implementation of the reset method. Don't call super.
-     */
+    /// Empty implementation of the reset method. Don't call super.
     @Override
     public void reset() {
         // empty

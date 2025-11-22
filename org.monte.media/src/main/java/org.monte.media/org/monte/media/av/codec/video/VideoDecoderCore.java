@@ -10,11 +10,9 @@ import javax.imageio.stream.ImageInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-/**
- * {@code AbstractVideoCodecCore}.
- *
- * @author Werner Randelshofer
- */
+/// `AbstractVideoCodecCore`.
+///
+/// @author Werner Randelshofer
 public class VideoDecoderCore {
 
     protected byte[] byteBuf = new byte[4];
@@ -73,10 +71,8 @@ public class VideoDecoderCore {
         return ((b2 & 0xff) << 16) | ((b1 & 0xff) << 8) | ((b0 & 0xff) << 0);
     }
 
-    /**
-     * Reads 16-bit RGB and converts it to 24-bit RGB. Endian is defined by byte
-     * buffer.
-     */
+    /// Reads 16-bit RGB and converts it to 24-bit RGB. Endian is defined by byte
+    /// buffer.
     public static void readRGBs565to24(ByteBuffer in, int[] i, int off, int len) throws IOException {
         for (int j = off, end = off + len; j < end; j++) {
             int v = in.getShort();
@@ -86,10 +82,8 @@ public class VideoDecoderCore {
         }
     }
 
-    /**
-     * Reads 16-bit RGB and converts it to 24-bit RGB. Endian is defined by byte
-     * buffer.
-     */
+    /// Reads 16-bit RGB and converts it to 24-bit RGB. Endian is defined by byte
+    /// buffer.
     public static int readRGB565to24(ByteBuffer in) throws IOException {
         int v = in.getShort();
         return ((v & 0xf800) << 8) | ((v & 0x3800) << 5)
@@ -97,10 +91,8 @@ public class VideoDecoderCore {
                 | ((v & 0x001f) << 3) | ((v & 0x0007));
     }
 
-    /**
-     * Reads 16-bit RGB and converts it to 24-bit RGB BE. Endian of input is
-     * defined by byte buffer.
-     */
+    /// Reads 16-bit RGB and converts it to 24-bit RGB BE. Endian of input is
+    /// defined by byte buffer.
     public static void readRGBs555to24(ImageInputStream in, int[] i, int off, int len) throws IOException {
         for (int j = off, end = off + len; j < end; j++) {
             int v = in.readUnsignedShort();
@@ -110,9 +102,7 @@ public class VideoDecoderCore {
         }
     }
 
-    /**
-     * ---
-     */
+    /// ---
     public static void readRGBs555to24(ByteBuffer in, int[] i, int off, int len) throws IOException {
         for (int j = off, end = off + len; j < end; j++) {
             int v = in.getShort();
@@ -122,10 +112,8 @@ public class VideoDecoderCore {
         }
     }
 
-    /**
-     * Reads 15-bit RGB and converts it to 24-bit RGB BE. Endian of input is
-     * defined by byte buffer.
-     */
+    /// Reads 15-bit RGB and converts it to 24-bit RGB BE. Endian of input is
+    /// defined by byte buffer.
     public static int readRGB555to24(ImageInputStream in) throws IOException {
         int v = in.readUnsignedShort();
         return BitDepthConverters.rgb15to24(v);

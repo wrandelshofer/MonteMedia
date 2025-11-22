@@ -35,11 +35,9 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_I
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
-/**
- * Encodes a {@link BufferedImage} into a {@link AmigaBitmapImage}.
- *
- * @author Werner Randelshofer
- */
+/// Encodes a [BufferedImage] into a [AmigaBitmapImage].
+///
+/// @author Werner Randelshofer
 public class AmigaBitmapEncoder extends org.monte.media.av.AbstractCodec {
     public AmigaBitmapEncoder() {
         super(new Format[]{

@@ -18,11 +18,9 @@ import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-/**
- * Displays images on a panel.
- *
- * @author Werner Randelshofer.
- */
+/// Displays images on a panel.
+///
+/// @author Werner Randelshofer.
 public class ImagePanel
         extends JComponent {
     private final static long serialVersionUID = 1L;
@@ -42,36 +40,22 @@ public class ImagePanel
         RENDER_SPEED = rh;
     }
 
-    /**
-     * Pixel aspect policy: Ignore pixel aspect.
-     */
+    /// Pixel aspect policy: Ignore pixel aspect.
     public final static int IGNORE_PIXEL_ASPECT = 0;
-    /**
-     * Pixel aspect policy: Preserves only extreme pixel aspects,
-     * where one dimension is a multiple of the other dimension.
-     */
+    /// Pixel aspect policy: Preserves only extreme pixel aspects,
+    /// where one dimension is a multiple of the other dimension.
     public final static int ROUNDED_PIXEL_ASPECT = 1;
-    /**
-     * Pixel aspect policy: Preserve the exact pixel aspect.
-     */
+    /// Pixel aspect policy: Preserve the exact pixel aspect.
     public final static int EXACT_PIXEL_ASPECT = 2;
-    /**
-     * Pixel aspect policy: Use Anamoprh 16:9 pixel aspect (=16/9*4/5=1.4222).
-     */
+    /// Pixel aspect policy: Use Anamoprh 16:9 pixel aspect (=16/9*4/5=1.4222).
     public final static int ANAMORPH_PIXEL_ASPECT = 3;
-    /**
-     * Image scaling policy: Scale as defined by #setAspectRatio
-     * and the image aspect.
-     */
+    /// Image scaling policy: Scale as defined by #setAspectRatio
+    /// and the image aspect.
     public final static int SCALE_TO_IMAGE_SIZE = 0;
-    /**
-     * Image scaling policy: Scale to panel size.
-     */
+    /// Image scaling policy: Scale to panel size.
     public final static int SCALE_TO_VIEW_SIZE = 1;
-    /**
-     * Image scaling policy: Scale to panel but keep the
-     * image aspect.
-     */
+    /// Image scaling policy: Scale to panel but keep the
+    /// image aspect.
     public final static int SCALE_TO_IMAGE_ASPECT = 2;
     private Image image;
     private double scaleFactor = 1d;
@@ -81,9 +65,7 @@ public class ImagePanel
     private int pixelAspectPolicy = EXACT_PIXEL_ASPECT;
     private String message;
     private BufferedImage texture;
-    /**
-     * Support for property change listeners.
-     */
+    /// Support for property change listeners.
     private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
     private RenderingHints renderingHints = RENDER_SPEED;
 
@@ -211,13 +193,11 @@ public class ImagePanel
     }
      */
 
-    /**
-     * Sets the pixel aspect policy.
-     *
-     * @param policy PixelAspectPolicy must be one of IGNORE_PIXEL_ASPECT,
-     *               ROUNDED_PIXEL_ASPECT, EXACT_PIXEL_ASPECT.
-     * @throws IllegalArgumentException When passing invalid policy.
-     */
+    /// Sets the pixel aspect policy.
+    ///
+    /// @param policy PixelAspectPolicy must be one of IGNORE_PIXEL_ASPECT,
+    ///                                           ROUNDED_PIXEL_ASPECT, EXACT_PIXEL_ASPECT.
+    /// @throws IllegalArgumentException When passing invalid policy.
     public synchronized void setPixelAspectPolicy(int policy) {
         int old = pixelAspectPolicy;
         if (old != policy) {
@@ -239,16 +219,12 @@ public class ImagePanel
         }
     }
 
-    /**
-     * Returns the pixel aspect policy.
-     */
+    /// Returns the pixel aspect policy.
     public int getPixelAspectPolicy() {
         return pixelAspectPolicy;
     }
 
-    /**
-     * Sets the image scale policy.
-     */
+    /// Sets the image scale policy.
     public synchronized void setImageScalePolicy(int policy) {
         int old = imageScalePolicy;
         if (old != policy) {
@@ -268,19 +244,15 @@ public class ImagePanel
         }
     }
 
-    /**
-     * Returns the image scale policy.
-     */
+    /// Returns the image scale policy.
     public int getImageScalePolicy() {
         return imageScalePolicy;
     }
 
-    /**
-     * Gets the horizontal pixel aspect of the image according to the
-     * pixel aspect policy that is in affect.
-     *
-     * @return Horizontal pixel aspect.
-     */
+    /// Gets the horizontal pixel aspect of the image according to the
+    /// pixel aspect policy that is in affect.
+    ///
+    /// @return Horizontal pixel aspect.
     public double getPixelAspectX() {
         if (image == null) {
             return 0;
@@ -304,12 +276,10 @@ public class ImagePanel
         }
     }
 
-    /**
-     * Gets the vertical pixel aspect of the image according to the
-     * pixel aspect policy that is in effect.
-     *
-     * @return Vertical pixel aspect.
-     */
+    /// Gets the vertical pixel aspect of the image according to the
+    /// pixel aspect policy that is in effect.
+    ///
+    /// @return Vertical pixel aspect.
     public double getPixelAspectY() {
         if (image == null) {
             return 0;
@@ -333,12 +303,10 @@ public class ImagePanel
         }
     }
 
-    /**
-     * Gets the preferred image size.
-     *
-     * @return Image dimension after applying the
-     * pixel aspect policy.
-     */
+    /// Gets the preferred image size.
+    ///
+    /// @return Image dimension after applying the
+    /// pixel aspect policy.
     public Dimension getPreferredImageSize() {
         if (image == null) {
             return new Dimension(0, 0);
@@ -356,12 +324,10 @@ public class ImagePanel
                 (int) Math.ceil(image.getHeight(this) * getPixelAspectY()));
     }
 
-    /**
-     * Gets the scaled and pixel aspect corrected image size.
-     *
-     * @return Image dimension after scaling and applying the
-     * pixel aspect policy.
-     */
+    /// Gets the scaled and pixel aspect corrected image size.
+    ///
+    /// @return Image dimension after scaling and applying the
+    /// pixel aspect policy.
     public Dimension getScaledImageSize() {
         if (image == null) {
             return new Dimension(0, 0);
@@ -379,10 +345,8 @@ public class ImagePanel
                 (int) Math.ceil(image.getHeight(this) * getPixelAspectY() * getAspectRatioY() * getScaleFactor()));
     }
 
-    /**
-     * Sets the image and displays it in this
-     * image panel.
-     */
+    /// Sets the image and displays it in this
+    /// image panel.
     public void setImage(Image image) {
         Image old = this.image;
         this.image = image;
@@ -395,39 +359,31 @@ public class ImagePanel
         propertyChangeSupport.firePropertyChange("image", old, image);
     }
 
-    /**
-     * Gets the image that is displayed in this
-     * image panel.
-     *
-     * @return image.
-     */
+    /// Gets the image that is displayed in this
+    /// image panel.
+    ///
+    /// @return image.
     public Image getImage() {
         return image;
     }
 
-    /**
-     * Sets the texture for the backdrop paint.
-     */
+    /// Sets the texture for the backdrop paint.
     public void setTexture(BufferedImage newValue) {
         BufferedImage old = this.texture;
         this.texture = newValue;
         propertyChangeSupport.firePropertyChange("texture", old, newValue);
     }
 
-    /**
-     * Gets the backdrop paint.
-     */
+    /// Gets the backdrop paint.
     public BufferedImage getTexture() {
         return texture;
     }
 
-    /**
-     * Sets the scale factor.
-     * The scale factor scales images shown in
-     * this image panel.
-     *
-     * @param scaleFactor The scale factor.
-     */
+    /// Sets the scale factor.
+    /// The scale factor scales images shown in
+    /// this image panel.
+    ///
+    /// @param scaleFactor The scale factor.
     public void setScaleFactor(double scaleFactor) {
         setScaleFactor(scaleFactor, true);
     }
@@ -448,20 +404,16 @@ public class ImagePanel
         }
     }
 
-    /**
-     * Gets the scale factor.
-     *
-     * @return Scale factor.
-     */
+    /// Gets the scale factor.
+    ///
+    /// @return Scale factor.
     public synchronized double getScaleFactor() {
         return scaleFactor;
     }
 
-    /**
-     * Sets the rendering hints.
-     *
-     * @param newValue The new rendering hints.
-     */
+    /// Sets the rendering hints.
+    ///
+    /// @param newValue The new rendering hints.
     public void setRenderingHints(RenderingHints newValue) {
         setRenderingHints(newValue, true);
     }
@@ -482,22 +434,18 @@ public class ImagePanel
         }
     }
 
-    /**
-     * Gets the rendering hints.
-     *
-     * @return Rendering Hints.
-     */
+    /// Gets the rendering hints.
+    ///
+    /// @return Rendering Hints.
     public synchronized RenderingHints getRenderingHints() {
         return renderingHints;
     }
 
-    /**
-     * Sets the aspect ratio.
-     * The aspect ratio distorts images shown in  this image panel.
-     *
-     * @param ratioX Horizontal scale factor.
-     * @param ratioY Vertical scale factor.
-     */
+    /// Sets the aspect ratio.
+    /// The aspect ratio distorts images shown in  this image panel.
+    ///
+    /// @param ratioX Horizontal scale factor.
+    /// @param ratioY Vertical scale factor.
     public void setAspectRatio(double ratioX, double ratioY) {
         if (aspectRatioX != ratioX || aspectRatioY != ratioY) {
             setAspectRatio0(ratioX, ratioY);
@@ -519,31 +467,25 @@ public class ImagePanel
         propertyChangeSupport.firePropertyChange("aspectRatioY", oldY, ratioY);
     }
 
-    /**
-     * Gets the horizontal scale factor that is
-     * used to scale images shown in this image panel.
-     *
-     * @return Horizontal scale factor.
-     */
+    /// Gets the horizontal scale factor that is
+    /// used to scale images shown in this image panel.
+    ///
+    /// @return Horizontal scale factor.
     public double getAspectRatioX() {
         return aspectRatioX;
     }
 
-    /**
-     * Gets the vertical scale factor that is
-     * used to scale images shown in this image panel.
-     *
-     * @return Vertical scale factor.
-     */
+    /// Gets the vertical scale factor that is
+    /// used to scale images shown in this image panel.
+    ///
+    /// @return Vertical scale factor.
     public double getAspectRatioY() {
         return aspectRatioY;
     }
 
-    /**
-     * Gets the preferred size of this image panel.
-     * The preferred size depends on the image size,
-     * the scale factor and the pixel aspect policy.
-     */
+    /// Gets the preferred size of this image panel.
+    /// The preferred size depends on the image size,
+    /// the scale factor and the pixel aspect policy.
     @Override
     public Dimension getPreferredSize() {
         if (image == null) {
@@ -553,17 +495,13 @@ public class ImagePanel
         }
     }
 
-    /**
-     * Adds a listener who is interested in changes of this object.
-     */
+    /// Adds a listener who is interested in changes of this object.
     @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
 
-    /**
-     * Removes a previously registered listener.
-     */
+    /// Removes a previously registered listener.
     @Override
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
@@ -579,10 +517,8 @@ public class ImagePanel
         // }
     }
 
-    /**
-     * XXX Netscape gets very slow when
-     * painting all SOMEBITS of an image.
-     */
+    /// XXX Netscape gets very slow when
+    /// painting all SOMEBITS of an image.
     @Override
     public boolean imageUpdate(Image img, int flags,
                                int x, int y, int w, int h) {

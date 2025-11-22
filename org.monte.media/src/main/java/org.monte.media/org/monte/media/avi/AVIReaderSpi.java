@@ -14,11 +14,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * AVIReaderSpi.
- *
- * @author Werner Randelshofer
- */
+/// AVIReaderSpi.
+///
+/// @author Werner Randelshofer
 public class AVIReaderSpi implements MovieReaderSpi {
 
     private final static List<String> extensions = Collections.unmodifiableList(Arrays.asList(new String[]{"avi"}));

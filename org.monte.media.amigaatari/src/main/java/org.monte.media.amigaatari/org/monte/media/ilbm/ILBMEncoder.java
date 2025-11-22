@@ -6,6 +6,7 @@ package org.monte.media.ilbm;
 
 import org.monte.media.amigabitmap.AmigaBitmapImage;
 import org.monte.media.amigabitmap.AmigaDisplayInfo;
+import org.monte.media.amigabitmap.AmigaDisplayInfoDatabase;
 import org.monte.media.amigabitmap.AmigaHAMColorModel;
 import org.monte.media.iff.IFFOutputStream;
 
@@ -18,11 +19,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * {@code ILBMEncoder}.
- *
- * @author Werner Randelshofer
- */
+/// `ILBMEncoder`.
+///
+/// @author Werner Randelshofer
 public class ILBMEncoder {
 
     public ILBMEncoder() {
@@ -37,27 +36,27 @@ public class ILBMEncoder {
         boolean isOcs = cm instanceof AmigaHAMColorModel hamc && hamc.getType() == AmigaHAMColorModel.Type.HAM6
                 || isOcs(cm);
         List<AmigaDisplayInfo> candidates = new ArrayList<>();
-        for (AmigaDisplayInfo info : AmigaDisplayInfo.getAllInfos().values()) {
-            boolean minMaxSizeFits = info.maximalSizeWidth <= width && width <= info.maximalSizeWidth
-                    && info.minimalSizeHeight <= height && height <= info.maximalSizeHeight;
-            boolean textSizeFitsPerfectly = minMaxSizeFits && width == info.textOverscanWidth
-                    && height == info.textOverscanHeight;
+        for (AmigaDisplayInfo info : AmigaDisplayInfoDatabase.getAllInfos().values()) {
+            boolean minMaxSizeFits = info.maximalSizeWidth() <= width && width <= info.maximalSizeWidth()
+                    && info.minimalSizeHeight() <= height && height <= info.maximalSizeHeight();
+            boolean textSizeFitsPerfectly = minMaxSizeFits && width == info.textOverscanWidth()
+                    && height == info.textOverscanHeight();
             boolean colorFits = info.isHAM() == isHam && info.isOCS() == isOcs
                     && cm.getPixelSize() <= 8;
             if (colorFits) {
                 if (textSizeFitsPerfectly) {
-                    return info.camg;
+                    return info.camg();
                 }
                 candidates.add(info);
             }
         }
         for (AmigaDisplayInfo info : candidates) {
-            boolean textSizeTooSmall = width > info.textOverscanWidth
-                    && height > info.textOverscanHeight;
-            boolean overscanSizeFits = width <= info.maxOverscanWidth
-                    && height <= info.maxOverscanHeight;
+            boolean textSizeTooSmall = width > info.textOverscanWidth()
+                    && height > info.textOverscanHeight();
+            boolean overscanSizeFits = width <= info.maxOverscanWidth()
+                    && height <= info.maxOverscanHeight();
             if (textSizeTooSmall && overscanSizeFits) {
-                return info.camg;
+                return info.camg();
             }
         }
         if (isHam) {
@@ -65,7 +64,7 @@ public class ILBMEncoder {
                 boolean colorFits = info.isHAM() == isHam && info.isOCS() == isOcs
                         && cm.getPixelSize() <= 8;
                 if (colorFits) {
-                    return info.camg;
+                    return info.camg();
                 }
             }
         }
@@ -121,37 +120,34 @@ public class ILBMEncoder {
         }
     }
 
-    /**
-     * Writes the bitmap header (ILBM BMHD).
-     *
-     * <pre>
-     * typedef UBYTE Masking; // Choice of masking technique
-     *
-     * #define mskNone                 0
-     * #define mskHasMask              1
-     * #define mskHasTransparentColor  2
-     * #define mskLasso                3
-     *
-     * typedef UBYTE Compression; // Choice of compression algorithm
-     *     // applied to the rows of all source and mask planes.
-     *     // "cmpByteRun1" is the byte run encoding. Do not compress
-     *     // accross rows!
-     * #define cmpNone      0
-     * #define cmpByteRun1  1
-     *
-     * typedef struct {
-     *   UWORD       w, h; // raster width & height in pixels
-     *   WORD        x, y; // pixel position for this image
-     *   UBYTE       nbPlanes; // # source bitplanes
-     *   Masking     masking;
-     *   Compression compression;
-     *   UBYTE       pad1;     // unused; ignore on read, write as 0
-     *   UWORD       transparentColor; // transparent "color number" (sort of)
-     *   UBYTE       xAspect, yAspect; // pixel aspect, a ratio width : height
-     *   UWORD       pageWidth, pageHeight; // source "page" size in pixels
-     *   } BitmapHeader;
-     * </pre>
-     */
+    /// Writes the bitmap header (ILBM BMHD).
+    /// <pre>
+    /// typedef UBYTE Masking; // Choice of masking technique
+    ///
+    /// #define mskNone                 0
+    /// #define mskHasMask              1
+    /// #define mskHasTransparentColor  2
+    /// #define mskLasso                3
+    ///
+    /// typedef UBYTE Compression; // Choice of compression algorithm
+    ///     // applied to the rows of all source and mask planes.
+    ///     // "cmpByteRun1" is the byte run encoding. Do not compress
+    ///     // accross rows!
+    /// #define cmpNone      0
+    /// #define cmpByteRun1  1
+    ///
+    /// typedef struct {
+    ///   UWORD       w, h; // raster width & height in pixels
+    ///   WORD        x, y; // pixel position for this image
+    ///   UBYTE       nbPlanes; // # source bitplanes
+    ///   Masking     masking;
+    ///   Compression compression;
+    ///   UBYTE       pad1;     // unused; ignore on read, write as 0
+    ///   UWORD       transparentColor; // transparent "color number" (sort of)
+    ///   UBYTE       xAspect, yAspect; // pixel aspect, a ratio width : height
+    ///   UWORD       pageWidth, pageHeight; // source "page" size in pixels
+    ///   } BitmapHeader;
+    /// </pre>
     private void writeBMHD(IFFOutputStream out, AmigaBitmapImage img) throws IOException {
         out.pushDataChunk("BMHD");
         out.writeUWORD(img.getWidth());
@@ -170,9 +166,7 @@ public class ILBMEncoder {
         out.popChunk();
     }
 
-    /**
-     * Writes the color map (ILBM CMAP).
-     */
+    /// Writes the color map (ILBM CMAP).
     private void writeCMAP(IFFOutputStream out, AmigaBitmapImage img) throws IOException {
         out.pushDataChunk("CMAP");
 
@@ -186,9 +180,7 @@ public class ILBMEncoder {
         out.popChunk();
     }
 
-    /**
-     * Writes the color amiga viewport mode display id (ILBM CAMG).
-     */
+    /// Writes the color amiga viewport mode display id (ILBM CAMG).
     private void writeCAMG(IFFOutputStream out, int camg) throws IOException {
         out.pushDataChunk("CAMG");
 
@@ -197,9 +189,7 @@ public class ILBMEncoder {
         out.popChunk();
     }
 
-    /**
-     * Writes the body (ILBM BODY).
-     */
+    /// Writes the body (ILBM BODY).
     private void writeBODY(IFFOutputStream out, AmigaBitmapImage img) throws IOException {
         out.pushDataChunk("BODY");
 

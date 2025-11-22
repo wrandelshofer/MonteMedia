@@ -6,6 +6,7 @@ package org.monte.media.av.codec.video;
 
 import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
+import org.monte.media.av.FormatKey;
 import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.image.algo.NearestNeighbourResampleAlgoFloat;
 import org.monte.media.image.op.GaussianKernelFactory;
@@ -14,7 +15,6 @@ import org.monte.media.image.op.ScaleOp;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.awt.image.IndexColorModel;
 
 import static org.monte.media.av.BufferFlag.DISCARD;
 import static org.monte.media.av.FormatKeys.EncodingKey;
@@ -26,29 +26,29 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_I
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
-/**
- * Scales a buffered image.
- * <p>
- * Usage:
- * <pre>
- *     var codec=new ScaleImageCodec();
- *     codec.setOutputFormat(new Format(
- *          VideoFormatKeys.WidthKey, 320,
- *          VideoFormatKeys.HeightKey, 240
- *     ));
- *     var in=new Buffer();
- *     var out=new Buffer();
- *     in.data=ew BufferedImage(640,480,BufferedImage.TYPE_INT_RGB);
- *     var result=codec.process(in,out);
- *     if (result != Codec.CODEC_OK) throw new RuntimeException("cropping failed",out.exception);
- *     return (BufferedImage) out.data;
- * </pre>
- *
- * @author Werner Randelshofer
- */
+/// Scales a buffered image.
+///
+/// Usage:
+/// <pre>
+///     var codec=new ScaleImageCodec();
+///     codec.setOutputFormat(new Format(
+///          VideoFormatKeys.WidthKey, 320,
+///          VideoFormatKeys.HeightKey, 240
+///     ));
+///     var in=new Buffer();
+///     var out=new Buffer();
+///     in.data=ew BufferedImage(640,480,BufferedImage.TYPE_INT_RGB);
+///     var result=codec.process(in,out);
+///     if (result != Codec.CODEC_OK) throw new RuntimeException("cropping failed",out.exception);
+///     return (BufferedImage) out.data;
+/// </pre>
+///
+/// @author Werner Randelshofer
 public class ScaleImageCodec extends org.monte.media.av.AbstractCodec {
 
     private Object interpolationRenderingHint = RenderingHints.VALUE_INTERPOLATION_BICUBIC;
+    /// The scale factor for the gaussian blur.
+    public final static FormatKey<Double> ScaleGaussianBlurFactorKey = new FormatKey<>("scaleGaussianBlurFactor", Double.class);
 
     public ScaleImageCodec() {
         super(new Format[]{
@@ -86,23 +86,7 @@ public class ScaleImageCodec extends org.monte.media.av.AbstractCodec {
             return CODEC_FAILED;
         }
 
-        BufferedImage imgOut = null;
-        if (out.data instanceof BufferedImage) {
-            imgOut = (BufferedImage) out.data;
-            if (imgOut.getWidth() != outputFormat.get(WidthKey)
-                    || imgOut.getHeight() != outputFormat.get(HeightKey)//
-                    || imgOut.getType() != imgIn.getType()) {
-                imgOut = null;
-            }
-        }
-        if (imgOut == null) {
-            if (imgIn.getColorModel() instanceof IndexColorModel) {
-                imgOut = new BufferedImage(outputFormat.get(WidthKey), outputFormat.get(HeightKey), imgIn.getType(), (IndexColorModel) imgIn.getColorModel());
-            } else {
-                imgOut = new BufferedImage(outputFormat.get(WidthKey), outputFormat.get(HeightKey), imgIn.getType());
-            }
-
-        }
+        BufferedImage imgOut = reuseOutputImage(imgIn, (out.data instanceof BufferedImage b) ? b : null);
         if (imgOut.getWidth() < imgIn.getWidth() && imgOut.getHeight() < imgIn.getHeight()) {
             downscaleImage(imgIn, imgOut);
         } else {
@@ -111,6 +95,21 @@ public class ScaleImageCodec extends org.monte.media.av.AbstractCodec {
         out.data = imgOut;
 
         return CODEC_OK;
+    }
+
+    private BufferedImage reuseOutputImage(BufferedImage imgIn, BufferedImage imgOut) {
+        if (imgOut == null
+                || imgOut.getColorModel() != imgIn.getColorModel()
+                || imgOut.getWidth() != outputFormat.get(WidthKey)
+                || imgOut.getHeight() != outputFormat.get(HeightKey)) {
+            return new BufferedImage(imgIn.getColorModel(),
+                    imgIn.getColorModel().createCompatibleWritableRaster(
+                            outputFormat.get(WidthKey), outputFormat.get(HeightKey)),
+                    imgIn.isAlphaPremultiplied(), null);
+
+        }
+
+        return imgOut;
     }
 
     private void upscaleImage(BufferedImage src, BufferedImage dst) {
@@ -122,11 +121,14 @@ public class ScaleImageCodec extends org.monte.media.av.AbstractCodec {
 
     private void downscaleImage(BufferedImage src, BufferedImage dst) {
         var scaleOp = new ScaleOp(src.getWidth(), src.getHeight(), dst.getWidth(), dst.getHeight(),
-                0.5f, new GaussianKernelFactory(), new NearestNeighbourResampleAlgoFloat());
-        BufferedImage tmp = scaleOp.filter(src, null);
+                outputFormat.get(ScaleGaussianBlurFactorKey, 0.5).floatValue(),
+                new GaussianKernelFactory(), new NearestNeighbourResampleAlgoFloat());
+        BufferedImage tmp = scaleOp.filter(src, dst);
 
-        var g = dst.createGraphics();
-        g.drawImage(tmp, 0, 0, null);
-        g.dispose();
+        if (tmp != dst) {
+            var g = dst.createGraphics();
+            g.drawImage(tmp, 0, 0, null);
+            g.dispose();
+        }
     }
 }

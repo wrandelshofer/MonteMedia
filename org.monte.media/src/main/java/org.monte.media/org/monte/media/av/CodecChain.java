@@ -8,11 +8,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * {@code CodecChain}.
- *
- * @author Werner Randelshofer
- */
+/// `CodecChain` allows to chain multiple codecs together into a sequence.
+///
+/// @author Werner Randelshofer
 public class CodecChain implements Codec {
 
     private Codec first;

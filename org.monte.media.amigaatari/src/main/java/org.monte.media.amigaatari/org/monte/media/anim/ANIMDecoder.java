@@ -26,11 +26,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
 
-/**
- * Decodes IFF files and adds the data to an ANIMMovieTrack.
- *
- * @author Werner Randelshofer
- */
+/// Decodes IFF files and adds the data to an ANIMMovieTrack.
+///
+/// @author Werner Randelshofer
 public class ANIMDecoder
         implements IFFVisitor {
 
@@ -50,105 +48,59 @@ public class ANIMDecoder
     private final static int ANNO_ID = IFFParser.stringToID("ANNO");
     private final static int ANFI_ID = IFFParser.stringToID("ANFI");
     private final static int SCTL_ID = IFFParser.stringToID("SCTL");
-    /**
-     * CAMG monitor ID mask.
-     */
+    /// CAMG monitor ID mask.
     public final static int MONITOR_ID_MASK = 0xffff1000;
-    /**
-     * Default ID chooses a system dependent screen mode. We always fall back
-     * to NTSC OCS with 60fps.
-     * <p>
-     * The default monitor ID triggers OCS mode!
-     * OCS stands for "Original Chip Set". The OCS chip set only had 4 bits per color register.
-     * All later chip sets hat 8 bits per color register.
-     */
+    /// Default ID chooses a system dependent screen mode. We always fall back
+    /// to NTSC OCS with 60fps.
+    ///
+    /// The default monitor ID triggers OCS mode!
+    /// OCS stands for "Original Chip Set". The OCS chip set only had 4 bits per color register.
+    /// All later chip sets hat 8 bits per color register.
     public final static int DEFAULT_MONITOR_ID = 0x00000000;
-    /**
-     * NTSC, 60fps, 44:52.
-     */
+    /// NTSC, 60fps, 44:52.
     public final static int NTSC_MONITOR_ID = 0x00011000;
-    /**
-     * PAL, 50fps, 44:44.
-     */
+    /// PAL, 50fps, 44:44.
     public final static int PAL_MONITOR_ID = 0x00021000;
-    /**
-     * MULTISCAN (VGA), 58fps, 44:44.
-     */
+    /// MULTISCAN (VGA), 58fps, 44:44.
     public final static int MULTISCAN_MONITOR_ID = 0x00031000;
-    /**
-     * A2024, 60fps (I don't know the real value).
-     */
+    /// A2024, 60fps (I don't know the real value).
     public final static int A2024_MONITOR_ID = 0x00041000;
-    /**
-     * PROTO, 60fps (I don't know the real value).
-     */
+    /// PROTO, 60fps (I don't know the real value).
     public final static int PROTO_MONITOR_ID = 0x00051000;
-    /**
-     * EURO72, 69fps, 44:44.
-     */
+    /// EURO72, 69fps, 44:44.
     public final static int EURO72_MONITOR_ID = 0x00061000;
-    /**
-     * EURO36, 73fps, 44:44.
-     */
+    /// EURO36, 73fps, 44:44.
     public final static int EURO36_MONITOR_ID = 0x00071000;
-    /**
-     * SUPER72, 71fps, 34:40.
-     */
+    /// SUPER72, 71fps, 34:40.
     public final static int SUPER72_MONITOR_ID = 0x00081000;
-    /**
-     * DBLNTSC, 58fps, 44:52.
-     */
+    /// DBLNTSC, 58fps, 44:52.
     public final static int DBLNTSC_MONITOR_ID = 0x00091000;
-    /**
-     * DBLPAL, 48fps, 44:44.
-     */
+    /// DBLPAL, 48fps, 44:44.
     public final static int DBLPAL_MONITOR_ID = 0x000a1000;
     protected final static int MODE_MASK = 0x00000880;
     protected final static int HAM_MODE = 0x00000800;
     protected final static int EHB_MODE = 0x00000080;
-    /**
-     * Instance variables
-     */
+    /// Instance variables
     private InputStream inputStream_;
     private URL location;
-    /**
-     * CMAP data.
-     */
+    /// CMAP data.
     private ColorModel cmapColorModel;
-    /**
-     * MovieTrack
-     */
+    /// MovieTrack
     private ANIMMovieResources track;
-    /**
-     * Number of ANIM Chunks found.
-     */
+    /// Number of ANIM Chunks found.
     private int animCount;
-    /**
-     * Index of ANIM Chunk to load.
-     */
+    /// Index of ANIM Chunk to load.
     private int index;
-    /**
-     * 8SVX Decoder
-     */
+    /// 8SVX Decoder
     private EightSVXDecoder eightSVXDecoder;
-    /**
-     * Data of previously decoded CMAP.
-     */
+    /// Data of previously decoded CMAP.
     private byte[] previousCMAPdata_;
-    /**
-     * Count the number of color maps encountered.
-     */
-    /**
-     * Flag if within ANIM form.
-     */
+    /// Count the number of color maps encountered.
+    /// Flag if within ANIM form.
     private boolean isInANIM;
-    /**
-     * Flag if within ILBM form.
-     */
+    /// Flag if within ILBM form.
     private boolean isInILBM;
-    /**
-     * The camg.
-     */
+    /// The camg.
     private int camg = NTSC_MONITOR_ID;
 
     /* Constructors */
@@ -160,15 +112,13 @@ public class ANIMDecoder
         this.location = location;
     }
 
-    /**
-     * Decodes the stream and produces animation frames into the specified movie
-     * track.
-     * Reads the n-th ANIM chunk out of the IFF-file.
-     *
-     * @param track     The decoded data is stored in this track.
-     * @param n         The index of the ANIM FORM to be read out of the IFF-File
-     * @param loadAudio If this is set to false, audio data will be skipped.
-     */
+    /// Decodes the stream and produces animation frames into the specified movie
+    /// track.
+    /// Reads the n-th ANIM chunk out of the IFF-file.
+    ///
+    /// @param track     The decoded data is stored in this track.
+    /// @param n         The index of the ANIM FORM to be read out of the IFF-File
+    /// @param loadAudio If this is set to false, audio data will be skipped.
     public void produce(ANIMMovieResources track, int n, boolean loadAudio)
             throws IOException {
         InputStream in = null;
@@ -324,37 +274,34 @@ public class ANIMDecoder
         }
     }
 
-    /**
-     * Decodes the bitmap header (ILBM BMHD).
-     *
-     * <pre>
-     * typedef UBYTE Masking; // Choice of masking technique
-     *
-     * #define mskNone                 0
-     * #define mskHasMask              1
-     * #define mskHasTransparentColor  2
-     * #define mskLasso                3
-     *
-     * typedef UBYTE Compression; // Choice of compression algorithm
-     * // applied to the rows of all source and mask planes.
-     * // "cmpByteRun1" is the byte run encoding. Do not compress
-     * // accross rows!
-     * #define cmpNone      0
-     * #define cmpByteRun1  1
-     *
-     * typedef struct {
-     * UWORD       w, h; // raster width & height in pixels
-     * WORD        x, y; // pixel position for this image
-     * UBYTE       nbPlanes; // # source bitplanes
-     * Masking     masking;
-     * Compression compression;
-     * UBYTE       pad1;     // unused; ignore on read, write as 0
-     * UWORD       transparentColor; // transparent "color number" (sort of)
-     * UBYTE       xAspect, yAspect; // pixel aspect, a ratio width : height
-     * WORD        pageWidth, pageHeight; // source "page" size in pixels
-     * } BitmapHeader;
-     * </pre>
-     */
+    /// Decodes the bitmap header (ILBM BMHD).
+    /// <pre>
+    /// typedef UBYTE Masking; // Choice of masking technique
+    ///
+    /// #define mskNone                 0
+    /// #define mskHasMask              1
+    /// #define mskHasTransparentColor  2
+    /// #define mskLasso                3
+    ///
+    /// typedef UBYTE Compression; // Choice of compression algorithm
+    /// // applied to the rows of all source and mask planes.
+    /// // "cmpByteRun1" is the byte run encoding. Do not compress
+    /// // accross rows!
+    /// #define cmpNone      0
+    /// #define cmpByteRun1  1
+    ///
+    /// typedef struct {
+    /// UWORD       w, h; // raster width & height in pixels
+    /// WORD        x, y; // pixel position for this image
+    /// UBYTE       nbPlanes; // # source bitplanes
+    /// Masking     masking;
+    /// Compression compression;
+    /// UBYTE       pad1;     // unused; ignore on read, write as 0
+    /// UWORD       transparentColor; // transparent "color number" (sort of)
+    /// UBYTE       xAspect, yAspect; // pixel aspect, a ratio width : height
+    /// WORD        pageWidth, pageHeight; // source "page" size in pixels
+    /// } BitmapHeader;
+    /// </pre>
     private void decodeBMHD(IFFChunk chunk, ANIMMovieResources track)
             throws ParseException {
         try {
@@ -378,11 +325,9 @@ public class ANIMDecoder
         }
     }
 
-    /**
-     * Decodes the CAMG Chunk.
-     * The required information from the BMHD chunk must be provided
-     * by the ANIMMovieTrack.
-     */
+    /// Decodes the CAMG Chunk.
+    /// The required information from the BMHD chunk must be provided
+    /// by the ANIMMovieTrack.
     private void decodeCAMG(IFFChunk chunk, ANIMMovieResources track)
             throws ParseException {
 
@@ -465,19 +410,16 @@ public class ANIMDecoder
         track.setJiffies(camgJiffies);
     }
 
-    /**
-     * Decodes the color map (ILBM CMAP).
-     * The required information from the BMHD chunk and the CAMG chunk
-     * must be provided by the ANIMMovieTrack.
-     *
-     * <pre>
-     * typedef struct {
-     * UBYTE red, green, blue; // color intesnities 0..255
-     * } ColorRegister;          // size = 3 bytes
-     *
-     * typedef ColorRegister ColorMap[n]; // size = 3n bytes
-     * </pre>
-     */
+    /// Decodes the color map (ILBM CMAP).
+    /// The required information from the BMHD chunk and the CAMG chunk
+    /// must be provided by the ANIMMovieTrack.
+    /// <pre>
+    /// typedef struct {
+    /// UBYTE red, green, blue; // color intesnities 0..255
+    /// } ColorRegister;          // size = 3 bytes
+    ///
+    /// typedef ColorRegister ColorMap[n]; // size = 3n bytes
+    /// </pre>
     private ColorModel decodeCMAP(IFFChunk chunk, ANIMMovieResources track, boolean is4BitsPerChannel)
             throws ParseException {
         byte[] red;
@@ -571,23 +513,20 @@ public class ANIMDecoder
         }
     }
 
-    /**
-     * Decodes the color cycling range and timing chunk (ILBM CCRT).
-     *
-     * <pre>
-     * enum {
-     *     dontCycle = 0, forward = 1, backwards = -1
-     * } ccrtDirection;
-     * typedef struct {
-     *   WORD enum ccrtDirection direction;  // 0=don't cycle, 1=forward, -1=backwards
-     *   UBYTE start;      // range lower
-     *   UBYTE end;        // range upper
-     *   ULONG  seconds;    // seconds between cycling
-     *   ULONG  microseconds; // msecs between cycling
-     *   WORD  pad;        // future exp - store 0 here
-     * } ilbmColorCyclingRangeAndTimingChunk;
-     * </pre>
-     */
+    /// Decodes the color cycling range and timing chunk (ILBM CCRT).
+    /// <pre>
+    /// enum {
+    ///     dontCycle = 0, forward = 1, backwards = -1
+    /// } ccrtDirection;
+    /// typedef struct {
+    ///   WORD enum ccrtDirection direction;  // 0=don't cycle, 1=forward, -1=backwards
+    ///   UBYTE start;      // range lower
+    ///   UBYTE end;        // range upper
+    ///   ULONG  seconds;    // seconds between cycling
+    ///   ULONG  microseconds; // msecs between cycling
+    ///   WORD  pad;        // future exp - store 0 here
+    /// } ilbmColorCyclingRangeAndTimingChunk;
+    /// </pre>
     protected void decodeCCRT(IFFChunk chunk, ANIMMovieResources track)
             throws ParseException {
         ColorCycle cc;
@@ -613,24 +552,21 @@ public class ANIMDecoder
         }
     }
 
-    /**
-     * Decodes the color range cycling (ILBM CRNG).
-     *
-     * <pre>
-     * #define RNG_NORATE  36   // Dpaint uses this rate to mean non-active
-     *  set {
-     *  active = 1, reverse = 2
-     *  } crngActive;
-     *
-     *  // A CRange is store in a CRNG chunk.
-     *  typedef struct {
-     *  WORD  pad1;              // reserved for future use; store 0 here *
-     *  WORD  rate;              // 60/sec=16384, 30/sec=8192, 1/sec=16384/60=273
-     *  WORD set crngActive flags;     // bit0 set = active, bit 1 set = reverse
-     *  UBYTE low; UBYTE high;         // lower and upper color registers selected
-     *  } ilbmColorRegisterRangeChunk;
-     * </pre>
-     */
+    /// Decodes the color range cycling (ILBM CRNG).
+    /// <pre>
+    /// #define RNG_NORATE  36   // Dpaint uses this rate to mean non-active
+    ///  set {
+    ///  active = 1, reverse = 2
+    ///  } crngActive;
+    ///
+    ///  // A CRange is store in a CRNG chunk.
+    ///  typedef struct {
+    ///  WORD  pad1;              // reserved for future use; store 0 here *
+    ///  WORD  rate;              // 60/sec=16384, 30/sec=8192, 1/sec=16384/60=273
+    ///  WORD set crngActive flags;     // bit0 set = active, bit 1 set = reverse
+    ///  UBYTE low; UBYTE high;         // lower and upper color registers selected
+    ///  } ilbmColorRegisterRangeChunk;
+    /// </pre>
     protected void decodeCRNG(IFFChunk chunk, ANIMMovieResources track)
             throws ParseException {
         try {
@@ -659,51 +595,49 @@ public class ANIMDecoder
         }
     }
 
-    /**
-     * Decodes the DPaint IV enhanced color cycle chunk (ILBM DRNG)
-     * <p>
-     * The RNG_ACTIVE flag is set when the range is cyclable. A range should
-     * only have the RNG _ACTIVE if it:
-     * <ol>
-     * <li>contains at least one color register</li>
-     * <li>has a defined rate</li>
-     * <li>has more than one color and/or color register</li>
-     * </ol>
-     * <pre>
-     * ILBM DRNG DPaint IV enhanced color cycle chunk
-     * --------------------------------------------
-     *
-     * set {
-     *     RNG_ACTIVE=1,RNG_DP_RESERVED=4
-     * } drngFlags;
-     *
-     * /* True color cell * /
-     * typedef struct {
-     *     UBYTE cell;
-     *     UBYTE r;
-     *     UBYTE g;
-     *     UBYTE b;
-     * } ilbmDRNGDColor;
-     *
-     * /* Color register cell * /
-     * typedef struct {
-     *     UBYTE cell;
-     *     UBYTE index;
-     * } ilbmDRNGDIndex;
-     *
-     * /* DRNG chunk. * /
-     * typedef struct {
-     *     UBYTE min; /* min cell value * /
-     *     UBYTE max; /* max cell value * /
-     *     UWORD rate; /* color cycling rate, 16384 = 60 steps/second * /
-     *     UWORD set drngFlags flags; /* 1=RNG_ACTIVE, 4=RNG_DP_RESERVED * /
-     *     UBYTE ntrue; /* number of DColorCell structs to follow * /
-     *     UBYTE ntregs; /* number of DIndexCell structs to follow * /
-     *     ilbmDRNGDColor[ntrue] trueColorCells;
-     *     ilbmDRNGDIndex[ntregs] colorRegisterCells;
-     * } ilbmDRangeChunk;
-     * </pre>
-     */
+    /// Decodes the DPaint IV enhanced color cycle chunk (ILBM DRNG)
+    ///
+    /// The RNG_ACTIVE flag is set when the range is cyclable. A range should
+    /// only have the RNG _ACTIVE if it:
+    /// <ol>
+    ///   - contains at least one color register
+    ///   - has a defined rate
+    ///   - has more than one color and/or color register
+    /// </ol>
+    /// <pre>
+    /// ILBM DRNG DPaint IV enhanced color cycle chunk
+    /// --------------------------------------------
+    ///
+    /// set {
+    ///     RNG_ACTIVE=1,RNG_DP_RESERVED=4
+    /// } drngFlags;
+    ///
+    /// /* True color cell * /
+    /// typedef struct {
+    ///     UBYTE cell;
+    ///     UBYTE r;
+    ///     UBYTE g;
+    ///     UBYTE b;
+    /// } ilbmDRNGDColor;
+    ///
+    /// /* Color register cell * /
+    /// typedef struct {
+    ///     UBYTE cell;
+    ///     UBYTE index;
+    /// } ilbmDRNGDIndex;
+    ///
+    /// /* DRNG chunk. * /
+    /// typedef struct {
+    ///     UBYTE min; /* min cell value * /
+    ///     UBYTE max; /* max cell value * /
+    ///     UWORD rate; /* color cycling rate, 16384 = 60 steps/second * /
+    ///     UWORD set drngFlags flags; /* 1=RNG_ACTIVE, 4=RNG_DP_RESERVED * /
+    ///     UBYTE ntrue; /* number of DColorCell structs to follow * /
+    ///     UBYTE ntregs; /* number of DIndexCell structs to follow * /
+    ///     ilbmDRNGDColor[ntrue] trueColorCells;
+    ///     ilbmDRNGDIndex[ntregs] colorRegisterCells;
+    /// } ilbmDRangeChunk;
+    /// </pre>
     protected void decodeDRNG(IFFChunk chunk, ANIMMovieResources track)
             throws ParseException {
         ColorCycle cc;
@@ -743,10 +677,8 @@ public class ANIMDecoder
         }
     }
 
-    /**
-     * Process CRNG and DRNG chunks in the sequence of their
-     * location in the file.
-     */
+    /// Process CRNG and DRNG chunks in the sequence of their
+    /// location in the file.
     protected void decodeColorCycling(IFFChunk[] ccrtChunks, IFFChunk[] crngChunks, IFFChunk[] drngChunks, ANIMMovieResources track) throws ParseException {
         int activeCycles = 0;
         int j = 0, k = 0, l = 0;
@@ -809,78 +741,75 @@ public class ANIMDecoder
         track.addFrame(frame);
     }
 
-    /**
-     * Decodes the anim header (ILBM ANHD).
-     *
-     * <pre>
-     * typedef UBYTE Operation; // Choice of compression algorithm.
-     *
-     * #define opDirect        0  // set directly (normal ILBM BODY)
-     * #define opXOR           1  // XOR ILBM mode
-     * #define opLongDelta     2  // Long Delta mode
-     * #define opShortDelta    3  // Short Delta Mode
-     * #define opGeneralDelta  4  // Generalized short/long Delta mode
-     * #define opByteVertical  5  // Byte Vertical Delta mode
-     * #define opStereoDelta   6  // Stereo op 5 (third party)
-     * #define opVertical7     7  // Short/Long Vertical Delta mode (opcodes and data stored separately)
-     * #define opVertical8     8  // Short/Long Vertical Delta mode (opcodes and data combined)
-     * #define opJ            74  // (ascii 'J') reserved for Eric Graham's compression technique
-     *
-     * typedef struct {
-     * Operation   operation; // The compression method.
-     * UBYTE       mask;      // XOR mode only - plane mask where each
-     * // bit is set =1 if there is data and =0
-     * // if not.
-     * UWORD       w,h;       // XOR mode only - width and height of the
-     * // area represented by the BODY to eliminate
-     * // unnecessary un-changed data.
-     * UWORD        x,y;       // XOR mode only - position of rectangular
-     * // area represented by the BODY.
-     * ULONG       abstime;   // currently unused - timing for a frame
-     * // relative to the time the first frame
-     * // was displayed - in jiffies (1/60 sec).
-     * ULONG       reltime;   // timing for frame relative to time
-     * // previous frame was displayed - in
-     * // jiffies (1/60 sec).
-     * UBYTE       interleave;// unused so far - indicates how many frames
-     * // back this data is to modify. =0 defaults
-     * // to indicate two frames back (for double
-     * // buffering). =n indicates n frames back.
-     * // The main intent here is to allow values
-     * // of =1 for special applications where
-     * // frame data would modify the immediately
-     * // previous frame.
-     * UBYTE        pad0;     // Pad byte, not used at present.
-     * ULONG        bits;     // 32 option bits used by opGeneralDelta,
-     * // opByteVertical, opVertical7 and opVertical8.
-     * // At present only 6 are identified, but the
-     * // rest are set =0 tso they can be used to
-     * // implement future ideas. These are defined
-     * // for opGeneralData only at this point. It is
-     * // recommended that all bits be set =0 for
-     * // opByteVertical and that any bit settings used in
-     * // the future (such as for XOR mode) be compatible
-     * // with the opGeneralData settings. Player code
-     * // should check undefined bits in opGeneralData and
-     * // opByteVertical to assure they are zero.
-     * //
-     * // The six bits for current use are:
-     * //
-     * // bit #    set =0          set =1
-     * // =======================================
-     * // 0        short data          long data
-     * // 1        set                 XOR
-     * // 2        separate info       one info list
-     * //          for each plane      for all planes
-     * // 3        not RLC             RLC (run length coded)
-     * // 4        horizontal          vertical
-     * // 5        short info offsets  long info offsets
-     *
-     * UBYTE        pad[16];  // This is a pad for future use for future
-     * // compression modes.
-     * } AnimHeader;
-     * </pre>
-     */
+    /// Decodes the anim header (ILBM ANHD).
+    /// <pre>
+    /// typedef UBYTE Operation; // Choice of compression algorithm.
+    ///
+    /// #define opDirect        0  // set directly (normal ILBM BODY)
+    /// #define opXOR           1  // XOR ILBM mode
+    /// #define opLongDelta     2  // Long Delta mode
+    /// #define opShortDelta    3  // Short Delta Mode
+    /// #define opGeneralDelta  4  // Generalized short/long Delta mode
+    /// #define opByteVertical  5  // Byte Vertical Delta mode
+    /// #define opStereoDelta   6  // Stereo op 5 (third party)
+    /// #define opVertical7     7  // Short/Long Vertical Delta mode (opcodes and data stored separately)
+    /// #define opVertical8     8  // Short/Long Vertical Delta mode (opcodes and data combined)
+    /// #define opJ            74  // (ascii 'J') reserved for Eric Graham's compression technique
+    ///
+    /// typedef struct {
+    /// Operation   operation; // The compression method.
+    /// UBYTE       mask;      // XOR mode only - plane mask where each
+    /// // bit is set =1 if there is data and =0
+    /// // if not.
+    /// UWORD       w,h;       // XOR mode only - width and height of the
+    /// // area represented by the BODY to eliminate
+    /// // unnecessary un-changed data.
+    /// UWORD        x,y;       // XOR mode only - position of rectangular
+    /// // area represented by the BODY.
+    /// ULONG       abstime;   // currently unused - timing for a frame
+    /// // relative to the time the first frame
+    /// // was displayed - in jiffies (1/60 sec).
+    /// ULONG       reltime;   // timing for frame relative to time
+    /// // previous frame was displayed - in
+    /// // jiffies (1/60 sec).
+    /// UBYTE       interleave;// unused so far - indicates how many frames
+    /// // back this data is to modify. =0 defaults
+    /// // to indicate two frames back (for double
+    /// // buffering). =n indicates n frames back.
+    /// // The main intent here is to allow values
+    /// // of =1 for special applications where
+    /// // frame data would modify the immediately
+    /// // previous frame.
+    /// UBYTE        pad0;     // Pad byte, not used at present.
+    /// ULONG        bits;     // 32 option bits used by opGeneralDelta,
+    /// // opByteVertical, opVertical7 and opVertical8.
+    /// // At present only 6 are identified, but the
+    /// // rest are set =0 tso they can be used to
+    /// // implement future ideas. These are defined
+    /// // for opGeneralData only at this point. It is
+    /// // recommended that all bits be set =0 for
+    /// // opByteVertical and that any bit settings used in
+    /// // the future (such as for XOR mode) be compatible
+    /// // with the opGeneralData settings. Player code
+    /// // should check undefined bits in opGeneralData and
+    /// // opByteVertical to assure they are zero.
+    /// //
+    /// // The six bits for current use are:
+    /// //
+    /// // bit #    set =0          set =1
+    /// // =======================================
+    /// // 0        short data          long data
+    /// // 1        set                 XOR
+    /// // 2        separate info       one info list
+    /// //          for each plane      for all planes
+    /// // 3        not RLC             RLC (run length coded)
+    /// // 4        horizontal          vertical
+    /// // 5        short info offsets  long info offsets
+    ///
+    /// UBYTE        pad[16];  // This is a pad for future use for future
+    /// // compression modes.
+    /// } AnimHeader;
+    /// </pre>
     private void decodeANHD(IFFChunk chunk, ANIMFrame frame)
             throws ParseException {
         if (chunk != null) {
@@ -905,30 +834,27 @@ public class ANIMDecoder
         }
     }
 
-    /**
-     * Decodes the anim frame info (ILBM ANFI).
-     *
-     * <pre>
-     * enum {
-     * play = 0x28,
-     * doNothing = 0x0
-     * } anfiCommand;
-     *
-     * typedef struct {
-     * USHORT enum anfiCommand command;   // What to do, see above
-     * USHORT frequencyDivider; // frequency divider (Amiga's audio.device)
-     * UBYTE  sound; // Sound Number (starting at 1).
-     * UBYTE  channel;    // Channel number (1 to 4, 0=invalid)
-     * UBYTE  repeats; // repeat count (0..2 = play once, 3..? = play 2 or more times)
-     * UBYTE  volume;   // volume 00 to 40 (max should be 3F weird, perhaps volum 01 is 00 and 00 is channel off)
-     * } anfiCommandInfo;
-     *
-     * typedef struct {
-     * anfiCommandInfo[4] commandInfo;
-     * UBYTE[4] pad4;       // For future use
-     * } animANFIChunk;
-     * </pre>
-     */
+    /// Decodes the anim frame info (ILBM ANFI).
+    /// <pre>
+    /// enum {
+    /// play = 0x28,
+    /// doNothing = 0x0
+    /// } anfiCommand;
+    ///
+    /// typedef struct {
+    /// USHORT enum anfiCommand command;   // What to do, see above
+    /// USHORT frequencyDivider; // frequency divider (Amiga's audio.device)
+    /// UBYTE  sound; // Sound Number (starting at 1).
+    /// UBYTE  channel;    // Channel number (1 to 4, 0=invalid)
+    /// UBYTE  repeats; // repeat count (0..2 = play once, 3..? = play 2 or more times)
+    /// UBYTE  volume;   // volume 00 to 40 (max should be 3F weird, perhaps volum 01 is 00 and 00 is channel off)
+    /// } anfiCommandInfo;
+    ///
+    /// typedef struct {
+    /// anfiCommandInfo[4] commandInfo;
+    /// UBYTE[4] pad4;       // For future use
+    /// } animANFIChunk;
+    /// </pre>
     private void decodeANFI(IFFChunk chunk, ANIMFrame frame, ANIMMovieResources track)
             throws ParseException {
         try {
@@ -988,32 +914,29 @@ public class ANIMDecoder
         }*/
     }
 
-    /**
-     * Decodes the ANIM+SLA Sound Control collection chunk (ILBM SCTL).
-     *
-     * <pre>
-     * typedef UBYTE Command; // Choice of commands
-     * #define cmdPlaySound 1 // Start playing a sound
-     * #define cmdStopSound 2 // Stop the sound in a given channel
-     * #define cmdSetFreqvol 3 // Change frequency/volume for a channel
-     *
-     * typedef USHORT Flags; // Choice of flags
-     * #define flagNoInterrupt 1 // Play the sound, but only if
-     *                           // the channel isn't in use
-     *
-     * typedef struct {
-     * Command  command;   // What to do, see above
-     * UBYTE    volume;    // Volume 0..64
-     * UWORD    sound,     // Sound number (one based)
-     *          repeats,   // Number of times to play the sound
-     *          channel,   // Channel(s) to use for playing (bit mask)
-     *          frequency; // If non-zero, overrides the VHDR value
-     * Flags    flags;     // Flags, see above
-     * UBYTE    pad[4];       // For future use
-     * } SoundControl;
-     *
-     * </pre>
-     */
+    /// Decodes the ANIM+SLA Sound Control collection chunk (ILBM SCTL).
+    /// <pre>
+    /// typedef UBYTE Command; // Choice of commands
+    /// #define cmdPlaySound 1 // Start playing a sound
+    /// #define cmdStopSound 2 // Stop the sound in a given channel
+    /// #define cmdSetFreqvol 3 // Change frequency/volume for a channel
+    ///
+    /// typedef USHORT Flags; // Choice of flags
+    /// #define flagNoInterrupt 1 // Play the sound, but only if
+    ///                           // the channel isn't in use
+    ///
+    /// typedef struct {
+    /// Command  command;   // What to do, see above
+    /// UBYTE    volume;    // Volume 0..64
+    /// UWORD    sound,     // Sound number (one based)
+    ///          repeats,   // Number of times to play the sound
+    ///          channel,   // Channel(s) to use for playing (bit mask)
+    ///          frequency; // If non-zero, overrides the VHDR value
+    /// Flags    flags;     // Flags, see above
+    /// UBYTE    pad[4];       // For future use
+    /// } SoundControl;
+    ///
+    /// </pre>
     private void decodeSCTL(IFFChunk chunk, ANIMFrame frame, ANIMMovieResources track)
             throws ParseException {
         try {

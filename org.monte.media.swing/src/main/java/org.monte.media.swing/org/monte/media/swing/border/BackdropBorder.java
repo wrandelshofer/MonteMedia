@@ -10,20 +10,16 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Insets;
 
-/**
- * BackdropBorder has a foreground border and a background border.
- * The foreground border is drawn, when paintBorder() is invoked.
- * The background border can be retrieved using getBackgroundBorder().
- *
- * @author Werner Randelshofer
- */
+/// BackdropBorder has a foreground border and a background border.
+/// The foreground border is drawn, when paintBorder() is invoked.
+/// The background border can be retrieved using getBackgroundBorder().
+///
+/// @author Werner Randelshofer
 public class BackdropBorder implements Border {
     private Border foregroundBorder;
     private Border backgroundBorder;
 
-    /**
-     * Creates a new instance.
-     */
+    /// Creates a new instance.
     public BackdropBorder(Border backdropBorder) {
         this(null, backdropBorder);
     }

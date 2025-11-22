@@ -21,28 +21,22 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-/**
- * Reads an image in the Motion JPEG (MJPG) format.
- * <p>
- * This class can read Motion JPEG files with omitted Huffmann table.
- * <p>
- * For more information see: Microsoft Windows Bitmap Format. Multimedia
- * Technical Note: JPEG DIB Format. (c) 1993 Microsoft Corporation. All rights
- * reserved. <a
- * href="http://www.fileformat.info/format/bmp/spec/b7c72ebab8064da48ae5ed0c053c67a4/BMPDIB.TXT">BMPDIB.txt</a>
- *
- * @author Werner Randelshofer
- */
+/// Reads an image in the Motion JPEG (MJPG) format.
+///
+/// This class can read Motion JPEG files with omitted Huffmann table.
+///
+/// For more information see: Microsoft Windows Bitmap Format. Multimedia
+/// Technical Note: JPEG DIB Format. (c) 1993 Microsoft Corporation. All rights
+/// reserved. <a
+/// href="http://www.fileformat.info/format/bmp/spec/b7c72ebab8064da48ae5ed0c053c67a4/BMPDIB.TXT">BMPDIB.txt</a>
+///
+/// @author Werner Randelshofer
 public class MJPGImageReader extends ImageReader {
 
     private static final DirectColorModel RGB = new DirectColorModel(24, 0xff0000, 0xff00, 0xff, 0x0);
-    /**
-     * When we read the header, we read the whole image.
-     */
+    /// When we read the header, we read the whole image.
     private BufferedImage image;
-    /**
-     * This value is set to true, when we returned the image.
-     */
+    /// This value is set to true, when we returned the image.
     private boolean didReturnImage;
 
     private MovieReader reader;
@@ -96,10 +90,8 @@ public class MJPGImageReader extends ImageReader {
         return image;
     }
 
-    /**
-     * Reads the image header. Does nothing if the header has already been
-     * loaded.
-     */
+    /// Reads the image header. Does nothing if the header has already been
+    /// loaded.
     private void readHeader() throws IOException {
         if (image == null) {
 
@@ -117,11 +109,9 @@ public class MJPGImageReader extends ImageReader {
         }
     }
 
-    /**
-     * Gets the JPEG image reader from ImageIO. This method ensures that we do
-     * not get a reader from the Monte Media library, because this library does
-     * not implement the actual decoding.
-     */
+    /// Gets the JPEG image reader from ImageIO. This method ensures that we do
+    /// not get a reader from the Monte Media library, because this library does
+    /// not implement the actual decoding.
     private static ImageReader getBasicJPEGImageReader() {
         for (ImageReader r : (Iterable<ImageReader>) () -> ImageIO.getImageReadersByFormatName("jpeg")) {
             if ("com.sun.imageio.plugins.jpeg.JPEGImageReader".equals(r.getClass().getName())) {
@@ -131,9 +121,7 @@ public class MJPGImageReader extends ImageReader {
         throw new InternalError("could not find native JPEG Reader");
     }
 
-    /**
-     * Disposes of resources held internally by the reader.
-     */
+    /// Disposes of resources held internally by the reader.
     @Override
     public void dispose() {
         try {

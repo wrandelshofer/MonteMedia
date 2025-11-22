@@ -7,11 +7,8 @@ package org.monte.media.color;
 
 import java.io.Serial;
 
-/**
- * A parametric color space with scaled components computed from an RGB color space
- * with component values in the range {@code [0, 1]}.
- *
- */
+/// A parametric color space with scaled components computed from an RGB color space
+/// with component values in the range `[0, 1]`.
 public class ParametricScaledColorSpace extends AbstractNamedColorSpace {
 
     @Serial
@@ -30,12 +27,10 @@ public class ParametricScaledColorSpace extends AbstractNamedColorSpace {
         this.inverseScale = 1 / scale;
     }
 
-    /**
-     * XYZ to LCH.
-     *
-     * @param lch CIEXYZ color value.
-     * @return LCH color value.
-     */
+    /// XYZ to LCH.
+    ///
+    /// @param lch CIEXYZ color value.
+    /// @return LCH color value.
     @Override
     public float[] fromCIEXYZ(float[] xyz, float[] lch) {
         return rgbToScaled(labColorSpace.fromCIEXYZ(xyz, lch), lch);
@@ -70,12 +65,10 @@ public class ParametricScaledColorSpace extends AbstractNamedColorSpace {
         return rgb;
     }
 
-    /**
-     * LCH to XYZ.
-     *
-     * @param colorvalue LCH color value.
-     * @return CIEXYZ color value.
-     */
+    /// LCH to XYZ.
+    ///
+    /// @param colorvalue LCH color value.
+    /// @return CIEXYZ color value.
     @Override
     public float[] toCIEXYZ(float[] colorvalue, float[] xyz) {
         return labColorSpace.toCIEXYZ(scaledToRgb(colorvalue, xyz), xyz);

@@ -9,11 +9,9 @@ import org.monte.media.av.BufferFlag;
 import org.monte.media.av.Format;
 import org.monte.media.math.Rational;
 
-/**
- * {@code PassThroughCodec} passes through all buffers in the specified time range.
- *
- * @author Werner Randelshofer
- */
+/// `PassThroughCodec` passes through all buffers in the specified time range.
+///
+/// @author Werner Randelshofer
 public class TrimTimeCodec extends org.monte.media.av.AbstractCodec {
 
     private Rational startTime;
@@ -29,11 +27,9 @@ public class TrimTimeCodec extends org.monte.media.av.AbstractCodec {
         name = "Trim Time";
     }
 
-    /**
-     * Sets the start time of the buffers.
-     *
-     * @param newValue Start time. Specify null, to pass through all buffers.
-     */
+    /// Sets the start time of the buffers.
+    ///
+    /// @param newValue Start time. Specify null, to pass through all buffers.
     public void setStartTime(Rational newValue) {
         startTime = newValue;
     }
@@ -46,11 +42,9 @@ public class TrimTimeCodec extends org.monte.media.av.AbstractCodec {
         return endTime;
     }
 
-    /**
-     * Sets the end time of the buffers.
-     *
-     * @param newValue Start time. Specify null, to pass through all buffers.
-     */
+    /// Sets the end time of the buffers.
+    ///
+    /// @param newValue Start time. Specify null, to pass through all buffers.
     public void setEndTime(Rational newValue) {
         this.endTime = newValue;
     }

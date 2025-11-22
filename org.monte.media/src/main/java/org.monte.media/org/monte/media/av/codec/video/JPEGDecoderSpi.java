@@ -7,11 +7,9 @@ package org.monte.media.av.codec.video;
 
 import org.monte.media.av.CodecSpi;
 
-/**
- * JPEGCodecSpi.
- *
- * @author Werner Randelshofer
- */
+/// JPEGCodecSpi.
+///
+/// @author Werner Randelshofer
 public class JPEGDecoderSpi implements CodecSpi {
 
     @Override

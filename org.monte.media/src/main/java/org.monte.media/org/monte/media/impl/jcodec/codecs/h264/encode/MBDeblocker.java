@@ -13,21 +13,16 @@ import static java.lang.Math.abs;
 import static org.monte.media.impl.jcodec.codecs.h264.H264Const.QP_SCALE_CR;
 import static org.monte.media.impl.jcodec.common.tools.MathUtil.clip;
 
-/**
- * References:
- * <p>
- * This code has been derived from JCodecProject.
- * <dl>
- *     <dt>JCodecProject. Copyright 2008-2019 JCodecProject.
- *     <br><a href="https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE">BSD 2-Clause License.</a></dt>
- *     <dd><a href="https://github.com/jcodec/jcodec">github.com</a></dd>
- * </dl>
- *
- * <p>
- * Contains various deblocking filter routines for deblocking on MB bases
- *
- * @author Stan Vitvitskyy
- */
+/// References:
+///
+/// JCodecProject. Copyright 2008-2019 JCodecProject.
+/// : [BSD 2-Clause License.](https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE)
+/// : [github.com](https://github.com/jcodec/jcodec)
+///
+///
+/// Contains various deblocking filter routines for deblocking on MB bases
+///
+/// @author Stan Vitvitskyy
 public class MBDeblocker {
 
     static int[][] LOOKUP_IDX_P_V = new int[][]{{3, 7, 11, 15}, {0, 4, 8, 12}, {1, 5, 9, 13},
@@ -43,23 +38,21 @@ public class MBDeblocker {
         return QP_SCALE_CR[MathUtil.clip(qp + crQpOffset, 0, 51)];
     }
 
-    /**
-     * Deblocks bottom edge of topOutMB, right edge of leftOutMB and left/top and
-     * inner block edges of outMB
-     * <p>
-     * //@param curPix        Pixels of the current MB
-     * //@param leftPix       Pixels of the leftMB
-     * //@param topPix        Pixels of the tipMB
-     * //
-     * //@param vertStrength  Border strengths for vertical edges (filtered first)
-     * //@param horizStrength Border strengths for the horizontal edges
-     * //@param lastH
-     * //@param lastW
-     * //
-     * //@param curQp         Current MB's qp
-     * //@param leftQp        Left MB's qp
-     * //@param topQp         Top MB's qp
-     */
+    /// Deblocks bottom edge of topOutMB, right edge of leftOutMB and left/top and
+    /// inner block edges of outMB
+    ///
+    /// //@param curPix        Pixels of the current MB
+    /// //@param leftPix       Pixels of the leftMB
+    /// //@param topPix        Pixels of the tipMB
+    /// //
+    /// //@param vertStrength  Border strengths for vertical edges (filtered first)
+    /// //@param horizStrength Border strengths for the horizontal edges
+    /// //@param lastH
+    /// //@param lastW
+    /// //
+    /// //@param curQp         Current MB's qp
+    /// //@param leftQp        Left MB's qp
+    /// //@param topQp         Top MB's qp
     public void deblockMBGeneric(EncodedMB curMB, EncodedMB leftMB, EncodedMB topMB, int[][] vertStrength,
                                  int horizStrength[][]) {
         Picture curPix = curMB.getPixels();
@@ -113,15 +106,13 @@ public class MBDeblocker {
                 P_POS_H_CHR, Q_POS_H_CHR, true);
     }
 
-    /**
-     * @param cur  Pixels and parameters of encoded and reconstructed current
-     *             macroblock
-     * @param left Pixels and parameters of encoded and reconstructed left
-     *             macroblock
-     * @param top  Pixels and parameters of encoded and reconstructed top macroblock
-     *             //@param c
-     *             //@param b
-     */
+    /// @param cur  Pixels and parameters of encoded and reconstructed current
+    ///                                                                                     macroblock
+    /// @param left Pixels and parameters of encoded and reconstructed left
+    ///                                                                                     macroblock
+    /// @param top  Pixels and parameters of encoded and reconstructed top macroblock
+    ///                                                                                     //@param c
+    ///                                                                                     //@param b
     public void deblockMBP(EncodedMB cur, EncodedMB left, EncodedMB top) {
         int[][] vertStrength = new int[4][4];
         int[][] horizStrength = new int[4][4];

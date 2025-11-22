@@ -38,6 +38,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ComponentColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferFloat;
+import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -274,7 +275,7 @@ public class ColorDotsViewController {
         if (getImage() == null) return;
         switch (getColorSpaceProperty()) {
             case SRGB -> {
-                updateViewAsSRgb();
+                updateViewAsRgb();
             }
             case OKLAB -> {
                 updateViewAsOKLab();
@@ -328,12 +329,16 @@ public class ColorDotsViewController {
         world.getChildren().add(colorDotsGroup);
 
         System.out.println("number of distinct colors " + done.size());
+        if (img.getColorModel() instanceof IndexColorModel icm) {
+            System.out.println("color palette size " + icm.getMapSize());
+        }
     }
 
 
-    private void updateViewAsSRgb() {
+    private void updateViewAsRgb() {
         //updateViewAsRgb(ColorSpace.getInstance(ColorSpace.CS_sRGB));
-        updateViewAsRgb(SrgbColorSpace.INSTANCE);
+        updateViewAsRgb(SrgbColorSpace.getInstance());
+        //updateViewAsRgb(Rec709ColorSpace.INSTANCE);
     }
 
     private void updateViewAsRgb(ColorSpace cs) {
@@ -347,18 +352,33 @@ public class ColorDotsViewController {
         List<Node> dots = new ArrayList<>();
         ComponentColorModel cm = new ComponentColorModel(cs, false, false, Transparency.OPAQUE, DataBuffer.TYPE_FLOAT);
         WritableRaster rasterCs = cm.createCompatibleWritableRaster(width, height);
-        var imgCs = new BufferedImage(cm, rasterCs, false, null);
-        var g = imgCs.createGraphics();
-        g.drawImage(img, 0, 0, null);
-        g.dispose();
-        int[] rgbArray = new int[width * height];
-        img.getRGB(0, 0, width, height, rgbArray, 0, width);
-        var d0 = ((DataBufferFloat) rasterCs.getDataBuffer()).getData(0);
+        int[] rgbArray;
+        float[] pixels;
+        if (img.getColorModel() instanceof IndexColorModel icm) {
+            rgbArray = new int[icm.getMapSize()];
+            pixels = new float[icm.getMapSize() * 3];
+            icm.getRGBs(rgbArray);
+            for (int i = 0; i < rgbArray.length; i++) {
+                inputF[0] = ((rgbArray[i] & 0xff0000) >>> 16) / 255f;
+                inputF[1] = ((rgbArray[i] & 0xff00) >>> 8) / 255f;
+                inputF[2] = ((rgbArray[i] & 0xff)) / 255f;
+                csf = cs.fromRGB(inputF);
+                System.arraycopy(csf, 0, pixels, i * 3, 3);
+            }
+        } else {
+            var imgCs = new BufferedImage(cm, rasterCs, false, null);
+            var g = imgCs.createGraphics();
+            g.drawImage(img, 0, 0, null);
+            g.dispose();
+            rgbArray = new int[width * height];
+            img.getRGB(0, 0, width, height, rgbArray, 0, width);
+            pixels = ((DataBufferFloat) rasterCs.getDataBuffer()).getData(0);
+        }
         for (int i = 0; i < rgbArray.length; i++) {
             int rgb = rgbArray[i];
-            csf[0] = d0[i * 3];
-            csf[1] = d0[i * 3 + 1];
-            csf[2] = d0[i * 3 + 2];
+            csf[0] = pixels[i * 3];
+            csf[1] = pixels[i * 3 + 1];
+            csf[2] = pixels[i * 3 + 2];
             if (done.add(new Point3DFloat(csf[0], csf[1], csf[2]))) {
                 Sphere dot;
                 dot = new Sphere(1.0, 8);
@@ -375,6 +395,9 @@ public class ColorDotsViewController {
         colorDotsGroup = new Xform(dots);
         world.getChildren().add(colorDotsGroup);
         System.out.println("number of distinct colors " + done.size());
+        if (img.getColorModel() instanceof IndexColorModel icm) {
+            System.out.println("color palette size " + icm.getMapSize());
+        }
 
     }
 

@@ -3,11 +3,9 @@
  */
 
 
-/**
- * A program that demonstrates how to play movies with the Monte Media library.
- *
- * @author Werner Randelshofer
- */
+/// A program that demonstrates how to play movies with the Monte Media library.
+///
+/// @author Werner Randelshofer
 module org.monte.demo.javafx.colorquantizer {
     requires javafx.graphics;
     requires javafx.base;

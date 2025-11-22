@@ -31,28 +31,25 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
-/**
- * {@code RawCodec} encodes a BufferedImage as a byte[] array.
- * <p>
- * This codec does not encode the color palette of an image. This must be done
- * separately.
- * <p>
- * The pixels of a frame are written row by row from top to bottom and from
- * the left to the right.
- * <p>
- * Supported input formats:
- * <ul>
- * <li>{@code VideoFormat} onlyWith {@code BufferedImage.class}, any width, any height,
- * depth=4.</li>
- * </ul>
- * Supported output formats:
- * <ul>
- * <li>{@code VideoFormat} onlyWith {@code byte[].class}, same width and height as input
- * format, depth=4.</li>
- * </ul>
- *
- * @author Werner Randelshofer
- */
+/// `RawCodec` encodes a BufferedImage as a byte[] array.
+///
+/// This codec does not encode the color palette of an image. This must be done
+/// separately.
+///
+/// The pixels of a frame are written row by row from top to bottom and from
+/// the left to the right.
+///
+/// Supported input formats:
+///
+///   - `VideoFormat` onlyWith `BufferedImage.class`, any width, any height,
+///     depth=4.
+///
+/// Supported output formats:
+///
+///   - `VideoFormat` onlyWith `byte[].class`, same width and height as input
+///     format, depth=4.
+///
+/// @author Werner Randelshofer
 public class RawEncoder extends org.monte.media.av.AbstractCodec {
 
     public RawEncoder() {
@@ -88,16 +85,14 @@ public class RawEncoder extends org.monte.media.av.AbstractCodec {
     }
 
 
-    /**
-     * Encodes an 8-bit key frame.
-     *
-     * @param out            The output stream.
-     * @param data           The image data.
-     * @param width          The width of the image in data elements.
-     * @param height         The height of the image in data elements.
-     * @param offset         The offset to the first pixel in the data array.
-     * @param scanlineStride The number to append to offset to get to the next scanline.
-     */
+    /// Encodes an 8-bit key frame.
+    ///
+    /// @param out            The output stream.
+    /// @param data           The image data.
+    /// @param width          The width of the image in data elements.
+    /// @param height         The height of the image in data elements.
+    /// @param offset         The offset to the first pixel in the data array.
+    /// @param scanlineStride The number to append to offset to get to the next scanline.
     private void writeKey8(ByteArrayImageOutputStream out, byte[] data, int width, int height, int offset,
                            int scanlineStride)
             throws IOException {
@@ -108,16 +103,14 @@ public class RawEncoder extends org.monte.media.av.AbstractCodec {
         }
     }
 
-    /**
-     * Encodes a 16-bit key frame.
-     *
-     * @param out            The output stream.
-     * @param data           The image data.
-     * @param width          The width of the image in data elements.
-     * @param height         The height of the image in data elements.
-     * @param offset         The offset to the first pixel in the data array.
-     * @param scanlineStride The number to append to offset to get to the next scanline.
-     */
+    /// Encodes a 16-bit key frame.
+    ///
+    /// @param out            The output stream.
+    /// @param data           The image data.
+    /// @param width          The width of the image in data elements.
+    /// @param height         The height of the image in data elements.
+    /// @param offset         The offset to the first pixel in the data array.
+    /// @param scanlineStride The number to append to offset to get to the next scanline.
     private void writeKey16(ByteArrayImageOutputStream out, short[] data, int width, int height, int offset,
                             int scanlineStride)
             throws IOException {
@@ -134,16 +127,14 @@ public class RawEncoder extends org.monte.media.av.AbstractCodec {
 
     }
 
-    /**
-     * Encodes a 24-bit key frame.
-     *
-     * @param out            The output stream.
-     * @param data           The image data.
-     * @param width          The width of the image in data elements.
-     * @param height         The height of the image in data elements.
-     * @param offset         The offset to the first pixel in the data array.
-     * @param scanlineStride The number to append to offset to get to the next scanline.
-     */
+    /// Encodes a 24-bit key frame.
+    ///
+    /// @param out            The output stream.
+    /// @param data           The image data.
+    /// @param width          The width of the image in data elements.
+    /// @param height         The height of the image in data elements.
+    /// @param offset         The offset to the first pixel in the data array.
+    /// @param scanlineStride The number to append to offset to get to the next scanline.
     private void writeKey24(ByteArrayImageOutputStream out, int[] data, int width, int height, int offset,
                             int scanlineStride)
             throws IOException {
@@ -162,16 +153,14 @@ public class RawEncoder extends org.monte.media.av.AbstractCodec {
         }
     }
 
-    /**
-     * Encodes a 32-bit key frame.
-     *
-     * @param out            The output stream.
-     * @param data           The image data.
-     * @param width          The width of the image in data elements.
-     * @param height         The height of the image in data elements.
-     * @param offset         The offset to the first pixel in the data array.
-     * @param scanlineStride The number to append to offset to get to the next scanline.
-     */
+    /// Encodes a 32-bit key frame.
+    ///
+    /// @param out            The output stream.
+    /// @param data           The image data.
+    /// @param width          The width of the image in data elements.
+    /// @param height         The height of the image in data elements.
+    /// @param offset         The offset to the first pixel in the data array.
+    /// @param scanlineStride The number to append to offset to get to the next scanline.
     private void writeKey32(ByteArrayImageOutputStream out, int[] data, int width, int height, int offset,
                             int scanlineStride)
             throws IOException {

@@ -9,13 +9,11 @@ import org.monte.media.av.Format;
 import org.monte.media.av.MovieReader;
 import org.monte.media.math.Rational;
 
-/**
- * {@code ANIMMovie}.
- * <p>
- * FIXME - Implement me.
- *
- * @author Werner Randelshofer
- */
+/// `ANIMMovie`.
+///
+/// FIXME - Implement me.
+///
+/// @author Werner Randelshofer
 public class ANIMMovie extends AbstractMovie {
     private final static long serialVersionUID = 1L;
 

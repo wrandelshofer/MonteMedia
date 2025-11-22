@@ -16,9 +16,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.PaletteKey;
 public class ArrayBufferToImage {
 
 
-    /**
-     * Copies a buffered image.
-     */
+    /// Copies a buffered image.
     public BufferedImage copyImage(BufferedImage img) {
         ColorModel cm = img.getColorModel();
         boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();

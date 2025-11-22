@@ -10,14 +10,12 @@ import javax.imageio.stream.ImageInputStream;
 import java.io.IOException;
 import java.util.Locale;
 
-/**
- * ImageIO service provider interface for images in the Netpbm grayscale image
- * format (PGM).
- * <p>
- * See: <a href="http://netpbm.sourceforge.net/doc/pgm.html">PGM Format Specification</a>.
- *
- * @author Werner Randelshofer
- */
+/// ImageIO service provider interface for images in the Netpbm grayscale image
+/// format (PGM).
+///
+/// See: [PGM Format Specification](http://netpbm.sourceforge.net/doc/pgm.html).
+///
+/// @author Werner Randelshofer
 public class PGMImageReaderSpi extends ImageReaderSpi {
 
     public PGMImageReaderSpi() {

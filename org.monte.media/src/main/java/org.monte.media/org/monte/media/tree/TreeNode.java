@@ -9,11 +9,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * TreeNode.
- *
- * @author Werner Randelshofer
- */
+/// TreeNode.
+///
+/// @author Werner Randelshofer
 public class TreeNode<T extends TreeNode<T>> {
 
     private T parent;

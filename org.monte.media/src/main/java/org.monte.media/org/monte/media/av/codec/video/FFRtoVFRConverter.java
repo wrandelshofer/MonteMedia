@@ -25,15 +25,13 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.FixedFrameRateKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
-/**
- * This codec converts frames from a fixed frame rate into a variable frame rate
- * by coalescing identical frames.
- * <p>
- * This codec can be used when the input source has a fixed frame rate and
- * the output sink supports a variable frame rate.
- *
- * @author Werner Randelshofer
- */
+/// This codec converts frames from a fixed frame rate into a variable frame rate
+/// by coalescing identical frames.
+///
+/// This codec can be used when the input source has a fixed frame rate and
+/// the output sink supports a variable frame rate.
+///
+/// @author Werner Randelshofer
 public class FFRtoVFRConverter extends org.monte.media.av.AbstractCodec {
 
     private Rational timeStamp;

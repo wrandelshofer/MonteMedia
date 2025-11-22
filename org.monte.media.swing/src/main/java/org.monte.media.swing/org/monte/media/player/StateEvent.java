@@ -6,21 +6,15 @@ package org.monte.media.player;
 
 import java.util.EventObject;
 
-/**
- * Event for state changes.
- *
- * @author Werner Randelshofer
- */
+/// Event for state changes.
+///
+/// @author Werner Randelshofer
 public class StateEvent
         extends EventObject {
     private final static long serialVersionUID = 2L;
-    /**
-     * The old State.
-     */
+    /// The old State.
     private final int oldState;
-    /**
-     * The new State.
-     */
+    /// The new State.
     private final int newState;
 
     public StateEvent(Object source, int oldState, int newState) {

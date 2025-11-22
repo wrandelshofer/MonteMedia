@@ -54,17 +54,13 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.PaletteKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.QualityKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
-/**
- * Supports writing of time-based video and audio data into a MP4 movie
- * file (.MP4) without the need of native code.
- *
- * @author Werner Randelshofer
- */
+/// Supports writing of time-based video and audio data into a MP4 movie
+/// file (.MP4) without the need of native code.
+///
+/// @author Werner Randelshofer
 public class MP4Writer extends MP4OutputStream implements MovieWriter {
     private static class TrackEncoder {
-        /**
-         * The codec.
-         */
+        /// The codec.
         public Codec codec;
         public Buffer outputBuffer;
         public Buffer inputBuffer;
@@ -74,20 +70,16 @@ public class MP4Writer extends MP4OutputStream implements MovieWriter {
 
     public final static Format MP4 = new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_MP4);
 
-    /**
-     * Creates a new MP4 writer.
-     *
-     * @param file the output file
-     */
+    /// Creates a new MP4 writer.
+    ///
+    /// @param file the output file
     public MP4Writer(File file) throws IOException {
         super(file);
     }
 
-    /**
-     * Creates a new MP4 writer.
-     *
-     * @param out the output stream.
-     */
+    /// Creates a new MP4 writer.
+    ///
+    /// @param out the output stream.
     public MP4Writer(ImageOutputStream out) throws IOException {
         super(out);
     }
@@ -108,12 +100,10 @@ public class MP4Writer extends MP4OutputStream implements MovieWriter {
         return tracks.get(track).format;
     }
 
-    /**
-     * Adds a track.
-     *
-     * @param fmt The format of the track.
-     * @return The track number.
-     */
+    /// Adds a track.
+    ///
+    /// @param fmt The format of the track.
+    /// @return The track number.
     @Override
     public int addTrack(Format fmt) throws IOException {
         if (fmt.get(MediaTypeKey) == MediaType.VIDEO) {
@@ -161,38 +151,34 @@ public class MP4Writer extends MP4OutputStream implements MovieWriter {
         }
     }
 
-    /**
-     * Adds a video track.
-     *
-     * @param format    The MP4 video format.
-     * @param timeScale The media timescale. This is typically the frame rate.
-     *                  If the frame rate is not an integer fraction of a second, specify a
-     *                  multiple of the frame rate and specify a correspondingly multiplied
-     *                  sampleDuration when writing frames. For example, for a rate of 23.976 fps
-     *                  specify a timescale of 23976 and multiply the sampleDuration of a video
-     *                  frame by 1000.
-     * @param width     The width of a video image. Must be larger than 0.
-     * @param height    The height of a video image. Must be larger than 0.
-     * @return Returns the track index.
-     * @throws IllegalArgumentException if the width or the height is smaller
-     *                                  than 1.
-     */
+    /// Adds a video track.
+    ///
+    /// @param format    The MP4 video format.
+    /// @param timeScale The media timescale. This is typically the frame rate.
+    ///                                                    If the frame rate is not an integer fraction of a second, specify a
+    ///                                                    multiple of the frame rate and specify a correspondingly multiplied
+    ///                                                    sampleDuration when writing frames. For example, for a rate of 23.976 fps
+    ///                                                    specify a timescale of 23976 and multiply the sampleDuration of a video
+    ///                                                    frame by 1000.
+    /// @param width     The width of a video image. Must be larger than 0.
+    /// @param height    The height of a video image. Must be larger than 0.
+    /// @return Returns the track index.
+    /// @throws IllegalArgumentException if the width or the height is smaller
+    ///                                                                                                    than 1.
     public int addVideoTrack(Format format, long timeScale, int width, int height) throws IOException {
         int tr = addVideoTrack(format.get(EncodingKey), format.get(CompressorNameKey), timeScale, width, height, 24, 30, format);
         setVideoColorTable(tr, format.get(PaletteKey));
         return tr;
     }
 
-    /**
-     * Adds a video track.
-     *
-     * @param format The MP4 video format.
-     * @param width  The width of a video image. Must be larger than 0.
-     * @param height The height of a video image. Must be larger than 0.
-     * @return Returns the track index.
-     * @throws IllegalArgumentException if the width or the height is smaller
-     *                                  than 1.
-     */
+    /// Adds a video track.
+    ///
+    /// @param format The MP4 video format.
+    /// @param width  The width of a video image. Must be larger than 0.
+    /// @param height The height of a video image. Must be larger than 0.
+    /// @return Returns the track index.
+    /// @throws IllegalArgumentException if the width or the height is smaller
+    ///                                                                   than 1.
     public int addVideoTrack(Format format, int width, int height, int depth, int syncInterval) throws IOException {
         int tr = addVideoTrack(format.get(EncodingKey), format.get(CompressorNameKey),
                 format.get(MediaTimeScale, format.get(FrameRateKey).getDenominator() * format.get(FrameRateKey).getNumerator()), width, height, depth, syncInterval, format);
@@ -200,16 +186,14 @@ public class MP4Writer extends MP4OutputStream implements MovieWriter {
         return tr;
     }
 
-    /**
-     * Adds an audio track, and configures it using an {@code AudioFormat}
-     * object from the javax.sound API.
-     * <p>
-     * Use this method for writing audio data from an {@code AudioInputStream}
-     * into a MP4 Movie file.
-     *
-     * @param format The javax.sound audio format.
-     * @return Returns the track index.
-     */
+    /// Adds an audio track, and configures it using an `AudioFormat`
+    /// object from the javax.sound API.
+    ///
+    /// Use this method for writing audio data from an `AudioInputStream`
+    /// into a MP4 Movie file.
+    ///
+    /// @param format The javax.sound audio format.
+    /// @return Returns the track index.
     public int addAudioTrack(javax.sound.sampled.AudioFormat format) throws IOException {
         ensureStarted();
         String qtAudioFormat;
@@ -274,9 +258,7 @@ public class MP4Writer extends MP4OutputStream implements MovieWriter {
         return tracks.size();
     }
 
-    /**
-     * Returns the sampleDuration of the track in seconds.
-     */
+    /// Returns the sampleDuration of the track in seconds.
     @Override
     public Rational getDuration(int track) {
         AbstractQTFFMovieStream.Track tr = tracks.get(track);
@@ -318,27 +300,21 @@ public class MP4Writer extends MP4OutputStream implements MovieWriter {
         }
     }
 
-    /**
-     * Returns the codec of the specified track.
-     */
+    /// Returns the codec of the specified track.
     public Codec getCodec(int track) {
         return getTrackEncoder(track).codec;
     }
 
-    /**
-     * Sets the codec for the specified track.
-     */
+    /// Sets the codec for the specified track.
     public void setCodec(int track, Codec codec) {
         getTrackEncoder(track).codec = codec;
     }
 
-    /**
-     * Writes a sample. Does nothing if the discard-flag in the buffer is set to
-     * true.
-     *
-     * @param track The track number.
-     * @param buf   The buffer containing the sample data.
-     */
+    /// Writes a sample. Does nothing if the discard-flag in the buffer is set to
+    /// true.
+    ///
+    /// @param track The track number.
+    /// @param buf   The buffer containing the sample data.
     @Override
     public void write(int track, Buffer buf) throws IOException {
         ensureStarted();
@@ -402,15 +378,13 @@ public class MP4Writer extends MP4OutputStream implements MovieWriter {
     }
 
 
-    /**
-     * Encodes an image as a video frame and writes it into a video track.
-     *
-     * @param track    The track index.
-     * @param image    The image of the video frame.
-     * @param duration The sampleDuration of the video frame in media timescale
-     *                 units.
-     * @throws IOException if writing the sample data failed.
-     */
+    /// Encodes an image as a video frame and writes it into a video track.
+    ///
+    /// @param track    The track index.
+    /// @param image    The image of the video frame.
+    /// @param duration The sampleDuration of the video frame in media timescale
+    ///                                 units.
+    /// @throws IOException if writing the sample data failed.
     public void write(int track, BufferedImage image, long duration) throws IOException {
         Track tr = tracks.get(track);
         TrackEncoder tre = getTrackEncoder(track);
@@ -432,45 +406,41 @@ public class MP4Writer extends MP4OutputStream implements MovieWriter {
         return trackEncoders.get(track);
     }
 
-    /**
-     * Writes a sample from a byte array into a track.
-     * <p>
-     * This method encodes the sample if the format of the track does not match
-     * the format of the media in this track.
-     *
-     * @param track    The track index.
-     * @param data     The sample data.
-     * @param off      The start offset in the data.
-     * @param len      The number of bytes to write.
-     * @param duration The duration of the sample in media timescale units.
-     * @param isSync   Whether the sample is a sync sample (keyframe).
-     * @throws IllegalArgumentException if the sampleDuration is less than 1.
-     * @throws IOException              if writing the sample data failed.
-     */
+    /// Writes a sample from a byte array into a track.
+    ///
+    /// This method encodes the sample if the format of the track does not match
+    /// the format of the media in this track.
+    ///
+    /// @param track    The track index.
+    /// @param data     The sample data.
+    /// @param off      The start offset in the data.
+    /// @param len      The number of bytes to write.
+    /// @param duration The duration of the sample in media timescale units.
+    /// @param isSync   Whether the sample is a sync sample (keyframe).
+    /// @throws IllegalArgumentException if the sampleDuration is less than 1.
+    /// @throws IOException              if writing the sample data failed.
     @Deprecated
     public void write(int track, byte[] data, int off, int len, long duration, boolean isSync) throws IOException {
         writeSamples(track, 1, data, off, len, duration, isSync);
     }
 
-    /**
-     * Writes multiple already encoded samples from a byte array into a track.
-     * <p>
-     * This method does not inspect the contents of the data. The contents has
-     * to match the format and dimensions of the media in this track.
-     *
-     * @param track          The track index.
-     * @param sampleCount    The number of samples.
-     * @param data           The encoded sample data.
-     * @param off            The start offset in the data.
-     * @param len            The number of bytes to write. Must be dividable by
-     *                       sampleCount.
-     * @param sampleDuration The sampleDuration of a sample. All samples must
-     *                       have the same sampleDuration.
-     * @param isSync         Whether the samples are sync samples. All samples must
-     *                       either be sync samples or non-sync samples.
-     * @throws IllegalArgumentException if the sampleDuration is less than 1.
-     * @throws IOException              if writing the sample data failed.
-     */
+    /// Writes multiple already encoded samples from a byte array into a track.
+    ///
+    /// This method does not inspect the contents of the data. The contents has
+    /// to match the format and dimensions of the media in this track.
+    ///
+    /// @param track          The track index.
+    /// @param sampleCount    The number of samples.
+    /// @param data           The encoded sample data.
+    /// @param off            The start offset in the data.
+    /// @param len            The number of bytes to write. Must be dividable by
+    ///                                             sampleCount.
+    /// @param sampleDuration The sampleDuration of a sample. All samples must
+    ///                                             have the same sampleDuration.
+    /// @param isSync         Whether the samples are sync samples. All samples must
+    ///                                             either be sync samples or non-sync samples.
+    /// @throws IllegalArgumentException if the sampleDuration is less than 1.
+    /// @throws IOException              if writing the sample data failed.
     @Deprecated
     public void write(int track, int sampleCount, byte[] data, int off, int len, long sampleDuration, boolean isSync) throws IOException {
         AbstractQTFFMovieStream.Track tr = tracks.get(track);
@@ -499,9 +469,7 @@ public class MP4Writer extends MP4OutputStream implements MovieWriter {
         }
     }
 
-    /**
-     * Returns true because MP4 supports variable frame rates.
-     */
+    /// Returns true because MP4 supports variable frame rates.
     public boolean isVFRSupported() {
         return true;
     }

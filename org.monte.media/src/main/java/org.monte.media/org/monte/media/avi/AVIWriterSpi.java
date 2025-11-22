@@ -15,11 +15,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * AVIWriterSpi.
- *
- * @author Werner Randelshofer
- */
+/// AVIWriterSpi.
+///
+/// @author Werner Randelshofer
 public class AVIWriterSpi implements MovieWriterSpi {
 
     private final static List<String> extensions = Collections.unmodifiableList(Arrays.asList(new String[]{"avi"}));

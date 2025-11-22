@@ -8,17 +8,13 @@ package org.monte.media.swing.datatransfer;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 
-/**
- * Base class for transferable objects.
- *
- * @author Werner Randelshofer
- */
+/// Base class for transferable objects.
+///
+/// @author Werner Randelshofer
 public abstract class AbstractTransferable implements Transferable {
     private DataFlavor[] flavors;
 
-    /**
-     * Creates a new instance.
-     */
+    /// Creates a new instance.
     public AbstractTransferable(DataFlavor[] flavors) {
         this.flavors = flavors;
     }

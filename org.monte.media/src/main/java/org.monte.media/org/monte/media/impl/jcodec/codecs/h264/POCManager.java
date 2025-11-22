@@ -12,31 +12,26 @@ import org.monte.media.impl.jcodec.codecs.h264.io.model.SliceHeader;
 
 import static org.monte.media.impl.jcodec.codecs.h264.io.model.NALUnitType.IDR_SLICE;
 
-/**
- * References:
- * <p>
- * This code has been derived from JCodecProject.
- * <dl>
- *     <dt>JCodecProject. Copyright 2008-2019 JCodecProject.
- *     <br><a href="https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE">BSD 2-Clause License.</a></dt>
- *     <dd><a href="https://github.com/jcodec/jcodec">github.com</a></dd>
- * </dl>
- *
- * <p>
- * POC ( Picture Order Count ) manager
- * <p>
- * Picture Order Count is used to represent an order of picture in a GOP ( Group
- * of Pictures ) this is needed to correctly reorder and B-framed GOPs. POC is
- * also used when building lists of reference pictures ( see 8.2.4.2 ).
- * <p>
- * There are 3 possible ways of assigning POC to decoded pictures:
- * <p>
- * - Explicit, i.e. POC is directly specified in a slice header in form <POC
- * Pred> + <POC Dec>. <POC Pred> is a significant part of POC ( see 8.2.1.1 ). -
- * Frame based type 1 ( see 8.2.1.2 ). - Frame based type 2 ( see 8.2.1.3 ).
- *
- * @author The JCodec project
- */
+/// References:
+///
+/// JCodecProject. Copyright 2008-2019 JCodecProject.
+/// : [BSD 2-Clause License.](https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE)
+/// : [github.com](https://github.com/jcodec/jcodec)
+///
+///
+/// POC ( Picture Order Count ) manager
+///
+/// Picture Order Count is used to represent an order of picture in a GOP ( Group
+/// of Pictures ) this is needed to correctly reorder and B-framed GOPs. POC is
+/// also used when building lists of reference pictures ( see 8.2.4.2 ).
+///
+/// There are 3 possible ways of assigning POC to decoded pictures:
+///
+/// - Explicit, i.e. POC is directly specified in a slice header in form <POC
+/// Pred> + <POC Dec>. <POC Pred> is a significant part of POC ( see 8.2.1.1 ). -
+/// Frame based type 1 ( see 8.2.1.2 ). - Frame based type 2 ( see 8.2.1.3 ).
+///
+/// @author The JCodec project
 public class POCManager {
 
     private int prevPOCMsb;

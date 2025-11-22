@@ -12,21 +12,19 @@ import java.io.InputStream;
 import java.util.Locale;
 
 
-/**
- * ImageIO service provider interface for images in the Motion JPEG (MJPG)
- * format.
- * <p>
- * The reader described by this class can read Motion JPEG files with omitted
- * Huffmann table.
- * <p>
- * For more information see:
- * Microsoft Windows Bitmap Format.
- * Multimedia Technical Note: JPEG DIB Format.
- * (c) 1993 Microsoft Corporation. All rights reserved.
- * <a href="http://www.fileformat.info/format/bmp/spec/b7c72ebab8064da48ae5ed0c053c67a4/BMPDIB.TXT">BMPDIB.txt</a>
- *
- * @author Werner Randelshofer
- */
+/// ImageIO service provider interface for images in the Motion JPEG (MJPG)
+/// format.
+///
+/// The reader described by this class can read Motion JPEG files with omitted
+/// Huffmann table.
+///
+/// For more information see:
+/// Microsoft Windows Bitmap Format.
+/// Multimedia Technical Note: JPEG DIB Format.
+/// (c) 1993 Microsoft Corporation. All rights reserved.
+/// [BMPDIB.txt](http://www.fileformat.info/format/bmp/spec/b7c72ebab8064da48ae5ed0c053c67a4/BMPDIB.TXT)
+///
+/// @author Werner Randelshofer
 public class MJPGImageReaderSpi extends ImageReaderSpi {
 
     public MJPGImageReaderSpi() {

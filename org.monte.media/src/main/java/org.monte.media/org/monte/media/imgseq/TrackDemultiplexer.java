@@ -9,11 +9,9 @@ import org.monte.media.av.Track;
 
 import java.io.IOException;
 
-/**
- * Can "demultiplex" an array of already demultiplexed tracks.
- *
- * @author Werner Randelshofer
- */
+/// Can "demultiplex" an array of already demultiplexed tracks.
+///
+/// @author Werner Randelshofer
 public class TrackDemultiplexer implements Demultiplexer {
 
     private final Track[] tracks;

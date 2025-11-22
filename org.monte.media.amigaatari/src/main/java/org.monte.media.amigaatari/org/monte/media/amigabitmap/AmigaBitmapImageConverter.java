@@ -17,71 +17,59 @@ import java.awt.image.WritableRaster;
 import java.util.Arrays;
 import java.util.Hashtable;
 
-/**
- * Converts an {@link AmigaBitmapImage} from/to {@link BufferedImage}.
- * <p>
- * Supports the following conversions
- * <ul>
- *     <li>Indexed colors: {@link AmigaBitmapImage} from/to a {@link BufferedImage}
- *     with a {@link java.awt.image.IndexColorModel}.</li>
- *     <li>HAM colors: {@link AmigaBitmapImage} from/to a {@link BufferedImage}
- *     with a {@link AmigaHAMColorModel}.</li>
- *     <li>HAM colors: {@link AmigaBitmapImage} to a {@link BufferedImage}
- *     with a {@link java.awt.image.DirectColorModel}.</li>
- * </ul>
- */
+/// Converts an [AmigaBitmapImage] from/to [BufferedImage].
+///
+/// Supports the following conversions
+///
+///   - Indexed colors: [AmigaBitmapImage] from/to a [BufferedImage]
+///     with a [java.awt.image.IndexColorModel].
+///   - HAM colors: [AmigaBitmapImage] from/to a [BufferedImage]
+///     with a [AmigaHAMColorModel].
+///   - HAM colors: [AmigaBitmapImage] to a [BufferedImage]
+///     with a [java.awt.image.DirectColorModel].
+///
 public interface AmigaBitmapImageConverter {
-    /**
-     * Converts an {@link AmigaBitmapImage} to {@link BufferedImage}, creating
-     * a new object if needed.
-     *
-     * @param input the input image
-     * @return the converted image
-     */
+    /// Converts an [AmigaBitmapImage] to [BufferedImage], creating
+    /// a new object if needed.
+    ///
+    /// @param input the input image
+    /// @return the converted image
     default BufferedImage toBufferedImage(AmigaBitmapImage input) {
         return toBufferedImage(input, null);
     }
 
-    /**
-     * Converts an {@link BufferedImage} to {@link AmigaBitmapImage}, creating
-     * a new object if needed.
-     *
-     * @param input the input image
-     * @return the converted image
-     */
+    /// Converts an [BufferedImage] to [AmigaBitmapImage], creating
+    /// a new object if needed.
+    ///
+    /// @param input the input image
+    /// @return the converted image
     default AmigaBitmapImage toBitmapImage(BufferedImage input) {
         return toBitmapImage(input, null);
     }
 
-    /**
-     * Converts an {@link BufferedImage} to {@link AmigaBitmapImage}, creating
-     * a new object if needed.
-     *
-     * @param input the input image
-     * @return the converted image
-     */
+    /// Converts an [BufferedImage] to [AmigaBitmapImage], creating
+    /// a new object if needed.
+    ///
+    /// @param input the input image
+    /// @return the converted image
     default AmigaBitmapImage toBitmapImage(ImageProducer input) {
         return toBitmapImage(input, null);
     }
 
-    /**
-     * Converts an {@link AmigaBitmapImage} to {@link BufferedImage}, creating
-     * a new object if needed.
-     *
-     * @param input  the input image
-     * @param output an optional buffered image that can be used to store the output data
-     * @return the converted image
-     */
+    /// Converts an [AmigaBitmapImage] to [BufferedImage], creating
+    /// a new object if needed.
+    ///
+    /// @param input  the input image
+    /// @param output an optional buffered image that can be used to store the output data
+    /// @return the converted image
     BufferedImage toBufferedImage(AmigaBitmapImage input, BufferedImage output);
 
-    /**
-     * Converts an {@link BufferedImage} to {@link AmigaBitmapImage}, creating
-     * a new object if needed.
-     *
-     * @param input  the input image
-     * @param output an optional bitmap image that can be used to store the output data
-     * @return the converted image
-     */
+    /// Converts an [BufferedImage] to [AmigaBitmapImage], creating
+    /// a new object if needed.
+    ///
+    /// @param input  the input image
+    /// @param output an optional bitmap image that can be used to store the output data
+    /// @return the converted image
     AmigaBitmapImage toBitmapImage(BufferedImage input, AmigaBitmapImage output);
 
     default BufferedImage hamToRgb(BufferedImage input, BufferedImage output) {
@@ -154,14 +142,12 @@ public interface AmigaBitmapImageConverter {
         }
     }
 
-    /**
-     * Converts an {@link BufferedImage} to {@link AmigaBitmapImage}, creating
-     * a new object if needed.
-     *
-     * @param input  the input image
-     * @param output an optional bitmap image that can be used to store the output data
-     * @return the converted image
-     */
+    /// Converts an [BufferedImage] to [AmigaBitmapImage], creating
+    /// a new object if needed.
+    ///
+    /// @param input  the input image
+    /// @param output an optional bitmap image that can be used to store the output data
+    /// @return the converted image
     default AmigaBitmapImage toBitmapImage(ImageProducer input, AmigaBitmapImage output) {
         class MyImageConsumer implements ImageConsumer {
             int width = 0;
@@ -247,11 +233,9 @@ public interface AmigaBitmapImageConverter {
         return toBitmapImage(bufferedImage, output);
     }
 
-    /**
-     * Creates a new instance that is optimized for the current operating system architecture.
-     *
-     * @return a new instance
-     */
+    /// Creates a new instance that is optimized for the current operating system architecture.
+    ///
+    /// @return a new instance
     public static AmigaBitmapImageConverter newInstance() {
         return ("x86_64".equals(System.getProperty("os.arch"))) ? new ParallelExtractAmigaBitmapImageConverter() : new LongMultiplyAmigaBitmapImageConverter();
     }

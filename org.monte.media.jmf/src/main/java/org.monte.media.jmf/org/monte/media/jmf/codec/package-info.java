@@ -2,10 +2,8 @@
  * @(#)package-info.java
  * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
-/**
- * Contains base classes for JMF codecs.
- *
- * @author Werner Randelshofer
- */
+/// Contains base classes for JMF codecs.
+///
+/// @author Werner Randelshofer
 package org.monte.media.jmf.codec;
 

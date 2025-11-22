@@ -7,11 +7,9 @@ package org.monte.media.quicktime.codec.audio;
 
 import org.monte.media.av.CodecSpi;
 
-/**
- * QuickTimePCMAudioCodecSpi.
- *
- * @author Werner Randelshofer
- */
+/// QuickTimePCMAudioCodecSpi.
+///
+/// @author Werner Randelshofer
 public class QuickTimePCMAudioCodecSpi implements CodecSpi {
 
     @Override

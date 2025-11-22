@@ -12,22 +12,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
-/**
- * Parses a CTA-708 stream containing closed captions.
- * <p>
- *
- * <p>
- * References:
- * <dl>
- *     <dt>ANSI/CTA Standard. Digital Television (DTV) Closed Captioning. CTA-708-E S-2023. August 2013.</dt>
- *     <dd><a href="https://shop.cta.tech/collections/standards/products/digital-television-dtv-closed-captioning">
- *         ANSI CTA-708-E S-2023 + Errata Letter and Replacement Pages FINAL.pdf</a></dd>
- * </dl>
- */
+/// Parses a CTA-708 stream containing closed captions.
+///
+///
+/// References:
+/// <dl>
+///     <dt>ANSI/CTA Standard. Digital Television (DTV) Closed Captioning. CTA-708-E S-2023. August 2013.</dt>
+///     <dd>[
+///         ANSI CTA-708-E S-2023 + Errata Letter and Replacement Pages FINAL.pdf](https://shop.cta.tech/collections/standards/products/digital-television-dtv-closed-captioning)</dd>
+/// </dl>
 public class Cta708Parser {
-    /**
-     * Number of bytes of a syntactic element.
-     */
+    /// Number of bytes of a syntactic element.
     private final static int[] numBytes = new int[256];
 
     static {
@@ -45,40 +40,26 @@ public class Cta708Parser {
         Arrays.fill(numBytes, 0x97, 0x9f + 1, 2);
     }
 
-    /**
-     * Skip this opcode.
-     */
+    /// Skip this opcode.
     private final static int TT_SKIP = -1;
-    /**
-     * Extend the DTVCC code space.
-     */
+    /// Extend the DTVCC code space.
     private final static int TT_EXT1 = -2;
-    /**
-     * The ETX code has a special use at the end of a caption text
-     * segment to terminate the segment when the segment is not immediately
-     * followed by another caption command.
-     */
+    /// The ETX code has a special use at the end of a caption text
+    /// segment to terminate the segment when the segment is not immediately
+    /// followed by another caption command.
     private final static int TT_ETX = -3;
-    /**
-     * Carriage Return (CR) moves the current entry point to the beginning of the next row.
-     * If the next row is below the visible window, the window “rolls up” .
-     */
+    /// Carriage Return (CR) moves the current entry point to the beginning of the next row.
+    /// If the next row is below the visible window, the window “rolls up” .
     private final static int TT_CR = -4;
-    /**
-     * Horizontal Carriage Return (HCR) moves the current entry point to the beginning of the current row without row
-     * increment or decrement. It shall erase all text on the row.
-     */
+    /// Horizontal Carriage Return (HCR) moves the current entry point to the beginning of the current row without row
+    /// increment or decrement. It shall erase all text on the row.
     private final static int TT_HCR = -5;
-    /**
-     * Form Feed (FF) erases all text in the window and moves the cursor to the first character position in the
-     * window (0,0). This is equivalent to specifying the window in a ClearWindows (CLW) command, followed by
-     * SetPenLocation (SPL) (0, 0).
-     */
+    /// Form Feed (FF) erases all text in the window and moves the cursor to the first character position in the
+    /// window (0,0). This is equivalent to specifying the window in a ClearWindows (CLW) command, followed by
+    /// SetPenLocation (SPL) (0, 0).
     private final static int TT_FF = -6;
 
-    /**
-     * Code type: Values greater or equal are characters.
-     */
+    /// Code type: Values greater or equal are characters.
     private final static int[] codeType = new int[256];
 
     static {

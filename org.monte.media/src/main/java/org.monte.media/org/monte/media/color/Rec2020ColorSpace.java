@@ -48,7 +48,13 @@ import static org.monte.media.color.ParametricLinearRgbColorSpace.ILLUMINANT_D65
 /// Wikipedia: Rec. 2020
 /// : [wikipedia](https://en.wikipedia.org/wiki/Rec_2020)
 public class Rec2020ColorSpace extends ParametricNonLinearRgbColorSpace {
-    public final static Rec2020ColorSpace INSTANCE = new Rec2020ColorSpace();
+    public static Rec2020ColorSpace getInstance() {
+        class Holder {
+            private static final Rec2020ColorSpace INSTANCE = new Rec2020ColorSpace();
+        }
+        return Holder.INSTANCE;
+    }
+
 
     public Rec2020ColorSpace() {
         super("Rec. 2020", new ParametricLinearRgbColorSpace("Linear Rec. 2020",
@@ -61,11 +67,9 @@ public class Rec2020ColorSpace extends ParametricNonLinearRgbColorSpace {
         );
     }
 
-    /**
-     * Convert an array of linear-light rec2020 RGB  in the range 0.0-1.0
-     * to gamma corrected form.
-     * ITU-R BT.2020-2 p.4
-     */
+    /// Convert an array of linear-light rec2020 RGB  in the range 0.0-1.0
+    /// to gamma corrected form.
+    /// ITU-R BT.2020-2 p.4
     public static float fromLinear(float linear) {
         float α = 1.09929682680944f;
         float β = 0.018053968510807f;
@@ -82,11 +86,9 @@ public class Rec2020ColorSpace extends ParametricNonLinearRgbColorSpace {
         return c;
     }
 
-    /**
-     * Convert an array of rec2020 RGB values in the range 0.0 - 1.0
-     * to linear light (un-companded) form.
-     * ITU-R BT.2020-2 p.4
-     */
+    /// Convert an array of rec2020 RGB values in the range 0.0 - 1.0
+    /// to linear light (un-companded) form.
+    /// ITU-R BT.2020-2 p.4
     public static float toLinear(float nonlinear) {
         float α = 1.09929682680944f;
         float β = 0.018053968510807f;

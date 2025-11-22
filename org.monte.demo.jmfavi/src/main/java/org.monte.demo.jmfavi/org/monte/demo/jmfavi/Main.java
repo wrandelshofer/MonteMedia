@@ -43,16 +43,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
-/**
- * {@code Main}.
- *
- * @author Werner Randelshofer
- */
+/// `Main`.
+///
+/// @author Werner Randelshofer
 public class Main {
 
-    /**
-     * @param args the command line arguments
-     */
+    /// @param args the command line arguments
     public static void main(String[] args) {
         String folder;
         if (args.length > 0) {

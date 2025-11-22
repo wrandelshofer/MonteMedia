@@ -28,21 +28,16 @@ import static org.monte.media.impl.jcodec.codecs.h264.io.model.MBType.P_8x8;
 import static org.monte.media.impl.jcodec.codecs.h264.io.model.MBType.P_8x8ref0;
 import static org.monte.media.impl.jcodec.codecs.h264.io.model.SliceType.P;
 
-/**
- * References:
- * <p>
- * This code has been derived from JCodecProject.
- * <dl>
- *     <dt>JCodecProject. Copyright 2008-2019 JCodecProject.
- *     <br><a href="https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE">BSD 2-Clause License.</a></dt>
- *     <dd><a href="https://github.com/jcodec/jcodec">github.com</a></dd>
- * </dl>
- *
- * <p>
- * A decoder for an individual slice
- *
- * @author The JCodec project
- */
+/// References:
+///
+/// JCodecProject. Copyright 2008-2019 JCodecProject.
+/// : [BSD 2-Clause License.](https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE)
+/// : [github.com](https://github.com/jcodec/jcodec)
+///
+///
+/// A decoder for an individual slice
+///
+/// @author The JCodec project
 public class SliceDecoder {
 
     private Mapper mapper;

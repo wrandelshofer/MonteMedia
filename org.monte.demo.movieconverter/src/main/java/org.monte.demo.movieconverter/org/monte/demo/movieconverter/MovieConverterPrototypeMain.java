@@ -6,11 +6,9 @@ package org.monte.demo.movieconverter;
 
 import org.monte.media.av.Buffer;
 
-/**
- * {@code MovieConverterPrototypeMain}.
- *
- * @author Werner Randelshofer
- */
+/// `MovieConverterPrototypeMain`.
+///
+/// @author Werner Randelshofer
 public class MovieConverterPrototypeMain {
     private static class MovieReader {
 

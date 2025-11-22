@@ -25,11 +25,9 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
 
-/**
- * ColorCyclingMemoryImageSource.
- *
- * @author Werner Randelshofer
- */
+/// ColorCyclingMemoryImageSource.
+///
+/// @author Werner Randelshofer
 public class ColorCyclingMemoryImageSource extends MemoryImageSource {
 
     private int width;
@@ -42,52 +40,42 @@ public class ColorCyclingMemoryImageSource extends MemoryImageSource {
     private ArrayList<ColorCycle> colorCycles = new ArrayList<>();
     private Timer timer;
     private HashSet<ImageConsumer> consumers = new HashSet<>();
-    /**
-     * Whether color cycling is available.
-     */
+    /// Whether color cycling is available.
     private boolean isColorCyclingAvailable;
-    /**
-     * Whether color cycling is started.
-     */
+    /// Whether color cycling is started.
     private boolean isStarted;
-    /**
-     * Whether color cycles are blended.
-     */
+    /// Whether color cycles are blended.
     private boolean isBlendedColorCycling;
     private volatile ColorModel cycledModel;
 
-    /**
-     * Constructs an ImageProducer object which uses an array of bytes to
-     * produce data for an Image object.
-     *
-     * @param w    the width of the rectangle of pixels
-     * @param h    the height of the rectangle of pixels
-     * @param cm   the specified <code>ColorModel</code>
-     * @param pix  an array of pixels
-     * @param off  the offset into the array of where to store the first pixel
-     * @param scan the distance from one row of pixels to the next in the array
-     * @see java.awt.Component#createImage
-     */
+    /// Constructs an ImageProducer object which uses an array of bytes to
+    /// produce data for an Image object.
+    ///
+    /// @param w    the width of the rectangle of pixels
+    /// @param h    the height of the rectangle of pixels
+    /// @param cm   the specified [ColorModel]
+    /// @param pix  an array of pixels
+    /// @param off  the offset into the array of where to store the first pixel
+    /// @param scan the distance from one row of pixels to the next in the array
+    /// @see java.awt.Component#createImage
     public ColorCyclingMemoryImageSource(int w, int h, ColorModel cm,
                                          byte[] pix, int off, int scan) {
         super(w, h, cm, pix, off, scan);
         initialize(w, h, cm, (Object) pix, off, scan, new Hashtable<>());
     }
 
-    /**
-     * Constructs an ImageProducer object which uses an array of bytes to
-     * produce data for an Image object.
-     *
-     * @param w     the width of the rectangle of pixels
-     * @param h     the height of the rectangle of pixels
-     * @param cm    the specified <code>ColorModel</code>
-     * @param pix   an array of pixels
-     * @param off   the offset into the array of where to store the first pixel
-     * @param scan  the distance from one row of pixels to the next in the array
-     * @param props a list of properties that the <code>ImageProducer</code>
-     *              uses to process an image
-     * @see java.awt.Component#createImage
-     */
+    /// Constructs an ImageProducer object which uses an array of bytes to
+    /// produce data for an Image object.
+    ///
+    /// @param w     the width of the rectangle of pixels
+    /// @param h     the height of the rectangle of pixels
+    /// @param cm    the specified [ColorModel]
+    /// @param pix   an array of pixels
+    /// @param off   the offset into the array of where to store the first pixel
+    /// @param scan  the distance from one row of pixels to the next in the array
+    /// @param props a list of properties that the [ImageProducer]
+    ///                                                                  uses to process an image
+    /// @see java.awt.Component#createImage
     public ColorCyclingMemoryImageSource(int w, int h, ColorModel cm,
                                          byte[] pix, int off, int scan,
                                          Hashtable<?, ?> props) {
@@ -95,38 +83,34 @@ public class ColorCyclingMemoryImageSource extends MemoryImageSource {
         initialize(w, h, cm, (Object) pix, off, scan, props);
     }
 
-    /**
-     * Constructs an ImageProducer object which uses an array of integers to
-     * produce data for an Image object.
-     *
-     * @param w    the width of the rectangle of pixels
-     * @param h    the height of the rectangle of pixels
-     * @param cm   the specified <code>ColorModel</code>
-     * @param pix  an array of pixels
-     * @param off  the offset into the array of where to store the first pixel
-     * @param scan the distance from one row of pixels to the next in the array
-     * @see java.awt.Component#createImage
-     */
+    /// Constructs an ImageProducer object which uses an array of integers to
+    /// produce data for an Image object.
+    ///
+    /// @param w    the width of the rectangle of pixels
+    /// @param h    the height of the rectangle of pixels
+    /// @param cm   the specified [ColorModel]
+    /// @param pix  an array of pixels
+    /// @param off  the offset into the array of where to store the first pixel
+    /// @param scan the distance from one row of pixels to the next in the array
+    /// @see java.awt.Component#createImage
     public ColorCyclingMemoryImageSource(int w, int h, ColorModel cm,
                                          int[] pix, int off, int scan) {
         super(w, h, cm, pix, off, scan);
         initialize(w, h, cm, (Object) pix, off, scan, null);
     }
 
-    /**
-     * Constructs an ImageProducer object which uses an array of integers to
-     * produce data for an Image object.
-     *
-     * @param w     the width of the rectangle of pixels
-     * @param h     the height of the rectangle of pixels
-     * @param cm    the specified <code>ColorModel</code>
-     * @param pix   an array of pixels
-     * @param off   the offset into the array of where to store the first pixel
-     * @param scan  the distance from one row of pixels to the next in the array
-     * @param props a list of properties that the <code>ImageProducer</code>
-     *              uses to process an image
-     * @see java.awt.Component#createImage
-     */
+    /// Constructs an ImageProducer object which uses an array of integers to
+    /// produce data for an Image object.
+    ///
+    /// @param w     the width of the rectangle of pixels
+    /// @param h     the height of the rectangle of pixels
+    /// @param cm    the specified [ColorModel]
+    /// @param pix   an array of pixels
+    /// @param off   the offset into the array of where to store the first pixel
+    /// @param scan  the distance from one row of pixels to the next in the array
+    /// @param props a list of properties that the [ImageProducer]
+    ///                                                     uses to process an image
+    /// @see java.awt.Component#createImage
     public ColorCyclingMemoryImageSource(int w, int h, ColorModel cm,
                                          int[] pix, int off, int scan,
                                          Hashtable<?, ?> props) {
@@ -171,20 +155,18 @@ public class ColorCyclingMemoryImageSource extends MemoryImageSource {
         super.newPixels(newpix, cycledModel == null ? newmodel : cycledModel, offset, scansize);
     }
 
-    /**
-     * Changes to a new int array to hold the pixels for this image. If the
-     * animation flag has been turned on through the setAnimated() method, then
-     * the new pixels will be immediately delivered to any ImageConsumers that
-     * are currently interested in the data for this image.
-     *
-     * @param newpix   the new pixel array
-     * @param newmodel the specified <code>ColorModel</code>
-     * @param offset   the offset into the array
-     * @param scansize the distance from one row of pixels to the next in the
-     *                 array
-     * @see #newPixels(int, int, int, int, boolean)
-     * @see #setAnimated
-     */
+    /// Changes to a new int array to hold the pixels for this image. If the
+    /// animation flag has been turned on through the setAnimated() method, then
+    /// the new pixels will be immediately delivered to any ImageConsumers that
+    /// are currently interested in the data for this image.
+    ///
+    /// @param newpix   the new pixel array
+    /// @param newmodel the specified [ColorModel]
+    /// @param offset   the offset into the array
+    /// @param scansize the distance from one row of pixels to the next in the
+    ///                                                                 array
+    /// @see #newPixels(int, int, int, int, boolean)
+    /// @see #setAnimated
     @Override
     public synchronized void newPixels(int[] newpix, ColorModel newmodel,
                                        int offset, int scansize) {
@@ -229,9 +211,7 @@ public class ColorCyclingMemoryImageSource extends MemoryImageSource {
         }
     }
 
-    /**
-     * Starts or stops color cycling.
-     */
+    /// Starts or stops color cycling.
     public void setColorCyclingStarted(boolean b) {
         isStarted = b;
         if (isColorCyclingAvailable && !consumers.isEmpty() && isStarted) {
@@ -241,23 +221,17 @@ public class ColorCyclingMemoryImageSource extends MemoryImageSource {
         }
     }
 
-    /**
-     * Returns true if color cycling is on.
-     */
+    /// Returns true if color cycling is on.
     public boolean isColorCyclingStarted() {
         return isStarted;
     }
 
-    /**
-     * Starts color cycling.
-     */
+    /// Starts color cycling.
     public void start() {
         setColorCyclingStarted(true);
     }
 
-    /**
-     * Stops color cycling.
-     */
+    /// Stops color cycling.
     public void stop() {
         setColorCyclingStarted(false);
     }
@@ -349,10 +323,8 @@ public class ColorCyclingMemoryImageSource extends MemoryImageSource {
 
     }
 
-    /**
-     * Creates a BufferedImage which shares its pixel data with this memory
-     * image source.
-     */
+    /// Creates a BufferedImage which shares its pixel data with this memory
+    /// image source.
     public BufferedImage toBufferedImage() {
         DataBuffer buf = (pixels instanceof byte[]) ?//
                 new DataBufferByte((byte[]) pixels, pixelscan * height, pixeloffset) ://

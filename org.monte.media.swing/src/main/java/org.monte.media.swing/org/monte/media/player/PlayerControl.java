@@ -7,11 +7,9 @@ package org.monte.media.player;
 
 import java.awt.Component;
 
-/**
- * A @code PlayerControl} can be used to control a movie using a user interface.
- *
- * @author Werner Randelshofer
- */
+/// A @code PlayerControl} can be used to control a movie using a user interface.
+///
+/// @author Werner Randelshofer
 public interface PlayerControl {
     public void setPlayer(Player player);
 

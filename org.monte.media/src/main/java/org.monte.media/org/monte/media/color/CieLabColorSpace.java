@@ -7,73 +7,66 @@ package org.monte.media.color;
 
 import java.io.Serial;
 
-/**
- * The 1976 CIE {@code L*a*b*} color space (CIELAB).
- * <p>
- * The {@code L*} coordinate of an object
- * is the lightness intensity as measured on a scale from 0 to 100, where 0
- * represents black and 100 represents white.
- * <p>
- * The {@code a*} coordinate of an object
- * represents the position of the object’s color on a pure green and pure red
- * scale, where -127 represents pure green and +127 represents pure red.
- * <p>
- * The {@code b*} coordinate represents the position of the object’s color on a pure blue
- * and pure yellow scale, where -127 represents pure blue and +127 represents
- * pure yellow.
- * <p>
- * The {@code a*} and {@code b*} values are unbounded. CSS associates the range of ±125 to
- * the range of -100% to +100%.
- * <p>
- * The distance that can be calculated between two colors, is directly proportional to
- * the difference between the two colors as perceived by the human eye.
- * <p>
- * References:
- * <dl>
- *     <dt>CSS Color Module Level 4, §9.3 Specifying Lab and LCH: the lab() and lch() functional notations</dt>
- *     <dd><a href="https://www.w3.org/TR/2025/CRD-css-color-4-20250424/#specifying-lab-lch">csswg.org</a></dd>
- * </dl>
- */
+/// The 1976 CIE `L*a*b*` color space (CIELAB).
+///
+/// The `L*` coordinate of an object
+/// is the lightness intensity as measured on a scale from 0 to 100, where 0
+/// represents black and 100 represents white.
+///
+/// The `a*` coordinate of an object
+/// represents the position of the object’s color on a pure green and pure red
+/// scale, where -127 represents pure green and +127 represents pure red.
+///
+/// The `b*` coordinate represents the position of the object’s color on a pure blue
+/// and pure yellow scale, where -127 represents pure blue and +127 represents
+/// pure yellow.
+///
+/// The `a*` and `b*` values are unbounded. CSS associates the range of ±125 to
+/// the range of -100% to +100%.
+///
+/// The distance that can be calculated between two colors, is directly proportional to
+/// the difference between the two colors as perceived by the human eye.
+///
+/// References:
+///
+/// CSS Color Module Level 4, §9.3 Specifying Lab and LCH: the lab() and lch() functional notations
+/// : [csswg.org](https://www.w3.org/TR/2025/CRD-css-color-4-20250424/#specifying-lab-lch)
+///
 public class CieLabColorSpace extends AbstractNamedColorSpace {
 
-    public final static CieLabColorSpace INSTANCE = new CieLabColorSpace();
+    public static CieLabColorSpace getInstance() {
+        class Holder {
+            private static final CieLabColorSpace INSTANCE = new CieLabColorSpace();
+        }
+        return Holder.INSTANCE;
+    }
+
+
     @Serial
     private static final long serialVersionUID = 1L;
 
-    /**
-     * The X coordinate of the reference white.
-     */
+    /// The X coordinate of the reference white.
     final private double Xw;
-    /**
-     * The Y coordinate of the reference white.
-     */
+    /// The Y coordinate of the reference white.
     final private double Yw;
-    /**
-     * The Z coordinate of the reference white.
-     */
+    /// The Z coordinate of the reference white.
     final private double Zw;
-    /**
-     * Epsilon
-     */
+    /// Epsilon
     private static final double eps = 216d / 24389d;
     private static final double k = 24389d / 27d;
 
-    /**
-     * Creates a new instance with the  XYZ coordinates of the
-     * CIE Standard Illuminant D65 reference white.
-     */
+    /// Creates a new instance with the  XYZ coordinates of the
+    /// CIE Standard Illuminant D65 reference white.
     public CieLabColorSpace() {
         this(0.9505d, 1d, 1.0890d);
     }
 
-    /**
-     * Creates a new instance with the given XYZ coordinates of the
-     * reference white.
-     *
-     * @param Xw X coordinate of the reference white
-     * @param Yw Y coordinate of the reference white
-     * @param Zw Z coordinate of the reference white
-     */
+    /// Creates a new instance with the given XYZ coordinates of the
+    /// reference white.
+    ///
+    /// @param Xw X coordinate of the reference white
+    /// @param Yw Y coordinate of the reference white
+    /// @param Zw Z coordinate of the reference white
     public CieLabColorSpace(double Xw, double Yw, double Zw) {
         super(TYPE_Lab, 3);
 
@@ -92,39 +85,37 @@ public class CieLabColorSpace extends AbstractNamedColorSpace {
         return fromCIEXYZ(new SrgbColorSpace().toCIEXYZ(rgb, component), component);
     }
 
-    /**
-     * Lab to XYZ.
-     * <pre>
-     * X = xr*Xw;
-     * Y = yr*Yw;
-     * Z = zr*Zw;
-     * </pre> where
-     * <pre>
-     * xr = fx^3, if fx^3 &gt; eps
-     *    = (116*fx - 16)/k, if fx^3 &lt;= eps
-     *
-     * yr = ((L+16)/116)^3, if L &gt; k*eps
-     *    = L/k, if L &lt;= k*eps
-     *
-     * zr = fz^3, if fz^3 &gt; eps
-     *    = (116*fz - 16)/k, if fz^3 &lt;= eps
-     *
-     * fx = a/500+fy
-     *
-     * fz = fy - b / 200
-     *
-     * fy = (L+16)/116
-     *
-     * eps = 216/24389
-     * k = 24389/27
-     * </pre>
-     * <p>
-     * Source: <a href="http://www.brucelindbloom.com/index.html?Equations.html"
-     * >http://www.brucelindbloom.com/index.html?Equations.html</a>
-     *
-     * @param colorvalue Lab color value.
-     * @return CIEXYZ color value.
-     */
+    /// Lab to XYZ.
+    /// <pre>
+    /// X = xr*Xw;
+    /// Y = yr*Yw;
+    /// Z = zr*Zw;
+    /// </pre> where
+    /// <pre>
+    /// xr = fx^3, if fx^3 &gt; eps
+    ///    = (116*fx - 16)/k, if fx^3 &lt;= eps
+    ///
+    /// yr = ((L+16)/116)^3, if L &gt; k*eps
+    ///    = L/k, if L &lt;= k*eps
+    ///
+    /// zr = fz^3, if fz^3 &gt; eps
+    ///    = (116*fz - 16)/k, if fz^3 &lt;= eps
+    ///
+    /// fx = a/500+fy
+    ///
+    /// fz = fy - b / 200
+    ///
+    /// fy = (L+16)/116
+    ///
+    /// eps = 216/24389
+    /// k = 24389/27
+    /// </pre>
+    ///
+    /// Source: <a href="http://www.brucelindbloom.com/index.html?Equations.html"
+    /// >http://www.brucelindbloom.com/index.html?Equations.html</a>
+    ///
+    /// @param colorvalue Lab color value.
+    /// @return CIEXYZ color value.
     @Override
     public float[] toCIEXYZ(float[] colorvalue, float[] xyz) {
         double L = colorvalue[0];
@@ -168,37 +159,35 @@ public class CieLabColorSpace extends AbstractNamedColorSpace {
         return xyz;
     }
 
-    /**
-     * XYZ to Lab.
-     * <pre>
-     * L = 116*fy - 16
-     * a = 500 * (fx - fy)
-     * b = 200 * (fy - fz)
-     * </pre> where
-     * <pre>
-     * fx = xr^(1/3), if xr &gt; eps
-     *    = (k*xr + 16) / 116 if xr &lt;= eps
-     *
-     * fy = yr^(1/3), if yr &gt; eps
-     *    = (k*yr + 16) / 116 if yr &lt;= eps
-     *
-     * fz = zr^(1/3), if zr &gt; eps
-     *    = (k*zr + 16) / 116 if zr &lt;= eps
-     *
-     * xr = X / Xw
-     * yr = Y / Yw
-     * zr = Z / Zw
-     *
-     * eps = 216/24389
-     * k = 24389/27
-     * </pre>
-     * <p>
-     * Source: <a href="http://www.brucelindbloom.com/index.html?Equations.html"
-     * >http://www.brucelindbloom.com/index.html?Equations.html</a>
-     *
-     * @param xyz CIEXYZ color value.
-     * @return Lab color value.
-     */
+    /// XYZ to Lab.
+    /// <pre>
+    /// L = 116*fy - 16
+    /// a = 500 * (fx - fy)
+    /// b = 200 * (fy - fz)
+    /// </pre> where
+    /// <pre>
+    /// fx = xr^(1/3), if xr &gt; eps
+    ///    = (k*xr + 16) / 116 if xr &lt;= eps
+    ///
+    /// fy = yr^(1/3), if yr &gt; eps
+    ///    = (k*yr + 16) / 116 if yr &lt;= eps
+    ///
+    /// fz = zr^(1/3), if zr &gt; eps
+    ///    = (k*zr + 16) / 116 if zr &lt;= eps
+    ///
+    /// xr = X / Xw
+    /// yr = Y / Yw
+    /// zr = Z / Zw
+    ///
+    /// eps = 216/24389
+    /// k = 24389/27
+    /// </pre>
+    ///
+    /// Source: <a href="http://www.brucelindbloom.com/index.html?Equations.html"
+    /// >http://www.brucelindbloom.com/index.html?Equations.html</a>
+    ///
+    /// @param xyz CIEXYZ color value.
+    /// @return Lab color value.
     @Override
     public float[] fromCIEXYZ(float[] xyz, float[] component) {
         double X = xyz[0];

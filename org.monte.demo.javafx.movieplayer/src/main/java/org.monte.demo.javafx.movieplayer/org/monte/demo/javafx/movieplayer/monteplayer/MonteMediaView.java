@@ -3,10 +3,7 @@
  * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 
-/**
- * Sample Skeleton for 'MonteMediaView.fxml' Controller Class
- */
-
+/// Sample Skeleton for 'MonteMediaView.fxml' Controller Class
 package org.monte.demo.javafx.movieplayer.monteplayer;
 
 import javafx.beans.binding.Bindings;

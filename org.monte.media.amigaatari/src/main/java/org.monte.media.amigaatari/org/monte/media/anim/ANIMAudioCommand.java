@@ -9,79 +9,59 @@ import org.monte.media.eightsvx.EightSVXAudioClip;
 import org.monte.media.eightsvx.LoopableAudioClip;
 
 
-/**
- * An ANIMAudioCommand handles an audio command that is associated to
- * a single ANIMFrame of a ANIMMovieTrack. An ANIMFrame may be associated
- * to multiple ANIMAudioCommands.
- * <p>
- * This version of ANIMAudioCommand is designed to handle audio commands
- * as specified by the ANIM+SLA Sound Control collection chunk (ILBM SCTL).
- * <p>
- * Here's the specification of the SCTL collection chunk:
- * <pre>
- * typedef UBYTE Command; // Choice of commands
- * #define cmdPlaySound 1 // Start playing a sound
- * #define cmdStopSound 2 // Stop the sound in a given channelMask
- * #define cmdSetFreqvol 3 // Change frequency/volume for a channelMask
- *
- * typedef USHORT Flags; // Choice of flags
- * #define flagNoInterrupt 1 // Play the sound, but only if
- *                           // the channelMask isn't in use
- *
- * typedef struct {
- * Command  command;   // What to do, see above
- * UBYTE    volume;    // Volume 0..64
- * UWORD    sound,     // Sound number (one based)
- *          repeats,   // Number of times to play the sound
- *          channelMask,   // Channel(s) to use for playing (bit mask)
- *          frequency; // If non-zero, overrides the VHDR value
- * Flags    flags;     // Flags, see above
- * UBYTE    pad[4];       // For future use
- * </pre>
- *
- * @author Werner Randelshofer
- */
+/// An ANIMAudioCommand handles an audio command that is associated to
+/// a single ANIMFrame of a ANIMMovieTrack. An ANIMFrame may be associated
+/// to multiple ANIMAudioCommands.
+///
+/// This version of ANIMAudioCommand is designed to handle audio commands
+/// as specified by the ANIM+SLA Sound Control collection chunk (ILBM SCTL).
+///
+/// Here's the specification of the SCTL collection chunk:
+/// <pre>
+/// typedef UBYTE Command; // Choice of commands
+/// #define cmdPlaySound 1 // Start playing a sound
+/// #define cmdStopSound 2 // Stop the sound in a given channelMask
+/// #define cmdSetFreqvol 3 // Change frequency/volume for a channelMask
+///
+/// typedef USHORT Flags; // Choice of flags
+/// #define flagNoInterrupt 1 // Play the sound, but only if
+///                           // the channelMask isn't in use
+///
+/// typedef struct {
+/// Command  command;   // What to do, see above
+/// UBYTE    volume;    // Volume 0..64
+/// UWORD    sound,     // Sound number (one based)
+///          repeats,   // Number of times to play the sound
+///          channelMask,   // Channel(s) to use for playing (bit mask)
+///          frequency; // If non-zero, overrides the VHDR value
+/// Flags    flags;     // Flags, see above
+/// UBYTE    pad[4];       // For future use
+/// </pre>
+///
+/// @author Werner Randelshofer
 public class ANIMAudioCommand {
-    /**
-     * Start playing a sound.
-     */
+    /// Start playing a sound.
     public final static int COMMAND_PLAY_SOUND = 1;
-    /**
-     * Stop the sound in a given channelMask.
-     */
+    /// Stop the sound in a given channelMask.
     public final static int COMMAND_STOP_SOUND = 2;
-    /**
-     * Change frequency/volume for a channelMask.
-     */
+    /// Change frequency/volume for a channelMask.
     public final static int COMMAND_SET_FREQVOL = 3;
 
-    /**
-     * Play the sound, but only if
-     * the channelMask isn't in use.
-     */
+    /// Play the sound, but only if
+    /// the channelMask isn't in use.
     public final static int FLAG_NO_INTERRUPT = 1;
-    /**
-     * What to do.
-     */
+    /// What to do.
     private int command;
-    /**
-     * Volume 0..64
-     */
+    /// Volume 0..64
     private int volume;
-    /**
-     * Sound number (one based).
-     */
+    /// Sound number (one based).
     private int sound;
-    /**
-     * Number of times to play the sound.
-     */
+    /// Number of times to play the sound.
     private int repeats;
-    /**
-     * Channel(s) to use for playing (bit mask).
-     * The channel mask tells which channel(s) we want.
-     * The code is 1=channel0 (left), 2=channel1 (right), 4=channel2 (left),
-     * 8=channel3 (right). If you want more than one channel, add the codes up.
-     */
+    /// Channel(s) to use for playing (bit mask).
+    /// The channel mask tells which channel(s) we want.
+    /// The code is 1=channel0 (left), 2=channel1 (right), 4=channel2 (left),
+    /// 8=channel3 (right). If you want more than one channel, add the codes up.
     private int channelMask;
 
     private final static int
@@ -92,29 +72,19 @@ public class ANIMAudioCommand {
     private final static int CHANNEL_LEFT_MASK = CHANNEL0_MASK | CHANNEL2_MASK;
     private final static int CHANNEL_RIGHT_MASK = CHANNEL1_MASK | CHANNEL3_MASK;
 
-    /**
-     * If non-zero, overrides the VHDR value.
-     */
+    /// If non-zero, overrides the VHDR value.
     private int frequency;
-    /**
-     * Flags, see above.
-     */
+    /// Flags, see above.
     private int flags;
 
-    /**
-     * Channel(s) that are in use now for playing (bit mask).
-     * If this mask is != zero, then this audio command is playing sound.
-     */
+    /// Channel(s) that are in use now for playing (bit mask).
+    /// If this mask is != zero, then this audio command is playing sound.
     private int activeChannelMask;
 
-    /**
-     * The prepared audio data.
-     */
+    /// The prepared audio data.
     private LoopableAudioClip audioClip;
 
-    /**
-     * Creates a new instance.
-     */
+    /// Creates a new instance.
     public ANIMAudioCommand(int command, int volume, int sound, int repeats, int channelMask, int frequency, int flags) {
         this.command = command;
         this.volume = volume;
@@ -190,9 +160,7 @@ public class ANIMAudioCommand {
         }
     }
 
-    /**
-     * Stops playback of this audio command on the specified channels.
-     */
+    /// Stops playback of this audio command on the specified channels.
     public void stop(ANIMMovieResources track, int channelMask) {
         activeChannelMask &= ~channelMask;
         if (activeChannelMask == 0) {

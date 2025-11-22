@@ -11,30 +11,24 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.SequencedMap;
 
-/**
- * Represents one sample of a sprite media.
- * <p>
- * References:
- * <dl>
- *     <dt>Sprite Sample Data</dt>
- *     <dd>
- *         "QuickTime File Format Specification", Apple Inc. 2010-08-03. (qtff)
- *          <a href="http://developer.apple.com/library/mac/documentation/QuickTime/QTFF/qtff.pdf/">
- *          http://developer.apple.com/library/mac/documentation/QuickTime/QTFF/qtff.pdf
- *          </a>
- *     </dd>
- * </dl>
- */
+/// Represents one sample of a sprite media.
+///
+/// References:
+///
+/// Sprite Sample Data
+/// :
+///         "QuickTime File Format Specification", Apple Inc. 2010-08-03. (qtff)
+///          [
+///          http://developer.apple.com/library/mac/documentation/QuickTime/QTFF/qtff.pdf
+///          ](http://developer.apple.com/library/mac/documentation/QuickTime/QTFF/qtff.pdf/)
+///
+///
 public class SpriteSample implements Cloneable {
-    /**
-     * Sprite images.
-     * <p>
-     * Images with ids 1,2,3,… are stored at indices 0,1,2,… .
-     */
+    /// Sprite images.
+    ///
+    /// Images with ids 1,2,3,… are stored at indices 0,1,2,… .
     public List<BufferedImage> images = new ArrayList<>();
-    /**
-     * Sprite properties.
-     */
+    /// Sprite properties.
     public SequencedMap<Integer, Sprite> sprites = new LinkedHashMap<>();
 
     @Override

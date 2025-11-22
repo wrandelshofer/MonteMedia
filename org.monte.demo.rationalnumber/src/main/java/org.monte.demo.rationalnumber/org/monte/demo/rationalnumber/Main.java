@@ -6,16 +6,12 @@ package org.monte.demo.rationalnumber;
 
 import org.monte.media.math.Rational;
 
-/**
- * {@code Main}.
- *
- * @author Werner Randelshofer
- */
+/// `Main`.
+///
+/// @author Werner Randelshofer
 public class Main {
 
-    /**
-     * @param args the command line arguments
-     */
+    /// @param args the command line arguments
     public static void main(String[] args) {
         arithmetics();
     }

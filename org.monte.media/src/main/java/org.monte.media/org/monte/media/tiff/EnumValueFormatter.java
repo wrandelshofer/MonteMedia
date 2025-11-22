@@ -6,19 +6,15 @@ package org.monte.media.tiff;
 
 import java.util.HashMap;
 
-/**
- * Formats integer values as an enumeration.
- *
- * @author Werner Randelshofer
- */
+/// Formats integer values as an enumeration.
+///
+/// @author Werner Randelshofer
 public class EnumValueFormatter implements ValueFormatter {
 
     private HashMap<Integer, String> enumMap;
 
-    /**
-     * Creates a new enumeration.
-     * The enumeration consists of a list of String=Integer pairs.
-     */
+    /// Creates a new enumeration.
+    /// The enumeration consists of a list of String=Integer pairs.
     public EnumValueFormatter(Object... enumeration) {
         enumMap = new HashMap<>();
         for (int i = 0; i < enumeration.length; i += 2) {

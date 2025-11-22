@@ -3,9 +3,11 @@
  * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 
-package org.monte.media.image;
+package org.monte.media.image.op;
 
 import org.junit.jupiter.api.Test;
+import org.monte.media.image.FloatImages;
+import org.monte.media.image.TestImageFactory;
 import org.monte.media.image.algo.BilinearInterpolationResampleAlgoFloat;
 import org.monte.media.image.algo.NearestNeighbourResampleAlgoFloat;
 import org.monte.media.image.algo.ResampleAlgoFloat;

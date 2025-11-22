@@ -2,9 +2,7 @@
  * @(#)package-info.java
  * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
-/**
- * Provides utility classes for stream processing.
- *
- * @author Werner Randelshofer
- */
+/// Provides utility classes for stream processing.
+///
+/// @author Werner Randelshofer
 package org.monte.media.util.stream;

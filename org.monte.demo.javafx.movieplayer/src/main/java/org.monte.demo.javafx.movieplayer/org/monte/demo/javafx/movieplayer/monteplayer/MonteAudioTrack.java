@@ -26,9 +26,7 @@ public class MonteAudioTrack extends AbstractAudioTrack implements MonteTrackInt
     protected long renderedUntilNanoTime;
     private SourceDataLine sourceDataLine;
     private final AtomicReference<Rational> seekTime = new AtomicReference<>();
-    /**
-     * The dispatcher.
-     */
+    /// The dispatcher.
     private ExecutorService dispatcher = Executors.newSingleThreadExecutor(new ThreadFactory() {
         @Override
         public Thread newThread(Runnable r) {

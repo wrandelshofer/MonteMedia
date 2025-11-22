@@ -6,17 +6,13 @@ package org.monte.media.av.codec.text;
 
 import org.monte.media.av.FormatKeys;
 
-/**
- * Defines common format keys for video media.
- *
- * @author Werner Randelshofer
- */
+/// Defines common format keys for video media.
+///
+/// @author Werner Randelshofer
 public class TextFormatKeys extends FormatKeys {
     // Standard text ENCODING strings for use with FormatKey.Encoding.
     public static final String ENCODING_STRING = "String";
     public static final String ENCODING_HTML = "HTML";
-    /**
-     * Apple Closed Caption format.
-     */
+    /// Apple Closed Caption format.
     public static final String ENCODING_CLOSED_CAPTION = "clcp";
 }

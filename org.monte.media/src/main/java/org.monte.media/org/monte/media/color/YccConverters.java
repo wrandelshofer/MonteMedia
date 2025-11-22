@@ -9,15 +9,11 @@ import static org.monte.media.util.MathUtil.clamp;
 
 
 public class YccConverters {
-    /**
-     * Don't let anyone instantiate this class.
-     */
+    /// Don't let anyone instantiate this class.
     private YccConverters() {
     }
 
-    /**
-     * YCC 8-bit per channel to RGB 8-bit per channel.
-     */
+    /// YCC 8-bit per channel to RGB 8-bit per channel.
     private static void RGB24toYCC24(int[] rgb, int[] ycc) {
         int R = rgb[0];
         int G = rgb[1];
@@ -35,9 +31,7 @@ public class YccConverters {
         ycc[2] = clamp(Cr, 0, 255);
     }
 
-    /**
-     * RGB 8-bit per channel to YCC 16-bit per channel.
-     */
+    /// RGB 8-bit per channel to YCC 16-bit per channel.
     private static void RGB24toYCC48(int[] rgb, int[] ycc) {
         int R = rgb[0];
         int G = rgb[1];
@@ -52,9 +46,7 @@ public class YccConverters {
         ycc[2] = Cr;
     }
 
-    /**
-     * RGB 8-bit per channel to YCC 16-bit per channel.
-     */
+    /// RGB 8-bit per channel to YCC 16-bit per channel.
     private static void RGB24toYCC48(int rgb, int[] ycc) {
         int R = (rgb & 0xff0000) >>> 16;
         int G = (rgb & 0xff00) >>> 8;
@@ -83,9 +75,7 @@ public class YccConverters {
         ycc[2] = Cr;
     }
 
-    /**
-     * YCC 8-bit per channel to RGB 8-bit per channel.
-     */
+    /// YCC 8-bit per channel to RGB 8-bit per channel.
     private static void YCC24toRGB24(int[] ycc, int[] rgb) {
         int Y = ycc[0];
         int Cb = ycc[1];
@@ -103,9 +93,7 @@ public class YccConverters {
         rgb[2] = clamp(B, 0, 255);
     }
 
-    /**
-     * YCC 16-bit per channel to RGB 8-bit per channel.
-     */
+    /// YCC 16-bit per channel to RGB 8-bit per channel.
     private static void YCC48toRGB24(int[] ycc, int[] rgb) {
         int Y = ycc[0];
         int Cb = ycc[1];

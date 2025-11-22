@@ -12,23 +12,19 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.awt.image.SinglePixelPackedSampleModel;
 
-/**
- * FXImages.
- *
- * @author Werner Randelshofer
- */
+/// FXImages.
+///
+/// @author Werner Randelshofer
 public class FXImages {
 
-    /**
-     * Converts an AWT image to Java FX.
-     * <p>
-     * This method performs better than SwingFXUtils on Java SE 8 if the
-     * underlying Raster has a DataBufferInt.
-     *
-     * @param bimg A buffered image, must not be null.
-     * @param wimg A writable image, can be null.
-     * @return a JavaFX writable image
-     */
+    /// Converts an AWT image to Java FX.
+    ///
+    /// This method performs better than SwingFXUtils on Java SE 8 if the
+    /// underlying Raster has a DataBufferInt.
+    ///
+    /// @param bimg A buffered image, must not be null.
+    /// @param wimg A writable image, can be null.
+    /// @return a JavaFX writable image
     public static WritableImage toFXImage(BufferedImage bimg, WritableImage wimg) {
         final int w = bimg.getWidth();
         final int h = bimg.getHeight();
@@ -74,9 +70,7 @@ public class FXImages {
         return SwingFXUtils.toFXImage(bimg, wimg);
     }
 
-    /**
-     * Prevent instance creation.
-     */
+    /// Prevent instance creation.
     private FXImages() {
     }
 }

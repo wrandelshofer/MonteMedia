@@ -19,9 +19,7 @@ import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-/**
- * Takes any IFF file and extracts the body of the i-th chunk.
- */
+/// Takes any IFF file and extracts the body of the i-th chunk.
 public class SiftRemove {
     public void remove(Path inputPath, Path outputPath, int extractionIndex) throws IOException, ParseException, AbortException {
         class MyVisitor implements IFFVisitor {

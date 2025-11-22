@@ -14,60 +14,52 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ColorModel;
-import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferFloat;
 import java.awt.image.Kernel;
+import java.util.stream.IntStream;
 
 import static java.lang.Math.clamp;
 
 
-/**
- * A convolution filter for images that have a data buffer of type {@link DataBuffer#TYPE_FLOAT}.
- * <p>
- * References:
- * <dl>
- *     <dt>Jerry Huxtable, Jerry's Java Image Processing Pages. MIT License.</dt>
- *     <dd><a href="http://www.jhlabs.com/ip/filters/download.html">jhlabs.com</a></dd>
- * </dl>
- */
+/// A convolution filter for images that have a data buffer of type [#TYPE_FLOAT].
+///
+/// References:
+///
+/// Jerry Huxtable, Jerry's Java Image Processing Pages. MIT License.
+/// : [jhlabs.com](http://www.jhlabs.com/ip/filters/download.html)
+///
 public class ConvolveOp implements BufferedImageOp {
     private final Kernel kernel;
     private final EdgeAction edgeAction;
 
 
-    /**
-     * Creates a new instance with {@link MirrorEdgeAction}.
-     *
-     * @param kernel the kernel
-     */
+    /// Creates a new instance with [MirrorEdgeAction].
+    ///
+    /// @param kernel the kernel
     public ConvolveOp(Kernel kernel) {
         this(kernel, new MirrorEdgeAction());
     }
 
-    /**
-     * Creates a new instance.
-     *
-     * @param kernel     the kernel
-     * @param edgeAction the edge action
-     */
+    /// Creates a new instance.
+    ///
+    /// @param kernel     the kernel
+    /// @param edgeAction the edge action
     public ConvolveOp(Kernel kernel, EdgeAction edgeAction) {
         this.kernel = kernel;
         this.edgeAction = edgeAction;
     }
 
-    /**
-     * Transforms the source {@link BufferedImage} and stores the result
-     * in the destination {@link BufferedImage}.
-     * <p>
-     * If the color models for the two images do not match, a color conversion
-     * into the destination color model is performed.
-     *
-     * @param src The {@code BufferedImage} to be filtered
-     * @param dst The {@code BufferedImage} in which to store the results$
-     * @return the filtered image
-     * @throws IllegalArgumentException if {@code src} and{@code dst} are the same
-     *                                  or if {@code dst} does not have a buffer of type {@link DataBufferFloat}.
-     */
+    /// Transforms the source [BufferedImage] and stores the result
+    /// in the destination [BufferedImage].
+    ///
+    /// If the color models for the two images do not match, a color conversion
+    /// into the destination color model is performed.
+    ///
+    /// @param src The `BufferedImage` to be filtered
+    /// @param dst The `BufferedImage` in which to store the results$
+    /// @return the filtered image
+    /// @throws IllegalArgumentException if `src` and`dst` are the same
+    ///                                                                                                                                                                                                                                                                       or if `dst` does not have a buffer of type [DataBufferFloat].
     @Override
     public BufferedImage filter(BufferedImage src, BufferedImage dst) {
         if (src == null) {
@@ -104,14 +96,15 @@ public class ConvolveOp implements BufferedImageOp {
     }
 
     private void convolveHV(Kernel kernel, float[] inPixels, float[] outPixels, int width, int height) {
-        int index = 0;
         float[] matrix = kernel.getKernelData(null);
         int rows = kernel.getHeight();
         int cols = kernel.getWidth();
         int rows2 = rows / 2;
         int cols2 = cols / 2;
 
-        for (int y = 0; y < height; y++) {
+        //for (int y = 0; y < height; y++) {
+        IntStream.range(0, height).parallel().forEach(y -> {
+            int yindex = y * width;
             for (int x = 0; x < width; x++) {
                 float r = 0;
                 for (int row = -rows2; row <= rows2; row++) {
@@ -124,38 +117,42 @@ public class ConvolveOp implements BufferedImageOp {
                         r = Math.fma(f, inPixels[ioffset + ix], r);
                     }
                 }
-                outPixels[index++] = clamp(r, 0f, 1f);
+                outPixels[yindex + x] = clamp(r, 0f, 1f);
             }
-        }
+        });
+        //}
+
     }
 
     private void convolveH(Kernel kernel, float[] inPixels, float[] outPixels, int width, int height) {
-        int index = 0;
         float[] matrix = kernel.getKernelData(null);
         int cols = kernel.getWidth();
         int cols2 = cols / 2;
 
-        for (int y = 0; y < height; y++) {
-            int ioffset = y * width;
+        //for (int y = 0; y < height; y++) {
+        IntStream.range(0, height).parallel().forEach(y -> {
+            int yindex = y * width;
             for (int x = 0; x < width; x++) {
                 float r = 0;
                 for (int col = -cols2; col <= cols2; col++) {
                     float f = matrix[cols2 + col];
                     int ix = edgeAction.map(x + col, width);
-                    r = Math.fma(f, inPixels[ioffset + ix], r);
+                    r = Math.fma(f, inPixels[yindex + ix], r);
                 }
-                outPixels[index++] = clamp(r, 0f, 1f);
+                outPixels[yindex + x] = clamp(r, 0f, 1f);
             }
-        }
+        });
+        //}
     }
 
     private void convolveV(Kernel kernel, float[] inPixels, float[] outPixels, int width, int height) {
-        int index = 0;
         float[] matrix = kernel.getKernelData(null);
         int rows = kernel.getHeight();
         int rows2 = rows / 2;
 
-        for (int y = 0; y < height; y++) {
+        //for (int y = 0; y < height; y++) {
+        IntStream.range(0, height).parallel().forEach(y -> {
+            int yindex = y * width;
             for (int x = 0; x < width; x++) {
                 float r = 0;
                 for (int row = -rows2; row <= rows2; row++) {
@@ -164,9 +161,10 @@ public class ConvolveOp implements BufferedImageOp {
                     float f = matrix[row + rows2];
                     r = Math.fma(f, inPixels[ioffset + x], r);
                 }
-                outPixels[index++] = clamp(r, 0f, 1f);
+                outPixels[yindex + x] = clamp(r, 0f, 1f);
             }
-        }
+        });
+        //}
     }
 
     @Override
@@ -184,7 +182,7 @@ public class ConvolveOp implements BufferedImageOp {
     @Override
     public Point2D getPoint2D(Point2D srcPt, Point2D dstPt) {
         if (dstPt == null) {
-            dstPt = new Point2D.Double();
+            return new Point2D.Double(srcPt.getX(), srcPt.getY());
         }
         dstPt.setLocation(srcPt.getX(), srcPt.getY());
         return dstPt;

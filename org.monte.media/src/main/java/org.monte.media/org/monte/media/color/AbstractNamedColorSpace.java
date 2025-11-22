@@ -9,9 +9,7 @@ import java.awt.color.ColorSpace;
 import java.io.Serial;
 import java.util.Objects;
 
-/**
- * {@code AbstractNamedColorSpace}.
- */
+/// `AbstractNamedColorSpace`.
 public abstract class AbstractNamedColorSpace extends ColorSpace implements NamedColorSpace {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -20,25 +18,27 @@ public abstract class AbstractNamedColorSpace extends ColorSpace implements Name
         super(type, numcomponents);
     }
 
+
     @Override
     public float[] fromCIEXYZ(float[] colorvalue) {
-        return fromCIEXYZ(colorvalue, new float[getNumComponents()]);
+        return fromCIEXYZ(colorvalue, colorvalue.length >= getNumComponents() ? colorvalue : new float[getNumComponents()]);// we are allowed to reuse this array
     }
 
     @Override
     public float[] toRGB(float[] colorvalue) {
-        return toRGB(colorvalue, new float[3]);
+        return toRGB(colorvalue, colorvalue.length >= 3 ? colorvalue : new float[3]);// we are allowed to reuse this array
     }
 
     @Override
     public float[] fromRGB(float[] rgb) {
-        return fromRGB(rgb, new float[getNumComponents()]);
+        return fromRGB(rgb, rgb.length >= getNumComponents() ? rgb : new float[getNumComponents()]);// we are allowed to reuse this arrayto reuse this array
     }
 
     @Override
     public float[] toCIEXYZ(float[] colorvalue) {
-        return toCIEXYZ(colorvalue, new float[3]);
+        return toCIEXYZ(colorvalue, colorvalue.length >= 3 ? colorvalue : new float[3]);// we are allowed to reuse this array
     }
+
 
     @Override
     public float[] toCIEXYZ(float[] colorvalue, float[] xyz) {
@@ -56,9 +56,7 @@ public abstract class AbstractNamedColorSpace extends ColorSpace implements Name
         return getName();
     }
 
-    /**
-     * Lazy-initialized names of components in the color space.
-     */
+    /// Lazy-initialized names of components in the color space.
     private transient volatile String[] compName;
 
     public String getName(int component) {

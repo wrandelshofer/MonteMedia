@@ -9,11 +9,9 @@ import org.monte.media.amigabitmap.AmigaBitmapImage;
 import java.awt.image.ColorModel;
 import java.util.ArrayList;
 
-/**
- * Represents a frame in a movie track.
- *
- * @author Werner Randelshofer
- */
+/// Represents a frame in a movie track.
+///
+/// @author Werner Randelshofer
 public abstract class SEQFrame {
     protected ColorModel colorModel;
     protected byte[] data;
@@ -34,14 +32,10 @@ public abstract class SEQFrame {
     // BITs for Vertical Delta 5 Kompression
     BadBitsOP_ByteVertical = 0xfff7;
 
-    /**
-     * Holds an array of audio commands associated with this ANM frame.
-     */
+    /// Holds an array of audio commands associated with this ANM frame.
     private SEQAudioCommand[] audioCommands;
 
-    /**
-     * Adds an audio command to this anim frame.
-     */
+    /// Adds an audio command to this anim frame.
     public void addAudioCommand(SEQAudioCommand command) {
         if (audioCommands == null) {
             audioCommands = new SEQAudioCommand[1];
@@ -53,17 +47,13 @@ public abstract class SEQFrame {
         audioCommands[audioCommands.length - 1] = command;
     }
 
-    /**
-     * Returns audio commands associated with this frame.
-     * Returns null if there are no audio commands available for this frame.
-     */
+    /// Returns audio commands associated with this frame.
+    /// Returns null if there are no audio commands available for this frame.
     public SEQAudioCommand[] getAudioCommands() {
         return audioCommands;
     }
 
-    /**
-     * Removes duplicate audio commands.
-     */
+    /// Removes duplicate audio commands.
     public void cleanUpAudioCommands() {
         if (audioCommands != null && audioCommands.length > 1) {
             int i, j;
@@ -166,14 +156,12 @@ public abstract class SEQFrame {
         return track.getWidth() - 1;
     }
 
-    /**
-     * Returns true if the frame can be decoded over both the previous frame
-     * or the subsequent frame. Bidirectional frames can be used efficiently
-     * for forward and backward playing a movie.
-     * <p>
-     * All key frames are bidirectional. Delta frames which use an XOR OP-mode
-     * are bidirectional as well.
-     */
+    /// Returns true if the frame can be decoded over both the previous frame
+    /// or the subsequent frame. Bidirectional frames can be used efficiently
+    /// for forward and backward playing a movie.
+    ///
+    /// All key frames are bidirectional. Delta frames which use an XOR OP-mode
+    /// are bidirectional as well.
     public boolean isBidirectional() {
         return true;
     }

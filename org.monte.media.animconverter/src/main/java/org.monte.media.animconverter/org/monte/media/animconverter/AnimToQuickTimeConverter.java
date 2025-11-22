@@ -42,28 +42,20 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_PNG;
 
-/**
- * Converts an Amiga IFF Cell Animation file into a QuickTime movie file.
- */
+/// Converts an Amiga IFF Cell Animation file into a QuickTime movie file.
 public class AnimToQuickTimeConverter {
-    /**
-     * Two bitmaps are needed for double buffering.
-     */
+    /// Two bitmaps are needed for double buffering.
     private AmigaBitmapImage bitmapEven, bitmapOdd;
-    /**
-     * The memory image source handles the image
-     * producer/consumer protocol.
-     */
+    /// The memory image source handles the image
+    /// producer/consumer protocol.
     private ColorCyclingMemoryImageSource memoryImage;
     private boolean setSwapLeftRightChannels;
 
-    /**
-     * Converts the given input file to the given output file.
-     *
-     * @param animFile      input file, animFile or zipFile containing anims
-     * @param quickTimeFile output file
-     * @throws IOException if the input file does not exit, or if the output file exists
-     */
+    /// Converts the given input file to the given output file.
+    ///
+    /// @param animFile      input file, animFile or zipFile containing anims
+    /// @param quickTimeFile output file
+    /// @throws IOException if the input file does not exit, or if the output file exists
     public void convert(String animFile, String quickTimeFile) throws IOException {
         Path userDir = Paths.get(System.getProperty("user.dir"));
         Path inputPath = userDir.resolve(Paths.get(animFile));
@@ -201,14 +193,12 @@ public class AnimToQuickTimeConverter {
         }
     }
 
-    /**
-     * Converts the input from the given demultiplexer to the given multiplexer.
-     *
-     * @param demux    input file
-     * @param mux      output file
-     * @param animFile
-     * @throws IOException on io exception
-     */
+    /// Converts the input from the given demultiplexer to the given multiplexer.
+    ///
+    /// @param demux    input file
+    /// @param mux      output file
+    /// @param animFile
+    /// @throws IOException on io exception
     public void convertToQuickTime(ANIMDemultiplexer demux, QuickTimeMultiplexer mux,
                                    String animFile) throws IOException {
 
@@ -392,15 +382,13 @@ public class AnimToQuickTimeConverter {
         }
     }
 
-    /**
-     * Reads up to 20 bytes at the current position of the input stream
-     * and returns true if the current position of the input stream denotes
-     * an IFF "FORM" "ANIM" file.
-     *
-     * @param in an input stream
-     * @return true if anim
-     * @throws IOException
-     */
+    /// Reads up to 20 bytes at the current position of the input stream
+    /// and returns true if the current position of the input stream denotes
+    /// an IFF "FORM" "ANIM" file.
+    ///
+    /// @param in an input stream
+    /// @return true if anim
+    /// @throws IOException
     private boolean isANIM(InputStream in) throws IOException {
         MC68000InputStream mc = new MC68000InputStream(in);
         int form = (int) mc.readULONG();
@@ -419,18 +407,14 @@ public class AnimToQuickTimeConverter {
         return fNameWithoutExtension;
     }
 
-    /**
-     * Pixel aspect ratio. Overrides the pixel aspect ratio of the ANIM
-     * file if the value is non-null.
-     * Must be greater or equal than 1.
-     */
+    /// Pixel aspect ratio. Overrides the pixel aspect ratio of the ANIM
+    /// file if the value is non-null.
+    /// Must be greater or equal than 1.
     private Integer xAspect, yAspect;
 
-    /**
-     * Duration of a frame in jiffies. Overrides the frame duration of
-     * the ANIM if the value is non-null.
-     * Must be greater or equal than 1.
-     */
+    /// Duration of a frame in jiffies. Overrides the frame duration of
+    /// the ANIM if the value is non-null.
+    /// Must be greater or equal than 1.
     private Integer frameDuration;
 
     public void setXAspect(Integer xAspect) {

@@ -8,9 +8,7 @@ package org.monte.media.math;
 public class Scalars {
     public static final double REAL_THRESHOLD = 1e-8;
 
-    /**
-     * Don't let anyone instantiate this class.
-     */
+    /// Don't let anyone instantiate this class.
     private Scalars() {
     }
 

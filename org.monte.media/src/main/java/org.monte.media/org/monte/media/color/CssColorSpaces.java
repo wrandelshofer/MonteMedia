@@ -7,24 +7,18 @@ package org.monte.media.color;
 
 import java.util.Map;
 
-/**
- * References:
- * <dl>
- *     <dt>CSS Color Module Level 4. Chapter 4. Representing Colors: the &lt;color&gt; type.</dt>
- *     <dd><a href="https://www.w3.org/TR/2024/CRD-css-color-4-20240213/#typedef-colorspace-params">w3.org</a></dd>
- * </dl>
- */
+/// References:
+///
+/// CSS Color Module Level 4. Chapter 4. Representing Colors: the &lt;color&gt; type.
+/// : [w3.org](https://www.w3.org/TR/2024/CRD-css-color-4-20240213/#typedef-colorspace-params)
+///
 public class CssColorSpaces {
-    /**
-     * Don't let anyone instantiate this class.
-     */
+    /// Don't let anyone instantiate this class.
     private CssColorSpaces() {
 
     }
 
-    /**
-     * Map of CSS color spaces.
-     */
+    /// Map of CSS color spaces.
     public final static Map<String, NamedColorSpace> COLOR_SPACES;
 
     static {

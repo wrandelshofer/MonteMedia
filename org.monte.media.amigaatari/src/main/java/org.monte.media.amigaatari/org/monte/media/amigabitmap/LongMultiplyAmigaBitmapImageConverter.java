@@ -13,13 +13,11 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.nio.ByteOrder;
 
-/**
- * {@link AmigaBitmapImageConverter} optimised for processors that provide
- * long multiplication instructions.
- * <p>
- * This class performs well on processors, that do not provide PDEP (Parallel Deposit/Expand) and
- * PEXT (Parallel Extract) instructions, such as Apple M processors.
- */
+/// [AmigaBitmapImageConverter] optimised for processors that provide
+/// long multiplication instructions.
+///
+/// This class performs well on processors, that do not provide PDEP (Parallel Deposit/Expand) and
+/// PEXT (Parallel Extract) instructions, such as Apple M processors.
 public class LongMultiplyAmigaBitmapImageConverter implements AmigaBitmapImageConverter {
     private static final VarHandle LONG_BE = MethodHandles.byteArrayViewVarHandle(long[].class, ByteOrder.BIG_ENDIAN);
 

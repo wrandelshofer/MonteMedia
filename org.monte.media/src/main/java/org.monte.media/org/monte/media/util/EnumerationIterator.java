@@ -7,17 +7,13 @@ package org.monte.media.util;
 
 import java.util.Enumeration;
 
-/**
- * Wraps an Enumeration with the Iterator interface.
- *
- * @author Werni Randelshofer
- */
+/// Wraps an Enumeration with the Iterator interface.
+///
+/// @author Werni Randelshofer
 public class EnumerationIterator<T> implements java.util.Iterator<T> {
     private Enumeration<T> enumer;
 
-    /**
-     * Creates new EnumIterator
-     */
+    /// Creates new EnumIterator
     public EnumerationIterator(Enumeration<T> e) {
         enumer = e;
     }
@@ -32,11 +28,9 @@ public class EnumerationIterator<T> implements java.util.Iterator<T> {
         return enumer.nextElement();
     }
 
-    /**
-     * Throws always UnsupportedOperationException.
-     *
-     * @throws UnsupportedOperationException
-     */
+    /// Throws always UnsupportedOperationException.
+    ///
+    /// @throws UnsupportedOperationException
     @Override
     public void remove() {
         throw new UnsupportedOperationException();

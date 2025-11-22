@@ -12,11 +12,9 @@ import java.io.InputStream;
 import java.util.Locale;
 
 
-/**
- * A reader for JPEG images in the CMYK color space.
- *
- * @author Werner Randelshofer
- */
+/// A reader for JPEG images in the CMYK color space.
+///
+/// @author Werner Randelshofer
 public class CMYKJPEGImageReaderSpi extends ImageReaderSpi {
 
     public CMYKJPEGImageReaderSpi() {

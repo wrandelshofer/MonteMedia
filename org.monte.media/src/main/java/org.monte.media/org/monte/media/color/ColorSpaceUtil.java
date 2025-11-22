@@ -11,27 +11,20 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
-/**
- * A utility class for {@code ColorSpace} objects.
- *
- */
+/// A utility class for `ColorSpace` objects.
 public class ColorSpaceUtil {
 
-    /**
-     * Don't let anyone instantiate this class.
-     */
+    /// Don't let anyone instantiate this class.
     private ColorSpaceUtil() {
     }
 
 
-    /**
-     * Returns the name of the color space. If the color space is an
-     * {@code ICC_ColorSpace} the name is retrieved from the "desc" data element
-     * of the color profile.
-     *
-     * @param a A ColorSpace.
-     * @return The name.
-     */
+    /// Returns the name of the color space. If the color space is an
+    /// `ICC_ColorSpace` the name is retrieved from the "desc" data element
+    /// of the color profile.
+    ///
+    /// @param a A ColorSpace.
+    /// @return The name.
     public static String getName(ColorSpace a) {
         if (a instanceof NamedColorSpace) {
             return ((NamedColorSpace) a).getName();

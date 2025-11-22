@@ -8,21 +8,16 @@ package org.monte.media.impl.jcodec.codecs.common.biari;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-/**
- * References:
- * <p>
- * This code has been derived from JCodecProject.
- * <dl>
- *     <dt>JCodecProject. Copyright 2008-2019 JCodecProject.
- *     <br><a href="https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE">BSD 2-Clause License.</a></dt>
- *     <dd><a href="https://github.com/jcodec/jcodec">github.com</a></dd>
- * </dl>
- *
- * <p>
- * H264 CABAC M-encoder
- *
- * @author The JCodec project
- */
+/// References:
+///
+/// JCodecProject. Copyright 2008-2019 JCodecProject.
+/// : [BSD 2-Clause License.](https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE)
+/// : [github.com](https://github.com/jcodec/jcodec)
+///
+///
+/// H264 CABAC M-encoder
+///
+/// @author The JCodec project
 public class MEncoder {
     private ByteBuffer out;
 
@@ -47,13 +42,11 @@ public class MEncoder {
         this.out = out;
     }
 
-    /**
-     * Encodes one bin in normal mode using supplied context model
-     *
-     * @param bin
-     * @param cm
-     * @throws IOException
-     */
+    /// Encodes one bin in normal mode using supplied context model
+    ///
+    /// @param bin
+    /// @param cm
+    /// @throws IOException
     public void encodeBin(int model, int bin) {
 
         int qs = (range >> 6) & 0x3;
@@ -75,13 +68,11 @@ public class MEncoder {
         renormalize();
     }
 
-    /**
-     * Codes one bin in bypass mode for symbols with uniform probability
-     * distribution
-     *
-     * @param bin
-     * @throws IOException
-     */
+    /// Codes one bin in bypass mode for symbols with uniform probability
+    /// distribution
+    ///
+    /// @param bin
+    /// @throws IOException
     public void encodeBinBypass(int bin) {
         offset <<= 1;
         if (bin == 1) {
@@ -99,12 +90,10 @@ public class MEncoder {
         }
     }
 
-    /**
-     * Codes termination flag. Range for LPS is preset to be 2
-     *
-     * @param bin
-     * @throws IOException
-     */
+    /// Codes termination flag. Range for LPS is preset to be 2
+    ///
+    /// @param bin
+    /// @throws IOException
     public void encodeBinFinal(int bin) {
         range -= 2;
         if (bin == 0) {

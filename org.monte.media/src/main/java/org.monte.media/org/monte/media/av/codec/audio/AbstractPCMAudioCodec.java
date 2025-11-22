@@ -35,14 +35,12 @@ import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.SilenceBugKey;
 import static org.monte.media.av.codec.audio.AudioFormatKeys.toAudioFormat;
 
-/**
- * {@code AbstractPCMAudioCodec} performs sign conversion, endian conversion and
- * quantization conversion of PCM audio data.
- * <p>
- * Does not perform sampling rate conversion or channel conversion.
- *
- * @author Werner Randelshofer
- */
+/// `AbstractPCMAudioCodec` performs sign conversion, endian conversion and
+/// quantization conversion of PCM audio data.
+///
+/// Does not perform sampling rate conversion or channel conversion.
+///
+/// @author Werner Randelshofer
 public abstract class AbstractPCMAudioCodec extends AbstractAudioCodec {
 
     private final static int UNSIGNED_BASE = 128;
@@ -170,10 +168,8 @@ public abstract class AbstractPCMAudioCodec extends AbstractAudioCodec {
         return CODEC_OK;
     }
 
-    /**
-     * 16-bit audio data in and out. No sign conversion. Endian conversion is
-     * performed by the stream objects.
-     */
+    /// 16-bit audio data in and out. No sign conversion. Endian conversion is
+    /// performed by the stream objects.
     protected void write16To16(ImageInputStream in, ImageOutputStream out) throws IOException {
         try {
             while (true) {
@@ -184,10 +180,8 @@ public abstract class AbstractPCMAudioCodec extends AbstractAudioCodec {
         }
     }
 
-    /**
-     * 16-bit audio data unsigned in and signed out. Endian conversion is
-     * performed by the stream objects.
-     */
+    /// 16-bit audio data unsigned in and signed out. Endian conversion is
+    /// performed by the stream objects.
     protected void write16UTo16S(ImageInputStream in, ImageOutputStream out) throws IOException {
         try {
             while (true) {
@@ -198,10 +192,8 @@ public abstract class AbstractPCMAudioCodec extends AbstractAudioCodec {
         }
     }
 
-    /**
-     * 16-bit audio data signed in and unsigned out. Endian conversion is
-     * performed by the stream objects.
-     */
+    /// 16-bit audio data signed in and unsigned out. Endian conversion is
+    /// performed by the stream objects.
     protected void write16STo16U(ImageInputStream in, ImageOutputStream out) throws IOException {
         try {
             while (true) {
@@ -212,10 +204,8 @@ public abstract class AbstractPCMAudioCodec extends AbstractAudioCodec {
         }
     }
 
-    /**
-     * Signed 16-bit audio data in, unsigned 8-bit out. Endian conversion is
-     * performed by the stream objects.
-     */
+    /// Signed 16-bit audio data in, unsigned 8-bit out. Endian conversion is
+    /// performed by the stream objects.
     protected void write16STo8U(ImageInputStream in, ImageOutputStream out) throws IOException {
         try {
             while (true) {
@@ -226,9 +216,7 @@ public abstract class AbstractPCMAudioCodec extends AbstractAudioCodec {
         }
     }
 
-    /**
-     * 8-bit audio data in and out. No sign conversion.
-     */
+    /// 8-bit audio data in and out. No sign conversion.
     protected void write8To8(ImageInputStream in, ImageOutputStream out) throws IOException {
         try {
             byte[] buf = new byte[512];
@@ -244,9 +232,7 @@ public abstract class AbstractPCMAudioCodec extends AbstractAudioCodec {
         }
     }
 
-    /**
-     * Unsigned 8-bit audio data in, signed out.
-     */
+    /// Unsigned 8-bit audio data in, signed out.
     protected void write8UTo8S(ImageInputStream in, ImageOutputStream out, boolean fixSilenceBug) throws IOException {
         try {
             byte[] buf = new byte[512];
@@ -274,9 +260,7 @@ public abstract class AbstractPCMAudioCodec extends AbstractAudioCodec {
         }
     }
 
-    /**
-     * Signed 8-bit audio data in, unsigned out.
-     */
+    /// Signed 8-bit audio data in, unsigned out.
     protected void write8STo8U(ImageInputStream in, ImageOutputStream out, boolean fixSilenceBug) throws IOException {
         try {
             byte[] buf = new byte[512];
@@ -304,9 +288,7 @@ public abstract class AbstractPCMAudioCodec extends AbstractAudioCodec {
         }
     }
 
-    /**
-     * Signed 8-bit audio data in, signed out.
-     */
+    /// Signed 8-bit audio data in, signed out.
     protected void write8STo8S(ImageInputStream in, ImageOutputStream out, boolean fixSilenceBug) throws IOException {
         try {
             byte[] buf = new byte[512];

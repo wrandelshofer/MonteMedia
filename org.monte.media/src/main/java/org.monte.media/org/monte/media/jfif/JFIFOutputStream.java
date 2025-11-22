@@ -13,62 +13,41 @@ import java.nio.ByteOrder;
 import java.util.HashSet;
 import java.util.Stack;
 
-/**
- * {@code JFIFOutputStream}.
- * <p>
- * This OutputStream supports writing of a JFIF stream.
- *
- * <p>
- * References:<br>
- * JPEG File Interchange Format Version 1.02<br>
- * <a href="http://www.jpeg.org/public/jfif.pdf">http://www.jpeg.org/public/jfif.pdf</a>
- * <p>
- * Pennebaker, W., Mitchell, J. (1993).<br>
- * JPEG Still Image Data Compression Standard.<br>
- * Chapmann &amp; Hall, New York.<br>
- * ISBN 0-442-01272-1<br>
- *
- * @author Werner Randelshofer
- */
+/// `JFIFOutputStream`.
+///
+/// This OutputStream supports writing of a JFIF stream.
+///
+/// References:
+/// JPEG File Interchange Format Version 1.02
+/// [http://www.jpeg.org/public/jfif.pdf](http://www.jpeg.org/public/jfif.pdf)
+///
+/// Pennebaker, W., Mitchell, J. (1993).
+/// JPEG Still Image Data Compression Standard.
+/// Chapmann &amp; Hall, New York.
+/// ISBN 0-442-01272-1
+///
+/// @author Werner Randelshofer
 public class JFIFOutputStream extends OutputStream {
 
-    /**
-     * This hash set holds the ids of markers which stand alone,
-     * respectively do not have a data segment.
-     */
+    /// This hash set holds the ids of markers which stand alone,
+    /// respectively do not have a data segment.
     private final HashSet<Integer> standaloneMarkers = new HashSet<>();
-    /**
-     * This hash set holds the ids of markers which have a data
-     * segment followed by an entropy-coded data segment.
-     */
+    /// This hash set holds the ids of markers which have a data
+    /// segment followed by an entropy-coded data segment.
     private final HashSet<Integer> doubleSegMarkers = new HashSet<>();
-    /**
-     * Start of image
-     */
+    /// Start of image
     public final static int SOI_MARKER = 0xffd8;
-    /**
-     * End of image
-     */
+    /// End of image
     public final static int EOI_MARKER = 0xffd9;
-    /**
-     * Temporary private use in arithmetic coding
-     */
+    /// Temporary private use in arithmetic coding
     public final static int TEM_MARKER = 0xff01;
-    /**
-     * Start of scan
-     */
+    /// Start of scan
     public final static int SOS_MARKER = 0xffda;
-    /**
-     * APP1_MARKER Reserved for application use
-     */
+    /// APP1_MARKER Reserved for application use
     public final static int APP1_MARKER = 0xffe1;
-    /**
-     * APP2_MARKER Reserved for application use
-     */
+    /// APP2_MARKER Reserved for application use
     public final static int APP2_MARKER = 0xffe2;
-    /**
-     * Reserved for JPEG extensions
-     */
+    /// Reserved for JPEG extensions
     public final static int JPG0_MARKER = 0xfff0;
     public final static int JPG1_MARKER = 0xfff1;
     public final static int JPG2_MARKER = 0xfff2;
@@ -83,9 +62,7 @@ public class JFIFOutputStream extends OutputStream {
     public final static int JPGB_MARKER = 0xfffB;
     public final static int JPGC_MARKER = 0xfffC;
     public final static int JPGD_MARKER = 0xfffD;
-    /**
-     * Start of frame markers
-     */
+    /// Start of frame markers
     public final static int SOF0_MARKER = 0xffc0;//nondifferential Huffman-coding frames with baseline DCT.
     public final static int SOF1_MARKER = 0xffc1;//nondifferential Huffman-coding frames with extended sequential DCT.
     public final static int SOF2_MARKER = 0xffc2;//nondifferential Huffman-coding frames with progressive DCT.
@@ -153,26 +130,22 @@ public class JFIFOutputStream extends OutputStream {
         this(new FileImageOutputStream(imgFile));
     }
 
-    /**
-     * Gets the position relative to the beginning of the IFF output stream.
-     * <p>
-     * Usually this value is equal to the stream position of the underlying
-     * ImageOutputStream, but can be larger if the underlying stream already
-     * contained data.
-     *
-     * @return The relative stream position.
-     * @throws IOException
-     */
+    /// Gets the position relative to the beginning of the IFF output stream.
+    ///
+    /// Usually this value is equal to the stream position of the underlying
+    /// ImageOutputStream, but can be larger if the underlying stream already
+    /// contained data.
+    ///
+    /// @return The relative stream position.
+    /// @throws IOException
     public long getStreamPosition() throws IOException {
         return out.getStreamPosition() - streamOffset;
     }
 
-    /**
-     * Seeks relative to the beginning of the IFF output stream.
-     * <p>
-     * Usually this equal to seeking in the underlying ImageOutputStream, but
-     * can be different if the underlying stream already contained data.
-     */
+    /// Seeks relative to the beginning of the IFF output stream.
+    ///
+    /// Usually this equal to seeking in the underlying ImageOutputStream, but
+    /// can be different if the underlying stream already contained data.
     public void seek(long newPosition) throws IOException {
         out.seek(newPosition + streamOffset);
     }
@@ -186,9 +159,7 @@ public class JFIFOutputStream extends OutputStream {
         seg.finish();
     }
 
-    /**
-     * Returns the offset of the current segment or -1 if none has been pushed.
-     */
+    /// Returns the offset of the current segment or -1 if none has been pushed.
     public long getSegmentOffset() throws IOException {
         if (stack.peek() == null) {
             return -1;
@@ -197,9 +168,7 @@ public class JFIFOutputStream extends OutputStream {
         }
     }
 
-    /**
-     * Returns the length of the current segment or -1 if none has been pushed.
-     */
+    /// Returns the length of the current segment or -1 if none has been pushed.
     public long getSegmentLength() throws IOException {
         if (stack.peek() == null) {
             return -1;
@@ -223,10 +192,8 @@ public class JFIFOutputStream extends OutputStream {
         }
     }
 
-    /**
-     * Writes stuffed or non-stuffed bytes to the underlying output stream.
-     * Bytes are stuffed, if the stream is not currently in a segment.
-     */
+    /// Writes stuffed or non-stuffed bytes to the underlying output stream.
+    /// Bytes are stuffed, if the stream is not currently in a segment.
     @Override
     public void write(byte[] b, int off, int len) throws IOException {
         if (stack.isEmpty() || standaloneMarkers.contains(stack.peek().marker)) {
@@ -236,10 +203,8 @@ public class JFIFOutputStream extends OutputStream {
         }
     }
 
-    /**
-     * Writes a stuffed or non-stuffed byte to the underlying output stream.
-     * Bytes are stuffed, if the stream is not currently in a segment.
-     */
+    /// Writes a stuffed or non-stuffed byte to the underlying output stream.
+    /// Bytes are stuffed, if the stream is not currently in a segment.
     @Override
     public void write(int b) throws IOException {
         if (stack.isEmpty() || standaloneMarkers.contains(stack.peek().marker)) {
@@ -249,24 +214,18 @@ public class JFIFOutputStream extends OutputStream {
         }
     }
 
-    /**
-     * Writes non-stuffed bytes to the underlying output stream.
-     */
+    /// Writes non-stuffed bytes to the underlying output stream.
     private void writeNonstuffed(byte[] b, int off, int len) throws IOException {
         out.write(b, off, len);
     }
 
-    /**
-     * Writes non-stuffed byte to the underlying output stream.
-     * Bytes should be stuffed, if the stream is not currently in a segment.
-     */
+    /// Writes non-stuffed byte to the underlying output stream.
+    /// Bytes should be stuffed, if the stream is not currently in a segment.
     private void writeNonstuffed(int b) throws IOException {
         out.write(b);
     }
 
-    /**
-     * Writes stuffed bytes to the underlying output stream.
-     */
+    /// Writes stuffed bytes to the underlying output stream.
     private void writeStuffed(byte[] b, int off, int len) throws IOException {
         int n = off + len;
         for (int i = off; i < n; i++) {
@@ -281,10 +240,8 @@ public class JFIFOutputStream extends OutputStream {
         }
     }
 
-    /**
-     * Writes stuffed byte to the underlying output stream.
-     * Bytes should be stuffed, if the stream is not currently in a segment.
-     */
+    /// Writes stuffed byte to the underlying output stream.
+    /// Bytes should be stuffed, if the stream is not currently in a segment.
     private void writeStuffed(int b) throws IOException {
         out.write(0xff);
         if (b == 0xff) {
@@ -292,28 +249,20 @@ public class JFIFOutputStream extends OutputStream {
         }
     }
 
-    /**
-     * Segment base class.
-     */
+    /// Segment base class.
     private class Segment {
 
-        /**
-         * The marker of the segment.
-         */
+        /// The marker of the segment.
         protected int marker;
-        /**
-         * The offset of the segment relative to the start of the
-         * ImageOutputStream.
-         */
+        /// The offset of the segment relative to the start of the
+        /// ImageOutputStream.
         protected long offset;
         protected boolean finished;
 
-        /**
-         * Creates a new Segment at the current position of the ImageOutputStream.
-         *
-         * @param marker The marker of the segment.
-         * @throws IOException if an I/O error occurs.
-         */
+        /// Creates a new Segment at the current position of the ImageOutputStream.
+        ///
+        /// @param marker The marker of the segment.
+        /// @throws IOException if an I/O error occurs.
         public Segment(int marker) throws IOException {
             this.marker = marker;
             if (marker != 0) {
@@ -325,9 +274,7 @@ public class JFIFOutputStream extends OutputStream {
             }
         }
 
-        /**
-         * Writes the segment to the ImageOutputStream and disposes it.
-         */
+        /// Writes the segment to the ImageOutputStream and disposes it.
         public void finish() throws IOException {
             if (!finished) {
                 if (!standaloneMarkers.contains(marker)) {

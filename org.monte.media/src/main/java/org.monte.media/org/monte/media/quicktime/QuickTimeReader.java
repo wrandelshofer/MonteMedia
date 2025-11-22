@@ -36,31 +36,25 @@ import static org.monte.media.av.codec.audio.AudioFormatKeys.FrameSizeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
 
-/**
- * {@code QuickTimeReader}.
- *
- * @author Werner Randelshofer
- */
+/// `QuickTimeReader`.
+///
+/// @author Werner Randelshofer
 public class QuickTimeReader extends QuickTimeInputStream implements MovieReader {
 
     private Buffer[] inputBuffers = null;
     private Codec[] codecs = null;
     public final static Format QUICKTIME = new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_QUICKTIME);
 
-    /**
-     * Creates a new instance.
-     *
-     * @param file the input file
-     */
+    /// Creates a new instance.
+    ///
+    /// @param file the input file
     public QuickTimeReader(File file) throws IOException {
         super(file);
     }
 
-    /**
-     * Creates a new instance.
-     *
-     * @param in the input stream.
-     */
+    /// Creates a new instance.
+    ///
+    /// @param in the input stream.
     public QuickTimeReader(ImageInputStream in) throws IOException {
         super(in);
     }
@@ -120,15 +114,13 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
         }
     }
 
-    /**
-     * Reads an image.
-     *
-     * @param track The track number
-     * @param img   An image that can be reused if it fits the media format of the
-     *              track. Pass null to create a new image on each read.
-     * @return An image or null if the end of the media has been reached.
-     * @throws IOException if an I/O error occurs
-     */
+    /// Reads an image.
+    ///
+    /// @param track The track number
+    /// @param img   An image that can be reused if it fits the media format of the
+    ///                                        track. Pass null to create a new image on each read.
+    /// @return An image or null if the end of the media has been reached.
+    /// @throws IOException if an I/O error occurs
     public BufferedImage read(int track, BufferedImage img) throws IOException {
         ensureRealized();
         QuickTimeMeta.Track tr = meta.tracks.get(track);

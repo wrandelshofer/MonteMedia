@@ -9,13 +9,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteOrder;
 
-/**
- * An implementation of {@code ImageInputStream} that gets its input from a
- * regular {@code InputStream}. No caching is used and thus backward seeking is
- * not supported.
- *
- * @author Werner Randelshofer
- */
+/// An implementation of `ImageInputStream` that gets its input from a
+/// regular `InputStream`. No caching is used and thus backward seeking is
+/// not supported.
+///
+/// @author Werner Randelshofer
 public class UncachedImageInputStream extends ImageInputStreamImpl2 {
 
     private final InputStream in;

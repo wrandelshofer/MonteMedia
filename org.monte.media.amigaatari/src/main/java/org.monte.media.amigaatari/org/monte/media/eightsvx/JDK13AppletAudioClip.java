@@ -17,85 +17,61 @@ import javax.sound.sampled.SourceDataLine;
 import java.io.IOException;
 import java.util.LinkedList;
 
-/**
- * JDK13AppletAudioClip.
- * Supports playback of JDK13_SAMPLE_RATE Hz linear 8 encoded PCM data.
- * This class is designed and tuned for use in applets. It is not recommended
- * to use this class in Java applications.
- *
- * @author Werner Randelshofer
- */
+/// JDK13AppletAudioClip.
+/// Supports playback of JDK13_SAMPLE_RATE Hz linear 8 encoded PCM data.
+/// This class is designed and tuned for use in applets. It is not recommended
+/// to use this class in Java applications.
+///
+/// @author Werner Randelshofer
 @SuppressWarnings("unchecked")
 public class JDK13AppletAudioClip implements LoopableAudioClip, Runnable {
-    /**
-     * This buffer holds the audio samples of the clip.
-     */
+    /// This buffer holds the audio samples of the clip.
     private byte[] samples;
-    /**
-     * All instances share this mixer.
-     * Acquiring a line from a mixer is faster than acquiring it from
-     * AudioSystem directly.
-     */
+    /// All instances share this mixer.
+    /// Acquiring a line from a mixer is faster than acquiring it from
+    /// AudioSystem directly.
     private static Mixer mixer;
 
-    /**
-     * This vector holds a pool of SourceDataLine objects.
-     * All SourceDataLine objects in this vector are open() and stopped.
-     * This vector is used to improve the audio playback performance
-     * because opening a SourceDataLine may take a long time.
-     */
+    /// This vector holds a pool of SourceDataLine objects.
+    /// All SourceDataLine objects in this vector are open() and stopped.
+    /// This vector is used to improve the audio playback performance
+    /// because opening a SourceDataLine may take a long time.
     private static LinkedList<SourceDataLine> lines = new LinkedList<>();
 
-    /**
-     * The only place where the workerThread variable is changed is in the loop(int)
-     * method and in the stop() method.
-     * For all other methods this variable is strictly <bold>read only</bold>!
-     */
+    /// The only place where the workerThread variable is changed is in the loop(int)
+    /// method and in the stop() method.
+    /// For all other methods this variable is strictly <bold>read only</bold>!
     private volatile Thread workerThread;
 
-    /**
-     * Loop count.
-     * LOOP_CONTINUOUSLY indicates an endless loop.
-     */
+    /// Loop count.
+    /// LOOP_CONTINUOUSLY indicates an endless loop.
     private int loopCount;
 
-    /**
-     * Represents a control for the volume on a line. 64 is the maximal
-     * volume, 0 mutes the line.
-     */
+    /// Represents a control for the volume on a line. 64 is the maximal
+    /// volume, 0 mutes the line.
     private int volume;
 
-    /**
-     * The sample rate of the audio data.
-     */
+    /// The sample rate of the audio data.
     private int sampleRate;
 
-    /**
-     * The relative pan of a stereo signal between two stereo
-     * speakers. The valid range of values is -1.0 (left channel only) to 1.0
-     * (right channel  only). The default is 0.0 (centered).
-     */
+    /// The relative pan of a stereo signal between two stereo
+    /// speakers. The valid range of values is -1.0 (left channel only) to 1.0
+    /// (right channel  only). The default is 0.0 (centered).
     private float pan;
-    /**
-     * Holds the loop start value.
-     */
+    /// Holds the loop start value.
     private int loopStart;
-    /**
-     * Holds the loop end value + 1.
-     */
+    /// Holds the loop end value + 1.
     private int loopEnd;
 
 
-    /**
-     * Creates a new instance.
-     *
-     * @param samples Array of signed linear 8-bit encoded audio samples.
-     * @param volume  The volume setting controls the loudness of the sound.
-     *                range 0 (mute) to 64 (maximal volume).
-     * @param pan     The relative pan of a stereo signal between two stereo
-     *                speakers. The valid range of values is -1.0 (left channel only) to 1.0
-     *                (right channel  only). The default is 0.0 (centered).
-     */
+    /// Creates a new instance.
+    ///
+    /// @param samples Array of signed linear 8-bit encoded audio samples.
+    /// @param volume  The volume setting controls the loudness of the sound.
+    ///                                                             range 0 (mute) to 64 (maximal volume).
+    /// @param pan     The relative pan of a stereo signal between two stereo
+    ///                                                             speakers. The valid range of values is -1.0 (left channel only) to 1.0
+    ///                                                             (right channel  only). The default is 0.0 (centered).
     public JDK13AppletAudioClip(byte[] samples, int sampleRate, int volume, float pan)
             throws IOException {
         this.samples = samples;
@@ -113,10 +89,8 @@ public class JDK13AppletAudioClip implements LoopableAudioClip, Runnable {
         }
     }
 
-    /**
-     * Lazily creates the shared mixer instance and returns it.
-     * Puts 8 lines into the pool.
-     */
+    /// Lazily creates the shared mixer instance and returns it.
+    /// Puts 8 lines into the pool.
     private static Mixer getMixer() throws LineUnavailableException {
         if (mixer == null) {
             mixer = AudioSystem.getMixer(AudioSystem.getMixerInfo()[0]);
@@ -131,10 +105,8 @@ public class JDK13AppletAudioClip implements LoopableAudioClip, Runnable {
         return mixer;
     }
 
-    /**
-     * Tries to get a SourceDataLine from the cache.
-     * If none is available, a new line is created and opened.
-     */
+    /// Tries to get a SourceDataLine from the cache.
+    /// If none is available, a new line is created and opened.
     private synchronized static SourceDataLine acquireLine()
             throws LineUnavailableException {
         SourceDataLine line;
@@ -158,10 +130,8 @@ public class JDK13AppletAudioClip implements LoopableAudioClip, Runnable {
         return line;
     }
 
-    /**
-     * Adds a line to the pool and makes it available for reuse.
-     * If more than 16 lines are in the cache, then the line is closed.
-     */
+    /// Adds a line to the pool and makes it available for reuse.
+    /// If more than 16 lines are in the cache, then the line is closed.
     private synchronized static void poolLine(SourceDataLine line) {
         if (lines.size() < 16) {
             //line.flush();
@@ -172,22 +142,20 @@ public class JDK13AppletAudioClip implements LoopableAudioClip, Runnable {
         }
     }
 
-    /**
-     * Sets the first and last sample frames that will be played in
-     * the loop.  The ending point must be greater than
-     * or equal to the starting point, and both must fall within the
-     * the size of the loaded media.  A value of 0 for the starting
-     * point means the beginning of the loaded media.  Similarly, a value of -1
-     * for the ending point indicates the last frame of the media.
-     *
-     * @param start the loop's starting position, in sample frames (zero-based)
-     * @param end   the loop's ending position, in sample frames (zero-based), or
-     *              -1 to indicate the final frame
-     * @throws IllegalArgumentException if the requested
-     *                                  loop points cannot be set, usually because one or both falls outside
-     *                                  the media's duration or because the ending point is
-     *                                  before the starting point
-     */
+    /// Sets the first and last sample frames that will be played in
+    /// the loop.  The ending point must be greater than
+    /// or equal to the starting point, and both must fall within the
+    /// the size of the loaded media.  A value of 0 for the starting
+    /// point means the beginning of the loaded media.  Similarly, a value of -1
+    /// for the ending point indicates the last frame of the media.
+    ///
+    /// @param start the loop's starting position, in sample frames (zero-based)
+    /// @param end   the loop's ending position, in sample frames (zero-based), or
+    ///                                        -1 to indicate the final frame
+    /// @throws IllegalArgumentException if the requested
+    ///                                                                                                    loop points cannot be set, usually because one or both falls outside
+    ///                                                                                                    the media's duration or because the ending point is
+    ///                                                                                                    before the starting point
     public void setLoopPoints(int start, int end) {
         if (start < 0 || start >= samples.length || end < start && end != -1 || end >= samples.length)
             throw new IllegalArgumentException("start:" + start + " end:" + end);
@@ -199,30 +167,28 @@ public class JDK13AppletAudioClip implements LoopableAudioClip, Runnable {
         loop(LOOP_CONTINUOUSLY);
     }
 
-    /**
-     * Starts looping playback from the current position.   Playback will
-     * continue to the loop's end point, then loop back to the loop start point
-     * <code>count</code> times, and finally continue playback to the end of
-     * the clip.
-     * <p>
-     * If the current position when this method is invoked is greater than the
-     * loop end point, playback simply continues to the
-     * end of the clip without looping.
-     * <p>
-     * A <code>count</code> value of 0 indicates that any current looping should
-     * cease and playback should continue to the end of the clip.  The behavior
-     * is undefined when this method is invoked with any other value during a
-     * loop operation.
-     * <p>
-     * If playback is stopped during looping, the current loop status is
-     * cleared; the behavior of subsequent loop and start requests is not
-     * affected by an interrupted loop operation.
-     *
-     * @param count the number of times playback should loop back from the
-     *              loop's end position to the loop's  start position, or
-     *              <code>{@link #LOOP_CONTINUOUSLY}</code> to indicate that looping should
-     *              continue until interrupted
-     */
+    /// Starts looping playback from the current position.   Playback will
+    /// continue to the loop's end point, then loop back to the loop start point
+    /// `count` times, and finally continue playback to the end of
+    /// the clip.
+    ///
+    /// If the current position when this method is invoked is greater than the
+    /// loop end point, playback simply continues to the
+    /// end of the clip without looping.
+    ///
+    /// A `count` value of 0 indicates that any current looping should
+    /// cease and playback should continue to the end of the clip.  The behavior
+    /// is undefined when this method is invoked with any other value during a
+    /// loop operation.
+    ///
+    /// If playback is stopped during looping, the current loop status is
+    /// cleared; the behavior of subsequent loop and start requests is not
+    /// affected by an interrupted loop operation.
+    ///
+    /// @param count the number of times playback should loop back from the
+    ///                                        loop's end position to the loop's  start position, or
+    ///                                        `[#LOOP_CONTINUOUSLY]` to indicate that looping should
+    ///                                        continue until interrupted
     public synchronized void loop(int count) {
         stop();
         loopCount = count;
@@ -247,9 +213,7 @@ public class JDK13AppletAudioClip implements LoopableAudioClip, Runnable {
         }
     }
 
-    /**
-     * Sets the pan and volume settings of the data line.
-     */
+    /// Sets the pan and volume settings of the data line.
     private void configureDataLine(DataLine clip) {
         if (clip.isControlSupported(FloatControl.Type.PAN)) {
             FloatControl control = (FloatControl) clip.getControl(FloatControl.Type.PAN);
@@ -274,17 +238,15 @@ public class JDK13AppletAudioClip implements LoopableAudioClip, Runnable {
         } */
     }
 
-    /**
-     * When an object implementing interface <code>Runnable</code> is used
-     * to create a workerThread, starting the workerThread causes the object's
-     * <code>run</code> method to be called in that separately executing
-     * workerThread.
-     * <p>
-     * The general contract of the method <code>run</code> is that it may
-     * take any action whatsoever.
-     *
-     * @see java.lang.Thread#run()
-     */
+    /// When an object implementing interface `Runnable` is used
+    /// to create a workerThread, starting the workerThread causes the object's
+    /// `run` method to be called in that separately executing
+    /// workerThread.
+    ///
+    /// The general contract of the method `run` is that it may
+    /// take any action whatsoever.
+    ///
+    /// @see java.lang.Thread#run()
     public void run() {
         //System.out.println("run "+hashCode());
         long start = (System.nanoTime() / 1_000_000);

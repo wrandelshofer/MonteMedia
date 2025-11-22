@@ -8,11 +8,9 @@ import org.monte.media.math.Rational;
 
 import java.io.IOException;
 
-/**
- * {@code DefaultMovie}.
- *
- * @author Werner Randelshofer
- */
+/// `DefaultMovie`.
+///
+/// @author Werner Randelshofer
 public class DefaultMovie extends AbstractMovie {
     private final static long serialVersionUID = 1L;
 

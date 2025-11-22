@@ -9,120 +9,115 @@ import org.monte.media.math.Matrix3Double;
 import java.awt.color.ColorSpace;
 import java.io.Serial;
 
-/**
- * The OK Lab Color Space.
- * <p>
- * There lightness {@code L} axis is a number in the range [0,1]. Where 0 is a deep black and 1 is a diffuse white.
- * <p>
- * The {@code a} and {@code b} axes convey hue; positive values along the {@code a} axis are a purplish red while
- * negative values are the complementary color, a green.
- * Similarly, positive values along the {@code b} axis are yellow and negative are the complementary blue/violet.
- * <p>
- * The {@code a} and {@code b} values are unbounded. CSS associates the range of ±0.4 to
- * the range of -100% to +100%.
- * <p>
- * The distance that can be calculated between two colors, is
- * directly proportional to the difference between the two colors as perceived
- * by the human eye.
- * <p>
- * Given a color in XYZ coordinates, with a D65 white point and white as Y=1,
- * OK Lab coordinates can be computed like this:
- * <p>
- * First the XYZ coordinates are converted to an approximate cone responses:
- * <pre>
- *    [ l ]          [ X ]
- *    [ m ] = M_1 ×  [ Y ]
- *    [ s ]          [ Z ]
- * </pre>
- * A non-linearity  is applied
- * <pre>
- *    [ l' ]    [ ∛l ]
- *    [ m' ] =  [ ∛m ]
- *    [ s' ]    [ ∛s ]
- * </pre>
- * Finally, this is transformed into the LabLab-coordinates:
- * <pre>
- *    [ L ]          [ l' ]
- *    [ a ] = M_2 ×  [ m' ]
- *    [ b ]          [ s' ]
- * </pre>
- * With the following values for M1M1 and M2M2:
- * <pre>
- * M1= [ +0.8189330101 +0.3618667424 −0.1288597137 ]
- *     [ +0.0329845436 +0.9293118715 +0.0361456387 ]
- *     [ +0.0482003018 +0.2643662691 +0.6338517070 ]
- *
- *
- * M2 = [ +0.2104542553 +0.7936177850 −0.0040720468 ]
- *      [ +1.9779984951 −2.4285922050 +0.4505937099 ]
- *      [ +0.0259040371 +0.7827717662 −0.8086757660 ]
- *
- * </pre>
- * Note that we have to use a different matrix for M1 when we compute from/to XYZ with a D50 white point.
- * <p>
- * References:
- * <dl>
- *     <dt>Börn Ottosson, A perceptual color space for image processing, Converting from linear sRGB to Oklab.
- *     <a href="https://github.com/bottosson/bottosson.github.io/blob/3d3f17644d7f346e1ce1ca08eb8b01782eea97af/misc/colorpicker/License.txt">MIT License</a></dt>
- *     <dd><a href="https://bottosson.github.io/posts/oklab/#converting-from-linear-srgb-to-oklab">github.io</a></dd>
- * </dl>
- *
- */
+/// The OK Lab Color Space.
+///
+/// There lightness `L` axis is a number in the range [0,1]. Where 0 is a deep black and 1 is a diffuse white.
+///
+/// The `a` and `b` axes convey hue; positive values along the `a` axis are a purplish red while
+/// negative values are the complementary color, a green.
+/// Similarly, positive values along the `b` axis are yellow and negative are the complementary blue/violet.
+///
+/// The `a` and `b` values are unbounded. CSS associates the range of ±0.4 to
+/// the range of -100% to +100%.
+///
+/// The distance that can be calculated between two colors, is
+/// directly proportional to the difference between the two colors as perceived
+/// by the human eye.
+///
+/// Given a color in XYZ coordinates, with a D65 white point and white as Y=1,
+/// OK Lab coordinates can be computed like this:
+///
+/// First the XYZ coordinates are converted to an approximate cone responses:
+/// <pre>
+///    [l]          [X]
+///    [m] = M_1 ×  [Y]
+///    [s]          [Z]
+/// </pre>
+/// A non-linearity  is applied
+/// <pre>
+///    [l' ]    [∛l]
+///    [m' ] =  [∛m]
+///    [s' ]    [∛s]
+/// </pre>
+/// Finally, this is transformed into the LabLab-coordinates:
+/// <pre>
+///    [L]          [l' ]
+///    [a] = M_2 ×  [m' ]
+///    [b]          [s' ]
+/// </pre>
+/// With the following values for M1M1 and M2M2:
+/// <pre>
+/// M1= [+0.8189330101+0.3618667424 −0.1288597137]
+///     [+0.0329845436+0.9293118715+0.0361456387]
+///     [+0.0482003018+0.2643662691+0.6338517070]
+///
+///
+/// M2 = [+0.2104542553+0.7936177850 −0.0040720468]
+///      [+1.9779984951 −2.4285922050+0.4505937099]
+///      [+0.0259040371+0.7827717662 −0.8086757660]
+///
+/// </pre>
+/// Note that we have to use a different matrix for M1 when we compute from/to XYZ with a D50 white point.
+///
+/// References:
+/// <dl>
+///     <dt>Börn Ottosson, A perceptual color space for image processing, Converting from linear sRGB to Oklab.
+///     [MIT License](https://github.com/bottosson/bottosson.github.io/blob/3d3f17644d7f346e1ce1ca08eb8b01782eea97af/misc/colorpicker/License.txt)</dt>
+///     <dd>[github.io](https://bottosson.github.io/posts/oklab/#converting-from-linear-srgb-to-oklab)</dd>
+/// </dl>
 @SuppressWarnings("UnnecessaryLocalVariable")
 public class OKLabColorSpace extends AbstractNamedColorSpace {
-    public final static OKLabColorSpace INSTANCE = new OKLabColorSpace();
+    public static OKLabColorSpace getInstance() {
+        class Holder {
+            private static final OKLabColorSpace INSTANCE = new OKLabColorSpace();
+        }
+        return Holder.INSTANCE;
+    }
 
-    /**
-     * Concatenation of RGB_to_XYZ_D65 matrix and the M1 matrix.
-     * <p>
-     * This matrix computes lms directly from linear sRGB values.
-     * <pre>
-     *    [ X ]                     [ R ]
-     *    [ Y ] = RGB_to_XYZ_D65 ×  [ G ]
-     *    [ Z ]                     [ B ]
-     * </pre>
-     * <pre>
-     *    [ l ]          [ X ]
-     *    [ m ] = M_1 ×  [ Y ]
-     *    [ s ]          [ Z ]
-     * </pre>
-     */
+
+    /// Concatenation of RGB_to_XYZ_D65 matrix and the M1 matrix.
+    ///
+    /// This matrix computes lms directly from linear sRGB values.
+    /// <pre>
+    ///    [X]                     [R]
+    ///    [Y] = RGB_to_XYZ_D65 ×  [G]
+    ///    [Z]                     [B]
+    /// </pre>
+    /// <pre>
+    ///    [l]          [X]
+    ///    [m] = M_1 ×  [Y]
+    ///    [s]          [Z]
+    /// </pre>
     private static final Matrix3Double M1_RGB = new Matrix3Double(
             0.4122214708, +0.5363325363, +0.0514459929,
             0.2119034982, +0.6806995451, +0.1073969566,
             0.0883024619, +0.2817188376, +0.6299787005
     );
-    /**
-     * The M2 matrix.
-     */
+    /// The M2 matrix.
     private static final Matrix3Double M2 = new Matrix3Double(
             0.2104542553, 0.7936177850, -0.0040720468,
             1.9779984951, -2.4285922050, +0.4505937099,
             0.0259040371, +0.7827717662, -0.8086757660
     );
-    /**
-     * The inverse of the M2 matrix.
-     */
+    /// The inverse of the M2 matrix.
     private static final Matrix3Double M2_INV = new Matrix3Double(
             1, +0.3963377774, +0.2158037573,
             1, -0.1055613458, -0.0638541728,
             1, -0.0894841775, -1.2914855480
     );
-    /**
-     * Concatenation of M<sup>-1</sup> and RGB<sup>-1</sup> matrix.
-     * <p>
-     * This matrix computes sRGB values directly from lms values.
-     * <pre>
-     *    [ X ]            [ l ]
-     *    [ Y ] = M_1^-1 ×  [ m ]
-     *    [ Z ]            [ s ]
-     * </pre>
-     * <pre>
-     *    [ R ]                        [ X ]
-     *    [ G ] = RGB_to_XYZ_D65^-1 ×  [ Y ]
-     *    [ B ]                        [ Z ]
-     * </pre>
-     */
+    /// Concatenation of M<sup>-1</sup> and RGB<sup>-1</sup> matrix.
+    ///
+    /// This matrix computes sRGB values directly from lms values.
+    /// <pre>
+    ///    [X]            [l]
+    ///    [Y] = M_1^-1 ×  [m]
+    ///    [Z]            [s]
+    /// </pre>
+    /// <pre>
+    ///    [R]                        [X]
+    ///    [G] = RGB_to_XYZ_D65^-1 ×  [Y]
+    ///    [B]                        [Z]
+    /// </pre>
     private static final Matrix3Double RGB_INV_M1_INV = new Matrix3Double(
             4.0767416621, -3.3077115913, +0.2309699292,
             -1.2684380046, +2.6097574011, -0.3413193965,

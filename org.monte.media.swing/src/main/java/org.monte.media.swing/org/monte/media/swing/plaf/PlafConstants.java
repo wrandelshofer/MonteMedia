@@ -5,37 +5,23 @@
 
 package org.monte.media.swing.plaf;
 
-/**
- * @author Werner Randelshofer
- */
+/// @author Werner Randelshofer
 public interface PlafConstants {
-    /**
-     * Client property to specify bevel in ImageButtonUI,
-     * ImageToggleButtonUI and ImageSliderUI.
-     *
-     * <p>Possible values for this property are:
-     * EAST, WEST, NONE, ALL.
-     */
+    /// Client property to specify bevel in ImageButtonUI,
+    /// ImageToggleButtonUI and ImageSliderUI.
+    ///
+    /// Possible values for this property are:
+    /// EAST, WEST, NONE, ALL.
     public final static String PROP_BEVEL = "org.monte.gui.plaf.Bevel";
-    /**
-     * The all property value.
-     */
+    /// The all property value.
     public final static String ALL = "All";
-    /**
-     * The none property value.
-     */
+    /// The none property value.
     public final static String NONE = "None";
-    /**
-     * The center property value.
-     */
+    /// The center property value.
     public final static String CENTER = "Center";
-    /**
-     * The east property value.
-     */
+    /// The east property value.
     public final static String EAST = "East";
-    /**
-     * The west property value.
-     */
+    /// The west property value.
     public final static String WEST = "West";
 }
 

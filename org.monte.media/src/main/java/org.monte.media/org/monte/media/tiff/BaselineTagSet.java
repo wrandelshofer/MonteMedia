@@ -15,12 +15,10 @@ import static org.monte.media.tiff.TIFFTag.SLONG_MASK;
 import static org.monte.media.tiff.TIFFTag.SSHORT_MASK;
 import static org.monte.media.tiff.TIFFTag.UNDEFINED_MASK;
 
-/**
- * A class representing the set of tags found in the baseline TIFF specification
- * as well as some common additional tags.
- *
- * @author Werner Randelshofer
- */
+/// A class representing the set of tags found in the baseline TIFF specification
+/// as well as some common additional tags.
+///
+/// @author Werner Randelshofer
 public class BaselineTagSet extends TagSet {
 
     private static BaselineTagSet instance;
@@ -38,9 +36,7 @@ public class BaselineTagSet extends TagSet {
     public final static TIFFTag SamplesPerPixel = new TIFFTag("SamplesPerPixel", 0x0115, SHORT_MASK);
     /* Same as PrintIM */
     public final static TIFFTag PrintImageMatching = new TIFFTag("PrintImageMatching", 0xc4a5/*=50341*/, UNDEFINED_MASK);
-    /**
-     * Synthetic tags.
-     */
+    /// Synthetic tags.
     public final static int TAG_JPEGThumbnailImage = -1;
     public final static TIFFTag JPEGThumbnailImage = new TIFFTag("JPEGThumbnailImage", TAG_JPEGThumbnailImage, UNDEFINED_MASK);
 
@@ -48,9 +44,7 @@ public class BaselineTagSet extends TagSet {
         super("Baseline", tags);
     }
 
-    /**
-     * Returns a shared instance of a BaselineTagSet.
-     */
+    /// Returns a shared instance of a BaselineTagSet.
     public static BaselineTagSet getInstance() {
         if (instance == null) {
             TIFFTag[] tags = {//

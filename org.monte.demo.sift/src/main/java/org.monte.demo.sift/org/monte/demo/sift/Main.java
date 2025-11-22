@@ -12,10 +12,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-/**
- * Takes any IFF file and tells you what's in it.
- * <p>
- */
+/// Takes any IFF file and tells you what's in it.
+///
 public class Main {
     enum Mode {
         SIFT,

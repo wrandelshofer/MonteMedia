@@ -11,20 +11,16 @@ import javax.imageio.stream.ImageOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 
-/**
- * A CompositeAtom contains an ordered list of Atoms.
- */
+/// A CompositeAtom contains an ordered list of Atoms.
 public class CompositeAtom extends DataAtom {
 
     protected LinkedList<Atom> children;
 
-    /**
-     * Creates a new CompositeAtom at the current position of the
-     * ImageOutputStream.
-     *
-     * @param type The type of the atom.
-     * @param out
-     */
+    /// Creates a new CompositeAtom at the current position of the
+    /// ImageOutputStream.
+    ///
+    /// @param type The type of the atom.
+    /// @param out
     public CompositeAtom(String type, ImageOutputStream out) throws IOException {
         super(type, out);
         children = new LinkedList<>();
@@ -37,12 +33,10 @@ public class CompositeAtom extends DataAtom {
         children.add(child);
     }
 
-    /**
-     * Writes the atom and all its children to the ImageOutputStream and
-     * disposes of all resources held by the atom.
-     *
-     * @throws IOException
-     */
+    /// Writes the atom and all its children to the ImageOutputStream and
+    /// disposes of all resources held by the atom.
+    ///
+    /// @throws IOException
     @Override
     public void finish() throws IOException {
         if (!finished) {

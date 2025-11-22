@@ -18,16 +18,13 @@ public class Rec2020ColorSpaceTest extends AbstractNamedColorSpaceTest {
         return new Rec2020ColorSpace();
     }
 
-    /**
-     * References:
-     * <dl>
-     *     <dt>CSS Color Module Level 4.  The Predefined ITU-R BT.2020-2 Color Space: the rec2020 keyword.</dt>
-     *     <dd><a href="https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#predefined-rec2020">w3.org</a></dd>
-     *
-     *     <dt>CSS Color Module Level 4. Sample code for Color Conversions.</dt>
-     *     <dd><a href="https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#color-conversion-code">w3.org</a></dd>
-     * </dl>
-     */
+    /// References:
+    /// <dl>
+    ///     <dt>CSS Color Module Level 4.  The Predefined ITU-R BT.2020-2 Color Space: the rec2020 keyword.</dt>
+    ///     <dd>[w3.org](https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#predefined-rec2020)</dd>
+    ///     <dt>CSS Color Module Level 4. Sample code for Color Conversions.</dt>
+    ///     <dd>[w3.org](https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#color-conversion-code)</dd>
+    /// </dl>
     @Test
     public void shouldHaveExpectedMatrix() {
         ParametricLinearRgbColorSpace instance = (ParametricLinearRgbColorSpace) getInstance().getLinearColorSpace();

@@ -8,32 +8,22 @@ package org.monte.media.color.octree;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Octree data structure.
- * <p>
- * References:
- * <dl>
- * <dt>M. Gervautz, W. Purgathofer. (1988).
- *       A Simple Method for Color Quantization: Octree Quantizati.</dt>
- *  <dd><a href="https://www.cg.tuwien.ac.at/research/publications/1988/purgathofer-1988-simple/purgathofer-1988-simple-Paper.PDF">www.cg.tuwien.ac.at</a></a></dd>
- * </dl>
- */
+/// Octree data structure.
+///
+/// References:
+/// <dl>
+/// <dt>M. Gervautz, W. Purgathofer. (1988).
+///       A Simple Method for Color Quantization: Octree Quantizati.</dt>
+///  <dd>[www.cg.tuwien.ac.at](https://www.cg.tuwien.ac.at/research/publications/1988/purgathofer-1988-simple/purgathofer-1988-simple-Paper.PDF)</a></dd>
+/// </dl>
 public class OctreeAlgo {
-    /**
-     * Maximum depth of the octree.
-     */
+    /// Maximum depth of the octree.
     final static int MAX_DEPTH = 8;
-    /**
-     * The number of desired colors.
-     */
+    /// The number of desired colors.
     private final int K;
-    /**
-     * One list for every depth level in the octree.
-     */
+    /// One list for every depth level in the octree.
     private final Octree[] reduceList = new Octree[MAX_DEPTH];
-    /**
-     * The number of leaves.
-     */
+    /// The number of leaves.
     private int size;
     private Octree root;
 
@@ -41,11 +31,9 @@ public class OctreeAlgo {
         K = k;
     }
 
-    /**
-     * Adds a color to the octree.
-     *
-     * @param color a color
-     */
+    /// Adds a color to the octree.
+    ///
+    /// @param color a color
     public void add(Color color) {
         root = insertTree(root, color, 1);
         while (size > K) {
@@ -59,14 +47,12 @@ public class OctreeAlgo {
         rgb.B += rgb1.B;
     }
 
-    /**
-     * Evaluates the branch of the octree for the color {@code rgb} in
-     * depth {@code depth}.
-     *
-     * @param rgb   the color
-     * @param depth the depth
-     * @return the branch to take (a value between 0 and 7).
-     */
+    /// Evaluates the branch of the octree for the color `rgb` in
+    /// depth `depth`.
+    ///
+    /// @param rgb   the color
+    /// @param depth the depth
+    /// @return the branch to take (a value between 0 and 7).
     private int branch(Color rgb, int depth) {
         int shift = MAX_DEPTH - depth;
         int bitMask = 1 << shift;
@@ -75,18 +61,14 @@ public class OctreeAlgo {
                 | ((bitMask & rgb.B) >>> shift);
     }
 
-    /**
-     * Creates the color table from the tree.
-     */
+    /// Creates the color table from the tree.
     public List<Color> createColorTable() {
         var colorTable = new ArrayList<Color>();
         initColorTable(root, colorTable);
         return colorTable;
     }
 
-    /**
-     * Finds the best reducible node of the octree.
-     */
+    /// Finds the best reducible node of the octree.
     private Octree getReducible() {
         Octree node;
         int octreeDepth = MAX_DEPTH;
@@ -98,10 +80,8 @@ public class OctreeAlgo {
         return node;
     }
 
-    /**
-     * Fills the color table with the means of the colors
-     * represented by the octree leaves.
-     */
+    /// Fills the color table with the means of the colors
+    /// represented by the octree leaves.
     private void initColorTable(Octree tree, List<Color> colorTable) {
         if (tree == null) return;
         if (tree.isLeaf) {
@@ -115,14 +95,12 @@ public class OctreeAlgo {
         }
     }
 
-    /**
-     * Inserts the color {@code rgb} into the subtree {@code tree}
-     * in depth {@code depth}.
-     *
-     * @param tree  the subtree
-     * @param rgb   the color
-     * @param depth the depth
-     */
+    /// Inserts the color `rgb` into the subtree `tree`
+    /// in depth `depth`.
+    ///
+    /// @param tree  the subtree
+    /// @param rgb   the color
+    /// @param depth the depth
     private Octree insertTree(Octree tree, Color rgb, int depth) {
         if (tree == null) {
             tree = newAndInit(depth);
@@ -137,10 +115,8 @@ public class OctreeAlgo {
         return tree;
     }
 
-    /**
-     * Inserts the node {@code node} with depth {@code level}
-     * into the right list.
-     */
+    /// Inserts the node `node` with depth `level`
+    /// into the right list.
     private void makeReducible(int level, Octree node) {
         node.nextNode = reduceList[level];
         reduceList[level] = node;
@@ -150,12 +126,10 @@ public class OctreeAlgo {
         return new Color(rgb.R / colorCount, rgb.G / colorCount, rgb.B / colorCount);
     }
 
-    /**
-     * Produces and initializes a new octree node
-     * for insertion into the tree at the specified depth.
-     *
-     * @param depth the depth
-     */
+    /// Produces and initializes a new octree node
+    /// for insertion into the tree at the specified depth.
+    ///
+    /// @param depth the depth
     public Octree newAndInit(int depth) {
         int i;
         Octree node;
@@ -169,14 +143,12 @@ public class OctreeAlgo {
         return node;
     }
 
-    /**
-     * For the original color {@code orig} its representative
-     * is searched for in the octree, and the index of
-     * its color table entry is returned.
-     *
-     * @param orig original color
-     * @return color table index
-     */
+    /// For the original color `orig` its representative
+    /// is searched for in the octree, and the index of
+    /// its color table entry is returned.
+    ///
+    /// @param orig original color
+    /// @return color table index
     public int quant(Color orig) {
         return quant(root, orig);
     }
@@ -189,9 +161,7 @@ public class OctreeAlgo {
         }
     }
 
-    /**
-     * Combines the successors of an intermediate node to one leaf.
-     */
+    /// Combines the successors of an intermediate node to one leaf.
     private void reduceTree() {
         Octree tree = getReducible();
         int children = 0;

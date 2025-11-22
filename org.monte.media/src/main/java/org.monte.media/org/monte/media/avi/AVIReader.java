@@ -40,17 +40,13 @@ import static org.monte.media.av.codec.audio.AudioFormatKeys.FrameSizeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
 
-/**
- * Provides high-level support for decoding and reading audio and video samples
- * from an AVI 1.0 file.
- *
- * @author Werner Randelshofer
- */
+/// Provides high-level support for decoding and reading audio and video samples
+/// from an AVI 1.0 file.
+///
+/// @author Werner Randelshofer
 public class AVIReader extends AVIInputStream implements MovieReader {
     private static class TrackEncoder {
-        /**
-         * The codec.
-         */
+        /// The codec.
         public Codec codec;
         public Buffer outputBuffer;
         public Buffer inputBuffer;
@@ -86,15 +82,14 @@ public class AVIReader extends AVIInputStream implements MovieReader {
         return 0;
     }
 
-    /**
-     * Reads a chunk of media data from the specified track. <p> If the track is
-     * a video track with palette change {@code "..PC"} chunks, then the body of the
-     * palette change chunk can be found in the buffer.header.
-     *
-     * @param track  The track number.
-     * @param buffer The buffer for the media data.
-     * @throws IOException on IO failure
-     */
+    /// Reads a chunk of media data from the specified track.
+    ///  If the track is
+    /// a video track with palette change `"..PC"` chunks, then the body of the
+    /// palette change chunk can be found in the buffer.header.
+    ///
+    /// @param track  The track number.
+    /// @param buffer The buffer for the media data.
+    /// @throws IOException on IO failure
     @Override
     public void read(int track, Buffer buffer) throws IOException {
         ensureRealized();
@@ -151,9 +146,7 @@ public class AVIReader extends AVIInputStream implements MovieReader {
 
     }
 
-    /**
-     * Decodes the PC palette change chunk.
-     */
+    /// Decodes the PC palette change chunk.
     private void readPalette(byte[] pc, int offset, int length, byte[] r, byte[] g, byte[] b) throws IOException {
                     /*
                      * typedef struct {
@@ -183,15 +176,13 @@ public class AVIReader extends AVIInputStream implements MovieReader {
 
     }
 
-    /**
-     * Reads an image.
-     *
-     * @param track The track number
-     * @param img   An image that can be reused if it fits the media format of the
-     *              track. Pass null to create a new image on each read.
-     * @return An image or null if the end of the media has been reached.
-     * @throws IOException
-     */
+    /// Reads an image.
+    ///
+    /// @param track The track number
+    /// @param img   An image that can be reused if it fits the media format of the
+    ///                                        track. Pass null to create a new image on each read.
+    /// @return An image or null if the end of the media has been reached.
+    /// @throws IOException
     public BufferedImage read(int track, BufferedImage img) throws IOException {
         AbstractAVIStream.Track tr = tracks.get(track);
         TrackEncoder tre = getTrackEncoder(track);

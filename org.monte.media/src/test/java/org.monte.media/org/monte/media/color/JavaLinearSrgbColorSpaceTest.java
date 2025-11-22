@@ -9,9 +9,7 @@ import org.junit.jupiter.api.Disabled;
 
 import java.awt.color.ColorSpace;
 
-/**
- * This test exists only for comparison with {@link LinearSrgbColorSpace}.
- */
+/// This test exists only for comparison with [LinearSrgbColorSpace].
 @Disabled("this test succeeds - the java implementation is okay")
 public class JavaLinearSrgbColorSpaceTest extends AbstractNamedColorSpaceTest {
     protected NamedColorSpace getInstance() {

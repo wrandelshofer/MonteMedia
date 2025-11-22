@@ -5,11 +5,9 @@
 
 package org.monte.media.tiff;
 
-/**
- * DateValueFormatter.
- *
- * @author Werner Randelshofer
- */
+/// DateValueFormatter.
+///
+/// @author Werner Randelshofer
 public class DateValueFormatter implements ValueFormatter {
 
     public DateValueFormatter() {

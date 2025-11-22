@@ -31,35 +31,32 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_I
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
-/**
- * {@code DIBCodec} encodes a BufferedImage as a Microsoft Device Independent
- * Bitmap (DIB) into a byte array.
- * <p>
- * The DIB codec only works with the AVI file format. Other file formats, such
- * as QuickTime, use a different encoding for uncompressed video.
- * <p>
- * This codec currently only supports encoding from a {@code BufferedImage} into
- * the file format. Decoding support may be added in the future.
- * <p>
- * This codec does not encode the color palette of an image. This must be done
- * separately.
- * <p>
- * The pixels of a frame are written row by row from bottom to top and from
- * the left to the right. 24-bit pixels are encoded as BGR.
- * <p>
- * Supported input formats:
- * <ul>
- * <li>{@code Format} with {@code BufferedImage.class}, any width, any height,
- * depth=4.</li>
- * </ul>
- * Supported output formats:
- * <ul>
- * <li>{@code Format} with {@code byte[].class}, same width and height as input
- * format, depth=4.</li>
- * </ul>
- *
- * @author Werner Randelshofer
- */
+/// `DIBCodec` encodes a BufferedImage as a Microsoft Device Independent
+/// Bitmap (DIB) into a byte array.
+///
+/// The DIB codec only works with the AVI file format. Other file formats, such
+/// as QuickTime, use a different encoding for uncompressed video.
+///
+/// This codec currently only supports encoding from a `BufferedImage` into
+/// the file format. Decoding support may be added in the future.
+///
+/// This codec does not encode the color palette of an image. This must be done
+/// separately.
+///
+/// The pixels of a frame are written row by row from bottom to top and from
+/// the left to the right. 24-bit pixels are encoded as BGR.
+///
+/// Supported input formats:
+///
+///   - `Format` with `BufferedImage.class`, any width, any height,
+///     depth=4.
+///
+/// Supported output formats:
+///
+///   - `Format` with `byte[].class`, same width and height as input
+///     format, depth=4.
+///
+/// @author Werner Randelshofer
 public class DIBEncoder extends org.monte.media.av.AbstractCodec {
 
     public DIBEncoder() {
@@ -175,15 +172,13 @@ public class DIBEncoder extends org.monte.media.av.AbstractCodec {
         }
     }
 
-    /**
-     * Encodes a 4-bit key frame.
-     *
-     * @param out            The output stream.
-     * @param pixels         The image data.
-     * @param offset         The offset to the first pixel in the data array.
-     * @param width          The width of the image in data elements.
-     * @param scanlineStride The number to append to offset to get to the next scanline.
-     */
+    /// Encodes a 4-bit key frame.
+    ///
+    /// @param out            The output stream.
+    /// @param pixels         The image data.
+    /// @param offset         The offset to the first pixel in the data array.
+    /// @param width          The width of the image in data elements.
+    /// @param scanlineStride The number to append to offset to get to the next scanline.
     public void writeKey4(ImageOutputStream out, byte[] pixels, int width, int height, int offset, int scanlineStride)
             throws IOException {
 
@@ -197,15 +192,13 @@ public class DIBEncoder extends org.monte.media.av.AbstractCodec {
 
     }
 
-    /**
-     * Encodes an 8-bit key frame.
-     *
-     * @param out            The output stream.
-     * @param pixels         The image data.
-     * @param offset         The offset to the first pixel in the data array.
-     * @param width          The width of the image in data elements.
-     * @param scanlineStride The number to append to offset to get to the next scanline.
-     */
+    /// Encodes an 8-bit key frame.
+    ///
+    /// @param out            The output stream.
+    /// @param pixels         The image data.
+    /// @param offset         The offset to the first pixel in the data array.
+    /// @param width          The width of the image in data elements.
+    /// @param scanlineStride The number to append to offset to get to the next scanline.
     public void writeKey8(ImageOutputStream out, byte[] pixels, int width, int height, int offset, int scanlineStride)
             throws IOException {
 
@@ -214,15 +207,13 @@ public class DIBEncoder extends org.monte.media.av.AbstractCodec {
         }
     }
 
-    /**
-     * Encodes a 24-bit key frame.
-     *
-     * @param out            The output stream.
-     * @param pixels         The image data.
-     * @param offset         The offset to the first pixel in the data array.
-     * @param width          The width of the image in data elements.
-     * @param scanlineStride The number to append to offset to get to the next scanline.
-     */
+    /// Encodes a 24-bit key frame.
+    ///
+    /// @param out            The output stream.
+    /// @param pixels         The image data.
+    /// @param offset         The offset to the first pixel in the data array.
+    /// @param width          The width of the image in data elements.
+    /// @param scanlineStride The number to append to offset to get to the next scanline.
     public void writeKey24(ImageOutputStream out, int[] pixels, int width, int height, int offset, int scanlineStride)
             throws IOException {
         int w3 = width * 3;

@@ -12,23 +12,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-/**
- * {@code SEQReader}.
- *
- * @author Werner Randelshofer
- */
+/// `SEQReader`.
+///
+/// @author Werner Randelshofer
 public class SEQReader {
 
     private SEQMovieTrack track;
     // ---- BEGIN Decoder variables ----
-    /**
-     * Index of the frame which has been delta
-     * decoded in its even or odd bitmap buffer.
-     */
+    /// Index of the frame which has been delta
+    /// decoded in its even or odd bitmap buffer.
     private int fetchedEven = -1, fetchedOdd = -1;
-    /**
-     * Two bitmaps are needed for double buffering.
-     */
+    /// Two bitmaps are needed for double buffering.
     private AmigaBitmapImage bitmapEven, bitmapOdd;
     // ---- END Decoder variables ----
 
@@ -74,9 +68,7 @@ public class SEQReader {
                 track.getFrame(0).getColorModel());
     }
 
-    /**
-     * Reads a frame into the supplied image.
-     */
+    /// Reads a frame into the supplied image.
     public void readFrame(int index, AmigaBitmapImage image) {
         AmigaBitmapImage fetched = fetchFrame(index);
 
@@ -89,9 +81,7 @@ public class SEQReader {
         return track.getJiffies();
     }
 
-    /**
-     * Reads the duration of the specified frame.
-     */
+    /// Reads the duration of the specified frame.
     public int getDuration(int index) {
         return (int) track.getFrame(index).getRelTime();
     }

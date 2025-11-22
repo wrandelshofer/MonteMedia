@@ -17,34 +17,29 @@ import static org.monte.media.impl.jcodec.codecs.h264.H264Utils.Mv.mvX;
 import static org.monte.media.impl.jcodec.codecs.h264.H264Utils.Mv.mvY;
 import static org.monte.media.impl.jcodec.common.tools.MathUtil.clip;
 
-/**
- * References:
- * <p>
- * This code has been derived from JCodecProject.
- * <dl>
- *     <dt>JCodecProject. Copyright 2008-2019 JCodecProject.
- *     <br><a href="https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE">BSD 2-Clause License.</a></dt>
- *     <dd><a href="https://github.com/jcodec/jcodec">github.com</a></dd>
- * </dl>
- *
- * <p>
- * A filter that removes DCT artifacts on block boundaries.
- * <p>
- * It's operation is dependant on QP and is designed the way that the strenth is
- * adjusted to the likelyhood of appearence of blocking artifacts on the
- * specific edges.
- * <p>
- * Builds a parameter for deblocking filter based on the properties of specific
- * macroblocks.
- * <p>
- * A parameter specifies the behavior of deblocking filter on each of 8 edges
- * that need to filtered for a macroblock.
- * <p>
- * For each edge the following things are evaluated on it's both sides: presence
- * of DCT coded residual; motion vector difference; spatial location.
- *
- * @author The JCodec project
- */
+/// References:
+///
+/// JCodecProject. Copyright 2008-2019 JCodecProject.
+/// : [BSD 2-Clause License.](https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE)
+/// : [github.com](https://github.com/jcodec/jcodec)
+///
+///
+/// A filter that removes DCT artifacts on block boundaries.
+///
+/// It's operation is dependant on QP and is designed the way that the strenth is
+/// adjusted to the likelyhood of appearence of blocking artifacts on the
+/// specific edges.
+///
+/// Builds a parameter for deblocking filter based on the properties of specific
+/// macroblocks.
+///
+/// A parameter specifies the behavior of deblocking filter on each of 8 edges
+/// that need to filtered for a macroblock.
+///
+/// For each edge the following things are evaluated on it's both sides: presence
+/// of DCT coded residual; motion vector difference; spatial location.
+///
+/// @author The JCodec project
 public class DeblockingFilter {
 
     public static int[] alphaTab = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 5, 6, 7, 8, 9, 10, 12,

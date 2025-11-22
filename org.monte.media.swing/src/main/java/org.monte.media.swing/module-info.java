@@ -2,11 +2,9 @@
  * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
  */
 
-/**
- * Provides Swing classes for use with the Monte Media library.
- *
- * @author Werner Randelshofer
- */
+/// Provides Swing classes for use with the Monte Media library.
+///
+/// @author Werner Randelshofer
 module org.monte.media.swing {
     requires java.desktop;
     requires java.prefs;

@@ -11,15 +11,13 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Stack;
 
-/**
- * Facilitates writing of EA 85 IFF files.
- * <p>
- * Reference:<br>
- * Commodore-Amiga, Inc. (1991) Amiga ROM Kernel Reference Manual. Devices.
- * Third Edition. Reading: Addison-Wesley.
- *
- * @author Werner Randelshofer
- */
+/// Facilitates writing of EA 85 IFF files.
+///
+/// Reference:
+/// Commodore-Amiga, Inc. (1991) Amiga ROM Kernel Reference Manual. Devices.
+/// Third Edition. Reading: Addison-Wesley.
+///
+/// @author Werner Randelshofer
 public class IFFOutputStream extends OutputStream {
 
     private byte[] writeBuffer = new byte[4];
@@ -78,81 +76,61 @@ public class IFFOutputStream extends OutputStream {
         out.write(b);
     }
 
-    /**
-     * Gets the position relative to the beginning of the IFF output stream.
-     * <p>
-     * Usually this value is equal to the stream position of the underlying
-     * ImageOutputStream, but can be larger if the underlying stream already
-     * contained data.
-     *
-     * @return The relative stream position.
-     * @throws IOException
-     */
+    /// Gets the position relative to the beginning of the IFF output stream.
+    ///
+    /// Usually this value is equal to the stream position of the underlying
+    /// ImageOutputStream, but can be larger if the underlying stream already
+    /// contained data.
+    ///
+    /// @return The relative stream position.
+    /// @throws IOException
     public long getStreamPosition() throws IOException {
         return out.getStreamPosition() - streamOffset;
     }
 
-    /**
-     * Seeks relative to the beginning of the IFF output stream.
-     * <p>
-     * Usually this equal to seeking in the underlying ImageOutputStream, but
-     * can be different if the underlying stream already contained data.
-     */
+    /// Seeks relative to the beginning of the IFF output stream.
+    ///
+    /// Usually this equal to seeking in the underlying ImageOutputStream, but
+    /// can be different if the underlying stream already contained data.
     public void seek(long newPosition) throws IOException {
         out.seek(newPosition + streamOffset);
     }
 
-    /**
-     * Chunk base class.
-     */
+    /// Chunk base class.
     private abstract class Chunk {
 
-        /**
-         * The chunkType of the chunk. A String with the length of 4 characters.
-         */
+        /// The chunkType of the chunk. A String with the length of 4 characters.
         protected String chunkType;
-        /**
-         * The offset of the chunk relative to the start of the
-         * ImageOutputStream.
-         */
+        /// The offset of the chunk relative to the start of the
+        /// ImageOutputStream.
         protected long offset;
         protected boolean finished;
 
-        /**
-         * Creates a new Chunk at the current position of the ImageOutputStream.
-         *
-         * @param chunkType The chunkType of the chunk. A string with a length of 4 characters.
-         */
+        /// Creates a new Chunk at the current position of the ImageOutputStream.
+        ///
+        /// @param chunkType The chunkType of the chunk. A string with a length of 4 characters.
         public Chunk(String chunkType) throws IOException {
             this.chunkType = chunkType;
             offset = getStreamPosition();
         }
 
-        /**
-         * Writes the chunk to the ImageOutputStream and disposes it.
-         */
+        /// Writes the chunk to the ImageOutputStream and disposes it.
         public abstract void finish() throws IOException;
 
         public abstract boolean isComposite();
     }
 
-    /**
-     * A CompositeChunk contains an ordered list of Chunks.
-     */
+    /// A CompositeChunk contains an ordered list of Chunks.
     private class CompositeChunk extends Chunk {
 
-        /**
-         * The type of the composite. A String with the length of 4 characters.
-         */
+        /// The type of the composite. A String with the length of 4 characters.
         protected String compositeType;
 
-        /**
-         * Creates a new CompositeChunk at the current position of the
-         * ImageOutputStream.
-         *
-         * @param compositeType The type of the composite.
-         * @param chunkType     The type of the chunk.
-         */
+        /// Creates a new CompositeChunk at the current position of the
+        /// ImageOutputStream.
+        ///
+        /// @param compositeType The type of the composite.
+        /// @param chunkType     The type of the chunk.
         public CompositeChunk(String compositeType, String chunkType) throws IOException {
             super(chunkType);
             this.compositeType = compositeType;
@@ -161,12 +139,10 @@ public class IFFOutputStream extends OutputStream {
             out.writeInt(0); // make room for the chunk header
         }
 
-        /**
-         * Writes the chunk and all its children to the ImageOutputStream
-         * and disposes of all resources held by the chunk.
-         *
-         * @throws java.io.IOException
-         */
+        /// Writes the chunk and all its children to the ImageOutputStream
+        /// and disposes of all resources held by the chunk.
+        ///
+        /// @throws java.io.IOException
         @Override
         public void finish() throws IOException {
             if (!finished) {
@@ -195,17 +171,13 @@ public class IFFOutputStream extends OutputStream {
         }
     }
 
-    /**
-     * Data Chunk.
-     */
+    /// Data Chunk.
     private class DataChunk extends Chunk {
 
-        /**
-         * Creates a new DataChunk at the current position of the
-         * ImageOutputStream.
-         *
-         * @param chunkType The chunkType of the chunk.
-         */
+        /// Creates a new DataChunk at the current position of the
+        /// ImageOutputStream.
+        ///
+        /// @param chunkType The chunkType of the chunk.
         public DataChunk(String chunkType) throws IOException {
             super(chunkType);
             out.writeLong(0); // make room for the chunk header
@@ -270,11 +242,9 @@ public class IFFOutputStream extends OutputStream {
         out.write(v);
     }
 
-    /**
-     * Writes an chunk type identifier (4 bytes).
-     *
-     * @param s A string with a length of 4 characters.
-     */
+    /// Writes an chunk type identifier (4 bytes).
+    ///
+    /// @param s A string with a length of 4 characters.
     public void writeTYPE(String s) throws IOException {
         if (s.length() != 4) {
             throw new IllegalArgumentException("type string must have 4 characters");
@@ -287,24 +257,22 @@ public class IFFOutputStream extends OutputStream {
         }
     }
 
-    /**
-     * ByteRun1 Run Encoding.
-     * <p>
-     * The run encoding scheme in byteRun1 is best described by
-     * pseudo code for the decoder Unpacker (called UnPackBits in the
-     * Macintosh toolbox):
-     * <pre>
-     * UnPacker:
-     *    LOOP until produced the desired number of bytes
-     *       Read the next source byte into n
-     *       SELECT n FROM
-     *          [ 0..127 ] ⇒ copy the next n+1 bytes literally
-     *          [-1..-127] ⇒ replicate the next byte -n+1 timees
-     *          -128       ⇒ no operation
-     *       ENDCASE
-     *    ENDLOOP
-     * </pre>
-     */
+    /// ByteRun1 Run Encoding.
+    ///
+    /// The run encoding scheme in byteRun1 is best described by
+    /// pseudo code for the decoder Unpacker (called UnPackBits in the
+    /// Macintosh toolbox):
+    /// <pre>
+    /// UnPacker:
+    ///    LOOP until produced the desired number of bytes
+    ///       Read the next source byte into n
+    ///       SELECT n FROM
+    ///          [0..127] ⇒ copy the next n+1 bytes literally
+    ///          [-1..-127] ⇒ replicate the next byte -n+1 timees
+    ///          -128       ⇒ no operation
+    ///       ENDCASE
+    ///    ENDLOOP
+    /// </pre>
     public void writeByteRun1(byte[] data) throws IOException {
         writeByteRun1(data, 0, data.length);
     }

@@ -28,41 +28,37 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-/**
- * Creates Image objects by reading an IFF ILBM stream.
- *
- * <p><b>ILBM regular expression</b>
- * <pre>
- * ILBM ::= "FORM" #{ "ILBM" BMHD [CMAP] [GRAB] [DEST] [SPRT] [CAMG] CRNG* CCRT* DRNG* [BODY] }
- *
- * BMHD ::= "BMHD" #{ BitMapHeader }
- * CMAP ::= "CMAP" #{ (red green blue)* } [0]
- * GRAB ::= "GRAB" #{ Point2D }
- * DEST ::= "DEST" #{ DestMerge }
- * SPRT ::= "SPRT" #{ SpritePrecedence }
- * CAMG ::= "CAMG" #{ LONG }
- *
- * CRNG ::= "CRNG" #{ CRange }
- * DRNG ::= "DRNG" #{ DRange }
- * CCRT ::= "CCRT" #{ CycleInfo }
- * BODY ::= "BODY" #{ UBYTE* } [0]
- * </pre>
- * The token "#" represents a <code>ckSize</code> LONG count of the following
- * braced data bytes. E.g., a BMHD's "#" should equal <code>sizeof(BitMapHeader)</code>.
- * Literal strings are shown in "quotes", [square bracket items] are optional, and
- * "*" means 0 or more repetitions. A sometimes-needed pad byte is shown as "[0]".
- *
- * @author Werner Randelshofer
- */
+/// Creates Image objects by reading an IFF ILBM stream.
+///
+/// **ILBM regular expression**
+/// <pre>
+/// ILBM ::= "FORM" #{ "ILBM" BMHD [CMAP] [GRAB] [DEST] [SPRT] [CAMG] CRNG* CCRT* DRNG* [BODY] }
+///
+/// BMHD ::= "BMHD" #{ BitMapHeader }
+/// CMAP ::= "CMAP" #{ (red green blue)* } [0]
+/// GRAB ::= "GRAB" #{ Point2D }
+/// DEST ::= "DEST" #{ DestMerge }
+/// SPRT ::= "SPRT" #{ SpritePrecedence }
+/// CAMG ::= "CAMG" #{ LONG }
+///
+/// CRNG ::= "CRNG" #{ CRange }
+/// DRNG ::= "DRNG" #{ DRange }
+/// CCRT ::= "CCRT" #{ CycleInfo }
+/// BODY ::= "BODY" #{ UBYTE* } [0]
+/// </pre>
+/// The token "#" represents a `ckSize` LONG count of the following
+/// braced data bytes. E.g., a BMHD's "#" should equal `sizeof(BitMapHeader)`.
+/// Literal strings are shown in "quotes", [square bracket items] are optional, and
+/// "*" means 0 or more repetitions. A sometimes-needed pad byte is shown as "[0]".
+///
+/// @author Werner Randelshofer
 public class ILBMDecoder
         implements IFFVisitor {
     private boolean force8BitsPerChannel = true;
 
     /* ---- constants ---- */
 
-    /**
-     * Chunk ID's.
-     */
+    /// Chunk ID's.
     protected final static int ILBM_ID = IFFParser.stringToID("ILBM");
     protected final static int BMHD_ID = IFFParser.stringToID("BMHD");
     protected final static int CMAP_ID = IFFParser.stringToID("CMAP");
@@ -75,10 +71,8 @@ public class ILBMDecoder
     private final static int AUTH_ID = IFFParser.stringToID("AUTH");
     private final static int ANNO_ID = IFFParser.stringToID("ANNO");
     private final static int COPYRIGHT_ID = IFFParser.stringToID("(c) ");
-    /** ILBM CAMG chunk: Commodore Amiga Video display modes. */
-    /**
-     * ILBM CAMG chunk: Mask and ID bits for CAMG ModeID.
-     */
+    /// ILBM CAMG chunk: Commodore Amiga Video display modes.
+    /// ILBM CAMG chunk: Mask and ID bits for CAMG ModeID.
     protected final static int MONITOR_ID_MASK = 0xffff1000;
     protected final static int DEFAULT_MONITOR_ID = 0x00000000;
     protected final static int NTSC_MONITOR_ID = 0x00011000;
@@ -100,80 +94,48 @@ public class ILBMDecoder
     protected final static int EHB_MASK = 0x00000080;
     protected final static int HAM_KEY = 0x00000800;
     protected final static int EXTRAHALFBRITE_KEY = 0x00000080;
-    /**
-     * ILBM BMHD chunk: masking technique.
-     */
+    /// ILBM BMHD chunk: masking technique.
     protected final static int MSK_NONE = 0,
             MSK_HAS_MASK = 1,
             MSK_HAS_TRANSPARENT_COLOR = 2,
             MSK_LASSO = 3;
-    /**
-     * ILBM BMHD chunk: compression algorithm.
-     */
+    /// ILBM BMHD chunk: compression algorithm.
     protected final static int CMP_NONE = 0,
             CMP_BYTE_RUN_1 = 1, CMP_VERTICAL = 2;
     /* ---- instance variables ---- */
-    /**
-     * Input stream to decode from.
-     */
+    /// Input stream to decode from.
     protected InputStream inputStream;
-    /**
-     * URL to get the input stream from.
-     */
+    /// URL to get the input stream from.
     protected URL location;
-    /**
-     * Stores all the ILBM pictures found during decoding
-     * as an instance of ColorCyclingMemoryImageSource.
-     */
+    /// Stores all the ILBM pictures found during decoding
+    /// as an instance of ColorCyclingMemoryImageSource.
     protected ArrayList<ColorCyclingMemoryImageSource> sources;
     protected ArrayList<AmigaBitmapImage> bitmapSources;
-    /** BMHD data. */
-    /**
-     * Raster width and height in pixels
-     */
+    /// BMHD data.
+    /// Raster width and height in pixels
     protected int bmhdWidth, bmhdHeight;
-    /**
-     * pixel position for this image
-     */
+    /// pixel position for this image
     protected int bmhdXPosition, bmhdYPosition;
-    /**
-     * Number of source bitplanes.
-     */
+    /// Number of source bitplanes.
     protected int bmhdNbPlanes;
     protected int bmhdMasking;
     protected int bmhdCompression;
-    /**
-     * Transparent "color number" (sort of).
-     */
+    /// Transparent "color number" (sort of).
     protected int bmhdTransparentColor;
-    /**
-     * Pixel aspect, a ratio width : height
-     */
+    /// Pixel aspect, a ratio width : height
     protected int bmhdXAspect, bmhdYAspect;
-    /**
-     * Source "page" size in pixels.
-     */
+    /// Source "page" size in pixels.
     protected int bmhdPageWidth, bmhdPageHeight;
-    /**
-     * Commodore Amiga Graphics Mode.
-     */
+    /// Commodore Amiga Graphics Mode.
     protected int camg = NTSC_MONITOR_ID;
-    /**
-     * CAMG Video display mode.
-     */
+    /// CAMG Video display mode.
     protected int camgMode;
-    /**
-     * CMAP data.
-     */
+    /// CMAP data.
     protected ColorModel cmapColorModel;
-    /**
-     * BODY data
-     */
+    /// BODY data
     protected AmigaBitmapImage bodyBitmap;
 
-    /**
-     * Constructors
-     */
+    /// Constructors
     public ILBMDecoder(InputStream in) {
         inputStream = in;
     }
@@ -182,12 +144,10 @@ public class ILBMDecoder
         this.location = location;
     }
 
-    /**
-     * Processes the input stream and creates a vector of
-     * ColorCyclingMemoryImageSource instances.
-     *
-     * @return A vector of java.awt.img.ColorCyclingMemoryImageSource.
-     */
+    /// Processes the input stream and creates a vector of
+    /// ColorCyclingMemoryImageSource instances.
+    ///
+    /// @return A vector of java.awt.img.ColorCyclingMemoryImageSource.
     public List<ColorCyclingMemoryImageSource> produce()
             throws IOException {
         InputStream in = null;
@@ -218,12 +178,10 @@ public class ILBMDecoder
         return sources;
     }
 
-    /**
-     * Processes the input stream and creates a vector of
-     * BitmapImages instances.
-     *
-     * @return A vector of java.awt.img.ColorCyclingMemoryImageSource.
-     */
+    /// Processes the input stream and creates a vector of
+    /// BitmapImages instances.
+    ///
+    /// @return A vector of java.awt.img.ColorCyclingMemoryImageSource.
     public ArrayList<AmigaBitmapImage> produceBitmaps()
             throws IOException {
         InputStream in = null;
@@ -482,10 +440,8 @@ public class ILBMDecoder
         }
     }
 
-    /**
-     * Decodes the CAMG Chunk.
-     * Requires data from BMHD Chunk.
-     */
+    /// Decodes the CAMG Chunk.
+    /// Requires data from BMHD Chunk.
     protected void decodeCAMG(IFFChunk chunk)
             throws ParseException {
         camg = 0;
@@ -656,23 +612,20 @@ public class ILBMDecoder
         }
     }
 
-    /**
-     * Decodes the color cycling range and timing chunk (ILBM CCRT).
-     *
-     * <pre>
-     * enum {
-     *     dontCycle = 0, forward = 1, backwards = -1
-     * } ccrtDirection;
-     * typedef struct {
-     *   WORD enum ccrtDirection direction;  // 0=don't cycle, 1=forward, -1=backwards
-     *   UBYTE start;      // range lower
-     *   UBYTE end;        // range upper
-     *   ULONG  seconds;    // seconds between cycling
-     *   ULONG  microseconds; // msecs between cycling
-     *   WORD  pad;        // future exp - store 0 here
-     * } ilbmColorCyclingRangeAndTimingChunk;
-     * </pre>
-     */
+    /// Decodes the color cycling range and timing chunk (ILBM CCRT).
+    /// <pre>
+    /// enum {
+    ///     dontCycle = 0, forward = 1, backwards = -1
+    /// } ccrtDirection;
+    /// typedef struct {
+    ///   WORD enum ccrtDirection direction;  // 0=don't cycle, 1=forward, -1=backwards
+    ///   UBYTE start;      // range lower
+    ///   UBYTE end;        // range upper
+    ///   ULONG  seconds;    // seconds between cycling
+    ///   ULONG  microseconds; // msecs between cycling
+    ///   WORD  pad;        // future exp - store 0 here
+    /// } ilbmColorCyclingRangeAndTimingChunk;
+    /// </pre>
     protected ColorCycle decodeCCRT(IFFChunk chunk)
             throws ParseException {
         ColorCycle cc;
@@ -696,24 +649,21 @@ public class ILBMDecoder
         return cc;
     }
 
-    /**
-     * Decodes the color range cycling (ILBM CRNG).
-     *
-     * <pre>
-     * #define RNG_NORATE  36   // Dpaint uses this rate to mean non-active
-     *  set {
-     *  active = 1, reverse = 2
-     *  } crngActive;
-     *
-     *  // A CRange is store in a CRNG chunk.
-     *  typedef struct {
-     *  WORD  pad1;              // reserved for future use; store 0 here *
-     *  WORD  rate;              // 60/sec=16384, 30/sec=8192, 1/sec=16384/60=273
-     *  WORD set crngActive flags;     // bit0 set = active, bit 1 set = reverse
-     *  UBYTE low; UBYTE high;         // lower and upper color registers selected
-     *  } ilbmColorRegisterRangeChunk;
-     * </pre>
-     */
+    /// Decodes the color range cycling (ILBM CRNG).
+    /// <pre>
+    /// #define RNG_NORATE  36   // Dpaint uses this rate to mean non-active
+    ///  set {
+    ///  active = 1, reverse = 2
+    ///  } crngActive;
+    ///
+    ///  // A CRange is store in a CRNG chunk.
+    ///  typedef struct {
+    ///  WORD  pad1;              // reserved for future use; store 0 here *
+    ///  WORD  rate;              // 60/sec=16384, 30/sec=8192, 1/sec=16384/60=273
+    ///  WORD set crngActive flags;     // bit0 set = active, bit 1 set = reverse
+    ///  UBYTE low; UBYTE high;         // lower and upper color registers selected
+    ///  } ilbmColorRegisterRangeChunk;
+    /// </pre>
     protected ColorCycle decodeCRNG(IFFChunk chunk)
             throws ParseException {
         ColorCycle cc;
@@ -736,51 +686,49 @@ public class ILBMDecoder
         return cc;
     }
 
-    /**
-     * Decodes the DPaint IV enhanced color cycle chunk (ILBM DRNG)
-     * <p>
-     * The RNG_ACTIVE flag is set when the range is cyclable. A range should
-     * only have the RNG _ACTIVE if it:
-     * <ol>
-     * <li>contains at least one color register</li>
-     * <li>has a defined rate</li>
-     * <li>has more than one color and/or color register</li>
-     * </ol>
-     * <pre>
-     * ILBM DRNG DPaint IV enhanced color cycle chunk
-     * --------------------------------------------
-     *
-     * set {
-     *     RNG_ACTIVE=1,RNG_DP_RESERVED=4
-     * } drngFlags;
-     *
-     * /* True color cell * /
-     * typedef struct {
-     *     UBYTE cell;
-     *     UBYTE r;
-     *     UBYTE g;
-     *     UBYTE b;
-     * } ilbmDRNGDColor;
-     *
-     * /* Color register cell * /
-     * typedef struct {
-     *     UBYTE cell;
-     *     UBYTE index;
-     * } ilbmDRNGDIndex;
-     *
-     * /* DRNG chunk. * /
-     * typedef struct {
-     *     UBYTE min; /* min cell value * /
-     *     UBYTE max; /* max cell value * /
-     *     UWORD rate; /* color cycling rate, 16384 = 60 steps/second * /
-     *     UWORD set drngFlags flags; /* 1=RNG_ACTIVE, 4=RNG_DP_RESERVED * /
-     *     UBYTE ntrue; /* number of DColorCell structs to follow * /
-     *     UBYTE ntregs; /* number of DIndexCell structs to follow * /
-     *     ilbmDRNGDColor[ntrue] trueColorCells;
-     *     ilbmDRNGDIndex[ntregs] colorRegisterCells;
-     * } ilbmDRangeChunk;
-     * </pre>
-     */
+    /// Decodes the DPaint IV enhanced color cycle chunk (ILBM DRNG)
+    ///
+    /// The RNG_ACTIVE flag is set when the range is cyclable. A range should
+    /// only have the RNG _ACTIVE if it:
+    /// <ol>
+    ///   - contains at least one color register
+    ///   - has a defined rate
+    ///   - has more than one color and/or color register
+    /// </ol>
+    /// <pre>
+    /// ILBM DRNG DPaint IV enhanced color cycle chunk
+    /// --------------------------------------------
+    ///
+    /// set {
+    ///     RNG_ACTIVE=1,RNG_DP_RESERVED=4
+    /// } drngFlags;
+    ///
+    /// /* True color cell * /
+    /// typedef struct {
+    ///     UBYTE cell;
+    ///     UBYTE r;
+    ///     UBYTE g;
+    ///     UBYTE b;
+    /// } ilbmDRNGDColor;
+    ///
+    /// /* Color register cell * /
+    /// typedef struct {
+    ///     UBYTE cell;
+    ///     UBYTE index;
+    /// } ilbmDRNGDIndex;
+    ///
+    /// /* DRNG chunk. * /
+    /// typedef struct {
+    ///     UBYTE min; /* min cell value * /
+    ///     UBYTE max; /* max cell value * /
+    ///     UWORD rate; /* color cycling rate, 16384 = 60 steps/second * /
+    ///     UWORD set drngFlags flags; /* 1=RNG_ACTIVE, 4=RNG_DP_RESERVED * /
+    ///     UBYTE ntrue; /* number of DColorCell structs to follow * /
+    ///     UBYTE ntregs; /* number of DIndexCell structs to follow * /
+    ///     ilbmDRNGDColor[ntrue] trueColorCells;
+    ///     ilbmDRNGDIndex[ntregs] colorRegisterCells;
+    /// } ilbmDRangeChunk;
+    /// </pre>
     protected ColorCycle decodeDRNG(IFFChunk chunk)
             throws ParseException {
         ColorCycle cc;
@@ -842,28 +790,26 @@ public class ILBMDecoder
         }
     }
 
-    /**
-     * ByteRun1 run decoder.
-     * <p>
-     * The run encoding scheme by <em>byteRun1</em> is best described by pseudo
-     * code for the decoder <em>Unpacker</em> (called <em>UnPackBits</em> in
-     * the Macintosh toolbox.
-     * <pre>
-     * UnPacker:
-     *  LOOP until produced the desired number of bytes
-     *      Read the next source byte into n
-     *      SELECT n FROM
-     *          [0..127] =&gt; copy the next n+1 bytes literally
-     *          [-1..-127] =&gt; replicate the next byte -n+1 times
-     *          -128    =&gt; no operation
-     *      ENDCASE;
-     *   ENDLOOP;
-     * </pre>
-     *
-     * @param in
-     * @param out
-     * @throws ParseException
-     */
+    /// ByteRun1 run decoder.
+    ///
+    /// The run encoding scheme by _byteRun1_ is best described by pseudo
+    /// code for the decoder _Unpacker_ (called _UnPackBits_ in
+    /// the Macintosh toolbox.
+    /// <pre>
+    /// UnPacker:
+    ///  LOOP until produced the desired number of bytes
+    ///      Read the next source byte into n
+    ///      SELECT n FROM
+    ///          [0..127] =&gt; copy the next n+1 bytes literally
+    ///          [-1..-127] =&gt; replicate the next byte -n+1 times
+    ///          -128    =&gt; no operation
+    ///      ENDCASE;
+    ///   ENDLOOP;
+    /// </pre>
+    ///
+    /// @param in
+    /// @param out
+    /// @throws ParseException
     public static int unpackByteRun1(byte[] in, byte[] out)
             throws ParseException {
         try {
@@ -875,49 +821,47 @@ public class ILBMDecoder
         }
     }
 
-    /**
-     * Vertical run decoder.
-     * <p>
-     * Each plane is stored in a separate VDAT chunk.
-     * <p>
-     * A VDAT chunk consists of an id, a length, and a body.
-     * <pre>
-     * struct {
-     *    uint16 id;  // The 4 ASCII characters "VDAT"
-     *    uint16 length,
-     *    byte[length] body
-     * }
-     * </pre>
-     * The body consists of a command list and a data list.
-     * <pre>
-     * struct {
-     *    uint16         cnt;        // Command count + 2
-     *    uint8[cnt - 2] cmd;        // The commands
-     *    uint16[]       data;       // Data words
-     * }
-     * </pre>
-     * Pseudo code for the unpacker:
-     * <pre>
-     * UnPacker:
-     *  Read cnt;
-     *  LOOP cnt - 2 TIMES
-     *      Read the next command byte into cmd
-     *      SELECT cmd FROM
-     *          0 =&gt;
-     *                  Read the next data word into n
-     *                  Copy the next n data words literally
-     *          1    =&gt;
-     *                  Read the next data word into n
-     *                  Replicate the next data word n times
-     *          [2..127] =&gt;
-     *                  Replicate the next data word cmd times
-     *          [-1..-128] =&gt;
-     *                  Copy the next -cmd data words literally
-     *      ENDCASE;
-     *      IF end of data reached THEN EXIT END;
-     *   ENDLOOP;
-     * </pre>
-     */
+    /// Vertical run decoder.
+    ///
+    /// Each plane is stored in a separate VDAT chunk.
+    ///
+    /// A VDAT chunk consists of an id, a length, and a body.
+    /// <pre>
+    /// struct {
+    ///    uint16 id;  // The 4 ASCII characters "VDAT"
+    ///    uint16 length,
+    ///    byte[length] body
+    /// }
+    /// </pre>
+    /// The body consists of a command list and a data list.
+    /// <pre>
+    /// struct {
+    ///    uint16         cnt;        // Command count + 2
+    ///    uint8[cnt-2] cmd;        // The commands
+    ///    uint16[]       data;       // Data words
+    /// }
+    /// </pre>
+    /// Pseudo code for the unpacker:
+    /// <pre>
+    /// UnPacker:
+    ///  Read cnt;
+    ///  LOOP cnt - 2 TIMES
+    ///      Read the next command byte into cmd
+    ///      SELECT cmd FROM
+    ///          0 =&gt;
+    ///                  Read the next data word into n
+    ///                  Copy the next n data words literally
+    ///          1    =&gt;
+    ///                  Read the next data word into n
+    ///                  Replicate the next data word n times
+    ///          [2..127] =&gt;
+    ///                  Replicate the next data word cmd times
+    ///          [-1..-128] =&gt;
+    ///                  Copy the next -cmd data words literally
+    ///      ENDCASE;
+    ///      IF end of data reached THEN EXIT END;
+    ///   ENDLOOP;
+    /// </pre>
     public void unpackVertical(byte[] in, AmigaBitmapImage bm)
             throws ParseException {
         byte[] out = bm.getBitmap();

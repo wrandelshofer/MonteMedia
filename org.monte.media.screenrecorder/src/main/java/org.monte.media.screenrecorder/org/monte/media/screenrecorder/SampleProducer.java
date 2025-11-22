@@ -9,22 +9,16 @@ import org.monte.media.av.Buffer;
 
 import java.util.concurrent.BlockingQueue;
 
-/**
- * Runs the given samplers until it is closed.
- */
+/// Runs the given samplers until it is closed.
 public interface SampleProducer extends AutoCloseable {
-    /**
-     * Starts the sampler.
-     */
+    /// Starts the sampler.
     public void start();
 
     @Override
     void close();
 
-    /**
-     * Gets the samples.
-     *
-     * @return the samples.
-     */
+    /// Gets the samples.
+    ///
+    /// @return the samples.
     BlockingQueue<Buffer> getSamples();
 }

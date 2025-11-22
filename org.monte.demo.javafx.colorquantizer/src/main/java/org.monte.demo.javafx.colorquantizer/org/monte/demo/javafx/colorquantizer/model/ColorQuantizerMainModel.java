@@ -6,6 +6,7 @@
 package org.monte.demo.javafx.colorquantizer.model;
 
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -32,11 +33,13 @@ import org.monte.media.av.Codec;
 import org.monte.media.av.CodecChain;
 import org.monte.media.av.Format;
 import org.monte.media.av.codec.video.CropImageCodec;
+import org.monte.media.av.codec.video.ImageOpCodec;
 import org.monte.media.av.codec.video.ReplaceColorSpaceCodec;
 import org.monte.media.av.codec.video.ScaleImageCodec;
 import org.monte.media.av.codec.video.VideoFormatKeys;
 import org.monte.media.color.RgbBitConverters;
 import org.monte.media.color.quant.OctreeColorQuantizer;
+import org.monte.media.image.op.UnsharpMaskOp;
 
 import javax.imageio.ImageIO;
 import javax.imageio.spi.IIORegistry;
@@ -81,12 +84,16 @@ public class ColorQuantizerMainModel {
     private final IntegerProperty cropTop = new SimpleIntegerProperty();
     private final IntegerProperty cropRight = new SimpleIntegerProperty();
     private final IntegerProperty cropBottom = new SimpleIntegerProperty();
-    private final DoubleProperty ditherIntensityFactor = new SimpleDoubleProperty(1.0);
+    private final DoubleProperty ditherIntensityFactor = new SimpleDoubleProperty(1.5);
+    private final DoubleProperty scaleRadiusFactor = new SimpleDoubleProperty(0.5);
+    private final DoubleProperty sharpenAmount = new SimpleDoubleProperty(1);
+    private final DoubleProperty sharpenRadius = new SimpleDoubleProperty(1.35);
     private final StringProperty batchOutputFormat = new SimpleStringProperty("PNG");
     private final ObjectProperty<Color> palette0Color = new SimpleObjectProperty<>(Color.BLACK);
     private final ObjectProperty<Path> referenceFile = new SimpleObjectProperty<>();
     private final ObjectProperty<Path> batchOutputDirectory = new SimpleObjectProperty<>();
-    private final ObjectProperty<BufferedImage> referenceImage = new SimpleObjectProperty<>();
+    private final ObjectProperty<BufferedImage> rawReferenceImage = new SimpleObjectProperty<>();
+    private final ObjectProperty<BufferedImage> colorCorrectedReferenceImage = new SimpleObjectProperty<>();
     private final ObjectProperty<ColorMode> colorMode = new SimpleObjectProperty<>(ColorMode._24_BIT_RGB);
     private final ObjectProperty<PaletteMode> paletteMode = new SimpleObjectProperty<>(PaletteMode.COMPUTED_K_MEANS);
     private final ObjectProperty<IndexColorModel> indexColorModel = new SimpleObjectProperty<>(null);
@@ -100,34 +107,64 @@ public class ColorQuantizerMainModel {
     public ColorQuantizerMainModel() {
         referenceFile.addListener(this::updateReferenceImage);
         referenceImageColorSpace.addListener(this::updateReferenceImage);
-        referenceImage.addListener(this::updateInputImage);
+        rawReferenceImage.addListener(this::updateInputImage);
         scaledHeight.addListener(this::scaledHeightChanged);
-        scaledWidth.addListener(this::updateScaledHeight);
-        preserveAspectRatio.addListener(this::updateScaledHeight);
-        crop.addListener(this::updateScaledHeight);
-        scale.addListener(this::updateScaledHeight);
-        cropLeft.addListener(this::updateScaledHeight);
-        cropLeft.addListener(this::updateRenderedImage);
-        cropRight.addListener(this::updateScaledHeight);
-        cropTop.addListener(this::updateScaledHeight);
-        cropBottom.addListener(this::updateScaledHeight);
 
-        referenceImage.addListener(this::updateRenderedImage);
-        crop.addListener(this::updateRenderedImage);
-        scale.addListener(this::updateRenderedImage);
-        cropLeft.addListener(this::updateRenderedImage);
-        cropRight.addListener(this::updateRenderedImage);
-        cropTop.addListener(this::updateRenderedImage);
-        cropBottom.addListener(this::updateRenderedImage);
-        scaledWidth.addListener(this::updateRenderedImage);
-        scaledHeight.addListener(this::updateRenderedImage);
-        colorMode.addListener(this::updateRenderedImage);
-        ditheringMethod.addListener(this::updateRenderedImage);
-        ditherIntensityFactor.addListener(this::updateRenderedImage);
-        paletteMode.addListener(this::updateRenderedImage);
-        lockPaletteIndex0.addListener(this::updateRenderedImage);
-        palette0Color.addListener(this::updateRenderedImage);
-        paletteSize.addListener(this::updateRenderedImage);
+        InvalidationListener updateScaledHeight = this::updateScaledHeight;
+        scaledWidth.addListener(updateScaledHeight);
+        preserveAspectRatio.addListener(updateScaledHeight);
+        crop.addListener(updateScaledHeight);
+        scale.addListener(updateScaledHeight);
+        cropLeft.addListener(updateScaledHeight);
+        cropRight.addListener(updateScaledHeight);
+        cropTop.addListener(updateScaledHeight);
+        cropBottom.addListener(updateScaledHeight);
+
+        InvalidationListener updateRenderedImage = this::updateRenderedImage;
+        cropLeft.addListener(updateRenderedImage);
+        scaleRadiusFactor.addListener(updateRenderedImage);
+        sharpenAmount.addListener(updateRenderedImage);
+        sharpenRadius.addListener(updateRenderedImage);
+        rawReferenceImage.addListener(updateRenderedImage);
+        crop.addListener(updateRenderedImage);
+        scale.addListener(updateRenderedImage);
+        cropLeft.addListener(updateRenderedImage);
+        cropRight.addListener(updateRenderedImage);
+        cropTop.addListener(updateRenderedImage);
+        cropBottom.addListener(updateRenderedImage);
+        scaledWidth.addListener(updateRenderedImage);
+        scaledHeight.addListener(updateRenderedImage);
+        colorMode.addListener(updateRenderedImage);
+        ditheringMethod.addListener(updateRenderedImage);
+        ditherIntensityFactor.addListener(updateRenderedImage);
+        paletteMode.addListener(updateRenderedImage);
+        lockPaletteIndex0.addListener(updateRenderedImage);
+        palette0Color.addListener(updateRenderedImage);
+        paletteSize.addListener(updateRenderedImage);
+    }
+
+    public double getScaleRadiusFactor() {
+        return scaleRadiusFactor.get();
+    }
+
+    public DoubleProperty scaleRadiusFactorProperty() {
+        return scaleRadiusFactor;
+    }
+
+    public double getSharpenAmount() {
+        return sharpenAmount.get();
+    }
+
+    public DoubleProperty sharpenAmountProperty() {
+        return sharpenAmount;
+    }
+
+    public double getSharpenRadius() {
+        return sharpenRadius.get();
+    }
+
+    public DoubleProperty sharpenRadiusProperty() {
+        return sharpenRadius;
     }
 
     public ColorSpace getReferenceImageColorSpace() {
@@ -160,7 +197,7 @@ public class ColorQuantizerMainModel {
         String outputFormat = getBatchOutputFormat();
         BlockingQueue<Codec> codecs = new LinkedBlockingQueue<>();
         for (int i = 0, n = ForkJoinPool.commonPool().getParallelism(); i < n; i++) {
-            Codec codec = createCodec();
+            Codec codec = createCodecPipeline();
             if (codec == null) {
                 break;
             }
@@ -202,7 +239,9 @@ public class ColorQuantizerMainModel {
                     try {
                         borrowedCodec = codecs.take();
                         updateMessage(p.getFileName().toString());
+                        long startTime = System.nanoTime();
                         process(p, borrowedCodec, outputFormat, dir);
+                        System.out.println(p.getFileName() + " elapsed=" + (System.nanoTime() - startTime) / 1_000_000 + "ms");
                         updateProgress(progress + 1, files.size());
                     } catch (Exception e) {
                         throw new RuntimeException(e.getMessage() + " " + p.getFileName(), e);
@@ -245,16 +284,15 @@ public class ColorQuantizerMainModel {
         return newTask;
     }
 
-    public Codec createCodec() {
-        BufferedImage inputImg = getReferenceImage();
+    public Codec createCodecPipeline() {
+        BufferedImage inputImg = getRawReferenceImage();
         if (inputImg == null) return null;
         List<Codec> codecs = new ArrayList<>();
 
         ColorSpace cs = getReferenceImageColorSpace();
         if (cs != null) {
             var codec = new ReplaceColorSpaceCodec();
-            codec.setOutputFormat(new Format(ReplaceColorSpaceCodec.ColorSpaceKey,
-                    cs));
+            codec.setOutputFormat(new Format(ReplaceColorSpaceCodec.ColorSpaceKey, cs));
             codecs.add(codec);
         } else {
             cs = inputImg.getColorModel().getColorSpace();
@@ -272,10 +310,20 @@ public class ColorQuantizerMainModel {
             var codec = new ScaleImageCodec();
             codec.setOutputFormat(new Format(
                     VideoFormatKeys.WidthKey, getScaledWidth(),
-                    VideoFormatKeys.HeightKey, getScaledHeight()
+                    VideoFormatKeys.HeightKey, getScaledHeight(),
+                    ScaleImageCodec.ScaleGaussianBlurFactorKey, getScaleRadiusFactor()
             ));
             codecs.add(codec);
         }
+        if (isScale() && getSharpenAmount() > 0 && getSharpenRadius() > 0) {
+            var codec = new ImageOpCodec();
+            codec.setOutputFormat(new Format(
+                    VideoFormatKeys.WidthKey, getScaledWidth(),
+                    VideoFormatKeys.HeightKey, getScaledHeight(),
+                    ImageOpCodec.ImageOpKey, new UnsharpMaskOp((float) getSharpenRadius(), (float) getSharpenAmount(), 0.025f)));
+            codecs.add(codec);
+        }
+
         Format colorFormat = new Format(DirectColorModelEncoder.DitheringMethodKey, getDitheringMethod(),
                 DirectColorModelEncoder.DitheringFactorKey, getDitherIntensityFactor());
         switch (getColorMode()) {
@@ -525,7 +573,7 @@ public class ColorQuantizerMainModel {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        setReferenceImage(finalNewImage);
+                        setRawReferenceImage(finalNewImage);
                     }
                 });
                 return finalNewImage;
@@ -635,12 +683,16 @@ public class ColorQuantizerMainModel {
         referenceFile.set(newValue);
     }
 
-    public BufferedImage getReferenceImage() {
-        return referenceImage.get();
+    public BufferedImage getRawReferenceImage() {
+        return rawReferenceImage.get();
     }
 
-    public void setReferenceImage(BufferedImage newValue) {
-        referenceImage.set(newValue);
+    public void setRawReferenceImage(BufferedImage newValue) {
+        rawReferenceImage.set(newValue);
+    }
+
+    public void setColorCorrectedReferenceImage(BufferedImage newValue) {
+        colorCorrectedReferenceImage.set(newValue);
     }
 
     public BufferedImage getRenderedImage() {
@@ -742,8 +794,12 @@ public class ColorQuantizerMainModel {
         return referenceFile;
     }
 
-    public ObjectProperty<BufferedImage> referenceImageProperty() {
-        return referenceImage;
+    public ObjectProperty<BufferedImage> rawReferenceImageProperty() {
+        return rawReferenceImage;
+    }
+
+    public ObjectProperty<BufferedImage> colorCorrectedReferenceImageProperty() {
+        return colorCorrectedReferenceImage;
     }
 
     public ObjectProperty<BufferedImage> renderedImageProperty() {
@@ -836,21 +892,37 @@ public class ColorQuantizerMainModel {
             if (!isPreserveAspectRatio()) {
                 setScaledHeight(newv.getHeight());
             }
+            if (getReferenceImageColorSpace() == null || newv == null) {
+                setColorCorrectedReferenceImage(newv);
+            } else {
+                var codec = new ReplaceColorSpaceCodec();
+                codec.setOutputFormat(new Format(ReplaceColorSpaceCodec.ColorSpaceKey, getReferenceImageColorSpace()));
+                var in = new Buffer();
+                in.data = newv;
+                var out = new Buffer();
+                codec.process(in, out);
+                if (out.data instanceof BufferedImage bimg) {
+                    setColorCorrectedReferenceImage(bimg);
+                } else {
+                    setColorCorrectedReferenceImage(null);
+                }
+            }
             changing--;
         }
     }
 
     public void updateRenderedImage(Observable o) {
-        var inputImg = getReferenceImage();
+        var inputImg = getRawReferenceImage();
         if (inputImg == null) return;
-        final Codec finalCodec = createCodec();
+        final Codec finalCodec = createCodecPipeline();
         final BufferedImage finalInputImg = inputImg;
         var newTask = new Task<Void>() {
 
             @Override
             protected Void call() throws Exception {
+                long startTime = System.nanoTime();
                 try {
-                    if (currentTask != this) {
+                    if (isCancelled()) {
                         return null;
                     }
                     BufferedImage renderedImg;
@@ -866,6 +938,9 @@ public class ColorQuantizerMainModel {
                         }
                         renderedImg = (BufferedImage) out.data;
                     }
+                    if (isCancelled()) {
+                        return null;
+                    }
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
@@ -875,12 +950,16 @@ public class ColorQuantizerMainModel {
                             setRenderedImage(renderedImg);
                         }
                     });
+                    System.out.println("updateRenderedImage elapsed=" + (System.nanoTime() - startTime) / 1_000_000 + "ms");
                 } catch (Throwable t) {
                     t.printStackTrace();
                 }
                 return null;
             }
         };
+        if (currentTask != null) {
+            currentTask.cancel(true);
+        }
         currentTask = newTask;
         exec.submit(newTask);
     }

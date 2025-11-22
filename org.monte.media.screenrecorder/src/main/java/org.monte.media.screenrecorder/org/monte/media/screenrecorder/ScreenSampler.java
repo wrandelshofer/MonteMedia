@@ -25,15 +25,11 @@ import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
-/**
- * Samples the screen in fixed time intervals.
- */
+/// Samples the screen in fixed time intervals.
 public class ScreenSampler implements Sampler {
     private final int track;
     private long sequenceNumber;
-    /**
-     * The AWT Robot which we use for capturing the screen.
-     */
+    /// The AWT Robot which we use for capturing the screen.
     private final Robot robot;
     private final Rectangle captureArea;
     private final Rational interval;

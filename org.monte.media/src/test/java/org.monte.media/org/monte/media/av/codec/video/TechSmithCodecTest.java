@@ -181,15 +181,13 @@ public class TechSmithCodecTest {
         return new UncachedImageInputStream(new InflaterInputStream(new ByteArrayInputStream(encoded.getBuffer(), 0, encoded.size())), ByteOrder.LITTLE_ENDIAN);
     }
 
-    /**
-     * Creates a video frame at the specified time.
-     *
-     * @param width  width of the frame
-     * @param height height of the frame
-     * @param time   time in range[0,1].
-     * @param type
-     * @return
-     */
+    /// Creates a video frame at the specified time.
+    ///
+    /// @param width  width of the frame
+    /// @param height height of the frame
+    /// @param time   time in range[0,1].
+    /// @param type
+    /// @return
     private static BufferedImage createFrame(int width, int height, float time, int type) throws IOException {
         BufferedImage img = new BufferedImage(width, height, type);
         Graphics2D g = img.createGraphics();
@@ -238,14 +236,12 @@ public class TechSmithCodecTest {
         return ibta.getIndexed8(buf);
     }
 
-    /**
-     * Computes the arc length of an oval.
-     * <a href="https://www.mathematik.ch/anwendungenmath/ellipsenumfang/">www.mathematik.ch</a>
-     *
-     * @param width  width of the oval
-     * @param height height of the oval
-     * @return arc length
-     */
+    /// Computes the arc length of an oval.
+    /// [www.mathematik.ch](https://www.mathematik.ch/anwendungenmath/ellipsenumfang/)
+    ///
+    /// @param width  width of the oval
+    /// @param height height of the oval
+    /// @return arc length
     private static double arcLength(int width, int height) {
         double a = width / 2.0, b = height / 2.0;
         double lambda = (a - b) / (a + b);

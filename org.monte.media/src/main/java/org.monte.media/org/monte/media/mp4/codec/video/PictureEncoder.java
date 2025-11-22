@@ -20,9 +20,7 @@ import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
 
-/**
- * Codec for {@link BufferedImage} to/from {@link Picture}.
- */
+/// Codec for [BufferedImage] to/from [Picture].
 public class PictureEncoder extends org.monte.media.av.AbstractCodec {
     public static final String ENCODING_PICTURE = "picture";
 

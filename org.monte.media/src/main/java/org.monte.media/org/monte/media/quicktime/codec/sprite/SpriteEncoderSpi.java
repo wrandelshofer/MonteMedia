@@ -6,11 +6,9 @@ package org.monte.media.quicktime.codec.sprite;
 
 import org.monte.media.av.CodecSpi;
 
-/**
- * RawCodecSpi.
- *
- * @author Werner Randelshofer
- */
+/// RawCodecSpi.
+///
+/// @author Werner Randelshofer
 public class SpriteEncoderSpi implements CodecSpi {
 
     @Override

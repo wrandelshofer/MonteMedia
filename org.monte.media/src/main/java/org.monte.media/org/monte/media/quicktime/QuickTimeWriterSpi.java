@@ -13,11 +13,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * MP4WriterSpi.
- *
- * @author Werner Randelshofer
- */
+/// MP4WriterSpi.
+///
+/// @author Werner Randelshofer
 public class QuickTimeWriterSpi implements MovieWriterSpi {
 
     private final static List<String> extensions = List.of(new String[]{"mov"});

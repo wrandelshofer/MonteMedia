@@ -12,12 +12,10 @@ import javax.imageio.stream.ImageInputStream;
 import java.io.IOException;
 import java.util.Locale;
 
-/**
- * ImageIO service provider interface for images in the Amiga IFF Interleaved
- * Bitmap image format (ILBM).
- *
- * @author Werner Randelshofer
- */
+/// ImageIO service provider interface for images in the Amiga IFF Interleaved
+/// Bitmap image format (ILBM).
+///
+/// @author Werner Randelshofer
 public class PBMImageReaderSpi extends ImageReaderSpi {
     protected final static int FORM_ID = IFFParser.stringToID("FORM");
     protected final static int CAT_ID = IFFParser.stringToID("CAT ");

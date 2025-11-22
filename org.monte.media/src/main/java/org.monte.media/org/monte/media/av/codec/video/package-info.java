@@ -2,10 +2,8 @@
  * @(#)package-info.java
  * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
-/**
- * Provides base classes for video codecs, and common video codecs.
- *
- * @author Werner Randelshofer
- */
+/// Provides base classes for video codecs, and common video codecs.
+///
+/// @author Werner Randelshofer
 package org.monte.media.av.codec.video;
 

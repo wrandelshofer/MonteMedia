@@ -10,14 +10,12 @@ import javax.imageio.stream.ImageInputStream;
 import java.io.IOException;
 import java.util.Locale;
 
-/**
- * ImageIO service provider interface for images in the MultiPicture Object
- * format (MPO).
- * <p>
- * See: <a href="http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf">MPO Format Specification</a>.
- *
- * @author Werner Randelshofer
- */
+/// ImageIO service provider interface for images in the MultiPicture Object
+/// format (MPO).
+///
+/// See: [MPO Format Specification](http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf).
+///
+/// @author Werner Randelshofer
 public class MPOImageReaderSpi extends ImageReaderSpi {
 
     public MPOImageReaderSpi() {

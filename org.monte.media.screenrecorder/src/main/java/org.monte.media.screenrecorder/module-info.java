@@ -2,11 +2,9 @@
  * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
  */
 
-/**
- * A screen recorder in pure Java.
- *
- * @author Werner Randelshofer
- */
+/// A screen recorder in pure Java.
+///
+/// @author Werner Randelshofer
 module org.monte.media.screenrecorder {
     requires java.desktop;
     requires java.prefs;

@@ -20,21 +20,19 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
 import static org.monte.media.av.codec.video.VideoFormatKeys.FixedFrameRateKey;
 
-/**
- * This codec converts frames from one frame rate into another.
- * <p>
- * Makes frames longer if the output time is behind the input time.
- * Drops frames if the output time runs away from the input time.
- * <p>
- * The output of the converter has a variable frame rate but it may still
- * contain identical frames.
- * Thus an additional conversion step with {@link FFRtoVFRConverter} is needed.
- * <p>
- * This codec is needed when the input source has a different frame rate than
- * the output sink.
- *
- * @author Werner Randelshofer
- */
+/// This codec converts frames from one frame rate into another.
+///
+/// Makes frames longer if the output time is behind the input time.
+/// Drops frames if the output time runs away from the input time.
+///
+/// The output of the converter has a variable frame rate but it may still
+/// contain identical frames.
+/// Thus an additional conversion step with [FFRtoVFRConverter] is needed.
+///
+/// This codec is needed when the input source has a different frame rate than
+/// the output sink.
+///
+/// @author Werner Randelshofer
 public class FrameRateConverter extends org.monte.media.av.AbstractCodec {
 
     private Rational inputTime;

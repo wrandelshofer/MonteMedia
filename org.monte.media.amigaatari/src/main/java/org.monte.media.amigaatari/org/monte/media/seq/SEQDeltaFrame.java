@@ -8,15 +8,13 @@ import org.monte.media.amigabitmap.AmigaBitmapImage;
 
 import java.util.Arrays;
 
-/**
- * Represents a delta frame in a movie track.
- * <p>
- * References:<br>
- * <a href="http://www.fileformat.info/format/atari/egff.htm">http://www.fileformat.info/format/atari/egff.htm</a><br>
- * <a href="http://www.atari-forum.com/wiki/index.php/ST_Picture_Formats">http://www.atari-forum.com/wiki/index.php/ST_Picture_Formats</a>
- *
- * @author Werner Randelshofer
- */
+/// Represents a delta frame in a movie track.
+///
+/// References:
+/// [http://www.fileformat.info/format/atari/egff.htm](http://www.fileformat.info/format/atari/egff.htm)
+/// [http://www.atari-forum.com/wiki/index.php/ST_Picture_Formats](http://www.atari-forum.com/wiki/index.php/ST_Picture_Formats)
+///
+/// @author Werner Randelshofer
 public class SEQDeltaFrame
         extends SEQFrame {
 
@@ -32,9 +30,7 @@ public class SEQDeltaFrame
             ENCODING_COPY_COMPRESSED = (OP_Copy << 1) | SM_COMPRESSED,
             ENCODING_XOR_UNCOMPRESSED = (OP_XOR << 1) | SM_UNCOMPRESSED,
             ENCODING_XOR_COMPRESSED = (OP_XOR << 1) | SM_COMPRESSED;
-    /**
-     * Wether we already printed a warning about a broken encoding.
-     */
+    /// Wether we already printed a warning about a broken encoding.
     private boolean isWarningPrinted = false;
 
     public SEQDeltaFrame() {
@@ -67,14 +63,12 @@ public class SEQDeltaFrame
     private void decodeCopyUncompressed(AmigaBitmapImage bitmap, SEQMovieTrack track) {
     }
 
-    /**
-     * Compressed data contains a sequence of control WORDs (16-bit signed WORDs)
-     * and data. A control WORD with a value between 1 and 32,767 indicates that
-     * the next WORD is to be repeated a number of times equal to the control
-     * WORD value. A control WORD with a negative value indicates that a run
-     * of bytes equal to the absolute value of the control WORD value is to be
-     * read from the compressed data.
-     */
+    /// Compressed data contains a sequence of control WORDs (16-bit signed WORDs)
+    /// and data. A control WORD with a value between 1 and 32,767 indicates that
+    /// the next WORD is to be repeated a number of times equal to the control
+    /// WORD value. A control WORD with a negative value indicates that a run
+    /// of bytes equal to the absolute value of the control WORD value is to be
+    /// read from the compressed data.
     private void decodeCopyCompressed(AmigaBitmapImage bitmap, SEQMovieTrack track) {
         int di = 0; // data index
         byte[] screen = bitmap.getBitmap();
@@ -372,14 +366,12 @@ public class SEQDeltaFrame
         return rightBound;
     }
 
-    /**
-     * Returns true if the frame can be decoded over both the previous frame
-     * or the subsequent frame. Bidirectional frames can be used efficiently
-     * for forward and backward playing a movie.
-     * <p>
-     * All key frames are bidirectional. Delta frames which use an XOR OP-mode
-     * are bidirectional as well.
-     */
+    /// Returns true if the frame can be decoded over both the previous frame
+    /// or the subsequent frame. Bidirectional frames can be used efficiently
+    /// for forward and backward playing a movie.
+    ///
+    /// All key frames are bidirectional. Delta frames which use an XOR OP-mode
+    /// are bidirectional as well.
     @Override
     public boolean isBidirectional() {
         return getOperation() == OP_XOR;

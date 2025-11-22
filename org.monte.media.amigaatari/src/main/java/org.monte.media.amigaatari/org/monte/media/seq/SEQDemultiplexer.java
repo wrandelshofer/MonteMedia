@@ -10,11 +10,9 @@ import org.monte.media.av.Track;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * {@code SEQDemultiplexer}.
- *
- * @author Werner Randelshofer
- */
+/// `SEQDemultiplexer`.
+///
+/// @author Werner Randelshofer
 public class SEQDemultiplexer extends SEQReader implements Demultiplexer {
 
     private Track[] tracks;

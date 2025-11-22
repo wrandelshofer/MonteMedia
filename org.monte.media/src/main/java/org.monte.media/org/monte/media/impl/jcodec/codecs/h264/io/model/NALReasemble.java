@@ -9,48 +9,32 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * NALReasemble.
- * <p>
- * References:
- * <p>
- * This code has been derived from JCodecProject.
- * <dl>
- *     <dt>JCodecProject. Copyright 2008-2019 JCodecProject.
- *     <br><a href="https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE">BSD 2-Clause License.</a></dt>
- *     <dd><a href="https://github.com/jcodec/jcodec">github.com</a></dd>
- * </dl>
- */
+/// NALReasemble.
+///
+/// References:
+///
+/// JCodecProject. Copyright 2008-2019 JCodecProject.
+/// : [BSD 2-Clause License.](https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE)
+/// : [github.com](https://github.com/jcodec/jcodec)
+///
 public class NALReasemble {
 
-    /**
-     * The mask for NAL header type.
-     */
+    /// The mask for NAL header type.
     private static final int FU_TYPE_MASK = 0x1F;
 
-    /**
-     * The mask for FU start & end bits.
-     */
+    /// The mask for FU start & end bits.
     private static final int FU_STARTEND_MASK = 0xC0;
 
-    /**
-     * The mask for FU start bit.
-     */
+    /// The mask for FU start bit.
     private static final int FU_START_MASK = 0x80;
 
-    /**
-     * The mask for FU end bit.
-     */
+    /// The mask for FU end bit.
     private static final int FU_END_MASK = 0x40;
 
-    /**
-     * The mask for NAL NRI.
-     */
+    /// The mask for NAL NRI.
     private static final int NRI_MASK = 0x60;
 
-    /**
-     * The mask for NAL forbidden bit.
-     */
+    /// The mask for NAL forbidden bit.
     private static final int FORBIDDEN_MASK = 0x80;
 
     // Important Notes for FU-A/B fragments:
@@ -72,60 +56,58 @@ public class NALReasemble {
     //       syntax violation.   [RFC3984-p31]
 
 
-    /**
-     * Defragment FU-A NALs into a single NAL.
-     * <p>
-     * This method assumes the following are true:
-     * <p>
-     * 1. The NALs presented in the list are CONTIGUOUS - i.e.
-     * any FU packets received have been reordered based on
-     * RTP sequence number AND any dropped packets been detected
-     * and the rest of the fragment NALs have NOT been sent on this
-     * list - i.e. there is no END packet.
-     * e.g.
-     * RTP:seq1  RTP:seq3  RTP:seq2 RTP:seq4  RTP:seq5  ---> { [FU-A-S], [FU-A:1], [FU-A:2] }
-     * [FU-A-S]  [FU-A:2]  [FU-A:1]    X      [FU-A-E]
-     * <p>
-     * NB: If an issue is detected, the F bit will be set to 1 to indicate
-     * to the decoder that this NAL is suspicious.
-     * <p>
-     * 2. The list of buffers passed into this method are ONLY related to the
-     * same Fragmentation Unit, i.e. ALL buffers will be used to build
-     * the resulting NAL.
-     * <p>
-     * 3. Each buffer in the list is at position 0, with limit set the the
-     * length of the data that should be extracted - i.e. payload length.
-     * <p>
-     * For FU-A, the following 2 bytes are seen in the payload of each NAL:
-     * <p>
-     * |  FU indicator |   FU header   |
-     * +---------------+---------------+
-     * |0|1|2|3|4|5|6|7|0|1|2|3|4|5|6|7|
-     * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-     * |F|NRI|  TypeX  |S|E|R|  TypeY  |
-     * +---------------+---------------+
-     * <p>
-     * The defragmented NAL takes it's NAL header data from the first FU-A payload
-     * as follows:
-     * <p>
-     * |  NAL header   |
-     * +---------------+
-     * |0|1|2|3|4|5|6|7|
-     * +-+-+-+-+-+-+-+-+
-     * |F|NRI|  TypeY  |   NB: F bit is SET if no end marker OR
-     * +---------------+       start and end marker seen in a packet.
-     * <p>
-     * NB: If NO start element is seen, this method will return byte[0]
-     * THE RTP interface layer should have stripped missing data as per note 1
-     * already. In this case, the data would never be sent to this method, as
-     * a missing FU-A-START would mean dropping all fragments, same as passing
-     * empty list.
-     *
-     * @param nals The list of ByteBuffer-based NALs that meet the requirements above.
-     * @return The (optional) byte[] represented the defragmented NAL - NB: data will be empty
-     * if the defragmentation failed due to bad data, BUT will be present if some data
-     * could be decoded but was not 'perfect' - in this instance the forbidden bit is set.
-     */
+    /// Defragment FU-A NALs into a single NAL.
+    ///
+    /// This method assumes the following are true:
+    ///
+    /// 1. The NALs presented in the list are CONTIGUOUS - i.e.
+    /// any FU packets received have been reordered based on
+    /// RTP sequence number AND any dropped packets been detected
+    /// and the rest of the fragment NALs have NOT been sent on this
+    /// list - i.e. there is no END packet.
+    /// e.g.
+    /// RTP:seq1  RTP:seq3  RTP:seq2 RTP:seq4  RTP:seq5  ---> { [FU-A-S], [FU-A:1], [FU-A:2] }
+    /// [FU-A-S]  [FU-A:2]  [FU-A:1]    X      [FU-A-E]
+    ///
+    /// NB: If an issue is detected, the F bit will be set to 1 to indicate
+    /// to the decoder that this NAL is suspicious.
+    ///
+    /// 2. The list of buffers passed into this method are ONLY related to the
+    /// same Fragmentation Unit, i.e. ALL buffers will be used to build
+    /// the resulting NAL.
+    ///
+    /// 3. Each buffer in the list is at position 0, with limit set the the
+    /// length of the data that should be extracted - i.e. payload length.
+    ///
+    /// For FU-A, the following 2 bytes are seen in the payload of each NAL:
+    ///
+    /// |  FU indicator |   FU header   |
+    /// +---------------+---------------+
+    /// |0|1|2|3|4|5|6|7|0|1|2|3|4|5|6|7|
+    /// +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    /// |F|NRI|  TypeX  |S|E|R|  TypeY  |
+    /// +---------------+---------------+
+    ///
+    /// The defragmented NAL takes it's NAL header data from the first FU-A payload
+    /// as follows:
+    ///
+    /// |  NAL header   |
+    /// +---------------+
+    /// |0|1|2|3|4|5|6|7|
+    /// +-+-+-+-+-+-+-+-+
+    /// |F|NRI|  TypeY  |   NB: F bit is SET if no end marker OR
+    /// +---------------+       start and end marker seen in a packet.
+    ///
+    /// NB: If NO start element is seen, this method will return byte[0]
+    /// THE RTP interface layer should have stripped missing data as per note 1
+    /// already. In this case, the data would never be sent to this method, as
+    /// a missing FU-A-START would mean dropping all fragments, same as passing
+    /// empty list.
+    ///
+    /// @param nals The list of ByteBuffer-based NALs that meet the requirements above.
+    /// @return The (optional) byte[] represented the defragmented NAL - NB: data will be empty
+    /// if the defragmentation failed due to bad data, BUT will be present if some data
+    /// could be decoded but was not 'perfect' - in this instance the forbidden bit is set.
     public static byte[] defragmentFUANals(final List<ByteBuffer> nals) { // JAVA 8 - Optional<byte[]>
 
         // Require a valid list of NALs to work on.
@@ -209,9 +191,7 @@ public class NALReasemble {
     }
 
 
-    /**
-     * Private constructor to prevent general instance creation.
-     */
+    /// Private constructor to prevent general instance creation.
     private NALReasemble() {
         // Do nothing.
     }

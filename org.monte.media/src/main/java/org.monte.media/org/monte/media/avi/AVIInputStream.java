@@ -47,52 +47,44 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.PixelAspectRatioKey
 import static org.monte.media.av.codec.video.VideoFormatKeys.TransformKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
-/**
- * Provides low-level support for reading encoded audio and video samples from
- * an AVI 1.0 or an AVI 2.0 file.
- * <p>
- * The length of an AVI 1.0 file is limited to 1 GB.
- * This class supports lengths of up to 4 GB, but such files may not work on
- * all players.
- * <p>
- * Support for AVI 2.0 file is incomplete.
- * This class currently ignores the extended index chunks. Instead all chunks
- * in the "movi" list are scanned. With scanning, the reader is not able to
- * distinguish between keyframes and non-keyframes. As a consequence opening an
- * AVI 2.0 file is very slow, and decoding of frames may fail.
- * <p>
- * For detailed information about the AVI 1.0 file format see:<br>
- * <a href="http://msdn.microsoft.com/en-us/library/ms779636.aspx">msdn.microsoft.com AVI RIFF</a><br>
- * <a href="http://www.microsoft.com/whdc/archive/fourcc.mspx">www.microsoft.com FOURCC for Video Compression</a><br>
- * <a href="http://www.saettler.com/RIFFMCI/riffmci.html">www.saettler.com RIFF</a><br>
- * <p>
- * For detailed information about the AVI 2.0 file format see:<br>
- * <a href="http://www.the-labs.com/Video/odmlff2-avidef.pdf">OpenDML AVI File Format Extensions, Version 1.02</a><br>
- * <p>
- * FIXME - This class lacks readSample() methods.
- *
- * @author Werner Randelshofer
- */
+/// Provides low-level support for reading encoded audio and video samples from
+/// an AVI 1.0 or an AVI 2.0 file.
+///
+/// The length of an AVI 1.0 file is limited to 1 GB.
+/// This class supports lengths of up to 4 GB, but such files may not work on
+/// all players.
+///
+/// Support for AVI 2.0 file is incomplete.
+/// This class currently ignores the extended index chunks. Instead all chunks
+/// in the "movi" list are scanned. With scanning, the reader is not able to
+/// distinguish between keyframes and non-keyframes. As a consequence opening an
+/// AVI 2.0 file is very slow, and decoding of frames may fail.
+///
+/// For detailed information about the AVI 1.0 file format see:
+/// [msdn.microsoft.com AVI RIFF](http://msdn.microsoft.com/en-us/library/ms779636.aspx)
+/// [www.microsoft.com FOURCC for Video Compression](http://www.microsoft.com/whdc/archive/fourcc.mspx)
+/// [www.saettler.com RIFF](http://www.saettler.com/RIFFMCI/riffmci.html)
+///
+/// For detailed information about the AVI 2.0 file format see:
+/// [OpenDML AVI File Format Extensions, Version 1.02](http://www.the-labs.com/Video/odmlff2-avidef.pdf)
+///
+/// FIXME - This class lacks readSample() methods.
+///
+/// @author Werner Randelshofer
 public class AVIInputStream extends AbstractAVIStream {
 
-    /**
-     * The image input stream.
-     */
+    /// The image input stream.
     protected final ImageInputStream in;
-    /**
-     * This variable is set to true when all meta-data has been read from the
-     * file.
-     */
+    /// This variable is set to true when all meta-data has been read from the
+    /// file.
     private boolean isRealized = false;
     protected MainHeader mainHeader;
     protected ArrayList<Sample> idx1 = new ArrayList<>();
     private long moviOffset = 0;
 
-    /**
-     * Creates a new instance.
-     *
-     * @param file the input file
-     */
+    /// Creates a new instance.
+    ///
+    /// @param file the input file
     public AVIInputStream(File file) throws IOException {
 
         this.in = new FileImageInputStream(file);
@@ -100,20 +92,16 @@ public class AVIInputStream extends AbstractAVIStream {
         this.streamOffset = 0;
     }
 
-    /**
-     * Creates a new instance.
-     *
-     * @param in the input stream.
-     */
+    /// Creates a new instance.
+    ///
+    /// @param in the input stream.
     public AVIInputStream(ImageInputStream in) throws IOException {
         this.in = in;
         this.streamOffset = in.getStreamPosition();
         in.setByteOrder(ByteOrder.LITTLE_ENDIAN);
     }
 
-    /**
-     * Ensures that all meta-data has been read from the file.
-     */
+    /// Ensures that all meta-data has been read from the file.
     protected void ensureRealized() throws IOException {
         if (!isRealized) {
             isRealized = true;
@@ -124,10 +112,8 @@ public class AVIInputStream extends AbstractAVIStream {
         }
     }
 
-    /**
-     * Returns the main header flags. The flags are an or-combination of the
-     * {@code AVIH_...} values.
-     */
+    /// Returns the main header flags. The flags are an or-combination of the
+    /// `AVIH_...` values.
     public int getHeaderFlags() throws IOException {
         ensureRealized();
         return mainHeader.flags;
@@ -143,63 +129,51 @@ public class AVIInputStream extends AbstractAVIStream {
         return tracks.size();
     }
 
-    /**
-     * Returns the number of microseconds (10^-6 seconds) per frame. This is
-     * used as a time basis for the start time of tracks within a movie.
-     */
+    /// Returns the number of microseconds (10^-6 seconds) per frame. This is
+    /// used as a time basis for the start time of tracks within a movie.
     public long getMicroSecPerFrame() throws IOException {
         ensureRealized();
         return mainHeader.microSecPerFrame;
     }
 
-    /**
-     * Returns the time scale of the specified track.
-     */
+    /// Returns the time scale of the specified track.
     public long getTimeScale(int track) throws IOException {
         ensureRealized();
         return tracks.get(track).scale;
     }
 
-    /**
-     * Returns the start time of the track given as the number of frames in
-     * microSecPerFrame units.
-     */
+    /// Returns the start time of the track given as the number of frames in
+    /// microSecPerFrame units.
     public long getStartTime(int track) throws IOException {
         ensureRealized();
         return tracks.get(track).startTime;
     }
 
-    /**
-     * Returns the number of media data chunks in the track. This includes
-     * chunks which do not affect the timing of the media, such as palette
-     * changes.
-     *
-     * @param track
-     * @return the number of chunks
-     * @throws IOException
-     */
+    /// Returns the number of media data chunks in the track. This includes
+    /// chunks which do not affect the timing of the media, such as palette
+    /// changes.
+    ///
+    /// @param track
+    /// @return the number of chunks
+    /// @throws IOException
     public long getChunkCount(int track) throws IOException {
         ensureRealized();
         return tracks.get(track).samples.size();
     }
 
-    /**
-     * Returns the name of the track, or null if the name is not specified.
-     */
+    /// Returns the name of the track, or null if the name is not specified.
     public String getName(int track) throws IOException {
         ensureRealized();
         return tracks.get(track).name;
     }
 
-    /**
-     * Returns the contents of the extra track header. Returns null if the
-     * header is not present.
-     *
-     * @param track
-     * @param fourcc
-     * @return The extra header as a byte array
-     * @throws IOException
-     */
+    /// Returns the contents of the extra track header. Returns null if the
+    /// header is not present.
+    ///
+    /// @param track
+    /// @param fourcc
+    /// @return The extra header as a byte array
+    /// @throws IOException
     public byte[] getExtraHeader(int track, String fourcc) throws IOException {
         ensureRealized();
         int id = RIFFParser.stringToID(fourcc);
@@ -211,13 +185,11 @@ public class AVIInputStream extends AbstractAVIStream {
         return null;
     }
 
-    /**
-     * Returns the fourcc's of all extra stream headers.
-     *
-     * @param track the track index
-     * @return An array of fourcc's of all extra stream headers.
-     * @throws IOException
-     */
+    /// Returns the fourcc's of all extra stream headers.
+    ///
+    /// @param track the track index
+    /// @return An array of fourcc's of all extra stream headers.
+    /// @throws IOException
     public String[] getExtraHeaderFourCCs(int track) throws IOException {
         Track tr = tracks.get(track);
         String[] fourccs = new String[tr.extraHeaders.size()];
@@ -227,9 +199,7 @@ public class AVIInputStream extends AbstractAVIStream {
         return fourccs;
     }
 
-    /**
-     * Reads all metadata of the file.
-     */
+    /// Reads all metadata of the file.
     protected void readAllMetadata() throws IOException {
         in.seek(streamOffset);
         final RIFFParser p = new RIFFParser();
@@ -383,9 +353,7 @@ public class AVIInputStream extends AbstractAVIStream {
         }
     }
 
-    /**
-     * Reads the AVI Main Header and returns a MainHeader object.
-     */
+    /// Reads the AVI Main Header and returns a MainHeader object.
     private MainHeader readAVIH(byte[] data) throws IOException, ParseException {
         ByteArrayImageInputStream in = new ByteArrayImageInputStream(data, ByteOrder.LITTLE_ENDIAN);
         MainHeader mh = new MainHeader();
@@ -402,44 +370,38 @@ public class AVIInputStream extends AbstractAVIStream {
         return mh;
     }
 
-    /**
-     * Gets the size of a sample in bytes.
-     *
-     * @param track  The track index.
-     * @param sample The sample index.
-     * @return the size of the sample
-     * @throws IOException if reading the sample data failed.
-     */
+    /// Gets the size of a sample in bytes.
+    ///
+    /// @param track  The track index.
+    /// @param sample The sample index.
+    /// @return the size of the sample
+    /// @throws IOException if reading the sample data failed.
     public int getSampleSize(int track, int sample) throws IOException {
         AbstractAVIStream.Track tr = tracks.get(track);
         AbstractAVIStream.Sample s = tr.samples.get(sample);
         return (int) s.length;
     }
 
-    /**
-     * Gets the number of a samples of the specified track.
-     *
-     * @param track The track index.
-     * @return the number of samples in the track
-     * @throws IOException if reading the sample data failed.
-     */
+    /// Gets the number of a samples of the specified track.
+    ///
+    /// @param track The track index.
+    /// @return the number of samples in the track
+    /// @throws IOException if reading the sample data failed.
     public int getSampleCount(int track) throws IOException {
         AbstractAVIStream.Track tr = tracks.get(track);
         return tr.samples.size();
     }
 
 
-    /**
-     * Reads a sample from a track into a byte array.
-     *
-     * @param track  The track index.
-     * @param sample The sample index.
-     * @param data   The encoded sample data.
-     * @param off    The startTime offset in the data.
-     * @param len    The maximal number of bytes to read
-     * @return the actual number of samples read
-     * @throws IOException if reading the sample data failed.
-     */
+    /// Reads a sample from a track into a byte array.
+    ///
+    /// @param track  The track index.
+    /// @param sample The sample index.
+    /// @param data   The encoded sample data.
+    /// @param off    The startTime offset in the data.
+    /// @param len    The maximal number of bytes to read
+    /// @return the actual number of samples read
+    /// @throws IOException if reading the sample data failed.
     public int readSample(int track, int sample, byte[] data, int off, int len) throws IOException {
         AbstractAVIStream.Track tr = tracks.get(track);
         AbstractAVIStream.Sample s = tr.samples.get(sample);
@@ -450,9 +412,7 @@ public class AVIInputStream extends AbstractAVIStream {
         return bytesRead;
     }
 
-    /**
-     * Reads an AVI Stream Header and returns a Track object.
-     */
+    /// Reads an AVI Stream Header and returns a Track object.
     /*typedef struct {
      *     FOURCC enum aviStrhType type;
      *        // Contains a FOURCC that specifies the type of the data contained in
@@ -516,71 +476,67 @@ public class AVIInputStream extends AbstractAVIStream {
         return tr;
     }
 
-    /**
-     * <pre>
-     * typedef struct {
-     *   cstring name;
-     * } STREAMNAME;
-     * </pre>
-     *
-     * @param tr
-     * @param data
-     * @throws IOException
-     */
+    /// <pre>
+    /// typedef struct {
+    ///   cstring name;
+    /// } STREAMNAME;
+    /// </pre>
+    ///
+    /// @param tr
+    /// @param data
+    /// @throws IOException
     private void readSTRN(Track tr, byte[] data) throws IOException {
         tr.name = new String(data, 0, data.length - 1, StandardCharsets.US_ASCII);
     }
 
-    /**
-     * Reads an AVI bitmap info header for a video track.
-     * </pre>
-     * // ----------------------
-     * // AVI Bitmap Info Header
-     * // ----------------------
-     * typedef struct {
-     * BYTE blue;
-     * BYTE green;
-     * BYTE red;
-     * BYTE reserved;
-     * } RGBQUAD;
-     * .
-     * // Values for this enum taken from: //
-     * http://www.fourcc.org/index.php?http%3A//www.fourcc.org/rgb.php
-     * <p>
-     * enum {
-     * BI_RGB = 0x00000000,
-     * RGB = 0x32424752, // Alias for BI_RGB
-     * BI_RLE8 = 0x01000000,
-     * RLE8 = 0x38454C52, // Alias for BI_RLE8
-     * BI_RLE4 = 0x00000002,
-     * RLE4 = 0x34454C52, // Alias for BI_RLE4
-     * BI_BITFIELDS = 0x00000003,
-     * raw = 0x32776173,
-     * RGBA = 0x41424752,
-     * RGBT = 0x54424752,
-     * cvid = "cvid"
-     * } bitmapCompression;
-     * <p>
-     * typedef struct {
-     * DWORD structSize;
-     * DWORD width;
-     * DWORD height;
-     * WORD planes;
-     * WORD bitCount;
-     * FOURCC enum bitmapCompression compression;
-     * DWORD imageSizeInBytes;
-     * DWORD xPelsPerMeter;
-     * DWORD yPelsPerMeter;
-     * DWORD numberOfColorsUsed;
-     * DWORD numberOfColorsImportant;
-     * RGBQUAD colors[numberOfColorsUsed];
-     * } BITMAPINFOHEADER;
-     * </pre>
-     *
-     * @param tr
-     * @param data
-     * @throws IOException
-     */
+    /// Reads an AVI bitmap info header for a video track.
+    /// </pre>
+    /// // ----------------------
+    /// // AVI Bitmap Info Header
+    /// // ----------------------
+    /// typedef struct {
+    /// BYTE blue;
+    /// BYTE green;
+    /// BYTE red;
+    /// BYTE reserved;
+    /// } RGBQUAD;
+    /// .
+    /// // Values for this enum taken from: //
+    /// http://www.fourcc.org/index.php?http%3A//www.fourcc.org/rgb.php
+    ///
+    /// enum {
+    /// BI_RGB = 0x00000000,
+    /// RGB = 0x32424752, // Alias for BI_RGB
+    /// BI_RLE8 = 0x01000000,
+    /// RLE8 = 0x38454C52, // Alias for BI_RLE8
+    /// BI_RLE4 = 0x00000002,
+    /// RLE4 = 0x34454C52, // Alias for BI_RLE4
+    /// BI_BITFIELDS = 0x00000003,
+    /// raw = 0x32776173,
+    /// RGBA = 0x41424752,
+    /// RGBT = 0x54424752,
+    /// cvid = "cvid"
+    /// } bitmapCompression;
+    ///
+    /// typedef struct {
+    /// DWORD structSize;
+    /// DWORD width;
+    /// DWORD height;
+    /// WORD planes;
+    /// WORD bitCount;
+    /// FOURCC enum bitmapCompression compression;
+    /// DWORD imageSizeInBytes;
+    /// DWORD xPelsPerMeter;
+    /// DWORD yPelsPerMeter;
+    /// DWORD numberOfColorsUsed;
+    /// DWORD numberOfColorsImportant;
+    /// RGBQUAD colors[numberOfColorsUsed];
+    /// } BITMAPINFOHEADER;
+    /// </pre>
+    ///
+    /// @param tr
+    /// @param data
+    /// @throws IOException
     private void readVideoSTRF(VideoTrack tr, byte[] data) throws IOException {
         ByteArrayImageInputStream in = new ByteArrayImageInputStream(data, ByteOrder.LITTLE_ENDIAN);
 
@@ -626,43 +582,42 @@ public class AVIInputStream extends AbstractAVIStream {
         }
     }
 
-    /**
-     * /**
-     * <p> The format of a video track is defined in a "strf" chunk, which
-     * contains a {@code WAVEFORMATEX} struct.
-     * <pre>
-     * ----------------------
-     * AVI Wave Format Header
-     * ----------------------
-     * // values for this enum taken from mmreg.h
-     * enum {
-     *         WAVE_FORMAT_PCM = 0x0001,
-     *         //  Microsoft Corporation
-     *       ...many more...
-     * } wFormatTagEnum;
-     *
-     * typedef struct {
-     *   WORD enum wFormatTagEnum formatTag;
-     *   WORD  numberOfChannels;
-     *   DWORD samplesPerSec;
-     *   DWORD avgBytesPerSec;
-     *   WORD  blockAlignment;
-     *   WORD  bitsPerSample;
-     *   WORD  cbSize;
-     *     // Size, in bytes, of extra format information appended to the end of the
-     *     // WAVEFORMATEX structure. This information can be used by non-PCM formats
-     *     // to store extra attributes for the "wFormatTag". If no extra information
-     *     // is required by the "wFormatTag", this member must be set to zero. For
-     *     // WAVE_FORMAT_PCM formats (and only WAVE_FORMAT_PCM formats), this member
-     *     // is ignored.
-     *   byte[cbSize] extra;
-     * } WAVEFORMATEX;
-     * </pre>
-     *
-     * @param tr
-     * @param data
-     * @throws IOException
-     */
+    /// /**
+    ///
+    ///  The format of a video track is defined in a "strf" chunk, which
+    /// contains a `WAVEFORMATEX` struct.
+    /// <pre>
+    /// ----------------------
+    /// AVI Wave Format Header
+    /// ----------------------
+    /// // values for this enum taken from mmreg.h
+    /// enum {
+    ///         WAVE_FORMAT_PCM = 0x0001,
+    ///         //  Microsoft Corporation
+    ///       ...many more...
+    /// } wFormatTagEnum;
+    ///
+    /// typedef struct {
+    ///   WORD enum wFormatTagEnum formatTag;
+    ///   WORD  numberOfChannels;
+    ///   DWORD samplesPerSec;
+    ///   DWORD avgBytesPerSec;
+    ///   WORD  blockAlignment;
+    ///   WORD  bitsPerSample;
+    ///   WORD  cbSize;
+    ///     // Size, in bytes, of extra format information appended to the end of the
+    ///     // WAVEFORMATEX structure. This information can be used by non-PCM formats
+    ///     // to store extra attributes for the "wFormatTag". If no extra information
+    ///     // is required by the "wFormatTag", this member must be set to zero. For
+    ///     // WAVE_FORMAT_PCM formats (and only WAVE_FORMAT_PCM formats), this member
+    ///     // is ignored.
+    ///   byte[cbSize] extra;
+    /// } WAVEFORMATEX;
+    /// </pre>
+    ///
+    /// @param tr
+    /// @param data
+    /// @throws IOException
     private void readAudioSTRF(AudioTrack tr, byte[] data) throws IOException {
         ByteArrayImageInputStream in = new ByteArrayImageInputStream(data, ByteOrder.LITTLE_ENDIAN);
 
@@ -691,44 +646,42 @@ public class AVIInputStream extends AbstractAVIStream {
 
     }
 
-    /**
-     * <pre>
-     * // The values for this set have been taken from:
-     * // http://graphics.cs.uni-sb.de/NMM/dist-0.4.0/Docs/Doxygen/html/avifmt_8h.html
-     * set {
-     *     AVIIF_KEYFRAME = 0x00000010,
-     *         // The data chunk is a key frame.
-     *     AVIIF_LIST = 0x00000001,
-     *         // The data chunk is a 'rec ' list.
-     *     AVIIF_NO_TIME = 0x00000100,
-     *         // The data chunk does not affect the timing of the stream. For example,
-     *         // this flag should be set for palette changes.
-     *     AVIIF_COMPUSE = 0x0fff0000
-     *         // These bits are for compressor use
-     * } avioldindex_flags;
-     *
-     * typedef struct {
-     *       FOURCC   chunkId;
-     *       // Specifies a FOURCC that identifies a stream in the AVI file. The
-     *       // FOURCC must have the form 'xxyy' where xx is the stream number and yy
-     *       // is a two-character code that identifies the contents of the stream:
-     *       DWORD  set avioldindex_flags flags;
-     *       // Specifies a bitwise combination of zero or more of flags.
-     *       DWORD   offset;
-     *       // Specifies the location of the data chunk in the file. The value should
-     *       // be specified as an offset, in bytes, from the start of the 'movi' list;
-     *       // however, in some AVI files it is given as an offset from the start of
-     *       // the file.
-     *       DWORD   size;
-     *       // Specifies the size of the data chunk, in bytes.
-     * } avioldindex_entry;
-     * </pre>
-     *
-     * @param tracks
-     * @param data
-     * @return The idx1 list of samples.
-     * @throws IOException
-     */
+    /// <pre>
+    /// // The values for this set have been taken from:
+    /// // http://graphics.cs.uni-sb.de/NMM/dist-0.4.0/Docs/Doxygen/html/avifmt_8h.html
+    /// set {
+    ///     AVIIF_KEYFRAME = 0x00000010,
+    ///         // The data chunk is a key frame.
+    ///     AVIIF_LIST = 0x00000001,
+    ///         // The data chunk is a 'rec ' list.
+    ///     AVIIF_NO_TIME = 0x00000100,
+    ///         // The data chunk does not affect the timing of the stream. For example,
+    ///         // this flag should be set for palette changes.
+    ///     AVIIF_COMPUSE = 0x0fff0000
+    ///         // These bits are for compressor use
+    /// } avioldindex_flags;
+    ///
+    /// typedef struct {
+    ///       FOURCC   chunkId;
+    ///       // Specifies a FOURCC that identifies a stream in the AVI file. The
+    ///       // FOURCC must have the form 'xxyy' where xx is the stream number and yy
+    ///       // is a two-character code that identifies the contents of the stream:
+    ///       DWORD  set avioldindex_flags flags;
+    ///       // Specifies a bitwise combination of zero or more of flags.
+    ///       DWORD   offset;
+    ///       // Specifies the location of the data chunk in the file. The value should
+    ///       // be specified as an offset, in bytes, from the start of the 'movi' list;
+    ///       // however, in some AVI files it is given as an offset from the start of
+    ///       // the file.
+    ///       DWORD   size;
+    ///       // Specifies the size of the data chunk, in bytes.
+    /// } avioldindex_entry;
+    /// </pre>
+    ///
+    /// @param tracks
+    /// @param data
+    /// @return The idx1 list of samples.
+    /// @throws IOException
     private void readIDX1(ArrayList<Track> tracks, ArrayList<Sample> idx1, byte[] data) throws IOException {
         ByteArrayImageInputStream in = new ByteArrayImageInputStream(data, ByteOrder.LITTLE_ENDIAN);
 

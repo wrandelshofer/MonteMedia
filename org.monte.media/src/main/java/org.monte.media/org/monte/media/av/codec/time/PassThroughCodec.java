@@ -7,11 +7,9 @@ package org.monte.media.av.codec.time;
 import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
 
-/**
- * {@code PassThroughCodec} passes through all buffers.
- *
- * @author Werner Randelshofer
- */
+/// `PassThroughCodec` passes through all buffers.
+///
+/// @author Werner Randelshofer
 public class PassThroughCodec extends org.monte.media.av.AbstractCodec {
 
     public PassThroughCodec() {

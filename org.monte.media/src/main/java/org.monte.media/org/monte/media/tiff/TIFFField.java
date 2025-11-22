@@ -4,21 +4,15 @@
  */
 package org.monte.media.tiff;
 
-/**
- * A field in a {@link TIFFDirectory}.
- *
- * @author Werner Randelshofer
- */
+/// A field in a [TIFFDirectory].
+///
+/// @author Werner Randelshofer
 public class TIFFField extends TIFFNode {
 
-    /**
-     * The data of this field.
-     */
+    /// The data of this field.
     private Object data;
 
-    /**
-     * The type of this field, if no IFDEntry is provided.
-     */
+    /// The type of this field, if no IFDEntry is provided.
     private IFDDataType type;
 
     public TIFFField(TIFFTag tag, Object data, IFDDataType type) {
@@ -40,9 +34,7 @@ public class TIFFField extends TIFFNode {
     }
 
 
-    /**
-     * Returns a description of the field. If known.
-     */
+    /// Returns a description of the field. If known.
     public String getDescription() {
         return getTag().getDescription(getData());
     }

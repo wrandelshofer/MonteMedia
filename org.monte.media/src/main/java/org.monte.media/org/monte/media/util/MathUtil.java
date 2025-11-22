@@ -5,13 +5,9 @@
 
 package org.monte.media.util;
 
-/**
- * Math utilities.
- */
+/// Math utilities.
 public class MathUtil {
-    /**
-     * Don't let anyone instantiate this class.
-     */
+    /// Don't let anyone instantiate this class.
     private MathUtil() {
 
     }

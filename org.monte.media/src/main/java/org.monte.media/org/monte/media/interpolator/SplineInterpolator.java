@@ -6,85 +6,72 @@ package org.monte.media.interpolator;
 
 import java.awt.geom.Point2D;
 
-/**
- * A spline interpolator for use in conjunction with an Animator object.
- * <p>
- * This class interpolates fractional values using Bezier splines.  The anchor
- * points for the spline are assumed to be (0, 0) and (1, 1).  Control points
- * should all be in the range [0, 1].
- * <p>
- * For more information on how splines are used to interpolate, refer to the
- * SMIL specification at http://w3c.org.
- * <p>
- * <a href="http://www.w3.org/TR/smil/smil-animation.html#animationNS-InterpolationKeysplines"
- * >http://www.w3.org/TR/smil/smil-animation.html#animationNS-InterpolationKeysplines</a>
- *
- * @author Werner Randelshofer
- */
+/// A spline interpolator for use in conjunction with an Animator object.
+///
+/// This class interpolates fractional values using Bezier splines.  The anchor
+/// points for the spline are assumed to be (0, 0) and (1, 1).  Control points
+/// should all be in the range [0, 1].
+///
+/// For more information on how splines are used to interpolate, refer to the
+/// SMIL specification at http://w3c.org.
+///
+/// <a href="http://www.w3.org/TR/smil/smil-animation.html#animationNS-InterpolationKeysplines"
+/// >http://www.w3.org/TR/smil/smil-animation.html#animationNS-InterpolationKeysplines</a>
+///
+/// @author Werner Randelshofer
 public class SplineInterpolator extends AbstractSplineInterpolator {
 
-    /**
-     * Note: (x0,y0) and (x1,y1) are implicitly (0, 0) and (1,1) respectively.
-     */
+    /// Note: (x0,y0) and (x1,y1) are implicitly (0, 0) and (1,1) respectively.
     private float x1, y1, x2, y2;
 
-    /**
-     * Creates a new instance of SplineInterpolator with the control points
-     * defined by (x1, y1) and (x2, y2).  The anchor points are implicitly
-     * defined as (0, 0) and (1, 1).
-     * <p>
-     * The interpolator runs for one second.
-     * </p>
-     *
-     * @param x1 The x coordinate for the first bezier control point.
-     * @param y1 The y coordinate for the first bezier control point.
-     * @param x2 The x coordinate for the second bezier control point.
-     * @param y2 The x coordinate for the second bezier control point.
-     * @throws IllegalArgumentException This exception is thrown when values
-     *                                  beyond the allowed [0,1] range are passed in
-     */
+    /// Creates a new instance of SplineInterpolator with the control points
+    /// defined by (x1, y1) and (x2, y2).  The anchor points are implicitly
+    /// defined as (0, 0) and (1, 1).
+    ///
+    /// The interpolator runs for one second.
+    ///
+    /// @param x1 The x coordinate for the first bezier control point.
+    /// @param y1 The y coordinate for the first bezier control point.
+    /// @param x2 The x coordinate for the second bezier control point.
+    /// @param y2 The x coordinate for the second bezier control point.
+    /// @throws IllegalArgumentException This exception is thrown when values
+    ///                                                                                                    beyond the allowed [0,1] range are passed in
     public SplineInterpolator(float x1, float y1, float x2, float y2) {
         this(x1, y1, x2, y2, 1000);
 
     }
 
-    /**
-     * Creates a new instance of SplineInterpolator with the control points
-     * defined by (x1, y1) and (x2, y2).  The anchor points are implicitly
-     * defined as (0, 0) and (1, 1).
-     * <p>
-     * The interpolator runs for the specified time span.
-     * </p>
-     *
-     * @param x1       The x coordinate for the first bezier control point.
-     * @param y1       The y coordinate for the first bezier control point.
-     * @param x2       The x coordinate for the second bezier control point.
-     * @param y2       The x coordinate for the second bezier control point.
-     * @param timespan The time span in milliseconds.
-     * @throws IllegalArgumentException This exception is thrown when values
-     *                                  beyond the allowed [0,1] range are passed in
-     */
+    /// Creates a new instance of SplineInterpolator with the control points
+    /// defined by (x1, y1) and (x2, y2).  The anchor points are implicitly
+    /// defined as (0, 0) and (1, 1).
+    ///
+    /// The interpolator runs for the specified time span.
+    ///
+    /// @param x1       The x coordinate for the first bezier control point.
+    /// @param y1       The y coordinate for the first bezier control point.
+    /// @param x2       The x coordinate for the second bezier control point.
+    /// @param y2       The x coordinate for the second bezier control point.
+    /// @param timespan The time span in milliseconds.
+    /// @throws IllegalArgumentException This exception is thrown when values
+    ///                                                                   beyond the allowed [0,1] range are passed in
     public SplineInterpolator(float x1, float y1, float x2, float y2, long timespan) {
         this(x1, y1, x2, y2, false, timespan);
     }
 
-    /**
-     * Creates a new instance of SplineInterpolator with the control points
-     * defined by (x1, y1) and (x2, y2).  The anchor points are implicitly
-     * defined as (0, 0) and (1, 1).
-     * <p>
-     * The interpolator runs for the specified time span.
-     * </p>
-     *
-     * @param x1       The x coordinate for the first bezier control point.
-     * @param y1       The y coordinate for the first bezier control point.
-     * @param x2       The x coordinate for the second bezier control point.
-     * @param y2       The x coordinate for the second bezier control point.
-     * @param reverse  Run interpolator in the reverse direction.
-     * @param timespan The time span in milliseconds.
-     * @throws IllegalArgumentException This exception is thrown when values
-     *                                  beyond the allowed [0,1] range are passed in
-     */
+    /// Creates a new instance of SplineInterpolator with the control points
+    /// defined by (x1, y1) and (x2, y2).  The anchor points are implicitly
+    /// defined as (0, 0) and (1, 1).
+    ///
+    /// The interpolator runs for the specified time span.
+    ///
+    /// @param x1       The x coordinate for the first bezier control point.
+    /// @param y1       The y coordinate for the first bezier control point.
+    /// @param x2       The x coordinate for the second bezier control point.
+    /// @param y2       The x coordinate for the second bezier control point.
+    /// @param reverse  Run interpolator in the reverse direction.
+    /// @param timespan The time span in milliseconds.
+    /// @throws IllegalArgumentException This exception is thrown when values
+    ///                                                                   beyond the allowed [0,1] range are passed in
     public SplineInterpolator(float x1, float y1, float x2, float y2, boolean reverse, long timespan) {
         super((reverse) ? 1f : 0f, (reverse) ? 0f : 1f, timespan);
 
@@ -105,9 +92,7 @@ public class SplineInterpolator extends AbstractSplineInterpolator {
     }
 
 
-    /**
-     * Evaluates the spline function at curve parameter time t.
-     */
+    /// Evaluates the spline function at curve parameter time t.
     @Override
     public Point2D.Float getXY(float t, Point2D.Float p) {
         if (p == null) {
@@ -121,9 +106,7 @@ public class SplineInterpolator extends AbstractSplineInterpolator {
         return p;
     }
 
-    /**
-     * Evaluates the spline function at curve parameter time t.
-     */
+    /// Evaluates the spline function at curve parameter time t.
     @Override
     public float getY(float t) {
         float invT = (1 - t);

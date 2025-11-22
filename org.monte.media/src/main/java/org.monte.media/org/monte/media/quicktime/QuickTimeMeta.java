@@ -41,11 +41,9 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.PaletteKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
-/**
- * {@code QuickTimeMeta} holds the meta-data contained in a QuickTime movie.
- *
- * @author Werner Randelshofer
- */
+/// `QuickTimeMeta` holds the meta-data contained in a QuickTime movie.
+///
+/// @author Werner Randelshofer
 public class QuickTimeMeta extends AbstractMovie {
 
     private final static long serialVersionUID = 1L;
@@ -136,15 +134,11 @@ public class QuickTimeMeta extends AbstractMovie {
             Locale.forLanguageTag("mal"),//83 MalayRoman
     };
     public List<IndexColorModel> colorTables = new ArrayList<>();
-    /**
-     * The compression method used for compressing the compressed movie data atom cmvd.
-     */
+    /// The compression method used for compressing the compressed movie data atom cmvd.
     public String compressionMethod;
     public long movieDataStreamPosition = -1;
     public long movieDataSize = -1;
-    /**
-     * The file format.
-     */
+    /// The file format.
     protected Format fileFormat = new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_QUICKTIME);
     // BEGIN File Type
     protected String brand;
@@ -154,79 +148,49 @@ public class QuickTimeMeta extends AbstractMovie {
     protected ArrayList<String> compatibleBrands = new ArrayList<>();
     // END File Type
     // BEGIN Movie Header
-    /**
-     * Creation time of the movie.
-     */
+    /// Creation time of the movie.
     protected Instant creationTime;
-    /**
-     * Modification time of the movie.
-     */
+    /// Modification time of the movie.
     protected Instant modificationTime;
-    /**
-     * The time scale of the movie. A time value that indicates the time scale
-     * for this media—that is, the number of time units that pass per second in
-     * its time coordinate system.
-     */
+    /// The time scale of the movie. A time value that indicates the time scale
+    /// for this media—that is, the number of time units that pass per second in
+    /// its time coordinate system.
     protected long timeScale;
-    /**
-     * The duration of the movie in time scale units (derived value). The value
-     * of this field corresponds to the duration of the longest track in the
-     * movie.
-     */
+    /// The duration of the movie in time scale units (derived value). The value
+    /// of this field corresponds to the duration of the longest track in the
+    /// movie.
     protected long duration;
-    /**
-     * The preferred rate at which to play this movie. A value of 1.0 indicates
-     * normal rate.
-     */
+    /// The preferred rate at which to play this movie. A value of 1.0 indicates
+    /// normal rate.
     protected double preferredRate;
-    /**
-     * The preferred volume of this movie’s sound. A value of 1.0 indicates full
-     * volume.
-     */
+    /// The preferred volume of this movie’s sound. A value of 1.0 indicates full
+    /// volume.
     protected double preferredVolume;
-    /**
-     * The transformation matrix [a,b,u;c,d,v;x,y,w] for mapping 2d points of
-     * this movie to the screen.
-     * <pre>
-     *           [a b u;
-     * [x y 1] *  c d v; = [x' y' 1]
-     *            x y w]
-     * </pre>
-     */
+    /// The transformation matrix [a,b,u;c,d,v;x,y,w] for mapping 2d points of
+    /// this movie to the screen.
+    /// <pre>
+    ///           [a b u;
+    /// [x y 1] *  c d v; = [x' y'1]
+    ///            x y w]
+    /// </pre>
     protected double[] matrix;
-    /**
-     * The time value in the movie at which the preview begins.
-     */
+    /// The time value in the movie at which the preview begins.
     protected long previewTime;
-    /**
-     * The duration of the movie preview in movie time scale units.
-     */
+    /// The duration of the movie preview in movie time scale units.
     protected long previewDuration;
-    /**
-     * The time value of the time of the movie poster.
-     */
+    /// The time value of the time of the movie poster.
     protected long posterTime;
-    /**
-     * The time value for the start time of the current selection.
-     */
+    /// The time value for the start time of the current selection.
     protected long selectionTime;
-    /**
-     * The duration of the current selection in movie time scale units.
-     */
+    /// The duration of the current selection in movie time scale units.
     protected long selectionDuration;
-    /**
-     * The time value for current time position within the movie.
-     */
+    /// The time value for current time position within the movie.
     protected long currentTime;
-    /**
-     * The ID to use for the next track added to this movie (derived value). The
-     * value of this field corresponds to the number of tracks.
-     */
+    /// The ID to use for the next track added to this movie (derived value). The
+    /// value of this field corresponds to the number of tracks.
     protected long nextTrackId;
     // END Movie Header
-    /**
-     * The list of tracks in the movie.
-     */
+    /// The list of tracks in the movie.
     protected ArrayList<Track> tracks = new ArrayList<>();
 
     public QuickTimeMeta() {
@@ -449,9 +413,7 @@ public class QuickTimeMeta extends AbstractMovie {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    /**
-     * Clears this movie.
-     */
+    /// Clears this movie.
     protected void clear() {
         // File Type
         brand = "qt";
@@ -481,9 +443,7 @@ public class QuickTimeMeta extends AbstractMovie {
         return matrix;
     }
 
-    /**
-     * Groups consecutive samples with same characteristics.
-     */
+    /// Groups consecutive samples with same characteristics.
     protected abstract static class Group {
 
         protected MediaSample firstSample;
@@ -511,13 +471,11 @@ public class QuickTimeMeta extends AbstractMovie {
             sampleCount = group.sampleCount;
         }
 
-        /**
-         * Returns true, if the samples was added to the group. If false is
-         * returned, the sample must be added to a new group.
-         * <p>
-         * A sample can only be added to a group, if the capacity of the group
-         * is not exceeded.
-         */
+        /// Returns true, if the samples was added to the group. If false is
+        /// returned, the sample must be added to a new group.
+        ///
+        /// A sample can only be added to a group, if the capacity of the group
+        /// is not exceeded.
         protected boolean maybeAddSample(MediaSample sample) {
             if (sampleCount < maxSampleCount) {
                 lastSample = sample;
@@ -527,13 +485,11 @@ public class QuickTimeMeta extends AbstractMovie {
             return false;
         }
 
-        /**
-         * Returns true, if the chunk was added to the group. If false is
-         * returned, the chunk must be added to a new group.
-         * <p>
-         * A chunk can only be added to a group, if the capacity of the group is
-         * not exceeded.
-         */
+        /// Returns true, if the chunk was added to the group. If false is
+        /// returned, the chunk must be added to a new group.
+        ///
+        /// A chunk can only be added to a group, if the capacity of the group is
+        /// not exceeded.
         protected boolean maybeAddChunk(Chunk chunk) {
             if (sampleCount + chunk.sampleCount <= maxSampleCount) {
                 lastSample = chunk.lastSample;
@@ -548,46 +504,32 @@ public class QuickTimeMeta extends AbstractMovie {
         }
     }
 
-    /**
-     * QuickTime stores media data in media samples. A media sample is a single
-     * element in a sequence of time-ordered data. Information about samples is
-     * stored in the mdat atom.
-     * <p>
-     * Please note that {@code MediaSample} objects are created on demand. This helps
-     * to save memory, because a highly multiplexed audio track may consist of
-     * many samples per second. As a consequence multiple instances of
-     * {@code MediaSample} objects may represent the same data sample in the movie.
-     */
+    /// QuickTime stores media data in media samples. A media sample is a single
+    /// element in a sequence of time-ordered data. Information about samples is
+    /// stored in the mdat atom.
+    ///
+    /// Please note that `MediaSample` objects are created on demand. This helps
+    /// to save memory, because a highly multiplexed audio track may consist of
+    /// many samples per second. As a consequence multiple instances of
+    /// `MediaSample` objects may represent the same data sample in the movie.
     protected static class MediaSample {
 
-        /**
-         * Byte offset of the sample relative to the start of the QuickTime file.
-         * The value -1 is used if the offset is unknown.
-         */
+        /// Byte offset of the sample relative to the start of the QuickTime file.
+        /// The value -1 is used if the offset is unknown.
         long offset;
-        /**
-         * Data length of the sample in bytes. The value -1 is used if the data length is
-         * unknown.
-         */
+        /// Data length of the sample in bytes. The value -1 is used if the data length is
+        /// unknown.
         long length;
-        /**
-         * The duration of the sample in media timescale units. The value -1 is
-         * used if the duration is unknown.
-         */
+        /// The duration of the sample in media timescale units. The value -1 is
+        /// used if the duration is unknown.
         long duration;
-        /**
-         * The timestamp of the first sample in the chunk in media timescale units.
-         * The value -1 is used if the timestamp is unknown.
-         */
+        /// The timestamp of the first sample in the chunk in media timescale units.
+        /// The value -1 is used if the timestamp is unknown.
         public long timeStamp = -1;
-        /**
-         * Whether the sample is a sync-sample.
-         */
+        /// Whether the sample is a sync-sample.
         public boolean isKeyframe;
 
-        /**
-         * Creates a new sample.
-         */
+        /// Creates a new sample.
         public MediaSample(long duration, long offset, long length) {
             this.duration = duration;
             this.offset = offset;
@@ -595,50 +537,36 @@ public class QuickTimeMeta extends AbstractMovie {
         }
     }
 
-    /**
-     * QuickTime plays media in tracks which reference media samples.
-     * <p>
-     * Please note that {@code TrackSample} objects are created on demand. This helps
-     * to save memory, because a highly multiplexed audio track may consist of
-     * many samples per second. As a consequence multiple instances of
-     * {@code TrackSample} objects may represent the same data sample in the movie.
-     */
+    /// QuickTime plays media in tracks which reference media samples.
+    ///
+    /// Please note that `TrackSample` objects are created on demand. This helps
+    /// to save memory, because a highly multiplexed audio track may consist of
+    /// many samples per second. As a consequence multiple instances of
+    /// `TrackSample` objects may represent the same data sample in the movie.
     protected static class TrackSample {
 
-        /**
-         * Byte offset of the sample relative to the start of the QuickTime file.
-         * The value -1 is used if the offset is unknown.
-         */
+        /// Byte offset of the sample relative to the start of the QuickTime file.
+        /// The value -1 is used if the offset is unknown.
         MediaSample mediaSample;
 
-        /**
-         * The timestamp of the sample in movie timescale units.
-         */
+        /// The timestamp of the sample in movie timescale units.
         public long timeStamp;
-        /**
-         * The duration of the sample in movie timescale units. The value -1 is
-         * used if the duration is unknown.
-         */
+        /// The duration of the sample in movie timescale units. The value -1 is
+        /// used if the duration is unknown.
         long duration;
 
-        /**
-         * The edited start time in the media time sample in media timescale.
-         * <p>
-         * The value is 0 the track sample starts at the beginning of the
-         * media sample.
-         */
+        /// The edited start time in the media time sample in media timescale.
+        ///
+        /// The value is 0 the track sample starts at the beginning of the
+        /// media sample.
         long startTimeInMediaSample;
-        /**
-         * The edited end time in the media time sample in media timescale.
-         * <p>
-         * The value is mediaSample.duration if the track sample ends at the
-         * end of the media sample.
-         */
+        /// The edited end time in the media time sample in media timescale.
+        ///
+        /// The value is mediaSample.duration if the track sample ends at the
+        /// end of the media sample.
         long endTimeInMediaSample;
 
-        /**
-         * Creates a new sample.
-         */
+        /// Creates a new sample.
         public TrackSample(MediaSample mediaSample, long timeStamp, long duration,
                            long startTimeInMediaSample, long endTimeInMediaSample) {
             this.mediaSample = mediaSample;
@@ -649,9 +577,7 @@ public class QuickTimeMeta extends AbstractMovie {
         }
     }
 
-    /**
-     * Groups consecutive samples of the same duration.
-     */
+    /// Groups consecutive samples of the same duration.
     protected static class TimeToSampleGroup extends Group {
 
         public TimeToSampleGroup(MediaSample firstSample) {
@@ -666,14 +592,12 @@ public class QuickTimeMeta extends AbstractMovie {
             super(group);
         }
 
-        /**
-         * Returns true, if the sample was added to the group. If false is
-         * returned, the sample must be added to a new group.
-         * <p>
-         * A sample can only be added to a TimeToSampleGroup, if it has the same
-         * duration as previously added samples, and if the capacity of the
-         * group is not exceeded.
-         */
+        /// Returns true, if the sample was added to the group. If false is
+        /// returned, the sample must be added to a new group.
+        ///
+        /// A sample can only be added to a TimeToSampleGroup, if it has the same
+        /// duration as previously added samples, and if the capacity of the
+        /// group is not exceeded.
         @Override
         public boolean maybeAddSample(MediaSample sample) {
             if (firstSample.duration == sample.duration) {
@@ -690,9 +614,7 @@ public class QuickTimeMeta extends AbstractMovie {
             return false;
         }
 
-        /**
-         * Returns the duration that all samples in this group share.
-         */
+        /// Returns the duration that all samples in this group share.
         public long getSampleDuration() {
             return firstSample.duration;
         }
@@ -705,9 +627,7 @@ public class QuickTimeMeta extends AbstractMovie {
         }
     }
 
-    /**
-     * Groups consecutive samples into a chunk.
-     */
+    /// Groups consecutive samples into a chunk.
     protected static class SampleToChunk {
 
         int firstChunk;
@@ -716,9 +636,7 @@ public class QuickTimeMeta extends AbstractMovie {
 
     }
 
-    /**
-     * Groups consecutive samples of the same size.
-     */
+    /// Groups consecutive samples of the same size.
     protected static class SampleSizeGroup extends Group {
 
         public SampleSizeGroup(MediaSample firstSample) {
@@ -733,14 +651,12 @@ public class QuickTimeMeta extends AbstractMovie {
             super(firstSample, lastSample, sampleCount);
         }
 
-        /**
-         * Returns true, if the sample was added to the group. If false is
-         * returned, the sample must be added to a new group.
-         * <p>
-         * A sample can only be added to a SampleSizeGroup, if it has the same
-         * size as previously added samples, and if the capacity of the group is
-         * not exceeded.
-         */
+        /// Returns true, if the sample was added to the group. If false is
+        /// returned, the sample must be added to a new group.
+        ///
+        /// A sample can only be added to a SampleSizeGroup, if it has the same
+        /// size as previously added samples, and if the capacity of the group is
+        /// not exceeded.
         @Override
         public boolean maybeAddSample(MediaSample sample) {
             if (firstSample.length == sample.length) {
@@ -757,9 +673,7 @@ public class QuickTimeMeta extends AbstractMovie {
             return false;
         }
 
-        /**
-         * Returns the length that all samples in this group share.
-         */
+        /// Returns the length that all samples in this group share.
         public long getSampleLength() {
             return firstSample.length;
         }
@@ -772,45 +686,37 @@ public class QuickTimeMeta extends AbstractMovie {
         }
     }
 
-    /**
-     * Groups consecutive samples with the same sample description Id and with
-     * adjacent offsets in the movie file.
-     */
+    /// Groups consecutive samples with the same sample description Id and with
+    /// adjacent offsets in the movie file.
     protected static class Chunk extends Group {
 
         protected int sampleDescriptionId;
 
-        /**
-         * Creates a new Chunk.
-         *
-         * @param firstSample         The first sample contained in this chunk.
-         * @param sampleDescriptionId The description id of the sample.
-         */
+        /// Creates a new Chunk.
+        ///
+        /// @param firstSample         The first sample contained in this chunk.
+        /// @param sampleDescriptionId The description id of the sample.
         public Chunk(MediaSample firstSample, int sampleDescriptionId) {
             super(firstSample);
             this.sampleDescriptionId = sampleDescriptionId;
         }
 
-        /**
-         * Creates a new Chunk.
-         *
-         * @param firstSample         The first sample contained in this chunk.
-         * @param sampleDescriptionId The description Id of the sample.
-         */
+        /// Creates a new Chunk.
+        ///
+        /// @param firstSample         The first sample contained in this chunk.
+        /// @param sampleDescriptionId The description Id of the sample.
         public Chunk(MediaSample firstSample, MediaSample lastSample, int sampleCount, int sampleDescriptionId) {
             super(firstSample, lastSample, sampleCount);
             this.sampleDescriptionId = sampleDescriptionId;
         }
 
-        /**
-         * Returns true, if the sample was added to the chunk. If false is
-         * returned, the sample must be added to a new chunk.
-         * <p>
-         * A sample can only be added to a chunk, if it has the same sample
-         * description Id as previously added samples, if the capacity of the
-         * chunk is not exceeded and if the sample offset is adjacent to the
-         * last sample in this chunk.
-         */
+        /// Returns true, if the sample was added to the chunk. If false is
+        /// returned, the sample must be added to a new chunk.
+        ///
+        /// A sample can only be added to a chunk, if it has the same sample
+        /// description Id as previously added samples, if the capacity of the
+        /// chunk is not exceeded and if the sample offset is adjacent to the
+        /// last sample in this chunk.
         public boolean maybeAddSample(MediaSample sample, int sampleDescriptionId) {
             if (sampleDescriptionId == this.sampleDescriptionId
                     && lastSample.offset + lastSample.length == sample.offset) {
@@ -828,120 +734,84 @@ public class QuickTimeMeta extends AbstractMovie {
             return false;
         }
 
-        /**
-         * Returns the offset of the chunk in the movie file.
-         */
+        /// Returns the offset of the chunk in the movie file.
         public long getChunkOffset() {
             return firstSample.offset;
         }
     }
 
-    /**
-     * Represents a track.
-     */
+    /// Represents a track.
     protected static class Track {
-        /**
-         * Table of samples in this track.
-         * <p>
-         * This value is derived from the media data in this track,
-         * and from the edit list of this track.
-         * <p>
-         * This value is set to null to indicate that it must be recomputed.
-         * <dl>
-         *     <dt>Map.key</dt><dd>absolute movie time of a track sample</dd>
-         *     <dt>Map.value</dt><dd>track sample</dd>
-         * </dl>
-         */
+        /// Table of samples in this track.
+        ///
+        /// This value is derived from the media data in this track,
+        /// and from the edit list of this track.
+        ///
+        /// This value is set to null to indicate that it must be recomputed.
+        /// <dl>
+        ///     <dt>Map.key</dt><dd>absolute movie time of a track sample</dd>
+        ///     <dt>Map.value</dt><dd>track sample</dd>
+        /// </dl>
         public NavigableMap<Long, ArrayList<TrackSample>> trackSampleMap = null;
         public ArrayList<TrackSample> trackSamplesList = null;
         public int readIndex;
-        /**
-         * The media type of the track.
-         */
+        /// The media type of the track.
         protected FormatKeys.MediaType mediaType;
-        /**
-         * The fourcc type of the track.
-         */
+        /// The fourcc type of the track.
         protected String encoding;
-        /**
-         * The format of the media in the track.
-         */
+        /// The format of the media in the track.
         protected Format format;
         // BEGIN Track Header
         private final static int TrackEnable = 0x1; // enabled track
         private final static int TrackInMovie = 0x2;// track in playback
         private final static int TrackInPreview = 0x4; // track in preview
         private final static int TrackInPoster = 0x8; // track in posterTrackEnable = 0x1, // enabled track
-        /**
-         * <pre>
-         * // Enumeration for track header flags
-         * set {
-         * TrackEnable = 0x1, // enabled track
-         * TrackInMovie = 0x2, // track in playback
-         * TrackInPreview = 0x4, // track in preview
-         * TrackInPoster = 0x8 // track in poster
-         * } TrackHeaderFlags;
-         * </pre>
-         */
+        /// <pre>
+        /// // Enumeration for track header flags
+        /// set {
+        /// TrackEnable = 0x1, // enabled track
+        /// TrackInMovie = 0x2, // track in playback
+        /// TrackInPreview = 0x4, // track in preview
+        /// TrackInPoster = 0x8 // track in poster
+        /// } TrackHeaderFlags;
+        /// </pre>
         protected int headerFlags = TrackEnable | TrackInMovie | TrackInPreview | TrackInPoster;
-        /**
-         * Creation time of the track.
-         */
+        /// Creation time of the track.
         protected Instant creationTime;
-        /**
-         * Modification time of the track.
-         */
+        /// Modification time of the track.
         protected Instant modificationTime;
-        /**
-         * The id of the track. The value 0 cannot be used.
-         */
+        /// The id of the track. The value 0 cannot be used.
         protected int trackId;
-        /**
-         * The duration of the track given in the movie time scale (derived
-         * value). The value is equal to the sum of all track edits. If there
-         * are no edits, then the value is the sum of all sample durations
-         * converted into the movie time scale.
-         */
+        /// The duration of the track given in the movie time scale (derived
+        /// value). The value is equal to the sum of all track edits. If there
+        /// are no edits, then the value is the sum of all sample durations
+        /// converted into the movie time scale.
         protected long duration;
-        /**
-         * The track layer. Tracks with lower layers are displayed in front of
-         * tracks with higher layers.
-         */
+        /// The track layer. Tracks with lower layers are displayed in front of
+        /// tracks with higher layers.
         protected int layer;
-        /**
-         * An identifier which specifies a collection of tracks that contain
-         * alternate data for one other. Only one track of an alternate group is
-         * displayed based on selection criteria such as quality, language or
-         * computer capabilities.
-         */
+        /// An identifier which specifies a collection of tracks that contain
+        /// alternate data for one other. Only one track of an alternate group is
+        /// displayed based on selection criteria such as quality, language or
+        /// computer capabilities.
         protected int alternateGroup;
-        /**
-         * The audio volume of the track. 1.0 means normal volume.
-         */
+        /// The audio volume of the track. 1.0 means normal volume.
         protected double volume;
-        /**
-         * The transformation matrix of the track.
-         */
+        /// The transformation matrix of the track.
         protected double[] matrix = {//
                 1, 0, 0,//
                 0, 1, 0,//
                 0, 0, 1
         };
-        /**
-         * The track dimension.
-         */
+        /// The track dimension.
         protected double width, height;
         // END Track Header
         // BEGIN Edit List
-        /**
-         * The edit list of the track.
-         */
+        /// The edit list of the track.
         protected ArrayList<Edit> editList = new ArrayList<>();
         // END Edit List
         // BEGIN Media List
-        /**
-         * The media of the track.
-         */
+        /// The media of the track.
         public Media media = null;
         // END Media List
 
@@ -977,11 +847,9 @@ public class QuickTimeMeta extends AbstractMovie {
             return (headerFlags & TrackInPoster) != 0;
         }
 
-        /**
-         * Gets the track duration in the movie timescale.
-         *
-         * @param movieTimeScale The timescale of the movie.
-         */
+        /// Gets the track duration in the movie timescale.
+        ///
+        /// @param movieTimeScale The timescale of the movie.
         public long getTrackDuration(long movieTimeScale) {
             long sum = 0;
             if (editList.isEmpty()) {
@@ -995,9 +863,7 @@ public class QuickTimeMeta extends AbstractMovie {
             return sum;
         }
 
-        /**
-         * Builds the samples table for this track.
-         */
+        /// Builds the samples table for this track.
         public void buildSamplesTable(long movieTimeScale) throws IOException {
             buildMediaSamplesTable(movieTimeScale);
             buildTrackSamplesTable(movieTimeScale);
@@ -1177,24 +1043,18 @@ public class QuickTimeMeta extends AbstractMovie {
         }
     }
 
-    /**
-     * Represents a media.
-     */
+    /// Represents a media.
     protected static class Media {
         // BEGIN Media Header
 
         protected Instant mediaCreationTime;
         protected Instant mediaModificationTime;
-        /**
-         * The timescale of the media in the track. A time value that indicates
-         * the timescale for this media. That is, the number of time units that
-         * pass per second in its time coordinate system.
-         */
+        /// The timescale of the media in the track. A time value that indicates
+        /// the timescale for this media. That is, the number of time units that
+        /// pass per second in its time coordinate system.
         protected long mediaTimeScale = 600;
-        /**
-         * The duration of the media in this track in media time units (derived
-         * value). The value is equal to the sum of all sample durations.
-         */
+        /// The duration of the media in this track in media time units (derived
+        /// value). The value is equal to the sum of all sample durations.
         protected long mediaDuration = 0;
         protected Locale mediaLanguage = Locale.ENGLISH;
         protected String mediaLanguageEncoding = "UTF-8";
@@ -1205,44 +1065,26 @@ public class QuickTimeMeta extends AbstractMovie {
 
         // END Media Header
         // BEGIN Data Reference List
-        /**
-         * The data reference list of the track.
-         */
+        /// The data reference list of the track.
         protected ArrayList<DataReference> dataReferenceList = new ArrayList<>();
         // END Data Reference List
-        /**
-         * List of chunk offsets.
-         */
+        /// List of chunk offsets.
         protected ArrayList<Long> chunkOffsets = new ArrayList<>();
-        /**
-         * List of TimeToSample entries.
-         */
+        /// List of TimeToSample entries.
         protected ArrayList<TimeToSampleGroup> timeToSamples = new ArrayList<>();
-        /**
-         * List of SampleToChunk entries.
-         */
+        /// List of SampleToChunk entries.
         protected ArrayList<SampleToChunk> samplesToChunks = new ArrayList<>();
-        /**
-         * List of SampleSize entries.
-         */
+        /// List of SampleSize entries.
         protected ArrayList<SampleSizeGroup> sampleSizes = new ArrayList<>();
-        /**
-         * List of sync samples. This list is null if all samples are sync samples.
-         */
+        /// List of sync samples. This list is null if all samples are sync samples.
         protected NavigableSet<Long> syncSamples = null;
-        /**
-         * The number of samples in this track.
-         */
+        /// The number of samples in this track.
         protected long sampleCount = 0;
-        /**
-         * Interval between sync samples (keyframes). 0 = automatic. 1 = write
-         * all samples as sync samples. n = sync every n-th sample.
-         */
+        /// Interval between sync samples (keyframes). 0 = automatic. 1 = write
+        /// all samples as sync samples. n = sync every n-th sample.
         protected int syncInterval;
         // BEGIN Video Header
-        /**
-         * The video compression quality.
-         */
+        /// The video compression quality.
         protected float videoQuality = 0.97f;
         // END Video Header
         // BEGIN Video Media Header
@@ -1252,19 +1094,17 @@ public class QuickTimeMeta extends AbstractMovie {
         // END Video Media Header
 
         private ArrayList<SampleDescription> sampleDescriptions = new ArrayList<>();
-        /**
-         * Table of samples in the media of this track.
-         * <p>
-         * This value is derived from the media data in this track.
-         * <p>
-         * This value is set to null to indicate that it must be recomputed.
-         * <dl>
-         *     <dt>Map.key</dt><dd>absolute media time of a media sample</dd>
-         *     <dt>Map.value</dt><dd>media samples, may contain multiple
-         *     entries, if there are samples with duration=0. In this
-         *     case, only the last sample has a duration &gt;= 0.</dd>
-         * </dl>
-         */
+        /// Table of samples in the media of this track.
+        ///
+        /// This value is derived from the media data in this track.
+        ///
+        /// This value is set to null to indicate that it must be recomputed.
+        /// <dl>
+        ///     <dt>Map.key</dt><dd>absolute media time of a media sample</dd>
+        ///     <dt>Map.value</dt><dd>media samples, may contain multiple
+        ///     entries, if there are samples with duration=0. In this
+        ///     case, only the last sample has a duration &gt;= 0.</dd>
+        /// </dl>
         public NavigableMap<Long, ArrayList<MediaSample>> mediaSamples = null;
 
         public void addSampleDescription(SampleDescription d) {
@@ -1376,19 +1216,13 @@ public class QuickTimeMeta extends AbstractMovie {
         }
     }
 
-    /**
-     * Represents a sample description.
-     */
+    /// Represents a sample description.
     protected static class SampleDescription {
 
         public int videoColorTableId;
-        /**
-         * The media type.
-         */
+        /// The media type.
         protected String dataFormat;
-        /**
-         * The data reference index.
-         */
+        /// The data reference index.
         protected int dataReferenceIndex;
 
         // BEGIN Video Sample Description
@@ -1400,67 +1234,47 @@ public class QuickTimeMeta extends AbstractMovie {
         protected double videoVerticalResolution = 72;
         protected int videoFrameCount;
         protected String videoCompressorName;
-        /**
-         * Number of bits per Pixel. All frames must have the same depth. The
-         * value -1 is used to mark unspecified depth.
-         */
+        /// Number of bits per Pixel. All frames must have the same depth. The
+        /// value -1 is used to mark unspecified depth.
         protected int videoDepth = -1;
         protected IndexColorModel videoColorTable = null;
         protected byte[] extendData;
         // END Video Sample Description
         // BEGIN Sound Sample Description
-        /**
-         * Number of sound channels used by the sound sample.
-         */
+        /// Number of sound channels used by the sound sample.
         protected int soundNumberOfChannels;
-        /**
-         * Number of bits per audio sample before compression.
-         */
+        /// Number of bits per audio sample before compression.
         protected int soundSampleSize;
-        /**
-         * Sound compressionId. The value -1 means fixed bit rate, -2 means
-         * variable bit rate.
-         */
+        /// Sound compressionId. The value -1 means fixed bit rate, -2 means
+        /// variable bit rate.
         protected int soundCompressionId;
-        /**
-         * Sound stsd samples per packet. The number of uncompressed samples
-         * generated by a compressed sample (an uncompressed sample is one
-         * sample from each channel). This is also the sample duration,
-         * expressed in the media’s timescale, where the timescale is equal to
-         * the sample rate. For uncompressed formats, this field is always 1.
-         */
+        /// Sound stsd samples per packet. The number of uncompressed samples
+        /// generated by a compressed sample (an uncompressed sample is one
+        /// sample from each channel). This is also the sample duration,
+        /// expressed in the media’s timescale, where the timescale is equal to
+        /// the sample rate. For uncompressed formats, this field is always 1.
         protected long soundSamplesPerPacket;
-        /**
-         * For uncompressed audio, the number of bytes in a sample for a single
-         * channel. This replaces the older sampleSize field, which is set to
-         * 16. This value is calculated by dividing the frame size by the number
-         * of channels. The same calculation is performed to calculate the value
-         * of this field for compressed audio, but the result of the calculation
-         * is not generally meaningful for compressed audio.
-         */
+        /// For uncompressed audio, the number of bytes in a sample for a single
+        /// channel. This replaces the older sampleSize field, which is set to
+        /// 16. This value is calculated by dividing the frame size by the number
+        /// of channels. The same calculation is performed to calculate the value
+        /// of this field for compressed audio, but the result of the calculation
+        /// is not generally meaningful for compressed audio.
         protected long soundBytesPerPacket;
-        /**
-         * The number of bytes in a frame: for uncompressed audio, an
-         * uncompressed frame; for compressed audio, a compressed frame. This
-         * can be calculated by multiplying the bytes per packet field by the
-         * number of channels.
-         */
+        /// The number of bytes in a frame: for uncompressed audio, an
+        /// uncompressed frame; for compressed audio, a compressed frame. This
+        /// can be calculated by multiplying the bytes per packet field by the
+        /// number of channels.
         protected long soundBytesPerFrame;
-        /**
-         * The size of an uncompressed sample in bytes. This is set to 1 for
-         * 8-bit audio, 2 for all other cases, even if the sample size is
-         * greater than 2 bytes.
-         */
+        /// The size of an uncompressed sample in bytes. This is set to 1 for
+        /// 8-bit audio, 2 for all other cases, even if the sample size is
+        /// greater than 2 bytes.
         protected long soundBytesPerSample;
-        /**
-         * Sound sample rate. The integer portion must match the media's time
-         * scale.
-         */
+        /// Sound sample rate. The integer portion must match the media's time
+        /// scale.
         protected double soundSampleRate;
-        /**
-         * Extensions to the stsd chunk. Must contain atom-based fields: ([long
-         * size, long type, some data], repeat)
-         */
+        /// Extensions to the stsd chunk. Must contain atom-based fields: ([long
+        /// size, long type, some data], repeat)
         protected byte[] stsdExtensions = new byte[0];
         // END Sound Sample Description
 
@@ -1481,46 +1295,36 @@ public class QuickTimeMeta extends AbstractMovie {
         }
     }
 
-    /**
-     * An {@code Edit} define the portions of the media that are to be used to
-     * build up a track for a movie. The edits themselves are stored in an edit
-     * list table, which consists of time offset and duration values for each
-     * segment.
-     * <p>
-     * In the absence of an edit list, the presentation of the track starts
-     * immediately. An empty edit is used to offset the start time of a track.
-     */
+    /// An `Edit` define the portions of the media that are to be used to
+    /// build up a track for a movie. The edits themselves are stored in an edit
+    /// list table, which consists of time offset and duration values for each
+    /// segment.
+    ///
+    /// In the absence of an edit list, the presentation of the track starts
+    /// immediately. An empty edit is used to offset the start time of a track.
     public static class Edit {
 
-        /**
-         * A 32-bit integer that specifies the duration of this edit segment in
-         * units of the movie's time scale.
-         */
+        /// A 32-bit integer that specifies the duration of this edit segment in
+        /// units of the movie's time scale.
         public long trackDuration;
-        /**
-         * A 32-bit integer containing the start time within the media of this
-         * edit segment (in media time scale units). If this field is set to -1,
-         * it is an empty edit. The last edit in a track should never be an
-         * empty edit. Any differece between the movie's duration and the
-         * track's duration is expressed as an implicit empty edit.
-         */
+        /// A 32-bit integer containing the start time within the media of this
+        /// edit segment (in media time scale units). If this field is set to -1,
+        /// it is an empty edit. The last edit in a track should never be an
+        /// empty edit. Any differece between the movie's duration and the
+        /// track's duration is expressed as an implicit empty edit.
         public long mediaTime;
-        /**
-         * A 32-bit fixed-point number (16.16) that specifies the relative rate
-         * at which to play the media corresponding to this edit segment. This
-         * rate value cannot be 0 or negative.
-         */
+        /// A 32-bit fixed-point number (16.16) that specifies the relative rate
+        /// at which to play the media corresponding to this edit segment. This
+        /// rate value cannot be 0 or negative.
         public double mediaRate;
 
-        /**
-         * Creates an edit.
-         *
-         * @param trackDuration Duration of this edit in the movie's timescale.
-         * @param mediaTime     Start time of this edit in the media's timescale.
-         *                      Specify -1 for an empty edit. The last edit in a track should never
-         *                      be an empty edit.
-         * @param mediaRate     The relative rate at which to play this edit.
-         */
+        /// Creates an edit.
+        ///
+        /// @param trackDuration Duration of this edit in the movie's timescale.
+        /// @param mediaTime     Start time of this edit in the media's timescale.
+        ///                                                                Specify -1 for an empty edit. The last edit in a track should never
+        ///                                                                be an empty edit.
+        /// @param mediaRate     The relative rate at which to play this edit.
         public Edit(long trackDuration, int mediaTime, double mediaRate) {
             if (trackDuration < 0) {
                 throw new IllegalArgumentException("trackDuration must not be < 0:" + trackDuration);
@@ -1543,29 +1347,21 @@ public class QuickTimeMeta extends AbstractMovie {
         }
     }
 
-    /**
-     * An {@code DataReference} references the media data. Typically, the media
-     * data is contained in the same file.
-     */
+    /// An `DataReference` references the media data. Typically, the media
+    /// data is contained in the same file.
     public static class DataReference {
 
-        /**
-         * Reference type. Can be "alis", "rsrc" or "url ".
-         */
+        /// Reference type. Can be "alis", "rsrc" or "url ".
         protected String referenceType;
         private final static int DataRefSelfReference = 0x1; //
-        /**
-         * <pre>
-         * // Enumeration for reference flags
-         * set {
-         * DataRefSelfReference = 0x1, // data is in same file
-         * } TrackHeaderFlags;
-         * </pre>
-         */
+        /// <pre>
+        /// // Enumeration for reference flags
+        /// set {
+        /// DataRefSelfReference = 0x1, // data is in same file
+        /// } TrackHeaderFlags;
+        /// </pre>
         protected int referenceFlags = DataRefSelfReference;
-        /**
-         * Reference data.
-         */
+        /// Reference data.
         protected byte[] data;
 
         @Override

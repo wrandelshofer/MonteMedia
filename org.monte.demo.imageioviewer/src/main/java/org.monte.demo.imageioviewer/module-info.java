@@ -2,11 +2,9 @@
  * Copyright © 2017 Werner Randelshofer, Switzerland. MIT License.
  */
 
-/**
- * Image IO viewer demo.
- *
- * @author Werner Randelshofer
- */
+/// Image IO viewer demo.
+///
+/// @author Werner Randelshofer
 module org.monte.demo.imageioviewer {
     requires java.desktop;
 

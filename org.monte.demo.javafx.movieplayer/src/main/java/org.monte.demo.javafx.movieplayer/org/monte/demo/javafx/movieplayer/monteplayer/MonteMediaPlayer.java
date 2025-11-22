@@ -66,11 +66,9 @@ public class MonteMediaPlayer extends AbstractMediaPlayer {
         return Duration.millis(t.multiply(1000).longValue() - 1);
     }
 
-    /**
-     * Package private method for {@link PlayerEngine}
-     *
-     * @param newValue the new status
-     */
+    /// Package private method for [PlayerEngine]
+    ///
+    /// @param newValue the new status
     void setStatus(MediaPlayer.Status newValue) {
         status.set(newValue);
     }

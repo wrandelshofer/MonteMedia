@@ -21,18 +21,14 @@ import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.FormatKeys.MimeTypeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
 
-/**
- * Replaces the color space of an image without converting sample values.
- * <p>
- * This codec is useful if an image was loaded in the wrong color space.
- *
- * @author Werner Randelshofer
- */
+/// Replaces the color space of an image without converting sample values.
+///
+/// This codec is useful if an image was loaded in the wrong color space.
+///
+/// @author Werner Randelshofer
 public class ReplaceColorSpaceCodec extends org.monte.media.av.AbstractCodec {
 
-    /**
-     * The color space of the media.
-     */
+    /// The color space of the media.
     public final static FormatKey<ColorSpace> ColorSpaceKey = new FormatKey<>("colorSpace", ColorSpace.class);
 
     public ReplaceColorSpaceCodec() {

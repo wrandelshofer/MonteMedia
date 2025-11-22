@@ -17,9 +17,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-/**
- * Takes any IFF file and tells you what's in it.
- */
+/// Takes any IFF file and tells you what's in it.
 public class Sift {
     private boolean hexdump = false;
 

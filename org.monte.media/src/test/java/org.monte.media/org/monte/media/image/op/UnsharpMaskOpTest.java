@@ -3,10 +3,10 @@
  * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 
-package org.monte.media.image;
+package org.monte.media.image.op;
 
 import org.junit.jupiter.api.Test;
-import org.monte.media.image.op.UnsharpMaskOp;
+import org.monte.media.image.TestImageFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.color.ColorSpace;
@@ -18,7 +18,7 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class UnsharpMaskFloatTest {
+public class UnsharpMaskOpTest {
     @Test
     public void shouldUnsharpMaskImageUsingUnsharpMaskOp() throws IOException {
         BufferedImage src = TestImageFactory.createHighFrequencyTestImage();
@@ -34,7 +34,7 @@ public class UnsharpMaskFloatTest {
         var g = dstSRgb.createGraphics();
         g.drawImage(dst, 0, 0, null);
         g.dispose();
-        boolean success = ImageIO.write(dstSRgb, "PNG", new File("target/unsharpmask-output.png"));
+        boolean success = ImageIO.write(dstSRgb, "PNG", new File("target/UnsharpMaskOp-output.png"));
         assertTrue(success);
     }
 

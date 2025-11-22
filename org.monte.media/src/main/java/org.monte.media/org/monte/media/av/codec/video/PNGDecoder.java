@@ -30,19 +30,16 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.MediaTypeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.MimeTypeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
-/**
- * {@code PNGCodec} encodes a BufferedImage as a byte[] array.
- * <p>
- * Supported input/output formats:
- * <ul>
- * <li>{@code VideoFormat} with {@code BufferedImage.class}, any width, any height,
- * any depth.</li>
- * <li>{@code VideoFormat} with {@code byte[].class}, same width and height as input
- * format, depth=24.</li>
- * </ul>
- *
- * @author Werner Randelshofer
- */
+/// `PNGCodec` encodes a BufferedImage as a byte[] array.
+///
+/// Supported input/output formats:
+///
+///   - `VideoFormat` with `BufferedImage.class`, any width, any height,
+///     any depth.
+///   - `VideoFormat` with `byte[].class`, same width and height as input
+///     format, depth=24.
+///
+/// @author Werner Randelshofer
 public class PNGDecoder extends org.monte.media.av.AbstractCodec {
 
     public PNGDecoder() {

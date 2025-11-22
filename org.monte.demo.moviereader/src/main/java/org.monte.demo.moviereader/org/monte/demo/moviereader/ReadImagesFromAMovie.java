@@ -23,20 +23,16 @@ import java.util.List;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
 
-/**
- * This example shows how to read all images from the first video track of a movie into a list.
- *
- * @author Werner Randelshofer
- */
+/// This example shows how to read all images from the first video track of a movie into a list.
+///
+/// @author Werner Randelshofer
 public class ReadImagesFromAMovie {
 
-    /**
-     * Reads all images from the specified movie file into a list.
-     *
-     * @param file a movie file
-     * @return a list of images
-     * @throws IOException on IO failure
-     */
+    /// Reads all images from the specified movie file into a list.
+    ///
+    /// @param file a movie file
+    /// @return a list of images
+    /// @throws IOException on IO failure
     public List<BufferedImage> readImages(File file) throws IOException {
         List<BufferedImage> images = new ArrayList<>();
 

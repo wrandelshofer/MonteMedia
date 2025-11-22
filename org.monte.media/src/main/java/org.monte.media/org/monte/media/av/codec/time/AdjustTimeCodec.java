@@ -8,11 +8,9 @@ import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
 import org.monte.media.math.Rational;
 
-/**
- * Adjusts the time stamp of the media.
- *
- * @author Werner Randelshofer
- */
+/// Adjusts the time stamp of the media.
+///
+/// @author Werner Randelshofer
 public class AdjustTimeCodec extends org.monte.media.av.AbstractCodec {
 
     private Rational mediaTime = new Rational(0);

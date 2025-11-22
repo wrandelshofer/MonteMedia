@@ -8,21 +8,19 @@ package org.monte.media.math;
 import static java.lang.Math.fma;
 import static org.monte.media.math.Scalars.almostEqual;
 
-/**
- * A 3x3 matrix with float precision.
- * <p>
- * This matrix is intended for use in performance-critical code.
- *
- * @param a row 0 column 0
- * @param b row 0 column 1
- * @param c row 0 column 2
- * @param d row 1 column 0
- * @param e row 1 column 1
- * @param f row 1 column 2
- * @param g row 2 column 0
- * @param h row 2 column 1
- * @param i row 2 column 2
- */
+/// A 3x3 matrix with float precision.
+///
+/// This matrix is intended for use in performance-critical code.
+///
+/// @param a row 0 column 0
+/// @param b row 0 column 1
+/// @param c row 0 column 2
+/// @param d row 1 column 0
+/// @param e row 1 column 1
+/// @param f row 1 column 2
+/// @param g row 2 column 0
+/// @param h row 2 column 1
+/// @param i row 2 column 2
 public record Matrix3Float(float a, float b, float c,
                            float d, float e, float f,
                            float g, float h, float i) implements Matrix3 {
@@ -113,13 +111,11 @@ public record Matrix3Float(float a, float b, float c,
         return new Matrix3Double(a, b, c, d, e, f, g, h, i);
     }
 
-    /**
-     * Inverses the matrix. The inversion is performed in double precision.
-     * <p>
-     * References:<br>
-     * <a href="https://www.wikihow.com/Find-the-Inverse-of-a-3x3-Matrix">wikihow.com</a><br>
-     * <a href="https://www.chilimath.com/lessons/advanced-algebra/determinant-2x2-matrix/">chilimath.com</a>
-     */
+    /// Inverses the matrix. The inversion is performed in double precision.
+    ///
+    /// References:
+    /// [wikihow.com](https://www.wikihow.com/Find-the-Inverse-of-a-3x3-Matrix)
+    /// [chilimath.com](https://www.chilimath.com/lessons/advanced-algebra/determinant-2x2-matrix/)
     public Matrix3Float inv() {
         return toDouble().inv().toFloat();
     }

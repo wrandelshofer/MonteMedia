@@ -11,22 +11,19 @@ import static java.lang.Math.signum;
 import static org.monte.media.math.IntMath.gcd;
 import static org.monte.media.math.IntMath.scm;
 
-/**
- * Represents a Rational number {@code numerator/denominator}.
- * <p>
- * A number is represented by two longs: the first represents the numerator of
- * a fraction; the second, the denominator.
- * <p>
- * Invariants:
- * <ul>
- * <li>{@code denominator &gt;=0}, the denominator is always a positive integer</li>
- * <li>{@code 0/1} is the unique* representation of 0.</li>
- * <li>{code 1/0},{@code -1/}0 are the unique representations of positive and
- * negative infinity.</li>
- * </ul>
- *
- * @author Werner Randelshofer
- */
+/// Represents a Rational number `numerator/denominator`.
+///
+/// A number is represented by two longs: the first represents the numerator of
+/// a fraction; the second, the denominator.
+///
+/// Invariants:
+///
+///   - `denominator &gt;=0`, the denominator is always a positive integer
+///   - `0/1` is the unique* representation of 0.
+///   - {code 1/0},`-1/`0 are the unique representations of positive and
+///     negative infinity.
+///
+/// @author Werner Randelshofer
 public class Rational extends Number implements Comparable<Rational> {
 
     public static final Rational ONE = new Rational(1, 1, false);
@@ -172,10 +169,8 @@ public class Rational extends Number implements Comparable<Rational> {
         return valueOf(den, num, false);
     }
 
-    /**
-     * Returns the closest rational with the specified denominator which is
-     * smaller or equal than this number.
-     */
+    /// Returns the closest rational with the specified denominator which is
+    /// smaller or equal than this number.
     public Rational floor(long d) {
         if (d == den) {
             return valueOf(num, den);
@@ -191,10 +186,8 @@ public class Rational extends Number implements Comparable<Rational> {
         }
     }
 
-    /**
-     * Returns the closest numerator for the specified denominator which is
-     * smaller or equal than this number.
-     */
+    /// Returns the closest numerator for the specified denominator which is
+    /// smaller or equal than this number.
     public long floorNumerator(long d) {
         if (d == den) {
             return num;
@@ -208,10 +201,8 @@ public class Rational extends Number implements Comparable<Rational> {
         }
     }
 
-    /**
-     * Returns the closest rational with the specified denominator which is
-     * greater or equal than this number.
-     */
+    /// Returns the closest rational with the specified denominator which is
+    /// greater or equal than this number.
     public Rational ceil(long d) {
         if (d == den) {
             return valueOf(num, den);
@@ -356,9 +347,7 @@ public class Rational extends Number implements Comparable<Rational> {
         return compareTo(that) == 0;
     }
 
-    /**
-     * return { -1, 0, +1 } if a &lt; b, a = b, or a &gt; b.
-     */
+    /// return { -1, 0, +1 } if a &lt; b, a = b, or a &gt; b.
     public int compareTo(Rational that) {
         // The following code avoids BigInteger allocation if the denominators 
         // are equal 
@@ -472,14 +461,14 @@ public class Rational extends Number implements Comparable<Rational> {
         return new Rational(num, den, reduceFraction);
     }
 
-    /**
-     * Iteratively computes rational from double.
-     * <p>Reference:
-     * <br> <a
-     * href="http://www2.fz-juelich.de/video/cpp/html/exercises/exercise/Rational_cpp.html">
-     * http://www2.fz-juelich.de/video/cpp/html/exercises/exercise/Rational_cpp.html</a>
-     * </p>
-     */
+    /// Iteratively computes rational from double.
+    ///
+    /// Reference:
+    ///
+    /// <a
+    /// href="http://www2.fz-juelich.de/video/cpp/html/exercises/exercise/Rational_cpp.html">
+    /// http://www2.fz-juelich.de/video/cpp/html/exercises/exercise/Rational_cpp.html</a>
+    ///
     private static Rational toRational(double x, double limit, int iterations) {
         double intpart = Math.floor(x);
         double fractpart = x - intpart;
@@ -523,16 +512,14 @@ public class Rational extends Number implements Comparable<Rational> {
         return num < 0;
     }
 
-    /**
-     * Parses a string.
-     * <p>
-     * A rational can be represented in the following ways:
-     * <ul><li>As a long
-     * number</li> <li>As a double number</li> <li>As an integer/integer
-     * rational number</li></ul>
-     *
-     * @throws NumberFormatException if str can not be parsed.
-     */
+    /// Parses a string.
+    ///
+    /// A rational can be represented in the following ways:
+    ///   - As a long
+    ///     number   - As a double number   - As an integer/integer
+    ///     rational number
+    ///
+    /// @throws NumberFormatException if str can not be parsed.
     public static Rational valueOf(String str) {
         int p = str.indexOf('/');
         if (p != -1) {

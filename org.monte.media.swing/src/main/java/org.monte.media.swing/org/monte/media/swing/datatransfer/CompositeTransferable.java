@@ -12,16 +12,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-/**
- * @author Werner Randelshofer
- */
+/// @author Werner Randelshofer
 public class CompositeTransferable implements java.awt.datatransfer.Transferable {
     private HashMap<DataFlavor, Transferable> transferables = new HashMap<>();
     private LinkedList<DataFlavor> flavors = new LinkedList<>();
 
-    /**
-     * Creates a new instance of CompositeTransferable
-     */
+    /// Creates a new instance of CompositeTransferable
     public CompositeTransferable() {
     }
 
@@ -36,17 +32,15 @@ public class CompositeTransferable implements java.awt.datatransfer.Transferable
         }
     }
 
-    /**
-     * Returns an object which represents the data to be transferred.  The class
-     * of the object returned is defined by the representation class of the flavor.
-     *
-     * @param flavor the requested flavor for the data
-     * @throws IOException                if the data is no longer available
-     *                                    in the requested flavor.
-     * @throws UnsupportedFlavorException if the requested data flavor is
-     *                                    not supported.
-     * @see DataFlavor#getRepresentationClass
-     */
+    /// Returns an object which represents the data to be transferred.  The class
+    /// of the object returned is defined by the representation class of the flavor.
+    ///
+    /// @param flavor the requested flavor for the data
+    /// @throws IOException                if the data is no longer available
+    ///                                                                                                          in the requested flavor.
+    /// @throws UnsupportedFlavorException if the requested data flavor is
+    ///                                                                                                          not supported.
+    /// @see DataFlavor#getRepresentationClass
     @Override
     public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
         Transferable t = transferables.get(flavor);
@@ -56,25 +50,21 @@ public class CompositeTransferable implements java.awt.datatransfer.Transferable
         return t.getTransferData(flavor);
     }
 
-    /**
-     * Returns an array of DataFlavor objects indicating the flavors the data
-     * can be provided in.  The array should be ordered according to preference
-     * for providing the data (from most richly descriptive to least descriptive).
-     *
-     * @return an array of data flavors in which this data can be transferred
-     */
+    /// Returns an array of DataFlavor objects indicating the flavors the data
+    /// can be provided in.  The array should be ordered according to preference
+    /// for providing the data (from most richly descriptive to least descriptive).
+    ///
+    /// @return an array of data flavors in which this data can be transferred
     @Override
     public DataFlavor[] getTransferDataFlavors() {
         return flavors.toArray(new DataFlavor[transferables.size()]);
     }
 
-    /**
-     * Returns whether or not the specified data flavor is supported for
-     * this object.
-     *
-     * @param flavor the requested flavor for the data
-     * @return boolean indicating wjether or not the data flavor is supported
-     */
+    /// Returns whether or not the specified data flavor is supported for
+    /// this object.
+    ///
+    /// @param flavor the requested flavor for the data
+    /// @return boolean indicating wjether or not the data flavor is supported
     @Override
     public boolean isDataFlavorSupported(DataFlavor flavor) {
         return transferables.containsKey(flavor);

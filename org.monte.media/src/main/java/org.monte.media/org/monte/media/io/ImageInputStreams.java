@@ -9,9 +9,7 @@ import javax.imageio.stream.ImageInputStream;
 import java.io.IOException;
 
 public class ImageInputStreams {
-    /**
-     * Don't let anyone instantiate this class.
-     */
+    /// Don't let anyone instantiate this class.
     private ImageInputStreams() {
 
     }

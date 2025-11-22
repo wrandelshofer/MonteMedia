@@ -6,11 +6,9 @@ package org.monte.media.quicktime.codec.video;
 
 import org.monte.media.av.CodecSpi;
 
-/**
- * RawCodecSpi.
- *
- * @author Werner Randelshofer
- */
+/// RawCodecSpi.
+///
+/// @author Werner Randelshofer
 public class RawDecoderSpi implements CodecSpi {
 
     @Override

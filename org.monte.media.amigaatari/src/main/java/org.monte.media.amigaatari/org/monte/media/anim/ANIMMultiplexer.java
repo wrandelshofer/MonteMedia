@@ -20,11 +20,9 @@ import java.io.IOException;
 import static java.lang.Math.max;
 import static org.monte.media.av.BufferFlag.DISCARD;
 
-/**
- * {@code ANIMMultiplexer}.
- *
- * @author Werner Randelshofer
- */
+/// `ANIMMultiplexer`.
+///
+/// @author Werner Randelshofer
 public class ANIMMultiplexer extends ANIMOutputStream implements Multiplexer {
 
     protected Rational inputTime;
@@ -91,18 +89,16 @@ public class ANIMMultiplexer extends ANIMOutputStream implements Multiplexer {
         close();
     }
 
-    /**
-     * Sets the Commodore Amiga Graphics Mode. The default value is 0.
-     * <p>
-     * The graphics mode is an or-combination of the monitor ID and the mode ID.
-     * <p>
-     * Example:
-     * <pre>
-     * setCAMG(PAL_MONITOR_ID|HAM_MODE);
-     * </pre>
-     * <p>
-     * Also sets the Jiffies for the Graphics Mode.
-     */
+    /// Sets the Commodore Amiga Graphics Mode. The default value is 0.
+    ///
+    /// The graphics mode is an or-combination of the monitor ID and the mode ID.
+    ///
+    /// Example:
+    /// <pre>
+    /// setCAMG(PAL_MONITOR_ID|HAM_MODE);
+    /// </pre>
+    ///
+    /// Also sets the Jiffies for the Graphics Mode.
     public void setCAMG(int newValue) {
         setCAMG(newValue);
     }

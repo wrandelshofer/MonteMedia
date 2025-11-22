@@ -8,11 +8,9 @@ import javax.imageio.stream.ImageOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-/**
- * {@code VideoEncoderCore}.
- *
- * @author Werner Randelshofer
- */
+/// `VideoEncoderCore`.
+///
+/// @author Werner Randelshofer
 public class VideoEncoderCore {
 
     protected byte[] byteBuf = new byte[4];

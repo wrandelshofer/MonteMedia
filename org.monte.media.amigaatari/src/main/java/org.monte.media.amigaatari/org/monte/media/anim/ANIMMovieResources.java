@@ -16,105 +16,65 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Gives access to the static resources of
- * a movie (image and audio data, global informations).
- *
- * @author Werner Randelshofer
- */
+/// Gives access to the static resources of
+/// a movie (image and audio data, global informations).
+///
+/// @author Werner Randelshofer
 public class ANIMMovieResources {
 
-    /**
-     * Raster width and heigth in pixels.
-     */
+    /// Raster width and heigth in pixels.
     private int width, height;
-    /**
-     * Pixel position for this image.
-     */
+    /// Pixel position for this image.
     private int xPosition, yPosition;
-    /**
-     * Number of source bitplanes.
-     */
+    /// Number of source bitplanes.
     private int nbPlanes;
-    /**
-     * Number of palettes (cmap chunks).
-     * The value -1 is used to invalidate this variable.
-     */
+    /// Number of palettes (cmap chunks).
+    /// The value -1 is used to invalidate this variable.
     private int nbPalettes = -1;
-    /**
-     * Masking.
-     */
+    /// Masking.
     private int masking;
     public final static int MSK_NONE = 0,
             MSK_HAS_MASK = 1,
             MSK_HAS_TRANSPARENT_COLOR = 2,
             MSK_LASSO = 3;
-    /**
-     * Index of transparent color.
-     */
+    /// Index of transparent color.
     private int transparentColor;
-    /**
-     * Pixel aspect ratio.
-     */
+    /// Pixel aspect ratio.
     private int xAspect, yAspect;
-    /**
-     * Page size in pixels.
-     */
+    /// Page size in pixels.
     private int pageWidth, pageHeight;
-    /**
-     * Screenmode.
-     */
+    /// Screenmode.
     private int screenMode;
-    /**
-     * Jiffies is the number of frames or fields per second.
-     */
+    /// Jiffies is the number of frames or fields per second.
     private int jiffies;
-    /**
-     * Set this to true to treat the two wrapup frames at the end of the
-     * animation like regular frames.
-     */
+    /// Set this to true to treat the two wrapup frames at the end of the
+    /// animation like regular frames.
     private boolean isPlayWrapupFrames = false;
-    /**
-     * Indicates wether left and right speakers are swapped.
-     */
+    /// Indicates wether left and right speakers are swapped.
     private boolean isSwapSpeakers = false;
-    /**
-     * Screenmodes.
-     */
+    /// Screenmodes.
     public final static int MODE_INDEXED_COLORS = 0,
             MODE_DIRECT_COLORS = 1,
             MODE_EHB = 2,
             MODE_HAM6 = 3,
             MODE_HAM8 = 4;
-    /**
-     * Compression method of key frame.
-     * XXX Should not be stored here since it is
-     * only needed during the decoding of the
-     * ANIM file.
-     */
+    /// Compression method of key frame.
+    /// XXX Should not be stored here since it is
+    /// only needed during the decoding of the
+    /// ANIM file.
     private int compression;
     public final static int CMP_NONE = 0,
             CMP_BYTE_RUN_1 = 1,
             CMP_VERTICAL = 2;
-    /**
-     * Total playback time of the movie in Jiffies (1/60 second).
-     */
+    /// Total playback time of the movie in Jiffies (1/60 second).
     private long totalDuration;
-    /**
-     * User defined properties.
-     */
+    /// User defined properties.
     private HashMap<String, Object> properties = new HashMap<>();
-    /**
-     * Anim frames.
-     */
+    /// Anim frames.
     private ArrayList<ANIMFrame> frames = new ArrayList<>();
-    /**
-     * Sound clips.
-     */
+    /// Sound clips.
     private ArrayList<AudioClip> audioClips = new ArrayList<>();
-    /**
-     * Property Change support.
-     */
+    /// Property Change support.
     private PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 
     private ArrayList<ColorCycle> colorCycles = new ArrayList<>();
@@ -127,12 +87,10 @@ public class ANIMMovieResources {
         listeners.removePropertyChangeListener(listener);
     }
 
-    /**
-     * Sets a property.
-     *
-     * @param name     The name of the property.
-     * @param newValue The value of the property.
-     */
+    /// Sets a property.
+    ///
+    /// @param name     The name of the property.
+    /// @param newValue The value of the property.
     public void setProperty(String name, Object newValue) {
         Object oldValue = properties.get(name);
         if (newValue == null) {
@@ -143,10 +101,8 @@ public class ANIMMovieResources {
         listeners.firePropertyChange(name, oldValue, newValue);
     }
 
-    /**
-     * Set this to true to treat the two wrapup frames at the end of the
-     * movie track like regular frames.
-     */
+    /// Set this to true to treat the two wrapup frames at the end of the
+    /// movie track like regular frames.
     public void setPlayWrapupFrames(boolean b) {
         isPlayWrapupFrames = b;
 
@@ -155,27 +111,21 @@ public class ANIMMovieResources {
         totalDuration = -1;
     }
 
-    /**
-     * Returns true, if the two wrapup frames at the end of the movie track
-     * are treated like regular frames.
-     */
+    /// Returns true, if the two wrapup frames at the end of the movie track
+    /// are treated like regular frames.
     public boolean isPlayWrapupFrames() {
         return isPlayWrapupFrames;
     }
 
-    /**
-     * Returns the interleave of frames in this movie track.
-     * This is 2 for double buffered animations, and 1 one for animations without
-     * double buffering.
-     */
+    /// Returns the interleave of frames in this movie track.
+    /// This is 2 for double buffered animations, and 1 one for animations without
+    /// double buffering.
     public int getInterleave() {
         return frames.size() > 0 && frames.get(frames.size() - 1).getInterleave() == 1 ? 1 : 2;
     }
 
 
-    /**
-     * Swaps left and right speakers if set to true.
-     */
+    /// Swaps left and right speakers if set to true.
     public void setSwapSpeakers(boolean newValue) {
         boolean oldValue = isSwapSpeakers;
         isSwapSpeakers = newValue;
@@ -197,20 +147,16 @@ public class ANIMMovieResources {
         );*/
     }
 
-    /**
-     * Returns true if left and right speakers are swapped.
-     */
+    /// Returns true if left and right speakers are swapped.
     public boolean isSwapSpeakers() {
         return isSwapSpeakers;
     }
 
-    /**
-     * Gets a property.
-     *
-     * @param name The name of the property.
-     * @return The value of the property or null if the property
-     * is not defined.
-     */
+    /// Gets a property.
+    ///
+    /// @param name The name of the property.
+    /// @return The value of the property or null if the property
+    /// is not defined.
     public Object getProperty(String name) {
         return properties.get(name);
     }
@@ -409,10 +355,8 @@ public class ANIMMovieResources {
         return compression;
     }
 
-    /**
-     * The return value of this method is only reliable when all frames of
-     * the movie have been loaded.
-     */
+    /// The return value of this method is only reliable when all frames of
+    /// the movie have been loaded.
     public int getDeltaOperation() {
         int lastFrame = frames.size() - 1;
         if (lastFrame < 0) {
@@ -463,16 +407,12 @@ public class ANIMMovieResources {
         return frames.get(index);
     }
 
-    /**
-     * Timing for frame relative to previous frame.
-     */
+    /// Timing for frame relative to previous frame.
     public long getFrameDuration(int index) {
         return frames.get(index).getRelTime();
     }
 
-    /**
-     * Total playback time of the movie in Jiffies (1/60 second).
-     */
+    /// Total playback time of the movie in Jiffies (1/60 second).
     public synchronized long getTotalDuration() {
         if (totalDuration == -1) {
             totalDuration = 0;

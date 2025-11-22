@@ -7,11 +7,9 @@ package org.monte.media.imgseq;
 import java.io.File;
 import java.util.Comparator;
 
-/**
- * {@code FileComparator}.
- *
- * @author Werner Randelshofer
- */
+/// `FileComparator`.
+///
+/// @author Werner Randelshofer
 public class FileComparator implements Comparator<File> {
 
     private final NaturalSortCollator collator = new NaturalSortCollator();

@@ -7,11 +7,9 @@ package org.monte.media.avi.codec.video;
 
 import org.monte.media.av.CodecSpi;
 
-/**
- * RunLengthCodecSpi.
- *
- * @author Werner Randelshofer
- */
+/// RunLengthCodecSpi.
+///
+/// @author Werner Randelshofer
 public class RunLengthEncoderSpi implements CodecSpi {
 
     @Override

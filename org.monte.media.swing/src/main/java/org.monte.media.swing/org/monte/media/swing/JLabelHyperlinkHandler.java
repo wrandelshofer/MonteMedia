@@ -18,35 +18,33 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 
-/**
- * {@code JLabelHyperlinkHandler} makes HTML hyperlinks in a {@code JLabel}
- * clickable.
- * <p>
- * You can add an action listener to this handler to perform the desired action.
- * The {@code command} contains the content of the href attribute in the hyperlink.
- * <p>
- * Example:
- * <pre>
- * File f=new File(System.getProperty("user.home"));
- * JLabel l=new JLabel("&lt;html&gt;Click this &lt;a href="\""+
- *                      f.toURI();+
- *                      "\""&gt;link&lt;/a&gt; to open your home folder.");
- * new JLabelHyperlinkHandler(l, new ActionListener() {
- *      public void ActionPerformed(ActionEvent evt) {
- *              try {
- *                  File f = new File(new URI(e.getActionCommand()));
- *                  Desktop.getDesktop().open(f);
- *              } catch (URISyntaxException ex) {
- *                  ex.printStackTrace();
- *              } catch (IOException ex) {
- *                  ex.printStackTrace();
- *              }
- *      }
- * });
- * </pre>
- *
- * @author Werner Randelshofer
- */
+/// `JLabelHyperlinkHandler` makes HTML hyperlinks in a `JLabel`
+/// clickable.
+///
+/// You can add an action listener to this handler to perform the desired action.
+/// The `command` contains the content of the href attribute in the hyperlink.
+///
+/// Example:
+/// <pre>
+/// File f=new File(System.getProperty("user.home"));
+/// JLabel l=new JLabel("&lt;html&gt;Click this &lt;a href="\""+
+///                      f.toURI();+
+///                      "\""&gt;link&lt;/a&gt; to open your home folder.");
+/// new JLabelHyperlinkHandler(l, new ActionListener() {
+///      public void ActionPerformed(ActionEvent evt) {
+///              try {
+///                  File f = new File(new URI(e.getActionCommand()));
+///                  Desktop.getDesktop().open(f);
+///              } catch (URISyntaxException ex) {
+///                  ex.printStackTrace();
+///              } catch (IOException ex) {
+///                  ex.printStackTrace();
+///              }
+///      }
+/// });
+/// </pre>
+///
+/// @author Werner Randelshofer
 public class JLabelHyperlinkHandler {
 
     private class Handler implements MouseListener, MouseMotionListener {

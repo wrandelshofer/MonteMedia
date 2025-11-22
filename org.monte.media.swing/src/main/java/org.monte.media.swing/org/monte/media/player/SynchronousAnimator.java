@@ -13,31 +13,25 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 import java.util.ArrayList;
 
-/**
- * SynchronousAnimator.
- *
- * @author Werner Randelshofer
- *  @version $Id$
- */
+/// SynchronousAnimator.
+///
+/// @author Werner Randelshofer
+///  @version $Id$
 public class SynchronousAnimator implements Animator {
     protected EventListenerList listenerList = new EventListenerList();
     protected ChangeEvent changeEvent;
     private Object lock;
     private long currentTimeMillis;
-    /**
-     * List of active interpolators.
-     * Implementation note: This vector is only accessed by the animationThread.
-     */
+    /// List of active interpolators.
+    /// Implementation note: This vector is only accessed by the animationThread.
     private ArrayList<Interpolator> activeInterpolators = new ArrayList<>();
-    /**
-     * List of new interpolators.
-     * Implementation note: The dispatcher thread adds items to this list, the
-     * animationThread removes items.
-     * This queue is used to synchronize the dispatcher thread with the animation
-     * thread.
-     * Note: the dispatcher thread is not necesseraly the  Event Dispatcher
-     * thread. The dispatcher thread is any thread which dispatches interpolators.
-     */
+    /// List of new interpolators.
+    /// Implementation note: The dispatcher thread adds items to this list, the
+    /// animationThread removes items.
+    /// This queue is used to synchronize the dispatcher thread with the animation
+    /// thread.
+    /// Note: the dispatcher thread is not necesseraly the  Event Dispatcher
+    /// thread. The dispatcher thread is any thread which dispatches interpolators.
     private ArrayList<Interpolator> newInterpolators = new ArrayList<>();
 
     public void setLock(Object lock) {
@@ -128,10 +122,8 @@ public class SynchronousAnimator implements Animator {
         listenerList.remove(ChangeListener.class, listener);
     }
 
-    /**
-     * Notify all listeners that have registered interest for
-     * notification on this event type.
-     */
+    /// Notify all listeners that have registered interest for
+    /// notification on this event type.
     protected void fireStateChanged() {
         // Guaranteed to return a non-null array
         Object[] listeners = listenerList.getListenerList();

@@ -19,21 +19,17 @@ import javax.media.format.VideoFormat;
 import java.awt.Dimension;
 import java.io.IOException;
 
-/**
- * JMF Codec for the TechSmith Screen-Capture format.
- * <p>
- * This codec can decode24 and encode the format to/from a JMF {@code RGBFormat}
- * or a {@code IndexedColorFormat}.
- * <p>
- * See {@link TechSmithCodecCore} for a description of the format.
- *
- * @author Werner Randelshofer
- */
+/// JMF Codec for the TechSmith Screen-Capture format.
+///
+/// This codec can decode24 and encode the format to/from a JMF `RGBFormat`
+/// or a `IndexedColorFormat`.
+///
+/// See [TechSmithCodecCore] for a description of the format.
+///
+/// @author Werner Randelshofer
 public class TSCCCodec extends AbstractVideoDecoder {
 
-    /**
-     * RGB bit masks
-     */
+    /// RGB bit masks
     protected static final int bMask = 0x000000ff;
     protected static final int gMask = 0x0000ff00;
     protected static final int rMask = 0x00ff0000;
@@ -156,9 +152,7 @@ public class TSCCCodec extends AbstractVideoDecoder {
         }
     }
 
-    /**
-     * Copies all meta-data field from in to out.
-     */
+    /// Copies all meta-data field from in to out.
     protected void copyMetaTo(Buffer in, Buffer out) {
         //out.setData(in.getData());
         //out.setHeader(in.getHeader());
@@ -439,9 +433,7 @@ public class TSCCCodec extends AbstractVideoDecoder {
         }*/
     }
 
-    /**
-     * Registers this codec with the JMF PluginManager.
-     */
+    /// Registers this codec with the JMF PluginManager.
     public static void registerWithJMF() {
         TSCCCodec codec = new TSCCCodec();
         PlugInManager.addPlugIn(TSCCCodec.class.getName(), codec.supportedInputFormats, codec.defaultOutputFormats, PlugInManager.CODEC);

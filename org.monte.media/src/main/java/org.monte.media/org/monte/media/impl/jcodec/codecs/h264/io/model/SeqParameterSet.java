@@ -28,23 +28,18 @@ import static org.monte.media.impl.jcodec.common.model.ColorSpace.YUV422;
 import static org.monte.media.impl.jcodec.common.model.ColorSpace.YUV444;
 import static org.monte.media.impl.jcodec.platform.Platform.arrayEqualsInt;
 
-/**
- * References:
- * <p>
- * This code has been derived from JCodecProject.
- * <dl>
- *     <dt>JCodecProject. Copyright 2008-2019 JCodecProject.
- *     <br><a href="https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE">BSD 2-Clause License.</a></dt>
- *     <dd><a href="https://github.com/jcodec/jcodec">github.com</a></dd>
- * </dl>
- *
- * <p>
- * Sequence Parameter Set structure of h264 bitstream
- * <p>
- * capable to serialize and deserialize with CAVLC bitstream
- *
- * @author The JCodec project
- */
+/// References:
+///
+/// JCodecProject. Copyright 2008-2019 JCodecProject.
+/// : [BSD 2-Clause License.](https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE)
+/// : [github.com](https://github.com/jcodec/jcodec)
+///
+///
+/// Sequence Parameter Set structure of h264 bitstream
+///
+/// capable to serialize and deserialize with CAVLC bitstream
+///
+/// @author The JCodec project
 public class SeqParameterSet {
     // pic_order_cnt_type
     public int picOrderCntType;
@@ -90,53 +85,43 @@ public class SeqParameterSet {
     public int levelIdc;
     // seq_parameter_set_id
     public int seqParameterSetId;
-    /**
-     * separate_colour_plane_flag. When a picture is coded using three separate
-     * colour planes (separate_colour_plane_flag is equal to 1), a slice
-     * contains only macroblocks of one colour component being identified by the
-     * corresponding value of colour_plane_id, and each colour component array
-     * of a picture consists of slices having the same colour_plane_id value.
-     * Coded slices with different values of colour_plane_id within an access
-     * unit can be interleaved with each other under the constraint that for
-     * each value of colour_plane_id, the coded slice NAL units with that value
-     * colour_plane_id shall be in the order of increasing macroblock address
-     * for the first macroblock of each coded slice NAL unit.
-     */
+    /// separate_colour_plane_flag. When a picture is coded using three separate
+    /// colour planes (separate_colour_plane_flag is equal to 1), a slice
+    /// contains only macroblocks of one colour component being identified by the
+    /// corresponding value of colour_plane_id, and each colour component array
+    /// of a picture consists of slices having the same colour_plane_id value.
+    /// Coded slices with different values of colour_plane_id within an access
+    /// unit can be interleaved with each other under the constraint that for
+    /// each value of colour_plane_id, the coded slice NAL units with that value
+    /// colour_plane_id shall be in the order of increasing macroblock address
+    /// for the first macroblock of each coded slice NAL unit.
     public boolean separateColourPlaneFlag;
 
-    /**
-     * offset_for_non_ref_pic is used to calculate the picture order count of a
-     * non-reference picture as specified in 8.2.1. The value of
-     * offset_for_non_ref_pic shall be in the range of -231 to 231 - 1,
-     * inclusive.
-     */
+    /// offset_for_non_ref_pic is used to calculate the picture order count of a
+    /// non-reference picture as specified in 8.2.1. The value of
+    /// offset_for_non_ref_pic shall be in the range of -231 to 231 - 1,
+    /// inclusive.
     public int offsetForNonRefPic;
 
-    /**
-     * offset_for_top_to_bottom_field is used to calculate the picture order
-     * count of a bottom field as specified in subclause 8.2.1. The value of
-     * offset_for_top_to_bottom_field shall be in the range of -231 to 231 - 1,
-     * inclusive.
-     */
+    /// offset_for_top_to_bottom_field is used to calculate the picture order
+    /// count of a bottom field as specified in subclause 8.2.1. The value of
+    /// offset_for_top_to_bottom_field shall be in the range of -231 to 231 - 1,
+    /// inclusive.
     public int offsetForTopToBottomField;
 
     // num_ref_frames
     public int numRefFrames;
 
-    /**
-     * gaps_in_frame_num_value_allowed_flag specifies the allowed values of
-     * frame_num as specified in subclause 7.4.3 and the decoding process in
-     * case of an inferred gap between values of frame_num as specified in
-     * subclause 8.2.5.2.
-     */
+    /// gaps_in_frame_num_value_allowed_flag specifies the allowed values of
+    /// frame_num as specified in subclause 7.4.3 and the decoding process in
+    /// case of an inferred gap between values of frame_num as specified in
+    /// subclause 8.2.5.2.
     public boolean gapsInFrameNumValueAllowedFlag;
 
-    /**
-     * frame_mbs_only_flag equal to 0 specifies that coded pictures of the coded
-     * video sequence may either be coded fields or coded frames.
-     * frame_mbs_only_flag equal to 1 specifies that every coded picture of the
-     * coded video sequence is a coded frame containing only frame macroblocks.
-     */
+    /// frame_mbs_only_flag equal to 0 specifies that coded pictures of the coded
+    /// video sequence may either be coded fields or coded frames.
+    /// frame_mbs_only_flag equal to 1 specifies that every coded picture of the
+    /// coded video sequence is a coded frame containing only frame macroblocks.
     public boolean frameMbsOnlyFlag;
 
     // frame_cropping_flag

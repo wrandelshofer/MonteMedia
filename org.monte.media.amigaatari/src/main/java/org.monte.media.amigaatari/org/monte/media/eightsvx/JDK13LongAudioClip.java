@@ -14,73 +14,49 @@ import javax.sound.sampled.Line;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
-/**
- * JDK13AudioClip.
- *
- * @author Werner Randelshofer
- */
+/// JDK13AudioClip.
+///
+/// @author Werner Randelshofer
 public class JDK13LongAudioClip implements LoopableAudioClip, Runnable {
-    /**
-     * The data line used for audio output.
-     */
+    /// The data line used for audio output.
     private SourceDataLine dataLine;
-    /**
-     * This buffer holds the audio samples of the clip.
-     */
+    /// This buffer holds the audio samples of the clip.
     private byte[] samples;
-    /**
-     * The sample rate of the audio data.
-     */
+    /// The sample rate of the audio data.
     private int sampleRate;
-    /**
-     * The position of the play head (counted in sample frames).
-     */
+    /// The position of the play head (counted in sample frames).
     private int framePosition;
-    /**
-     * Holds the loop start value.
-     */
+    /// Holds the loop start value.
     private int loopStart;
-    /**
-     * Holds the loop end value + 1.
-     */
+    /// Holds the loop end value + 1.
     private int loopEnd;
 
-    /**
-     * Loop count.
-     * LOOP_CONTINUOUSLY indicates an endless loop.
-     */
+    /// Loop count.
+    /// LOOP_CONTINUOUSLY indicates an endless loop.
     private int loopCount;
-    /**
-     * The only place where the thread variable is changed is in the loop(int)
-     * method and in the stop() method.
-     * For all other methods this variable is strictly <bold>read only</bold>!
-     */
+    /// The only place where the thread variable is changed is in the loop(int)
+    /// method and in the stop() method.
+    /// For all other methods this variable is strictly <bold>read only</bold>!
     private volatile Thread thread;
 
-    /**
-     * Represents a control for the volume on a line. 64 is the maximal
-     * volume, 0 mutes the line.
-     */
+    /// Represents a control for the volume on a line. 64 is the maximal
+    /// volume, 0 mutes the line.
     private int volume;
 
-    /**
-     * The relative pan of a stereo signal between two stereo
-     * speakers. The valid range of values is -1.0 (left channel only) to 1.0
-     * (right channel  only). The default is 0.0 (centered).
-     */
+    /// The relative pan of a stereo signal between two stereo
+    /// speakers. The valid range of values is -1.0 (left channel only) to 1.0
+    /// (right channel  only). The default is 0.0 (centered).
     private float pan;
 
-    /**
-     * Creates a new instance.
-     *
-     * @param samples    Array of signed linear 8-bit encoded audio samples.
-     * @param sampleRate sampleRate of the audio samples.
-     * @param volume     The volume setting controls the loudness of the sound.
-     *                   range 0 (mute) to 64 (maximal volume).
-     * @param pan        The relative pan of a stereo signal between two stereo
-     *                   speakers. The valid range of values is -1.0 (left channel only) to 1.0
-     *                   (right channel  only). The default is 0.0 (centered).
-     */
+    /// Creates a new instance.
+    ///
+    /// @param samples    Array of signed linear 8-bit encoded audio samples.
+    /// @param sampleRate sampleRate of the audio samples.
+    /// @param volume     The volume setting controls the loudness of the sound.
+    ///                                                                         range 0 (mute) to 64 (maximal volume).
+    /// @param pan        The relative pan of a stereo signal between two stereo
+    ///                                                                         speakers. The valid range of values is -1.0 (left channel only) to 1.0
+    ///                                                                         (right channel  only). The default is 0.0 (centered).
     public JDK13LongAudioClip(byte[] samples, int sampleRate, int volume, float pan) {
         this.samples = samples;
         this.sampleRate = sampleRate;
@@ -92,39 +68,35 @@ public class JDK13LongAudioClip implements LoopableAudioClip, Runnable {
         this.loopEnd = samples.length;
     }
 
-    /**
-     * Starts playing this audio clip in a loop.
-     */
+    /// Starts playing this audio clip in a loop.
     public void loop() {
         stop();
         framePosition = 0;
         loop(LOOP_CONTINUOUSLY);
     }
 
-    /**
-     * Starts looping playback from the current position.   Playback will
-     * continue to the loop's end point, then loop back to the loop start point
-     * <code>count</code> times, and finally continue playback to the end of
-     * the clip.
-     * <p>
-     * If the current position when this method is invoked is greater than the
-     * loop end point, playback simply continues to the
-     * end of the clip without looping.
-     * <p>
-     * A <code>count</code> value of 0 indicates that any current looping should
-     * cease and playback should continue to the end of the clip.  The behavior
-     * is undefined when this method is invoked with any other value during a
-     * loop operation.
-     * <p>
-     * If playback is stopped during looping, the current loop status is
-     * cleared; the behavior of subsequent loop and start requests is not
-     * affected by an interrupted loop operation.
-     *
-     * @param count the number of times playback should loop back from the
-     *              loop's end position to the loop's  start position, or
-     *              <code>{@link #LOOP_CONTINUOUSLY}</code> to indicate that looping should
-     *              continue until interrupted
-     */
+    /// Starts looping playback from the current position.   Playback will
+    /// continue to the loop's end point, then loop back to the loop start point
+    /// `count` times, and finally continue playback to the end of
+    /// the clip.
+    ///
+    /// If the current position when this method is invoked is greater than the
+    /// loop end point, playback simply continues to the
+    /// end of the clip without looping.
+    ///
+    /// A `count` value of 0 indicates that any current looping should
+    /// cease and playback should continue to the end of the clip.  The behavior
+    /// is undefined when this method is invoked with any other value during a
+    /// loop operation.
+    ///
+    /// If playback is stopped during looping, the current loop status is
+    /// cleared; the behavior of subsequent loop and start requests is not
+    /// affected by an interrupted loop operation.
+    ///
+    /// @param count the number of times playback should loop back from the
+    ///                                        loop's end position to the loop's  start position, or
+    ///                                        `[#LOOP_CONTINUOUSLY]` to indicate that looping should
+    ///                                        continue until interrupted
     public synchronized void loop(int count) {
         stop();
         try {
@@ -148,26 +120,20 @@ public class JDK13LongAudioClip implements LoopableAudioClip, Runnable {
         }
     }
 
-    /**
-     * Starts playing this audio clip. Each time this method is called,
-     * the clip is restarted from the beginning.
-     */
+    /// Starts playing this audio clip. Each time this method is called,
+    /// the clip is restarted from the beginning.
     public void play() {
         stop();
         framePosition = 0;
         loop(0);
     }
 
-    /**
-     * Starts the audio clip.
-     */
+    /// Starts the audio clip.
     public void start() {
         loop(0);
     }
 
-    /**
-     * Stops playing this audio clip.
-     */
+    /// Stops playing this audio clip.
     public synchronized void stop() {
         Thread t = thread;
         if (thread != null) {
@@ -180,65 +146,57 @@ public class JDK13LongAudioClip implements LoopableAudioClip, Runnable {
         }
     }
 
-    /**
-     * Sets the media position in sample frames.  The position is zero-based;
-     * the first frame is frame number zero.  When the clip begins playing the
-     * next time, it will start by playing the frame at this position.
-     * <p>
-     * To obtain the current position in sample frames, use the
-     * <code>{@link DataLine#getFramePosition getFramePosition}</code>
-     * method of <code>DataLine</code>.
-     *
-     * @param param the desired new media position, expressed in sample frames
-     */
+    /// Sets the media position in sample frames.  The position is zero-based;
+    /// the first frame is frame number zero.  When the clip begins playing the
+    /// next time, it will start by playing the frame at this position.
+    ///
+    /// To obtain the current position in sample frames, use the
+    /// `[getFramePosition][#getFramePosition]`
+    /// method of `DataLine`.
+    ///
+    /// @param param the desired new media position, expressed in sample frames
     public void setFramePosition(int param) {
         framePosition = param;
     }
 
-    /**
-     * Obtains the media duration in microseconds
-     *
-     * @return the media duration, expressed in microseconds,
-     * or <code>AudioSystem.NOT_SPECIFIED</code> if the line is not open.
-     * @see AudioSystem#NOT_SPECIFIED
-     */
+    /// Obtains the media duration in microseconds
+    ///
+    /// @return the media duration, expressed in microseconds,
+    /// or `AudioSystem.NOT_SPECIFIED` if the line is not open.
+    /// @see AudioSystem#NOT_SPECIFIED
     public long getMicrosecondLength() {
         //return dataLine.getMicrosecondLength();
         return samples.length / sampleRate;
     }
 
-    /**
-     * Obtains the current position in the audio data, in microseconds.
-     * The microsecond position measures the time corresponding to the number
-     * of sample frames captured by, or rendered from, the line since it was opened.
-     * The level of precision is not guaranteed.  For example, an implementation
-     * might calculate the microsecond position from the current frame position
-     * and the audio sample frame rate.  The precision in microseconds would
-     * then be limited to the number of microseconds per sample frame.
-     *
-     * @return the number of microseconds of data processed since the line was opened
-     */
+    /// Obtains the current position in the audio data, in microseconds.
+    /// The microsecond position measures the time corresponding to the number
+    /// of sample frames captured by, or rendered from, the line since it was opened.
+    /// The level of precision is not guaranteed.  For example, an implementation
+    /// might calculate the microsecond position from the current frame position
+    /// and the audio sample frame rate.  The precision in microseconds would
+    /// then be limited to the number of microseconds per sample frame.
+    ///
+    /// @return the number of microseconds of data processed since the line was opened
     public long getMicrosecondPosition() {
         SourceDataLine sdl = dataLine;
         return (sdl == null) ? 0 : sdl.getMicrosecondPosition();
     }
 
-    /**
-     * Sets the first and last sample frames that will be played in
-     * the loop.  The ending point must be greater than
-     * or equal to the starting point, and both must fall within the
-     * the size of the loaded media.  A value of 0 for the starting
-     * point means the beginning of the loaded media.  Similarly, a value of -1
-     * for the ending point indicates the last frame of the media.
-     *
-     * @param start the loop's starting position, in sample frames (zero-based)
-     * @param end   the loop's ending position, in sample frames (zero-based), or
-     *              -1 to indicate the final frame
-     * @throws IllegalArgumentException if the requested
-     *                                  loop points cannot be set, usually because one or both falls outside
-     *                                  the media's duration or because the ending point is
-     *                                  before the starting point
-     */
+    /// Sets the first and last sample frames that will be played in
+    /// the loop.  The ending point must be greater than
+    /// or equal to the starting point, and both must fall within the
+    /// the size of the loaded media.  A value of 0 for the starting
+    /// point means the beginning of the loaded media.  Similarly, a value of -1
+    /// for the ending point indicates the last frame of the media.
+    ///
+    /// @param start the loop's starting position, in sample frames (zero-based)
+    /// @param end   the loop's ending position, in sample frames (zero-based), or
+    ///                                        -1 to indicate the final frame
+    /// @throws IllegalArgumentException if the requested
+    ///                                                                                                    loop points cannot be set, usually because one or both falls outside
+    ///                                                                                                    the media's duration or because the ending point is
+    ///                                                                                                    before the starting point
     public void setLoopPoints(int start, int end) {
         if (start < 0 || start >= samples.length || end < start && end != -1 || end >= samples.length)
             throw new IllegalArgumentException("start:" + start + " end:" + end);
@@ -284,17 +242,15 @@ public class JDK13LongAudioClip implements LoopableAudioClip, Runnable {
         return sdl;
     }
 
-    /**
-     * When an object implementing interface <code>Runnable</code> is used
-     * to create a thread, starting the thread causes the object's
-     * <code>run</code> method to be called in that separately executing
-     * thread.
-     * <p>
-     * The general contract of the method <code>run</code> is that it may
-     * take any action whatsoever.
-     *
-     * @see java.lang.Thread#run()
-     */
+    /// When an object implementing interface `Runnable` is used
+    /// to create a thread, starting the thread causes the object's
+    /// `run` method to be called in that separately executing
+    /// thread.
+    ///
+    /// The general contract of the method `run` is that it may
+    /// take any action whatsoever.
+    ///
+    /// @see java.lang.Thread#run()
     public void run() {
         dataLine.start();
 

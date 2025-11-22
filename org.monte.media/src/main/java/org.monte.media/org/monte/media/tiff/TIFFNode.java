@@ -10,26 +10,18 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
-/**
- * TIFFNode.
- *
- * @author Werner Randelshofer
- */
+/// TIFFNode.
+///
+/// @author Werner Randelshofer
 public abstract class TIFFNode {
 
-    /**
-     * The tag which identifies this node.
-     */
+    /// The tag which identifies this node.
     protected TIFFTag tag;
-    /**
-     * The children.
-     */
+    /// The children.
     private final ArrayList<TIFFNode> children = new ArrayList<>();
     private TIFFNode parent;
-    /**
-     * The IFDEntry from which this node was read.
-     * IFDEntry is null, if this node has not been read from a TIFF file.
-     */
+    /// The IFDEntry from which this node was read.
+    /// IFDEntry is null, if this node has not been read from a TIFF file.
     protected IFDEntry ifdEntry;
 
     public TIFFNode(TIFFTag tag) {
@@ -44,9 +36,7 @@ public abstract class TIFFNode {
         return tag;
     }
 
-    /**
-     * Returns the tag number or -1 if not known.
-     */
+    /// Returns the tag number or -1 if not known.
     public int getTagNumber() {
         return tag != null ? tag.getNumber() : -1;
     }

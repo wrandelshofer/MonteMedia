@@ -45,43 +45,37 @@ import java.util.Iterator;
 import java.util.Stack;
 import java.util.TreeSet;
 
-/**
- * Reads EXIF and MP metadata from a JPEG, MPO or AVI file. <p> Creates a tree
- * structure of {@code DefaultMutableTreeNode}s. Nodes with a String user object
- * describe the hierarchy of the metadata. Nodes with an MetaDataEntry as user
- * object hold the actual metadata. <p> Sources: <p> Exchangeable image file
- * format for digital still cameras: EXIF Version 2.2. (April 2002). Standard
- * of Japan Electronics and Information Technology Industries Association. JEITA
- * CP-3451. <a
- * href="http://www.exif.org/Exif2-2.PDF">http://www.exif.org/Exif2-2.PDF</a>
- * <p> Multi-Picture Format (February 4, 2009). Standard of the Camera &amp; Imaging
- * Products Association. CIPA DC-007-Translation-2009. <a
- * href="http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf">
- * http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf</a>
- *
- * @author Werner Randelshofer
- */
+/// Reads EXIF and MP metadata from a JPEG, MPO or AVI file.
+///  Creates a tree
+/// structure of `DefaultMutableTreeNode`s. Nodes with a String user object
+/// describe the hierarchy of the metadata. Nodes with an MetaDataEntry as user
+/// object hold the actual metadata.
+///  Sources:
+///  Exchangeable image file
+/// format for digital still cameras: EXIF Version 2.2. (April 2002). Standard
+/// of Japan Electronics and Information Technology Industries Association. JEITA
+/// CP-3451. <a
+/// href="http://www.exif.org/Exif2-2.PDF">http://www.exif.org/Exif2-2.PDF</a>
+///
+///  Multi-Picture Format (February 4, 2009). Standard of the Camera &amp; Imaging
+/// Products Association. CIPA DC-007-Translation-2009. <a
+/// href="http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf">
+/// http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf</a>
+///
+/// @author Werner Randelshofer
 public class EXIFReader {
 
     private File file;
     private ImageInputStream iin;
-    /**
-     * When this is set to true, the reader stops after heaving read the
-     * metadata of the first image.
-     */
+    /// When this is set to true, the reader stops after heaving read the
+    /// metadata of the first image.
     private boolean firstImageOnly;
-    /**
-     * Whether data from the file container shall be added to the Exif data. For
-     * most file types, this adds the width and height of the image to the Exif.
-     */
+    /// Whether data from the file container shall be added to the Exif data. For
+    /// most file types, this adds the width and height of the image to the Exif.
     private boolean includeContainerMetadata = true;
-    /**
-     * Meta data tree.
-     */
+    /// Meta data tree.
     private TIFFNode root;
-    /**
-     * Contains offsets to additional images.
-     */
+    /// Contains offsets to additional images.
     private TreeSet<Long> imageOffsets = new TreeSet<>();
 
     public EXIFReader(File f) {
@@ -108,10 +102,8 @@ public class EXIFReader {
         return includeContainerMetadata;
     }
 
-    /**
-     * Reads the meta data from the file or input stream that has been set on
-     * the constructor.
-     */
+    /// Reads the meta data from the file or input stream that has been set on
+    /// the constructor.
     public void read() throws IOException {
         if (file != null) {
             iin = new FileImageInputStream(file);
@@ -141,9 +133,7 @@ public class EXIFReader {
         }
     }
 
-    /**
-     * Reads the metadata from a JFIF file.
-     */
+    /// Reads the metadata from a JFIF file.
     private void readJFIF(ImageInputStream iin) throws IOException {
         root = new TIFFDirectory(null, null, -1);
 
@@ -280,9 +270,7 @@ public class EXIFReader {
         }
     }
 
-    /**
-     * Reads the Exif metadata from an AVI RIFF file.
-     */
+    /// Reads the Exif metadata from an AVI RIFF file.
     private void readRIFF(ImageInputStream iin) throws IOException {
         root = new TIFFDirectory(null, null, -1);
 
@@ -360,9 +348,7 @@ public class EXIFReader {
         }
     }
 
-    /**
-     * Reads the Exif metadata from an AVI RIFF file.
-     */
+    /// Reads the Exif metadata from an AVI RIFF file.
     public void readAVIstrdChunk(byte[] data) throws IOException {
         int track = 0; // track number
         int scan = 0;
@@ -496,9 +482,7 @@ public class EXIFReader {
         }
     }
 
-    /**
-     * imageCount*16 byte MP Entry Information.
-     */
+    /// imageCount*16 byte MP Entry Information.
     private void readMPEntries(TIFFInputStream tin, IFDEntry mpEntryInformation, TIFFDirectory parent, ArrayList<FileSegment> tiffSeg) throws IOException {
         byte[] buf = (byte[]) mpEntryInformation.readData(tin);
         TagSet tagSet = MPEntryTagSet.getInstance();
@@ -608,24 +592,18 @@ public class EXIFReader {
         return true;
     }
 
-    /**
-     * Gets the meta data as a Swing TreeNode structure.
-     */
+    /// Gets the meta data as a Swing TreeNode structure.
     public TIFFNode getMetaDataTree() {
         return root;
     }
 
-    /**
-     * Returns the number of images that are described with EXIF. Returns -1 if
-     * not known.
-     */
+    /// Returns the number of images that are described with EXIF. Returns -1 if
+    /// not known.
     public int getImageCount() {
         return root == null ? -1 : root.getChildCount();
     }
 
-    /**
-     * Returns all IFDDirectories of the specified tag set for the given image.
-     */
+    /// Returns all IFDDirectories of the specified tag set for the given image.
     public ArrayList<TIFFDirectory> getDirectories(int image, TagSet tagSet) {
         Deque<TIFFDirectory> dirs = new ArrayDeque<>();
         Deque<TIFFDirectory> stack = new ArrayDeque<>();
@@ -647,9 +625,7 @@ public class EXIFReader {
         return new ArrayList<>(dirs);
     }
 
-    /**
-     * Returns all thumbnails.
-     */
+    /// Returns all thumbnails.
     public ArrayList<BufferedImage> getThumbnails(boolean suppressException) throws IOException {
         ArrayDeque<BufferedImage> thumbnails = new ArrayDeque<>();
         Stack<TIFFDirectory> stack = new Stack<>();
@@ -681,9 +657,7 @@ public class EXIFReader {
         return new ArrayList<>(thumbnails);
     }
 
-    /**
-     * Returns a flat hash map of the metadata.
-     */
+    /// Returns a flat hash map of the metadata.
     public HashMap<TIFFTag, TIFFField> getMetaDataMap() {
         HashMap<TIFFTag, TIFFField> m = new HashMap<>();
 
@@ -698,157 +672,157 @@ public class EXIFReader {
         return m;
     }
 
-    /**
-     * Gets the metadata as an ImageIO structure. <p> Format description
-     * replicated from <a
-     * href="http://download.java.net/media/jai-imageio/javadoc/1.1/com/sun/media/imageio/plugins/tiff/package-summary.html"
-     * >http://download.java.net/media/jai-imageio/javadoc/1.1/com/sun/media/imageio/plugins/tiff/package-summary.html</a>:
-     * <p> The DTD for the native image metadata format is as follows:
-     * <pre>
-     * The DTD for the native image metadata format is as follows:
-     * &lt;!DOCTYPE "com_sun_media_imageio_plugins_tiff_image_1.0" [
-     *
-     *  &lt;!ELEMENT "com_sun_media_imageio_plugins_tiff_image_1.0" (TIFFIFD)*&gt;
-     *
-     *    &lt;!ELEMENT "TIFFIFD" (TIFFField | TIFFIFD)*&gt;
-     *      &lt;!-- An IFD (directory) containing fields --&gt;
-     *      &lt;!ATTLIST "TIFFIFD" "tagSets" #CDATA #REQUIRED&gt;
-     *        &lt;!-- Data type: String --&gt;
-     *      &lt;!ATTLIST "TIFFIFD" "parentTagNumber" #CDATA #IMPLIED&gt;
-     *        &lt;!-- The tag number of the field pointing to this IFD --&gt;
-     *        &lt;!-- Data type: Integer --&gt;
-     *      &lt;!ATTLIST "TIFFIFD" "parentTagName" #CDATA #IMPLIED&gt;
-     *        &lt;!-- A mnemonic name for the field pointing to this IFD, if known
-     *             --&gt;
-     *        &lt;!-- Data type: String --&gt;
-     *
-     *      &lt;!ELEMENT "TIFFField" (TIFFBytes | TIFFAsciis |
-     *        TIFFShorts | TIFFSShorts | TIFFLongs | TIFFSLongs |
-     *        TIFFRationals | TIFFSRationals |
-     *        TIFFFloats | TIFFDoubles | TIFFUndefined)&gt;
-     *        &lt;!-- A field containing data --&gt;
-     *        &lt;!ATTLIST "TIFFField" "number" #CDATA #REQUIRED&gt;
-     *          &lt;!-- The tag number asociated with the field --&gt;
-     *          &lt;!-- Data type: String --&gt;
-     *        &lt;!ATTLIST "TIFFField" "name" #CDATA #IMPLIED&gt;
-     *          &lt;!-- A mnemonic name associated with the field, if known --&gt;
-     *          &lt;!-- Data type: String --&gt;
-     *
-     *        &lt;!ELEMENT "TIFFBytes" (TIFFByte)*&gt;
-     *          &lt;!-- A sequence of TIFFByte nodes --&gt;
-     *
-     *          &lt;!ELEMENT "TIFFByte" EMPTY&gt;
-     *            &lt;!-- An integral value between 0 and 255 --&gt;
-     *            &lt;!ATTLIST "TIFFByte" "value" #CDATA #IMPLIED&gt;
-     *              &lt;!-- The value --&gt;
-     *              &lt;!-- Data type: String --&gt;
-     *            &lt;!ATTLIST "TIFFByte" "description" #CDATA #IMPLIED&gt;
-     *              &lt;!-- A description, if available --&gt;
-     *              &lt;!-- Data type: String --&gt;
-     *
-     *        &lt;!ELEMENT "TIFFAsciis" (TIFFAscii)*&gt;
-     *          &lt;!-- A sequence of TIFFAscii nodes --&gt;
-     *
-     *          &lt;!ELEMENT "TIFFAscii" EMPTY&gt;
-     *            &lt;!-- A String value --&gt;
-     *            &lt;!ATTLIST "TIFFAscii" "value" #CDATA #IMPLIED&gt;
-     *              &lt;!-- The value --&gt;
-     *              &lt;!-- Data type: String --&gt;
-     *
-     *        &lt;!ELEMENT "TIFFShorts" (TIFFShort)*&gt;
-     *          &lt;!-- A sequence of TIFFShort nodes --&gt;
-     *
-     *          &lt;!ELEMENT "TIFFShort" EMPTY&gt;
-     *            &lt;!-- An integral value between 0 and 65535 --&gt;
-     *            &lt;!ATTLIST "TIFFShort" "value" #CDATA #IMPLIED&gt;
-     *              &lt;!-- The value --&gt;
-     *              &lt;!-- Data type: String --&gt;
-     *            &lt;!ATTLIST "TIFFShort" "description" #CDATA #IMPLIED&gt;
-     *              &lt;!-- A description, if available --&gt;
-     *              &lt;!-- Data type: String --&gt;
-     *
-     *        &lt;!ELEMENT "TIFFSShorts" (TIFFSShort)*&gt;
-     *          &lt;!-- A sequence of TIFFSShort nodes --&gt;
-     *
-     *          &lt;!ELEMENT "TIFFSShort" EMPTY&gt;
-     *            &lt;!-- An integral value between -32768 and 32767 --&gt;
-     *            &lt;!ATTLIST "TIFFSShort" "value" #CDATA #IMPLIED&gt;
-     *              &lt;!-- The value --&gt;
-     *              &lt;!-- Data type: String --&gt;
-     *            &lt;!ATTLIST "TIFFSShort" "description" #CDATA #IMPLIED&gt;
-     *              &lt;!-- A description, if available --&gt;
-     *              &lt;!-- Data type: String --&gt;
-     *
-     *        &lt;!ELEMENT "TIFFLongs" (TIFFLong)*&gt;
-     *          &lt;!-- A sequence of TIFFLong nodes --&gt;
-     *
-     *          &lt;!ELEMENT "TIFFLong" EMPTY&gt;
-     *            &lt;!-- An integral value between 0 and 4294967295 --&gt;
-     *            &lt;!ATTLIST "TIFFLong" "value" #CDATA #IMPLIED&gt;
-     *              &lt;!-- The value --&gt;
-     *              &lt;!-- Data type: String --&gt;
-     *            &lt;!ATTLIST "TIFFLong" "description" #CDATA #IMPLIED&gt;
-     *              &lt;!-- A description, if available --&gt;
-     *              &lt;!-- Data type: String --&gt;
-     *
-     *        &lt;!ELEMENT "TIFFSLongs" (TIFFSLong)*&gt;
-     *          &lt;!-- A sequence of TIFFSLong nodes --&gt;
-     *
-     *          &lt;!ELEMENT "TIFFSLong" EMPTY&gt;
-     *            &lt;!-- An integral value between -2147483648 and 2147482647 --&gt;
-     *            &lt;!ATTLIST "TIFFSLong" "value" #CDATA #IMPLIED&gt;
-     *              &lt;!-- The value --&gt;
-     *              &lt;!-- Data type: String --&gt;
-     *            &lt;!ATTLIST "TIFFSLong" "description" #CDATA #IMPLIED&gt;
-     *              &lt;!-- A description, if available --&gt;
-     *              &lt;!-- Data type: String --&gt;
-     *
-     *        &lt;!ELEMENT "TIFFRationals" (TIFFRational)*&gt;
-     *          &lt;!-- A sequence of TIFFRational nodes --&gt;
-     *
-     *          &lt;!ELEMENT "TIFFRational" EMPTY&gt;
-     *            &lt;!-- A rational value consisting of an unsigned numerator and
-     *                 denominator --&gt;
-     *            &lt;!ATTLIST "TIFFRational" "value" #CDATA #IMPLIED&gt;
-     *              &lt;!-- The numerator and denominator, separated by a slash --&gt;
-     *              &lt;!-- Data type: String --&gt;
-     *
-     *        &lt;!ELEMENT "TIFFSRationals" (TIFFSRational)*&gt;
-     *          &lt;!-- A sequence of TIFFSRational nodes --&gt;
-     *
-     *          &lt;!ELEMENT "TIFFSRational" EMPTY&gt;
-     *            &lt;!-- A rational value consisting of a signed numerator and
-     *                 denominator --&gt;
-     *            &lt;!ATTLIST "TIFFSRational" "value" #CDATA #IMPLIED&gt;
-     *              &lt;!-- The numerator and denominator, separated by a slash --&gt;
-     *              &lt;!-- Data type: String --&gt;
-     *
-     *        &lt;!ELEMENT "TIFFFloats" (TIFFFloat)*&gt;
-     *          &lt;!-- A sequence of TIFFFloat nodes --&gt;
-     *
-     *          &lt;!ELEMENT "TIFFFloat" EMPTY&gt;
-     *            &lt;!-- A single-precision floating-point value --&gt;
-     *            &lt;!ATTLIST "TIFFFloat" "value" #CDATA #IMPLIED&gt;
-     *              &lt;!-- The value --&gt;
-     *              &lt;!-- Data type: String --&gt;
-     *
-     *        &lt;!ELEMENT "TIFFDoubles" (TIFFDouble)*&gt;
-     *          &lt;!-- A sequence of TIFFDouble nodes --&gt;
-     *
-     *          &lt;!ELEMENT "TIFFDouble" EMPTY&gt;
-     *            &lt;!-- A double-precision floating-point value --&gt;
-     *            &lt;!ATTLIST "TIFFDouble" "value" #CDATA #IMPLIED&gt;
-     *              &lt;!-- The value --&gt;
-     *              &lt;!-- Data type: String --&gt;
-     *
-     *        &lt;!ELEMENT "TIFFUndefined" EMPTY&gt;
-     *          &lt;!-- Uninterpreted byte data --&gt;
-     *          &lt;!ATTLIST "TIFFUndefined" "value" #CDATA #IMPLIED&gt;
-     *            &lt;!-- A list of comma-separated byte values --&gt;
-     *            &lt;!-- Data type: String --&gt;
-     * ]&gt;
-     * </pre>
-     */
+    /// Gets the metadata as an ImageIO structure.
+    ///  Format description
+    /// replicated from <a
+    /// href="http://download.java.net/media/jai-imageio/javadoc/1.1/com/sun/media/imageio/plugins/tiff/package-summary.html"
+    /// >http://download.java.net/media/jai-imageio/javadoc/1.1/com/sun/media/imageio/plugins/tiff/package-summary.html</a>:
+    ///
+    ///  The DTD for the native image metadata format is as follows:
+    /// <pre>
+    /// The DTD for the native image metadata format is as follows:
+    /// &lt;!DOCTYPE "com_sun_media_imageio_plugins_tiff_image_1.0" [
+    ///
+    ///&lt;!ELEMENT"com_sun_media_imageio_plugins_tiff_image_1.0"(TIFFIFD)*&gt;
+    ///
+    ///    &lt;!ELEMENT "TIFFIFD" (TIFFField | TIFFIFD)*&gt;
+    ///      &lt;!-- An IFD (directory) containing fields --&gt;
+    ///      &lt;!ATTLIST "TIFFIFD" "tagSets" #CDATA #REQUIRED&gt;
+    ///        &lt;!-- Data type: String --&gt;
+    ///      &lt;!ATTLIST "TIFFIFD" "parentTagNumber" #CDATA #IMPLIED&gt;
+    ///        &lt;!-- The tag number of the field pointing to this IFD --&gt;
+    ///        &lt;!-- Data type: Integer --&gt;
+    ///      &lt;!ATTLIST "TIFFIFD" "parentTagName" #CDATA #IMPLIED&gt;
+    ///        &lt;!-- A mnemonic name for the field pointing to this IFD, if known
+    ///             --&gt;
+    ///        &lt;!-- Data type: String --&gt;
+    ///
+    ///      &lt;!ELEMENT "TIFFField" (TIFFBytes | TIFFAsciis |
+    ///        TIFFShorts | TIFFSShorts | TIFFLongs | TIFFSLongs |
+    ///        TIFFRationals | TIFFSRationals |
+    ///        TIFFFloats | TIFFDoubles | TIFFUndefined)&gt;
+    ///        &lt;!-- A field containing data --&gt;
+    ///        &lt;!ATTLIST "TIFFField" "number" #CDATA #REQUIRED&gt;
+    ///          &lt;!-- The tag number asociated with the field --&gt;
+    ///          &lt;!-- Data type: String --&gt;
+    ///        &lt;!ATTLIST "TIFFField" "name" #CDATA #IMPLIED&gt;
+    ///          &lt;!-- A mnemonic name associated with the field, if known --&gt;
+    ///          &lt;!-- Data type: String --&gt;
+    ///
+    ///        &lt;!ELEMENT "TIFFBytes" (TIFFByte)*&gt;
+    ///          &lt;!-- A sequence of TIFFByte nodes --&gt;
+    ///
+    ///          &lt;!ELEMENT "TIFFByte" EMPTY&gt;
+    ///            &lt;!-- An integral value between 0 and 255 --&gt;
+    ///            &lt;!ATTLIST "TIFFByte" "value" #CDATA #IMPLIED&gt;
+    ///              &lt;!-- The value --&gt;
+    ///              &lt;!-- Data type: String --&gt;
+    ///            &lt;!ATTLIST "TIFFByte" "description" #CDATA #IMPLIED&gt;
+    ///              &lt;!-- A description, if available --&gt;
+    ///              &lt;!-- Data type: String --&gt;
+    ///
+    ///        &lt;!ELEMENT "TIFFAsciis" (TIFFAscii)*&gt;
+    ///          &lt;!-- A sequence of TIFFAscii nodes --&gt;
+    ///
+    ///          &lt;!ELEMENT "TIFFAscii" EMPTY&gt;
+    ///            &lt;!-- A String value --&gt;
+    ///            &lt;!ATTLIST "TIFFAscii" "value" #CDATA #IMPLIED&gt;
+    ///              &lt;!-- The value --&gt;
+    ///              &lt;!-- Data type: String --&gt;
+    ///
+    ///        &lt;!ELEMENT "TIFFShorts" (TIFFShort)*&gt;
+    ///          &lt;!-- A sequence of TIFFShort nodes --&gt;
+    ///
+    ///          &lt;!ELEMENT "TIFFShort" EMPTY&gt;
+    ///            &lt;!-- An integral value between 0 and 65535 --&gt;
+    ///            &lt;!ATTLIST "TIFFShort" "value" #CDATA #IMPLIED&gt;
+    ///              &lt;!-- The value --&gt;
+    ///              &lt;!-- Data type: String --&gt;
+    ///            &lt;!ATTLIST "TIFFShort" "description" #CDATA #IMPLIED&gt;
+    ///              &lt;!-- A description, if available --&gt;
+    ///              &lt;!-- Data type: String --&gt;
+    ///
+    ///        &lt;!ELEMENT "TIFFSShorts" (TIFFSShort)*&gt;
+    ///          &lt;!-- A sequence of TIFFSShort nodes --&gt;
+    ///
+    ///          &lt;!ELEMENT "TIFFSShort" EMPTY&gt;
+    ///            &lt;!-- An integral value between -32768 and 32767 --&gt;
+    ///            &lt;!ATTLIST "TIFFSShort" "value" #CDATA #IMPLIED&gt;
+    ///              &lt;!-- The value --&gt;
+    ///              &lt;!-- Data type: String --&gt;
+    ///            &lt;!ATTLIST "TIFFSShort" "description" #CDATA #IMPLIED&gt;
+    ///              &lt;!-- A description, if available --&gt;
+    ///              &lt;!-- Data type: String --&gt;
+    ///
+    ///        &lt;!ELEMENT "TIFFLongs" (TIFFLong)*&gt;
+    ///          &lt;!-- A sequence of TIFFLong nodes --&gt;
+    ///
+    ///          &lt;!ELEMENT "TIFFLong" EMPTY&gt;
+    ///            &lt;!-- An integral value between 0 and 4294967295 --&gt;
+    ///            &lt;!ATTLIST "TIFFLong" "value" #CDATA #IMPLIED&gt;
+    ///              &lt;!-- The value --&gt;
+    ///              &lt;!-- Data type: String --&gt;
+    ///            &lt;!ATTLIST "TIFFLong" "description" #CDATA #IMPLIED&gt;
+    ///              &lt;!-- A description, if available --&gt;
+    ///              &lt;!-- Data type: String --&gt;
+    ///
+    ///        &lt;!ELEMENT "TIFFSLongs" (TIFFSLong)*&gt;
+    ///          &lt;!-- A sequence of TIFFSLong nodes --&gt;
+    ///
+    ///          &lt;!ELEMENT "TIFFSLong" EMPTY&gt;
+    ///            &lt;!-- An integral value between -2147483648 and 2147482647 --&gt;
+    ///            &lt;!ATTLIST "TIFFSLong" "value" #CDATA #IMPLIED&gt;
+    ///              &lt;!-- The value --&gt;
+    ///              &lt;!-- Data type: String --&gt;
+    ///            &lt;!ATTLIST "TIFFSLong" "description" #CDATA #IMPLIED&gt;
+    ///              &lt;!-- A description, if available --&gt;
+    ///              &lt;!-- Data type: String --&gt;
+    ///
+    ///        &lt;!ELEMENT "TIFFRationals" (TIFFRational)*&gt;
+    ///          &lt;!-- A sequence of TIFFRational nodes --&gt;
+    ///
+    ///          &lt;!ELEMENT "TIFFRational" EMPTY&gt;
+    ///            &lt;!-- A rational value consisting of an unsigned numerator and
+    ///                 denominator --&gt;
+    ///            &lt;!ATTLIST "TIFFRational" "value" #CDATA #IMPLIED&gt;
+    ///              &lt;!-- The numerator and denominator, separated by a slash --&gt;
+    ///              &lt;!-- Data type: String --&gt;
+    ///
+    ///        &lt;!ELEMENT "TIFFSRationals" (TIFFSRational)*&gt;
+    ///          &lt;!-- A sequence of TIFFSRational nodes --&gt;
+    ///
+    ///          &lt;!ELEMENT "TIFFSRational" EMPTY&gt;
+    ///            &lt;!-- A rational value consisting of a signed numerator and
+    ///                 denominator --&gt;
+    ///            &lt;!ATTLIST "TIFFSRational" "value" #CDATA #IMPLIED&gt;
+    ///              &lt;!-- The numerator and denominator, separated by a slash --&gt;
+    ///              &lt;!-- Data type: String --&gt;
+    ///
+    ///        &lt;!ELEMENT "TIFFFloats" (TIFFFloat)*&gt;
+    ///          &lt;!-- A sequence of TIFFFloat nodes --&gt;
+    ///
+    ///          &lt;!ELEMENT "TIFFFloat" EMPTY&gt;
+    ///            &lt;!-- A single-precision floating-point value --&gt;
+    ///            &lt;!ATTLIST "TIFFFloat" "value" #CDATA #IMPLIED&gt;
+    ///              &lt;!-- The value --&gt;
+    ///              &lt;!-- Data type: String --&gt;
+    ///
+    ///        &lt;!ELEMENT "TIFFDoubles" (TIFFDouble)*&gt;
+    ///          &lt;!-- A sequence of TIFFDouble nodes --&gt;
+    ///
+    ///          &lt;!ELEMENT "TIFFDouble" EMPTY&gt;
+    ///            &lt;!-- A double-precision floating-point value --&gt;
+    ///            &lt;!ATTLIST "TIFFDouble" "value" #CDATA #IMPLIED&gt;
+    ///              &lt;!-- The value --&gt;
+    ///              &lt;!-- Data type: String --&gt;
+    ///
+    ///        &lt;!ELEMENT "TIFFUndefined" EMPTY&gt;
+    ///          &lt;!-- Uninterpreted byte data --&gt;
+    ///          &lt;!ATTLIST "TIFFUndefined" "value" #CDATA #IMPLIED&gt;
+    ///            &lt;!-- A list of comma-separated byte values --&gt;
+    ///            &lt;!-- Data type: String --&gt;
+    /// ]&gt;
+    /// </pre>
     public IIOMetadataNode getIIOMetadataTree(String formatName, int imageIndex) {
         if (formatName != null && !formatName.equals("com_sun_media_imageio_plugins_tiff_image_1.0")) {
             throw new IllegalArgumentException("Unsupported formatName:" + formatName);

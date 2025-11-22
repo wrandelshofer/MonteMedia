@@ -7,18 +7,13 @@ package org.monte.media.impl.jcodec.common.io;
 
 import java.nio.ByteBuffer;
 
-/**
- * References:
- * <p>
- * This code has been derived from JCodecProject.
- * <dl>
- *     <dt>JCodecProject. Copyright 2008-2019 JCodecProject.
- *     <br><a href="https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE">BSD 2-Clause License.</a></dt>
- *     <dd><a href="https://github.com/jcodec/jcodec">github.com</a></dd>
- * </dl>
- *
- * @author The JCodec project
- */
+/// References:
+///
+/// JCodecProject. Copyright 2008-2019 JCodecProject.
+/// : [BSD 2-Clause License.](https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE)
+/// : [github.com](https://github.com/jcodec/jcodec)
+///
+/// @author The JCodec project
 public class BitReader {
     public static BitReader createBitReader(ByteBuffer bb) {
         BitReader r = new BitReader(bb);
@@ -237,10 +232,8 @@ public class BitReader {
         return ((((java.nio.Buffer) bb).position() - initPos - 4) << 3) + deficit;
     }
 
-    /**
-     * Stops this bit reader. Returns underlying ByteBuffer pointer to the next
-     * byte unread byte
-     */
+    /// Stops this bit reader. Returns underlying ByteBuffer pointer to the next
+    /// byte unread byte
     public void stop() {
         ((java.nio.Buffer) bb).position(((java.nio.Buffer) bb).position() - ((32 - deficit) >> 3));
     }

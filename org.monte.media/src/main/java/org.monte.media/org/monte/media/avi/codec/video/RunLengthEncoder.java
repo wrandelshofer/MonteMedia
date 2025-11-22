@@ -36,81 +36,81 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_I
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
-/**
- * {@code RunLengthCodec} encodes a BufferedImage as a byte[] array.
- * <p>
- * This codec only works with the AVI file format. Other formats, such as
- * QuickTime, use a different encoding for run-length compressed video.
- * <p>
- * This codec currently only supports encoding from a {@code BufferedImage} into
- * the file format. Decoding support may be added in the future.
- * <p>
- * Supported input formats:
- * <ul>
- * <li>{@code Format} with {@code BufferedImage.class}, any width, any height,
- * depth=8.</li>
- * </ul>
- * Supported output formats:
- * <ul>
- * <li>{@code Format} with {@code byte[].class}, same width and height as input
- * format, depth=8.</li>
- * </ul>
- * The codec supports lossless delta- and key-frame encoding of images with 8
- * bits per pixel.
- * <p>
- * The codec does not encode the color palette of an image. This must be done
- * separately.
- * <p>
- * A frame is compressed line by line from bottom to top.
- * <p>
- * Each line of a frame is compressed individually. A line consists of two-byte
- * op-codes optionally followed by data. The end of the line is marked with
- * the EOL op-code.
- * <p>
- * The following op-codes are supported:
- * <ul>
- * <li>{@code 0x00 0x00}
- * <br>Marks the end of a line.</li>
- *
- * <li>{@code  0x00 0x01}
- * <br>Marks the end of the bitmap.</li>
- *
- * <li>{@code 0x00 0x02 x y}
- * <br> Marks a delta (skip). {@code x} and {@code y}
- * indicate the horizontal and vertical offset from the current position.
- * {@code x} and {@code y} are unsigned 8-bit values.</li>
- *
- * <li>{@code 0x00 n data{n} 0x00?}
- * <br> Marks a literal run. {@code n}
- * gives the number of data bytes that follow. {@code n} must be between 3 and
- * 255. If n is odd, a pad byte with the value 0x00 must be added.
- * </li>
- * <li>{@code n data}
- * <br> Marks a repetition. {@code n}
- * gives the number of times the data byte is repeated. {@code n} must be
- * between 1 and 255.
- * </li>
- * </ul>
- * Example:
- * <pre>
- * Compressed data         Expanded data
- *
- * 03 04                   04 04 04
- * 05 06                   06 06 06 06 06
- * 00 03 45 56 67 00       45 56 67
- * 02 78                   78 78
- * 00 02 05 01             Move 5 right and 1 down
- * 02 78                   78 78
- * 00 00                   End of line
- * 09 1E                   1E 1E 1E 1E 1E 1E 1E 1E 1E
- * 00 01                   End of RLE bitmap
- * </pre>
- * <p>
- * References:<br>
- * <a href="http://wiki.multimedia.cx/index.php?title=Microsoft_RLE">http://wiki.multimedia.cx/index.php?title=Microsoft_RLE</a><br>
- *
- * @author Werner Randelshofer
- */
+/// `RunLengthCodec` encodes a BufferedImage as a byte[] array.
+///
+/// This codec only works with the AVI file format. Other formats, such as
+/// QuickTime, use a different encoding for run-length compressed video.
+///
+/// This codec currently only supports encoding from a `BufferedImage` into
+/// the file format. Decoding support may be added in the future.
+///
+/// Supported input formats:
+///
+///   - `Format` with `BufferedImage.class`, any width, any height,
+///     depth=8.
+///
+/// Supported output formats:
+///
+///   - `Format` with `byte[].class`, same width and height as input
+///     format, depth=8.
+///
+/// The codec supports lossless delta- and key-frame encoding of images with 8
+/// bits per pixel.
+///
+/// The codec does not encode the color palette of an image. This must be done
+/// separately.
+///
+/// A frame is compressed line by line from bottom to top.
+///
+/// Each line of a frame is compressed individually. A line consists of two-byte
+/// op-codes optionally followed by data. The end of the line is marked with
+/// the EOL op-code.
+///
+/// The following op-codes are supported:
+///
+///   - `0x00 0x00`
+///
+/// Marks the end of a line.
+///   - `0x00 0x01`
+///
+/// Marks the end of the bitmap.
+///   - `0x00 0x02 x y`
+///
+/// Marks a delta (skip). `x` and `y`
+///     indicate the horizontal and vertical offset from the current position.
+///     `x` and `y` are unsigned 8-bit values.
+///   - `0x00 n data{n}0x00?`
+///
+/// Marks a literal run. `n`
+///     gives the number of data bytes that follow. `n` must be between 3 and
+///     255. If n is odd, a pad byte with the value 0x00 must be added.
+///
+///   - `n data`
+///
+/// Marks a repetition. `n`
+///     gives the number of times the data byte is repeated. `n` must be
+///     between 1 and 255.
+///
+///
+/// Example:
+/// <pre>
+/// Compressed data         Expanded data
+///
+/// 03 04                   04 04 04
+/// 05 06                   06 06 06 06 06
+/// 00 03 45 56 67 00       45 56 67
+/// 02 78                   78 78
+/// 00 02 05 01             Move 5 right and 1 down
+/// 02 78                   78 78
+/// 00 00                   End of line
+/// 09 1E                   1E 1E 1E 1E 1E 1E 1E 1E 1E
+/// 00 01                   End of RLE bitmap
+/// </pre>
+///
+/// References:
+/// [http://wiki.multimedia.cx/index.php?title=Microsoft_RLE](http://wiki.multimedia.cx/index.php?title=Microsoft_RLE)
+///
+/// @author Werner Randelshofer
 public class RunLengthEncoder extends org.monte.media.av.AbstractCodec {
 
     private byte[] previousPixels;
@@ -216,15 +216,13 @@ public class RunLengthEncoder extends org.monte.media.av.AbstractCodec {
         }
     }
 
-    /**
-     * Encodes an 8-bit key frame.
-     *
-     * @param out            The output stream.
-     * @param data           The image data.
-     * @param offset         The offset to the first pixel in the data array.
-     * @param width          The width of the image in data elements.
-     * @param scanlineStride The number to append to offset to get to the next scanline.
-     */
+    /// Encodes an 8-bit key frame.
+    ///
+    /// @param out            The output stream.
+    /// @param data           The image data.
+    /// @param offset         The offset to the first pixel in the data array.
+    /// @param width          The width of the image in data elements.
+    /// @param scanlineStride The number to append to offset to get to the next scanline.
     public void encodeKey8(ImageOutputStream out, byte[] data, int width, int height, int offset, int scanlineStride)
             throws IOException {
         out.setByteOrder(ByteOrder.LITTLE_ENDIAN);
@@ -305,16 +303,14 @@ public class RunLengthEncoder extends org.monte.media.av.AbstractCodec {
     }
 
 
-    /**
-     * Encodes an 8-bit delta frame.
-     *
-     * @param out            The output stream.
-     * @param data           The image data.
-     * @param prev           The image data of the previous frame.
-     * @param offset         The offset to the first pixel in the data array.
-     * @param width          The width of the image in data elements.
-     * @param scanlineStride The number to append to offset to get to the next scanline.
-     */
+    /// Encodes an 8-bit delta frame.
+    ///
+    /// @param out            The output stream.
+    /// @param data           The image data.
+    /// @param prev           The image data of the previous frame.
+    /// @param offset         The offset to the first pixel in the data array.
+    /// @param width          The width of the image in data elements.
+    /// @param scanlineStride The number to append to offset to get to the next scanline.
     public void encodeDelta8(ImageOutputStream out, byte[] data, byte[] prev, int width, int height, int offset,
                              int scanlineStride)
             throws IOException {

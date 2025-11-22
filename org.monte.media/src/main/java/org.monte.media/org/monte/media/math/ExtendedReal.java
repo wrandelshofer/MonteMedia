@@ -4,80 +4,72 @@
  */
 package org.monte.media.math;
 
-/**
- * Represents an extended-real number as specified by IEEE 754.
- * <p>
- * An extended-real number uses 80 bits to represent a floating point
- * number. It is able to represent numbers ranging from 3.37*10^-4932
- * up to 1.18*10^4932.
- * <p>
- * Bit layout
- * <pre><code>
- * 79    78-64            63       62-0
- * Sign  Biased Exponent  Integer  Fraction
- * </code></pre>
- * <p>
- * For the single-real and double-real formats, only the fraction part
- * of the significand is encoded. The integer is assumed to be 1 for
- * all numbers except 0 and denormalized finite numbers. For the
- * extended-real format, the integer is contained in bit 64, and the
- * most significant fraction bit is bit 62. Here, the integer is
- * explicitly set to 1 for normalized numbers, infinites, and NaNs,
- * and to 0 for zero and denormalized numbers.
- * <p>
- * The exponent is encoded in biased format. The biasing constant is
- * 16'383 for the extended-real format.
- * <p>
- * NaN Encodings for ExtendedReal:
- * <pre><code>
- * Class                   Sign   Biased     Significand
- *                                Exponent   Integer  Fraction
- * ------------------------------------------------------------
- * Positive +Infinity       0    11..11       1       00..00
- *          +Normals        0    11..10       1       11..11
- *                          .        .        .           .
- *                          .        .        .           .
- *                          0    00..01       1       00..00
- *          +Denormals      0    00..00       0       11..11
- *                          .        .        .           .
- *                          .        .        .           .
- *                          0    00..00       0       00..01
- *          +Zero           0    00..00       0       00..00
- * Negative -Zero           1    00..00       0       00..00
- *          -Denormals      1    00..00       0       00..01
- *                          .        .        .           .
- *                          .        .        .           .
- *                          1    00..00       0       11..11
- *          -Normals        1    00..01       1       00..01
- *                          .        .        .           .
- *                          .        .        .           .
- *                          1    11..10       1       11..11
- *          -Infinity       1    11..11       1       00..00
- * NaNs     SNaN            X    11..11       1       0X..XX(2
- *          QNaN            X    11..11       1       1X..XX
- *          Real Indefinite 1    11..11       1       10..00
- *
- * </code></pre>
- * (2 The fraction for SNaN encodings must be non zero.
- *
- * @author Werner Randelshofer.
- */
+/// Represents an extended-real number as specified by IEEE 754.
+///
+/// An extended-real number uses 80 bits to represent a floating point
+/// number. It is able to represent numbers ranging from 3.37*10^-4932
+/// up to 1.18*10^4932.
+///
+/// Bit layout
+/// <pre>`
+/// 79    78-64            63       62-0
+/// Sign  Biased Exponent  Integer  Fraction
+///`</pre>
+///
+/// For the single-real and double-real formats, only the fraction part
+/// of the significand is encoded. The integer is assumed to be 1 for
+/// all numbers except 0 and denormalized finite numbers. For the
+/// extended-real format, the integer is contained in bit 64, and the
+/// most significant fraction bit is bit 62. Here, the integer is
+/// explicitly set to 1 for normalized numbers, infinites, and NaNs,
+/// and to 0 for zero and denormalized numbers.
+///
+/// The exponent is encoded in biased format. The biasing constant is
+/// 16'383 for the extended-real format.
+///
+/// NaN Encodings for ExtendedReal:
+/// <pre>`
+/// Class                   Sign   Biased     Significand
+///                                Exponent   Integer  Fraction
+/// ------------------------------------------------------------
+/// Positive +Infinity       0    11..11       1       00..00
+///          +Normals        0    11..10       1       11..11
+///                          .        .        .           .
+///                          .        .        .           .
+///                          0    00..01       1       00..00
+///          +Denormals      0    00..00       0       11..11
+///                          .        .        .           .
+///                          .        .        .           .
+///                          0    00..00       0       00..01
+///          +Zero           0    00..00       0       00..00
+/// Negative -Zero           1    00..00       0       00..00
+///          -Denormals      1    00..00       0       00..01
+///                          .        .        .           .
+///                          .        .        .           .
+///                          1    00..00       0       11..11
+///          -Normals        1    00..01       1       00..01
+///                          .        .        .           .
+///                          .        .        .           .
+///                          1    11..10       1       11..11
+///          -Infinity       1    11..11       1       00..00
+/// NaNs     SNaN            X    11..11       1       0X..XX(2
+///          QNaN            X    11..11       1       1X..XX
+///          Real Indefinite 1    11..11       1       10..00
+///
+/// `</pre>
+/// (2 The fraction for SNaN encodings must be non zero.
+///
+/// @author Werner Randelshofer.
 public class ExtendedReal
         extends Number {
     private final static long serialVersionUID = 1L;
-    /**
-     * bit 79: negSign
-     */
+    /// bit 79: negSign
     private boolean negSign;
 
-    /**
-     * bit 78 - 64: biased exponent.
-     */
+    /// bit 78 - 64: biased exponent.
     private int exponent;
 
-    /**
-     * bit 63: Integer; 62 - 0: Fraction
-     */
+    /// bit 63: Integer; 62 - 0: Fraction
     private long mantissa;
 
 
@@ -231,10 +223,8 @@ public class ExtendedReal
         return negSign == obj.negSign && exponent == obj.exponent && mantissa == obj.mantissa;
     }
 
-    /**
-     * FIXME: Loss of precision, because we currently convert to double before
-     * we create the String.
-     */
+    /// FIXME: Loss of precision, because we currently convert to double before
+    /// we create the String.
     public String toString() {
         return Double.toString(doubleValue());
     }

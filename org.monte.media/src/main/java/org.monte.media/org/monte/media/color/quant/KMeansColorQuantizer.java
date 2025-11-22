@@ -21,18 +21,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Estimates a color palette using a K-Means clustering algorithm.
- * <p>
- * References:
- * <dl>
- * <dt>M. Emre Celebi. Department of Computer Science.
- *       Louisiana State University, Shreveport, LA, USA (2024).
- *        Improving the Performance of K-Means for Color Quantization.</dt>
- *  <dd><a href="https://ui.adsabs.harvard.edu/abs/2011arXiv1101.0395E/abstract">harvard.edu</a>
- *     <br><a href="https://arxiv.org/pdf/1101.0395">arxiv.org</a></a></dd>
- * </dl>
- */
+/// Estimates a color palette using a K-Means clustering algorithm.
+///
+/// References:
+/// <dl>
+/// <dt>M. Emre Celebi. Department of Computer Science.
+///       Louisiana State University, Shreveport, LA, USA (2024).
+///        Improving the Performance of K-Means for Color Quantization.</dt>
+///  <dd>[harvard.edu](https://ui.adsabs.harvard.edu/abs/2011arXiv1101.0395E/abstract)
+///
+/// [arxiv.org](https://arxiv.org/pdf/1101.0395)</a></dd>
+/// </dl>
 public class KMeansColorQuantizer implements ColorQuantizer {
     private final int K;
     private final OKLabColorSpace cs = new OKLabColorSpace();

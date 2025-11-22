@@ -30,19 +30,15 @@ import java.awt.image.WritableRaster;
 import java.net.URL;
 import java.util.Hashtable;
 
-/**
- * Image processing methods for buffered images.
- *
- * @author Werner Randelshofer, Karl von Randow
- */
+/// Image processing methods for buffered images.
+///
+/// @author Werner Randelshofer, Karl von Randow
 public class Images {
 
     private static final DirectColorModel RGB = new DirectColorModel(24, 0xff0000, 0xff00, 0xff);
     private static final DirectColorModel ARGB = new DirectColorModel(32, 0xff0000, 0xff00, 0xff, 0xff000000);
 
-    /**
-     * Prevent instance creation.
-     */
+    /// Prevent instance creation.
     private Images() {
     }
 
@@ -75,13 +71,11 @@ public class Images {
         return image;
     }
 
-    /**
-     * Converts the image to a buffered image into the sRGB color space. Preserves
-     * the alpha channel of the input image.
-     *
-     * @param img img
-     * @return img
-     */
+    /// Converts the image to a buffered image into the sRGB color space. Preserves
+    /// the alpha channel of the input image.
+    ///
+    /// @param img img
+    /// @return img
     public static BufferedImage toRGBImage(Image img) {
         BufferedImage src = toBufferedImage(img);
         if (src.getColorModel().getColorSpace().getType() == RGB.getColorSpace().getType()) {
@@ -91,22 +85,20 @@ public class Images {
         return toImageWithColorModel_usingColorConvertOp(img, dst);
     }
 
-    /**
-     * Converts the image into a buffered image with an RGB color model. This
-     * method returns the same image, if no conversion is needed.
-     * <p>
-     * This method should be run with "KCMS" (Kodak Color Management System). The "Little CMS" which
-     * is the default in JVMs is 4 times slower.
-     * <p>
-     * Start the VM with the following options:
-     * <pre>
-     * -Dsun.java2d.cmm=sun.java2d.cmm.kcms.KcmsServiceProvider
-     * </pre>
-     *
-     * @param img an image
-     * @param cm  the destination color model
-     * @return the converted image, may be the same as the source image
-     */
+    /// Converts the image into a buffered image with an RGB color model. This
+    /// method returns the same image, if no conversion is needed.
+    ///
+    /// This method should be run with "KCMS" (Kodak Color Management System). The "Little CMS" which
+    /// is the default in JVMs is 4 times slower.
+    ///
+    /// Start the VM with the following options:
+    /// <pre>
+    /// -Dsun.java2d.cmm=sun.java2d.cmm.kcms.KcmsServiceProvider
+    /// </pre>
+    ///
+    /// @param img an image
+    /// @param cm  the destination color model
+    /// @return the converted image, may be the same as the source image
     public static BufferedImage toImageWithColorModel_usingColorConvertOp(Image img, ColorModel cm) {
         BufferedImage src = toBufferedImage(img);
         if (src.getColorModel().equals(cm)) {
@@ -129,14 +121,12 @@ public class Images {
         return dest;
     }
 
-    /**
-     * Converts the image into a buffered image with an RGB color model. This
-     * method returns the same image, if no conversion is needed.
-     *
-     * @param img an image
-     * @param cm  cm destination color model
-     * @return the converted image, may be the same as the source image
-     */
+    /// Converts the image into a buffered image with an RGB color model. This
+    /// method returns the same image, if no conversion is needed.
+    ///
+    /// @param img an image
+    /// @param cm  cm destination color model
+    /// @return the converted image, may be the same as the source image
     public static BufferedImage toImageWithColorModel_usingDrawImage(Image img, ColorModel cm) {
         BufferedImage src = toBufferedImage(img);
         BufferedImage dest = new BufferedImage(cm, cm.createCompatibleWritableRaster(src.getWidth(), src.getHeight()), cm.isAlphaPremultiplied(), new Hashtable<>());
@@ -150,10 +140,8 @@ public class Images {
         return dest;
     }
 
-    /**
-     * Converts the image to a buffered image. Returns the same image, if the
-     * image is already a buffered image.
-     */
+    /// Converts the image to a buffered image. Returns the same image, if the
+    /// image is already a buffered image.
     public static BufferedImage toBufferedImage(RenderedImage rImg) {
         BufferedImage image;
         if (rImg instanceof BufferedImage) {
@@ -173,9 +161,7 @@ public class Images {
         return image;
     }
 
-    /**
-     * Clone the image.
-     */
+    /// Clone the image.
     public static BufferedImage cloneImage(RenderedImage rImg) {
         BufferedImage image;
 
@@ -290,12 +276,10 @@ public class Images {
          }*/
     }
 
-    /**
-     * This method returns true if the specified image has transparent pixels
-     * <p>
-     * Code taken from the Java Developers Almanac 1.4
-     * http://javaalmanac.com/egs/java.awt.image/HasAlpha.html
-     */
+    /// This method returns true if the specified image has transparent pixels
+    ///
+    /// Code taken from the Java Developers Almanac 1.4
+    /// http://javaalmanac.com/egs/java.awt.image/HasAlpha.html
     public static boolean hasAlpha(Image image) {
         // If buffered image, the color model is readily available
         if (image instanceof BufferedImage) {
@@ -316,9 +300,7 @@ public class Images {
         return cm.hasAlpha();
     }
 
-    /**
-     * Splits an image into count subimages.
-     */
+    /// Splits an image into count subimages.
     public static BufferedImage[] split(Image image, int count, boolean isHorizontal) {
         BufferedImage src = Images.toBufferedImage(image);
         if (count == 1) {
@@ -342,9 +324,7 @@ public class Images {
         return parts;
     }
 
-    /**
-     * Converts the image into a format that can be handled easier.
-     */
+    /// Converts the image into a format that can be handled easier.
     public static BufferedImage toIntImage(BufferedImage img) {
         if (img.getRaster().getDataBuffer() instanceof DataBufferInt) {
             return img;
@@ -357,18 +337,14 @@ public class Images {
         }
     }
 
-    /**
-     * Converts an image into an array of integer pixels. If the image has an
-     * integer data buffer, the internal pixel array is returned.
-     */
+    /// Converts an image into an array of integer pixels. If the image has an
+    /// integer data buffer, the internal pixel array is returned.
     public static int[] toPixels(BufferedImage img) {
         return ((DataBufferInt) toIntImage(img).getRaster().getDataBuffer()).getData();
     }
 
-    /**
-     * Converts an array of integer pixels into an image. The array is referenced
-     * by the image.
-     */
+    /// Converts an array of integer pixels into an image. The array is referenced
+    /// by the image.
     public static BufferedImage toImage(int[] pixels, int width, int height) {
         return new BufferedImage(DirectColorModel.getRGBdefault(),//
                 Raster.createWritableRaster(new SinglePixelPackedSampleModel(DataBuffer.TYPE_INT, width, height,

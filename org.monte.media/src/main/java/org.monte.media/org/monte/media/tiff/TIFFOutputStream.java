@@ -10,17 +10,15 @@ import java.io.OutputStream;
 import java.nio.ByteOrder;
 import java.util.Stack;
 
-/**
- * {@code TIFFOutputStream}.
- * <p>
- * References:
- * <p>
- * TIFF TM Revision 6.0. Final — June 3, 1992.
- * Adobe Systems Inc.
- * http://www.exif.org/specifications.html
- *
- * @author Werner Randelshofer
- */
+/// `TIFFOutputStream`.
+///
+/// References:
+///
+/// TIFF TM Revision 6.0. Final — June 3, 1992.
+/// Adobe Systems Inc.
+/// http://www.exif.org/specifications.html
+///
+/// @author Werner Randelshofer
 public class TIFFOutputStream extends OutputStream {
 
     private final ImageOutputStream out;
@@ -131,16 +129,12 @@ public class TIFFOutputStream extends OutputStream {
         }
     }
 
-    /**
-     * Writes a 32-bit unsigned integer.
-     */
+    /// Writes a 32-bit unsigned integer.
     public void writeLONG(long v) throws IOException {
         out.writeInt((int) v);
     }
 
-    /**
-     * Writes a 12-bit unsigned integer.
-     */
+    /// Writes a 12-bit unsigned integer.
     public void writeSHORT(int v) throws IOException {
         out.writeShort((short) v);
     }

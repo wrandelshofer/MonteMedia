@@ -9,27 +9,29 @@ import org.monte.media.math.Point2D;
 
 import static org.monte.media.color.ParametricLinearRgbColorSpace.ILLUMINANT_D50_XYZ;
 
-/**
- * ProPhoto RGB Color Space.
- * <p>
- * The ProPhoto RGB color space, also known as ROMM RGB (Reference Output Medium Metric), is an output referred RGB
- * color space developed by Kodak. It offers an especially large gamut designed for use with photographic output in
- * mind.
- * <p>
- * References:
- * <dl>
- *     <dt>Wikipedia: ProPhoto RGB color space.</dt>
- *     <dd><a href="https://en.wikipedia.org/wiki/ProPhoto_RGB_color_space">wikipedia</a></dd>
- *
- *     <dt>CSS Color Module Level 4. The Predefined ProPhoto RGB Color Space: the prophoto-rgb keyword.</dt>
- *     <dd><a href="https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#predefined-prophoto-rgb">w3.org</a></dd>
- *
- *     <dt>CSS Color Module Level 4. Sample code for Color Conversions.</dt>
- *     <dd><a href="https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#color-conversion-code">w3.org</a></dd>
- * </dl>
- */
+/// ProPhoto RGB Color Space.
+///
+/// The ProPhoto RGB color space, also known as ROMM RGB (Reference Output Medium Metric), is an output referred RGB
+/// color space developed by Kodak. It offers an especially large gamut designed for use with photographic output in
+/// mind.
+///
+/// References:
+/// <dl>
+///     <dt>Wikipedia: ProPhoto RGB color space.</dt>
+///     <dd>[wikipedia](https://en.wikipedia.org/wiki/ProPhoto_RGB_color_space)</dd>
+///     <dt>CSS Color Module Level 4. The Predefined ProPhoto RGB Color Space: the prophoto-rgb keyword.</dt>
+///     <dd>[w3.org](https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#predefined-prophoto-rgb)</dd>
+///     <dt>CSS Color Module Level 4. Sample code for Color Conversions.</dt>
+///     <dd>[w3.org](https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#color-conversion-code)</dd>
+/// </dl>
 public class ProPhotoRgbColorSpace extends ParametricNonLinearRgbColorSpace {
-    public final static ProPhotoRgbColorSpace INSTANCE = new ProPhotoRgbColorSpace();
+    public static ProPhotoRgbColorSpace getInstance() {
+        class Holder {
+            private static final ProPhotoRgbColorSpace INSTANCE = new ProPhotoRgbColorSpace();
+        }
+        return Holder.INSTANCE;
+    }
+
 
     public ProPhotoRgbColorSpace() {
         super("ProPhoto RGB", new ParametricLinearRgbColorSpace("Linear ProPhoto RGB",
@@ -43,11 +45,9 @@ public class ProPhotoRgbColorSpace extends ParametricNonLinearRgbColorSpace {
         );
     }
 
-    /**
-     * Convert an array of linear-light prophoto-rgb  in the range 0.0-1.0
-     * to gamma corrected form.
-     * Transfer curve is gamma 1.8 with a small linear portion.
-     */
+    /// Convert an array of linear-light prophoto-rgb  in the range 0.0-1.0
+    /// to gamma corrected form.
+    /// Transfer curve is gamma 1.8 with a small linear portion.
     public static float fromLinear(float cl) {
         float E = 1 / 512f;
         float sign = Math.signum(cl);
@@ -62,13 +62,11 @@ public class ProPhotoRgbColorSpace extends ParametricNonLinearRgbColorSpace {
         return c;
     }
 
-    /**
-     * Convert an array of prophoto-rgb values
-     * where in-gamut colors are in the range [0.0 - 1.0]
-     * to linear light (un-companded) form.
-     * Transfer curve is gamma 1.8 with a small linear portion.
-     * Extended transfer function.
-     */
+    /// Convert an array of prophoto-rgb values
+    /// where in-gamut colors are in the range [0.0-1.0]
+    /// to linear light (un-companded) form.
+    /// Transfer curve is gamma 1.8 with a small linear portion.
+    /// Extended transfer function.
     public static float toLinear(float c) {
         float E = 16 / 512f;
         float sign = Math.signum(c);

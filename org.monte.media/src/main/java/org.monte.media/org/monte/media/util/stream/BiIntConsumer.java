@@ -5,11 +5,9 @@
 
 package org.monte.media.util.stream;
 
-/**
- * BiIntConsumer.
- *
- * @author Werner Randelshofer
- */
+/// BiIntConsumer.
+///
+/// @author Werner Randelshofer
 @FunctionalInterface
 public interface BiIntConsumer {
     void accept(int left, int right);

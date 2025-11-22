@@ -7,11 +7,9 @@ package org.monte.demo.javafx.movieplayer.monteplayer;
 
 import org.monte.media.av.CodecSpi;
 
-/**
- * JPEGCodecSpi.
- *
- * @author Werner Randelshofer
- */
+/// JPEGCodecSpi.
+///
+/// @author Werner Randelshofer
 public class WritableImageCodecSpi implements CodecSpi {
 
     @Override

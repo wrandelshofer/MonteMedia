@@ -8,9 +8,7 @@ package org.monte.demo.javafx.movieplayer.model;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * An interface for {@link javafx.scene.media.Track}.
- */
+/// An interface for [javafx.scene.media.Track].
 public interface TrackInterface {
     Locale getLocale();
 

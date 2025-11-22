@@ -9,13 +9,11 @@ import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
 
 public class IndexColorModelFactory {
-    /**
-     * Creates an ordered palette with cbrt(numColors) RGB colors,
-     * and the remaining colors filled with a grayscale.
-     *
-     * @param size the palette size
-     * @return a new instance
-     */
+    /// Creates an ordered palette with cbrt(numColors) RGB colors,
+    /// and the remaining colors filled with a grayscale.
+    ///
+    /// @param size the palette size
+    /// @return a new instance
     public IndexColorModel createOrderedPalette(int size) {
         size = Math.max(2, size);
         int[] cmap = new int[size];

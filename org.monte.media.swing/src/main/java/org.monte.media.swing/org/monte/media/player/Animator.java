@@ -9,16 +9,12 @@ import org.monte.media.av.Interpolator;
 
 import javax.swing.event.ChangeListener;
 
-/**
- * Animator executes multiple Interpolator's on a worker thread.
- *
- * @author Werner Randelshofer
- */
+/// Animator executes multiple Interpolator's on a worker thread.
+///
+/// @author Werner Randelshofer
 public interface Animator extends Runnable {
-    /**
-     * Set the lock object, on which the animator synchronizes while
-     * animating the interpolators.
-     */
+    /// Set the lock object, on which the animator synchronizes while
+    /// animating the interpolators.
     public void setLock(Object lock);
 
     public boolean isActive();
@@ -27,10 +23,8 @@ public interface Animator extends Runnable {
 
     public void stop();
 
-    /**
-     * Dispatches an interpolator for the animation thread.
-     * This will launch the animation thread if it is not already active.
-     */
+    /// Dispatches an interpolator for the animation thread.
+    /// This will launch the animation thread if it is not already active.
     public void dispatch(Interpolator interpolator);
 
     public void animateStep();

@@ -11,20 +11,16 @@
  import java.awt.image.SampleModel;
  import java.awt.image.SinglePixelPackedSampleModel;
 
- /**
-  * {@code ICCPackedColorModel}.
-  *
-  * @author Werner Randelshofer
-  */
+ /// `ICCPackedColorModel`.
+ ///
+ /// @author Werner Randelshofer
  public class ICCPackedColorModel extends PackedColorModel {
 
      private final ICC_ColorSpace colorSpace;
      private final int[] maskArray;
      private final int[] maskOffsets;
 
-     /**
-      * Returns the number of bits per pixel.
-      */
+     /// Returns the number of bits per pixel.
      private static int getBits(Raster raster) {
          int bits = 0;
          SinglePixelPackedSampleModel sm = (SinglePixelPackedSampleModel) raster.getSampleModel();

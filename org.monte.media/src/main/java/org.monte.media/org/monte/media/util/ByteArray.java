@@ -7,9 +7,7 @@ package org.monte.media.util;
 
 import java.util.Arrays;
 
-/**
- * Wrapper for a byte array.
- */
+/// Wrapper for a byte array.
 public class ByteArray {
     private final byte[] array;
 
@@ -30,9 +28,7 @@ public class ByteArray {
         return Arrays.hashCode(array);
     }
 
-    /**
-     * Gets the underlying array.
-     */
+    /// Gets the underlying array.
     public byte[] getArray() {
         return array;
     }

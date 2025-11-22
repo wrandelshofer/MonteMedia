@@ -7,11 +7,9 @@ package org.monte.media.avi.codec.audio;
 
 import org.monte.media.av.CodecSpi;
 
-/**
- * AVIPCMAudioCodecSpi.
- *
- * @author Werner Randelshofer
- */
+/// AVIPCMAudioCodecSpi.
+///
+/// @author Werner Randelshofer
 public class AVIPCMAudioCodecSpi implements CodecSpi {
 
     @Override

@@ -32,25 +32,17 @@ import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.FormatKeys.MimeTypeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
 
-/**
- * Encodes a {@link BufferedImage} into a {@link BufferedImage} with a different {@link java.awt.image.DirectColorModel}.
- */
+/// Encodes a [BufferedImage] into a [BufferedImage] with a different [java.awt.image.DirectColorModel].
 public class DirectColorModelEncoder extends AbstractCodec {
     private final OKLabColorSpace oklab = new OKLabColorSpace();
 
-    /**
-     * Optional, the desired index color model.
-     * If this value is null, an index color model is computed.
-     */
+    /// Optional, the desired index color model.
+    /// If this value is null, an index color model is computed.
     public final static FormatKey<DirectColorModel> DirectColorModelKey = new FormatKey<>("directColorModel", DirectColorModel.class);
-    /**
-     * Dithering pattern is multiplied by the specified factor.
-     */
+    /// Dithering pattern is multiplied by the specified factor.
     public final static FormatKey<Double> DitheringFactorKey = new FormatKey<>("ditheringFactor", Double.class);
-    /**
-     * Optional, the desired number of colors in the index color model.
-     * This value is only used when no {@link #DirectColorModelKey} has been provided.
-     */
+    /// Optional, the desired number of colors in the index color model.
+    /// This value is only used when no [#DirectColorModelKey] has been provided.
     public final static FormatKey<DitheringMethod> DitheringMethodKey = new FormatKey<>("ditheringMethod", DitheringMethod.class);
 
     public DirectColorModelEncoder() {

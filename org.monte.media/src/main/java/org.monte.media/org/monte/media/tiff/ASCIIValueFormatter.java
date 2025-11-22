@@ -6,17 +6,13 @@ package org.monte.media.tiff;
 
 import java.nio.charset.StandardCharsets;
 
-/**
- * Formats byte arrays as string.
- *
- * @author Werner Randelshofer
- */
+/// Formats byte arrays as string.
+///
+/// @author Werner Randelshofer
 public class ASCIIValueFormatter implements ValueFormatter {
 
-    /**
-     * Creates a new enumeration.
-     * The enumeration consists of a list of String=Integer pairs.
-     */
+    /// Creates a new enumeration.
+    /// The enumeration consists of a list of String=Integer pairs.
     public ASCIIValueFormatter() {
     }
 

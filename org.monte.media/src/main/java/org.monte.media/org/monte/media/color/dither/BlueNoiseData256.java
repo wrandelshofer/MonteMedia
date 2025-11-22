@@ -12,15 +12,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StreamTokenizer;
 
-/**
- * 256x256 blue noise dither matrix. Provides 4 data arrays for color models with up to 4 components.
- * <p>
- * References:
- * <dl>
- *     <dt>Bart Wronski (2020). “Optimizing” blue noise dithering – backpropagation through Fourier transform and sorting.</dt>
- *     <dd><a href="https://bartwronski.com/2020/04/26/optimizing-blue-noise-dithering-backpropagation-through-fourier-transform-and-sorting/">bartwronski.com</a></dd>
- * </dl>
- */
+/// 256x256 blue noise dither matrix. Provides 4 data arrays for color models with up to 4 components.
+///
+/// References:
+///
+/// Bart Wronski (2020). “Optimizing” blue noise dithering – backpropagation through Fourier transform and sorting.
+/// : [bartwronski.com](https://bartwronski.com/2020/04/26/optimizing-blue-noise-dithering-backpropagation-through-fourier-transform-and-sorting/)
+///
 class BlueNoiseData256 {
     final static float[][] DATA0 = new float[256][256];
     final static float[][] DATA1 = new float[256][256];

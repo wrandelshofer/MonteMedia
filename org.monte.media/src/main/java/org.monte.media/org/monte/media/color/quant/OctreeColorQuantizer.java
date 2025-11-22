@@ -12,17 +12,14 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
 
-/**
- * Estimates a color palette using an octree algorithm.
- * <p>
- * References:
- * <dl>
- * <dt>M. Gervautz, W. Purgathofer. (1988).
- *       A Simple Method for Color Quantization: Octree Quantizati.</dt>
- *  <dd><a href="https://www.cg.tuwien.ac.at/research/publications/1988/purgathofer-1988-simple/purgathofer-1988-simple-Paper.PDF">www.cg.tuwien.ac.at</a></a></dd>
- * </dl>
- */
-
+/// Estimates a color palette using an octree algorithm.
+///
+/// References:
+/// <dl>
+/// <dt>M. Gervautz, W. Purgathofer. (1988).
+///       A Simple Method for Color Quantization: Octree Quantizati.</dt>
+///  <dd>[www.cg.tuwien.ac.at](https://www.cg.tuwien.ac.at/research/publications/1988/purgathofer-1988-simple/purgathofer-1988-simple-Paper.PDF)</a></dd>
+/// </dl>
 public class OctreeColorQuantizer implements ColorQuantizer {
     private OctreeAlgo algo;
     private IndexColorModel colorModel;
@@ -55,12 +52,10 @@ public class OctreeColorQuantizer implements ColorQuantizer {
         return colorModel;
     }
 
-    /**
-     * Returns the index of the representative color in the palette.
-     *
-     * @param rgb a color
-     * @return the representative color in the palette
-     */
+    /// Returns the index of the representative color in the palette.
+    ///
+    /// @param rgb a color
+    /// @return the representative color in the palette
     public int quant(int rgb) {
         return algo.quant(new Color(rgb));
     }

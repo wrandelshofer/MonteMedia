@@ -16,44 +16,36 @@ import java.util.Arrays;
 
 import static java.lang.Math.max;
 
-/**
- * This class implements an image output stream in which the data is
- * written into a byte array. The buffer automatically grows as data
- * is written to it.
- * The data can be retrieved using {@code toByteArray()}, {@code toImageOutputStream()}
- * and {@code toOutputStream()}.
- * <p>
- * Closing a {@code ByteArrayImageOutputStream} has no effect. The methods in
- * this class can be called after the stream has been closed without
- * generating an {@code IOException}.
- *
- * @author Werner Randelshofer
- */
+/// This class implements an image output stream in which the data is
+/// written into a byte array. The buffer automatically grows as data
+/// is written to it.
+/// The data can be retrieved using `toByteArray()`, `toImageOutputStream()`
+/// and `toOutputStream()`.
+///
+/// Closing a `ByteArrayImageOutputStream` has no effect. The methods in
+/// this class can be called after the stream has been closed without
+/// generating an `IOException`.
+///
+/// @author Werner Randelshofer
 public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
 
 
-    /**
-     * An array of bytes that was provided
-     * by the creator of the stream. Elements <code>buf[0]</code>
-     * through <code>buf[count-1]</code> are the
-     * only bytes that can ever be read from the
-     * stream;  element <code>buf[streamPos]</code> is
-     * the next byte to be read.
-     */
+    /// An array of bytes that was provided
+    /// by the creator of the stream. Elements `buf[0]`
+    /// through `buf[count-1]` are the
+    /// only bytes that can ever be read from the
+    /// stream;  element `buf[streamPos]` is
+    /// the next byte to be read.
     protected byte[] buf;
-    /**
-     * The index one greater than the last valid byte in the input
-     * stream buffer.
-     * This value should always be nonnegative
-     * and not larger than the length of <code>buf</code>.
-     * It  is one greater than the position of
-     * the last byte within <code>buf</code> that
-     * can ever be read  from the input stream buffer.
-     */
+    /// The index one greater than the last valid byte in the input
+    /// stream buffer.
+    /// This value should always be nonnegative
+    /// and not larger than the length of `buf`.
+    /// It  is one greater than the position of
+    /// the last byte within `buf` that
+    /// can ever be read  from the input stream buffer.
     protected int count;
-    /**
-     * The offset to the start of the array.
-     */
+    /// The offset to the start of the array.
     private final int arrayOffset;
 
     public ByteArrayImageOutputStream() {
@@ -84,54 +76,50 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
         this(new byte[16], byteOrder);
     }
 
-    /**
-     * Reads the next byte of data from this input stream. The value
-     * byte is returned as an <code>int</code> in the range
-     * <code>0</code> to <code>255</code>. If no byte is available
-     * because the end of the stream has been reached, the value
-     * <code>-1</code> is returned.
-     * <p>
-     * This <code>read</code> method
-     * cannot block.
-     *
-     * @return the next byte of data, or <code>-1</code> if the end of the
-     * stream has been reached.
-     */
+    /// Reads the next byte of data from this input stream. The value
+    /// byte is returned as an `int` in the range
+    /// `0` to `255`. If no byte is available
+    /// because the end of the stream has been reached, the value
+    /// `-1` is returned.
+    ///
+    /// This `read` method
+    /// cannot block.
+    ///
+    /// @return the next byte of data, or `-1` if the end of the
+    /// stream has been reached.
     @Override
     public int read() throws IOException {
         flushBits();
         return (streamPos < count) ? (buf[(int) (streamPos++)] & 0xff) : -1;
     }
 
-    /**
-     * Reads up to <code>len</code> bytes of data into an array of bytes
-     * from this input stream.
-     * If <code>streamPos</code> equals <code>count</code>,
-     * then <code>-1</code> is returned to indicate
-     * end of file. Otherwise, the  number <code>k</code>
-     * of bytes read is equal to the smaller of
-     * <code>len</code> and <code>count-streamPos</code>.
-     * If <code>k</code> is positive, then bytes
-     * <code>buf[streamPos]</code> through <code>buf[streamPos+k-1]</code>
-     * are copied into <code>b[off]</code>  through
-     * <code>b[off+k-1]</code> in the manner performed
-     * by <code>System.arraycopy</code>. The
-     * value <code>k</code> is added into <code>streamPos</code>
-     * and <code>k</code> is returned.
-     * <p>
-     * This <code>read</code> method cannot block.
-     *
-     * @param b   the buffer into which the data is read.
-     * @param off the start offset in the destination array <code>b</code>
-     * @param len the maximum number of bytes read.
-     * @return the total number of bytes read into the buffer, or
-     * <code>-1</code> if there is no more data because the end of
-     * the stream has been reached.
-     * @throws NullPointerException      If <code>b</code> is <code>null</code>.
-     * @throws IndexOutOfBoundsException If <code>off</code> is negative,
-     *                                   <code>len</code> is negative, or <code>len</code> is greater than
-     *                                   <code>b.length - off</code>
-     */
+    /// Reads up to `len` bytes of data into an array of bytes
+    /// from this input stream.
+    /// If `streamPos` equals `count`,
+    /// then `-1` is returned to indicate
+    /// end of file. Otherwise, the  number `k`
+    /// of bytes read is equal to the smaller of
+    /// `len` and `count-streamPos`.
+    /// If `k` is positive, then bytes
+    /// `buf[streamPos]` through `buf[streamPos+k-1]`
+    /// are copied into `b[off]`  through
+    /// `b[off+k-1]` in the manner performed
+    /// by `System.arraycopy`. The
+    /// value `k` is added into `streamPos`
+    /// and `k` is returned.
+    ///
+    /// This `read` method cannot block.
+    ///
+    /// @param b   the buffer into which the data is read.
+    /// @param off the start offset in the destination array `b`
+    /// @param len the maximum number of bytes read.
+    /// @return the total number of bytes read into the buffer, or
+    /// `-1` if there is no more data because the end of
+    /// the stream has been reached.
+    /// @throws NullPointerException      If `b` is `null`.
+    /// @throws IndexOutOfBoundsException If `off` is negative,
+    ///                                                                                                                                         `len` is negative, or `len` is greater than
+    ///                                                                                                                                         `b.length - off`
     @Override
     public int read(byte b[], int off, int len) throws IOException {
         flushBits();
@@ -154,18 +142,16 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
         return len;
     }
 
-    /**
-     * Skips <code>n</code> bytes of input from this input stream. Fewer
-     * bytes might be skipped if the end of the input stream is reached.
-     * The actual number <code>k</code>
-     * of bytes to be skipped is equal to the smaller
-     * of <code>n</code> and  <code>count-streamPos</code>.
-     * The value <code>k</code> is added into <code>streamPos</code>
-     * and <code>k</code> is returned.
-     *
-     * @param n the number of bytes to be skipped.
-     * @return the actual number of bytes skipped.
-     */
+    /// Skips `n` bytes of input from this input stream. Fewer
+    /// bytes might be skipped if the end of the input stream is reached.
+    /// The actual number `k`
+    /// of bytes to be skipped is equal to the smaller
+    /// of `n` and  `count-streamPos`.
+    /// The value `k` is added into `streamPos`
+    /// and `k` is returned.
+    ///
+    /// @param n the number of bytes to be skipped.
+    /// @return the actual number of bytes skipped.
     public long skip(long n) {
         if (streamPos + n > count) {
             n = count - streamPos;
@@ -177,26 +163,22 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
         return n;
     }
 
-    /**
-     * Returns the number of remaining bytes that can be read (or skipped over)
-     * from this input stream.
-     * <p>
-     * The value returned is <code>count&nbsp;- streamPos</code>,
-     * which is the number of bytes remaining to be read from the input buffer.
-     *
-     * @return the number of remaining bytes that can be read (or skipped
-     * over) from this input stream without blocking.
-     */
+    /// Returns the number of remaining bytes that can be read (or skipped over)
+    /// from this input stream.
+    ///
+    /// The value returned is `count&nbsp;- streamPos`,
+    /// which is the number of bytes remaining to be read from the input buffer.
+    ///
+    /// @return the number of remaining bytes that can be read (or skipped
+    /// over) from this input stream without blocking.
     public int available() {
         return (int) (count - streamPos);
     }
 
-    /**
-     * Closing a {@code ByteArrayInputStream} has no effect. The methods in
-     * this class can be called after the stream has been closed without
-     * generating an {@code IOException}.
-     * <p>
-     */
+    /// Closing a `ByteArrayInputStream` has no effect. The methods in
+    /// this class can be called after the stream has been closed without
+    /// generating an `IOException`.
+    ///
     @Override
     public void close() {
         // does nothing!!
@@ -221,11 +203,9 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
         this.streamPos = pos + arrayOffset;
     }
 
-    /**
-     * Writes the specified byte to this output stream.
-     *
-     * @param b the byte to be written.
-     */
+    /// Writes the specified byte to this output stream.
+    ///
+    /// @param b the byte to be written.
     @Override
     public void write(int b) throws IOException {
         flushBits();
@@ -240,24 +220,20 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
         count = (int) newcount;
     }
 
-    /**
-     * Writes the specified byte array to this output stream.
-     *
-     * @param b the data.
-     */
+    /// Writes the specified byte array to this output stream.
+    ///
+    /// @param b the data.
     @Override
     public void write(byte b[]) throws IOException {
         write(b, 0, b.length);
     }
 
-    /**
-     * Writes <code>len</code> bytes from the specified byte array
-     * starting at offset <code>off</code> to this output stream.
-     *
-     * @param b   the data.
-     * @param off the start offset in the data.
-     * @param len the number of bytes to write.
-     */
+    /// Writes `len` bytes from the specified byte array
+    /// starting at offset `off` to this output stream.
+    ///
+    /// @param b   the data.
+    /// @param off the start offset in the data.
+    /// @param len the number of bytes to write.
     @Override
     public void write(byte b[], int off, int len) throws IOException {
         flushBits();
@@ -276,43 +252,35 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
         count = newcount;
     }
 
-    /**
-     * Writes the contents of the byte array into the specified output
-     * stream.
-     *
-     * @param out
-     */
+    /// Writes the contents of the byte array into the specified output
+    /// stream.
+    ///
+    /// @param out
     public void toOutputStream(OutputStream out) throws IOException {
         out.write(buf, arrayOffset, count);
     }
 
-    /**
-     * Writes the contents of the byte array into the specified image output
-     * stream.
-     *
-     * @param out
-     */
+    /// Writes the contents of the byte array into the specified image output
+    /// stream.
+    ///
+    /// @param out
     public void toImageOutputStream(ImageOutputStream out) throws IOException {
         out.write(buf, arrayOffset, count);
     }
 
-    /**
-     * Creates a newly allocated byte array. Its size is the current
-     * size of this output stream and the valid contents of the buffer
-     * have been copied into it.
-     *
-     * @return the current contents of this output stream, as a byte array.
-     * @see java.io.ByteArrayOutputStream#size()
-     */
+    /// Creates a newly allocated byte array. Its size is the current
+    /// size of this output stream and the valid contents of the buffer
+    /// have been copied into it.
+    ///
+    /// @return the current contents of this output stream, as a byte array.
+    /// @see java.io.ByteArrayOutputStream#size()
     public byte[] toByteArray() {
         byte[] copy = new byte[count - arrayOffset];
         System.arraycopy(buf, arrayOffset, copy, 0, count);
         return copy;
     }
 
-    /**
-     * Returns the internally used byte buffer.
-     */
+    /// Returns the internally used byte buffer.
     public byte[] getBuffer() {
         return buf;
     }
@@ -326,12 +294,10 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
         return (int) length();
     }
 
-    /**
-     * Resets the <code>count</code> field of this byte array output
-     * stream to zero, so that all currently accumulated output in the
-     * output stream is discarded. The output stream can be used again,
-     * reusing the already allocated buffer space.
-     */
+    /// Resets the `count` field of this byte array output
+    /// stream to zero, so that all currently accumulated output in the
+    /// output stream is discarded. The output stream can be used again,
+    /// reusing the already allocated buffer space.
     public void clear() {
         count = arrayOffset;
         streamPos = arrayOffset;
@@ -351,11 +317,9 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
         streamPos += 2;
     }
 
-    /**
-     * Grows capacity if necessary, so that it can hold the given number of additional bytes.
-     *
-     * @param len the number of additional bytes
-     */
+    /// Grows capacity if necessary, so that it can hold the given number of additional bytes.
+    ///
+    /// @param len the number of additional bytes
     private void growBy(int len) {
         int newcount = max((int) streamPos + len, count);
         if (newcount > buf.length) {
@@ -364,11 +328,9 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
         count = newcount;
     }
 
-    /**
-     * Grows capacity if necessary, so that it can hold the given number of additional bytes.
-     *
-     * @param len the number of additional bytes
-     */
+    /// Grows capacity if necessary, so that it can hold the given number of additional bytes.
+    ///
+    /// @param len the number of additional bytes
     public void growSizeBy(int len) {
         int newcount = max((int) streamPos + len, count);
         if (newcount > buf.length) {

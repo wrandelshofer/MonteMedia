@@ -36,49 +36,35 @@ import static org.monte.media.av.FormatKeys.MimeTypeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
 
-/**
- * Encodes a {@link BufferedImage} into a {@link BufferedImage} with a {@link AmigaHAMColorModel}.
- */
+/// Encodes a [BufferedImage] into a [BufferedImage] with a [AmigaHAMColorModel].
 public class AmigaHAMColorModelEncoder extends AbstractCodec {
-    /**
-     * The number of bits per color channel.
-     * <p>
-     * The default value is 8.
-     * <p>
-     * <ul>
-     *     <li>4 will select HAM6</li>
-     *     <li>6 will select HAM8 but the low bits of every color will be set to 01.
-     *     This helps to prevent flickering in videos.
-     *     </li>
-     *     <li>8 and every other value will select HAM8</li>
-     * </ul>
-     */
+    /// The number of bits per color channel.
+    ///
+    /// The default value is 8.
+    ///
+    ///
+    ///   - 4 will select HAM6
+    ///   - 6 will select HAM8 but the low bits of every color will be set to 01.
+    ///     This helps to prevent flickering in videos.
+    ///
+    ///   - 8 and every other value will select HAM8
+    ///
     public final static FormatKey<Integer> BitsPerColorKey = new FormatKey<>("bitsPerColor", Integer.class);
-    /**
-     * Dithering pattern is multiplied by the specified factor.
-     */
+    /// Dithering pattern is multiplied by the specified factor.
     public final static FormatKey<Double> DitheringFactorKey = new FormatKey<>("ditheringFactor", Double.class);
-    /**
-     * Optional, the desired number of colors in the index color model.
-     * This value is only used when no {@link #IndexColorModelKey} has been provided.
-     */
+    /// Optional, the desired number of colors in the index color model.
+    /// This value is only used when no [#IndexColorModelKey] has been provided.
     public final static FormatKey<DitheringMethod> DitheringMethodKey = new FormatKey<>("ditheringMethod", DitheringMethod.class);
-    /**
-     * Optional, the desired index color model.
-     * If this value is null, an index color model is computed.
-     */
+    /// Optional, the desired index color model.
+    /// If this value is null, an index color model is computed.
     public final static FormatKey<IndexColorModel> IndexColorModelKey = new FormatKey<>("indexColorModel", IndexColorModel.class);
-    /**
-     * Optional, a color map with reserved colors.
-     * If this value is null, no colors are reserved.
-     * If this value is non-null and {@link #IndexColorModelKey} is null, the computed color model will start with the specified reserved colors.
-     */
+    /// Optional, a color map with reserved colors.
+    /// If this value is null, no colors are reserved.
+    /// If this value is non-null and [#IndexColorModelKey] is null, the computed color model will start with the specified reserved colors.
     public final static FormatKey<IndexColorModel> ReservedColorsKey = new FormatKey<>("reservedColors", IndexColorModel.class);
-    /**
-     * Optional, the desired number of colors in the index color model.
-     * This value is only used when no {@link #IndexColorModelKey} has been provided.
-     * The default value is 16.
-     */
+    /// Optional, the desired number of colors in the index color model.
+    /// This value is only used when no [#IndexColorModelKey] has been provided.
+    /// The default value is 16.
     public final static FormatKey<Integer> NumberOfColorsKey = new FormatKey<>("numberOfColors", Integer.class);
     private final OKLabColorSpace oklab = new OKLabColorSpace();
     private Dither dither0, dither1, dither2;

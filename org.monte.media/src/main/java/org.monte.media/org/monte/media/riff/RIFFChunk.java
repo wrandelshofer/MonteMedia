@@ -8,11 +8,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-/**
- * RIFF Chunks form the building blocks of a RIFF file.
- *
- * @author Werner Randelshofer
- */
+/// RIFF Chunks form the building blocks of a RIFF file.
+///
+/// @author Werner Randelshofer
 public class RIFFChunk {
     private int id;
     private int type;
@@ -21,10 +19,8 @@ public class RIFFChunk {
     private byte[] data;
     private HashMap<RIFFChunk, RIFFChunk> propertyChunks;
     private ArrayList<RIFFChunk> collectionChunks;
-    /**
-     * This is used to display parser messages, when the parser encounters and
-     * error while parsing the chunk.
-     */
+    /// This is used to display parser messages, when the parser encounters and
+    /// error while parsing the chunk.
     private String parserMessage;
 
     public RIFFChunk(int type, int id) {
@@ -56,30 +52,22 @@ public class RIFFChunk {
         }
     }
 
-    /**
-     * @return ID of chunk.
-     */
+    /// @return ID of chunk.
     public int getID() {
         return id;
     }
 
-    /**
-     * @return Type of chunk.
-     */
+    /// @return Type of chunk.
     public int getType() {
         return type;
     }
 
-    /**
-     * @return Size of chunk.
-     */
+    /// @return Size of chunk.
     public long getSize() {
         return size;
     }
 
-    /**
-     * @return Scan position of chunk within the file.
-     */
+    /// @return Scan position of chunk within the file.
     public long getScan() {
         return scan;
     }
@@ -144,18 +132,14 @@ public class RIFFChunk {
         return collectionChunks;
     }
 
-    /**
-     * Sets the data.
-     * Note: The array will not be cloned.
-     */
+    /// Sets the data.
+    /// Note: The array will not be cloned.
     public void setData(byte[] data) {
         this.data = data;
     }
 
-    /**
-     * Gets the data.
-     * Note: The array will not be cloned.
-     */
+    /// Gets the data.
+    /// Note: The array will not be cloned.
     public byte[] getData() {
         return data;
     }

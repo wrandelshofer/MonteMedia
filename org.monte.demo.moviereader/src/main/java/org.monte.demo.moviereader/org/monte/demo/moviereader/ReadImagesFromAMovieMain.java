@@ -28,26 +28,23 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-/**
- * Reads images from a movie with the Monte Media library and displays them in a JFrame.
- *
- * @author Werner Randelshofer
- */
+/// Reads images from a movie with the Monte Media library and displays them in a JFrame.
+///
+/// @author Werner Randelshofer
 public class ReadImagesFromAMovieMain {
-    /**
-     * Main method.
-     * <p>
-     * Arguments:
-     * <pre>{@literal
-     * <file>
-     * }</pre>
-     * <dl>
-     *     <dt>file</dt>
-     *     <dd>Optional. The movie file to be loaded.</dd>
-     * </dl>
-     *
-     * @param args the command line arguments
-     */
+    /// Main method.
+    ///
+    /// Arguments:
+    /// <pre>
+    /// {@literal
+    ///  <file>
+    ///  }</pre>
+    /// <dl>
+    ///     <dt>file</dt>
+    ///     <dd>Optional. The movie file to be loaded.</dd>
+    /// </dl>
+    ///
+    /// @param args the command line arguments
     public static void main(String[] args) throws Exception {
         ReadImagesFromAMovieMain main = new ReadImagesFromAMovieMain();
         SwingUtilities.invokeAndWait(() -> {
@@ -65,16 +62,14 @@ public class ReadImagesFromAMovieMain {
     private JLabel imageNbLabel;
     private JFrame frame;
 
-    /**
-     * Creates the frame.
-     * <pre>
-     *     +-----------------------+
-     *     |      videoLabel       |
-     *     +--------+--------------+
-     *     | slider | imageNbLabel |
-     *     +--------+--------------+
-     * </pre>
-     */
+    /// Creates the frame.
+    /// <pre>
+    ///     +-----------------------+
+    ///     |      videoLabel       |
+    ///     +--------+--------------+
+    ///     | slider | imageNbLabel |
+    ///     +--------+--------------+
+    /// </pre>
     private void createFrame() {
         frame = new JFrame("please drop a file in this window");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

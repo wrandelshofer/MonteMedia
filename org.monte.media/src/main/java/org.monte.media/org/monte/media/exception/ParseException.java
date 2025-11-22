@@ -4,11 +4,9 @@
  */
 package org.monte.media.exception;
 
-/**
- * Exception thrown by IFFParse.
- *
- * @author Werner Randelshofer
- */
+/// Exception thrown by IFFParse.
+///
+/// @author Werner Randelshofer
 public class ParseException extends Exception {
 
     public static final long serialVersionUID = 1L;

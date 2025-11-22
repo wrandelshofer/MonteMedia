@@ -4,11 +4,9 @@
  */
 package org.monte.media.av;
 
-/**
- * Service provider interface for {@link Codec}.
- *
- * @author Werner Randelshofer
- */
+/// Service provider interface for [Codec].
+///
+/// @author Werner Randelshofer
 public interface CodecSpi {
 
     Codec create();

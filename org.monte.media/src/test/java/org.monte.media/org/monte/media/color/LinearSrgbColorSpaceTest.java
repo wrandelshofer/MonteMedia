@@ -19,19 +19,15 @@ public class LinearSrgbColorSpaceTest extends AbstractNamedColorSpaceTest {
         return (ParametricLinearRgbColorSpace) new SrgbColorSpace().getLinearColorSpace();
     }
 
-    /**
-     * References:
-     * <dl>
-     *     <dt>Wikipedia. sRGB.</dt>
-     *     <dd><a href="https://en.wikipedia.org/wiki/SRGB">wikipedia</a></dd>
-     *
-     *     <dt>CSS Color Module Level 4. The Predefined sRGB Color Space: the sRGB keyword.</dt>
-     *     <dd><a href="https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#predefined-sRGB">w3.org</a></dd>
-     *
-     *     <dt>CSS Color Module Level 4. The Predefined Linear-light sRGB Color Space: the srgb-linear keyword.</dt>
-     *     <dd><a href="https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#predefined-sRGB-linear">w3.org</a></dd>
-     * </dl>
-     */
+    /// References:
+    /// <dl>
+    ///     <dt>Wikipedia. sRGB.</dt>
+    ///     <dd>[wikipedia](https://en.wikipedia.org/wiki/SRGB)</dd>
+    ///     <dt>CSS Color Module Level 4. The Predefined sRGB Color Space: the sRGB keyword.</dt>
+    ///     <dd>[w3.org](https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#predefined-sRGB)</dd>
+    ///     <dt>CSS Color Module Level 4. The Predefined Linear-light sRGB Color Space: the srgb-linear keyword.</dt>
+    ///     <dd>[w3.org](https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#predefined-sRGB-linear)</dd>
+    /// </dl>
     @Test
     public void shouldHaveExpectedMatrix() {
         ParametricLinearRgbColorSpace instance = getInstance();

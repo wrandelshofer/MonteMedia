@@ -48,17 +48,11 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 public class CDXLMovieReader extends CDXLInputStream implements MovieReader {
     public final static String MIME_CDXL = "video/x-cdxl";
     public final static Format CDXL = new Format(MediaTypeKey, FormatKeys.MediaType.FILE, MimeTypeKey, MIME_CDXL);
-    /**
-     * Whether the frame rate must be fixed. False means variable frame rate.
-     */
+    /// Whether the frame rate must be fixed. False means variable frame rate.
     public final static FormatKey<Boolean> HamKey = new FormatKey<>("hamKey", Boolean.class);
-    /**
-     * Whether the scanlines are interleaved.
-     */
+    /// Whether the scanlines are interleaved.
     public final static FormatKey<Boolean> InterleavedKey = new FormatKey<>("interleavedKey", Boolean.class);
-    /**
-     * Number of bits per color.
-     */
+    /// Number of bits per color.
     public final static FormatKey<Integer> BitsPerColor = new FormatKey<>("NumberOfBitsPerColor", Integer.class);
 
     private abstract static class Track {

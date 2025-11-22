@@ -12,21 +12,16 @@ import org.monte.media.impl.jcodec.common.model.Rect;
 
 import java.util.Comparator;
 
-/**
- * References:
- * <p>
- * This code has been derived from JCodecProject.
- * <dl>
- *     <dt>JCodecProject. Copyright 2008-2019 JCodecProject.
- *     <br><a href="https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE">BSD 2-Clause License.</a></dt>
- *     <dd><a href="https://github.com/jcodec/jcodec">github.com</a></dd>
- * </dl>
- *
- * <p>
- * Picture extension with frame number, makes it easier to debug reordering
- *
- * @author The JCodec project
- */
+/// References:
+///
+/// JCodecProject. Copyright 2008-2019 JCodecProject.
+/// : [BSD 2-Clause License.](https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE)
+/// : [github.com](https://github.com/jcodec/jcodec)
+///
+///
+/// Picture extension with frame number, makes it easier to debug reordering
+///
+/// @author The JCodec project
 public class Frame extends Picture {
     private int frameNo;
     private SliceType frameType;
@@ -66,11 +61,9 @@ public class Frame extends Picture {
         this.poc = src.poc;
     }
 
-    /**
-     * Creates a cropped clone of this picture.
-     *
-     * @return
-     */
+    /// Creates a cropped clone of this picture.
+    ///
+    /// @return
     public Frame cloneCropped() {
         if (cropNeeded()) {
             return cropped();

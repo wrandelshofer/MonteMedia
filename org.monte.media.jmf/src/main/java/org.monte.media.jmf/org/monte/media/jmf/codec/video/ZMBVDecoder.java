@@ -14,16 +14,12 @@ import javax.media.format.RGBFormat;
 import javax.media.format.VideoFormat;
 import java.awt.Dimension;
 
-/**
- * {@code ZMBVDecoder}.
- *
- * @author Werner Randelshofer
- */
+/// `ZMBVDecoder`.
+///
+/// @author Werner Randelshofer
 public class ZMBVDecoder extends AbstractVideoDecoder {
 
-    /**
-     * RGB bit masks
-     */
+    /// RGB bit masks
     protected static final int bMask = 0x000000ff;
     protected static final int gMask = 0x0000ff00;
     protected static final int rMask = 0x00ff0000;
@@ -118,9 +114,7 @@ public class ZMBVDecoder extends AbstractVideoDecoder {
         prevPixels = new int[outputFormat.getSize().width * outputFormat.getSize().height];
     }
 
-    /**
-     * Registers this codec with the JMF PluginManager.
-     */
+    /// Registers this codec with the JMF PluginManager.
     public static void registerWithJMF() {
         ZMBVDecoder codec = new ZMBVDecoder();
         PlugInManager.addPlugIn(TSCCCodec.class.getName(), codec.supportedInputFormats, codec.defaultOutputFormats, PlugInManager.CODEC);

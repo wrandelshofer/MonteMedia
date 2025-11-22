@@ -7,11 +7,9 @@ package org.monte.media.av.codec.audio;
 
 import org.monte.media.av.Format;
 
-/**
- * {@code AbstractAudioCodec}.
- *
- * @author Werner Randelshofer
- */
+/// `AbstractAudioCodec`.
+///
+/// @author Werner Randelshofer
 public abstract class AbstractAudioCodec extends org.monte.media.av.AbstractCodec {
 
     public AbstractAudioCodec(Format[] supportedInputFormats, Format[] supportedOutputFormats) {

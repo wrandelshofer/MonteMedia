@@ -7,54 +7,46 @@ package org.monte.media.quicktime.codec.text.cta608;
 
 import java.util.Objects;
 
-/**
- * CTA-608 Preamble address code and tab offsets (PAC).
- * <p>
- * This is a 16-bit unsigned short in big-endian order ({@code uint16BE}).
- * <pre>
- *     15     12 11     8   7     4   3     0
- *     +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
- *     |P|0|0|1| |C|r|r|r| |P|1|r|a| |a|a|a|u|
- *     +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
- *
- *     bits   interpretation
- *     15     odd parity bit of bits 8-19 (shown as 'P')
- *     14-13  always 0 (shown as '00').
- *     12     always 1 (shown as '1').
- *     11     channel (shown as 'C')
- *     10-8   row position indicator low-bits (shown as 'rrr')
- *     7      odd parity bit of bits 0-7 (shown as 'P')
- *     6      always 1 (shown as '1')
- *     5      row position indicator high-bit (shown as 'r')
- *     4-1    text attributes indicator (shown as 'aaaa')
- *     u      underline indicator (shown as 'U')
- * </pre>
- * <p>
- * The screen area for a closed caption provides space for 15 rows with 32 columns of text.
- * This allows to show up to 480 characters on the same screen.
- * <p>
- * References:
- * <dl>
- *     <dt>ANSI/CTA Standard. Line 21 Data Services. ANSI/CTA-608-E S-2019. April 2008.</dt>
- *     <dd><a href="https://shop.cta.tech/products/line-21-data-services">ANSI-CTA-608-E-S-2019-Final.pdf</a></dd>
- * </dl>
- */
+/// CTA-608 Preamble address code and tab offsets (PAC).
+///
+/// This is a 16-bit unsigned short in big-endian order (`uint16BE`).
+/// <pre>
+///     15     12 11     8   7     4   3     0
+///     +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
+///     |P|0|0|1| |C|r|r|r| |P|1|r|a| |a|a|a|u|
+///     +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
+///
+///     bits   interpretation
+///     15     odd parity bit of bits 8-19 (shown as 'P')
+///     14-13  always 0 (shown as '00').
+///     12     always 1 (shown as '1').
+///     11     channel (shown as 'C')
+///     10-8   row position indicator low-bits (shown as 'rrr')
+///     7      odd parity bit of bits 0-7 (shown as 'P')
+///     6      always 1 (shown as '1')
+///     5      row position indicator high-bit (shown as 'r')
+///     4-1    text attributes indicator (shown as 'aaaa')
+///     u      underline indicator (shown as 'U')
+/// </pre>
+///
+/// The screen area for a closed caption provides space for 15 rows with 32 columns of text.
+/// This allows to show up to 480 characters on the same screen.
+///
+/// References:
+/// <dl>
+///     <dt>ANSI/CTA Standard. Line 21 Data Services. ANSI/CTA-608-E S-2019. April 2008.</dt>
+///     <dd>[ANSI-CTA-608-E-S-2019-Final.pdf](https://shop.cta.tech/products/line-21-data-services)</dd>
+/// </dl>
 public non-sealed class PacToken implements Cta608Token {
 
-    /**
-     * Text attribute.
-     * <p>
-     * The ordinal is significant.
-     */
+    /// Text attribute.
+    ///
+    /// The ordinal is significant.
     public enum Attributes {
         WHITE, GREEN, BLUE, CYAN, RED, YELLOW, MAGENTA,
-        /**
-         * Italics assigns white as the color attribute.
-         */
+        /// Italics assigns white as the color attribute.
         WHITE_ITALICS,
-        /**
-         * Indent codes assign white as the color attribute.
-         */
+        /// Indent codes assign white as the color attribute.
         INDENT_0, INDENT_4, INDENT_8, INDENT_12, INDENT_16, INDENT_20, INDENT_24, INDENT_28
     }
 
@@ -67,11 +59,9 @@ public non-sealed class PacToken implements Cta608Token {
 
     private final short code;
 
-    /**
-     * Constructs a new instance.
-     *
-     * @param code a PAC code
-     */
+    /// Constructs a new instance.
+    ///
+    /// @param code a PAC code
     public PacToken(short code) {
         if ((code & 0b0111_0000_0100_0000) != 0b0001_0000_0100_0000)
             throw new IllegalArgumentException("code=" + Integer.toHexString(code));
@@ -79,14 +69,12 @@ public non-sealed class PacToken implements Cta608Token {
         this.code = Cta608Token.fixParityBits(code);
     }
 
-    /**
-     * Constructs a new instance.
-     *
-     * @param channel    value in the range [1,2].
-     * @param row        value in the range [1,15].
-     * @param attributes text attributes, non-null
-     * @param underline  true if underline
-     */
+    /// Constructs a new instance.
+    ///
+    /// @param channel    value in the range [1,2].
+    /// @param row        value in the range [1,15].
+    /// @param attributes text attributes, non-null
+    /// @param underline  true if underline
     public PacToken(int channel, int row, Attributes attributes, boolean underline) {
         if (channel < 1 || channel > 2) throw new IllegalArgumentException("channel=" + channel);
         if (row < 1 || row > 15) throw new IllegalArgumentException("row=" + row);
@@ -115,16 +103,12 @@ public non-sealed class PacToken implements Cta608Token {
         return Attributes.values()[attrs];
     }
 
-    /**
-     * Gets the code with parity bits.
-     */
+    /// Gets the code with parity bits.
     public short getCode() {
         return code;
     }
 
-    /**
-     * Gets the code without parity bits.
-     */
+    /// Gets the code without parity bits.
     public short getCodeWithoutParity() {
         return (short) (code & 0x7f7f);
     }

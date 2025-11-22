@@ -5,10 +5,8 @@
 
 package org.monte.media.image.algo;
 
-/**
- * Resamples an image by picking the nearest neighbour pixel
- * of the source image.
- */
+/// Resamples an image by picking the nearest neighbour pixel
+/// of the source image.
 public class NearestNeighbourResampleAlgoFloat implements ResampleAlgoFloat {
     @Override
     public void resample(float[] srcPixels, int srcWidth, int srcHeight, int srcOffset, int srcScanline, float[] dstPixels, int dstWidth, int dstHeight, int dstOffset, int dstScanline) {

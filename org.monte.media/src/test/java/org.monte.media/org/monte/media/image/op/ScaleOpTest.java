@@ -3,13 +3,11 @@
  * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 
-package org.monte.media.image;
+package org.monte.media.image.op;
 
 import org.junit.jupiter.api.Test;
+import org.monte.media.image.TestImageFactory;
 import org.monte.media.image.algo.BilinearInterpolationResampleAlgoFloat;
-import org.monte.media.image.op.GaussianKernelFactory;
-import org.monte.media.image.op.ScaleOp;
-import org.monte.media.image.op.UnsharpMaskOp;
 
 import javax.imageio.ImageIO;
 import java.awt.color.ColorSpace;
@@ -21,7 +19,7 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ScaleOpFloatTest {
+class ScaleOpTest {
     int dstWidth = 200;
     int dstHeight = 100;
     private final float blurRadiusFactor = 0.75f;
@@ -48,7 +46,7 @@ class ScaleOpFloatTest {
         var g = dstSRgb.createGraphics();
         g.drawImage(dst, 0, 0, null);
         g.dispose();
-        boolean success = ImageIO.write(dstSRgb, "PNG", new File("target/downscale-output.png"));
+        boolean success = ImageIO.write(dstSRgb, "PNG", new File("target/ScaleOp-output.png"));
         assertTrue(success);
 
     }
@@ -67,7 +65,7 @@ class ScaleOpFloatTest {
 
         var dst = op.filter(srcRgb, null);
 
-        boolean success = ImageIO.write(dst, "PNG", new File("target/downscale-output-awt.png"));
+        boolean success = ImageIO.write(dst, "PNG", new File("target/AwtScaleOp-output.png"));
         assertTrue(success);
 
     }

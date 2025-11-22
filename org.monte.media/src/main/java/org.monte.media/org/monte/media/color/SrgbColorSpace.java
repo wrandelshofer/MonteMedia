@@ -16,12 +16,13 @@ package org.monte.media.color;
 ///
 /// Chromatic coordinates:
 ///
-/// | Color       | x      | y      |
-/// |-------------|--------|--------|
-/// | Red (R)     | 0.640  | 0.330  |
-/// | Green (G)   | 0.300  | 0.600  |
-/// | Blue (B)    | 0.150  | 0.060  |
-/// | White (D65) | 0.3127 | 0.3290 |
+/// | Color       | x      | y      | X     | Y     | Z     |
+/// |-------------|--------|--------|-------|-------|-------|
+/// | Red (R)     | 0.640  | 0.330  | 0.436 | 0.222 | 0.014 |
+/// | Green (G)   | 0.300  | 0.600  | 0.385 | 0.717 | 0.097 |
+/// | Blue (B)    | 0.150  | 0.060  | 0.143 | 0.061 | 0.714 |
+/// | White (D65) | 0.3127 | 0.3290 | 0.950 | 1.000 | 1.089 |
+/// | Black       |        |        | 0.000 | 0.000 | 0.000 |
 ///
 /// Conceptual Gamma correction performed by the transfer function:
 ///
@@ -76,7 +77,13 @@ package org.monte.media.color;
 /// CSS Color Module Level 4. 18. Sample code for Color Conversions
 /// : [w3.org](https://www.w3.org/TR/2025/CRD-css-color-4-20250424/#color-conversion-code)
 public class SrgbColorSpace extends ParametricNonLinearRgbColorSpace {
-    public final static SrgbColorSpace INSTANCE = new SrgbColorSpace();
+    public static SrgbColorSpace getInstance() {
+        class Holder {
+            private static final SrgbColorSpace INSTANCE = new SrgbColorSpace();
+        }
+        return Holder.INSTANCE;
+    }
+
 
     public SrgbColorSpace() {
         super("sRGB", new LinearSrgbColorSpace(),
@@ -97,16 +104,12 @@ public class SrgbColorSpace extends ParametricNonLinearRgbColorSpace {
         return colorvalue;
     }
 
-    /**
-     * Inverse "Gamma" transfer function.
-     */
+    /// Inverse "Gamma" transfer function.
     public static float fromLinear(float linear) {
         return LinearSrgbColorSpace.fromLinear(linear);
     }
 
-    /**
-     * "Gamma" transfer function.
-     */
+    /// "Gamma" transfer function.
     public static float toLinear(float corrected) {
         return LinearSrgbColorSpace.toLinear(corrected);
     }

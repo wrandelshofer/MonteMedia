@@ -42,11 +42,9 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.QualityKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
-/**
- * Supports writing of images into a ZIP file.
- * <p>
- * All files with extension .png are treated as video frames.
- */
+/// Supports writing of images into a ZIP file.
+///
+/// All files with extension .png are treated as video frames.
 public class ZipMovieWriter implements MovieWriter {
     private final ZipOutputStream out;
     public final static Format ZIP = new Format(MediaTypeKey, FormatKeys.MediaType.FILE, MimeTypeKey, MIME_ZIP);
@@ -180,11 +178,9 @@ public class ZipMovieWriter implements MovieWriter {
         t.quality = MathUtil.clamp((int) (newValue * 10_000f), 0, 10_000);
     }
 
-    /**
-     * Returns the compression quality of a track.
-     *
-     * @return compression quality
-     */
+    /// Returns the compression quality of a track.
+    ///
+    /// @return compression quality
     public float getCompressionQuality(int track) {
         Track t = tracks.get(track);
         return t.quality == -1 ? 0.97f : MathUtil.clamp(t.quality / 10_000f, 0f, 1f);

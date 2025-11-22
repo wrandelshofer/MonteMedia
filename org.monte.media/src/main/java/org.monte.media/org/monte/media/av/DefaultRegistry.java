@@ -15,12 +15,10 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 
-/**
- * This default {@link Registry} uses {@link ServiceLoader} to discover
- * {@link CodecSpi}s, {@link MovieReaderSpi}s, and {@link MovieWriterSpi}s.
- *
- * @author Werner Randelshofer
- */
+/// This default [Registry] uses [ServiceLoader] to discover
+/// [CodecSpi]s, [MovieReaderSpi]s, and [MovieWriterSpi]s.
+///
+/// @author Werner Randelshofer
 public class DefaultRegistry extends Registry {
 
     private List<CodecSpi> codecSpis;

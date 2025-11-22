@@ -9,11 +9,9 @@ import javax.media.Codec;
 import javax.media.Control;
 import javax.media.ResourceUnavailableException;
 
-/**
- * {@code AbstractCodec}.
- *
- * @author Werner Randelshofer
- */
+/// `AbstractCodec`.
+///
+/// @author Werner Randelshofer
 public abstract class AbstractCodec implements Codec {
 
     protected String pluginName;

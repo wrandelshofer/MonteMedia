@@ -20,9 +20,7 @@ import javafx.scene.media.MediaMarkerEvent;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
-/**
- * Interface for a player that can play {@link MediaInterface}.
- */
+/// Interface for a player that can play [MediaInterface].
 public interface MediaPlayerInterface {
     DoubleProperty audioSpectrumIntervalProperty();
 
@@ -38,20 +36,16 @@ public interface MediaPlayerInterface {
 
     ReadOnlyObjectProperty<Duration> bufferProgressTimeProperty();
 
-    /**
-     * The number of completed playback cycles. On the first pass,
-     * the value should be 0.  On the second pass, the value should be 1 and
-     * so on.  It is incremented at the end of each cycle just prior to seeking
-     * back to {@link #startTimeProperty startTime}, i.e., when {@link #stopTimeProperty stopTime} or the
-     * end of media has been reached.
-     */
+    /// The number of completed playback cycles. On the first pass,
+    /// the value should be 0.  On the second pass, the value should be 1 and
+    /// so on.  It is incremented at the end of each cycle just prior to seeking
+    /// back to [startTime][#startTimeProperty], i.e., when [stopTime][#stopTimeProperty] or the
+    /// end of media has been reached.
     ReadOnlyIntegerProperty currentCountProperty();
 
     ReadOnlyDoubleProperty currentRateProperty();
 
-    /**
-     * The current media time.
-     */
+    /// The current media time.
     ReadOnlyObjectProperty<Duration> currentTimeProperty();
 
     IntegerProperty cycleCountProperty();
@@ -92,12 +86,10 @@ public interface MediaPlayerInterface {
 
     ReadOnlyObjectProperty<Duration> totalDurationProperty();
 
-    /**
-     * The current frame number.
-     * <p>
-     * A negative value indicates that the media does not have numbered frames.
-     * For example for life media.
-     */
+    /// The current frame number.
+    ///
+    /// A negative value indicates that the media does not have numbered frames.
+    /// For example for life media.
     LongProperty currentFrameNumberProperty();
 
     DoubleProperty volumeProperty();

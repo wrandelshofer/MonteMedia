@@ -16,12 +16,10 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.GregorianCalendar;
 
-/**
- * This output stream filter supports common data types used in
- * a QuickTime Data Atom.
- *
- * @author Werner Randelshofer
- */
+/// This output stream filter supports common data types used in
+/// a QuickTime Data Atom.
+///
+/// @author Werner Randelshofer
 public class QTFFImageOutputStream extends FilterImageOutputStream {
 
     protected static final long MAC_TIMESTAMP_EPOCH = new GregorianCalendar(1904, GregorianCalendar.JANUARY, 1).getTimeInMillis();
@@ -35,11 +33,9 @@ public class QTFFImageOutputStream extends FilterImageOutputStream {
         super(out, out.getStreamPosition(), ByteOrder.BIG_ENDIAN, forwardFlushAndClose);
     }
 
-    /**
-     * Writes an Atom Type identifier (4 bytes).
-     *
-     * @param s A string with a length of 4 characters.
-     */
+    /// Writes an Atom Type identifier (4 bytes).
+    ///
+    /// @param s A string with a length of 4 characters.
     public void writeType(String s) throws IOException {
         if (s == null) {
             writeInt(0);
@@ -57,22 +53,18 @@ public class QTFFImageOutputStream extends FilterImageOutputStream {
     }
 
 
-    /**
-     * Writes a <code>BCD2</code> (one byte) to the underlying output stream.
-     *
-     * @param v an <code>int</code> to be written.
-     * @throws IOException if an I/O error occurs.
-     */
+    /// Writes a `BCD2` (one byte) to the underlying output stream.
+    ///
+    /// @param v an `int` to be written.
+    /// @throws IOException if an I/O error occurs.
     public void writeBCD2(int v) throws IOException {
         write(((v % 100 / 10) << 4) | (v % 10));
     }
 
-    /**
-     * Writes a <code>BCD4</code> (two bytes) to the underlying output stream.
-     *
-     * @param v an <code>int</code> to be written.
-     * @throws IOException if an I/O error occurs.
-     */
+    /// Writes a `BCD4` (two bytes) to the underlying output stream.
+    ///
+    /// @param v an `int` to be written.
+    /// @throws IOException if an I/O error occurs.
     public void writeBCD4(int v) throws IOException {
         writeShort(
                 ((v % 10000 / 1000) << 12)
@@ -82,12 +74,10 @@ public class QTFFImageOutputStream extends FilterImageOutputStream {
         );
     }
 
-    /**
-     * Writes a 32-bit Mac timestamp (seconds since 1902).
-     *
-     * @param date the date to be converted to a Mac timestamp
-     * @throws IOException if an I/O error occurs
-     */
+    /// Writes a 32-bit Mac timestamp (seconds since 1902).
+    ///
+    /// @param date the date to be converted to a Mac timestamp
+    /// @throws IOException if an I/O error occurs
     public void writeMacTimestamp(Instant date) throws IOException {
         long millis = date.toEpochMilli();
         long qtMillis = millis - MAC_TIMESTAMP_EPOCH;
@@ -95,12 +85,10 @@ public class QTFFImageOutputStream extends FilterImageOutputStream {
         writeInt((int) qtSeconds);
     }
 
-    /**
-     * Writes 32-bit fixed-point number divided as 16.16.
-     *
-     * @param f an <code>int</code> to be written.
-     * @throws IOException if an I/O error occurs.
-     */
+    /// Writes 32-bit fixed-point number divided as 16.16.
+    ///
+    /// @param f an `int` to be written.
+    /// @throws IOException if an I/O error occurs.
     public void writeFixed16D16(double f) throws IOException {
         double v = (f >= 0) ? f : -f;
 
@@ -114,12 +102,10 @@ public class QTFFImageOutputStream extends FilterImageOutputStream {
         writeInt(t);
     }
 
-    /**
-     * Writes 32-bit fixed-point number divided as 2.30.
-     *
-     * @param f an <code>int</code> to be written.
-     * @throws IOException if an I/O error occurs.
-     */
+    /// Writes 32-bit fixed-point number divided as 2.30.
+    ///
+    /// @param f an `int` to be written.
+    /// @throws IOException if an I/O error occurs.
     public void writeFixed2D30(double f) throws IOException {
         double v = (f >= 0) ? f : -f;
 
@@ -133,12 +119,10 @@ public class QTFFImageOutputStream extends FilterImageOutputStream {
         writeInt(t);
     }
 
-    /**
-     * Writes 32-bit fixed-point number divided as 8.8.
-     *
-     * @param f an <code>int</code> to be written.
-     * @throws IOException if an I/O error occurs.
-     */
+    /// Writes 32-bit fixed-point number divided as 8.8.
+    ///
+    /// @param f an `int` to be written.
+    /// @throws IOException if an I/O error occurs.
     public void writeFixed8D8(double f) throws IOException {
         double v = (f >= 0) ? f : -f;
 
@@ -152,12 +136,10 @@ public class QTFFImageOutputStream extends FilterImageOutputStream {
         writeShort(t);
     }
 
-    /**
-     * Writes a zero-terminated C String.
-     *
-     * @param s the string to be written
-     * @throws IOException if an I/O error occurs
-     */
+    /// Writes a zero-terminated C String.
+    ///
+    /// @param s the string to be written
+    /// @throws IOException if an I/O error occurs
     public void writeCString(String s) throws IOException {
         for (int i = 0; i < s.length(); i++) {
             byte ch = (byte) s.charAt(i);
@@ -167,12 +149,10 @@ public class QTFFImageOutputStream extends FilterImageOutputStream {
         write(0);
     }
 
-    /**
-     * Writes a Pascal String.
-     *
-     * @param s the string to be written
-     * @throws IOException if an I/O error occurs
-     */
+    /// Writes a Pascal String.
+    ///
+    /// @param s the string to be written
+    /// @throws IOException if an I/O error occurs
     public void writePString(String s) throws IOException {
         if (s == null) {
             write(0);
@@ -193,13 +173,11 @@ public class QTFFImageOutputStream extends FilterImageOutputStream {
         }
     }
 
-    /**
-     * Writes a Pascal String padded to the specified fixed size in bytes.
-     *
-     * @param s      the string to be written
-     * @param length the fixed size in bytes
-     * @throws IOException if an I/O error occurs
-     */
+    /// Writes a Pascal String padded to the specified fixed size in bytes.
+    ///
+    /// @param s      the string to be written
+    /// @param length the fixed size in bytes
+    /// @throws IOException if an I/O error occurs
     public void writePString(String s, int length) throws IOException {
         if (s.length() > length) {
             throw new IllegalArgumentException("String too long for PString of length " + length);

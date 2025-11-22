@@ -5,30 +5,26 @@
 package org.monte.media.color;
 
 
-import java.awt.color.ColorSpace;
 import java.io.Serial;
 
-/**
- * A parametric HLS color space computed from an RGB color space.
- * <p>
- * Components:
- * <dl>
- *     <dt>hue</dt><dd>0 to 360 degrees</dd>
- *     <dt>lightness</dt><dd>0 to 1 percentage</dd>
- *     <dt>saturation</dt><dd>0 to 1 percentage</dd>
- * </dl>
- * <p>
- * A color with maximal {@code lightness} is pure white.
- * <p>
- * A color with minimal {@code lightness} is pure black.
- * <p>
- * References:
- * <dl>
- *     <dt>CSS Color Module Level 4. 7. HSL Colors: hsl() and hsla() functions.</dt>
- *     <dd><a href="https://www.w3.org/TR/css-color-4/#the-hsl-notation">w3.org</a></dd>
- * </dl>
- *
- */
+/// A parametric HLS color space computed from an RGB color space.
+///
+/// Components:
+/// <dl>
+///     <dt>hue</dt><dd>0 to 360 degrees</dd>
+///     <dt>lightness</dt><dd>0 to 1 percentage</dd>
+///     <dt>saturation</dt><dd>0 to 1 percentage</dd>
+/// </dl>
+///
+/// A color with maximal `lightness` is pure white.
+///
+/// A color with minimal `lightness` is pure black.
+///
+/// References:
+///
+/// CSS Color Module Level 4. 7. HSL Colors: hsl() and hsla() functions.
+/// : [w3.org](https://www.w3.org/TR/css-color-4/#the-hsl-notation)
+///
 public class ParametricHlsColorSpace extends AbstractNamedColorSpace {
 
     @Serial
@@ -36,13 +32,11 @@ public class ParametricHlsColorSpace extends AbstractNamedColorSpace {
     private final NamedColorSpace rgbColorSpace;
     private final String name;
 
-    /**
-     * Creates a new instance that is based on the provided RGB color space.
-     *
-     * @param name          the name of the created color space
-     * @param rgbColorSpace the base RGB color space
-     * @throws IllegalArgumentException if {@code rgbColorSpace} has not type {@link ColorSpace#TYPE_RGB}.
-     */
+    /// Creates a new instance that is based on the provided RGB color space.
+    ///
+    /// @param name          the name of the created color space
+    /// @param rgbColorSpace the base RGB color space
+    /// @throws IllegalArgumentException if `rgbColorSpace` has not type [#TYPE_RGB].
     public ParametricHlsColorSpace(String name, NamedColorSpace rgbColorSpace) {
         super(TYPE_HLS, 3);
         assert (rgbColorSpace.getType() == TYPE_RGB);
@@ -54,12 +48,10 @@ public class ParametricHlsColorSpace extends AbstractNamedColorSpace {
         return rgbColorSpace;
     }
 
-    /**
-     * XYZ to LCH.
-     *
-     * @param lch CIEXYZ color value.
-     * @return LCH color value.
-     */
+    /// XYZ to LCH.
+    ///
+    /// @param lch CIEXYZ color value.
+    /// @return LCH color value.
     @Override
     public float[] fromCIEXYZ(float[] xyz, float[] lch) {
         return rgbToHls(rgbColorSpace.fromCIEXYZ(xyz, lch), lch);
@@ -201,12 +193,10 @@ public class ParametricHlsColorSpace extends AbstractNamedColorSpace {
         return hls;
     }
 
-    /**
-     * LCH to XYZ.
-     *
-     * @param colorvalue LCH color value.
-     * @return CIEXYZ color value.
-     */
+    /// LCH to XYZ.
+    ///
+    /// @param colorvalue LCH color value.
+    /// @return CIEXYZ color value.
     @Override
     public float[] toCIEXYZ(float[] colorvalue, float[] xyz) {
         return rgbColorSpace.toCIEXYZ(hlsToRgb(colorvalue, xyz), xyz);

@@ -57,17 +57,13 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.PixelFormatKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.QualityKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
-/**
- * Demonstrates the use of {@link MovieWriter}.
- *
- * @author Werner Randelshofer
- */
+/// Demonstrates the use of [MovieWriter].
+///
+/// @author Werner Randelshofer
 public class Main {
 
 
-    /**
-     * Creates a buffered image of the specified format.
-     */
+    /// Creates a buffered image of the specified format.
     private static BufferedImage createImage(Format format) {
         int depth = format.get(DepthKey);
         int width = format.get(WidthKey);
@@ -171,9 +167,7 @@ public class Main {
         g.draw(new Line2D.Double(p1.getX(), p1.getY(), p2.getX(), p2.getY()));
     }
 
-    /**
-     * @param args the command line arguments
-     */
+    /// @param args the command line arguments
     public static void main(String[] args) throws InterruptedException {
         System.out.println("MovieWriterDemo " + Main.class.getPackage().getImplementationVersion());
         System.out.println("This is a demo of the Monte Media library.");

@@ -11,11 +11,9 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.function.Function;
 
-/**
- * PreorderSpliterator.
- *
- * @param <T> the element type
- */
+/// PreorderSpliterator.
+///
+/// @param <T> the element type
 public class PreorderSpliterator<T> extends AbstractEnumerator<T> {
     private final Function<T, Iterable<? extends T>> getChildrenFunction;
     private final Deque<Iterator<? extends T>> stack = new ArrayDeque<>();

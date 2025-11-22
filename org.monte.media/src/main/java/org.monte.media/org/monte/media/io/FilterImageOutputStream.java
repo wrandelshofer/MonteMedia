@@ -9,46 +9,38 @@ import javax.imageio.stream.ImageOutputStreamImpl;
 import java.io.IOException;
 import java.nio.ByteOrder;
 
-/**
- * {@code FilterImageOutputStream}.
- *
- * @author Werner Randelshofer
- */
+/// `FilterImageOutputStream`.
+///
+/// @author Werner Randelshofer
 public class FilterImageOutputStream extends ImageOutputStreamImpl {
 
     protected final ImageOutputStream out;
     private long maxStreamPos;
     private final long offset;
 
-    /**
-     * Whether flush and close request shall be forwarded to underlying stream.
-     */
+    /// Whether flush and close request shall be forwarded to underlying stream.
     private final boolean forwardFlushAndClose;
 
-    /**
-     * Creates a new instance that does not close the underlying stream when this instance is closed.
-     * <p>
-     * The stream position of this instance is relative to the stream position of the underlying stream
-     * when the instance was created.
-     *
-     * @param out the underlying stream.
-     * @throws IOException on IO failure
-     */
+    /// Creates a new instance that does not close the underlying stream when this instance is closed.
+    ///
+    /// The stream position of this instance is relative to the stream position of the underlying stream
+    /// when the instance was created.
+    ///
+    /// @param out the underlying stream.
+    /// @throws IOException on IO failure
     public FilterImageOutputStream(ImageOutputStream out) throws IOException {
         this(out, out.getStreamPosition(), out.getByteOrder(), false);
     }
 
-    /**
-     * Creates a new instance that optionally closes the underlying stream when this instance is closed.
-     * <p>
-     * The stream position of this instance is relative to the specified offset.
-     *
-     * @param out                  the underlying stream
-     * @param offset               the offset into the underlying stream.
-     * @param bo                   the byte order (will be set on the underlying stream)
-     * @param forwardFlushAndClose whether to forward flush and close to the underlying stream
-     * @throws IOException on IO failure
-     */
+    /// Creates a new instance that optionally closes the underlying stream when this instance is closed.
+    ///
+    /// The stream position of this instance is relative to the specified offset.
+    ///
+    /// @param out                  the underlying stream
+    /// @param offset               the offset into the underlying stream.
+    /// @param bo                   the byte order (will be set on the underlying stream)
+    /// @param forwardFlushAndClose whether to forward flush and close to the underlying stream
+    /// @throws IOException on IO failure
     public FilterImageOutputStream(ImageOutputStream out, long offset, ByteOrder bo, boolean forwardFlushAndClose) throws IOException {
         this.out = out;
         this.offset = offset;
@@ -116,19 +108,15 @@ public class FilterImageOutputStream extends ImageOutputStreamImpl {
         return out.getFlushedPosition() - offset;
     }
 
-    /**
-     * Default implementation returns false.  Subclasses should
-     * override this if they cache data.
-     */
+    /// Default implementation returns false.  Subclasses should
+    /// override this if they cache data.
     @Override
     public boolean isCached() {
         return out.isCached();
     }
 
-    /**
-     * Default implementation returns false.  Subclasses should
-     * override this if they cache data in main memory.
-     */
+    /// Default implementation returns false.  Subclasses should
+    /// override this if they cache data in main memory.
     @Override
     public boolean isCachedMemory() {
         return out.isCachedMemory();

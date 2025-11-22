@@ -2,11 +2,9 @@
  * @(#)package-info.java
  * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
-/**
- * Provides classes for playing SEQ files.
- * <p>
- * Atari "Cyber Paint Sequence" animations (SEQ).
- *
- * @author Werner Randelshofer
- */
+/// Provides classes for playing SEQ files.
+///
+/// Atari "Cyber Paint Sequence" animations (SEQ).
+///
+/// @author Werner Randelshofer
 package org.monte.media.seq;

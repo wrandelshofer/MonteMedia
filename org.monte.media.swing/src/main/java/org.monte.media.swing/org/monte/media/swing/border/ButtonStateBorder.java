@@ -14,11 +14,9 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Insets;
 
-/**
- * ButtonStateBorder.
- *
- * @author Werner Randelshofer
- */
+/// ButtonStateBorder.
+///
+/// @author Werner Randelshofer
 public class ButtonStateBorder implements Border {
     public final static int E = 0;
     public final static int EP = 1;
@@ -31,42 +29,28 @@ public class ButtonStateBorder implements Border {
     public final static int DI = 8;
     public final static int DIS = 9;
     public final static int DEFAULT = 10;
-    /**
-     * Borders
-     */
+    /// Borders
     private Border[] borders;
 
-    /**
-     * Holds the icon pictures in a single image. This variable is used only
-     * until we create the icons array. Then it is set to null.
-     */
+    /// Holds the icon pictures in a single image. This variable is used only
+    /// until we create the icons array. Then it is set to null.
     private Image tiledImage;
-    /**
-     * The number of icons in the tiledImage.
-     */
+    /// The number of icons in the tiledImage.
     private int tileCount;
-    /**
-     * Whether the tiledImage needs to be tiled horizontally or vertically
-     * to get the icons out of it.
-     */
+    /// Whether the tiledImage needs to be tiled horizontally or vertically
+    /// to get the icons out of it.
     private boolean isTiledHorizontaly;
 
     private Insets borderInsets;
-    /**
-     * Only used for tiled image.
-     */
+    /// Only used for tiled image.
     private boolean fill;
-    /**
-     * Only used for tiled image.
-     */
+    /// Only used for tiled image.
     private Insets imageInsets;
 
 
-    /**
-     * Creates a new instance.
-     * All borders must have the same insets.
-     * If a border is null, nothing is drawn for this state.
-     */
+    /// Creates a new instance.
+    /// All borders must have the same insets.
+    /// If a border is null, nothing is drawn for this state.
     public ButtonStateBorder(Border e, Border es) {
         borders = new Border[DEFAULT + 1];
         borders[E] = e;
@@ -81,11 +65,9 @@ public class ButtonStateBorder implements Border {
         borders[DIS] = es;
     }
 
-    /**
-     * Creates a new instance.
-     * All borders must have the same insets.
-     * If a border is null, nothing is drawn for this state.
-     */
+    /// Creates a new instance.
+    /// All borders must have the same insets.
+    /// If a border is null, nothing is drawn for this state.
     public ButtonStateBorder(Border e, Border ep, Border es, Border eps,
                              Border d, Border ds, Border i, Border is, Border di, Border dis) {
         borders = new Border[DEFAULT + 1];
@@ -101,19 +83,15 @@ public class ButtonStateBorder implements Border {
         borders[DIS] = dis;
     }
 
-    /**
-     * Creates a new instance.
-     * All borders must have the same insets.
-     */
+    /// Creates a new instance.
+    /// All borders must have the same insets.
     public ButtonStateBorder(Border[] borders) {
         this.borders = new Border[DEFAULT + 1];
         System.arraycopy(borders, 0, this.borders, 0, Math.min(borders.length, this.borders.length));
     }
 
-    /**
-     * Creates a new instance.
-     * All borders must have the same dimensions.
-     */
+    /// Creates a new instance.
+    /// All borders must have the same dimensions.
     public ButtonStateBorder(Image tiledImage, int tileCount, boolean isTiledHorizontaly,
                              Insets imageInsets, Insets borderInsets, boolean fill) {
         this.tiledImage = tiledImage;

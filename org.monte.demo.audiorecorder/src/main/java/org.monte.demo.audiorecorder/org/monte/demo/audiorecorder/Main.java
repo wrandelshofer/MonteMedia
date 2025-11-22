@@ -25,11 +25,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * {@code Main} records audio into an AVI file.
- *
- * @author Werner Randelshofer
- */
+/// `Main` records audio into an AVI file.
+///
+/// @author Werner Randelshofer
 public class Main implements Runnable {
 
     private volatile Thread worker;
@@ -61,9 +59,7 @@ public class Main implements Runnable {
         }
     }
 
-    /**
-     * This method is called from the worker thread.
-     */
+    /// This method is called from the worker thread.
     @Override
     public void run() {
         AVIWriter writer = null;
@@ -112,9 +108,7 @@ public class Main implements Runnable {
     record AudioTargetInfo(Mixer mixer, Line.Info info, AudioFormat format) {
     }
 
-    /**
-     * @param args the command line arguments
-     */
+    /// @param args the command line arguments
     public static void main(String[] args) throws IOException, LineUnavailableException {
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd 'at' HH.mm.ss").withZone(ZoneId.systemDefault());
         ;

@@ -6,9 +6,7 @@
 package org.monte.media.image;
 
 public class ImageUtil {
-    /**
-     * Converts the provided object to {@code String}
-     */
+    /// Converts the provided object to `String`
     public static String convertObjectToString(Object obj) {
         if (obj == null)
             return "";

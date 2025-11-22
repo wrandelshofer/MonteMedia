@@ -20,49 +20,39 @@ public interface Matrix3 {
 
     double[] toDoubleArray();
 
-    /**
-     * Vector multiplication.
-     * <pre>
-     * x1       [a1]
-     * x2 = M * [a2]
-     * x3       [a3]
-     * </pre>
-     */
+    /// Vector multiplication.
+    /// <pre>
+    /// x1       [a1]
+    /// x2 = M * [a2]
+    /// x3       [a3]
+    /// </pre>
     Point3DDouble mul(double a1, double a2, double a3);
 
-    /**
-     * Vector multiplication.
-     * <pre>
-     * y0       [x0]
-     * y1 = M * [x1]
-     * y2       [x2]
-     * </pre>
-     */
+    /// Vector multiplication.
+    /// <pre>
+    /// y0       [x0]
+    /// y1 = M * [x1]
+    /// y2       [x2]
+    /// </pre>
     float[] mul(float[] x, float[] y);
 
-    /**
-     * Vector multiplication.
-     * <pre>
-     * y0       [x0]
-     * y1 = M * [x1]
-     * y2       [x2]
-     * </pre>
-     */
+    /// Vector multiplication.
+    /// <pre>
+    /// y0       [x0]
+    /// y1 = M * [x1]
+    /// y2       [x2]
+    /// </pre>
     double[] mul(double[] x, double[] y);
 
-    /**
-     * Matrix multiplication.
-     * <pre>
-     * result = this * M*
-     * </pre>
-     */
+    /// Matrix multiplication.
+    /// <pre>
+    /// result = this * M*
+    /// </pre>
     Matrix3 mul(Matrix3 M);
 
-    /**
-     * Returns the inverse of the matrix.
-     *
-     * @throws ArithmeticException if the matrix is not invertible
-     */
+    /// Returns the inverse of the matrix.
+    ///
+    /// @throws ArithmeticException if the matrix is not invertible
     Matrix3 inv();
 
 }

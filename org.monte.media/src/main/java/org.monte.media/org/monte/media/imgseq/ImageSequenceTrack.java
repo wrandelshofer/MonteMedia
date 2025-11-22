@@ -18,11 +18,9 @@ import java.util.Arrays;
 
 import static org.monte.media.av.BufferFlag.DISCARD;
 
-/**
- * {@code ImageSequenceTrack}.
- *
- * @author Werner Randelshofer
- */
+/// `ImageSequenceTrack`.
+///
+/// @author Werner Randelshofer
 public class ImageSequenceTrack implements Track {
 
 

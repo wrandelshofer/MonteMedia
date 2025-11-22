@@ -45,11 +45,6 @@ public class CDXLOutputStreamTest {
         Path outputFile = Paths.get(System.getProperty("user.home"), "Documents/Virtualization/Amiga3000/Work/Media/Monument/Monument.cdxl");
         Path framesDir = Paths.get(System.getProperty("user.home"), "Documents/Virtualization/Amiga3000/Work/Media/Monument/Frames");
         new CDXLOutputStreamTest().convert(framesDir, audioFile, outputFile, Integer.MAX_VALUE);
-        /*
-        Path audioFile = Paths.get(System.getProperty("user.home"), "Documents/Virtualization/Amiga3000/Work/Media/Anoana/Anoana-Stereo-22050.aiff");
-        Path outputFile = Paths.get(System.getProperty("user.home"), "Documents/Virtualization/Amiga3000/Work/Media/Anoana/Anoana.cdxl");
-        Path framesDir = Paths.get(System.getProperty("user.home"), "Documents/Virtualization/Amiga3000/Work/Media/Anoana/Frames");
-        new CDXLOutputStreamTest().convert(framesDir, audioFile, outputFile, Integer.MAX_VALUE);
         * /
         Path audioFile = Paths.get(System.getProperty("user.home"), "Documents/Virtualization/Amiga3000/Work/Media/DanDaDan1/DanDaDan1-Stereo-22050.aiff");
         Path outputFile = Paths.get(System.getProperty("user.home"), "Documents/Virtualization/Amiga3000/Work/Media/DanDaDan1/DanDaDan1-Ham8.cdxl");
@@ -57,12 +52,12 @@ public class CDXLOutputStreamTest {
         new CDXLOutputStreamTest().convert(framesDir, (p, attr) -> (p.getFileName().toString().matches("\\d+.iff")) && attr.isRegularFile(),
                 audioFile, outputFile, 1618);
 
-        */
+        * /
         Path audioFile = Paths.get(System.getProperty("user.home"), "Documents/Virtualization/Amiga3000/Work/Media/DanDaDan2/DanDaDan2-Stereo-22050.aiff");
         Path outputFile = Paths.get(System.getProperty("user.home"), "Documents/Virtualization/Amiga3000/Work/Media/DanDaDan2/DanDaDan2-128Colors.cdxl");
         Path framesDir = Paths.get(System.getProperty("user.home"), "Documents/Virtualization/Amiga3000/Work/Media/DanDaDan2/Frames-128Colors");
         new CDXLOutputStreamTest().convert(framesDir, audioFile, outputFile, 2848);
-/*
+        /*
         Path audioFile = Paths.get(System.getProperty("user.home"), "Documents/Virtualization/Amiga3000/Work/Media/DanDaDan3/DanDaDan3-Stereo-22050.aiff");
         Path outputFile = Paths.get(System.getProperty("user.home"), "Documents/Virtualization/Amiga3000/Work/Media/DanDaDan3/DanDaDan3.cdxl");
         Path framesDir = Paths.get(System.getProperty("user.home"), "Documents/Virtualization/Amiga3000/Work/Media/DanDaDan3/Frames-Ham8");
@@ -83,12 +78,12 @@ public class CDXLOutputStreamTest {
         Path outputFile = Paths.get(System.getProperty("user.home"), "Documents/Virtualization/Amiga3000/Work/Media/Mulan/Mulan-24fps-HAM8-HamConvertTest.cdxl");
         Path framesDir = Paths.get(System.getProperty("user.home"), "Documents/Virtualization/Amiga3000/Work/Media/Mulan/Frames");
         new CDXLOutputStreamTest().convert(framesDir, audioFile, outputFile,Integer.MAX_VALUE);
-         * /
+         */
         Path audioFile = Paths.get(System.getProperty("user.home"), "Documents/Virtualization/Amiga3000/Work/Media/2XKO/2XKO-Stereo-22050.aiff");
         Path outputFile = Paths.get(System.getProperty("user.home"), "Documents/Virtualization/Amiga3000/Work/Media/2XKO/2XKO-Ham8.cdxl");
         Path framesDir = Paths.get(System.getProperty("user.home"), "Documents/Virtualization/Amiga3000/Work/Media/2XKO/Frames-Ham8");
         new CDXLOutputStreamTest().convert(framesDir, audioFile, outputFile, Integer.MAX_VALUE);
-        */
+        /**/
 
     }
 

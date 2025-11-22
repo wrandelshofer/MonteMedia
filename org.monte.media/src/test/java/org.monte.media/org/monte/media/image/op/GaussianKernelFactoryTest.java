@@ -3,10 +3,9 @@
  * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 
-package org.monte.media.image;
+package org.monte.media.image.op;
 
 import org.junit.jupiter.api.Test;
-import org.monte.media.image.op.GaussianKernelFactory;
 
 import java.util.DoubleSummaryStatistics;
 

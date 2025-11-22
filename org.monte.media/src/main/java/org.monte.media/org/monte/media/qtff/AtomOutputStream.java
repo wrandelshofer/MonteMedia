@@ -42,50 +42,36 @@ public class AtomOutputStream extends QTFFImageOutputStream {
         atom.finish();
     }
 
-    /**
-     * Atom base class.
-     */
+    /// Atom base class.
     private abstract class Atom {
 
-        /**
-         * The atomType of the atom. A String with the length of 4 characters.
-         */
+        /// The atomType of the atom. A String with the length of 4 characters.
         protected String atomType;
-        /**
-         * The offset of the atom relative to the start of the
-         * ImageOutputStream.
-         */
+        /// The offset of the atom relative to the start of the
+        /// ImageOutputStream.
         protected long offset;
         protected boolean finished;
 
-        /**
-         * Creates a new Atom at the current position of the ImageOutputStream.
-         *
-         * @param atomType The atomType of the atom. A string with a length of 4 characters.
-         */
+        /// Creates a new Atom at the current position of the ImageOutputStream.
+        ///
+        /// @param atomType The atomType of the atom. A string with a length of 4 characters.
         public Atom(String atomType) throws IOException {
             this.atomType = atomType;
             offset = getStreamPosition();
         }
 
-        /**
-         * Writes the atom to the ImageOutputStream and disposes it.
-         */
+        /// Writes the atom to the ImageOutputStream and disposes it.
         public abstract void finish() throws IOException;
 
     }
 
-    /**
-     * Simple Atom.
-     */
+    /// Simple Atom.
     private class SimpleAtom extends Atom {
 
-        /**
-         * Creates a new SimpleAtom at the current position of the
-         * ImageOutputStream.
-         *
-         * @param atomType The atomType of the atom.
-         */
+        /// Creates a new SimpleAtom at the current position of the
+        /// ImageOutputStream.
+        ///
+        /// @param atomType The atomType of the atom.
         public SimpleAtom(String atomType) throws IOException {
             super(atomType);
             out.writeLong(0); // make room for the atom header
@@ -111,17 +97,13 @@ public class AtomOutputStream extends QTFFImageOutputStream {
 
     }
 
-    /**
-     * Wide Atom.
-     */
+    /// Wide Atom.
     private class WideAtom extends Atom {
 
-        /**
-         * Creates a new DataAtom at the current position of the
-         * ImageOutputStream.
-         *
-         * @param atomType The atomType of the atom.
-         */
+        /// Creates a new DataAtom at the current position of the
+        /// ImageOutputStream.
+        ///
+        /// @param atomType The atomType of the atom.
         public WideAtom(String atomType) throws IOException {
             super(atomType);
             out.writeLong(0); // make room for the wide atom

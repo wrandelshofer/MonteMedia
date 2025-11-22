@@ -27,9 +27,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-/**
- * Samples the mouse.
- */
+/// Samples the mouse.
 public class MouseSampler implements Sampler {
     private final Rational interval;
     private final Rational initialDelay;

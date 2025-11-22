@@ -15,11 +15,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * ANIMWriterSpi.
- *
- * @author Werner Randelshofer
- */
+/// ANIMWriterSpi.
+///
+/// @author Werner Randelshofer
 public class ANIMWriterSpi implements MovieWriterSpi {
 
     private final static List<String> extensions = Collections.unmodifiableList(Arrays.asList(new String[]{"anim"}));

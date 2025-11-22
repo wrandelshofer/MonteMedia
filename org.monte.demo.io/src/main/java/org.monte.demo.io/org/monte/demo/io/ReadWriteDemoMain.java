@@ -37,21 +37,18 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_MJPG;
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
-/**
- * Demonstrates the use of {@link MovieReader} and {@link MovieWriter}. <p> This
- * class creates a video file named montemedia-...codec....avi for each
- * installed Codec, and writes simple animation frames into the file. Then, it
- * attempts to read the frames back from the video file.
- *
- * @author Werner Randelshofer
- */
+/// Demonstrates the use of [MovieReader] and [MovieWriter].
+///  This
+/// class creates a video file named montemedia-...codec....avi for each
+/// installed Codec, and writes simple animation frames into the file. Then, it
+/// attempts to read the frames back from the video file.
+///
+/// @author Werner Randelshofer
 public class ReadWriteDemoMain {
 
-    /**
-     * Main function.
-     *
-     * @param args the command line arguments (ignored)
-     */
+    /// Main function.
+    ///
+    /// @param args the command line arguments (ignored)
     public static void main(String[] args) {
         try {
             HashSet<String> usedFilenames = new HashSet<>();
@@ -247,9 +244,7 @@ public class ReadWriteDemoMain {
         }
     }
 
-    /**
-     * Creates a buffered image of the specified depth with a random color palette.
-     */
+    /// Creates a buffered image of the specified depth with a random color palette.
     private static BufferedImage createImage(Format format) {
         int depth = format.get(DepthKey);
         int width = format.get(WidthKey);

@@ -25,11 +25,9 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.PixelAspectRatioKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
-/**
- * {@code FormatFormatter}.
- *
- * @author Werner Randelshofer
- */
+/// `FormatFormatter`.
+///
+/// @author Werner Randelshofer
 public class FormatFormatter {
 
     private static String audioToString(Format f) {

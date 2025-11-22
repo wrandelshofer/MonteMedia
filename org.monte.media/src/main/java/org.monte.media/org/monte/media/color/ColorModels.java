@@ -12,22 +12,16 @@ import java.util.Arrays;
 
 import static org.monte.media.util.MathUtil.clamp;
 
-/**
- * Utility methods for ColorModels.
- *
- * @author Werner Randelshofer
- */
+/// Utility methods for ColorModels.
+///
+/// @author Werner Randelshofer
 public class ColorModels {
 
-    /**
-     * Prevent instance creation.
-     */
+    /// Prevent instance creation.
     private ColorModels() {
     }
 
-    /**
-     * Returns a descriptive string for the provided color model.
-     */
+    /// Returns a descriptive string for the provided color model.
     public static String toString(ColorModel cm) {
         StringBuilder buf = new StringBuilder();
         if (cm instanceof DirectColorModel) {
@@ -115,10 +109,8 @@ public class ColorModels {
         }
     }
 
-    /**
-     * RGB in the range [0,1] to YCC in the range Y=[0,1], Cb=[-0.5,0.5],
-     * Cr=[-0.5,0.5]
-     */
+    /// RGB in the range [0,1] to YCC in the range Y=[0,1], Cb=[-0.5,0.5],
+    /// Cr=[-0.5,0.5]
     public static void RGBtoYCC(float[] rgb, float[] ycc) {
         float R = clamp(rgb[0], 0f, 1f);
         float G = clamp(rgb[1], 0f, 1f);
@@ -133,10 +125,8 @@ public class ColorModels {
         ycc[2] = Cr;
     }
 
-    /**
-     * YCC in the range Y=[0,1], Cb=[-0.5,0.5], Cr=[-0.5,0.5]
-     * to RGB in the range [0,1]
-     */
+    /// YCC in the range Y=[0,1], Cb=[-0.5,0.5], Cr=[-0.5,0.5]
+    /// to RGB in the range [0,1]
     public static void YCCtoRGB(float[] ycc, float[] rgb) {
         float Y = clamp(ycc[0], 0f, 1f);
         float Cb = clamp(ycc[1], -0.5f, 0.5f);
@@ -151,9 +141,7 @@ public class ColorModels {
         rgb[2] = clamp(B, 0f, 1f);
     }
 
-    /**
-     * RGB 8-bit per channel to YCC 16-bit per channel.
-     */
+    /// RGB 8-bit per channel to YCC 16-bit per channel.
     public static void RGBtoYCC(int[] rgb, int[] ycc) {
         int R = rgb[0];
         int G = rgb[1];
@@ -168,9 +156,7 @@ public class ColorModels {
         ycc[2] = Cr;
     }
 
-    /**
-     * RGB 8-bit per channel to YCC 16-bit per channel.
-     */
+    /// RGB 8-bit per channel to YCC 16-bit per channel.
     public static void RGBtoYCC(int rgb, int[] ycc) {
         int R = (rgb & 0xff0000) >>> 16;
         int G = (rgb & 0xff00) >>> 8;
@@ -185,10 +171,8 @@ public class ColorModels {
         ycc[2] = Cr;
     }
 
-    /**
-     * RGB in the range [0,1] to YUV in the range Y=[0,1], U=[-0.5,0.5],
-     * V=[-0.5,0.5]
-     */
+    /// RGB in the range [0,1] to YUV in the range Y=[0,1], U=[-0.5,0.5],
+    /// V=[-0.5,0.5]
     public static void RGBtoYUV(float[] rgb, float[] yuv) {
         float R = clamp(rgb[0], 0f, 1f);
         float G = clamp(rgb[1], 0f, 1f);
@@ -199,10 +183,8 @@ public class ColorModels {
         yuv[2] = 0.615f * R - 0.51499f * G - 0.10001f * B;
     }
 
-    /**
-     * YUV in the range Y=[0,1], U=[-0.5,0.5], V=[-0.5,0.5]
-     * to RGB in the range [0,1]
-     */
+    /// YUV in the range Y=[0,1], U=[-0.5,0.5], V=[-0.5,0.5]
+    /// to RGB in the range [0,1]
     public static void YUVtoRGB(float[] yuv, float[] rgb) {
         float Y = clamp(yuv[0], 0f, 1f);
         float U = clamp(yuv[1], -0.5f, 0.5f);
@@ -215,9 +197,7 @@ public class ColorModels {
         rgb[2] = clamp(B, 0, 1);
     }
 
-    /**
-     * YCC 16-bit per channel to RGB 8-bit per channel.
-     */
+    /// YCC 16-bit per channel to RGB 8-bit per channel.
     public static void YCCtoRGB(int[] ycc, int[] rgb) {
         int Y = ycc[0];
         int Cb = ycc[1];
@@ -232,9 +212,7 @@ public class ColorModels {
         rgb[2] = B;
     }
 
-    /**
-     * YCC 16-bit per channel to RGB 8-bit per channel.
-     */
+    /// YCC 16-bit per channel to RGB 8-bit per channel.
     public static int YCCtoRGB(int[] ycc) {
         int Y = ycc[0];
         int Cb = ycc[1];
@@ -247,12 +225,10 @@ public class ColorModels {
         return R << 16 | G << 8 | B;
     }
 
-    /**
-     * RGB in the range [0,1] to YIQ in the range Y in [0,1],
-     * I in [-0.5957,0.5957], Q in [-0.5226,0.5226].
-     * <p>
-     * http://en.wikipedia.org/wiki/YIQ
-     */
+    /// RGB in the range [0,1] to YIQ in the range Y in [0,1],
+    /// I in [-0.5957,0.5957], Q in [-0.5226,0.5226].
+    ///
+    /// http://en.wikipedia.org/wiki/YIQ
     public static void RGBtoYIQ(float[] rgb, float[] yiq) {
         float R = clamp(rgb[0], 0f, 1f);
         float G = clamp(rgb[1], 0f, 1f);
@@ -265,12 +241,10 @@ public class ColorModels {
         yiq[2] = Q;
     }
 
-    /**
-     * YIQ in the range Y in [0,1], I in [-0.5957,0.5957], Q in [-0.5226,0.5226]
-     * to RGB in the range [0,1]
-     * <p>
-     * http://en.wikipedia.org/wiki/YIQ
-     */
+    /// YIQ in the range Y in [0,1], I in [-0.5957,0.5957], Q in [-0.5226,0.5226]
+    /// to RGB in the range [0,1]
+    ///
+    /// http://en.wikipedia.org/wiki/YIQ
     public static void YIQtoRGB(float[] yiq, float[] rgb) {
         float Y = clamp(yiq[0], 0f, 1f);
         float I = clamp(yiq[1], -0.5957f, 0.5957f);

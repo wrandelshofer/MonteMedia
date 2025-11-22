@@ -9,11 +9,9 @@ import org.monte.media.jmf.codec.AbstractCodec;
 import javax.media.Format;
 import javax.media.format.VideoFormat;
 
-/**
- * {@code AbstractVideoDecoder}.
- *
- * @author Werner Randelshofer
- */
+/// `AbstractVideoDecoder`.
+///
+/// @author Werner Randelshofer
 public abstract class AbstractVideoDecoder extends AbstractCodec {
 
     protected VideoFormat[] defaultOutputFormats = new VideoFormat[0];

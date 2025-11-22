@@ -4,70 +4,58 @@
  */
 package org.monte.media.ilbm;
 
-/**
- * Implements CRNG and CCRT color cycling for an IFF ILBM image.
- * <p>
- * This class supports CRNG and CCRT color cycling as published in
- * AMIGA ROM Kernel Reference Manual: Devices,
- * Third Edition,
- * Addison-Wesley, Reading
- * ISBN 0-201-56775-X
- *
- * <pre>
- * //ILBM CRNG Color range cycling
- * //--------------------------------------------
- *
- * #define RNG_NORATE  36   // Dpaint uses this rate to mean non-active
- *  set {
- *  active = 1, reverse = 2
- *  } crngActive;
- *
- *  // A CRange is store in a CRNG chunk.
- *  typedef struct {
- *  WORD  pad1;              // reserved for future use; store 0 here *
- *  WORD  rate;              // 60/sec=16384, 30/sec=8192, 1/sec=16384/60=273
- *  WORD set crngActive flags;     // bit0 set = active, bit 1 set = reverse
- *  UBYTE low; UBYTE high;         // lower and upper color registers selected
- *  } ilbmColorRegisterRangeChunk;
- * </pre>
- *
- * <pre>
- * ILBM CCRT Color cycling range and timing
- * --------------------------------------------
- * /
- * enum {
- * dontCycle = 0, forward = 1, backwards = -1
- * } ccrtDirection;
- * typedef struct {
- * WORD enum ccrtDirection direction;  /* 0=don't cycle, 1=forward, -1=backwards * /
- * UBYTE start;      /* range lower * /
- * UBYTE end;        /* range upper * /
- * LONG  seconds;    /* seconds between cycling * /
- * LONG  microseconds; /* msecs between cycling * /
- * WORD  pad;        /* future exp - store 0 here * /
- * } ilbmColorCyclingAndTimingChunk;
- *
- * </pre>
- *
- * @author Werner Randelshofer
- */
+/// Implements CRNG and CCRT color cycling for an IFF ILBM image.
+///
+/// This class supports CRNG and CCRT color cycling as published in
+/// AMIGA ROM Kernel Reference Manual: Devices,
+/// Third Edition,
+/// Addison-Wesley, Reading
+/// ISBN 0-201-56775-X
+/// <pre>
+/// //ILBM CRNG Color range cycling
+/// //--------------------------------------------
+///
+/// #define RNG_NORATE  36   // Dpaint uses this rate to mean non-active
+///  set {
+///  active = 1, reverse = 2
+///  } crngActive;
+///
+///  // A CRange is store in a CRNG chunk.
+///  typedef struct {
+///  WORD  pad1;              // reserved for future use; store 0 here *
+///  WORD  rate;              // 60/sec=16384, 30/sec=8192, 1/sec=16384/60=273
+///  WORD set crngActive flags;     // bit0 set = active, bit 1 set = reverse
+///  UBYTE low; UBYTE high;         // lower and upper color registers selected
+///  } ilbmColorRegisterRangeChunk;
+/// </pre>
+/// <pre>
+/// ILBM CCRT Color cycling range and timing
+/// --------------------------------------------
+/// /
+/// enum {
+/// dontCycle = 0, forward = 1, backwards = -1
+/// } ccrtDirection;
+/// typedef struct {
+/// WORD enum ccrtDirection direction;  /* 0=don't cycle, 1=forward, -1=backwards * /
+/// UBYTE start;      /* range lower * /
+/// UBYTE end;        /* range upper * /
+/// LONG  seconds;    /* seconds between cycling * /
+/// LONG  microseconds; /* msecs between cycling * /
+/// WORD  pad;        /* future exp - store 0 here * /
+/// } ilbmColorCyclingAndTimingChunk;
+///
+/// </pre>
+///
+/// @author Werner Randelshofer
 public class CRNGColorCycle extends ColorCycle {
 
-    /**
-     * Lowest color register of the range.
-     */
+    /// Lowest color register of the range.
     private int low;
-    /**
-     * Highest color register of the range.
-     */
+    /// Highest color register of the range.
     private int high;
-    /**
-     * Whether the color cycle is reverse.
-     */
+    /// Whether the color cycle is reverse.
     private boolean isReverse;
-    /**
-     * Whether the image is in EHB mode.
-     */
+    /// Whether the image is in EHB mode.
     private boolean isEHB;
 
     public CRNGColorCycle(int rate, int timeScale, int low, int high, boolean isActive, boolean isReverse, boolean isEHB) {

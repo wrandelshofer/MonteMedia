@@ -12,81 +12,60 @@ import org.monte.media.math.Point3DDouble;
 
 import java.awt.color.ColorSpace;
 
-/**
- * Parameterized linear color space based on {@code XYZ} conversion matrices.
- * <p>
- * The XYZ conversion matrices can be provided or can be computed from
- * red, green, blue and white point chromaticity points.
- * <p>
- * References:
- * <dl>
- *     <dt>C. A. Bouman: Digital Image Processing - January 9, 2023, Chromaticity Coordinates.</dt>
- *     <dd><a href="https://engineering.purdue.edu/~bouman/ece637/notes/pdf/ColorSpaces.pdf">purdue.edu</a></dd>
- *
- *     <dt>CSS Color Module Level 4. Color Terminology. White Point D50</dt>
- *     <dd><a href="https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#d50-whitepoint">w3.org</a></dd>
- *
- *     <dt>CSS Color Module Level 4. Color Terminology. White Point D65</dt>
- *     <dd><a href="https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#d65-whitepoint">w3.org</a></dd>
- *
- * </dl>
- */
+/// Parameterized linear color space based on `XYZ` conversion matrices.
+///
+/// The XYZ conversion matrices can be provided or can be computed from
+/// red, green, blue and white point chromaticity points.
+///
+/// References:
+///
+/// C. A. Bouman. Digital Image Processing - January 9, 2023, Chromaticity Coordinates
+/// : [purdue.edu](https://engineering.purdue.edu/~bouman/ece637/notes/pdf/ColorSpaces.pdf)
+///
+/// CSS Color Module Level 4. Color Terminology. White Point D50
+/// : [w3.org](https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#d50-whitepoint)</dd>
+///
+/// CSS Color Module Level 4. Color Terminology. White Point D65
+/// : [w3.org](https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#d65-whitepoint)</dd>
+///
 public class ParametricLinearRgbColorSpace extends AbstractNamedColorSpace {
-    /**
-     * The Bradford XYZ to Cone Response Domain Matrix [M<sub>A</sub>].
-     * <p>
-     * <a href="http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html">brucelindbloom.com</a>
-     */
+    /// The Bradford XYZ to Cone Response Domain Matrix [M<sub>A</sub>].
+    ///
+    /// [brucelindbloom.com](http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html)
     public final static Matrix3Double BRADFORD_XYZ_TO_CONE_RESPONSE_DOMAIN = new Matrix3Double(
             0.8951000, 0.2664000, -0.1614000,
             -0.7502000, 1.7135000, 0.0367000,
             0.0389000, -0.0685000, 1.0296000);
-    /**
-     * The inverse Bradford XYZ to Cone Response Domain Matrix [M<sub>A</sub>]<sup>-1</sup>.
-     * <p>
-     * <a href="http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html">brucelindbloom.com</a>
-     */
+    /// The inverse Bradford XYZ to Cone Response Domain Matrix [M<sub>A</sub>]<sup>-1</sup>.
+    ///
+    /// [brucelindbloom.com](http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html)
     public final static Matrix3Double BRADFORD_CONE_RESPONSE_DOMAIN_TO_XYZ = BRADFORD_XYZ_TO_CONE_RESPONSE_DOMAIN.inv();
 
 
-    /**
-     * Bradford chromatic adaptation from D50 to D65.
-     */
+    /// Bradford chromatic adaptation from D50 to D65.
     public final static Matrix3Double FROM_D50_XYZ_TO_D65_XYZ = new Matrix3Double(
             0.9554734527042182, -0.023098536874261423, 0.0632593086610217,
             -0.028369706963208136, 1.0099954580058226, 0.021041398966943008,
             0.012314001688319899, -0.020507696433477912, 1.3303659366080753
     );
-    /**
-     * Bradford chromatic adaptation from D65 to D50
-     * The matrix below is the result of three operations:
-     * - convert from XYZ to retinal cone domain
-     * - scale components from one reference white to another
-     * - convert back to XYZ
-     * <p>
-     * <a href="http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html">brucelindbloom.com</a>.
-     */
+    /// Bradford chromatic adaptation from D65 to D50
+    /// The matrix below is the result of three operations:
+    /// - convert from XYZ to retinal cone domain
+    /// - scale components from one reference white to another
+    /// - convert back to XYZ
+    ///
+    /// [brucelindbloom.com](http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html).
     public static final Matrix3Double FROM_D65_TO_D50 = FROM_D50_XYZ_TO_D65_XYZ.inv();
 
-    /**
-     * The XYZ coordinates of the D50 white illuminant.
-     */
+    /// The XYZ coordinates of the D50 white illuminant.
     public final static Point3DDouble ILLUMINANT_D50_XYZ = new Point3DDouble(0.96422, 1.00000, 0.82521);
-    /**
-     * The XYZ coordinates of the D65 white illuminant.
-     */
+    /// The XYZ coordinates of the D65 white illuminant.
     public final static Point3DDouble ILLUMINANT_D65_XYZ = new Point3DDouble(0.95047, 1.00000, 1.08883);
-    /**
-     * The XYZ coordinates of the E white illuminant.
-     */
+    /// The XYZ coordinates of the E white illuminant.
     public final static Point3DDouble ILLUMINANT_E_XYZ = new Point3DDouble(1.0, 1.0, 1.0);
-    /**
-     * The XYZ coordinates of the C white illuminant.
-     */
+    /// The XYZ coordinates of the C white illuminant.
     public final static Point3DDouble ILLUMINANT_C_XYZ = new Point3DDouble(0.98074, 1.00000, 1.18232);
-    /**
-     * The chromaticity coordinates (x,y) of the D65 white illuminant.
-     */
+    /// The chromaticity coordinates (x,y) of the D65 white illuminant.
     public final static Point2D ILLUMINANT_D65 = new Point2D(0.3127, 0.3290);
 
     private static final Matrix3Double FROM_LINEAR_SRGB_TO_D65_XYZ_MATRIX = computeToXyzMatrix(new Point2D(0.64, 0.33),
@@ -95,38 +74,26 @@ public class ParametricLinearRgbColorSpace extends AbstractNamedColorSpace {
             ParametricLinearRgbColorSpace.ILLUMINANT_D65);
     private static final Matrix3Double FROM_D65_XYZ_TO_LINEAR_SRGB_MATRIX = FROM_LINEAR_SRGB_TO_D65_XYZ_MATRIX.inv();
 
-    /**
-     * The matrix for converting from linear RGB to XYZ.
-     */
+    /// The matrix for converting from linear RGB to XYZ.
     private final Matrix3 toXyzMatrix;
-    /**
-     * The matrix for converting from XYZ to linear RGB.
-     */
+    /// The matrix for converting from XYZ to linear RGB.
     private final Matrix3 fromXyzMatrix;
-    /**
-     * The matrix for converting from linear RGB to sRGB.
-     */
+    /// The matrix for converting from linear RGB to sRGB.
     private final Matrix3 toLinearSrgbMatrix;
-    /**
-     * The matrix for converting from sRGB to linear RGB.
-     */
+    /// The matrix for converting from sRGB to linear RGB.
     private final Matrix3 fromLinearSrgbMatrix;
-    /**
-     * The name of the color space.
-     */
+    /// The name of the color space.
     private final String name;
     private final float maxValue;
     private final float minValue;
 
-    /**
-     * Creates a new instance.
-     *
-     * @param name          the name of the color space
-     * @param toXyzMatrix   the matrix for conversion to CIE XYZ
-     * @param fromXyzMatrix the matrix for conversion from CIE XYZ
-     * @param minValue
-     * @param maxValue
-     */
+    /// Creates a new instance.
+    ///
+    /// @param name          the name of the color space
+    /// @param toXyzMatrix   the matrix for conversion to CIE XYZ
+    /// @param fromXyzMatrix the matrix for conversion from CIE XYZ
+    /// @param minValue
+    /// @param maxValue
     public ParametricLinearRgbColorSpace(String name,
                                          Matrix3 toXyzMatrix,
                                          Matrix3 fromXyzMatrix,
@@ -141,15 +108,13 @@ public class ParametricLinearRgbColorSpace extends AbstractNamedColorSpace {
         this.minValue = minValue;
     }
 
-    /**
-     * Creates a new instance.
-     *
-     * @param name           the name of the color space
-     * @param red            the CIE chroma (x,y) red primary
-     * @param green          the CIE chroma (x,y) green primary
-     * @param blue           the CIE chroma (x,y) blue primary
-     * @param whitePoint_XYZ the white point (XYZ)
-     */
+    /// Creates a new instance.
+    ///
+    /// @param name           the name of the color space
+    /// @param red            the CIE chroma (x,y) red primary
+    /// @param green          the CIE chroma (x,y) green primary
+    /// @param blue           the CIE chroma (x,y) blue primary
+    /// @param whitePoint_XYZ the white point (XYZ)
     public ParametricLinearRgbColorSpace(String name,
                                          Point2D red,
                                          Point2D green,
@@ -181,21 +146,19 @@ public class ParametricLinearRgbColorSpace extends AbstractNamedColorSpace {
         this.fromLinearSrgbMatrix = toLinearSrgbMatrixDouble.inv();
     }
 
-    /**
-     * Converts a point from XZY coordinates in to xyY.
-     * <pre>
-     *     x = X / (X + Y + Z)
-     *     y = Y / (X + Y + Z)
-     *     z = Z / (X + Y + Z) = 1 - x - y
-     *     Y = Y
-     * </pre>
-     * <p>
-     * References:
-     * <dl>
-     *     <dt>CIE 1931 color space. CIE xy chromaticity diagram and the CIE xyY color space</dt>
-     *     <dd><a href="https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_xy_chromaticity_diagram_and_the_CIE_xyY_color_space>wikipedia.org</a></dd>
-     * </dl>
-     */
+    /// Converts a point from XZY coordinates in to xyY.
+    /// <pre>
+    ///     x = X / (X + Y + Z)
+    ///     y = Y / (X + Y + Z)
+    ///     z = Z / (X + Y + Z) = 1 - x - y
+    ///     Y = Y
+    /// </pre>
+    ///
+    /// References:
+    /// <dl>
+    ///     <dt>CIE 1931 color space. CIE xy chromaticity diagram and the CIE xyY color space</dt>
+    ///     <dd><a href="https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_xy_chromaticity_diagram_and_the_CIE_xyY_color_space>wikipedia.org</a></dd>
+    /// </dl>
     private Point2D convertXYZToxy(Point3DDouble XYZ) {
         double X = XYZ.getX();
         double Y = XYZ.getY();
@@ -203,14 +166,12 @@ public class ParametricLinearRgbColorSpace extends AbstractNamedColorSpace {
         return new Point2D(X / sum, Y / sum);
     }
 
-    /**
-     * Computes a matrix that converts from a linear RGB color to an XYZ color.
-     *
-     * @param red        the CIE chroma (x,y) red primary
-     * @param green      the CIE chroma (x,y) green primary
-     * @param blue       the CIE chroma (x,y) blue primary
-     * @param whitePoint the white point (x,y)
-     */
+    /// Computes a matrix that converts from a linear RGB color to an XYZ color.
+    ///
+    /// @param red        the CIE chroma (x,y) red primary
+    /// @param green      the CIE chroma (x,y) green primary
+    /// @param blue       the CIE chroma (x,y) blue primary
+    /// @param whitePoint the white point (x,y)
     public static Matrix3Double computeToXyzMatrix(Point2D red, Point2D green, Point2D blue, Point2D whitePoint) {
         // matrix M
         // [xr xg xb]
@@ -299,36 +260,31 @@ public class ParametricLinearRgbColorSpace extends AbstractNamedColorSpace {
         return maxValue;
     }
 
-    /**
-     * Computes a chromatic adaptation matrix using the Bradford method.
-     * <p>
-     * The matrix adapts XYZ colors from a source XYZ color space with white point W<sub>src</sub>
-     * to another XYZ color space with white point W<sub>dest</sub>.
-     * <p>
-     * The idea behind all of these algorithms is to follow three steps:
-     * <ol>
-     *     <li>Transform from XYZ into a cone response domain, (ρ, γ, β)</li>
-     *     <li>Scale the vector components by factors dependent upon both the source and destination reference whites.</li>
-     *     <li>Transform from (ρ, γ, β) back to XYZ using the inverse transform of step 1.</li>
-     * </ol>
-     * <code>
-     * [M] = [M<sub>A</sub>]<sup>-1</sup> * [S] * [M<sub>A</sub>]
-     * </code><br>
-     * where [S] is a diagonal matrix:<br>
-     * <code>
-     * [ ρ<sub>D</sub>/ρ<sub>S</sub>   0      0     ]<br>
-     * [ 0     γ<sub>D</sub>/γ<sub>S</sub>    0     ]<br>
-     * [ 0      0      β<sub>D</sub>/β<sub>S</sub>  ]<br>
-     * </code>
-     *
-     *
-     *
-     * <a href="http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html">brucelindbloom.com</a>
-     *
-     * @param wSource the source white point
-     * @param wDest   the destination white point
-     * @return a matrix that converts XYZ coordinates from source to dest
-     */
+    /// Computes a chromatic adaptation matrix using the Bradford method.
+    ///
+    /// The matrix adapts XYZ colors from a source XYZ color space with white point W<sub>src</sub>
+    /// to another XYZ color space with white point W<sub>dest</sub>.
+    ///
+    /// The idea behind all of these algorithms is to follow three steps:
+    ///
+    /// 1. Transform from XYZ into a cone response domain, (ρ, γ, β)
+    /// 2. Scale the vector components by factors dependent upon both the source and destination reference whites.
+    /// 3. Transform from (ρ, γ, β) back to XYZ using the inverse transform of step 1.
+    ///
+    /// ```
+    ///[M] = [M_A]^-1 * [S] * [M_A]
+    ///```
+    /// where `[S]` is a diagonal matrix:
+    /// ```
+    ///[ ρ_D/ρ_S   0        0        ]
+    ///[ 0         γ_D/γ_S  0        ]
+    ///[ 0         0        β_D/β_S  ]
+    ///```
+    /// [brucelindbloom.com](http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html)
+    ///
+    /// @param wSource the source white point
+    /// @param wDest   the destination white point
+    /// @return a matrix that converts XYZ coordinates from source to dest
     public static Matrix3Double computeChromaticAdaptationMatrix(Point3DDouble wSource, Point3DDouble wDest) {
         Point3DDouble coneS = BRADFORD_XYZ_TO_CONE_RESPONSE_DOMAIN.mul(wSource.getX(), wSource.getY(), wSource.getZ());
         Point3DDouble coneD = BRADFORD_XYZ_TO_CONE_RESPONSE_DOMAIN.mul(wDest.getX(), wDest.getY(), wDest.getZ());

@@ -38,75 +38,76 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.FixedFrameRateKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
-/**
- * {@code TechSmithCodec} (tscc) encodes a BufferedImage as a byte[] array.
- * <p>
- * The TechSmith codec works with AVI and QuickTime.
- * <p>
- * This codec supports encoding from a {@code BufferedImage} into the file
- * format, and decoding from the file format to a {@code BufferedImage}.
- * <p>
- * This codec does not encode the color palette of an image. This must be done
- * separately.
- * <p>
- * Supported input formats:
- * <ul><li> {@code Format} with
- * {@code BufferedImage.class}, any width, any height, depth=8,16 or 24.</li>
- * </ul>
- * Supported output formats:
- * <ul><li> {@code Format} with {@code byte[].class}, same
- * width and height as input format, depth=8,16 or 24. </li>
- * </ul>
- * The codec supports
- * lossless delta- and key-frame encoding of images with 8, 16 or 24 bits per
- * pixel.
- * <p>
- * Compression of a frame is performed in two steps: In the first, step a frame
- * is compressed line by line from bottom to top. In the second step the
- * resulting data is compressed again using zlib compression.
- * <p>
- * Apart from the second compression step and the support for 16- and 24-bit
- * data, this encoder is identical to the {@link RunLengthEncoder}.
- * <p>
- * Each line of a frame is compressed individually. A line consists of two-byte
- * op-codes optionally followed by data. The end of the line is marked with the
- * EOL op-code.
- * <p>
- * The following op-codes are supported: <ul> <li>{@code 0x00 0x00}
- * <br>Marks the end of a line.</li>
- *
- * <li>{@code  0x00 0x01} <br>Marks the end of the bitmap.</li>
- *
- * <li>{@code 0x00 0x02 x y} <br> Marks a delta (skip). {@code x} and {@code y}
- * indicate the horizontal and vertical offset from the current position.
- * {@code x} and {@code y} are unsigned 8-bit values.</li>
- *
- * <li>{@code 0x00 n pixel{n} 0x00?} <br> Marks a literal run. {@code n} gives
- * the number of 8-, 16- or 24-bit pixels that follow. {@code n} must be between
- * 3 and 255. If n is odd and 8-bit pixels are used, a pad byte with the value
- * 0x00 must be added. </li> <li>{@code n pixel} <br> Marks a repetition.
- * {@code n} gives the number of times the given pixel is repeated. {@code n}
- * must be between 1 and 255. </li> </ul> Example:
- * <pre>
- * Compressed data         Expanded data
- *
- * 03 04                   04 04 04
- * 05 06                   06 06 06 06 06
- * 00 03 45 56 67 00       45 56 67
- * 02 78                   78 78
- * 00 02 05 01             Move 5 right and 1 down
- * 02 78                   78 78
- * 00 00                   End of line
- * 09 1E                   1E 1E 1E 1E 1E 1E 1E 1E 1E
- * 00 01                   End of RLE bitmap
- * </pre>
- * <p>
- * References:<br> <a
- * href="http://wiki.multimedia.cx/index.php?title=TechSmith_Screen_Capture_Codec"
- * >http://wiki.multimedia.cx/index.php?title=TechSmith_Screen_Capture_Codec</a><br>
- *
- * @author Werner Randelshofer
- */
+/// `TechSmithCodec` (tscc) encodes a BufferedImage as a byte[] array.
+///
+/// The TechSmith codec works with AVI and QuickTime.
+///
+/// This codec supports encoding from a `BufferedImage` into the file
+/// format, and decoding from the file format to a `BufferedImage`.
+///
+/// This codec does not encode the color palette of an image. This must be done
+/// separately.
+///
+/// Supported input formats:
+///   -  `Format` with
+///     `BufferedImage.class`, any width, any height, depth=8,16 or 24.
+///
+/// Supported output formats:
+///   -  `Format` with `byte[].class`, same
+///     width and height as input format, depth=8,16 or 24.
+///
+/// The codec supports
+/// lossless delta- and key-frame encoding of images with 8, 16 or 24 bits per
+/// pixel.
+///
+/// Compression of a frame is performed in two steps: In the first, step a frame
+/// is compressed line by line from bottom to top. In the second step the
+/// resulting data is compressed again using zlib compression.
+///
+/// Apart from the second compression step and the support for 16- and 24-bit
+/// data, this encoder is identical to the [RunLengthEncoder].
+///
+/// Each line of a frame is compressed individually. A line consists of two-byte
+/// op-codes optionally followed by data. The end of the line is marked with the
+/// EOL op-code.
+///
+/// The following op-codes are supported:    - `0x00 0x00`
+///
+/// Marks the end of a line.
+///   - `0x00 0x01`
+/// Marks the end of the bitmap.
+///   - `0x00 0x02 x y`
+/// Marks a delta (skip). `x` and `y`
+///     indicate the horizontal and vertical offset from the current position.
+///     `x` and `y` are unsigned 8-bit values.
+///   - `0x00 n pixel{n}0x00?`
+/// Marks a literal run. `n` gives
+///     the number of 8-, 16- or 24-bit pixels that follow. `n` must be between
+///     3 and 255. If n is odd and 8-bit pixels are used, a pad byte with the value
+///     0x00 must be added.    - `n pixel`
+/// Marks a repetition.
+///     `n` gives the number of times the given pixel is repeated. `n`
+///     must be between 1 and 255.   Example:
+/// <pre>
+/// Compressed data         Expanded data
+///
+/// 03 04                   04 04 04
+/// 05 06                   06 06 06 06 06
+/// 00 03 45 56 67 00       45 56 67
+/// 02 78                   78 78
+/// 00 02 05 01             Move 5 right and 1 down
+/// 02 78                   78 78
+/// 00 00                   End of line
+/// 09 1E                   1E 1E 1E 1E 1E 1E 1E 1E 1E
+/// 00 01                   End of RLE bitmap
+/// </pre>
+///
+/// References:
+/// <a
+/// href="http://wiki.multimedia.cx/index.php?title=TechSmith_Screen_Capture_Codec"
+/// >http://wiki.multimedia.cx/index.php?title=TechSmith_Screen_Capture_Codec</a>
+///
+/// @author Werner Randelshofer
 public class TechSmithEncoder extends org.monte.media.av.AbstractCodec {
 
     private TechSmithCodecCore state;

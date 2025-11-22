@@ -13,23 +13,17 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * {@code ANIMReader}.
- *
- * @author Werner Randelshofer
- */
+/// `ANIMReader`.
+///
+/// @author Werner Randelshofer
 public class ANIMReader {
 
     private ANIMMovieResources resources;
     // ---- BEGIN Decoder variables ----
-    /**
-     * Index of the frame which has been delta
-     * decoded in its even or odd bitmap buffer.
-     */
+    /// Index of the frame which has been delta
+    /// decoded in its even or odd bitmap buffer.
     private int fetchedEven = Integer.MAX_VALUE, fetchedOdd = Integer.MAX_VALUE;
-    /**
-     * Two bitmaps are needed for double buffering.
-     */
+    /// Two bitmaps are needed for double buffering.
     private AmigaBitmapImage bitmapEven, bitmapOdd;
     // ---- END Decoder variables ----
 
@@ -79,9 +73,7 @@ public class ANIMReader {
         return resources.getHeight();
     }
 
-    /**
-     * Reads a frame into the supplied image.
-     */
+    /// Reads a frame into the supplied image.
     public void readFrame(int index, AmigaBitmapImage image) {
         AmigaBitmapImage fetched = fetchFrame(index);
 
@@ -89,9 +81,7 @@ public class ANIMReader {
         image.setColorModel(resources.getFrame(index).getColorModel());
     }
 
-    /**
-     * Reads the duration of the specified frame.
-     */
+    /// Reads the duration of the specified frame.
     public int getDuration(int index) {
         return Math.max(1, (int) resources.getFrame(index).getRelTime());
     }

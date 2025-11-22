@@ -13,11 +13,9 @@ import java.awt.image.DataBufferInt;
 import java.awt.image.ImageObserver;
 import java.awt.image.WritableRaster;
 
-/**
- * Scales an image down and applies Subpixel antialiasing to it.
- *
- * @author Werner Randelshofer
- */
+/// Scales an image down and applies Subpixel antialiasing to it.
+///
+/// @author Werner Randelshofer
 public class SubpixAA {
 
     public final static Object HBGR;
@@ -44,13 +42,9 @@ public class SubpixAA {
         VRGB = vbgr;
     }
 
-    /**
-     * Source image buffer.
-     */
+    /// Source image buffer.
     private BufferedImage sBuf;
-    /**
-     * Destination image buffer.
-     */
+    /// Destination image buffer.
     private BufferedImage dBuf;
 
     /*
@@ -136,25 +130,21 @@ public class SubpixAA {
 
     }*/
 
-    /**
-     * Renders an image with subpixel antialiasing.
-     * <p>
-     * This method uses caching to improve the performance of subsequent calls.
-     * <p>
-     * The image must be larger than the destination width and height.
-     */
+    /// Renders an image with subpixel antialiasing.
+    ///
+    /// This method uses caching to improve the performance of subsequent calls.
+    ///
+    /// The image must be larger than the destination width and height.
     public void drawAA(Graphics gr, BufferedImage img, int x, int y, int width, int height, ImageObserver observer) {
         Graphics2D g = (Graphics2D) gr;
         drawAA(gr, img, x, y, width, height, g.getRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING), observer);
     }
 
-    /**
-     * Renders an image with subpixel antialiasing.
-     * <p>
-     * This method uses caching to improve the performance of subsequent calls.
-     * <p>
-     * The image must be larger than the destination width and height.
-     */
+    /// Renders an image with subpixel antialiasing.
+    ///
+    /// This method uses caching to improve the performance of subsequent calls.
+    ///
+    /// The image must be larger than the destination width and height.
     public void drawAA(Graphics gr, BufferedImage img, int x, int y, int width, int height, Object method, ImageObserver observer) {
         // If the image dimension matches width and height, draw it as is.
         if (img.getWidth() == width && img.getHeight() == height) {
@@ -186,15 +176,13 @@ public class SubpixAA {
         g.drawImage(dBuf, x, y, observer);
     }
 
-    /**
-     * Returns the dimensions needed of the source image for the desired
-     * destination image size.
-     *
-     * @param width  The desired width of the destination image.
-     * @param height The desired height of the destination image.
-     * @param method The Antialiasing method to be used must be one of
-     *               {@code RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB}, {@code ..._HBGR},
-     */
+    /// Returns the dimensions needed of the source image for the desired
+    /// destination image size.
+    ///
+    /// @param width  The desired width of the destination image.
+    /// @param height The desired height of the destination image.
+    /// @param method The Antialiasing method to be used must be one of
+    ///                                           `RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB`, `..._HBGR`,
     public static Dimension getSourceDimension(int width, int height, Object method) {
         Dimension dim;
         if (method == HRGB ||//
@@ -209,18 +197,16 @@ public class SubpixAA {
         return dim;
     }
 
-    /**
-     * Scales down an image using the specified antialiasing method.
-     * <p>
-     * For methods {@code HBGR} and {@code HRGB}, the image width is scaled down
-     * by factor 3.
-     * For methods {@code VBGR} and {@code VRGB}, the image height is scaled down
-     * by factor 3.
-     *
-     * @param src The source image.
-     * @param dst The destination image.
-     * @param m   The method.
-     */
+    /// Scales down an image using the specified antialiasing method.
+    ///
+    /// For methods `HBGR` and `HRGB`, the image width is scaled down
+    /// by factor 3.
+    /// For methods `VBGR` and `VRGB`, the image height is scaled down
+    /// by factor 3.
+    ///
+    /// @param src The source image.
+    /// @param dst The destination image.
+    /// @param m   The method.
     public static void aa(BufferedImage src, BufferedImage dst, Object m) {
         if (m == HRGB) {
             aaHRGB(src, dst);
@@ -238,10 +224,8 @@ public class SubpixAA {
         }
     }
 
-    /**
-     * Set up the graphics transform to match the clip region
-     * to the image size.
-     */
+    /// Set up the graphics transform to match the clip region
+    /// to the image size.
     private static void setupRendering(Graphics2D g) {
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
@@ -254,33 +238,31 @@ public class SubpixAA {
         //getToolkit().
     }
 
-    /**
-     * Scales down an image using HRGB antia-aliasing.
-     * <p>
-     * Source and destination image must be of type BufferedImage.TYPE_RGB
-     * and have a data buffer of type DataBufferInt.
-     * <p>
-     * The height of source and destination image must be the same.
-     * The width of the source image must be 3 times the width of the
-     * destination image.
-     * <p>
-     * Intensity weights:
-     * <pre>
-     *
-     *            1
-     *            |
-     *       +----+----+
-     *       |    |    |
-     *      1/3  1/3  1/3
-     *            |
-     *  +----+----+----+----+
-     *  |    |    |    |    |
-     * 1/9  2/9  3/9  2/9  1/9
-     * </pre>
-     *
-     * @param src The source image.
-     * @param dst The destination image.
-     */
+    /// Scales down an image using HRGB antia-aliasing.
+    ///
+    /// Source and destination image must be of type BufferedImage.TYPE_RGB
+    /// and have a data buffer of type DataBufferInt.
+    ///
+    /// The height of source and destination image must be the same.
+    /// The width of the source image must be 3 times the width of the
+    /// destination image.
+    ///
+    /// Intensity weights:
+    /// <pre>
+    ///
+    ///            1
+    ///            |
+    ///       +----+----+
+    ///       |    |    |
+    ///      1/3  1/3  1/3
+    ///            |
+    ///  +----+----+----+----+
+    ///  |    |    |    |    |
+    /// 1/9  2/9  3/9  2/9  1/9
+    /// </pre>
+    ///
+    /// @param src The source image.
+    /// @param dst The destination image.
     public static void aaHRGB(BufferedImage src, BufferedImage dst) {
         WritableRaster sras = src.getRaster();
         WritableRaster dras = dst.getRaster();
@@ -392,33 +374,31 @@ public class SubpixAA {
         }
     }
 
-    /**
-     * Scales down an image using HBGR antia-aliasing.
-     * <p>
-     * Source and destination image must be of type BufferedImage.TYPE_RGB
-     * and have a data buffer of type DataBufferInt.
-     * <p>
-     * The height of source and destination image must be the same.
-     * The width of the source image must be 3 times the width of the
-     * destination image.
-     * <p>
-     * Intensity weights:
-     * <pre>
-     *
-     *            1
-     *            |
-     *       +----+----+
-     *       |    |    |
-     *      1/3  1/3  1/3
-     *            |
-     *  +----+----+----+----+
-     *  |    |    |    |    |
-     * 1/9  2/9  3/9  2/9  1/9
-     * </pre>
-     *
-     * @param src The source image.
-     * @param dst The destination image.
-     */
+    /// Scales down an image using HBGR antia-aliasing.
+    ///
+    /// Source and destination image must be of type BufferedImage.TYPE_RGB
+    /// and have a data buffer of type DataBufferInt.
+    ///
+    /// The height of source and destination image must be the same.
+    /// The width of the source image must be 3 times the width of the
+    /// destination image.
+    ///
+    /// Intensity weights:
+    /// <pre>
+    ///
+    ///            1
+    ///            |
+    ///       +----+----+
+    ///       |    |    |
+    ///      1/3  1/3  1/3
+    ///            |
+    ///  +----+----+----+----+
+    ///  |    |    |    |    |
+    /// 1/9  2/9  3/9  2/9  1/9
+    /// </pre>
+    ///
+    /// @param src The source image.
+    /// @param dst The destination image.
     public static void aaHBGR(BufferedImage src, BufferedImage dst) {
         WritableRaster sras = src.getRaster();
         WritableRaster dras = dst.getRaster();
@@ -529,33 +509,31 @@ public class SubpixAA {
         }
     }
 
-    /**
-     * Scales down an image using VRGB antia-aliasing.
-     * <p>
-     * Source and destination image must be of type BufferedImage.TYPE_RGB
-     * and have a data buffer of type DataBufferInt.
-     * <p>
-     * The width of source and destination image must be the same.
-     * The height of the source image must be 3 times the height of the
-     * destination image.
-     * <p>
-     * Intensity weights:
-     * <pre>
-     *
-     *            1
-     *            |
-     *       +----+----+
-     *       |    |    |
-     *      1/3  1/3  1/3
-     *            |
-     *  +----+----+----+----+
-     *  |    |    |    |    |
-     * 1/9  2/9  3/9  2/9  1/9
-     * </pre>
-     *
-     * @param src The source image.
-     * @param dst The destination image.
-     */
+    /// Scales down an image using VRGB antia-aliasing.
+    ///
+    /// Source and destination image must be of type BufferedImage.TYPE_RGB
+    /// and have a data buffer of type DataBufferInt.
+    ///
+    /// The width of source and destination image must be the same.
+    /// The height of the source image must be 3 times the height of the
+    /// destination image.
+    ///
+    /// Intensity weights:
+    /// <pre>
+    ///
+    ///            1
+    ///            |
+    ///       +----+----+
+    ///       |    |    |
+    ///      1/3  1/3  1/3
+    ///            |
+    ///  +----+----+----+----+
+    ///  |    |    |    |    |
+    /// 1/9  2/9  3/9  2/9  1/9
+    /// </pre>
+    ///
+    /// @param src The source image.
+    /// @param dst The destination image.
     public static void aaVRGB(BufferedImage src, BufferedImage dst) {
         WritableRaster sras = src.getRaster();
         WritableRaster dras = dst.getRaster();
@@ -667,33 +645,31 @@ public class SubpixAA {
         }
     }
 
-    /**
-     * Scales down an image using VBGR antia-aliasing.
-     * <p>
-     * Source and destination image must be of type BufferedImage.TYPE_RGB
-     * and have a data buffer of type DataBufferInt.
-     * <p>
-     * The width of source and destination image must be the same.
-     * The height of the source image must be 3 times the height of the
-     * destination image.
-     * <p>
-     * Intensity weights:
-     * <pre>
-     *
-     *            1
-     *            |
-     *       +----+----+
-     *       |    |    |
-     *      1/3  1/3  1/3
-     *            |
-     *  +----+----+----+----+
-     *  |    |    |    |    |
-     * 1/9  2/9  3/9  2/9  1/9
-     * </pre>
-     *
-     * @param src The source image.
-     * @param dst The destination image.
-     */
+    /// Scales down an image using VBGR antia-aliasing.
+    ///
+    /// Source and destination image must be of type BufferedImage.TYPE_RGB
+    /// and have a data buffer of type DataBufferInt.
+    ///
+    /// The width of source and destination image must be the same.
+    /// The height of the source image must be 3 times the height of the
+    /// destination image.
+    ///
+    /// Intensity weights:
+    /// <pre>
+    ///
+    ///            1
+    ///            |
+    ///       +----+----+
+    ///       |    |    |
+    ///      1/3  1/3  1/3
+    ///            |
+    ///  +----+----+----+----+
+    ///  |    |    |    |    |
+    /// 1/9  2/9  3/9  2/9  1/9
+    /// </pre>
+    ///
+    /// @param src The source image.
+    /// @param dst The destination image.
     public static void aaVBGR(BufferedImage src, BufferedImage dst) {
         WritableRaster sras = src.getRaster();
         WritableRaster dras = dst.getRaster();

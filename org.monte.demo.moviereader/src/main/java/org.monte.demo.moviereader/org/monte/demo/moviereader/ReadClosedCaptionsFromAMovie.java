@@ -24,11 +24,9 @@ import static org.monte.media.av.codec.text.TextFormatKeys.ENCODING_HTML;
 import static org.monte.media.av.codec.text.TextFormatKeys.ENCODING_STRING;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
 
-/**
- * Reads closed captions from a Movie with the Monte Media library.
- *
- * @author Werner Randelshofer
- */
+/// Reads closed captions from a Movie with the Monte Media library.
+///
+/// @author Werner Randelshofer
 public class ReadClosedCaptionsFromAMovie {
 
 

@@ -9,22 +9,20 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
-/**
- * StringTransferable.
- * <p>
- * Note: This transferable should always be used in conjunction with
- * PlainTextTransferable.
- * <p>
- * Usage:
- * <pre>
- * String text = "bla";
- * CompositeTransfer t = new CompositeTransferable();
- * t.add(new StringTransferable(text));
- * t.add(new PlainTextTransferable(text));
- * </pre>
- *
- * @author Werner Randelshofer
- */
+/// StringTransferable.
+///
+/// Note: This transferable should always be used in conjunction with
+/// PlainTextTransferable.
+///
+/// Usage:
+/// <pre>
+/// String text = "bla";
+/// CompositeTransfer t = new CompositeTransferable();
+/// t.add(new StringTransferable(text));
+/// t.add(new PlainTextTransferable(text));
+/// </pre>
+///
+/// @author Werner Randelshofer
 public class StringTransferable extends AbstractTransferable {
     private String string;
 

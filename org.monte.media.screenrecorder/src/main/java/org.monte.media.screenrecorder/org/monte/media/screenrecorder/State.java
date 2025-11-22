@@ -5,9 +5,7 @@
 
 package org.monte.media.screenrecorder;
 
-/**
- * States of the screen recorder.
- */
+/// States of the screen recorder.
 public enum State {
 
     CREATED, RECORDING, DONE, FAILED;

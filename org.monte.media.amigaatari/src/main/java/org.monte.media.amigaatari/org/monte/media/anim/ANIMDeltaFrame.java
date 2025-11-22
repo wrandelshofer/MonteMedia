@@ -6,9 +6,7 @@ package org.monte.media.anim;
 
 import org.monte.media.amigabitmap.AmigaBitmapImage;
 
-/**
- * @author Werner Randelshofer
- */
+/// @author Werner Randelshofer
 public class ANIMDeltaFrame
         extends ANIMFrame {
 
@@ -36,9 +34,7 @@ public class ANIMDeltaFrame
             OP_Vertical7 = 7,
             OP_Vertical8 = 8,
             OP_J = 74;
-    /**
-     * Whether we already printed a warning about a broken encoding.
-     */
+    /// Whether we already printed a warning about a broken encoding.
     private boolean isWarningPrinted = false;
 
     public ANIMDeltaFrame() {
@@ -100,160 +96,154 @@ public class ANIMDeltaFrame
         }
     }
 
-    /**
-     * 2.2.1 Format for methods 2 & 3.
-     * <p>
-     * This chunk is a basic data chunk used to hold the delta
-     * compression data.  The minimum size of this chunk is 32 bytes
-     * as the first 8 long-words are byte pointers into the chunk for
-     * the data for each of up to 8 bitplanes.  The pointer for the
-     * plane data starting immediately following these 8 pointers will
-     * have a value of 32 as the data starts in the 33-rd byte of the
-     * chunk (index value of 32 due to zero-base indexing).
-     * <p>
-     * The data for a given plane consists of groups of data words.  In
-     * Long Delta mode, these groups consist of both short and long
-     * words - short words for offsets and numbers, and long words for
-     * the actual data.  In Short Delta mode, the groups are identical
-     * except data words are also shorts so all data is short words.
-     * Each group consists of a starting word which is an offset.  If
-     * the offset is positive then it indicates the increment in long
-     * or short words (whichever is appropriate) through the bitplane.
-     * In other words, if you were reconstructing the plane, you would
-     * start a pointer (to shorts or longs depending on the mode) to
-     * point to the first word of the bitplane.  Then the offset would
-     * be added to it and the following data word would be placed at
-     * that position.  Then the next offset would be added to the
-     * pointer and the following data word would be placed at that
-     * position.  And so on...  The data terminates with an offset
-     * equal to 0xFFFF.
-     * <p>
-     * A second interpretation is given if the offset is negative.  In
-     * that case, the absolute value is the offset+2.  Then the
-     * following short-word indicates the number of data words that
-     * follow.  Following that is the indicated number of contiguous
-     * data words (longs or shorts depending on mode) which are to
-     * be placed in contiguous locations of the bitplane.
-     * <p>
-     * If there are no changed words in a given plane, then the pointer
-     * in the first 32 bytes of the chunk is =0.
-     */
+    /// 2.2.1 Format for methods 2 & 3.
+    ///
+    /// This chunk is a basic data chunk used to hold the delta
+    /// compression data.  The minimum size of this chunk is 32 bytes
+    /// as the first 8 long-words are byte pointers into the chunk for
+    /// the data for each of up to 8 bitplanes.  The pointer for the
+    /// plane data starting immediately following these 8 pointers will
+    /// have a value of 32 as the data starts in the 33-rd byte of the
+    /// chunk (index value of 32 due to zero-base indexing).
+    ///
+    /// The data for a given plane consists of groups of data words.  In
+    /// Long Delta mode, these groups consist of both short and long
+    /// words - short words for offsets and numbers, and long words for
+    /// the actual data.  In Short Delta mode, the groups are identical
+    /// except data words are also shorts so all data is short words.
+    /// Each group consists of a starting word which is an offset.  If
+    /// the offset is positive then it indicates the increment in long
+    /// or short words (whichever is appropriate) through the bitplane.
+    /// In other words, if you were reconstructing the plane, you would
+    /// start a pointer (to shorts or longs depending on the mode) to
+    /// point to the first word of the bitplane.  Then the offset would
+    /// be added to it and the following data word would be placed at
+    /// that position.  Then the next offset would be added to the
+    /// pointer and the following data word would be placed at that
+    /// position.  And so on...  The data terminates with an offset
+    /// equal to 0xFFFF.
+    ///
+    /// A second interpretation is given if the offset is negative.  In
+    /// that case, the absolute value is the offset+2.  Then the
+    /// following short-word indicates the number of data words that
+    /// follow.  Following that is the indicated number of contiguous
+    /// data words (longs or shorts depending on mode) which are to
+    /// be placed in contiguous locations of the bitplane.
+    ///
+    /// If there are no changed words in a given plane, then the pointer
+    /// in the first 32 bytes of the chunk is =0.
     private void decodeMethod2(AmigaBitmapImage bitmap, ANIMMovieResources track) {
         throw new UnsupportedOperationException();
 
     }
 
-    /**
-     * 2.2.2 Format for method 4.
-     * <p>
-     * The DLTA chunk is modified slightly to have 16 long pointers at
-     * the start.  The first 8 are as before - pointers to the start of
-     * the data for each of the bitplanes (up to a theoretical max of 8
-     * planes).  The next 8 are pointers to the start of the offset/numbers
-     * data list.  If there is only one list of offset/numbers for all
-     * planes, then the pointer to that list is repeated in all positions
-     * so the playback code need not even be aware of it.  In fact, one
-     * could get fancy and have some bitplanes share lists while others
-     * have different lists, or no lists (the problems in these schemes
-     * lie in the generation, not in the playback).
-     * <p>
-     * The best way to show the use of this format is in a sample playback
-     * routine.
-     * <pre>
-     *           SetDLTAshort(bm,deltaword)
-     *           struct BitMap *bm;
-     *           WORD *deltaword;
-     *           {
-     *              int i;
-     *              LONG *deltadata;
-     *              WORD *ptr,*planeptr;
-     *              register int s,size,nw;
-     *              register WORD *data,*dest;
-     *
-     *              deltadata = (LONG *)deltaword;
-     *              nw = bm->BytesPerRow >>1;
-     *
-     *              for (i=0;i&lt;bm->Depth;i++) {
-     *                 planeptr = (WORD *)(bm->Planes[i]);
-     *                 data = deltaword + deltadata[i];
-     *                 ptr  = deltaword + deltadata[i+8];
-     *                 while (*ptr != 0xFFFF) {
-     *                    dest = planeptr + *ptr++;
-     *                    size = *ptr++;
-     *                    if (size &lt; 0) {
-     *                       for (s=size;s&lt;0;s++) {
-     *                          *dest = *data;
-     *                          dest += nw;
-     *                       }
-     *                       data++;
-     *                    }
-     *                    else {
-     *                       for (s=0;s&lt;size;s++) {
-     *                          *dest = *data++;
-     *                          dest += nw;
-     *                       }
-     *                    }
-     *                 }
-     *              }
-     *              return(0);
-     *           }
-     * </pre>
-     * The above routine is for short word vertical compression with
-     * run length compression.  The most efficient way to support
-     * the various options is to replicate this routine and make
-     * alterations for, say, long word or XOR.  The variable nw
-     * indicates the number of words to skip to go down the vertical
-     * column.  This one routine could easily handle horizontal
-     * compression by simply setting nw=1.  For ultimate playback
-     * speed, the core, at least, of this routine should be coded in
-     * assembly language.
-     */
+    /// 2.2.2 Format for method 4.
+    ///
+    /// The DLTA chunk is modified slightly to have 16 long pointers at
+    /// the start.  The first 8 are as before - pointers to the start of
+    /// the data for each of the bitplanes (up to a theoretical max of 8
+    /// planes).  The next 8 are pointers to the start of the offset/numbers
+    /// data list.  If there is only one list of offset/numbers for all
+    /// planes, then the pointer to that list is repeated in all positions
+    /// so the playback code need not even be aware of it.  In fact, one
+    /// could get fancy and have some bitplanes share lists while others
+    /// have different lists, or no lists (the problems in these schemes
+    /// lie in the generation, not in the playback).
+    ///
+    /// The best way to show the use of this format is in a sample playback
+    /// routine.
+    /// <pre>
+    ///           SetDLTAshort(bm,deltaword)
+    ///           struct BitMap *bm;
+    ///           WORD *deltaword;
+    ///           {
+    ///              int i;
+    ///              LONG *deltadata;
+    ///              WORD *ptr,*planeptr;
+    ///              register int s,size,nw;
+    ///              register WORD *data,*dest;
+    ///
+    ///              deltadata = (LONG *)deltaword;
+    ///              nw = bm->BytesPerRow >>1;
+    ///
+    ///              for (i=0;i&lt;bm->Depth;i++) {
+    ///                 planeptr = (WORD *)(bm->Planes[i]);
+    ///                 data = deltaword + deltadata[i];
+    ///                 ptr  = deltaword + deltadata[i+8];
+    ///                 while (*ptr != 0xFFFF) {
+    ///                    dest = planeptr + *ptr++;
+    ///                    size = *ptr++;
+    ///                    if (size &lt; 0) {
+    ///                       for (s=size;s&lt;0;s++) {
+    ///                          *dest = *data;
+    ///                          dest += nw;
+    ///                       }
+    ///                       data++;
+    ///                    }
+    ///                    else {
+    ///                       for (s=0;s&lt;size;s++) {
+    ///                          *dest = *data++;
+    ///                          dest += nw;
+    ///                       }
+    ///                    }
+    ///                 }
+    ///              }
+    ///              return(0);
+    ///           }
+    /// </pre>
+    /// The above routine is for short word vertical compression with
+    /// run length compression.  The most efficient way to support
+    /// the various options is to replicate this routine and make
+    /// alterations for, say, long word or XOR.  The variable nw
+    /// indicates the number of words to skip to go down the vertical
+    /// column.  This one routine could easily handle horizontal
+    /// compression by simply setting nw=1.  For ultimate playback
+    /// speed, the core, at least, of this routine should be coded in
+    /// assembly language.
     private void decodeMethod4(AmigaBitmapImage bitmap, ANIMMovieResources track) {
         throw new UnsupportedOperationException();
 
     }
 
-    /**
-     * 2.2.2 Format for method 5.
-     * <p>
-     * In this method the same 16 pointers are used as in option 4.
-     * The first 8 are pointers to the data for up to 8 planes.
-     * The second set of 8 are not used but were retained for several
-     * reasons.  First to be somewhat compatible with code for option
-     * 4 (although this has not proven to be of any benefit) and
-     * second, to allow extending the format for more bitplanes (code
-     * has been written for up to 12 planes).
-     * <p>
-     * Compression/decompression is performed on a plane-by-plane basis.
-     * For each plane, compression can be handled by the skip.c code
-     * (provided Public Domain by Jim Kent) and decompression can be
-     * handled by unvscomp.asm (also provided Public Domain by Jim Kent).
-     * <p>
-     * Compression/decompression is performed on a plane-by-plane basis.
-     * The following description of the method is taken directly from
-     * Jim Kent's code with minor re-wording.  Please refer to Jim's
-     * code (skip.c and unvscomp.asm) for more details:
-     * <p>
-     * Each column of the bitplane is compressed separately.
-     * A 320x200 bitplane would have 40 columns of 200 bytes each.
-     * Each column starts with an op-count followed by a number
-     * of ops.  If the op-count is zero, that's ok, it just means
-     * there's no change in this column from the last frame.
-     * The ops are of three classes, and followed by a varying
-     * amount of data depending on which class:
-     * 1. Skip ops - this is a byte with the hi bit clear that
-     * says how many rows to move the "dest" pointer forward,
-     * ie to skip. It is non-zero.
-     * 2. Uniq ops - this is a byte with the hi bit set.  The hi
-     * bit is masked down and the remainder is a count of the
-     * number of bytes of data to copy literally.  It's of
-     * course followed by the data to copy.
-     * 3. Same ops - this is a 0 byte followed by a count byte,
-     * followed by a byte value to repeat count times.
-     * Do bear in mind that the data is compressed vertically rather
-     * than horizontally, so to get to the next byte in the destination
-     * we add the number of bytes per row instead of one!
-     */
+    /// 2.2.2 Format for method 5.
+    ///
+    /// In this method the same 16 pointers are used as in option 4.
+    /// The first 8 are pointers to the data for up to 8 planes.
+    /// The second set of 8 are not used but were retained for several
+    /// reasons.  First to be somewhat compatible with code for option
+    /// 4 (although this has not proven to be of any benefit) and
+    /// second, to allow extending the format for more bitplanes (code
+    /// has been written for up to 12 planes).
+    ///
+    /// Compression/decompression is performed on a plane-by-plane basis.
+    /// For each plane, compression can be handled by the skip.c code
+    /// (provided Public Domain by Jim Kent) and decompression can be
+    /// handled by unvscomp.asm (also provided Public Domain by Jim Kent).
+    ///
+    /// Compression/decompression is performed on a plane-by-plane basis.
+    /// The following description of the method is taken directly from
+    /// Jim Kent's code with minor re-wording.  Please refer to Jim's
+    /// code (skip.c and unvscomp.asm) for more details:
+    ///
+    /// Each column of the bitplane is compressed separately.
+    /// A 320x200 bitplane would have 40 columns of 200 bytes each.
+    /// Each column starts with an op-count followed by a number
+    /// of ops.  If the op-count is zero, that's ok, it just means
+    /// there's no change in this column from the last frame.
+    /// The ops are of three classes, and followed by a varying
+    /// amount of data depending on which class:
+    /// 1. Skip ops - this is a byte with the hi bit clear that
+    /// says how many rows to move the "dest" pointer forward,
+    /// ie to skip. It is non-zero.
+    /// 2. Uniq ops - this is a byte with the hi bit set.  The hi
+    /// bit is masked down and the remainder is a count of the
+    /// number of bytes of data to copy literally.  It's of
+    /// course followed by the data to copy.
+    /// 3. Same ops - this is a 0 byte followed by a count byte,
+    /// followed by a byte value to repeat count times.
+    /// Do bear in mind that the data is compressed vertically rather
+    /// than horizontally, so to get to the next byte in the destination
+    /// we add the number of bytes per row instead of one!
     private void decodeByteVertical(AmigaBitmapImage bitmap, ANIMMovieResources track) {
         int columns = 0;
         int iOp = 0;
@@ -797,37 +787,35 @@ public class ANIMDeltaFrame
         }
     }
 
-    /**
-     * Decodes DLTA's in Eric Graham's Compresson mode "J".
-     * <p>
-     * The following documentation has been taken from Steven Den Beste's docu
-     * for his "unmovie" program.
-     * <p>
-     * A DLTA appears to have three kinds of items in it, with each type being
-     * indicated by the value of its first byte:
-     * <p>
-     * <p>
-     * Type 0: indicates the end of the DLTA. Layout: word: 0
-     * <p>
-     * Type 1: indicates a "wall": This is a section of the image which has full
-     * Z-height, is 1 byte wide in X, and has a variable Y size. Layout: word: 1
-     * word: 0=unidirectional (store value), 1=bidirectional (XOR value) word:
-     * Y-size (number of pixels in Y direction) word: number of blocks to
-     * follow: per block: word: offset in each bitplane (note: NOT in the total
-     * image!) 1-6 bytes: full Z height for first Y 1-6 bytes: full Z height for
-     * second Y etc., extending DOWN.
-     * <p>
-     * Type 2: indicates a "pile": This is a section of the image which has full
-     * Z-height, and has both variable Y size and X size. Layout: word: 2 word:
-     * 0=unidirectional, 1=bidirectional word: Y size word: X size word: number
-     * of blocks to follow: per block: word: offset in each bitplane (NOT in the
-     * total image) successive bytes: a traversed 3D rectangle, with X varying
-     * within Y within Z. (X moves right, Z moves up, Y moves down)
-     * <p>
-     * The movie is double-buffered, but you don't have to know about that part.
-     * (Anyway, it is described in the original documentation for "pilbm" if
-     * you're curious.
-     */
+    /// Decodes DLTA's in Eric Graham's Compresson mode "J".
+    ///
+    /// The following documentation has been taken from Steven Den Beste's docu
+    /// for his "unmovie" program.
+    ///
+    /// A DLTA appears to have three kinds of items in it, with each type being
+    /// indicated by the value of its first byte:
+    ///
+    ///
+    /// Type 0: indicates the end of the DLTA. Layout: word: 0
+    ///
+    /// Type 1: indicates a "wall": This is a section of the image which has full
+    /// Z-height, is 1 byte wide in X, and has a variable Y size. Layout: word: 1
+    /// word: 0=unidirectional (store value), 1=bidirectional (XOR value) word:
+    /// Y-size (number of pixels in Y direction) word: number of blocks to
+    /// follow: per block: word: offset in each bitplane (note: NOT in the total
+    /// image!) 1-6 bytes: full Z height for first Y 1-6 bytes: full Z height for
+    /// second Y etc., extending DOWN.
+    ///
+    /// Type 2: indicates a "pile": This is a section of the image which has full
+    /// Z-height, and has both variable Y size and X size. Layout: word: 2 word:
+    /// 0=unidirectional, 1=bidirectional word: Y size word: X size word: number
+    /// of blocks to follow: per block: word: offset in each bitplane (NOT in the
+    /// total image) successive bytes: a traversed 3D rectangle, with X varying
+    /// within Y within Z. (X moves right, Z moves up, Y moves down)
+    ///
+    /// The movie is double-buffered, but you don't have to know about that part.
+    /// (Anyway, it is described in the original documentation for "pilbm" if
+    /// you're curious.
     private void decodeJ(AmigaBitmapImage bitmap, ANIMMovieResources track) {
 
         int nbPlanes = track.getNbPlanes();
@@ -1010,14 +998,12 @@ public class ANIMDeltaFrame
         return rightBound;
     }
 
-    /**
-     * Returns true if the frame can be decoded over both the previous frame or
-     * the subsequent frame. Bidirectional frames can be used efficiently for
-     * forward and backward playing a movie.
-     * <p>
-     * All key frames are bidirectional. Delta frames which use an XOR OP-mode
-     * are bidirectional as well.
-     */
+    /// Returns true if the frame can be decoded over both the previous frame or
+    /// the subsequent frame. Bidirectional frames can be used efficiently for
+    /// forward and backward playing a movie.
+    ///
+    /// All key frames are bidirectional. Delta frames which use an XOR OP-mode
+    /// are bidirectional as well.
     @Override
     public boolean isBidirectional() {
         switch (getOperation()) {

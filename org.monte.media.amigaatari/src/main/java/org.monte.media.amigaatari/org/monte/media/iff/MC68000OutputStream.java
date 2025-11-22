@@ -12,22 +12,16 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
-/**
- * MC68000OutputStream.
- *
- * @author Werner Randelshofer
- */
+/// MC68000OutputStream.
+///
+/// @author Werner Randelshofer
 public class MC68000OutputStream extends FilterOutputStream {
-    /**
-     * The number of bytes written to the data output stream so far.
-     * If this counter overflows, it will be wrapped to Integer.MAX_VALUE.
-     */
+    /// The number of bytes written to the data output stream so far.
+    /// If this counter overflows, it will be wrapped to Integer.MAX_VALUE.
     protected long written;
     private byte byteBuffer[] = new byte[8];
 
-    /**
-     * Creates a new instance.
-     */
+    /// Creates a new instance.
     public MC68000OutputStream(OutputStream out) {
         super(out);
     }
@@ -61,24 +55,22 @@ public class MC68000OutputStream extends FilterOutputStream {
         incCount(1);
     }
 
-    /**
-     * ByteRun1 Run Encoding.
-     * <p>
-     * The run encoding scheme in byteRun1 is best described by
-     * pseudo code for the decoder Unpacker (called UnPackBits in the
-     * Macintosh toolbox):
-     * <pre>
-     * UnPacker:
-     *    LOOP until produced the desired number of bytes
-     *       Read the next source byte into n
-     *       SELECT n FROM
-     *          [ 0..127 ] ⇒ copy the next n+1 bytes literally
-     *          [-1..-127] ⇒ replicate the next byte -n+1 times (same as ~n times)
-     *          -128       ⇒ no operation
-     *       ENDCASE
-     *    ENDLOOP
-     * </pre>
-     */
+    /// ByteRun1 Run Encoding.
+    ///
+    /// The run encoding scheme in byteRun1 is best described by
+    /// pseudo code for the decoder Unpacker (called UnPackBits in the
+    /// Macintosh toolbox):
+    /// <pre>
+    /// UnPacker:
+    ///    LOOP until produced the desired number of bytes
+    ///       Read the next source byte into n
+    ///       SELECT n FROM
+    ///          [0..127] ⇒ copy the next n+1 bytes literally
+    ///          [-1..-127] ⇒ replicate the next byte -n+1 times (same as ~n times)
+    ///          -128       ⇒ no operation
+    ///       ENDCASE
+    ///    ENDLOOP
+    /// </pre>
     public void writeByteRun1(byte[] data) throws IOException {
         writeByteRun1(data, 0, data.length);
     }
@@ -154,11 +146,9 @@ public class MC68000OutputStream extends FilterOutputStream {
         incCount(len);
     }
 
-    /**
-     * Writes an chunk type identifier (4 bytes).
-     *
-     * @param s A string with a length of 4 characters.
-     */
+    /// Writes an chunk type identifier (4 bytes).
+    ///
+    /// @param s A string with a length of 4 characters.
     public void writeType(String s) throws IOException {
         if (s.length() != 4) {
             throw new IllegalArgumentException("type string must have 4 characters");
@@ -172,28 +162,22 @@ public class MC68000OutputStream extends FilterOutputStream {
         }
     }
 
-    /**
-     * Returns the current value of the counter <code>written</code>,
-     * the number of bytes written to this data output stream so far.
-     * If the counter overflows, it will be wrapped to Integer.MAX_VALUE.
-     *
-     * @return the value of the <code>written</code> field.
-     */
+    /// Returns the current value of the counter `written`,
+    /// the number of bytes written to this data output stream so far.
+    /// If the counter overflows, it will be wrapped to Integer.MAX_VALUE.
+    ///
+    /// @return the value of the `written` field.
     public final long size() {
         return written;
     }
 
-    /**
-     * Sets the value of the counter <code>written</code> to 0.
-     */
+    /// Sets the value of the counter `written` to 0.
     public void clearCount() {
         written = 0;
     }
 
-    /**
-     * Increases the written counter by the specified value
-     * until it reaches Long.MAX_VALUE.
-     */
+    /// Increases the written counter by the specified value
+    /// until it reaches Long.MAX_VALUE.
     protected void incCount(int value) {
         long temp = written + value;
         if (temp < 0) {

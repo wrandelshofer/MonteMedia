@@ -8,30 +8,22 @@ package org.monte.media.util;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-/**
- * Methods contains convenience methods for method invocations using
- * java.lang.reflect.
- *
- * @author Werner Randelshofer
- */
-
+/// Methods contains convenience methods for method invocations using
+/// java.lang.reflect.
+///
+/// @author Werner Randelshofer
 @SuppressWarnings("unchecked")
 public class Methods {
-    /**
-     * Prevent instance creation.
-     */
+    /// Prevent instance creation.
     private Methods() {
     }
 
-    /**
-     * Invokes the specified accessible parameterless method if it exists.
-     *
-     * @param obj        The object on which to invoke the method.
-     * @param methodName The name of the method.
-     * @return The return value of the method.
-     *
-     * @throws NoSuchMethodException if the method does not exist or is not accessible.
-     */
+    /// Invokes the specified accessible parameterless method if it exists.
+    ///
+    /// @param obj        The object on which to invoke the method.
+    /// @param methodName The name of the method.
+    /// @return The return value of the method.
+    /// @throws NoSuchMethodException if the method does not exist or is not accessible.
     public static Object invoke(Object obj, String methodName)
             throws NoSuchMethodException {
         try {
@@ -45,16 +37,13 @@ public class Methods {
         }
     }
 
-    /**
-     * Invokes the specified accessible method with a string parameter if it exists.
-     *
-     * @param obj             The object on which to invoke the method.
-     * @param methodName      The name of the method.
-     * @param stringParameter The String parameter.
-     * @return The return value of the method.
-     *
-     * @throws NoSuchMethodException if the method does not exist or is not accessible.
-     */
+    /// Invokes the specified accessible method with a string parameter if it exists.
+    ///
+    /// @param obj             The object on which to invoke the method.
+    /// @param methodName      The name of the method.
+    /// @param stringParameter The String parameter.
+    /// @return The return value of the method.
+    /// @throws NoSuchMethodException if the method does not exist or is not accessible.
     public static Object invoke(Object obj, String methodName, String stringParameter)
             throws NoSuchMethodException {
         try {
@@ -67,15 +56,13 @@ public class Methods {
             throw new InternalError(e.getMessage());
         }
     }
-    /**
-     * Invokes the specified accessible parameterless method if it exists.
-     *
-     * @param clazz      The class on which to invoke the method.
-     * @param methodName The name of the method.
-     * @return The return value of the method.
-     *
-     * @throws NoSuchMethodException if the method does not exist or is not accessible.
-     */
+
+    /// Invokes the specified accessible parameterless method if it exists.
+    ///
+    /// @param clazz      The class on which to invoke the method.
+    /// @param methodName The name of the method.
+    /// @return The return value of the method.
+    /// @throws NoSuchMethodException if the method does not exist or is not accessible.
     public static Object invokeStatic(Class<?> clazz, String methodName)
             throws NoSuchMethodException {
         try {
@@ -88,15 +75,13 @@ public class Methods {
             throw new InternalError(e.getMessage());
         }
     }
-    /**
-     * Invokes the specified accessible parameterless method if it exists.
-     *
-     * @param clazz      The class on which to invoke the method.
-     * @param methodName The name of the method.
-     * @return The return value of the method.
-     *
-     * @throws NoSuchMethodException if the method does not exist or is not accessible.
-     */
+
+    /// Invokes the specified accessible parameterless method if it exists.
+    ///
+    /// @param clazz      The class on which to invoke the method.
+    /// @param methodName The name of the method.
+    /// @return The return value of the method.
+    /// @throws NoSuchMethodException if the method does not exist or is not accessible.
     public static Object invokeStatic(String clazz, String methodName)
             throws NoSuchMethodException {
         try {
@@ -105,33 +90,28 @@ public class Methods {
             throw new NoSuchMethodException("class " + clazz + " not found");
         }
     }
-    /**
-     * Invokes the specified method with a single parameter if it exists.
-     *
-     * @param clazz      The class on which to invoke the method.
-     * @param methodName The name of the method.
-     * @param type       The parameter type.
-     * @param value      The parameter value.
-     * @return The return value of the method.
-     *
-     * @throws NoSuchMethodException if the method does not exist or is not accessible.
-     */
+
+    /// Invokes the specified method with a single parameter if it exists.
+    ///
+    /// @param clazz      The class on which to invoke the method.
+    /// @param methodName The name of the method.
+    /// @param type       The parameter type.
+    /// @param value      The parameter value.
+    /// @return The return value of the method.
+    /// @throws NoSuchMethodException if the method does not exist or is not accessible.
     public static Object invokeStatic(Class<?> clazz, String methodName, Class<?> type, Object value)
             throws NoSuchMethodException {
         return invokeStatic(clazz, methodName, new Class<?>[]{type}, new Object[]{value});
     }
 
-    /**
-     * Invokes a static method on the specified class with the given parameter types and values.
-     *
-     * @param clazz      The class on which to invoke the method.
-     * @param methodName The name of the method to invoke.
-     * @param types      The parameter types of the method.
-     * @param values     The parameter values to pass to the method.
-     * @return The return value of the invoked method.
-     *
-     * @throws NoSuchMethodException if the method does not exist or is not accessible.
-     */
+    /// Invokes a static method on the specified class with the given parameter types and values.
+    ///
+    /// @param clazz      The class on which to invoke the method.
+    /// @param methodName The name of the method to invoke.
+    /// @param types      The parameter types of the method.
+    /// @param values     The parameter values to pass to the method.
+    /// @return The return value of the invoked method.
+    /// @throws NoSuchMethodException if the method does not exist or is not accessible.
     public static Object invokeStatic(Class<?> clazz, String methodName, Class<?>[] types, Object[] values)
             throws NoSuchMethodException {
         try {
@@ -145,17 +125,14 @@ public class Methods {
         }
     }
 
-    /**
-     * Invokes the specified parameterless method if it exists.
-     *
-     * @param clazz      The class on which to invoke the method.
-     * @param methodName The name of the method.
-     * @param types      The parameter types.
-     * @param values     The parameter values.
-     * @return The return value of the method.
-     *
-     * @throws NoSuchMethodException if the method does not exist or is not accessible.
-     */
+    /// Invokes the specified parameterless method if it exists.
+    ///
+    /// @param clazz      The class on which to invoke the method.
+    /// @param methodName The name of the method.
+    /// @param types      The parameter types.
+    /// @param values     The parameter values.
+    /// @return The return value of the method.
+    /// @throws NoSuchMethodException if the method does not exist or is not accessible.
     public static Object invokeStatic(String clazz, String methodName,
                                       Class<?>[] types, Object[] values)
             throws NoSuchMethodException {
@@ -166,17 +143,15 @@ public class Methods {
         }
     }
 
-    /**
-     * Invokes the specified parameterless method if it exists.
-     *
-     * @param clazz        The class on which to invoke the method.
-     * @param methodName   The name of the method.
-     * @param types        The parameter types.
-     * @param values       The parameter values.
-     * @param defaultValue The default value.
-     * @return The return value of the method or the default value if the method
-     * does not exist or is not accessible.
-     */
+    /// Invokes the specified parameterless method if it exists.
+    ///
+    /// @param clazz        The class on which to invoke the method.
+    /// @param methodName   The name of the method.
+    /// @param types        The parameter types.
+    /// @param values       The parameter values.
+    /// @param defaultValue The default value.
+    /// @return The return value of the method or the default value if the method
+    /// does not exist or is not accessible.
     public static Object invokeStatic(String clazz, String methodName,
                                       Class<?>[] types, Object[] values, Object defaultValue) {
         try {
@@ -186,14 +161,12 @@ public class Methods {
         }
     }
 
-    /**
-     * Invokes the specified getter method if it exists.
-     *
-     * @param obj          The object on which to invoke the method.
-     * @param methodName   The name of the method.
-     * @param defaultValue This value is returned, if the method does not exist.
-     * @return The value returned by the getter method or the default value.
-     */
+    /// Invokes the specified getter method if it exists.
+    ///
+    /// @param obj          The object on which to invoke the method.
+    /// @param methodName   The name of the method.
+    /// @param defaultValue This value is returned, if the method does not exist.
+    /// @return The value returned by the getter method or the default value.
     public static int invokeGetter(Object obj, String methodName, int defaultValue) {
         try {
             Method method = obj.getClass().getMethod(methodName, new Class<?>[0]);
@@ -204,14 +177,12 @@ public class Methods {
         }
     }
 
-    /**
-     * Invokes the specified getter method if it exists.
-     *
-     * @param obj          The object on which to invoke the method.
-     * @param methodName   The name of the method.
-     * @param defaultValue This value is returned, if the method does not exist.
-     * @return The value returned by the getter method or the default value.
-     */
+    /// Invokes the specified getter method if it exists.
+    ///
+    /// @param obj          The object on which to invoke the method.
+    /// @param methodName   The name of the method.
+    /// @param defaultValue This value is returned, if the method does not exist.
+    /// @return The value returned by the getter method or the default value.
     public static long invokeGetter(Object obj, String methodName, long defaultValue) {
         try {
             Method method = obj.getClass().getMethod(methodName, new Class<?>[0]);
@@ -222,14 +193,12 @@ public class Methods {
         }
     }
 
-    /**
-     * Invokes the specified getter method if it exists.
-     *
-     * @param obj          The object on which to invoke the method.
-     * @param methodName   The name of the method.
-     * @param defaultValue This value is returned, if the method does not exist.
-     * @return The value returned by the getter method or the default value.
-     */
+    /// Invokes the specified getter method if it exists.
+    ///
+    /// @param obj          The object on which to invoke the method.
+    /// @param methodName   The name of the method.
+    /// @param defaultValue This value is returned, if the method does not exist.
+    /// @return The value returned by the getter method or the default value.
     public static boolean invokeGetter(Object obj, String methodName, boolean defaultValue) {
         try {
             Method method = obj.getClass().getMethod(methodName, new Class<?>[0]);
@@ -240,14 +209,12 @@ public class Methods {
         }
     }
 
-    /**
-     * Invokes the specified getter method if it exists.
-     *
-     * @param obj          The object on which to invoke the method.
-     * @param methodName   The name of the method.
-     * @param defaultValue This value is returned, if the method does not exist.
-     * @return The value returned by the getter method or the default value.
-     */
+    /// Invokes the specified getter method if it exists.
+    ///
+    /// @param obj          The object on which to invoke the method.
+    /// @param methodName   The name of the method.
+    /// @param defaultValue This value is returned, if the method does not exist.
+    /// @return The value returned by the getter method or the default value.
     public static Object invokeGetter(Object obj, String methodName, Object defaultValue) {
         try {
             Method method = obj.getClass().getMethod(methodName, new Class<?>[0]);
@@ -258,14 +225,12 @@ public class Methods {
         }
     }
 
-    /**
-     * Invokes the specified getter method if it exists.
-     *
-     * @param clazz        The object on which to invoke the method.
-     * @param methodName   The name of the method.
-     * @param defaultValue This value is returned, if the method does not exist.
-     * @return The value returned by the getter method or the default value.
-     */
+    /// Invokes the specified getter method if it exists.
+    ///
+    /// @param clazz        The object on which to invoke the method.
+    /// @param methodName   The name of the method.
+    /// @param defaultValue This value is returned, if the method does not exist.
+    /// @return The value returned by the getter method or the default value.
     public static boolean invokeStaticGetter(Class<?> clazz, String methodName, boolean defaultValue) {
         try {
             Method method = clazz.getMethod(methodName, new Class<?>[0]);
@@ -276,12 +241,10 @@ public class Methods {
         }
     }
 
-    /**
-     * Invokes the specified setter method if it exists.
-     *
-     * @param obj        The object on which to invoke the method.
-     * @param methodName The name of the method.
-     */
+    /// Invokes the specified setter method if it exists.
+    ///
+    /// @param obj        The object on which to invoke the method.
+    /// @param methodName The name of the method.
     public static Object invoke(Object obj, String methodName, boolean newValue)
             throws NoSuchMethodException {
         try {
@@ -295,12 +258,10 @@ public class Methods {
         }
     }
 
-    /**
-     * Invokes the specified method if it exists.
-     *
-     * @param obj        The object on which to invoke the method.
-     * @param methodName The name of the method.
-     */
+    /// Invokes the specified method if it exists.
+    ///
+    /// @param obj        The object on which to invoke the method.
+    /// @param methodName The name of the method.
     public static Object invoke(Object obj, String methodName, int newValue)
             throws NoSuchMethodException {
         try {
@@ -314,12 +275,10 @@ public class Methods {
         }
     }
 
-    /**
-     * Invokes the specified setter method if it exists.
-     *
-     * @param obj        The object on which to invoke the method.
-     * @param methodName The name of the method.
-     */
+    /// Invokes the specified setter method if it exists.
+    ///
+    /// @param obj        The object on which to invoke the method.
+    /// @param methodName The name of the method.
     public static Object invoke(Object obj, String methodName, float newValue)
             throws NoSuchMethodException {
         try {
@@ -333,12 +292,10 @@ public class Methods {
         }
     }
 
-    /**
-     * Invokes the specified setter method if it exists.
-     *
-     * @param obj        The object on which to invoke the method.
-     * @param methodName The name of the method.
-     */
+    /// Invokes the specified setter method if it exists.
+    ///
+    /// @param obj        The object on which to invoke the method.
+    /// @param methodName The name of the method.
     public static Object invoke(Object obj, String methodName, Class<?> clazz, Object newValue)
             throws NoSuchMethodException {
         try {
@@ -352,12 +309,10 @@ public class Methods {
         }
     }
 
-    /**
-     * Invokes the specified setter method if it exists.
-     *
-     * @param obj        The object on which to invoke the method.
-     * @param methodName The name of the method.
-     */
+    /// Invokes the specified setter method if it exists.
+    ///
+    /// @param obj        The object on which to invoke the method.
+    /// @param methodName The name of the method.
     public static Object invoke(Object obj, String methodName, Class<?>[] clazz, Object... newValue)
             throws NoSuchMethodException {
         try {
@@ -373,12 +328,10 @@ public class Methods {
         }
     }
 
-    /**
-     * Invokes the specified setter method if it exists.
-     *
-     * @param obj        The object on which to invoke the method.
-     * @param methodName The name of the method.
-     */
+    /// Invokes the specified setter method if it exists.
+    ///
+    /// @param obj        The object on which to invoke the method.
+    /// @param methodName The name of the method.
     public static void invokeIfExists(Object obj, String methodName) {
         try {
             invoke(obj, methodName);
@@ -387,12 +340,10 @@ public class Methods {
         }
     }
 
-    /**
-     * Invokes the specified setter method if it exists.
-     *
-     * @param obj        The object on which to invoke the method.
-     * @param methodName The name of the method.
-     */
+    /// Invokes the specified setter method if it exists.
+    ///
+    /// @param obj        The object on which to invoke the method.
+    /// @param methodName The name of the method.
     public static void invokeIfExists(Object obj, String methodName, float newValue) {
         try {
             invoke(obj, methodName, newValue);
@@ -401,12 +352,10 @@ public class Methods {
         }
     }
 
-    /**
-     * Invokes the specified method if it exists.
-     *
-     * @param obj        The object on which to invoke the method.
-     * @param methodName The name of the method.
-     */
+    /// Invokes the specified method if it exists.
+    ///
+    /// @param obj        The object on which to invoke the method.
+    /// @param methodName The name of the method.
     public static void invokeIfExists(Object obj, String methodName, boolean newValue) {
         try {
             invoke(obj, methodName, newValue);
@@ -415,12 +364,10 @@ public class Methods {
         }
     }
 
-    /**
-     * Invokes the specified setter method if it exists.
-     *
-     * @param obj        The object on which to invoke the method.
-     * @param methodName The name of the method.
-     */
+    /// Invokes the specified setter method if it exists.
+    ///
+    /// @param obj        The object on which to invoke the method.
+    /// @param methodName The name of the method.
     public static void invokeIfExists(Object obj, String methodName, Class<?> clazz, Object newValue) {
         try {
             invoke(obj, methodName, clazz, newValue);
@@ -429,12 +376,10 @@ public class Methods {
         }
     }
 
-    /**
-     * Invokes the specified setter method if it exists.
-     *
-     * @param obj        The object on which to invoke the method.
-     * @param methodName The name of the method.
-     */
+    /// Invokes the specified setter method if it exists.
+    ///
+    /// @param obj        The object on which to invoke the method.
+    /// @param methodName The name of the method.
     public static void invokeIfExistsWithEnum(Object obj, String methodName, String enumClassName, String enumValueName) {
         try {
             Class<?> enumClass = Class.forName(enumClassName);

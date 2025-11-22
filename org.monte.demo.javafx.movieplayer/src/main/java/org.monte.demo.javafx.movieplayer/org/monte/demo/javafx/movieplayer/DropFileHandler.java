@@ -18,9 +18,7 @@ import java.io.File;
 import java.util.List;
 import java.util.function.Consumer;
 
-/**
- * Drag and Drop handler.
- */
+/// Drag and Drop handler.
 public class DropFileHandler {
     private final Pane pane;
     private final Consumer<File> fileDroppedConsumer;

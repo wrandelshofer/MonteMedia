@@ -13,101 +13,73 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-/**
- * MutableIFFChunk.
- * <p>
- * Syntax of an IFF Chunk:
- * <pre>
- * Chunk        ::= ID #{ UBYTE* } [0]
- *
- * Property     ::= Chunk
- *
- * FORM         ::= "FORM" #{ FormType (LocalChunk | FORM | LIST | CAT)* }
- * FormType     ::= ID
- * LocalChunk   ::= Property | Chunk
- *
- * CAT          ::= "CAT " #{ ContentsType {FROM | LIST | CAT)* }
- * ContentsType ::= ID -- a hint or an "abstract data type" ID
- *
- * LIST         ::= "LIST" #{ ContentsType PROP* {FORM | LIST | CAT)* }
- * PROP         ::= "PROP" #{ FormType Property* }
- * </pre>
- * In this extended regular expression notation the token "#" represents
- * a count of the following braced data types. Literal items are shown in
- * "quotes", [square bracketed items] are optional, and "*" means 0 or more
- * instances. A sometimes-needed pad is shown as "[0]".
- *
- * @author Werner Randelshofer
- */
+/// MutableIFFChunk.
+///
+/// Syntax of an IFF Chunk:
+/// <pre>
+/// Chunk        ::= ID #{ UBYTE* } [0]
+///
+/// Property     ::= Chunk
+///
+/// FORM         ::= "FORM" #{ FormType (LocalChunk | FORM | LIST | CAT)* }
+/// FormType     ::= ID
+/// LocalChunk   ::= Property | Chunk
+///
+/// CAT          ::= "CAT " #{ ContentsType {FROM | LIST | CAT)* }
+/// ContentsType ::= ID -- a hint or an "abstract data type" ID
+///
+/// LIST         ::= "LIST" #{ ContentsType PROP* {FORM | LIST | CAT)* }
+/// PROP         ::= "PROP" #{ FormType Property* }
+/// </pre>
+/// In this extended regular expression notation the token "#" represents
+/// a count of the following braced data types. Literal items are shown in
+/// "quotes", [square bracketed items] are optional, and "*" means 0 or more
+/// instances. A sometimes-needed pad is shown as "[0]".
+///
+/// @author Werner Randelshofer
 public class MutableIFFChunk extends TreeNode<MutableIFFChunk> {
     private final static long serialVersionUID = 1L;
 
-    /**
-     * ID for FORMGroupExpression.
-     */
+    /// ID for FORMGroupExpression.
     public final static int ID_FORM = 0x464f524d;
-    /**
-     * ID for CATGroupExpression.
-     */
+    /// ID for CATGroupExpression.
     public final static int ID_CAT = 0x43415420;
-    /**
-     * ID for CATGroupExpression.
-     */
+    /// ID for CATGroupExpression.
     public final static int ID_LIST = 0x4c495354;
-    /**
-     * ID for PROPGroupExpression.
-     */
+    /// ID for PROPGroupExpression.
     public final static int ID_PROP = 0x50524f50;
-    /**
-     * ID for unlabeled CATGroupExpressions.
-     */
+    /// ID for unlabeled CATGroupExpressions.
     public final static int ID_FILLER = 0x20202020;
-    /**
-     * The type of an IFF Chunk.
-     */
+    /// The type of an IFF Chunk.
     private int type;
-    /**
-     * The id of an IFF Chunk.
-     */
+    /// The id of an IFF Chunk.
     private int id;
-    /**
-     * The dat of an IFF Chunk.
-     */
+    /// The dat of an IFF Chunk.
     private byte[] data;
 
-    /**
-     * Creates a new instance.
-     */
+    /// Creates a new instance.
     public MutableIFFChunk() {
     }
 
-    /**
-     * Creates a new instance.
-     */
+    /// Creates a new instance.
     public MutableIFFChunk(int id, int type) {
         this.id = id;
         this.type = type;
     }
 
-    /**
-     * Creates a new instance.
-     */
+    /// Creates a new instance.
     public MutableIFFChunk(int id, byte[] data) {
         this.id = id;
         this.data = data;
     }
 
-    /**
-     * Creates a new instance.
-     */
+    /// Creates a new instance.
     public MutableIFFChunk(String id, String type) {
         this.id = stringToId(id);
         this.type = stringToId(type);
     }
 
-    /**
-     * Creates a new instance.
-     */
+    /// Creates a new instance.
     public MutableIFFChunk(String id, byte[] data) {
         this.id = stringToId(id);
         this.data = data;
@@ -195,12 +167,10 @@ public class MutableIFFChunk extends TreeNode<MutableIFFChunk> {
         return buf.toString();
     }
 
-    /**
-     * Convert an integer IFF identifier to String.
-     *
-     * @param    anID to be converted.
-     * @return String representation of the ID.
-     */
+    /// Convert an integer IFF identifier to String.
+    ///
+    /// @param anID to be converted.
+    /// @return String representation of the ID.
     public static String idToString(int anID) {
         byte[] bytes = new byte[4];
 
@@ -212,13 +182,11 @@ public class MutableIFFChunk extends TreeNode<MutableIFFChunk> {
         return new String(bytes);
     }
 
-    /**
-     * Converts the first four letters of the
-     * String into an IFF Identifier.
-     *
-     * @param    aString String to be converted.
-     * @return ID representation of the String.
-     */
+    /// Converts the first four letters of the
+    /// String into an IFF Identifier.
+    ///
+    /// @param aString String to be converted.
+    /// @return ID representation of the String.
     public static int stringToId(String aString) {
         byte[] bytes = aString.getBytes();
 

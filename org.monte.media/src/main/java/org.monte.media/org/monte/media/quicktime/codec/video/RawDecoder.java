@@ -32,28 +32,25 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.PaletteKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
-/**
- * {@code RawCodec} encodes a BufferedImage as a byte[] array.
- * <p>
- * This codec does not encode the color palette of an image. This must be done
- * separately.
- * <p>
- * The pixels of a frame are written row by row from top to bottom and from
- * the left to the right.
- * <p>
- * Supported input formats:
- * <ul>
- * <li>{@code VideoFormat} onlyWith {@code BufferedImage.class}, any width, any height,
- * depth=4.</li>
- * </ul>
- * Supported output formats:
- * <ul>
- * <li>{@code VideoFormat} onlyWith {@code byte[].class}, same width and height as input
- * format, depth=4.</li>
- * </ul>
- *
- * @author Werner Randelshofer
- */
+/// `RawCodec` encodes a BufferedImage as a byte[] array.
+///
+/// This codec does not encode the color palette of an image. This must be done
+/// separately.
+///
+/// The pixels of a frame are written row by row from top to bottom and from
+/// the left to the right.
+///
+/// Supported input formats:
+///
+///   - `VideoFormat` onlyWith `BufferedImage.class`, any width, any height,
+///     depth=4.
+///
+/// Supported output formats:
+///
+///   - `VideoFormat` onlyWith `byte[].class`, same width and height as input
+///     format, depth=4.
+///
+/// @author Werner Randelshofer
 public class RawDecoder extends org.monte.media.av.AbstractCodec {
 
     public RawDecoder() {

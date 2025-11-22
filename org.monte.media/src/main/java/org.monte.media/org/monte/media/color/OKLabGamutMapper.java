@@ -9,16 +9,14 @@ import static java.lang.Math.clamp;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-/**
- * OKLab Gamut Mapper.
- * <p>
- * References:
- * <dl>
- *     <dt>Björn Ottoson. sRGB gamut clipping.
- *     <a href="https://github.com/bottosson/bottosson.github.io/blob/3d3f17644d7f346e1ce1ca08eb8b01782eea97af/misc/colorpicker/License.txt">MIT License</a></dt>
- *     <dd><a href="https://bottosson.github.io/posts/gamutclipping/">github.io</a></dd>
- * </dl>
- */
+/// OKLab Gamut Mapper.
+///
+/// References:
+/// <dl>
+///     <dt>Björn Ottoson. sRGB gamut clipping.
+///     [MIT License](https://github.com/bottosson/bottosson.github.io/blob/3d3f17644d7f346e1ce1ca08eb8b01782eea97af/misc/colorpicker/License.txt)</dt>
+///     <dd>[github.io](https://bottosson.github.io/posts/gamutclipping/)</dd>
+/// </dl>
 public class OKLabGamutMapper implements GamutMapper {
     private OKLabColorSpace okLabColorSpace = new OKLabColorSpace();
     private SrgbColorSpace srgbColorSpace = new SrgbColorSpace();
@@ -34,13 +32,10 @@ public class OKLabGamutMapper implements GamutMapper {
         return srgbColorSpace.fromLinear(lrgb, srgb);
     }
 
-    /**
-     * Linear rgb.
-     */
+    /// Linear rgb.
     record RGB(float r, float g, float b) {
     }
 
-    ;
 
     record Lab(float L, float a, float b) {
     }
@@ -109,10 +104,8 @@ public class OKLabGamutMapper implements GamutMapper {
     record LC(float L, float C) {
     }
 
-    /**
-     * finds L_cusp and C_cusp for a given hue
-     * a and b must be normalized so a^2 + b^2 == 1
-     */
+    /// finds L_cusp and C_cusp for a given hue
+    /// a and b must be normalized so a^2 + b^2 == 1
     private static LC find_cusp(float a, float b) {
         // First, find the maximum saturation (saturation S = C/L)
         float S_cusp = compute_max_saturation(a, b);
@@ -125,19 +118,17 @@ public class OKLabGamutMapper implements GamutMapper {
         return new LC(L_cusp, C_cusp);
     }
 
-    /**
-     * <pre>
-     * Finds intersection of the line defined by
-     * L = L0 * (1 - t) + t * L1;
-     * C = t * C1;
-     * a and b must be normalized so a^2 + b^2 == 1
-     * </pre>
-     */
+    /// <pre>
+    /// Finds intersection of the line defined by
+    /// L = L0 * (1 - t) + t * L1;
+    /// C = t * C1;
+    /// a and b must be normalized so a^2 + b^2 == 1
+    /// </pre>
     private static float find_gamut_intersection(float a, float b, float L1, float C1, float L0) {
         // Find the cusp of the gamut triangle
         LC cusp = find_cusp(a, b);
 
-        // Find the intersection for upper and lower half seprately
+        // Find the intersection for upper and lower half separately
         float t;
         if (((L1 - L0) * cusp.C - (cusp.L - L0) * C1) <= 0.f) {
             // Lower half
@@ -217,13 +208,11 @@ public class OKLabGamutMapper implements GamutMapper {
         return t;
     }
 
-    /**
-     * <pre>
-     * Finds the maximum saturation possible for a given hue that fits in sRGB
-     * Saturation here is defined as S = C/L
-     * a and b must be normalized so a^2 + b^2 == 1
-     * </pre>
-     */
+    /// <pre>
+    /// Finds the maximum saturation possible for a given hue that fits in sRGB
+    /// Saturation here is defined as S = C/L
+    /// a and b must be normalized so a^2 + b^2 == 1
+    /// </pre>
     private static float compute_max_saturation(float a, float b) {
         // Max saturation will be when one of r, g or b goes below zero.
 
@@ -265,7 +254,7 @@ public class OKLabGamutMapper implements GamutMapper {
         // Approximate max saturation using a polynomial:
         float S = k0 + k1 * a + k2 * b + k3 * a * a + k4 * a * b;
 
-        // Do one step Halley's method to get closer
+        // Do one-step Halley's method to get closer
         // this gives an error less than 10e6, except for some blue hues where the dS/dh is close to infinite
         // this should be sufficient for most applications, otherwise do two/three steps
 

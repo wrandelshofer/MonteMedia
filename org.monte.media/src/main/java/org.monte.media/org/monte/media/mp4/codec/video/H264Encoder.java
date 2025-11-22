@@ -45,9 +45,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.MotionSearchRangeKe
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 import static org.monte.media.mp4.codec.video.PictureEncoder.ENCODING_PICTURE;
 
-/**
- * Codec for {@link BufferedImage} or {@link Picture} to {@code H264} byte array.
- */
+/// Codec for [BufferedImage] or [Picture] to `H264` byte array.
 public class H264Encoder extends org.monte.media.av.AbstractCodec {
     private VideoEncoder videoEncoder = null;
     private ByteBuffer byteBuffer;

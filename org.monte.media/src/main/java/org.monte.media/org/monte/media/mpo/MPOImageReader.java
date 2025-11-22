@@ -29,47 +29,29 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-/**
- * Reads an image in the MultiPicture Object format (MPO).
- * <p>
- * See: <a href="http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf">MPO Format Specification</a>.
- *
- * @author Werner Randelshofer
- */
+/// Reads an image in the MultiPicture Object format (MPO).
+///
+/// See: [MPO Format Specification](http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-007_E.pdf).
+///
+/// @author Werner Randelshofer
 public class MPOImageReader extends ImageReader {
 
     private static DirectColorModel RGB = new DirectColorModel(24, 0xff0000, 0xff00, 0xff, 0x0);
-    /**
-     * Number of images. -1 if not known.
-     */
+    /// Number of images. -1 if not known.
     private int numImages = -1;
-    /**
-     * Image offsets. null if not known.
-     */
+    /// Image offsets. null if not known.
     private long[] imageOffsets;
-    /**
-     * Image lengths. null if not known.
-     */
+    /// Image lengths. null if not known.
     private long[] imageLengths;
-    /**
-     * Thumbnail offsets. null if not known.
-     */
+    /// Thumbnail offsets. null if not known.
     private long[] thumbOffsets;
-    /**
-     * Thumbnail lengths. null if not known.
-     */
+    /// Thumbnail lengths. null if not known.
     private long[] thumbLengths;
-    /**
-     * Width of the images.
-     */
+    /// Width of the images.
     private int[] width = null;
-    /**
-     * Height of the images.
-     */
+    /// Height of the images.
     private int[] height = null;
-    /**
-     * Metadata of all images.
-     */
+    /// Metadata of all images.
     private IIOMetadata[] imageMetadata;
     private EXIFReader er;
 
@@ -144,10 +126,8 @@ public class MPOImageReader extends ImageReader {
         return super.getNumThumbnails(imageIndex);
     }
 
-    /**
-     * Reads the header.
-     * Does nothing if the header has already been loaded.
-     */
+    /// Reads the header.
+    /// Does nothing if the header has already been loaded.
     private void readHeader() throws IOException {
         if (numImages == -1) {
             ImageInputStream in = (ImageInputStream) getInput();

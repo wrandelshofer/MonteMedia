@@ -9,23 +9,21 @@ package org.monte.media.color;
 import java.awt.color.ColorSpace;
 import java.io.Serial;
 
-/**
- * Implements conversions from/to linear RGB color space.
- * <p>
- * This class should give identical results as
- * {@code ColorSpace.getInstance(} {@link ColorSpace#CS_LINEAR_RGB}{@code );}
- * <p>
- * References:
- * <dl>
- *     <dt>A close look at the sRGB formula. Copyright Jason Summers.</dt><dd>
- *         <a href="https://entropymine.com/imageworsener/srgbformula/">
- *             entropymine.como</a>
- *     <dt>Color Conversion Algorithms.  Eugene Vishnevsky.</dt><dd>
- *         <a href="https://www.cs.rit.edu/~ncs/color/t_convert.html#RGB%20to%20XYZ%20&%20XYZ%20to%20RGB">
- *             www.cs.rit.edu</a>
- *     </dd>
- * </dl>
- */
+/// Implements conversions from/to linear RGB color space.
+///
+/// This class should give identical results as
+/// `ColorSpace.getInstance(` [#CS_LINEAR_RGB]`);`
+///
+/// References:
+/// <dl>
+///     <dt>A close look at the sRGB formula. Copyright Jason Summers.</dt><dd>
+///         [
+///             entropymine.como](https://entropymine.com/imageworsener/srgbformula/)
+///     <dt>Color Conversion Algorithms.  Eugene Vishnevsky.</dt><dd>
+///         [
+///             www.cs.rit.edu](https://www.cs.rit.edu/~ncs/color/t_convert.html#RGB%20to%20XYZ%20&%20XYZ%20to%20RGB)
+///     </dd>
+/// </dl>
 public class NamedColorSpaceAdapter extends AbstractNamedColorSpace {
 
     @Serial

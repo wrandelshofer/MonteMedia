@@ -9,20 +9,16 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 
-/**
- * Abstract superclass of models that fire state change
- * events to registered ChangeListener's, when their
- * state changes.
- *
- * @author Werner Randelshofer
- */
+/// Abstract superclass of models that fire state change
+/// events to registered ChangeListener's, when their
+/// state changes.
+///
+/// @author Werner Randelshofer
 public class AbstractStateModel {
     protected EventListenerList listenerList;
     protected ChangeEvent changeEvent;
 
-    /**
-     * Creates a new instance of AbstractChangeModel
-     */
+    /// Creates a new instance of AbstractChangeModel
     public AbstractStateModel() {
     }
 
@@ -40,10 +36,8 @@ public class AbstractStateModel {
         listenerList.remove(ChangeListener.class, l);
     }
 
-    /**
-     * Notify all listeners that have registered interest for
-     * notification on this event type.
-     */
+    /// Notify all listeners that have registered interest for
+    /// notification on this event type.
     protected void fireStateChanged() {
         if (listenerList != null) {
             // Guaranteed to return a non-null array

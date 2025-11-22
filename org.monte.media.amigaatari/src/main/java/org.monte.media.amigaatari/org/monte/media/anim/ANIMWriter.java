@@ -26,11 +26,9 @@ import static org.monte.media.av.FormatKeys.MimeTypeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.FixedFrameRateKey;
 
-/**
- * {@code ANIMWriter}.
- *
- * @author Werner Randelshofer
- */
+/// `ANIMWriter`.
+///
+/// @author Werner Randelshofer
 public class ANIMWriter extends ANIMMultiplexer implements MovieWriter {
 
     public final static Format ANIM = new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_ANIM);

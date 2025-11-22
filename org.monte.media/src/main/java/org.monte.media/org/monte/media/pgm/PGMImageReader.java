@@ -26,34 +26,22 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-/**
- * Reads an image in the Netpbm grayscale image format (PGM).
- * <p>
- * See: <a href="http://netpbm.sourceforge.net/doc/pgm.html">PGM Format Specification</a>.
- *
- * @author Werner Randelshofer
- */
+/// Reads an image in the Netpbm grayscale image format (PGM).
+///
+/// See: [PGM Format Specification](http://netpbm.sourceforge.net/doc/pgm.html).
+///
+/// @author Werner Randelshofer
 public class PGMImageReader extends ImageReader {
 
-    /**
-     * All images have the same width.
-     */
+    /// All images have the same width.
     private int width = -1;
-    /**
-     * All images have the same height.
-     */
+    /// All images have the same height.
     private int height = -1;
-    /**
-     * All images have the same depth. Must be in the range [1,65535].
-     */
+    /// All images have the same depth. Must be in the range [1,65535].
     private int maxGray = -1;
-    /**
-     * Number of images.
-     */
+    /// Number of images.
     private int numImages = -1;
-    /**
-     * Start of image data.
-     */
+    /// Start of image data.
     private long dataOffset = -1;
 
     public PGMImageReader(PGMImageReaderSpi originatingProvider) {
@@ -144,10 +132,8 @@ public class PGMImageReader extends ImageReader {
         return img;
     }
 
-    /**
-     * Reads the PGM header.
-     * Does nothing if the header has already been loaded.
-     */
+    /// Reads the PGM header.
+    /// Does nothing if the header has already been loaded.
     private void readHeader() throws IOException {
         if (dataOffset == -1) {
 

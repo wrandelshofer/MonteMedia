@@ -26,25 +26,23 @@ import java.util.ArrayList;
 import static org.monte.media.av.FormatKeys.FrameRateKey;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
 
-/**
- * Demonstrates how to trim a movie file without re-encoding the entire media
- * data. <p> This demo is more complex than {@code ConcatDemoMain}, because we
- * need to re-encode the first video frame, if the movie is cut at a
- * non-keyframe.
- *
- * @author Werner Randelshofer
- */
+/// Demonstrates how to trim a movie file without re-encoding the entire media
+/// data.
+///  This demo is more complex than `ConcatDemoMain`, because we
+/// need to re-encode the first video frame, if the movie is cut at a
+/// non-keyframe.
+///
+/// @author Werner Randelshofer
 public class TrimDemoMain {
 
-    /**
-     * Main function. <p> Takes one output file and one or more input files as
-     * arguments. Concatenates all input files into the output file.
-     * <pre>
-     * TrimDemo [-o outputfile] [-i inputfile ...] [-s rational] [-e rational]
-     * </pre>
-     *
-     * @param args the command line arguments
-     */
+    /// Main function.
+    ///  Takes one output file and one or more input files as
+    /// arguments. Concatenates all input files into the output file.
+    /// <pre>
+    /// TrimDemo [-o outputfile] [-i inputfile...] [-s rational] [-e rational]
+    /// </pre>
+    ///
+    /// @param args the command line arguments
     public static void main(String[] args) {
         // Use hardcoded arguments for debugging
         /*
@@ -158,9 +156,7 @@ public class TrimDemoMain {
         }
     }
 
-    /**
-     * Prints an info about each input file.
-     */
+    /// Prints an info about each input file.
     private static void info(ArrayList<File> infiles) {
         for (File f : infiles) {
             System.out.println("Movie: " + f);
@@ -178,9 +174,7 @@ public class TrimDemoMain {
         }
     }
 
-    /**
-     * Prints an info about an output file.
-     */
+    /// Prints an info about an output file.
     private static void info(MovieWriter w) throws IOException {
         System.out.println("  Format: " + FormatFormatter.toString(w.getFileFormat()));
         //System.out.println("  Duration: " + in.getDuration().toDescriptiveString() + " seconds");
@@ -192,9 +186,7 @@ public class TrimDemoMain {
 
     }
 
-    /**
-     * Prints an info about an input file.
-     */
+    /// Prints an info about an input file.
     private static void info(MovieReader in) throws IOException {
         System.out.println("  Format: " + FormatFormatter.toString(in.getFileFormat()));
         System.out.println("  Duration: " + in.getMovieDuration().toDescriptiveString() + " seconds");

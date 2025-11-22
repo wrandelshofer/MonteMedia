@@ -14,50 +14,38 @@ import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/**
- * JDK13ShortAudioClip.
- *
- * @author Werner Randelshofer, Switzerland
- */
+/// JDK13ShortAudioClip.
+///
+/// @author Werner Randelshofer, Switzerland
 public class JDK13ShortAudioClip implements LoopableAudioClip {
     private Clip clip;
-    /**
-     * This buffer holds the audio samples of the clip.
-     */
+    /// This buffer holds the audio samples of the clip.
     private byte[] samples;
-    /**
-     * The sample rate of the audio data.
-     */
+    /// The sample rate of the audio data.
     private int sampleRate;
 
-    /**
-     * Represents a control for the volume on a line. 64 is the maximal
-     * volume, 0 mutes the line.
-     */
+    /// Represents a control for the volume on a line. 64 is the maximal
+    /// volume, 0 mutes the line.
     private int volume;
 
-    /**
-     * The relative pan of a stereo signal between two stereo
-     * speakers. The valid range of values is -1.0 (left channel only) to 1.0
-     * (right channel  only). The default is 0.0 (centered).
-     */
+    /// The relative pan of a stereo signal between two stereo
+    /// speakers. The valid range of values is -1.0 (left channel only) to 1.0
+    /// (right channel  only). The default is 0.0 (centered).
     private float pan;
     private final int sampleCount;
     private AudioFormat audioFormat;
     private static Timer TIMER;
     private volatile TimerTask preventPopping;
 
-    /**
-     * Creates a new instance.
-     *
-     * @param samples    Array of signed linear 8-bit encoded audio samples.
-     * @param sampleRate sampleRate of the audio samples.
-     * @param volume     The volume setting controls the loudness of the sound.
-     *                   range 0 (mute) to 64 (maximal volume).
-     * @param pan        The relative pan of a stereo signal between two stereo
-     *                   speakers. The valid range of values is -1.0 (left channel only) to 1.0
-     *                   (right channel  only). The default is 0.0 (centered).
-     */
+    /// Creates a new instance.
+    ///
+    /// @param samples    Array of signed linear 8-bit encoded audio samples.
+    /// @param sampleRate sampleRate of the audio samples.
+    /// @param volume     The volume setting controls the loudness of the sound.
+    ///                                                                         range 0 (mute) to 64 (maximal volume).
+    /// @param pan        The relative pan of a stereo signal between two stereo
+    ///                                                                         speakers. The valid range of values is -1.0 (left channel only) to 1.0
+    ///                                                                         (right channel  only). The default is 0.0 (centered).
     public JDK13ShortAudioClip(byte[] samples, int sampleRate, int volume, float pan) {
         // Add 1 second worth of silence to prevent popping
         this.samples = Arrays.copyOf(samples, samples.length + sampleRate);
@@ -146,30 +134,28 @@ public class JDK13ShortAudioClip implements LoopableAudioClip {
         return c;
     }
 
-    /**
-     * Starts looping playback from the current position.   Playback will
-     * continue to the loop's end point, then loop back to the loop start point
-     * <code>count</code> times, and finally continue playback to the end of
-     * the clip.
-     * <p>
-     * If the current position when this method is invoked is greater than the
-     * loop end point, playback simply continues to the
-     * end of the clip without looping.
-     * <p>
-     * A <code>count</code> value of 0 indicates that any current looping should
-     * cease and playback should continue to the end of the clip.  The behavior
-     * is undefined when this method is invoked with any other value during a
-     * loop operation.
-     * <p>
-     * If playback is stopped during looping, the current loop status is
-     * cleared; the behavior of subsequent loop and start requests is not
-     * affected by an interrupted loop operation.
-     *
-     * @param count the number of times playback should loop back from the
-     *              loop's end position to the loop's  start position, or
-     *              <code>{@link #LOOP_CONTINUOUSLY}</code> to indicate that looping should
-     *              continue until interrupted
-     */
+    /// Starts looping playback from the current position.   Playback will
+    /// continue to the loop's end point, then loop back to the loop start point
+    /// `count` times, and finally continue playback to the end of
+    /// the clip.
+    ///
+    /// If the current position when this method is invoked is greater than the
+    /// loop end point, playback simply continues to the
+    /// end of the clip without looping.
+    ///
+    /// A `count` value of 0 indicates that any current looping should
+    /// cease and playback should continue to the end of the clip.  The behavior
+    /// is undefined when this method is invoked with any other value during a
+    /// loop operation.
+    ///
+    /// If playback is stopped during looping, the current loop status is
+    /// cleared; the behavior of subsequent loop and start requests is not
+    /// affected by an interrupted loop operation.
+    ///
+    /// @param count the number of times playback should loop back from the
+    ///                                        loop's end position to the loop's  start position, or
+    ///                                        `[#LOOP_CONTINUOUSLY]` to indicate that looping should
+    ///                                        continue until interrupted
     public void loop(int count) {
         stop();
         clip = getOrCreateClip();

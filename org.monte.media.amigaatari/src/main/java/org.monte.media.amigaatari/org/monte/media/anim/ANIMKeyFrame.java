@@ -8,9 +8,7 @@ import org.monte.media.amigabitmap.AmigaBitmapImage;
 import org.monte.media.exception.ParseException;
 import org.monte.media.iff.IFFParser;
 
-/**
- * @author Werner Randelshofer
- */
+/// @author Werner Randelshofer
 public class ANIMKeyFrame
         extends ANIMFrame {
 
@@ -25,9 +23,7 @@ public class ANIMKeyFrame
         this.data = data;
     }
 
-    /**
-     * For possible values see {@link ANIMMovieResources}.
-     */
+    /// For possible values see [ANIMMovieResources].
     public void setCompression(int compression) {
         this.compression = compression;
     }
@@ -49,24 +45,22 @@ public class ANIMKeyFrame
         }
     }
 
-    /**
-     * ByteRun1 run decoder.
-     * <p>
-     * The run encoding scheme by <em>byteRun1</em> is best described by pseudo
-     * code for the decoder <em>Unpacker</em> (called <em>UnPackBits</em> in
-     * the Macintosh toolbox.
-     * <pre>
-     * UnPacker:
-     *  LOOP until produced the desired number of bytes
-     *      Read the next source byte into n
-     *      SELECT n FROM
-     *          [0..127] =&gt; copy the next n+1 bytes literally
-     *          [-1..-127] =&gt; replicate the next byte -n+1 times
-     *          -128    =&gt; no operation
-     *      ENDCASE;
-     *   ENDLOOP;
-     * </pre>
-     */
+    /// ByteRun1 run decoder.
+    ///
+    /// The run encoding scheme by _byteRun1_ is best described by pseudo
+    /// code for the decoder _Unpacker_ (called _UnPackBits_ in
+    /// the Macintosh toolbox.
+    /// <pre>
+    /// UnPacker:
+    ///  LOOP until produced the desired number of bytes
+    ///      Read the next source byte into n
+    ///      SELECT n FROM
+    ///          [0..127] =&gt; copy the next n+1 bytes literally
+    ///          [-1..-127] =&gt; replicate the next byte -n+1 times
+    ///          -128    =&gt; no operation
+    ///      ENDCASE;
+    ///   ENDLOOP;
+    /// </pre>
     public static int unpackByteRun1(byte[] in, byte[] out) {
         int iOut = 0; // output array index
         int iIn = 0; // input array index
@@ -99,49 +93,47 @@ public class ANIMKeyFrame
         return iOut;
     }
 
-    /**
-     * Vertical run decoder.
-     * <p>
-     * Each plane is stored in a separate VDAT chunk.
-     * <p>
-     * A VDAT chunk consists of an id, a length, and a body.
-     * <pre>
-     * struct {
-     *    uint16 id;  // The 4 ASCII characters "VDAT"
-     *    uint16 length,
-     *    byte[length] body
-     * }
-     * </pre>
-     * The body consists of a command list and a data list.
-     * <pre>
-     * struct {
-     *    uint16         cnt;        // Command count + 2
-     *    uint8[cnt - 2] cmd;        // The commands
-     *    uint16[]       data;       // Data words
-     * }
-     * </pre>
-     * Pseudo code for the unpacker:
-     * <pre>
-     * UnPacker:
-     *  Read cnt;
-     *  LOOP cnt - 2 TIMES
-     *      Read the next command byte into cmd
-     *      SELECT cmd FROM
-     *          0 =&gt;
-     *                  Read the next data word into n
-     *                  Copy the next n data words literally
-     *          1    =&gt;
-     *                  Read the next data word into n
-     *                  Replicate the next data word n times
-     *          [2..127] =&gt;
-     *                  Replicate the next data word cmd times
-     *          [-1..-128] =&gt;
-     *                  Copy the next -cmd data words literally
-     *      ENDCASE;
-     *      IF end of data reached THEN EXIT END;
-     *   ENDLOOP;
-     * </pre>
-     */
+    /// Vertical run decoder.
+    ///
+    /// Each plane is stored in a separate VDAT chunk.
+    ///
+    /// A VDAT chunk consists of an id, a length, and a body.
+    /// <pre>
+    /// struct {
+    ///    uint16 id;  // The 4 ASCII characters "VDAT"
+    ///    uint16 length,
+    ///    byte[length] body
+    /// }
+    /// </pre>
+    /// The body consists of a command list and a data list.
+    /// <pre>
+    /// struct {
+    ///    uint16         cnt;        // Command count + 2
+    ///    uint8[cnt-2] cmd;        // The commands
+    ///    uint16[]       data;       // Data words
+    /// }
+    /// </pre>
+    /// Pseudo code for the unpacker:
+    /// <pre>
+    /// UnPacker:
+    ///  Read cnt;
+    ///  LOOP cnt - 2 TIMES
+    ///      Read the next command byte into cmd
+    ///      SELECT cmd FROM
+    ///          0 =&gt;
+    ///                  Read the next data word into n
+    ///                  Copy the next n data words literally
+    ///          1    =&gt;
+    ///                  Read the next data word into n
+    ///                  Replicate the next data word n times
+    ///          [2..127] =&gt;
+    ///                  Replicate the next data word cmd times
+    ///          [-1..-128] =&gt;
+    ///                  Copy the next -cmd data words literally
+    ///      ENDCASE;
+    ///      IF end of data reached THEN EXIT END;
+    ///   ENDLOOP;
+    /// </pre>
     public void unpackVertical(byte[] in, AmigaBitmapImage bm) {
         byte[] out = bm.getBitmap();
         int iIn = 0; // input index

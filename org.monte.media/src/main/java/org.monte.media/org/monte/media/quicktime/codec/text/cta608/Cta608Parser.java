@@ -17,63 +17,57 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-/**
- * Parses a CTA-608 stream containing closed captions.
- * <p>
- * A CTA-608 screen has 32 columns and 15 rows.
- * <p>
- * ISO EBNF Grammar:
- * <pre>
- *     ClosedCaptions = Cta608Token , { Cta608Token } ;
- *     Cta608Token          = ( CmdToken | PacToken | CharsToken ) ;
- *     CmdToken       = uint16BE ; (* has constant bits: .001.....0...... *)
- *     PacToken       = uint16BE ; (* has constant bits: .001.....1...... *)
- *     CharsToken     = uint16BE ; (* has a value greater or equal 0x0200 *)
- * </pre>
- * The stream consists of a sequence of {@code uint16BE}.
- * <p>
- * Only the bits 0x7f7f contain data. The bits 0x8080 are parity bits.
- * <pre>
- *     CmdToken: Control command.
- *     15     12 11     8   7     4   3     0
- *     +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
- *     |P|0|0|1| |.|.|.|.| |P|0|.|.| |.|.|.|.|
- *     +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
- *
- *     PacToken: Preamble address code and tab offsets
- *     15     12 11     8   7     4   3     0
- *     +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
- *     |P|0|0|1| |.|.|.|.| |P|1|.|.| |.|.|.|.|
- *     +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
- *
- *     CharsToken: 1 or 2 text characters
- *     15     12 11     8   7     4   3     0
- *     +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
- *     |P|.|.|.| |.|.|.|.| |P|.|.|.| |.|.|.|.|
- *     +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
- * </pre>
- * <p>
- * References:
- * <dl>
- *     <dt>ANSI/CTA Standard. Digital Television (DTV) Closed Captioning. CTA-708-E S-2023. August 2013.</dt>
- *     <dd><a href="https://shop.cta.tech/collections/standards/products/digital-television-dtv-closed-captioning">
- *         ANSI CTA-708-E S-2023 + Errata Letter and Replacement Pages FINAL.pdf</a></dd>
- * </dl>
- */
+/// Parses a CTA-608 stream containing closed captions.
+///
+/// A CTA-608 screen has 32 columns and 15 rows.
+///
+/// ISO EBNF Grammar:
+/// <pre>
+///     ClosedCaptions = Cta608Token , { Cta608Token } ;
+///     Cta608Token          = ( CmdToken | PacToken | CharsToken ) ;
+///     CmdToken       = uint16BE ; (* has constant bits: .001.....0...... *)
+///     PacToken       = uint16BE ; (* has constant bits: .001.....1...... *)
+///     CharsToken     = uint16BE ; (* has a value greater or equal 0x0200 *)
+/// </pre>
+/// The stream consists of a sequence of `uint16BE`.
+///
+/// Only the bits 0x7f7f contain data. The bits 0x8080 are parity bits.
+/// <pre>
+///     CmdToken: Control command.
+///     15     12 11     8   7     4   3     0
+///     +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
+///     |P|0|0|1| |.|.|.|.| |P|0|.|.| |.|.|.|.|
+///     +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
+///
+///     PacToken: Preamble address code and tab offsets
+///     15     12 11     8   7     4   3     0
+///     +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
+///     |P|0|0|1| |.|.|.|.| |P|1|.|.| |.|.|.|.|
+///     +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
+///
+///     CharsToken: 1 or 2 text characters
+///     15     12 11     8   7     4   3     0
+///     +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
+///     |P|.|.|.| |.|.|.|.| |P|.|.|.| |.|.|.|.|
+///     +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
+/// </pre>
+///
+/// References:
+/// <dl>
+///     <dt>ANSI/CTA Standard. Digital Television (DTV) Closed Captioning. CTA-708-E S-2023. August 2013.</dt>
+///     <dd>[
+///         ANSI CTA-708-E S-2023 + Errata Letter and Replacement Pages FINAL.pdf](https://shop.cta.tech/collections/standards/products/digital-television-dtv-closed-captioning)</dd>
+/// </dl>
 public class Cta608Parser {
-    /**
-     * Parses CTA-608 data until the end of the provided stream.
-     * <p>
-     */
+    /// Parses CTA-608 data until the end of the provided stream.
+    ///
     public List<Cta608Token> parse(InputStream in) throws IOException {
         ImageInputStream iis = in instanceof ImageInputStream ? (ImageInputStream) in : new UncachedImageInputStream(in);
         return parse(iis);
     }
 
-    /**
-     * Parses CTA-608 data until the end of the provided stream.
-     * <p>
-     */
+    /// Parses CTA-608 data until the end of the provided stream.
+    ///
     public List<Cta608Token> parse(ImageInputStream iis) throws IOException {
         long length = iis.length();
         List<Cta608Token> tokens = new ArrayList<>();
@@ -285,14 +279,12 @@ public class Cta608Parser {
     );
 
 
-    /**
-     * Parses to HTML that can be used in a Swing {@code JLabel}.
-     *
-     * @param tokens the tokens
-     * @param memory
-     * @return the HTML String
-     * @throws IOException on IO failure
-     */
+    /// Parses to HTML that can be used in a Swing `JLabel`.
+    ///
+    /// @param tokens the tokens
+    /// @param memory
+    /// @return the HTML String
+    /// @throws IOException on IO failure
     public void updateMemory(List<Cta608Token> tokens, Cta608Memory memory) throws IOException {
         Point pos = new Point(0, 0);
         Cta608CharAttr attr = Cta608Screen.DEFAULT_ATTR;
@@ -379,13 +371,11 @@ public class Cta608Parser {
         }
     }
 
-    /**
-     * Parses to HTML that can be used in a Swing {@code JLabel}.
-     *
-     * @param memory the memory
-     * @return the HTML String
-     * @throws IOException on IO failure
-     */
+    /// Parses to HTML that can be used in a Swing `JLabel`.
+    ///
+    /// @param memory the memory
+    /// @return the HTML String
+    /// @throws IOException on IO failure
     public String toHtml(Cta608Memory memory) throws IOException {
         StringBuilder buf = new StringBuilder("<html>");
         Cta608Screen screen = memory.displayed;
@@ -459,15 +449,13 @@ public class Cta608Parser {
         buf.append(attr.underlined() ? "underline;" : "none;");
     }
 
-    /**
-     * Parses to String that can be used in a Swing {@code JTextArea}.
-     * <p>
-     * This format will lose most of the formatting.
-     *
-     * @param memory the memory
-     * @return the String
-     * @throws IOException on IO failure
-     */
+    /// Parses to String that can be used in a Swing `JTextArea`.
+    ///
+    /// This format will lose most of the formatting.
+    ///
+    /// @param memory the memory
+    /// @return the String
+    /// @throws IOException on IO failure
     public String toString(Cta608Memory memory) throws IOException {
         StringBuilder buf = new StringBuilder("");
         Cta608Screen screen = memory.displayed;

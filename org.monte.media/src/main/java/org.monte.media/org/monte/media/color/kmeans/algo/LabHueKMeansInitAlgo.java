@@ -14,26 +14,24 @@ import java.util.Comparator;
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
 
-/**
- * Sort colors by brightness, and then analyzes the hue in each brightness level.
- * <p>
- * This requires that data samples represent colors in a Lab space!
- * <p>
- * At each brightness level, we create a histogram with 9 buckets:
- * <pre>
- *       -----------------
- *     /light\  yellow /    \
- *    /green \       /orange\
- *    |----- -------- -------|
- *    |      |       |       |
- *    |green |  avg  | red   |
- *    |      |   0   |       |
- *    |----- -------- -------|
- *    \cyan /        \purple/
- *     \   /   blue   \    /
- *       -----------------
- * </pre>
- */
+/// Sort colors by brightness, and then analyzes the hue in each brightness level.
+///
+/// This requires that data samples represent colors in a Lab space!
+///
+/// At each brightness level, we create a histogram with 9 buckets:
+/// <pre>
+///       -----------------
+///     /light\  yellow /    \
+///    /green \       /orange\
+///    |----- -------- -------|
+///    |      |       |       |
+///    |green |  avg  | red   |
+///    |      |   0   |       |
+///    |----- -------- -------|
+///    \cyan /        \purple/
+///     \   /   blue   \    /
+///       -----------------
+/// </pre>
 public class LabHueKMeansInitAlgo implements KMeansInitAlgo {
     private record Level(float[] avg, DoubleSummaryStatistics saturationStats, float[][] buckets, int[] bucketCount) {
         public Level() {

@@ -22,11 +22,9 @@ public interface MonteTrackInterface extends TrackInterface {
 
     Format getFormat();
 
-    /**
-     * Swaps the output buffers and returns outBufferA.
-     *
-     * @return outBufferA
-     */
+    /// Swaps the output buffers and returns outBufferA.
+    ///
+    /// @return outBufferA
     Buffer swapOutBuffers();
 
     Codec getCodec();

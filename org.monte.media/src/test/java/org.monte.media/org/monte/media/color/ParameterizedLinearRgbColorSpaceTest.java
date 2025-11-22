@@ -12,13 +12,11 @@ import org.monte.media.math.Point2D;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-/**
- * References:
- * <dl>
- *     <dt>C. A. Bouman: Digital Image Processing - January 9, 2023, Chromacity Coordinates.</dt>
- *     <dd><a href="https://engineering.purdue.edu/~bouman/ece637/notes/pdf/ColorSpaces.pdf">purdue.edu</a></dd>
- * </dl>
- */
+/// References:
+///
+/// C. A. Bouman: Digital Image Processing - January 9, 2023, Chromacity Coordinates.
+/// : [purdue.edu](https://engineering.purdue.edu/~bouman/ece637/notes/pdf/ColorSpaces.pdf)
+///
 public class ParameterizedLinearRgbColorSpaceTest {
     private static final double EPSILON = 0x1p-10;
 
@@ -83,9 +81,7 @@ public class ParameterizedLinearRgbColorSpaceTest {
         assertArrayEquals(expectedMatrix.toDoubleArray(), actualMatrix.toDoubleArray(), EPSILON);
     }
 
-    /**
-     * <a href="http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html">brucelindbloom.com</a>
-     */
+    /// [brucelindbloom.com](http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html)
     @Test
     public void shouldYieldBradfordMatrix() {
         {

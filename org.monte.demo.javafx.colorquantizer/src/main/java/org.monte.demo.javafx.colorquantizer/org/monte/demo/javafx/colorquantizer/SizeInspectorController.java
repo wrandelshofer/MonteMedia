@@ -3,10 +3,7 @@
  * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
  */
 
-/**
- * Sample Skeleton for 'SizeInspector.fxml' Controller Class
- */
-
+/// Sample Skeleton for 'SizeInspector.fxml' Controller Class
 package org.monte.demo.javafx.colorquantizer;
 
 import javafx.beans.property.ObjectProperty;
@@ -61,6 +58,9 @@ public class SizeInspectorController {
     @FXML // fx:id="root"
     private GridPane root; // Value injected by FXMLLoader
 
+    @FXML // fx:id="scaleBlurRadiusFactorField"
+    private TextField scaleBlurRadiusFactorField; // Value injected by FXMLLoader
+
     @FXML // fx:id="scaleCheckBox"
     private CheckBox scaleCheckBox; // Value injected by FXMLLoader
 
@@ -69,6 +69,12 @@ public class SizeInspectorController {
 
     @FXML // fx:id="scaleWidthField"
     private TextField scaleWidthField; // Value injected by FXMLLoader
+
+    @FXML // fx:id="sharpenAmountField"
+    private TextField sharpenAmountField; // Value injected by FXMLLoader
+
+    @FXML // fx:id="sharpenRadiusField"
+    private TextField sharpenRadiusField; // Value injected by FXMLLoader
 
     @FXML // fx:id="widthLabel"
     private Label widthLabel; // Value injected by FXMLLoader
@@ -91,9 +97,12 @@ public class SizeInspectorController {
         assert heightLabel != null : "fx:id=\"heightLabel\" was not injected: check your FXML file 'SizeInspector.fxml'.";
         assert preserveAspectRatioCheckBox != null : "fx:id=\"preserveAspectRatioCheckBox\" was not injected: check your FXML file 'SizeInspector.fxml'.";
         assert root != null : "fx:id=\"root\" was not injected: check your FXML file 'SizeInspector.fxml'.";
+        assert scaleBlurRadiusFactorField != null : "fx:id=\"scaleBlurRadiusFactorField\" was not injected: check your FXML file 'SizeInspector.fxml'.";
         assert scaleCheckBox != null : "fx:id=\"scaleCheckBox\" was not injected: check your FXML file 'SizeInspector.fxml'.";
         assert scaleHeightField != null : "fx:id=\"scaleHeightField\" was not injected: check your FXML file 'SizeInspector.fxml'.";
         assert scaleWidthField != null : "fx:id=\"scaleWidthField\" was not injected: check your FXML file 'SizeInspector.fxml'.";
+        assert sharpenAmountField != null : "fx:id=\"sharpenAmountField\" was not injected: check your FXML file 'SizeInspector.fxml'.";
+        assert sharpenRadiusField != null : "fx:id=\"sharpenRadiusField\" was not injected: check your FXML file 'SizeInspector.fxml'.";
         assert widthLabel != null : "fx:id=\"widthLabel\" was not injected: check your FXML file 'SizeInspector.fxml'.";
         assert zoomSpinner != null : "fx:id=\"zoomSpinner\" was not injected: check your FXML file 'SizeInspector.fxml'.";
         zoomSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(-5, 5, 0, 1));
@@ -105,6 +114,9 @@ public class SizeInspectorController {
         cropLeftField.disableProperty().bind(cropCheckBox.selectedProperty().not());
         scaleHeightField.disableProperty().bind(scaleCheckBox.selectedProperty().not());
         scaleWidthField.disableProperty().bind(scaleCheckBox.selectedProperty().not());
+        scaleBlurRadiusFactorField.disableProperty().bind(scaleCheckBox.selectedProperty().not());
+        sharpenAmountField.disableProperty().bind(scaleCheckBox.selectedProperty().not());
+        sharpenRadiusField.disableProperty().bind(scaleCheckBox.selectedProperty().not());
     }
 
     private void modelChanged(ObservableValue<? extends ColorQuantizerMainModel> o, ColorQuantizerMainModel oldv, ColorQuantizerMainModel newv) {
@@ -120,6 +132,9 @@ public class SizeInspectorController {
             cropRightField.textProperty().unbindBidirectional(oldv.cropRightProperty());
             cropTopField.textProperty().unbindBidirectional(oldv.cropTopProperty());
             cropBottomField.textProperty().unbindBidirectional(oldv.cropBottomProperty());
+            scaleBlurRadiusFactorField.textProperty().unbindBidirectional(newv.scaleRadiusFactorProperty());
+            sharpenAmountField.textProperty().unbindBidirectional(newv.sharpenAmountProperty());
+            sharpenRadiusField.textProperty().unbindBidirectional(newv.sharpenRadiusProperty());
             if (keepZoomProperty != null) {
                 zoomSpinner.getValueFactory().valueProperty().unbindBidirectional(keepZoomProperty);
                 keepZoomProperty = null;
@@ -137,14 +152,15 @@ public class SizeInspectorController {
             cropRightField.textProperty().bindBidirectional(newv.cropRightProperty(), new NumberStringConverter());
             cropTopField.textProperty().bindBidirectional(newv.cropTopProperty(), new NumberStringConverter());
             cropBottomField.textProperty().bindBidirectional(newv.cropBottomProperty(), new NumberStringConverter());
+            scaleBlurRadiusFactorField.textProperty().bindBidirectional(newv.scaleRadiusFactorProperty(), new NumberStringConverter());
+            sharpenAmountField.textProperty().bindBidirectional(newv.sharpenAmountProperty(), new NumberStringConverter());
+            sharpenRadiusField.textProperty().bindBidirectional(newv.sharpenRadiusProperty(), new NumberStringConverter());
             keepZoomProperty = newv.zoomProperty().asObject();
             zoomSpinner.getValueFactory().valueProperty().bindBidirectional(keepZoomProperty);
         }
     }
 
-    /**
-     * Prevent zoom property from being garbage collected.
-     */
+    /// Prevent zoom property from being garbage collected.
     private ObjectProperty<Integer> keepZoomProperty;
 
     public ObjectProperty<ColorQuantizerMainModel> modelProperty() {

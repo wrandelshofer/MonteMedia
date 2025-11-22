@@ -8,19 +8,17 @@ package org.monte.media.math;
 import static java.lang.Math.fma;
 import static org.monte.media.math.Scalars.almostEqual;
 
-/**
- * A 3x3 matrix with double precision.
- *
- * @param a row 0 column 0
- * @param b row 0 column 1
- * @param c row 0 column 2
- * @param d row 1 column 0
- * @param e row 1 column 1
- * @param f row 1 column 2
- * @param g row 2 column 0
- * @param h row 2 column 1
- * @param i row 2 column 2
- */
+/// A 3x3 matrix with double precision.
+///
+/// @param a row 0 column 0
+/// @param b row 0 column 1
+/// @param c row 0 column 2
+/// @param d row 1 column 0
+/// @param e row 1 column 1
+/// @param f row 1 column 2
+/// @param g row 2 column 0
+/// @param h row 2 column 1
+/// @param i row 2 column 2
 public record Matrix3Double(double a, double b, double c,
                             double d, double e, double f,
                             double g, double h, double i) implements Matrix3 {
@@ -67,14 +65,12 @@ public record Matrix3Double(double a, double b, double c,
         return new double[]{a, b, c, d, e, f, g, h, i};
     }
 
-    /**
-     * Vector multiplication.
-     * <pre>
-     * x1       [a1]
-     * x2 = M * [a2]
-     * x3       [a3]
-     * </pre>
-     */
+    /// Vector multiplication.
+    /// <pre>
+    /// x1       [a1]
+    /// x2 = M * [a2]
+    /// x3       [a3]
+    /// </pre>
     public Point3DDouble mul(double a1, double a2, double a3) {
         return new Point3DDouble(
                 a * a1 + b * a2 + c * a3,
@@ -121,17 +117,13 @@ public record Matrix3Double(double a, double b, double c,
         );
     }
 
-    /**
-     * References:
-     * <dl>
-     *     <dt>Mario Banuelos. wikiHow. How to Find the Inverse of a 3x3 Matrix.</dt>
-     *     <dd><a href="https://www.wikihow.com/Find-the-Inverse-of-a-3x3-Matrix">wikihow.com</a></dd>
-     *
-     *     <dt>Chilimath. Determinant of a 2×2 Matrix.</dt>
-     *     <dd><a href="https://www.chilimath.com/lessons/advanced-algebra/determinant-2x2-matrix/">chilimath.com</a></dd>
-     *
-     * </dl>
-     */
+    /// References:
+    /// <dl>
+    ///     <dt>Mario Banuelos. wikiHow. How to Find the Inverse of a 3x3 Matrix.</dt>
+    ///     <dd>[wikihow.com](https://www.wikihow.com/Find-the-Inverse-of-a-3x3-Matrix)</dd>
+    ///     <dt>Chilimath. Determinant of a 2×2 Matrix.</dt>
+    ///     <dd>[chilimath.com](https://www.chilimath.com/lessons/advanced-algebra/determinant-2x2-matrix/)</dd>
+    /// </dl>
     public Matrix3Double inv() {
         double invdet = 1.0 / det();
         double ad = det(e, f, h, i);
@@ -149,13 +141,11 @@ public record Matrix3Double(double a, double b, double c,
                 invdet * cd, invdet * -fd, invdet * id);
     }
 
-    /**
-     * References:
-     * <dl>
-     *     <dt>Chilimath. The Formula of the Determinant of 3×3 Matrix.</dt>
-     *     <dd><a href="https://www.chilimath.com/lessons/advanced-algebra/determinant-3x3-matrix/">chilimath.com</a></dd>
-     * </dl>
-     */
+    /// References:
+    /// <dl>
+    ///     <dt>Chilimath. The Formula of the Determinant of 3×3 Matrix.</dt>
+    ///     <dd>[chilimath.com](https://www.chilimath.com/lessons/advanced-algebra/determinant-3x3-matrix/)</dd>
+    /// </dl>
     private double det(double a, double b, double c,
                        double d, double e, double f,
                        double g, double h, double i) {
@@ -164,19 +154,17 @@ public record Matrix3Double(double a, double b, double c,
                 + c * det(d, e, g, h);
     }
 
-    /**
-     * Computes the determinant of a 2x2 matrix:
-     * <pre>
-     *    | [a b] |
-     *    | [c d] | = a * d - b * c
-     * </pre>
-     * <p>
-     * References:
-     * <dl>
-     *     <dt>John D. Cook. Accurately computing a 2x2 determinant.</dt>
-     *     <dd><a href="https://www.johndcook.com/blog/2020/05/31/kahan-determinant/">johndcook.com</a></dd>
-     * </dl>
-     */
+    /// Computes the determinant of a 2x2 matrix:
+    /// <pre>
+    ///    | [a b] |
+    ///    | [c d] | = a * d - b * c
+    /// </pre>
+    ///
+    /// References:
+    /// <dl>
+    ///     <dt>John D. Cook. Accurately computing a 2x2 determinant.</dt>
+    ///     <dd>[johndcook.com](https://www.johndcook.com/blog/2020/05/31/kahan-determinant/)</dd>
+    /// </dl>
     private double det(double a, double b, double c, double d) {
         double w = b * c;
         double e = fma(-b, c, w);

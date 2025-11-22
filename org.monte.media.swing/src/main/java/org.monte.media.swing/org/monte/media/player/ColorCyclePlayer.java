@@ -4,40 +4,27 @@
  */
 package org.monte.media.player;
 
-/**
- * A {@link Player} which supports a second layer of animation by cycling colors
- * in the color palette of the current image in the video track.
- * <p>
- * Color cycling is provided in a separate layer on top of the video track.
- * It can be performed independently of video playback.
- * </p>
- *
- * @author Werner Randelshofer
- */
+/// A [Player] which supports a second layer of animation by cycling colors
+/// in the color palette of the current image in the video track.
+///
+/// Color cycling is provided in a separate layer on top of the video track.
+/// It can be performed independently of video playback.
+///
+/// @author Werner Randelshofer
 public interface ColorCyclePlayer extends Player {
 
-    /**
-     * Returns true if color cycling is started.
-     */
+    /// Returns true if color cycling is started.
     public boolean isColorCyclingStarted();
 
-    /**
-     * Starts/Stops color cycling.
-     */
+    /// Starts/Stops color cycling.
     public void setColorCyclingStarted(boolean b);
 
-    /**
-     * Returns true if color cycling is available.
-     */
+    /// Returns true if color cycling is available.
     public boolean isColorCyclingAvailable();
 
-    /**
-     * Sets whether colors are blended during color cycling.
-     */
+    /// Sets whether colors are blended during color cycling.
     public void setBlendedColorCycling(boolean newValue);
 
-    /**
-     * Returns true if colors are blended during color cycling.
-     */
+    /// Returns true if colors are blended during color cycling.
     public boolean isBlendedColorCycling();
 }

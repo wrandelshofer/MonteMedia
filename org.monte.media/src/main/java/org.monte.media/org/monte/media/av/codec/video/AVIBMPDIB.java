@@ -16,23 +16,19 @@ import java.io.SequenceInputStream;
 import java.io.UncheckedIOException;
 import java.util.Vector;
 
-/**
- * This class defines the JPEG Huffman table, which is omitted in AVI MJPEG
- * files.
- * <p>
- * Source:
- * Microsoft Windows Bitmap Format.
- * Multimedia Technical Note: JPEG DIB Format.
- * (c) 1993 Microsoft Corporation. All rights reserved.
- * <a href="http://www.fileformat.info/format/bmp/spec/b7c72ebab8064da48ae5ed0c053c67a4/BMPDIB.TXT">BMPDIB.txt</a>
- *
- * @author Werner Randelshofer
- */
+/// This class defines the JPEG Huffman table, which is omitted in AVI MJPEG
+/// files.
+///
+/// References:
+///
+/// Microsoft Windows Bitmap Format
+/// : Multimedia Technical Note: JPEG DIB Format. (c) 1993 Microsoft Corporation. All rights reserved.
+///   [BMPDIB.txt](http://www.fileformat.info/format/bmp/spec/b7c72ebab8064da48ae5ed0c053c67a4/BMPDIB.TXT)
+///
+
 public class AVIBMPDIB {
 
-    /**
-     * MJPG DHT Segment
-     */
+    /// MJPG DHT Segment
     private static byte[] MJPGDHTSeg = {
             /* JPEG DHT Segment for YCrCb omitted from MJPG data */
             (byte) 0xFF, (byte) 0xC4, (byte) 0x01, (byte) 0xA2,
@@ -65,9 +61,7 @@ public class AVIBMPDIB {
             (byte) 0xD3, (byte) 0xD4, (byte) 0xD5, (byte) 0xD6, (byte) 0xD7, (byte) 0xD8, (byte) 0xD9, (byte) 0xDA, (byte) 0xE2, (byte) 0xE3, (byte) 0xE4, (byte) 0xE5, (byte) 0xE6, (byte) 0xE7, (byte) 0xE8,
             (byte) 0xE9, (byte) 0xEA, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xFA
     };
-    /**
-     * JFIF Start of Image (SOI) segment.
-     */
+    /// JFIF Start of Image (SOI) segment.
     private static byte[] JFIFSOISeg = {
             (byte) 0xff,
             (byte) 0xd8

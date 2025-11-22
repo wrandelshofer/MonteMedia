@@ -9,25 +9,20 @@ import org.monte.media.impl.jcodec.common.model.Picture;
 
 import static org.monte.media.impl.jcodec.common.tools.MathUtil.clip;
 
-/**
- * References:
- * <p>
- * This code has been derived from JCodecProject.
- * <dl>
- *     <dt>JCodecProject. Copyright 2008-2019 JCodecProject.
- *     <br><a href="https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE">BSD 2-Clause License.</a></dt>
- *     <dd><a href="https://github.com/jcodec/jcodec">github.com</a></dd>
- * </dl>
- *
- * <p>
- * Transforms Picture in RGB colorspace ( one plane, 3 integers per pixel ) to
- * Yuv420 colorspace output picture ( 3 planes, luma - 0th plane, cb - 1th
- * plane, cr - 2nd plane; cb and cr planes are half width and half haight )
- * <p>
- * TODO: implement jpeg colorspace instead of NTSC
- *
- * @author The JCodec project
- */
+/// References:
+///
+/// JCodecProject. Copyright 2008-2019 JCodecProject.
+/// : [BSD 2-Clause License.](https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE)
+/// : [github.com](https://github.com/jcodec/jcodec)
+///
+///
+/// Transforms Picture in RGB colorspace ( one plane, 3 integers per pixel ) to
+/// Yuv420 colorspace output picture ( 3 planes, luma - 0th plane, cb - 1th
+/// plane, cr - 2nd plane; cb and cr planes are half width and half haight )
+///
+/// TODO: implement jpeg colorspace instead of NTSC
+///
+/// @author The JCodec project
 public class RgbToYuv420j implements Transform {
 
     public RgbToYuv420j() {

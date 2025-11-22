@@ -7,11 +7,9 @@ package org.monte.media.av.codec.video;
 
 import org.monte.media.av.CodecSpi;
 
-/**
- * TechSmithCodecSpi.
- *
- * @author Werner Randelshofer
- */
+/// TechSmithCodecSpi.
+///
+/// @author Werner Randelshofer
 public class TechSmithDecoderSpi implements CodecSpi {
 
     @Override

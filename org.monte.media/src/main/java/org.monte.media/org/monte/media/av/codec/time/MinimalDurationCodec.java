@@ -12,11 +12,9 @@ import org.monte.media.math.Rational;
 
 import java.util.Arrays;
 
-/**
- * Buffers at least the specified minimal duration.
- * <p>
- * This codec processes byte array data, that is typically used with audio codecs.
- */
+/// Buffers at least the specified minimal duration.
+///
+/// This codec processes byte array data, that is typically used with audio codecs.
 public class MinimalDurationCodec extends org.monte.media.av.AbstractCodec {
     private final Rational minimalDuration;
     private Rational currentDuration = Rational.ZERO;

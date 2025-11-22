@@ -19,11 +19,9 @@ import java.awt.MediaTracker;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-/**
- * MovieSliderAqua.
- *
- * @author Werner Randelshofer
- */
+/// MovieSliderAqua.
+///
+/// @author Werner Randelshofer
 public class JPlayerSliderAqua extends JComponent
         implements ChangeListener, MouseListener, MouseMotionListener {
     private final static long serialVersionUID = 1L;

@@ -23,9 +23,7 @@ import org.monte.demo.javafx.movieplayer.model.TrackInterface;
 
 import java.util.Objects;
 
-/**
- * Adapter for JavaFX {@link Media}.
- */
+/// Adapter for JavaFX [Media].
 public class FXMedia implements MediaInterface {
     private final ObservableList<TrackInterface> tracks = FXCollections.observableArrayList();
 

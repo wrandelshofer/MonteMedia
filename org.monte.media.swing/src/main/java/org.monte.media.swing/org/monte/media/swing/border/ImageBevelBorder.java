@@ -17,65 +17,49 @@ import java.awt.Rectangle;
 import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
 
-/**
- * Draws a filled bevel border using an image and insets.
- * The image must consist of a bevel and a fill area.
- * <p>
- * The insets and the size of the image are
- * used do determine which parts of the image shall be
- * used to draw the corners and edges of the bevel as
- * well the fill area.
- *
- * <p>For example, if you provide an image of size 10,10
- * and a insets of size 2, 2, 4, 4, then the corners of
- * the border are made up of top left: 2,2, top right: 2,4,
- * bottom left: 2,4, bottom right: 4,4 rectangle of the image.
- * The inner area of the image is used to fill the inner area.
- *
- * @author Werner Randelshofer
- */
+/// Draws a filled bevel border using an image and insets.
+/// The image must consist of a bevel and a fill area.
+///
+/// The insets and the size of the image are
+/// used do determine which parts of the image shall be
+/// used to draw the corners and edges of the bevel as
+/// well the fill area.
+///
+/// For example, if you provide an image of size 10,10
+/// and a insets of size 2, 2, 4, 4, then the corners of
+/// the border are made up of top left: 2,2, top right: 2,4,
+/// bottom left: 2,4, bottom right: 4,4 rectangle of the image.
+/// The inner area of the image is used to fill the inner area.
+///
+/// @author Werner Randelshofer
 public class ImageBevelBorder implements Border {
     private final static boolean VERBOSE = false;
-    /**
-     * The image to be used for drawing.
-     */
+    /// The image to be used for drawing.
     private Image image;
 
-    /**
-     * The border insets
-     */
+    /// The border insets
     private Insets borderInsets;
-    /**
-     * The insets of the image.
-     */
+    /// The insets of the image.
     private Insets imageInsets;
 
-    /**
-     * This attribute is set to true, when the image
-     * is used to fill the content area too.
-     */
+    /// This attribute is set to true, when the image
+    /// is used to fill the content area too.
     private boolean fillContentArea;
 
-    /**
-     * Creates a new instance with the given image and insets.
-     * The image has the same insets as the border.
-     */
+    /// Creates a new instance with the given image and insets.
+    /// The image has the same insets as the border.
     public ImageBevelBorder(Image img, Insets borderInsets) {
         this(img, borderInsets, borderInsets, true);
     }
 
-    /**
-     * Creates a new instance with the given image and insets.
-     * The image has different insets than the border.
-     */
+    /// Creates a new instance with the given image and insets.
+    /// The image has different insets than the border.
     public ImageBevelBorder(Image img, Insets imageInsets, Insets borderInsets) {
         this(img, imageInsets, borderInsets, true);
     }
 
-    /**
-     * Creates a new instance with the given image and insets.
-     * The image has different insets than the border.
-     */
+    /// Creates a new instance with the given image and insets.
+    /// The image has different insets than the border.
     public ImageBevelBorder(Image img, Insets imageInsets, Insets borderInsets, boolean fillContentArea) {
         this.image = img;
         this.imageInsets = imageInsets;
@@ -83,35 +67,29 @@ public class ImageBevelBorder implements Border {
         this.fillContentArea = fillContentArea;
     }
 
-    /**
-     * Returns true if the border is opaque.
-     * This implementation always returns false.
-     */
+    /// Returns true if the border is opaque.
+    /// This implementation always returns false.
     public boolean isBorderOpaque() {
         return false;
     }
 
-    /**
-     * Returns the insets of the border.
-     *
-     * @param c the component for which this border insets value applies
-     */
+    /// Returns the insets of the border.
+    ///
+    /// @param c the component for which this border insets value applies
     public Insets getBorderInsets(Component c) {
         return (Insets) borderInsets.clone();
     }
 
 
-    /**
-     * Paints the bevel image for the specified component with the
-     * specified position and size.
-     *
-     * @param c      the component for which this border is being painted
-     * @param gr     the paint graphics
-     * @param x      the x position of the painted border
-     * @param y      the y position of the painted border
-     * @param width  the width of the painted border
-     * @param height the height of the painted border
-     */
+    /// Paints the bevel image for the specified component with the
+    /// specified position and size.
+    ///
+    /// @param c      the component for which this border is being painted
+    /// @param gr     the paint graphics
+    /// @param x      the x position of the painted border
+    /// @param y      the y position of the painted border
+    /// @param width  the width of the painted border
+    /// @param height the height of the painted border
     public void paintBorder(Component c, Graphics gr, int x, int y, int width, int height) {
         if (image == null) return;
 

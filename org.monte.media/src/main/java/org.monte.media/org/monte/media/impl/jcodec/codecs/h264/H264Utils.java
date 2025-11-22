@@ -38,18 +38,13 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 
-/**
- * References:
- * <p>
- * This code has been derived from JCodecProject.
- * <dl>
- *     <dt>JCodecProject. Copyright 2008-2019 JCodecProject.
- *     <br><a href="https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE">BSD 2-Clause License.</a></dt>
- *     <dd><a href="https://github.com/jcodec/jcodec">github.com</a></dd>
- * </dl>
- *
- * @author The JCodec project
- */
+/// References:
+///
+/// JCodecProject. Copyright 2008-2019 JCodecProject.
+/// : [BSD 2-Clause License.](https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE)
+/// : [github.com](https://github.com/jcodec/jcodec)
+///
+/// @author The JCodec project
 public class H264Utils {
 
     public static ByteBuffer nextNALUnit(ByteBuffer buf) {
@@ -76,17 +71,15 @@ public class H264Utils {
         }
     }
 
-    /**
-     * Finds next Nth H.264 bitstream NAL unit (0x00000001) and returns the data
-     * that preceeds it as a ByteBuffer slice
-     * <p>
-     * Segment byte order is always little endian
-     * <p>
-     * TODO: emulation prevention
-     *
-     * @param buf
-     * @return
-     */
+    /// Finds next Nth H.264 bitstream NAL unit (0x00000001) and returns the data
+    /// that preceeds it as a ByteBuffer slice
+    ///
+    /// Segment byte order is always little endian
+    ///
+    /// TODO: emulation prevention
+    ///
+    /// @param buf
+    /// @return
     public static final ByteBuffer gotoNALUnit(ByteBuffer buf) {
 
         if (!buf.hasRemaining())
@@ -109,15 +102,13 @@ public class H264Utils {
         return result;
     }
 
-    /**
-     * Finds next Nth H.264 bitstream NAL unit (0x00000001) and returns the data
-     * that preceeds it as a ByteBuffer slice
-     * <p>
-     * Segment byte order is always little endian
-     *
-     * @param buf
-     * @return data
-     */
+    /// Finds next Nth H.264 bitstream NAL unit (0x00000001) and returns the data
+    /// that preceeds it as a ByteBuffer slice
+    ///
+    /// Segment byte order is always little endian
+    ///
+    /// @param buf
+    /// @return data
     public static final ByteBuffer gotoNALUnitWithArray(ByteBuffer buf) {
 
         if (!buf.hasRemaining())
@@ -257,15 +248,13 @@ public class H264Utils {
         }
     }
 
-    /**
-     * Encodes AVC frame in ISO BMF format. Takes Annex B format.
-     * <p>
-     * Scans the packet for each NAL Unit starting with 00 00 00 01 and replaces
-     * this 4 byte sequence with 4 byte integer representing this NAL unit
-     * length.
-     *
-     * @param avcFrame AVC frame encoded in Annex B NAL unit format
-     */
+    /// Encodes AVC frame in ISO BMF format. Takes Annex B format.
+    ///
+    /// Scans the packet for each NAL Unit starting with 00 00 00 01 and replaces
+    /// this 4 byte sequence with 4 byte integer representing this NAL unit
+    /// length.
+    ///
+    /// @param avcFrame AVC frame encoded in Annex B NAL unit format
     public static void encodeMOVPacketInplace(ByteBuffer avcFrame) {
 
         ByteBuffer dup = avcFrame.duplicate();
@@ -281,15 +270,13 @@ public class H264Utils {
         }
     }
 
-    /**
-     * Encodes AVC frame in ISO BMF format. Takes Annex B format.
-     * <p>
-     * Scans the packet for each NAL Unit starting with 00 00 00 01 and replaces
-     * this 4 byte sequence with 4 byte integer representing this NAL unit
-     * length.
-     *
-     * @param avcFrame AVC frame encoded in Annex B NAL unit format
-     */
+    /// Encodes AVC frame in ISO BMF format. Takes Annex B format.
+    ///
+    /// Scans the packet for each NAL Unit starting with 00 00 00 01 and replaces
+    /// this 4 byte sequence with 4 byte integer representing this NAL unit
+    /// length.
+    ///
+    /// @param avcFrame AVC frame encoded in Annex B NAL unit format
     public static ByteBuffer encodeMOVPacket(ByteBuffer avcFrame) {
 
         ByteBuffer dup = avcFrame.duplicate();
@@ -310,14 +297,12 @@ public class H264Utils {
         return result;
     }
 
-    /**
-     * Decodes AVC packet in ISO BMF format into Annex B format.
-     * <p>
-     * Replaces NAL unit size integers with 00 00 00 01 start codes. If the
-     * space allows the transformation is done inplace.
-     *
-     * @param result
-     */
+    /// Decodes AVC packet in ISO BMF format into Annex B format.
+    ///
+    /// Replaces NAL unit size integers with 00 00 00 01 start codes. If the
+    /// space allows the transformation is done inplace.
+    ///
+    /// @param result
     public static ByteBuffer decodeMOVPacket(ByteBuffer result, AvcCBox avcC) {
         if (avcC.getNalLengthSize() == 4) {
             decodeMOVPacketInplace(result, avcC);
@@ -330,13 +315,11 @@ public class H264Utils {
         return joinNALUnits(splitMOVPacket(result, avcC));
     }
 
-    /**
-     * Decodes AVC packet in ISO BMF format into Annex B format.
-     * <p>
-     * Inplace replaces NAL unit size integers with 00 00 00 01 start codes.
-     *
-     * @param result
-     */
+    /// Decodes AVC packet in ISO BMF format into Annex B format.
+    ///
+    /// Inplace replaces NAL unit size integers with 00 00 00 01 start codes.
+    ///
+    /// @param result
     public static void decodeMOVPacketInplace(ByteBuffer result, AvcCBox avcC) {
         if (avcC.getNalLengthSize() != 4)
             throw new IllegalArgumentException("Can only inplace decode AVC MOV packet with nal_length_size = 4.");
@@ -349,16 +332,14 @@ public class H264Utils {
         }
     }
 
-    /**
-     * Wipes AVC parameter sets ( SPS/PPS ) from the packet
-     *
-     * @param _in     AVC frame encoded in Annex B NAL unit format
-     * @param out     Buffer where packet without PS will be put
-     * @param spsList Storage for leading SPS structures ( can be null, then all
-     *                leading SPSs are discarded ).
-     * @param ppsList Storage for leading PPS structures ( can be null, then all
-     *                leading PPSs are discarded ).
-     */
+    /// Wipes AVC parameter sets ( SPS/PPS ) from the packet
+    ///
+    /// @param _in     AVC frame encoded in Annex B NAL unit format
+    /// @param out     Buffer where packet without PS will be put
+    /// @param spsList Storage for leading SPS structures ( can be null, then all
+    ///                                                                                                          leading SPSs are discarded ).
+    /// @param ppsList Storage for leading PPS structures ( can be null, then all
+    ///                                                                                                          leading PPSs are discarded ).
     public static void wipePS(ByteBuffer _in, ByteBuffer out, List<ByteBuffer> spsList, List<ByteBuffer> ppsList) {
 
         ByteBuffer dup = _in.duplicate();
@@ -383,16 +364,14 @@ public class H264Utils {
             out.flip();
     }
 
-    /**
-     * Wipes AVC parameter sets ( SPS/PPS ) from the packet ( inplace operation
-     * )
-     *
-     * @param _in     AVC frame encoded in Annex B NAL unit format
-     * @param spsList Storage for leading SPS structures ( can be null, then all
-     *                leading SPSs are discarded ).
-     * @param ppsList Storage for leading PPS structures ( can be null, then all
-     *                leading PPSs are discarded ).
-     */
+    /// Wipes AVC parameter sets ( SPS/PPS ) from the packet ( inplace operation
+    /// )
+    ///
+    /// @param _in     AVC frame encoded in Annex B NAL unit format
+    /// @param spsList Storage for leading SPS structures ( can be null, then all
+    ///                                                                                           leading SPSs are discarded ).
+    /// @param ppsList Storage for leading PPS structures ( can be null, then all
+    ///                                                                                           leading PPSs are discarded ).
     public static void wipePSinplace(ByteBuffer _in, Collection<ByteBuffer> spsList, Collection<ByteBuffer> ppsList) {
         ByteBuffer dup = _in.duplicate();
         while (dup.hasRemaining()) {
@@ -440,10 +419,8 @@ public class H264Utils {
         return AvcCBox.createAvcCBox(sps.profileIdc, 0, sps.levelIdc, nalLengthSize, serialSps, serialPps);
     }
 
-    /**
-     * @param initPPS
-     * @return
-     */
+    /// @param initPPS
+    /// @return
     public static List<ByteBuffer> savePPS(List<PictureParameterSet> initPPS) {
         List<ByteBuffer> serialPps = new ArrayList<ByteBuffer>();
         for (PictureParameterSet pps : initPPS) {
@@ -456,10 +433,8 @@ public class H264Utils {
         return serialPps;
     }
 
-    /**
-     * @param initSPS
-     * @return
-     */
+    /// @param initSPS
+    /// @return
     public static List<ByteBuffer> saveSPS(List<SeqParameterSet> initSPS) {
         List<ByteBuffer> serialSps = new ArrayList<ByteBuffer>();
         for (SeqParameterSet sps : initSPS) {
@@ -472,13 +447,11 @@ public class H264Utils {
         return serialSps;
     }
 
-    /**
-     * Creates a MP4 sample entry given AVC/H.264 codec private.
-     *
-     * @param codecPrivate Array containing AnnexB delimited (00 00 00 01) SPS/PPS NAL
-     *                     units.
-     * @return MP4 sample entry
-     */
+    /// Creates a MP4 sample entry given AVC/H.264 codec private.
+    ///
+    /// @param codecPrivate Array containing AnnexB delimited (00 00 00 01) SPS/PPS NAL
+    ///                                                                                                                         units.
+    /// @return MP4 sample entry
     public static SampleEntry createMOVSampleEntryFromBytes(ByteBuffer codecPrivate) {
         List<ByteBuffer> rawSPS = getRawSPS(codecPrivate.duplicate());
         List<ByteBuffer> rawPPS = getRawPPS(codecPrivate.duplicate());
@@ -492,13 +465,11 @@ public class H264Utils {
         return createMOVSampleEntryFromAvcC(avcC);
     }
 
-    /**
-     * Creates a MP4 sample entry given AVC/H.264 codec private.
-     *
-     * @param codecPrivate Array containing AnnexB delimited (00 00 00 01) SPS/PPS NAL
-     *                     units.
-     * @return MP4 sample entry
-     */
+    /// Creates a MP4 sample entry given AVC/H.264 codec private.
+    ///
+    /// @param codecPrivate Array containing AnnexB delimited (00 00 00 01) SPS/PPS NAL
+    ///                                                                                                                         units.
+    /// @return MP4 sample entry
     public static AvcCBox createAvcCFromBytes(ByteBuffer codecPrivate) {
         List<ByteBuffer> rawSPS = getRawSPS(codecPrivate.duplicate());
         List<ByteBuffer> rawPPS = getRawPPS(codecPrivate.duplicate());
@@ -605,13 +576,11 @@ public class H264Utils {
         return result;
     }
 
-    /**
-     * Joins buffers containing individual NAL units into a single AnnexB
-     * delimited buffer. Each NAL unit will be separated with 00 00 00 01
-     * markers. Allocates a new byte buffer and writes data into it.
-     *
-     * @param nalUnits //@param out
-     */
+    /// Joins buffers containing individual NAL units into a single AnnexB
+    /// delimited buffer. Each NAL unit will be separated with 00 00 00 01
+    /// markers. Allocates a new byte buffer and writes data into it.
+    ///
+    /// @param nalUnits//@param out
     public static ByteBuffer joinNALUnits(List<ByteBuffer> nalUnits) {
         int size = 0;
         for (ByteBuffer nal : nalUnits) {
@@ -623,14 +592,12 @@ public class H264Utils {
         return allocate;
     }
 
-    /**
-     * Joins buffers containing individual NAL units into a single AnnexB
-     * delimited buffer. Each NAL unit will be separated with 00 00 00 01
-     * markers.
-     *
-     * @param nalUnits
-     * @param out
-     */
+    /// Joins buffers containing individual NAL units into a single AnnexB
+    /// delimited buffer. Each NAL unit will be separated with 00 00 00 01
+    /// markers.
+    ///
+    /// @param nalUnits
+    /// @param out
     public static void joinNALUnitsToBuffer(List<ByteBuffer> nalUnits, ByteBuffer out) {
         for (ByteBuffer nal : nalUnits) {
             out.putInt(1);
@@ -923,22 +890,18 @@ public class H264Utils {
         codecPrivate.put(dst);
     }
 
-    /**
-     * Parses a list of SPS NAL units out of the codec private array.
-     *
-     * @param codecPrivate An AnnexB formatted set of SPS/PPS NAL units.
-     * @return A list of ByteBuffers containing PPS NAL units.
-     */
+    /// Parses a list of SPS NAL units out of the codec private array.
+    ///
+    /// @param codecPrivate An AnnexB formatted set of SPS/PPS NAL units.
+    /// @return A list of ByteBuffers containing PPS NAL units.
     public static List<ByteBuffer> getRawPPS(ByteBuffer codecPrivate) {
         return getRawNALUnitsOfType(codecPrivate, NALUnitType.PPS);
     }
 
-    /**
-     * Parses a list of SPS NAL units out of the codec private array.
-     *
-     * @param codecPrivate An AnnexB formatted set of SPS/PPS NAL units.
-     * @return A list of ByteBuffers containing SPS NAL units.
-     */
+    /// Parses a list of SPS NAL units out of the codec private array.
+    ///
+    /// @param codecPrivate An AnnexB formatted set of SPS/PPS NAL units.
+    /// @return A list of ByteBuffers containing SPS NAL units.
     public static List<ByteBuffer> getRawSPS(ByteBuffer codecPrivate) {
         return getRawNALUnitsOfType(codecPrivate, NALUnitType.SPS);
     }
@@ -954,13 +917,11 @@ public class H264Utils {
         return result;
     }
 
-    /**
-     * A collection of functions to work with a compact representation of a motion vector.
-     * <p>
-     * Motion vector is represented as long:
-     * <p>
-     * ||rrrrrr|vvvvvvvvvvvv|hhhhhhhhhhhhhh||
-     */
+    /// A collection of functions to work with a compact representation of a motion vector.
+    ///
+    /// Motion vector is represented as long:
+    ///
+    /// ||rrrrrr|vvvvvvvvvvvv|hhhhhhhhhhhhhh||
     public static class Mv {
         public static int mvX(int mv) {
             return (mv << 18) >> 18;
@@ -983,13 +944,11 @@ public class H264Utils {
         }
     }
 
-    /**
-     * A collection of functions to work with a compact representation of a
-     * motion vector list.
-     * <p>
-     * Motion vector list contains interleaved pairs of forward and backward
-     * motion vectors packed into integers.
-     */
+    /// A collection of functions to work with a compact representation of a
+    /// motion vector list.
+    ///
+    /// Motion vector list contains interleaved pairs of forward and backward
+    /// motion vectors packed into integers.
     public static class MvList {
         private int[] list;
         private static final int NA = Mv.packMv(0, 0, -1);

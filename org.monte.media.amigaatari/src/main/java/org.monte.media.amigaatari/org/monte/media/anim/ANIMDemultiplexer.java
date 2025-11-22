@@ -13,11 +13,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Demultiplexes an ANIM file into a video track and an audio track.
- *
- * @author Werner Randelshofer
- */
+/// Demultiplexes an ANIM file into a video track and an audio track.
+///
+/// @author Werner Randelshofer
 public class ANIMDemultiplexer extends ANIMReader implements Demultiplexer {
 
     private Track[] tracks;

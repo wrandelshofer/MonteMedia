@@ -27,26 +27,23 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-/**
- * Reads closed captions from a Movie with the Monte Media library.
- *
- * @author Werner Randelshofer
- */
+/// Reads closed captions from a Movie with the Monte Media library.
+///
+/// @author Werner Randelshofer
 public class ReadClosedCaptionsFromAMovieMain {
-    /**
-     * Main method.
-     * <p>
-     * Arguments:
-     * <pre>{@literal
-     * <file>
-     * }</pre>
-     * <dl>
-     *     <dt>file</dt>
-     *     <dd>Optional. The movie file to be loaded.</dd>
-     * </dl>
-     *
-     * @param args the command line arguments
-     */
+    /// Main method.
+    ///
+    /// Arguments:
+    /// <pre>
+    /// {@literal
+    ///  <file>
+    ///  }</pre>
+    /// <dl>
+    ///     <dt>file</dt>
+    ///     <dd>Optional. The movie file to be loaded.</dd>
+    /// </dl>
+    ///
+    /// @param args the command line arguments
     public static void main(String[] args) throws Exception {
         ReadClosedCaptionsFromAMovieMain main = new ReadClosedCaptionsFromAMovieMain();
         SwingUtilities.invokeAndWait(() -> {
@@ -64,16 +61,14 @@ public class ReadClosedCaptionsFromAMovieMain {
     private JLabel ccNbLabel;
     private JFrame frame;
 
-    /**
-     * Creates the frame.
-     * <pre>
-     *     +-----------------------+
-     *     |      ccLabel          |
-     *     +--------+--------------+
-     *     | slider |    ccNbLabel |
-     *     +--------+--------------+
-     * </pre>
-     */
+    /// Creates the frame.
+    /// <pre>
+    ///     +-----------------------+
+    ///     |      ccLabel          |
+    ///     +--------+--------------+
+    ///     | slider |    ccNbLabel |
+    ///     +--------+--------------+
+    /// </pre>
     private void createFrame() {
         frame = new JFrame("please drop a file in this window");
         JPanel panel = new JPanel(new BorderLayout());

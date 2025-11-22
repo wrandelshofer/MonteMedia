@@ -24,15 +24,13 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-/**
- * <pre>
- * Benchmark             Mode  Cnt    Score   Error  Units
- * IntGcdJmh.gcdCheck    avgt    4  245.136 ± 0.163  ns/op
- * IntGcdJmh.gcdHermann  avgt    4   82.966 ± 0.120  ns/op
- * IntGcdJmh.gcdStein1   avgt    4  115.451 ± 5.423  ns/op
- * IntGcdJmh.gcdStein2   avgt    4   52.087 ± 0.167  ns/op
- * </pre>
- */
+/// <pre>
+/// Benchmark             Mode  Cnt    Score   Error  Units
+/// IntGcdJmh.gcdCheck    avgt    4  245.136 ± 0.163  ns/op
+/// IntGcdJmh.gcdHermann  avgt    4   82.966 ± 0.120  ns/op
+/// IntGcdJmh.gcdStein1   avgt    4  115.451 ± 5.423  ns/op
+/// IntGcdJmh.gcdStein2   avgt    4   52.087 ± 0.167  ns/op
+/// </pre>
 @Measurement(iterations = 4)
 @Warmup(iterations = 2)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
@@ -97,14 +95,12 @@ public class IntGcdJmh {
         return gcdHermann(a[index], b[index]);
     }
 
-    /**
-     * References:
-     * <dl>
-     *     <dt>Herrmann, D. (1992). Algorithmen Arbeitsbuch</dt>
-     *     <dd>Bonn, München Paris: Addison Wesley.
-     *         ggt6, Page 63</dd>
-     * </dl>
-     */
+    /// References:
+    /// <dl>
+    ///     <dt>Herrmann, D. (1992). Algorithmen Arbeitsbuch</dt>
+    ///     <dd>Bonn, München Paris: Addison Wesley.
+    ///         ggt6, Page 63</dd>
+    /// </dl>
     static int gcdHermann(int a, int b) {
         a = Math.abs(a);
         b = Math.abs(b);
@@ -116,15 +112,13 @@ public class IntGcdJmh {
         return a + b;
     }
 
-    /**
-     * References:
-     * <dl>
-     *     <dt>Stein</dt>
-     *     <dd>
-     *         <a href="https://www.geeksforgeeks.org/steins-algorithm-for-finding-gcd/"geeksforgeeks.org></a>
-     *             </dd>
-     * </dl>
-     */
+    /// References:
+    /// <dl>
+    ///     <dt>Stein</dt>
+    ///     <dd>
+    ///         <a href="https://www.geeksforgeeks.org/steins-algorithm-for-finding-gcd/"geeksforgeeks.org></a>
+    ///             </dd>
+    /// </dl>
     static int gcdStein1(int a, int b) {
         // GCD(0, b) == b; GCD(a, 0) == a,
         // GCD(0, 0) == 0
@@ -169,15 +163,13 @@ public class IntGcdJmh {
         return a << k;
     }
 
-    /**
-     * References:
-     * <dl>
-     *     <dt>Stein</dt>
-     *     <dd>
-     *         <a href="https://www.geeksforgeeks.org/steins-algorithm-for-finding-gcd/"geeksforgeeks.org></a>
-     *             </dd>
-     * </dl>
-     */
+    /// References:
+    /// <dl>
+    ///     <dt>Stein</dt>
+    ///     <dd>
+    ///         <a href="https://www.geeksforgeeks.org/steins-algorithm-for-finding-gcd/"geeksforgeeks.org></a>
+    ///             </dd>
+    /// </dl>
     static int gcdStein2(int a, int b) {
         // GCD(0, b) == b; GCD(a, 0) == a,
         // GCD(0, 0) == 0

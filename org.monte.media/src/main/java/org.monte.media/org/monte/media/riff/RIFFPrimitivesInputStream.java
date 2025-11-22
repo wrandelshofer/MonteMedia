@@ -12,34 +12,28 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-/**
- * A RIFF primitives input stream lets an application read primitive data
- * types in the Microsoft Resource Interfache File Format (RIFF) format from an
- * underlying input stream.
- * <p>
- * Reference:
- * AVI RIFF File Reference
- * http://msdn.microsoft.com/archive/default.asp?url=/archive/en-us/directx9_c/directx/htm/avirifffilereference.asp
- *
- * @author Werner Randelshofer
- */
+/// A RIFF primitives input stream lets an application read primitive data
+/// types in the Microsoft Resource Interfache File Format (RIFF) format from an
+/// underlying input stream.
+///
+/// Reference:
+/// AVI RIFF File Reference
+/// http://msdn.microsoft.com/archive/default.asp?url=/archive/en-us/directx9_c/directx/htm/avirifffilereference.asp
+///
+/// @author Werner Randelshofer
 public class RIFFPrimitivesInputStream extends FilterInputStream {
     private long scan, mark;
     private final byte[] byteBuffer = new byte[8];
 
-    /**
-     * Creates a new instance.
-     *
-     * @param in the input stream.
-     */
+    /// Creates a new instance.
+    ///
+    /// @param in the input stream.
     public RIFFPrimitivesInputStream(InputStream in) {
         super(in);
     }
 
-    /**
-     * Read 1 byte from the input stream and interpret
-     * them as an 8 Bit unsigned UBYTE value.
-     */
+    /// Read 1 byte from the input stream and interpret
+    /// them as an 8 Bit unsigned UBYTE value.
     public int readUBYTE()
             throws IOException {
         int b0 = in.read();
@@ -52,85 +46,71 @@ public class RIFFPrimitivesInputStream extends FilterInputStream {
         return b0 & 0xff;
     }
 
-    /**
-     * Read 2 bytes from the input stream and interpret
-     * them as a 16 Bit signed WORD value.
-     */
+    /// Read 2 bytes from the input stream and interpret
+    /// them as a 16 Bit signed WORD value.
     public short readWORD()
             throws IOException {
         readFully(byteBuffer, 0, 2);
         return ByteArrays.getShortLE(byteBuffer, 0);
     }
 
-    /**
-     * Read 2 bytes from the input stream and interpret
-     * them as a 16 Bit unsigned UWORD value.
-     */
+    /// Read 2 bytes from the input stream and interpret
+    /// them as a 16 Bit unsigned UWORD value.
     public int readUWORD()
             throws IOException {
         return readWORD() & 0xffff;
     }
 
-    /**
-     * Read 4 bytes from the input stream and interpret
-     * them as a 32 Bit signed LONG value.
-     */
+    /// Read 4 bytes from the input stream and interpret
+    /// them as a 32 Bit signed LONG value.
     public int readLONG()
             throws IOException {
         readFully(byteBuffer, 0, 4);
         return ByteArrays.getIntLE(byteBuffer, 0);
     }
 
-    /**
-     * Read 4 bytes from the input stream and interpret
-     * them as a four byte character code.
-     * <p>
-     * Cited from Referenced "AVI RIFF File Reference":
-     * "A FOURCC (four-character code) is a 32-bit unsigned integer created by
-     * concatenating four ASCII characters. For example, the FOURCC 'abcd' is
-     * represented on a Little-Endian system as 0x64636261. FOURCCs can contain
-     * space characters, so ' abc' is a valid FOURCC. The AVI file format uses
-     * FOURCC codes to identify stream types, data chunks, index entries, and
-     * other information."
-     */
+    /// Read 4 bytes from the input stream and interpret
+    /// them as a four byte character code.
+    ///
+    /// Cited from Referenced "AVI RIFF File Reference":
+    /// "A FOURCC (four-character code) is a 32-bit unsigned integer created by
+    /// concatenating four ASCII characters. For example, the FOURCC 'abcd' is
+    /// represented on a Little-Endian system as 0x64636261. FOURCCs can contain
+    /// space characters, so ' abc' is a valid FOURCC. The AVI file format uses
+    /// FOURCC codes to identify stream types, data chunks, index entries, and
+    /// other information."
     public int readFourCC()
             throws IOException {
         readFully(byteBuffer, 0, 4);
         return ByteArrays.getIntBE(byteBuffer, 0);
     }
 
-    /**
-     * Read 4 bytes from the input stream and interpret
-     * them as a four byte character code.
-     * <p>
-     * Cited from Referenced "AVI RIFF File Reference":
-     * "A FOURCC (four-character code) is a 32-bit unsigned integer created by
-     * concatenating four ASCII characters. For example, the FOURCC 'abcd' is
-     * represented on a Little-Endian system as 0x64636261. FOURCCs can contain
-     * space characters, so ' abc' is a valid FOURCC. The AVI file format uses
-     * FOURCC codes to identify stream types, data chunks, index entries, and
-     * other information."
-     */
+    /// Read 4 bytes from the input stream and interpret
+    /// them as a four byte character code.
+    ///
+    /// Cited from Referenced "AVI RIFF File Reference":
+    /// "A FOURCC (four-character code) is a 32-bit unsigned integer created by
+    /// concatenating four ASCII characters. For example, the FOURCC 'abcd' is
+    /// represented on a Little-Endian system as 0x64636261. FOURCCs can contain
+    /// space characters, so ' abc' is a valid FOURCC. The AVI file format uses
+    /// FOURCC codes to identify stream types, data chunks, index entries, and
+    /// other information."
     public String readFourCCString()
             throws IOException {
         readFully(byteBuffer, 0, 4);
         return new String(byteBuffer, 0, 4, StandardCharsets.US_ASCII);
     }
 
-    /**
-     * Read 4 Bytes from the input Stream and interpret
-     * them as an unsigned Integer value of type ULONG.
-     */
+    /// Read 4 Bytes from the input Stream and interpret
+    /// them as an unsigned Integer value of type ULONG.
     public long readULONG()
             throws IOException {
         return (long) (readLONG()) & 0x00ffffffffL;
     }
 
-    /**
-     * Align to an even byte position in the input stream.
-     * This will skip one byte in the stream if the current
-     * read position is not even.
-     */
+    /// Align to an even byte position in the input stream.
+    /// This will skip one byte in the stream if the current
+    /// read position is not even.
     public void align()
             throws IOException {
         if (scan % 2 == 1) {
@@ -139,17 +119,13 @@ public class RIFFPrimitivesInputStream extends FilterInputStream {
         }
     }
 
-    /**
-     * Get the current read position within the file (as seen
-     * by this input stream filter).
-     */
+    /// Get the current read position within the file (as seen
+    /// by this input stream filter).
     public long getScan() {
         return scan;
     }
 
-    /**
-     * Reads one byte.
-     */
+    /// Reads one byte.
     public int read()
             throws IOException {
         int data = in.read();
@@ -157,9 +133,7 @@ public class RIFFPrimitivesInputStream extends FilterInputStream {
         return data;
     }
 
-    /**
-     * Reads a sequence of bytes.
-     */
+    /// Reads a sequence of bytes.
     public int readFully(byte[] b, int offset, int length)
             throws IOException {
         int count = read(b, offset, length);
@@ -170,9 +144,7 @@ public class RIFFPrimitivesInputStream extends FilterInputStream {
         return count;
     }
 
-    /**
-     * Reads a sequence of bytes.
-     */
+    /// Reads a sequence of bytes.
     public int read(byte[] b, int offset, int length)
             throws IOException {
         int count = 0;
@@ -185,37 +157,31 @@ public class RIFFPrimitivesInputStream extends FilterInputStream {
         return count;
     }
 
-    /**
-     * Marks the input stream.
-     *
-     * @param    readlimit    The maximum limit of bytes that can be read before
-     * the mark position becomes invalid.
-     */
+    /// Marks the input stream.
+    ///
+    /// @param readlimit The maximum limit of bytes that can be read before
+    ///                                   the mark position becomes invalid.
     public void mark(int readlimit) {
         in.mark(readlimit);
         mark = scan;
     }
 
-    /**
-     * Repositions the stream at the previously marked position.
-     *
-     * @throws IOException If the stream has not been marked or if the
-     *                     mark has been invalidated.
-     */
+    /// Repositions the stream at the previously marked position.
+    ///
+    /// @throws IOException If the stream has not been marked or if the
+    ///                                         mark has been invalidated.
     public void reset()
             throws IOException {
         in.reset();
         scan = mark;
     }
 
-    /**
-     * Skips over and discards n bytes of data from this input stream. This skip
-     * method tries to skip the provided number of bytes.
-     *
-     * @param n the number of bytes to be skipped.
-     * @throws IOException if this input stream does not support seek
-     *                     or if some other I/O error occured.
-     */
+    /// Skips over and discards n bytes of data from this input stream. This skip
+    /// method tries to skip the provided number of bytes.
+    ///
+    /// @param n the number of bytes to be skipped.
+    /// @throws IOException if this input stream does not support seek
+    ///                                         or if some other I/O error occured.
     public long skip(long n)
             throws IOException {
         long skipped = in.skip(n);
@@ -223,13 +189,11 @@ public class RIFFPrimitivesInputStream extends FilterInputStream {
         return skipped;
     }
 
-    /**
-     * Skips over and discards n bytes of data from this input stream. Throws
-     *
-     * @param n the number of bytes to be skipped.
-     * @throws EOFException if this input stream reaches the end before
-     *                      skipping all the bytes.
-     */
+    /// Skips over and discards n bytes of data from this input stream. Throws
+    ///
+    /// @param n the number of bytes to be skipped.
+    /// @throws EOFException if this input stream reaches the end before
+    ///                                           skipping all the bytes.
     public void skipFully(long n)
             throws IOException {
         if (n == 0) return;

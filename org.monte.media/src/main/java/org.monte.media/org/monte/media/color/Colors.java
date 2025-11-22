@@ -7,34 +7,27 @@ package org.monte.media.color;
 import java.awt.Transparency;
 import java.awt.image.IndexColorModel;
 
-/**
- * {@code Colors}.
- *
- * @author Werner Randelshofer
- */
+/// `Colors`.
+///
+/// @author Werner Randelshofer
 public class Colors {
 
-    /**
-     * Prevent instance creation.
-     */
+    /// Prevent instance creation.
     private Colors() {
     }
 
 
-    /**
-     * The macintosh palette is arranged as follows: there are 256 colours to
-     * allocate, an even distribution of colors through the color cube might be
-     * desirable but 256 is not the cube of an integer. 6x6x6 is 216 and so the
-     * first 216 colors are an equal 6x6x6 sampling of the color cube.
-     * This leaves 40 colours to allocate, this has been done by choosing a ramp of
-     * 10 shades each for red, green, blue and grey.
-     *
-     * <p>
-     * References:<br>
-     * <a href="http://paulbourke.net/texture_colour/colourramp/">http://paulbourke.net/texture_colour/colourramp/</a>
-     *
-     * @return The Macintosh color palette.
-     */
+    /// The macintosh palette is arranged as follows: there are 256 colours to
+    /// allocate, an even distribution of colors through the color cube might be
+    /// desirable but 256 is not the cube of an integer. 6x6x6 is 216 and so the
+    /// first 216 colors are an equal 6x6x6 sampling of the color cube.
+    /// This leaves 40 colours to allocate, this has been done by choosing a ramp of
+    /// 10 shades each for red, green, blue and grey.
+    ///
+    /// References:
+    /// [http://paulbourke.net/texture_colour/colourramp/](http://paulbourke.net/texture_colour/colourramp/)
+    ///
+    /// @return The Macintosh color palette.
     public static IndexColorModel createMacColors() {
         byte[] r = new byte[256];
         byte[] g = new byte[256];
@@ -95,13 +88,11 @@ public class Colors {
         return new IndexColorModel(8, 256, r, g, b);
     }
 
-    /**
-     * Gray colors from dark to bright
-     *
-     * @param pixelSize should be 2, 4, or 8 (or at least enough to fit the number of colors)
-     * @param numColors number of bits 2=4, 4=16, or 8=256
-     * @return IndexColorModel
-     */
+    /// Gray colors from dark to bright
+    ///
+    /// @param pixelSize should be 2, 4, or 8 (or at least enough to fit the number of colors)
+    /// @param numColors number of bits 2=4, 4=16, or 8=256
+    /// @return IndexColorModel
     public static IndexColorModel createGrayColorsDarkToBright(int pixelSize, int numColors) {
         byte[] r = new byte[numColors];
 
@@ -113,13 +104,11 @@ public class Colors {
         return new IndexColorModel(pixelSize, numColors, r, r, r, Transparency.OPAQUE);
     }
 
-    /**
-     * Gray colors from bright to dark
-     *
-     * @param pixelSize should be 2, 4, or 8 (or at least enough to fit the number of colors)
-     * @param numColors number of bits 2=4, 4=16, or 8=256
-     * @return IndexColorModel
-     */
+    /// Gray colors from bright to dark
+    ///
+    /// @param pixelSize should be 2, 4, or 8 (or at least enough to fit the number of colors)
+    /// @param numColors number of bits 2=4, 4=16, or 8=256
+    /// @return IndexColorModel
     public static IndexColorModel createGrayColorsBrightToDark(int pixelSize, int numColors) {
         byte[] r = new byte[numColors];
 

@@ -12,9 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.util.Duration;
 
-/**
- * Interface for {@link javafx.scene.media.Media}.
- */
+/// Interface for [javafx.scene.media.Media].
 public interface MediaInterface {
     ReadOnlyObjectProperty<Duration> durationProperty();
 

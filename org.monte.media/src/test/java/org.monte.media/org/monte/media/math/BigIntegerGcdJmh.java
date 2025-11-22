@@ -25,15 +25,13 @@ import java.math.BigInteger;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-/**
- * <pre>
- * Benchmark                    Mode  Cnt     Score     Error  Units
- * BigIntegerGcdJmh.gcdCheck    avgt    4  1559.873 ±  95.787  ns/op
- * BigIntegerGcdJmh.gcdHermann  avgt    4   325.661 ± 144.705  ns/op
- * BigIntegerGcdJmh.gcdStein1   avgt    4   579.999 ±  87.601  ns/op
- * BigIntegerGcdJmh.gcdStein2   avgt    4   501.797 ±  10.737  ns/op
- * </pre>
- */
+/// <pre>
+/// Benchmark                    Mode  Cnt     Score     Error  Units
+/// BigIntegerGcdJmh.gcdCheck    avgt    4  1559.873 ±  95.787  ns/op
+/// BigIntegerGcdJmh.gcdHermann  avgt    4   325.661 ± 144.705  ns/op
+/// BigIntegerGcdJmh.gcdStein1   avgt    4   579.999 ±  87.601  ns/op
+/// BigIntegerGcdJmh.gcdStein2   avgt    4   501.797 ±  10.737  ns/op
+/// </pre>
 @Measurement(iterations = 4)
 @Warmup(iterations = 2)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
@@ -101,14 +99,12 @@ public class BigIntegerGcdJmh {
         return gcdHermann(a[index], b[index]);
     }
 
-    /**
-     * References:
-     * <dl>
-     *     <dt>Herrmann, D. (1992). Algorithmen Arbeitsbuch</dt>
-     *     <dd>Bonn, München Paris: Addison Wesley.
-     *         ggt6, Page 63</dd>
-     * </dl>
-     */
+    /// References:
+    /// <dl>
+    ///     <dt>Herrmann, D. (1992). Algorithmen Arbeitsbuch</dt>
+    ///     <dd>Bonn, München Paris: Addison Wesley.
+    ///         ggt6, Page 63</dd>
+    /// </dl>
     static BigInteger gcdHermann(BigInteger a, BigInteger b) {
         a = a.abs();
         b = b.abs();
@@ -120,15 +116,13 @@ public class BigIntegerGcdJmh {
         return a.add(b);
     }
 
-    /**
-     * References:
-     * <dl>
-     *     <dt>Stein</dt>
-     *     <dd>
-     *         <a href="https://www.geeksforgeeks.org/steins-algorithm-for-finding-gcd/"geeksforgeeks.org></a>
-     *             </dd>
-     * </dl>
-     */
+    /// References:
+    /// <dl>
+    ///     <dt>Stein</dt>
+    ///     <dd>
+    ///         <a href="https://www.geeksforgeeks.org/steins-algorithm-for-finding-gcd/"geeksforgeeks.org></a>
+    ///             </dd>
+    /// </dl>
     static BigInteger gcdStein1(BigInteger a, BigInteger b) {
         // GCD(0, b) == b; GCD(a, 0) == a,
         // GCD(0, 0) == 0
@@ -173,15 +167,13 @@ public class BigIntegerGcdJmh {
         return a.shiftLeft(k);
     }
 
-    /**
-     * References:
-     * <dl>
-     *     <dt>Stein</dt>
-     *     <dd>
-     *         <a href="https://www.geeksforgeeks.org/steins-algorithm-for-finding-gcd/"geeksforgeeks.org></a>
-     *             </dd>
-     * </dl>
-     */
+    /// References:
+    /// <dl>
+    ///     <dt>Stein</dt>
+    ///     <dd>
+    ///         <a href="https://www.geeksforgeeks.org/steins-algorithm-for-finding-gcd/"geeksforgeeks.org></a>
+    ///             </dd>
+    /// </dl>
     static BigInteger gcdStein2(BigInteger a, BigInteger b) {
         // GCD(0, b) == b; GCD(a, 0) == a,
         // GCD(0, 0) == 0

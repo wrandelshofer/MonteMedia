@@ -26,24 +26,18 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_TECHSM
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
-/**
- * {@code ANIMVideoTrack}.
- *
- * @author Werner Randelshofer
- */
+/// `ANIMVideoTrack`.
+///
+/// @author Werner Randelshofer
 public class ANIMVideoTrack implements Track {
     private ANIMDemultiplexer demux;
-    /**
-     * The position in the jiffy count.
-     */
+    /// The position in the jiffy count.
     private long jiffyPosition;
     private Format format = null;
     private long jiffyCount = 0;
 
-    /**
-     * Key: jiffies position of frame
-     * Value: Frame index
-     */
+    /// Key: jiffies position of frame
+    /// Value: Frame index
     private TreeMap<Long, Integer> jiffiesToFrameMap = new TreeMap<>();
     private boolean hasColorCycling;
 

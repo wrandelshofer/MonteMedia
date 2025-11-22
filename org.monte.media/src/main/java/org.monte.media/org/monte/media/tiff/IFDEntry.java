@@ -7,48 +7,33 @@ package org.monte.media.tiff;
 import java.io.IOException;
 import java.nio.ByteOrder;
 
-/**
- * Represents a directory entry in a TIFF Image File Directory (IFD).
- * <p>
- * Each 12-byte IFD entry has the following format:
- * <ul>
- * <li>Bytes 0-1 The Tag that identifies the field.</li>
- * <li>Bytes 2-3 The field Type.</li>
- * <li>Bytes 4-7 The number of values, Count of the indicated Type.</li>
- * <li>Bytes 8-11 The Value Offset, the file offset (in bytes) of the Value for the
- * field. The Value is expected to begin on a word boundary; the corresponding
- * Value Offset will thus be an even number. This file offset may point anywhere
- * in the file, even after the image data.</li>
- * </ul>
- *
- * @author Werner Randelshofer
- */
+/// Represents a directory entry in a TIFF Image File Directory (IFD).
+///
+/// Each 12-byte IFD entry has the following format:
+///
+///   - Bytes 0-1 The Tag that identifies the field.
+///   - Bytes 2-3 The field Type.
+///   - Bytes 4-7 The number of values, Count of the indicated Type.
+///   - Bytes 8-11 The Value Offset, the file offset (in bytes) of the Value for the
+///     field. The Value is expected to begin on a word boundary; the corresponding
+///     Value Offset will thus be an even number. This file offset may point anywhere
+///     in the file, even after the image data.
+///
+/// @author Werner Randelshofer
 public class IFDEntry {
 
-    /**
-     * The Tag number that identifies the field.
-     */
+    /// The Tag number that identifies the field.
     private final int tagNumber;
-    /**
-     * The field Type.
-     */
+    /// The field Type.
     private final int typeNumber;
-    /**
-     * The number of values, Count of the indicated Type.
-     */
+    /// The number of values, Count of the indicated Type.
     private final long count;
-    /**
-     * The Value Offset stores the value or the offset of the value depending
-     * on typeNumber and on count.
-     */
+    /// The Value Offset stores the value or the offset of the value depending
+    /// on typeNumber and on count.
     private final long valueOffset;
-    /**
-     * The Entry Offset stores the location of the entry in the file.
-     */
+    /// The Entry Offset stores the location of the entry in the file.
     private final long entryOffset;
-    /**
-     * The IFD Offset stores the location of the IFD in the file.
-     */
+    /// The IFD Offset stores the location of the IFD in the file.
     private long ifdOffset;
     /* The entry data. */
     private Object data;
@@ -73,19 +58,15 @@ public class IFDEntry {
         return typeNumber;
     }
 
-    /**
-     * The value offset may either contain the data or point to the data
-     * depending on the type and the count.
-     *
-     * @return The value offset.
-     */
+    /// The value offset may either contain the data or point to the data
+    /// depending on the type and the count.
+    ///
+    /// @return The value offset.
     public long getValueOffset() {
         return valueOffset;
     }
 
-    /**
-     * The offset to the data.
-     */
+    /// The offset to the data.
     public long getDataOffset() {
         return isDataInValueOffset() ? entryOffset + 8 : valueOffset + ifdOffset;
     }
@@ -163,16 +144,12 @@ public class IFDEntry {
         };
     }
 
-    /**
-     * Reads value data with ifdDataOffset=0
-     */
+    /// Reads value data with ifdDataOffset=0
     public Object readData(TIFFInputStream in) throws IOException {
         return readData(in, ifdOffset);
     }
 
-    /**
-     * Reads value data with the specified ifdDataOffset.
-     */
+    /// Reads value data with the specified ifdDataOffset.
     public Object readData(TIFFInputStream in, long ifdDataOffset) throws IOException {
         Object d = null;
         IFDDataType tt = IFDDataType.valueOf(typeNumber);
@@ -304,9 +281,7 @@ public class IFDEntry {
         return data;
     }
 
-    /**
-     * FIXME Output is used by EXIFView
-     */
+    /// FIXME Output is used by EXIFView
     @Override
     public String toString() {
         return "IFD Entry: tag:0x" + Integer.toHexString(tagNumber) + " type:0x" + Integer.toHexString(typeNumber) + " count:0x" + Long.toHexString(count) + " valueOffset:0x" + Long.toHexString(valueOffset);

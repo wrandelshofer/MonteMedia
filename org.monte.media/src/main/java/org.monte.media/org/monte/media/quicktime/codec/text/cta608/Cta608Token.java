@@ -5,15 +5,13 @@
 
 package org.monte.media.quicktime.codec.text.cta608;
 
-/**
- * CTA-608 Cta608Token.
- * <p>
- * References:
- * <dl>
- *     <dt>ANSI/CTA Standard. Line 21 Data Services. ANSI/CTA-608-E S-2019. April 2008.</dt>
- *     <dd><a href="https://shop.cta.tech/products/line-21-data-services">ANSI-CTA-608-E-S-2019-Final.pdf</a></dd>
- * </dl>
- */
+/// CTA-608 Cta608Token.
+///
+/// References:
+/// <dl>
+///     <dt>ANSI/CTA Standard. Line 21 Data Services. ANSI/CTA-608-E S-2019. April 2008.</dt>
+///     <dd>[ANSI-CTA-608-E-S-2019-Final.pdf](https://shop.cta.tech/products/line-21-data-services)</dd>
+/// </dl>
 public sealed interface Cta608Token permits CmdToken, PacToken, TextToken {
     static short fixParityBits(short opCode) {
         int low = opCode & 0x7f;

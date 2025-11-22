@@ -15,11 +15,9 @@ import java.util.GregorianCalendar;
 
 import static java.lang.Math.min;
 
-/**
- * {@code QuickTimeImageInputStream}.
- *
- * @author Werner Randelshofer
- */
+/// `QuickTimeImageInputStream`.
+///
+/// @author Werner Randelshofer
 public class QTFFImageInputStream extends FilterImageInputStream {
     protected static final long MAC_TIMESTAMP_EPOCH = new GregorianCalendar(1904, GregorianCalendar.JANUARY, 1).getTimeInMillis();
 
@@ -28,20 +26,16 @@ public class QTFFImageInputStream extends FilterImageInputStream {
         setByteOrder(ByteOrder.BIG_ENDIAN);
     }
 
-    /**
-     * Reads a 32-bit Mac timestamp (seconds since 1902).
-     *
-     * @return the date corresponding to the Mac timestamp
-     * @throws IOException if an I/O error occurs
-     */
+    /// Reads a 32-bit Mac timestamp (seconds since 1902).
+    ///
+    /// @return the date corresponding to the Mac timestamp
+    /// @throws IOException if an I/O error occurs
     public Instant readMacTimestamp() throws IOException {
         long timestamp = ((long) readInt()) & 0xffffffffL;
         return Instant.ofEpochMilli(MAC_TIMESTAMP_EPOCH + timestamp * 1000);
     }
 
-    /**
-     * Reads 32-bit fixed-point number divided as 16.16.
-     */
+    /// Reads 32-bit fixed-point number divided as 16.16.
     public double readFixed16D16() throws IOException {
         int wholePart = readUnsignedShort();
         int fractionPart = readUnsignedShort();
@@ -49,9 +43,7 @@ public class QTFFImageInputStream extends FilterImageInputStream {
         return (wholePart + fractionPart / 65536.0);
     }
 
-    /**
-     * Reads 32-bit fixed-point number divided as 2.30.
-     */
+    /// Reads 32-bit fixed-point number divided as 2.30.
     public double readFixed2D30() throws IOException {
         int fixed = readInt();
         int wholePart = fixed >>> 30;
@@ -60,9 +52,7 @@ public class QTFFImageInputStream extends FilterImageInputStream {
         return (wholePart + fractionPart / (double) 0x3fffffff);
     }
 
-    /**
-     * Reads 16-bit fixed-point number divided as 8.8.
-     */
+    /// Reads 16-bit fixed-point number divided as 8.8.
     public double readFixed8D8() throws IOException {
         int fixed = readUnsignedShort();
         int wholePart = fixed >>> 8;
@@ -87,9 +77,7 @@ public class QTFFImageInputStream extends FilterImageInputStream {
         return new String(b, 0, size, StandardCharsets.US_ASCII);
     }
 
-    /**
-     * Reads a Pascal String which is padded to a fixed size.
-     */
+    /// Reads a Pascal String which is padded to a fixed size.
     public String readPString(int fixedSize) throws IOException {
         int remaining = fixedSize;
         int size = readUnsignedByte();

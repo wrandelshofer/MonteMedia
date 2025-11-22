@@ -53,23 +53,17 @@ import static org.monte.media.av.codec.audio.AudioFormatKeys.SignedKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
 
 class PlayerEngine extends AbstractPlayer {
-    /**
-     * 60 FPS
-     */
+    /// 60 FPS
     private static final int PLAYER_RATE = 60;
-    /**
-     * 1000ms / 60 = 16ms
-     */
+    /// 1000ms / 60 = 16ms
     public static final int JIFFIE = 16;
     private final MonteMediaPlayer player;
     private final MonteMedia media;
     private SynchronizedMovieReader reader;
-    /**
-     * Method {@link #seek(Rational)} sets the seek time to a non-null value.
-     * <p>
-     * Methods {@link #doPrefetched()} and {@link #doStarted()} retrieve the value (using {@code seekTime.getAndSet(null)}).
-     * And seek to the desired time.
-     */
+    /// Method [#seek(Rational)] sets the seek time to a non-null value.
+    ///
+    /// Methods [#doPrefetched()] and [#doStarted()] retrieve the value (using `seekTime.getAndSet(null)`).
+    /// And seek to the desired time.
     private final AtomicReference<Rational> seekTime = new AtomicReference<>();
 
 

@@ -9,62 +9,54 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * Input stream for the payload of a cc_data() struct.
- * <p>
- * The cc_data() structure begins with two header bytes. After this header is a repeating
- * structure of three bytes. The first of the three bytes defines the type of data carried
- * in the next two bytes which are referred to as byte-pairs.
- * <p>
- * ISO EBNF Grammar:
- * <pre>
- *     cc_data()      = cc_data_header , { cc_payload } ;
- *     cc_data_header = uint16BE;
- *     cc_payload         = cc_valid_and_type , cc_data_1, cc_data_2 ;
- *     cc_valid_and_type  = uint8 ; (* validity and type of the two data bytes that follow it. *)
- *     cc_data_1          = uint8 ; (* the first of two data bytes *)
- *     cc_data_2          = uint8 ; (* the second of two data bytes *)
- * </pre>
- * References:
- * <dl>
- *     <dt>ANSI/CTA Standard. Digital Television (DTV) Closed Captioning. CTA-708-E S-2023. August 2013.</dt>
- *     <dd><a href="https://shop.cta.tech/collections/standards/products/digital-television-dtv-closed-captioning">
- *         ANSI CTA-708-E S-2023 + Errata Letter and Replacement Pages FINAL.pdf</a></dd>
- * </dl>
- */
+/// Input stream for the payload of a cc_data() struct.
+///
+/// The cc_data() structure begins with two header bytes. After this header is a repeating
+/// structure of three bytes. The first of the three bytes defines the type of data carried
+/// in the next two bytes which are referred to as byte-pairs.
+///
+/// ISO EBNF Grammar:
+/// <pre>
+///     cc_data()      = cc_data_header , { cc_payload } ;
+///     cc_data_header = uint16BE;
+///     cc_payload         = cc_valid_and_type , cc_data_1, cc_data_2 ;
+///     cc_valid_and_type  = uint8 ; (* validity and type of the two data bytes that follow it. *)
+///     cc_data_1          = uint8 ; (* the first of two data bytes *)
+///     cc_data_2          = uint8 ; (* the second of two data bytes *)
+/// </pre>
+/// References:
+/// <dl>
+///     <dt>ANSI/CTA Standard. Digital Television (DTV) Closed Captioning. CTA-708-E S-2023. August 2013.</dt>
+///     <dd>[
+///         ANSI CTA-708-E S-2023 + Errata Letter and Replacement Pages FINAL.pdf](https://shop.cta.tech/collections/standards/products/digital-television-dtv-closed-captioning)</dd>
+/// </dl>
 public class CCDataInputStream extends InputStream {
     private final InputStream in;
-    /**
-     * Number of remaining triplets times 2.
-     * <p>
-     * If remaining is zero, we must read the
-     * header of the cc_data struct.
-     * <p>
-     * If remaining is even, we must read the Flag
-     * of the triplet, and then the first
-     * Data element of the triplet.
-     * <p>
-     * If remaining is odd, we must read the second
-     * Data element of the triplet.
-     */
+    /// Number of remaining triplets times 2.
+    ///
+    /// If remaining is zero, we must read the
+    /// header of the cc_data struct.
+    ///
+    /// If remaining is even, we must read the Flag
+    /// of the triplet, and then the first
+    /// Data element of the triplet.
+    ///
+    /// If remaining is odd, we must read the second
+    /// Data element of the triplet.
     long remaining;
 
-    /**
-     * Constructs a new instance, which is positioned before a cc_data_header.
-     *
-     * @param in the underlying input stream
-     */
+    /// Constructs a new instance, which is positioned before a cc_data_header.
+    ///
+    /// @param in the underlying input stream
     protected CCDataInputStream(InputStream in) {
         this.in = in;
     }
 
-    /**
-     * Constructs a new instance, which is positioned before a cc_data_header
-     * if remaining==0, or is positioned before a cc_payload otherwise.
-     *
-     * @param in        the underlying input stream
-     * @param remaining number of remaining payload byte triplets to parse
-     */
+    /// Constructs a new instance, which is positioned before a cc_data_header
+    /// if remaining==0, or is positioned before a cc_payload otherwise.
+    ///
+    /// @param in        the underlying input stream
+    /// @param remaining number of remaining payload byte triplets to parse
     protected CCDataInputStream(InputStream in, int remaining) {
         this.in = in;
         this.remaining = Math.max(0, remaining) * 2L;

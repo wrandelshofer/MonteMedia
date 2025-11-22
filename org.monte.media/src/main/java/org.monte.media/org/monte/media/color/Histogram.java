@@ -6,11 +6,9 @@ package org.monte.media.color;
 
 import java.awt.image.WritableRaster;
 
-/**
- * Histogram with 256 bins for each color band.
- *
- * @author Werner Randelshofer
- */
+/// Histogram with 256 bins for each color band.
+///
+/// @author Werner Randelshofer
 public class Histogram {
 
     private final int[][] bins = new int[3][256];

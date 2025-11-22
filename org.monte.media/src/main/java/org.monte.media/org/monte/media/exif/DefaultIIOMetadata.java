@@ -11,11 +11,9 @@ import javax.imageio.metadata.IIOInvalidTreeException;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.metadata.IIOMetadataNode;
 
-/**
- * DefaultIIOMetadata.
- *
- * @author Werner Randelshofer
- */
+/// DefaultIIOMetadata.
+///
+/// @author Werner Randelshofer
 public class DefaultIIOMetadata extends IIOMetadata {
     private final IIOMetadataNode root;
     private final String formatName;

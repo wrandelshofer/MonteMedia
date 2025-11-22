@@ -24,12 +24,10 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.zip.InflaterInputStream;
 
-/**
- * {@code QuickTimeDeserializer}. This is an internal class of
- * QuickTimeInputStream.
- *
- * @author Werner Randelshofer
- */
+/// `QuickTimeDeserializer`. This is an internal class of
+/// QuickTimeInputStream.
+///
+/// @author Werner Randelshofer
 public class QuickTimeDeserializer {
 
     static final Set<String> compositeAtoms = Set.of(
@@ -89,10 +87,8 @@ public class QuickTimeDeserializer {
         return m;
     }
 
-    /**
-     * Parses a QuickTime file. This method invokes other parse methods for
-     * individual data structures in the file.
-     */
+    /// Parses a QuickTime file. This method invokes other parse methods for
+    /// individual data structures in the file.
     protected void parse(QTFFImageInputStream in, QuickTimeMeta m) throws IOException {
         parseRecursively(in, in.length(), m);
         for (QuickTimeMeta.Track track : m.tracks) {
@@ -100,19 +96,16 @@ public class QuickTimeDeserializer {
         }
     }
 
-    /**
-     * Parses a QuickTime file. This method invokes other parse methods for
-     * individual data structures in the file.
-     *
-     * <pre>
-     * struct atom {
-     *    uint32 size;
-     *    type   type;  // exists only if size &gt;= 8
-     *    byte[size-8] body; // exists only if size &gt; 8
-     *
-     * }
-     * </pre>
-     */
+    /// Parses a QuickTime file. This method invokes other parse methods for
+    /// individual data structures in the file.
+    /// <pre>
+    /// struct atom {
+    ///    uint32 size;
+    ///    type   type;  // exists only if size &gt;= 8
+    ///    byte[size-8] body; // exists only if size &gt; 8
+    ///
+    /// }
+    /// </pre>
     protected void parseRecursively(QTFFImageInputStream in, long remainingSize, QuickTimeMeta m) throws IOException {
         while (remainingSize > 0) {
             Atom atom = new Atom();
@@ -253,18 +246,16 @@ public class QuickTimeDeserializer {
         }
     }
 
-    /**
-     * The file type ("ftyp"-atom).
-     * <pre>
-     * typedef struct {
-     * magic brand;
-     * bcd4 versionYear;
-     * bcd2 versionMonth;
-     * bcd2 versionMinor;
-     * magic[] compatibleBrands;
-     * } ftypAtom;
-     * </pre>
-     */
+    /// The file type ("ftyp"-atom).
+    /// <pre>
+    /// typedef struct {
+    /// magic brand;
+    /// bcd4 versionYear;
+    /// bcd2 versionMonth;
+    /// bcd2 versionMinor;
+    /// magic[] compatibleBrands;
+    /// } ftypAtom;
+    /// </pre>
     protected void parseFileType(QTFFImageInputStream in, long remainingSize, QuickTimeMeta m) throws IOException {
         m.brand = in.readType();
         m.versionYear = in.readUnsignedBCD4();
@@ -278,32 +269,28 @@ public class QuickTimeDeserializer {
         }
     }
 
-    /**
-     * <p>
-     * The data compression atom ("dcom"-atom) specifies how the 'cmvd' atom
-     * is compressed.
-     * <pre>
-     * typedef struct {
-     *      type compressionMethod;
-     * } dataCompressionAtom;
-     * </pre>
-     */
+    ///
+    /// The data compression atom ("dcom"-atom) specifies how the 'cmvd' atom
+    /// is compressed.
+    /// <pre>
+    /// typedef struct {
+    ///      type compressionMethod;
+    /// } dataCompressionAtom;
+    /// </pre>
     protected void parseDataCompressionAtom(QTFFImageInputStream in, long remainingSize, QuickTimeMeta m) throws IOException {
         if (remainingSize != 4) return;
         m.compressionMethod = in.readType();
     }
 
 
-    /**
-     * The compressed movie data atom ("cmvd"-atom) contains a compressed
-     * 'moov' atom.
-     * <pre>
-     * typedef struct {
-     *      uint32 sizeOfDecompressedData;
-     *      byte[] compressedData;
-     * } cmvdAtom.
-     * </pre>
-     */
+    /// The compressed movie data atom ("cmvd"-atom) contains a compressed
+    /// 'moov' atom.
+    /// <pre>
+    /// typedef struct {
+    ///      uint32 sizeOfDecompressedData;
+    ///      byte[] compressedData;
+    /// } cmvdAtom.
+    /// </pre>
     protected void parseCompressedMovieAtom(QTFFImageInputStream in, long remainingSize, QuickTimeMeta m) throws IOException {
         int sizeOfDecompressedData = remainingSize > 4 ? in.readInt() : -1;
         if (sizeOfDecompressedData > 0 && "zlib".equals(m.compressionMethod)) {
@@ -325,52 +312,48 @@ public class QuickTimeDeserializer {
         }
     }
 
-    /**
-     * The movie data ("mdat"-atom).
-     * <pre>
-     * typedef struct {
-     *      byte[] data;
-     * } movieDataAtom;
-     * </pre>
-     */
+    /// The movie data ("mdat"-atom).
+    /// <pre>
+    /// typedef struct {
+    ///      byte[] data;
+    /// } movieDataAtom;
+    /// </pre>
     protected void parseMovieData(QTFFImageInputStream in, long remainingSize, QuickTimeMeta m) throws IOException {
         m.movieDataStreamPosition = in.getStreamPosition();
         m.movieDataSize = remainingSize;
     }
 
 
-    /**
-     * The movie header ("mvhd"-atom).
-     * <pre>
-     * typedef struct {
-     *      byte version;
-     *      byte[3] flags;
-     *      mactimestamp creationTime;
-     *      mactimestamp modificationTime;
-     *      uint timeScale;
-     *      uint duration;
-     *      fixed16d16 preferredRate;
-     *      fixed8d8 preferredVolume;
-     *      byte[10] reserved;
-     *      fixed16d16 matrixA;
-     *      fixed16d16 matrixB;
-     *      fixed2d30 matrixU;
-     *      fixed16d16 matrixC;
-     *      fixed16d16 matrixD;
-     *      fixed2d30 matrixV;
-     *      fixed16d16 matrixX;
-     *      fixed16d16 matrixY;
-     *      fixed2d30 matrixW;
-     *      uint previewTime;
-     *      uint previewDuration;
-     *      uint posterTime;
-     *      uint selectionTime;
-     *      uint selectionDuration;
-     *      uint currentTime;
-     *      uint nextTrackId;
-     * } movieHeaderAtom;
-     * </pre>
-     */
+    /// The movie header ("mvhd"-atom).
+    /// <pre>
+    /// typedef struct {
+    ///      byte version;
+    ///      byte[3] flags;
+    ///      mactimestamp creationTime;
+    ///      mactimestamp modificationTime;
+    ///      uint timeScale;
+    ///      uint duration;
+    ///      fixed16d16 preferredRate;
+    ///      fixed8d8 preferredVolume;
+    ///      byte[10] reserved;
+    ///      fixed16d16 matrixA;
+    ///      fixed16d16 matrixB;
+    ///      fixed2d30 matrixU;
+    ///      fixed16d16 matrixC;
+    ///      fixed16d16 matrixD;
+    ///      fixed2d30 matrixV;
+    ///      fixed16d16 matrixX;
+    ///      fixed16d16 matrixY;
+    ///      fixed2d30 matrixW;
+    ///      uint previewTime;
+    ///      uint previewDuration;
+    ///      uint posterTime;
+    ///      uint selectionTime;
+    ///      uint selectionDuration;
+    ///      uint currentTime;
+    ///      uint nextTrackId;
+    /// } movieHeaderAtom;
+    /// </pre>
     protected void parseMovieHeader(QTFFImageInputStream in, long remainingSize, QuickTimeMeta m) throws IOException {
         if (remainingSize < 100) return;
         int version = in.readUnsignedByte();
@@ -401,46 +384,44 @@ public class QuickTimeDeserializer {
         m.nextTrackId = in.readUnsignedInt();
     }
 
-    /**
-     * <p>
-     * The track header ("tkhd"-atom).
-     * <pre>
-     * Enumeration for track header flags
-     * set {
-     *    TrackEnable = 0x1, // enabled track
-     *    TrackInMovie = 0x2, // track in playback
-     *    TrackInPreview = 0x4, // track in preview
-     *    TrackInPoster = 0x8 // track in poster
-     * } TrackHeaderFlags;
-     *
-     * typedef struct {
-     *    byte version;
-     *    byte flag0;
-     *    byte flag1;
-     *   byte set TrackHeaderFlags flag2;
-     *    mactimestamp creationTime;
-     *    mactimestamp modificationTime;
-     *    int trackId;
-     *    byte[4] reserved;
-     *    int duration;
-     *    byte[8] reserved;
-     *    short layer;
-     *    short alternateGroup;
-     *    fixed8d8 volume;
-     *    byte[2] reserved;
-     *    fixed16d16 matrixA;
-     *    fixed16d16 matrixB;
-     *    fixed2d30 matrixU;
-     *    fixed16d16 matrixC;
-     *    fixed16d16 matrixD;
-     *    fixed2d30 matrixV;
-     *    fixed16d16 matrixY;
-     *    fixed2d30 matrixW;
-     *    fixed16d16 trackWidth;
-     *    fixed16d16 trackHeight;
-     * trackHeaderAtom;
-     * </pre>
-     */
+    ///
+    /// The track header ("tkhd"-atom).
+    /// <pre>
+    /// Enumeration for track header flags
+    /// set {
+    ///    TrackEnable = 0x1, // enabled track
+    ///    TrackInMovie = 0x2, // track in playback
+    ///    TrackInPreview = 0x4, // track in preview
+    ///    TrackInPoster = 0x8 // track in poster
+    /// } TrackHeaderFlags;
+    ///
+    /// typedef struct {
+    ///    byte version;
+    ///    byte flag0;
+    ///    byte flag1;
+    ///   byte set TrackHeaderFlags flag2;
+    ///    mactimestamp creationTime;
+    ///    mactimestamp modificationTime;
+    ///    int trackId;
+    ///    byte[4] reserved;
+    ///    int duration;
+    ///    byte[8] reserved;
+    ///    short layer;
+    ///    short alternateGroup;
+    ///    fixed8d8 volume;
+    ///    byte[2] reserved;
+    ///    fixed16d16 matrixA;
+    ///    fixed16d16 matrixB;
+    ///    fixed2d30 matrixU;
+    ///    fixed16d16 matrixC;
+    ///    fixed16d16 matrixD;
+    ///    fixed2d30 matrixV;
+    ///    fixed16d16 matrixY;
+    ///    fixed2d30 matrixW;
+    ///    fixed16d16 trackWidth;
+    ///    fixed16d16 trackHeight;
+    /// trackHeaderAtom;
+    /// </pre>
     protected void parseTrackHeader(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Track t) throws IOException {
         int version = in.readUnsignedByte();
         if (version != 0) return;
@@ -471,24 +452,21 @@ public class QuickTimeDeserializer {
         remainingSize -= 84;
     }
 
-    /**
-     * The edit list ("elst"-Atom).
-     *
-     * <pre>
-     * typedef struct {
-     *    byte version;
-     *    byte[3] flags;
-     *    uint numberOfEntries;
-     *    editListTable editListTable[numberOfEntries];
-     * } editListAtom;
-     *
-     * typedef struct {
-     *    int trackDuration;
-     *    int mediaTime;
-     *    fixed16d16 mediaRate;
-     * } editListTable;
-     * </pre>
-     */
+    /// The edit list ("elst"-Atom).
+    /// <pre>
+    /// typedef struct {
+    ///    byte version;
+    ///    byte[3] flags;
+    ///    uint numberOfEntries;
+    ///    editListTable editListTable[numberOfEntries];
+    /// } editListAtom;
+    ///
+    /// typedef struct {
+    ///    int trackDuration;
+    ///    int mediaTime;
+    ///    fixed16d16 mediaRate;
+    /// } editListTable;
+    /// </pre>
     protected void parseEditList(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Track t) throws IOException {
         int version = in.readUnsignedByte();
         in.skipBytes(3);
@@ -505,21 +483,19 @@ public class QuickTimeDeserializer {
         remainingSize -= 8 + numberOfEntries * 12L;
     }
 
-    /**
-     * The media header (mdhd-Atom).
-     * <pre>
-     * typedef struct {
-     * byte version;
-     * byte[3] flags;
-     * mactimestamp creationTime;
-     * mactimestamp modificationTime;
-     * int timeScale;
-     * int duration;
-     * short language;
-     * short quality;
-     * } mediaHeaderAtom;
-     * </pre>
-     */
+    /// The media header (mdhd-Atom).
+    /// <pre>
+    /// typedef struct {
+    /// byte version;
+    /// byte[3] flags;
+    /// mactimestamp creationTime;
+    /// mactimestamp modificationTime;
+    /// int timeScale;
+    /// int duration;
+    /// short language;
+    /// short quality;
+    /// } mediaHeaderAtom;
+    /// </pre>
     protected void parseMediaHeader(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
         in.skipBytes(3);
@@ -570,22 +546,20 @@ public class QuickTimeDeserializer {
         m.mediaQuality = in.readShort();
     }
 
-    /**
-     * Handler Reference Atom ("hdlr"-Atom).
-     * <pre>
-     * typedef struct {
-     * byte version;
-     * byte[3] flags;
-     * magic componentType;
-     * magic componentSubtype;
-     * magic componentManufacturer;
-     * int componentFlags;
-     * int componentFlagsMask;
-     * pstring componentName;
-     * ubyte[] extraData;
-     * } handlerReferenceAtom;
-     * </pre>
-     */
+    /// Handler Reference Atom ("hdlr"-Atom).
+    /// <pre>
+    /// typedef struct {
+    /// byte version;
+    /// byte[3] flags;
+    /// magic componentType;
+    /// magic componentSubtype;
+    /// magic componentManufacturer;
+    /// int componentFlags;
+    /// int componentFlagsMask;
+    /// pstring componentName;
+    /// ubyte[] extraData;
+    /// } handlerReferenceAtom;
+    /// </pre>
     protected void parseHandlerReference(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Track t, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
         in.skipBytes(3);
@@ -612,27 +586,25 @@ public class QuickTimeDeserializer {
         //ignore extraData
     }
 
-    /**
-     * The sound media header ("smhd"-Atom).
-     * <pre>
-     * typedef struct {
-     *    ubyte version;  // A 1-byte specification of the version of this sound media information header atom.
-     *    byte[3] flags; // A 3-byte space for sound media information flags. Set this field to 0.
-     *    fixed8d8 balance;  // A 16-bit integer that specifies the sound balance of this
-     *                    // sound media. Sound balance is the setting that controls
-     *                    // the mix of sound between the two speakers of a computer.
-     *                    // This field is normally set to 0.
-     *                    // Balance values are represented as 16-bit, fixed-point
-     *                    // numbers that range from -1.0 to +1.0. The high-order 8
-     *                    // bits contain the integer portion of the value; the
-     *                    // low-order 8 bits contain the fractional part. Negative
-     *                    // values weight the balance toward the left speaker;
-     *                    // positive values emphasize the right channel. Setting the
-     *                    // balance to 0 corresponds to a neutral setting.
-     *    short reserved; // Reserved for use by Apple. Set this field to 0.
-     * } soundMediaInformationHeaderAtom;
-     * </pre>
-     */
+    /// The sound media header ("smhd"-Atom).
+    /// <pre>
+    /// typedef struct {
+    ///    ubyte version;  // A 1-byte specification of the version of this sound media information header atom.
+    ///    byte[3] flags; // A 3-byte space for sound media information flags. Set this field to 0.
+    ///    fixed8d8 balance;  // A 16-bit integer that specifies the sound balance of this
+    ///                    // sound media. Sound balance is the setting that controls
+    ///                    // the mix of sound between the two speakers of a computer.
+    ///                    // This field is normally set to 0.
+    ///                    // Balance values are represented as 16-bit, fixed-point
+    ///                    // numbers that range from -1.0 to +1.0. The high-order 8
+    ///                    // bits contain the integer portion of the value; the
+    ///                    // low-order 8 bits contain the fractional part. Negative
+    ///                    // values weight the balance toward the left speaker;
+    ///                    // positive values emphasize the right channel. Setting the
+    ///                    // balance to 0 corresponds to a neutral setting.
+    ///    short reserved; // Reserved for use by Apple. Set this field to 0.
+    /// } soundMediaInformationHeaderAtom;
+    /// </pre>
     protected void parseSoundMediaHeader(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
         in.skipBytes(3);
@@ -640,35 +612,33 @@ public class QuickTimeDeserializer {
         in.skipBytes(2);
     }
 
-    /**
-     * The video media header ("vmhd"-Atom).
-     * <pre>
-     * set {
-     * videoFlagNoLeanAhead=1 // I am not shure if this is the correct value for this flag
-     * } vmhdFlags;
-     *
-     * enum {
-     * Copy = 0x0,
-     * DitherCopy = 0x40,
-     * Blend = 0x20, // uses opcolor
-     * Transparent = 0x24, // uses opcolor
-     * StraightAlpha = 0x100,
-     * PremulWhiteAlpha = 0x101,
-     * PremulBlackAlpha = 0x102,
-     * StraightAlphaBlend = 0x104, // uses opclor
-     * Composition = 0x103
-     * } GraphicsModes;
-     *
-     * typedef struct {
-     * byte version;
-     * byte flag1;
-     * byte flag2;
-     * byte set vmhdFlags flag3;
-     * short enum GraphicsModes graphicsMode;
-     * ushort[3] opcolor;
-     * } videoMediaInformationHeaderAtom;
-     * </pre>
-     */
+    /// The video media header ("vmhd"-Atom).
+    /// <pre>
+    /// set {
+    /// videoFlagNoLeanAhead=1 // I am not shure if this is the correct value for this flag
+    /// } vmhdFlags;
+    ///
+    /// enum {
+    /// Copy = 0x0,
+    /// DitherCopy = 0x40,
+    /// Blend = 0x20, // uses opcolor
+    /// Transparent = 0x24, // uses opcolor
+    /// StraightAlpha = 0x100,
+    /// PremulWhiteAlpha = 0x101,
+    /// PremulBlackAlpha = 0x102,
+    /// StraightAlphaBlend = 0x104, // uses opclor
+    /// Composition = 0x103
+    /// } GraphicsModes;
+    ///
+    /// typedef struct {
+    /// byte version;
+    /// byte flag1;
+    /// byte flag2;
+    /// byte set vmhdFlags flag3;
+    /// short enum GraphicsModes graphicsMode;
+    /// ushort[3] opcolor;
+    /// } videoMediaInformationHeaderAtom;
+    /// </pre>
     protected void parseVideoMediaHeader(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
         if (version != 0 || remainingSize != 12) return;
@@ -683,32 +653,30 @@ public class QuickTimeDeserializer {
         }
     }
 
-    /**
-     * The data reference ("dref"-Atom).
-     * <pre>
-     * set {
-     *   dataRefSelfReference=1 // I am not shure if this is the correct value for this flag
-     * } drefEntryFlags;
-     *
-     * typedef struct {
-     *  uint size;
-     *  magic type;
-     *  byte version;
-     *  ubyte flag1;
-     *  ubyte flag2;
-     *  ubyte set drefEntryFlags flag3;
-     *  ubyte[size - 12] data;
-     * } dataReferenceEntry;
-     *
-     * typedef struct {
-     *  ubyte version;
-     *  ubyte[3] flags;
-     *  int numberOfEntries;
-     *  dataReferenceEntry dataReference[numberOfEntries];
-     * } dataReferenceAtom;
-     *
-     * </pre>
-     */
+    /// The data reference ("dref"-Atom).
+    /// <pre>
+    /// set {
+    ///   dataRefSelfReference=1 // I am not shure if this is the correct value for this flag
+    /// } drefEntryFlags;
+    ///
+    /// typedef struct {
+    ///  uint size;
+    ///  magic type;
+    ///  byte version;
+    ///  ubyte flag1;
+    ///  ubyte flag2;
+    ///  ubyte set drefEntryFlags flag3;
+    ///  ubyte[size-12] data;
+    /// } dataReferenceEntry;
+    ///
+    /// typedef struct {
+    ///  ubyte version;
+    ///  ubyte[3] flags;
+    ///  int numberOfEntries;
+    ///  dataReferenceEntry dataReference[numberOfEntries];
+    /// } dataReferenceAtom;
+    ///
+    /// </pre>
     protected void parseDataReference(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
         in.skipBytes(3);
@@ -726,109 +694,106 @@ public class QuickTimeDeserializer {
         }
     }
 
-    /**
-     * The sound sample description ("stsd"-Atom in a sound track).
-     *
-     * <pre>
-     * enum {
-     * version0 = 0, // compressionId must be 0 for version 0 sound sample description.
-     * uncompressedAudio = -1,
-     * compressedAudio = -2,
-     * } soundSampleCompressionId;
-     *
-     *
-     * typedef struct {
-     *  ushort version;     // A 16-bit integer that holds the sample description
-     *                      // version (currently 0 or 1).
-     *  ushort revisionLevel;// A 16-bit integer that must be set to 0.
-     *  uint vendor;        // A 32-bit integer that must be set to 0.
-     *  ushort numberOfChannels;
-     *                      // A 16-bit integer that indicates the number of sound
-     *                      // channels used by the sound sample. Set to 1 for
-     *                      // monaural sounds, 2 for stereo sounds.
-     *                      // Higher numbers of channels are not supported.
-     * ushort sampleSize;  // A 16-bit integer that specifies the number of bits in
-     * // each uncompressed sound sample. Allowable values are
-     * // 8 or 16. Formats using more than 16 bits per sample
-     * // set this field to 16 and use sound description
-     * // version 1.
-     * short enum soundSampleCompressionId compressionId;// A 16-bit integer that must be set to 0 for version 0
-     * // sound descriptions. This may be set to –2 for some
-     * // version 1 sound descriptions; see “Redefined Sample
-     * // Tables” (page 115).
-     * ushort packetSize;  // A 16-bit integer that must be set to 0.
-     *  fixed16d16 sampleRate;// A 32-bit unsigned fixed-point number (16.16) that
-     *  // indicates the rate at which the sound samples were
-     *  // obtained. The integer portion of this number should
-     *  // match the media’s time scale. Many older version 0
-     *  // files have values of 22254.5454 or 11127.2727, but
-     *  // most files have integer values, such as 44100. Sample
-     *  // rates greater than 2^16 are not supported.
-     *  soundSampleDescriptionV1[version] v1; // Additional fields for version 1
-     *  soundSampleDescriptionExtension[] extendedData;
-     * } soundSampleDescription;
-     *
-     * typedef struct {
-     *  int size; // A 32-bit integer indicating the number of bytes in the sample description.
-     *  magic type;         // A 32-bit integer indicating the format of the stored data.
-     *  // This depends on the media type, but is usually either the
-     *  // compression format or the media type.
-     *  byte[6] reserved; // six bytes that must be zero
-     *  short dataReferenceIndex; // A 16-bit integer that contains the index of the data reference to use to retrieve data associated with samples that use this sample description. Data references are stored in data reference atoms.
-     *  soundSampleDescription data;
-     * } soundSampleDescriptionEntry;
-     *
-     * typedef struct {
-     * uint samplesPerPacket;
-     * // This field is only present if version == 1.
-     * // A 32-bit integer.
-     * // The number of uncompressed frames generated by a
-     * // compressed frame (an uncompressed frame is one sample
-     * // from each channel). This is also the frame duration,
-     * // expressed in the media’s timescale, where the
-     * // timescale is equal to the sample rate. For
-     * // uncompressed formats, this field is always 1.
-     * uint bytesPerPacket;
-     * // This field is only present if version == 1.
-     * // A 32-bit integer.
-     * // For uncompressed audio, the number of bytes in a
-     * // sample for a single channel. This replaces the older
-     * // sampleSize field, which is set to 16.
-     * // This value is calculated by dividing the frame size
-     * // by the number of channels. The same calculation is
-     * // performed to calculate the value of this field for
-     * // compressed audio, but the result of the calculation
-     * // is not generally meaningful for compressed audio.
-     * uint bytesPerFrame;
-     * // This field is only present if version == 1.
-     * // A 32-bit integer.
-     * // The number of bytes in a frame: for uncompressed
-     * // audio, an uncompressed frame; for compressed audio, a
-     * // compressed frame. This can be calculated by
-     * // multiplying the bytes per packet field by the number
-     * // of channels.
-     * uint bytesPerSample;
-     * // This field is only present if version == 1.
-     * // A 32-bit integer.
-     * // The size of an uncompressed sample in bytes. This is
-     * // set to 1 for 8-bit audio, 2 for all other cases, even
-     * // if the sample size is greater than 2 bytes.
-     * } soundSampleDescriptionV1;
-     *
-     * typedef struct {
-     *  uint dataSize;
-     *  magic type;
-     *  ubyte[dataSize - 8] data;
-     * } soundSampleDescriptionExtension;
-     *
-     * typedef struct {
-     * byte version; // A 1-byte specification of the version of this sample description atom.
-     * byte[3] flags; // A 3-byte space for sample description flags. Set this field to 0.
-     * int numberOfEntries; // A 32-bit integer containing the number of sample descriptions that follow.
-     * soundSampleDescriptionEntry sampleDescriptionTable[numberOfEntries];
-     * } soundSampleDescriptionAtom;
-     * </pre>
-     */
+    /// The sound sample description ("stsd"-Atom in a sound track).
+    /// <pre>
+    /// enum {
+    /// version0 = 0, // compressionId must be 0 for version 0 sound sample description.
+    /// uncompressedAudio = -1,
+    /// compressedAudio = -2,
+    /// } soundSampleCompressionId;
+    ///
+    ///
+    /// typedef struct {
+    ///  ushort version;     // A 16-bit integer that holds the sample description
+    ///                      // version (currently 0 or 1).
+    ///  ushort revisionLevel;// A 16-bit integer that must be set to 0.
+    ///  uint vendor;        // A 32-bit integer that must be set to 0.
+    ///  ushort numberOfChannels;
+    ///                      // A 16-bit integer that indicates the number of sound
+    ///                      // channels used by the sound sample. Set to 1 for
+    ///                      // monaural sounds, 2 for stereo sounds.
+    ///                      // Higher numbers of channels are not supported.
+    /// ushort sampleSize;  // A 16-bit integer that specifies the number of bits in
+    /// // each uncompressed sound sample. Allowable values are
+    /// // 8 or 16. Formats using more than 16 bits per sample
+    /// // set this field to 16 and use sound description
+    /// // version 1.
+    /// short enum soundSampleCompressionId compressionId;// A 16-bit integer that must be set to 0 for version 0
+    /// // sound descriptions. This may be set to –2 for some
+    /// // version 1 sound descriptions; see “Redefined Sample
+    /// // Tables” (page 115).
+    /// ushort packetSize;  // A 16-bit integer that must be set to 0.
+    ///  fixed16d16 sampleRate;// A 32-bit unsigned fixed-point number (16.16) that
+    ///  // indicates the rate at which the sound samples were
+    ///  // obtained. The integer portion of this number should
+    ///  // match the media’s time scale. Many older version 0
+    ///  // files have values of 22254.5454 or 11127.2727, but
+    ///  // most files have integer values, such as 44100. Sample
+    ///  // rates greater than 2^16 are not supported.
+    ///  soundSampleDescriptionV1[version] v1; // Additional fields for version 1
+    ///  soundSampleDescriptionExtension[] extendedData;
+    /// } soundSampleDescription;
+    ///
+    /// typedef struct {
+    ///  int size; // A 32-bit integer indicating the number of bytes in the sample description.
+    ///  magic type;         // A 32-bit integer indicating the format of the stored data.
+    ///  // This depends on the media type, but is usually either the
+    ///  // compression format or the media type.
+    ///  byte[6] reserved; // six bytes that must be zero
+    ///  short dataReferenceIndex; // A 16-bit integer that contains the index of the data reference to use to retrieve data associated with samples that use this sample description. Data references are stored in data reference atoms.
+    ///  soundSampleDescription data;
+    /// } soundSampleDescriptionEntry;
+    ///
+    /// typedef struct {
+    /// uint samplesPerPacket;
+    /// // This field is only present if version == 1.
+    /// // A 32-bit integer.
+    /// // The number of uncompressed frames generated by a
+    /// // compressed frame (an uncompressed frame is one sample
+    /// // from each channel). This is also the frame duration,
+    /// // expressed in the media’s timescale, where the
+    /// // timescale is equal to the sample rate. For
+    /// // uncompressed formats, this field is always 1.
+    /// uint bytesPerPacket;
+    /// // This field is only present if version == 1.
+    /// // A 32-bit integer.
+    /// // For uncompressed audio, the number of bytes in a
+    /// // sample for a single channel. This replaces the older
+    /// // sampleSize field, which is set to 16.
+    /// // This value is calculated by dividing the frame size
+    /// // by the number of channels. The same calculation is
+    /// // performed to calculate the value of this field for
+    /// // compressed audio, but the result of the calculation
+    /// // is not generally meaningful for compressed audio.
+    /// uint bytesPerFrame;
+    /// // This field is only present if version == 1.
+    /// // A 32-bit integer.
+    /// // The number of bytes in a frame: for uncompressed
+    /// // audio, an uncompressed frame; for compressed audio, a
+    /// // compressed frame. This can be calculated by
+    /// // multiplying the bytes per packet field by the number
+    /// // of channels.
+    /// uint bytesPerSample;
+    /// // This field is only present if version == 1.
+    /// // A 32-bit integer.
+    /// // The size of an uncompressed sample in bytes. This is
+    /// // set to 1 for 8-bit audio, 2 for all other cases, even
+    /// // if the sample size is greater than 2 bytes.
+    /// } soundSampleDescriptionV1;
+    ///
+    /// typedef struct {
+    ///  uint dataSize;
+    ///  magic type;
+    ///  ubyte[dataSize-8] data;
+    /// } soundSampleDescriptionExtension;
+    ///
+    /// typedef struct {
+    /// byte version; // A 1-byte specification of the version of this sample description atom.
+    /// byte[3] flags; // A 3-byte space for sample description flags. Set this field to 0.
+    /// int numberOfEntries; // A 32-bit integer containing the number of sample descriptions that follow.
+    /// soundSampleDescriptionEntry sampleDescriptionTable[numberOfEntries];
+    /// } soundSampleDescriptionAtom;
+    /// </pre>
     protected void parseSoundSampleDescription(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
         if (version != 0) throw new IOException("unsupported stsd version=" + version);
@@ -887,26 +852,23 @@ public class QuickTimeDeserializer {
         }
     }
 
-    /**
-     * The sample description ("stsd"-Atom in generic tracks).
-     *
-     * <pre>
-     * typedef struct {
-     *  byte version;
-     *  byte[3] flags;
-     *  int numberOfEntries;
-     *  sampleDescriptionEntry sampleDescriptionTable[numberOfEntries];
-     * } videoSampleDescriptionAtom;
-     *
-     * typedef struct {
-     *  int size;
-     *  magic dataFormat; // A 32-bit integer indicating the format of the stored data. This depends on the media type, but is usually either the compression format or the media type.
-     *  byte[6] reserved; // six bytes that must be zero
-     *  short dataReferenceIndex; // A 16-bit integer that contains the index of the data reference to use to retrieve data associated with samples that use this sample description. Data references are stored in data reference atoms.
-     *  byte[size-16] data;
-     * } sampleDescriptionEntry;
-     * </pre>
-     */
+    /// The sample description ("stsd"-Atom in generic tracks).
+    /// <pre>
+    /// typedef struct {
+    ///  byte version;
+    ///  byte[3] flags;
+    ///  int numberOfEntries;
+    ///  sampleDescriptionEntry sampleDescriptionTable[numberOfEntries];
+    /// } videoSampleDescriptionAtom;
+    ///
+    /// typedef struct {
+    ///  int size;
+    ///  magic dataFormat; // A 32-bit integer indicating the format of the stored data. This depends on the media type, but is usually either the compression format or the media type.
+    ///  byte[6] reserved; // six bytes that must be zero
+    ///  short dataReferenceIndex; // A 16-bit integer that contains the index of the data reference to use to retrieve data associated with samples that use this sample description. Data references are stored in data reference atoms.
+    ///  byte[size-16] data;
+    /// } sampleDescriptionEntry;
+    /// </pre>
     protected void parseGenericSampleDescription(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
         if (version != 0) throw new IOException("unsupported stsd version=" + version);
@@ -928,90 +890,87 @@ public class QuickTimeDeserializer {
     }
 
 
-    /**
-     * The video sample description ("stsd"-Atom in a video track).
-     *
-     * <pre>
-     * typedef struct {
-     *  byte version;
-     *  byte[3] flags;
-     *  int numberOfEntries;
-     *  videoSampleDescriptionEntry sampleDescriptionTable[numberOfEntries];
-     * } videoSampleDescriptionAtom;
-     *
-     * typedef struct {
-     *  int size;
-     *  magic type;
-     *  byte[6] reserved; // six bytes that must be zero
-     *  short dataReferenceIndex; // A 16-bit integer that contains the index of the data reference to use to retrieve data associated with samples that use this sample description. Data references are stored in data reference atoms.
-     *  videoSampleDescription data;
-     * } videoSampleDescriptionEntry;
-     *
-     * typedef struct {
-     *  ushort version;     // A 16-bit integer indicating the version number of the
-     *                      // compressed data. This is set to 0, unless a
-     *                      // compressor has changed its data format.
-     *  ushort revisionLevel;// A 16-bit integer that must be set to 0.
-     *  magic vendor;       // A 32-bit integer that specifies the developer of the
-     *                      // compressor that generated the compressed data. Often
-     *                      //  this field contains 'appl' to indicate Apple
-     *                      // Computer, Inc.
-     *  uint temporalQuality;// A 32-bit integer containing a value from 0 to 1023
-     *                       // indicating the degree of temporal compression.
-     *  uint spatialQuality; // A 32-bit integer containing a value from 0 to 1024
-     *                       // indicating the degree of spatial compression.
-     *  ushort width;       // A 16-bit integer that specifies the width of the
-     *                      // source image in pixels.
-     *  ushort height;      // A 16-bit integer that specifies the height of the
-     *                      // source image in pixels.
-     *  fixed16d16 horizontalResolution;
-     *                      // A 32-bit fixed-point number containing the horizontal
-     *                      // resolution of the image in pixels per inch.
-     *  fixed16d16 verticalResolution;
-     *                      // A 32-bit fixed-point number containing the vertical
-     *                      // resolution of the image in pixels per inch.
-     *  uint dataSize;      // A 32-bit integer that must be set to 0.
-     *  ushort frameCount;  // A 16-bit integer that indicates how many frames of
-     *                      // compressed data are stored in each sample. Usually
-     *                      // set to 1.
-     *  pstring32 compressorName;// A 32-byte Pascal string containing the name of the
-     *                      // compressor that created the image, such as "jpeg".
-     *  ushort depth;       // A 16-bit integer that indicates the pixel depth of
-     *                      // the compressed image. Values of 1, 2, 4, 8 ,16, 24,
-     *                      // and 32 indicate the depth of color images. The value
-     *                      // 32 should be used only if the image contains an alpha
-     *                      // channel. Values of 34, 36, and 40 indicate 2-, 4-,
-     *                      // and 8-bit grayscale, respectively, for grayscale
-     *                      // images.
-     *  ushort colorTableId; // A 16-bit integer that identifies which color table to
-     *      // use. If this field is set to –1, the default color
-     *      // table should be used for the specified depth. For all
-     *      // depths below 16 bits per pixel, this indicates a
-     *      // standard Macintosh color table for the specified
-     *      // depth. Depths of 16, 24, and 32 have no color table.
-     *      // If the color table ID is set to 0, a color table is
-     *      // contained within the sample description itself. The
-     *      // color table immediately follows the color table ID
-     *      // field in the sample description. See “Color Table
-     *      // Atoms” (page 41) for a complete description of a color table.
-     *
-     *  videoSampleDescriptionExtension[] extendedData;
-     * } videoSampleDescription;
-     *
-     * typedef struct {
-     *  uint dataSize;
-     *  magic type;
-     *  ubyte[dataSize - 8] data;
-     * } videoSampleDescriptionExtension;
-     *
-     * typedef struct {
-     * byte version; // A 1-byte specification of the version of this sample description atom.
-     * byte[3] flags; // A 3-byte space for sample description flags. Set this field to 0.
-     * int numberOfEntries; // A 32-bit integer containing the number of sample descriptions that follow.
-     * soundSampleDescriptionEntry sampleDescriptionTable[numberOfEntries];
-     * } soundSampleDescriptionAtom;
-     * </pre>
-     */
+    /// The video sample description ("stsd"-Atom in a video track).
+    /// <pre>
+    /// typedef struct {
+    ///  byte version;
+    ///  byte[3] flags;
+    ///  int numberOfEntries;
+    ///  videoSampleDescriptionEntry sampleDescriptionTable[numberOfEntries];
+    /// } videoSampleDescriptionAtom;
+    ///
+    /// typedef struct {
+    ///  int size;
+    ///  magic type;
+    ///  byte[6] reserved; // six bytes that must be zero
+    ///  short dataReferenceIndex; // A 16-bit integer that contains the index of the data reference to use to retrieve data associated with samples that use this sample description. Data references are stored in data reference atoms.
+    ///  videoSampleDescription data;
+    /// } videoSampleDescriptionEntry;
+    ///
+    /// typedef struct {
+    ///  ushort version;     // A 16-bit integer indicating the version number of the
+    ///                      // compressed data. This is set to 0, unless a
+    ///                      // compressor has changed its data format.
+    ///  ushort revisionLevel;// A 16-bit integer that must be set to 0.
+    ///  magic vendor;       // A 32-bit integer that specifies the developer of the
+    ///                      // compressor that generated the compressed data. Often
+    ///                      //  this field contains 'appl' to indicate Apple
+    ///                      // Computer, Inc.
+    ///  uint temporalQuality;// A 32-bit integer containing a value from 0 to 1023
+    ///                       // indicating the degree of temporal compression.
+    ///  uint spatialQuality; // A 32-bit integer containing a value from 0 to 1024
+    ///                       // indicating the degree of spatial compression.
+    ///  ushort width;       // A 16-bit integer that specifies the width of the
+    ///                      // source image in pixels.
+    ///  ushort height;      // A 16-bit integer that specifies the height of the
+    ///                      // source image in pixels.
+    ///  fixed16d16 horizontalResolution;
+    ///                      // A 32-bit fixed-point number containing the horizontal
+    ///                      // resolution of the image in pixels per inch.
+    ///  fixed16d16 verticalResolution;
+    ///                      // A 32-bit fixed-point number containing the vertical
+    ///                      // resolution of the image in pixels per inch.
+    ///  uint dataSize;      // A 32-bit integer that must be set to 0.
+    ///  ushort frameCount;  // A 16-bit integer that indicates how many frames of
+    ///                      // compressed data are stored in each sample. Usually
+    ///                      // set to 1.
+    ///  pstring32 compressorName;// A 32-byte Pascal string containing the name of the
+    ///                      // compressor that created the image, such as "jpeg".
+    ///  ushort depth;       // A 16-bit integer that indicates the pixel depth of
+    ///                      // the compressed image. Values of 1, 2, 4, 8 ,16, 24,
+    ///                      // and 32 indicate the depth of color images. The value
+    ///                      // 32 should be used only if the image contains an alpha
+    ///                      // channel. Values of 34, 36, and 40 indicate 2-, 4-,
+    ///                      // and 8-bit grayscale, respectively, for grayscale
+    ///                      // images.
+    ///  ushort colorTableId; // A 16-bit integer that identifies which color table to
+    ///      // use. If this field is set to –1, the default color
+    ///      // table should be used for the specified depth. For all
+    ///      // depths below 16 bits per pixel, this indicates a
+    ///      // standard Macintosh color table for the specified
+    ///      // depth. Depths of 16, 24, and 32 have no color table.
+    ///      // If the color table ID is set to 0, a color table is
+    ///      // contained within the sample description itself. The
+    ///      // color table immediately follows the color table ID
+    ///      // field in the sample description. See “Color Table
+    ///      // Atoms” (page 41) for a complete description of a color table.
+    ///
+    ///  videoSampleDescriptionExtension[] extendedData;
+    /// } videoSampleDescription;
+    ///
+    /// typedef struct {
+    ///  uint dataSize;
+    ///  magic type;
+    ///  ubyte[dataSize-8] data;
+    /// } videoSampleDescriptionExtension;
+    ///
+    /// typedef struct {
+    /// byte version; // A 1-byte specification of the version of this sample description atom.
+    /// byte[3] flags; // A 3-byte space for sample description flags. Set this field to 0.
+    /// int numberOfEntries; // A 32-bit integer containing the number of sample descriptions that follow.
+    /// soundSampleDescriptionEntry sampleDescriptionTable[numberOfEntries];
+    /// } soundSampleDescriptionAtom;
+    /// </pre>
     protected void parseVideoSampleDescription(QTFFImageInputStream in, long remainingSize, QuickTimeMeta meta, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
         if (version != 0) throw new IOException("unsupported stsd version=" + version);
@@ -1097,34 +1056,31 @@ public class QuickTimeDeserializer {
         return new IndexColorModel(8, rgbs.length, rgbs, 0, false, -1, DataBuffer.TYPE_BYTE);
     }
 
-    /**
-     * The Time-to-Sample atom ("stts"-Atom in a media information section).
-     * Time-to-sample atoms store duration information for the samples in a
-     * media, providing a mapping from a time in a media to the corresponding
-     * data sample.
-     *
-     * <pre>
-     * typedef struct {
-     *    byte version;
-     *    byte[3] flags;
-     *    int numberOfEntries;
-     *    timeToSampleTable timeToSampleTable[numberOfEntries];
-     * } timeToSampleAtom;
-     *
-     * typedef struct {
-     *    int sampleCount;
-     *    int sampleDuration;
-     * } timeToSampleTable;
-     * </pre>
-     * <p>
-     * Note: this method adds {@code Sample} objects to the
-     * {@code Media.samples} list.
-     *
-     * @param in
-     * @param remainingSize
-     * @param m
-     * @throws IOException
-     */
+    /// The Time-to-Sample atom ("stts"-Atom in a media information section).
+    /// Time-to-sample atoms store duration information for the samples in a
+    /// media, providing a mapping from a time in a media to the corresponding
+    /// data sample.
+    /// <pre>
+    /// typedef struct {
+    ///    byte version;
+    ///    byte[3] flags;
+    ///    int numberOfEntries;
+    ///    timeToSampleTable timeToSampleTable[numberOfEntries];
+    /// } timeToSampleAtom;
+    ///
+    /// typedef struct {
+    ///    int sampleCount;
+    ///    int sampleDuration;
+    /// } timeToSampleTable;
+    /// </pre>
+    ///
+    /// Note: this method adds `Sample` objects to the
+    /// `Media.samples` list.
+    ///
+    /// @param in
+    /// @param remainingSize
+    /// @param m
+    /// @throws IOException
     protected void parseTimeToSample(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
         in.skipBytes(3);
@@ -1142,28 +1098,25 @@ public class QuickTimeDeserializer {
         }
     }
 
-    /**
-     * The Sample-to-Chunk atom ("stsc"-Atom in a media information section). As
-     * samples are added to a media, they are collected into chunks that allow
-     * optimized data access. A chunk may contain one or more samples. Chunks in
-     * a media may have different sizes, and the samples within a chunk may have
-     * different sizes.
-     *
-     * <pre>
-     * typedef struct {
-     *     byte version;
-     *     byte[3] flags;
-     *     int numberOfEntries;
-     *     sampleToChunkEntry[numberOfEntries] sampleToChunkTable;
-     * } sampleToChunkAtom;
-     *
-     * typedef struct {
-     *     int firstChunk;
-     *     int samplesPerChunk;
-     *     int sampleDescription;
-     * } sampleToChunkEntry;
-     * </pre>
-     */
+    /// The Sample-to-Chunk atom ("stsc"-Atom in a media information section). As
+    /// samples are added to a media, they are collected into chunks that allow
+    /// optimized data access. A chunk may contain one or more samples. Chunks in
+    /// a media may have different sizes, and the samples within a chunk may have
+    /// different sizes.
+    /// <pre>
+    /// typedef struct {
+    ///     byte version;
+    ///     byte[3] flags;
+    ///     int numberOfEntries;
+    ///     sampleToChunkEntry[numberOfEntries] sampleToChunkTable;
+    /// } sampleToChunkAtom;
+    ///
+    /// typedef struct {
+    ///     int firstChunk;
+    ///     int samplesPerChunk;
+    ///     int sampleDescription;
+    /// } sampleToChunkEntry;
+    /// </pre>
     protected void parseSampleToChunk(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         if (remainingSize < 20) return;
         int version = in.readUnsignedByte();
@@ -1180,22 +1133,20 @@ public class QuickTimeDeserializer {
         }
     }
 
-    /**
-     * The chunk offset atom ("stco"-Atom in a media information section)
-     * identifies the location of each chunk of data in the media’s data stream.
-     * <pre>
-     * typedef struct {
-     *     byte version;
-     *     byte[3] flags;
-     *     int numberOfEntries;
-     *     chunkOffsetEntry[numberOfEntries] chunkOffsetTable;
-     * } chunkOffsetAtom;
-     *
-     * typedef struct {
-     *     int offset;
-     * } chunkOffsetEntry;
-     * </pre>
-     */
+    /// The chunk offset atom ("stco"-Atom in a media information section)
+    /// identifies the location of each chunk of data in the media’s data stream.
+    /// <pre>
+    /// typedef struct {
+    ///     byte version;
+    ///     byte[3] flags;
+    ///     int numberOfEntries;
+    ///     chunkOffsetEntry[numberOfEntries] chunkOffsetTable;
+    /// } chunkOffsetAtom;
+    ///
+    /// typedef struct {
+    ///     int offset;
+    /// } chunkOffsetEntry;
+    /// </pre>
     protected void parseChunkOffsets(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
         if (version != 0) return;
@@ -1207,22 +1158,20 @@ public class QuickTimeDeserializer {
         }
     }
 
-    /**
-     * The chunk offset 64 atom ("co64"-Atom in a media information section)
-     * identifies the location of each chunk of data in the media’s data stream.
-     * <pre>
-     * typedef struct {
-     *     byte version;
-     *     byte[3] flags;
-     *     int numberOfEntries;
-     *     chunkOffset64Entry[numberOfEntries] chunkOffsetTable;
-     * } chunkOffset64Atom;
-     *
-     * typedef struct {
-     *     long offset;
-     * } chunkOffset64Entry;
-     * </pre>
-     */
+    /// The chunk offset 64 atom ("co64"-Atom in a media information section)
+    /// identifies the location of each chunk of data in the media’s data stream.
+    /// <pre>
+    /// typedef struct {
+    ///     byte version;
+    ///     byte[3] flags;
+    ///     int numberOfEntries;
+    ///     chunkOffset64Entry[numberOfEntries] chunkOffsetTable;
+    /// } chunkOffset64Atom;
+    ///
+    /// typedef struct {
+    ///     long offset;
+    /// } chunkOffset64Entry;
+    /// </pre>
     protected void parseChunkOffsets64(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
         if (version != 0) return;
@@ -1234,27 +1183,24 @@ public class QuickTimeDeserializer {
         }
     }
 
-    /**
-     * The Sync Sample atom ("stss"-Atom in a media information section). The
-     * sync sample atom identifies the key frames in the media. In a media that
-     * contains compressed data, key frames define starting points for portions
-     * of a temporally compressed sequence. The key frame is self-contained -
-     * that is, it is independent of preceding frames. Subsequent frames may
-     * depend on the key frame.
-     *
-     * <pre>
-     * typedef struct {
-     *     byte version;
-     *     byte[3] flags;
-     *     int numberOfEntries;
-     *     syncSampleTable syncSampleTable[numberOfEntries];
-     * } syncSampleAtom;
-     *
-     * typedef struct {
-     *     int number;
-     * } syncSampleTable;
-     * </pre>
-     */
+    /// The Sync Sample atom ("stss"-Atom in a media information section). The
+    /// sync sample atom identifies the key frames in the media. In a media that
+    /// contains compressed data, key frames define starting points for portions
+    /// of a temporally compressed sequence. The key frame is self-contained -
+    /// that is, it is independent of preceding frames. Subsequent frames may
+    /// depend on the key frame.
+    /// <pre>
+    /// typedef struct {
+    ///     byte version;
+    ///     byte[3] flags;
+    ///     int numberOfEntries;
+    ///     syncSampleTable syncSampleTable[numberOfEntries];
+    /// } syncSampleAtom;
+    ///
+    /// typedef struct {
+    ///     int number;
+    /// } syncSampleTable;
+    /// </pre>
     protected void parseSyncSample(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
         if (version != 0) return;
@@ -1271,24 +1217,21 @@ public class QuickTimeDeserializer {
         }
     }
 
-    /**
-     * The Sample Size atom ("stsz"-Atom in a media information section). Sample
-     * size atoms identify the size of each sample in the media.
-     *
-     * <pre>
-     * typedef struct {
-     *     byte version;
-     *     byte[3] flags;
-     *     int sampleSize;
-     *     int numberOfEntries;
-     *     sampleSizeTable sampleSizeTable[numberOfEntries];
-     * } sampleSizeAtom;
-     *
-     * typedef struct {
-     *    int size;
-     * } sampleSizeTable;
-     * </pre>
-     */
+    /// The Sample Size atom ("stsz"-Atom in a media information section). Sample
+    /// size atoms identify the size of each sample in the media.
+    /// <pre>
+    /// typedef struct {
+    ///     byte version;
+    ///     byte[3] flags;
+    ///     int sampleSize;
+    ///     int numberOfEntries;
+    ///     sampleSizeTable sampleSizeTable[numberOfEntries];
+    /// } sampleSizeAtom;
+    ///
+    /// typedef struct {
+    ///    int size;
+    /// } sampleSizeTable;
+    /// </pre>
     protected void parseSampleSize(QTFFImageInputStream in, long remainingSize, QuickTimeMeta.Media m) throws IOException {
         int version = in.readUnsignedByte();
         if (version != 0) return;
@@ -1315,38 +1258,35 @@ public class QuickTimeDeserializer {
         }
     }
 
-    /**
-     * Color table atoms define a list of preferred colors for displaying
-     * the movie on devices that support only 256 colors.
-     * The list may contain up to 256 colors. These optional atoms have a type value of 'ctab'.
-     * The color table atom contains a Macintosh color table data structure.
-     *
-     * <pre>
-     * magic colorTableAtom "ctab";
-     *
-     * typedef struct {
-     *     int colorTableSeed;      // A 32-bit integer that must be set to 0.
-     *     ushort colorTableFlags;   // A 16-bit integer that must be set to 0x8000.
-     *     ushort colorTableSize;    //A 16-bit integer that indicates the number
-     *                              // of colors in the following color array.
-     *                              // This is a zero-relative value; setting this field
-     *                              // to 0 means that there is one color in the array.
-     *     colorArrayEntry[] colorArray;
-     *                              // An array of colors. Each color is made of four
-     *                              // unsigned 16-bit integers. The first integer
-     *                              // must be set to 0, the second is the red value,
-     *                              // the third is the green value, and the fourth
-     *                              // is the blue value.
-     * } colorTableAtom;
-     *
-     * typedef struct {
-     *     ushort unused; // Must be set to 0
-     *     ushort red;
-     *     ushort green;
-     *     ushort blue;
-     * } colorArrayEntry;
-     * </pre>
-     */
+    /// Color table atoms define a list of preferred colors for displaying
+    /// the movie on devices that support only 256 colors.
+    /// The list may contain up to 256 colors. These optional atoms have a type value of 'ctab'.
+    /// The color table atom contains a Macintosh color table data structure.
+    /// <pre>
+    /// magic colorTableAtom "ctab";
+    ///
+    /// typedef struct {
+    ///     int colorTableSeed;      // A 32-bit integer that must be set to 0.
+    ///     ushort colorTableFlags;   // A 16-bit integer that must be set to 0x8000.
+    ///     ushort colorTableSize;    //A 16-bit integer that indicates the number
+    ///                              // of colors in the following color array.
+    ///                              // This is a zero-relative value; setting this field
+    ///                              // to 0 means that there is one color in the array.
+    ///     colorArrayEntry[] colorArray;
+    ///                              // An array of colors. Each color is made of four
+    ///                              // unsigned 16-bit integers. The first integer
+    ///                              // must be set to 0, the second is the red value,
+    ///                              // the third is the green value, and the fourth
+    ///                              // is the blue value.
+    /// } colorTableAtom;
+    ///
+    /// typedef struct {
+    ///     ushort unused; // Must be set to 0
+    ///     ushort red;
+    ///     ushort green;
+    ///     ushort blue;
+    /// } colorArrayEntry;
+    /// </pre>
     protected void parseColorTable(QTFFImageInputStream in, long remainingSize, QuickTimeMeta meta) throws IOException {
         int colorTableSeed = in.readInt();
         assert colorTableSeed == 0;

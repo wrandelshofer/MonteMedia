@@ -66,28 +66,20 @@ public class AtomInputStream extends QTFFImageInputStream {
         }
     }
 
-    /**
-     * Atom base class.
-     */
+    /// Atom base class.
     private class Atom {
 
-        /**
-         * The atomType of the atom. A String with the length of 4 characters.
-         */
+        /// The atomType of the atom. A String with the length of 4 characters.
         protected String atomType;
-        /**
-         * The offset of the atom relative to the start of the
-         * ImageOutputStream.
-         */
+        /// The offset of the atom relative to the start of the
+        /// ImageOutputStream.
         protected long offset;
         protected long size;
         protected boolean finished;
 
-        /**
-         * Creates a new Atom at the current position of the ImageOutputStream.
-         *
-         * @param atomType The atomType of the atom. A string with a length of 4 characters.
-         */
+        /// Creates a new Atom at the current position of the ImageOutputStream.
+        ///
+        /// @param atomType The atomType of the atom. A string with a length of 4 characters.
         public Atom(String atomType, long size, long offset) throws IOException {
             this.atomType = atomType;
             this.size = size;
