@@ -26,21 +26,30 @@ class BlueNoiseData256 {
     final static float[][] DATA3 = new float[256][256];
 
     static {
-        loadData(BlueNoiseData256.class.getResourceAsStream("BlueNoiseData0_256.txt"), DATA0);
-        loadData(BlueNoiseData256.class.getResourceAsStream("BlueNoiseData1_256.txt"), DATA1);
-        loadData(BlueNoiseData256.class.getResourceAsStream("BlueNoiseData2_256.txt"), DATA2);
-        loadData(BlueNoiseData256.class.getResourceAsStream("BlueNoiseData3_256.txt"), DATA3);
+        loadData(BlueNoiseData256.class.getResourceAsStream("BlueNoiseData0_256.hex"), DATA0);
+        loadData(BlueNoiseData256.class.getResourceAsStream("BlueNoiseData1_256.hex"), DATA1);
+        loadData(BlueNoiseData256.class.getResourceAsStream("BlueNoiseData2_256.hex"), DATA2);
+        loadData(BlueNoiseData256.class.getResourceAsStream("BlueNoiseData3_256.hex"), DATA3);
     }
 
-    private static void loadData(InputStream in, float[][] data) {
+    static void loadData(InputStream in, float[][] data) {
         try (InputStreamReader r = new InputStreamReader(in)) {
             var tt = new StreamPosTokenizer(r);
-            tt.parseExponents();
+            tt.resetSyntax();
+            tt.whitespaceChars(0, ' ');
+            tt.wordChars('0', '9');
+            tt.wordChars('a', 'z');
             int index = 0;
             while (tt.nextToken() != StreamTokenizer.TT_EOF) {
-                if (tt.ttype == StreamTokenizer.TT_NUMBER) {
-                    data[index >> 8][index & 255] = Math.clamp((float) tt.nval, -1f, 1f);
-                    index++;
+                switch (tt.ttype) {
+                    case StreamTokenizer.TT_WORD -> {
+                        float value = Float.intBitsToFloat(Integer.parseUnsignedInt(tt.sval, 16));
+                        data[index >> 8][index & 255] = Math.clamp(value, -1f, 1f);
+                        index++;
+                    }
+                    default -> {
+                        throw new IOException("Invalid data format at lineno=" + tt.lineno() + " tt.ttype=" + tt.ttype + (tt.ttype > 0 ? "  tt.val='" + (char) tt.ttype + "'" : " tt.sval=" + tt.sval));
+                    }
                 }
             }
         } catch (IOException e) {
