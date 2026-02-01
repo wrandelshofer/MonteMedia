@@ -6,65 +6,75 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>ch.randelshofer</groupId>
-    <artifactId>org.monte.media.parent</artifactId>
-    <version>${revision}</version>
-  </parent>
-  <artifactId>org.monte.media.amigaatari</artifactId>
-  <packaging>jar</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>ch.randelshofer</groupId>
+        <artifactId>org.monte.media.parent</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <artifactId>org.monte.media.amigaatari</artifactId>
+    <packaging>jar</packaging>
 
-  <name>Monte Media Amiga Atari</name>
-  <description>A library for processing Amiga and Atari still images, video, audio and meta-data.</description>
+    <name>Monte Media Amiga Atari</name>
+    <description>A library for processing Amiga and Atari still images, video, audio and meta-data.</description>
 
-  <build>
-    <sourceDirectory>${basedir}/src/main/java/org.monte.media.amigaatari</sourceDirectory>
-    <testSourceDirectory>${basedir}/src/test/java/org.monte.media.amigaatari</testSourceDirectory>
-    <resources>
-      <resource>
-        <directory>${basedir}/src/main/java/org.monte.media.amigaatari</directory>
-        <excludes>
-          <exclude>**/*.java</exclude>
-        </excludes>
-      </resource>
+    <build>
+        <sourceDirectory>${basedir}/src/main/java/org.monte.media.amigaatari</sourceDirectory>
+        <testSourceDirectory>${basedir}/src/test/java/org.monte.media.amigaatari</testSourceDirectory>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/java/org.monte.media.amigaatari</directory>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </resource>
 
-    </resources>
-    <testResources>
-      <testResource>
-        <directory>${basedir}/src/test/java/org.monte.media.amigaatari</directory>
-        <excludes>
-          <exclude>**/*.java</exclude>
-        </excludes>
-      </testResource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>${basedir}/src/test/java/org.monte.media.amigaatari</directory>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </testResource>
 
-    </testResources>
+        </testResources>
 
-    <plugins></plugins>
-  </build>
-  <dependencies>
-    <dependency>
-      <groupId>ch.randelshofer</groupId>
-      <artifactId>org.monte.media</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>ch.randelshofer</groupId>
-      <artifactId>org.monte.media.swing</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.openjdk.jmh</groupId>
-      <artifactId>jmh-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openjdk.jmh</groupId>
-      <artifactId>jmh-generator-annprocess</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>21</source>
+                    <target>21</target>
+                </configuration>
+            </plugin>
+        </plugins>
+
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>ch.randelshofer</groupId>
+            <artifactId>org.monte.media</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.randelshofer</groupId>
+            <artifactId>org.monte.media.swing</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-generator-annprocess</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>
