@@ -263,7 +263,8 @@ public class MainWindowController {
             ObservableList<Node> c = vBox.getChildren();
             c.clear();
             c.add(new Label(resources.getString("error.creatingPlayer") + "\n"
-                    + ((error.getMessage() == null) ? error.getClass().getSimpleName() : error.getMessage())));
+                    + (error == null ? "" :
+                    ((error.getMessage() == null) ? error.getClass().getSimpleName() : error.getMessage()))));
             error.printStackTrace();
         }
     }
