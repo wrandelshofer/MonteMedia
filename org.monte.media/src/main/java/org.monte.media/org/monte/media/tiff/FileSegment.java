@@ -9,6 +9,8 @@ package org.monte.media.tiff;
 /// In a JPEG JFIF stream, a TIFF file can be segmented over multiple APP
 /// markers.
 ///
+/// @param offset offset in number of bytes from the start of the file
+/// @param length length in number of bytes
 /// @author Werner Randelshofer
 public record FileSegment(long offset, long length) {
 

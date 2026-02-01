@@ -11,7 +11,7 @@ import java.util.Set;
 
 /// Header data for an encoded H.264 frame in a [org.monte.media.av.Buffer].
 ///
-/// The [#data] contains the data for video* coding layer (VCL). The VCL data is embedded
+/// The header contains the data for video* coding layer (VCL). The VCL data is embedded
 /// in data for the network* abstraction layer (NAL). The NAL describes how the stream could be split into packets
 /// - Network Abstraction Layer units (NALUnit).
 ///

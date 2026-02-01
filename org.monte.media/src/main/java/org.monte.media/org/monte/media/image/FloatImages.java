@@ -5,7 +5,6 @@
 
 package org.monte.media.image;
 
-import org.monte.media.color.LinearSrgbColorSpace;
 
 import java.awt.*;
 import java.awt.color.ColorSpace;
@@ -66,7 +65,7 @@ public class FloatImages {
                 && src.getSampleModel() instanceof PixelInterleavedSampleModel pism) {
             WritableRaster dstRast = dest.getRaster();
             var destCS = destCM.getColorSpace();
-            if (destCS == ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB)) destCS = LinearSrgbColorSpace.getInstance();
+            //if (destCS == ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB)) destCS = LinearSrgbColorSpace.getInstance();
             byte[] srcData = ((DataBufferByte) srcRast.getDataBuffer()).getData();
             float[] destPix = new float[3];
             int[] bandOffsets = pism.getBandOffsets();

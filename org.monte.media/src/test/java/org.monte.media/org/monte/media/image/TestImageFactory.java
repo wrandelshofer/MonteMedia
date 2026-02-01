@@ -6,14 +6,11 @@
 package org.monte.media.image;
 
 import org.junit.jupiter.api.Test;
-import org.monte.media.color.Rec709ColorSpace;
 
 import javax.imageio.ImageIO;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferFloat;
-import java.awt.image.DirectColorModel;
 import java.io.File;
 import java.io.IOException;
 import java.util.function.ToDoubleBiFunction;
@@ -70,6 +67,7 @@ public class TestImageFactory {
         return img;
     }
 
+    /*
     /// Creates an image with the 6 faces of a Rec.709 cube.
     ///
     /// @return test image
@@ -89,7 +87,7 @@ public class TestImageFactory {
             }
         }
         return img;
-    }
+    }*/
 
     @Test
     public void shouldCreateHighFrequencyTestPattern() throws IOException {

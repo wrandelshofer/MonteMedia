@@ -11,7 +11,9 @@ import java.util.Objects;
 ///
 /// A format key has a name, a type and a value.
 ///
+/// @param <T> the type of the value
 /// @author Werner Randelshofer
+///
 public class FormatKey<T> {
 
     public static final long serialVersionUID = 1L;

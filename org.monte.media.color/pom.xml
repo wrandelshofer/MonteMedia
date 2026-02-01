@@ -12,18 +12,18 @@
         <artifactId>org.monte.media.parent</artifactId>
         <version>${revision}</version>
     </parent>
-    <artifactId>org.monte.media.amigaatari</artifactId>
+    <artifactId>org.monte.media.color</artifactId>
     <packaging>jar</packaging>
 
     <name>Monte Media Amiga Atari</name>
     <description>A library for processing Amiga and Atari still images, video, audio and meta-data.</description>
 
     <build>
-        <sourceDirectory>${basedir}/src/main/java/org.monte.media.amigaatari</sourceDirectory>
-        <testSourceDirectory>${basedir}/src/test/java/org.monte.media.amigaatari</testSourceDirectory>
+        <sourceDirectory>${basedir}/src/main/java/org.monte.media.color</sourceDirectory>
+        <testSourceDirectory>${basedir}/src/test/java/org.monte.media.color</testSourceDirectory>
         <resources>
             <resource>
-                <directory>${basedir}/src/main/java/org.monte.media.amigaatari</directory>
+                <directory>${basedir}/src/main/java/org.monte.media.color</directory>
                 <excludes>
                     <exclude>**/*.java</exclude>
                 </excludes>
@@ -32,7 +32,7 @@
         </resources>
         <testResources>
             <testResource>
-                <directory>${basedir}/src/test/java/org.monte.media.amigaatari</directory>
+                <directory>${basedir}/src/test/java/org.monte.media.color</directory>
                 <excludes>
                     <exclude>**/*.java</exclude>
                 </excludes>
@@ -45,10 +45,6 @@
         <dependency>
             <groupId>ch.randelshofer</groupId>
             <artifactId>org.monte.media</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ch.randelshofer</groupId>
-            <artifactId>org.monte.media.color</artifactId>
         </dependency>
         <dependency>
             <groupId>ch.randelshofer</groupId>

@@ -77,6 +77,10 @@
         </dependency>
         <dependency>
             <groupId>ch.randelshofer</groupId>
+            <artifactId>org.monte.media.color</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.randelshofer</groupId>
             <artifactId>org.monte.media.swing</artifactId>
         </dependency>
         <dependency>

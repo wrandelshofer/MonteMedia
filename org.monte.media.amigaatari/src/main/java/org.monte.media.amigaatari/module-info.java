@@ -46,6 +46,7 @@ module org.monte.media.amigaatari {
     requires java.desktop;
     requires java.prefs;
     requires org.monte.media;
+    requires org.monte.media.color;
     requires org.monte.media.swing;
 
     exports org.monte.media.anim;

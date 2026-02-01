@@ -18,9 +18,9 @@ import java.awt.image.ColorModel;
 import java.awt.image.DataBufferFloat;
 
 
-/// Scales an [BufferedImage] image by processing [#TYPE_FLOAT] data samples.
+/// Scales an [BufferedImage] image by processing [BufferedImage#TYPE_FLOAT] data samples.
 ///
-/// Converts the image to [#TYPE_FLOAT] if necessary.
+/// Converts the image to [BufferedImage#TYPE_FLOAT] if necessary.
 ///
 /// Applies an approximated Gaussian Blur to the image before downscaling it.
 ///
@@ -57,7 +57,7 @@ public class ScaleOp implements BufferedImageOp {
     /// @param dstWidth           the width
     /// @param dstHeight          the height
     /// @param kernelRadiusFactor The factor with which the scale factor is multiplied
-    ///                                                                                                                                                                                                                                                                                                                                                                                                       to compute the radius of the blur kernel.
+    ///                                                                                                                                                                                                                                                                                                                                                                                                                                                           to compute the radius of the blur kernel.
     public ScaleOp(int srcWidth, int srcHeight, int dstWidth, int dstHeight,
                    float kernelRadiusFactor, SeparableKernelFactory kernelFactory, ResampleAlgoFloat resampler) {
         this.srcWidth = srcWidth;
@@ -89,7 +89,7 @@ public class ScaleOp implements BufferedImageOp {
     /// @param dst The `BufferedImage` in which to store the results$
     /// @return the filtered image
     /// @throws IllegalArgumentException if `src` and`dst` are the same
-    ///                                                                                                                                                                                                                                                                                                                                                                                                                                                                               or if `dst` does not have a buffer of type [DataBufferFloat].
+    ///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 or if `dst` does not have a buffer of type [DataBufferFloat].
     @Override
     public BufferedImage filter(BufferedImage src, BufferedImage dst) {
         if (src == null) {

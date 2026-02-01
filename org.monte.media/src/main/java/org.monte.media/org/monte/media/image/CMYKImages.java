@@ -5,7 +5,7 @@
 
 package org.monte.media.image;
 
-import org.monte.media.color.ICCPackedColorModel;
+import org.monte.media.image.colormodel.ICCPackedColorModel;
 import org.monte.media.util.stream.RangeStream;
 
 import java.awt.color.ColorSpace;
@@ -48,8 +48,8 @@ public class CMYKImages {
     ///
     /// @param ycckRaster  A raster with (at least) 4 bands of samples.
     /// @param cmykProfile An ICC_Profile for conversion from the CMYK color space
-    ///                                       to the RGB color space. If this parameter is null, a default profile is
-    ///                                       used.
+    ///                                                          to the RGB color space. If this parameter is null, a default profile is
+    ///                                                          used.
     /// @return a BufferedImage
     public static BufferedImage createImageFromInvertedYCCK(Raster ycckRaster, ICC_Profile cmykProfile) {
         return createImageFromCMYK(convertInvertedYCCKToCMYK(ycckRaster), cmykProfile);
@@ -78,7 +78,7 @@ public class CMYKImages {
     ///
     /// @param cmykRaster  A raster with (at least) 4 bands of samples.
     /// @param cmykProfile An ICC_Profile in the CMYK color space. If this parameter is null, a default profile is
-    ///                                       used, and the returned image will be an RGB image. !!!! FIXME always create a CMYK image!
+    ///                                                          used, and the returned image will be an RGB image. !!!! FIXME always create a CMYK image!
     /// @return a BufferedImage.
     public static BufferedImage createImageFromCMYK(Raster cmykRaster, ICC_Profile cmykProfile) {
         if (cmykProfile != null) {
@@ -124,7 +124,7 @@ public class CMYKImages {
     ///
     /// @param rgbwRaster  A raster with inverted CMYK values (=RGBW).
     /// @param cmykProfile An ICC_Profile. If this parameter is null, a default
-    ///                                       profile is used.
+    ///                                                          profile is used.
     /// @return a BufferedImage in the RGB color space.
     public static BufferedImage createImageFromInvertedCMYK(Raster rgbwRaster, ICC_Profile cmykProfile) {
         int w = rgbwRaster.getWidth();

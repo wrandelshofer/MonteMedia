@@ -31,6 +31,7 @@
         <module name="org.monte.media.swing" />
         <module name="org.monte.demo.screenrecorder" />
         <module name="org.monte.media.h264" />
+        <module name="org.monte.media.color" />
         <module name="org.monte.demo.rationalnumber" />
         <module name="org.monte.demo.moviewriter" />
       </profile>

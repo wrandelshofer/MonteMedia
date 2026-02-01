@@ -8,7 +8,7 @@ import org.monte.media.av.AbstractMovie;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys;
 import org.monte.media.av.MovieReader;
-import org.monte.media.color.Colors;
+import org.monte.media.image.colormodel.ColorModels;
 import org.monte.media.math.Rational;
 
 import java.awt.image.IndexColorModel;
@@ -166,13 +166,15 @@ public class QuickTimeMeta extends AbstractMovie {
     /// The preferred volume of this movie’s sound. A value of 1.0 indicates full
     /// volume.
     protected double preferredVolume;
-    /// The transformation matrix [a,b,u;c,d,v;x,y,w] for mapping 2d points of
+
+    /// The transformation matrix `[a,b,u;c,d,v;x,y,w]` for mapping 2d points of
     /// this movie to the screen.
-    /// <pre>
+    ///
+    /// ```
     ///           [a b u;
-    /// [x y 1] *  c d v; = [x' y'1]
+    /// [x y 1] *  c d v; = [x' y' 1]
     ///            x y w]
-    /// </pre>
+    /// ```
     protected double[] matrix;
     /// The time value in the movie at which the preview begins.
     protected long previewTime;
@@ -223,7 +225,7 @@ public class QuickTimeMeta extends AbstractMovie {
                     if (desc.videoColorTable != null && desc.videoColorTable.getPixelSize() <= 8) {
                         format = format.append(PaletteKey, desc.videoColorTable);
                     } else {
-                        format = format.append(PaletteKey, Colors.createMacColors());
+                        format = format.append(PaletteKey, ColorModels.createMacColors());
                     }
                 }
 
@@ -1322,8 +1324,8 @@ public class QuickTimeMeta extends AbstractMovie {
         ///
         /// @param trackDuration Duration of this edit in the movie's timescale.
         /// @param mediaTime     Start time of this edit in the media's timescale.
-        ///                                                                Specify -1 for an empty edit. The last edit in a track should never
-        ///                                                                be an empty edit.
+        ///                                                                                     Specify -1 for an empty edit. The last edit in a track should never
+        ///                                                                                     be an empty edit.
         /// @param mediaRate     The relative rate at which to play this edit.
         public Edit(long trackDuration, int mediaTime, double mediaRate) {
             if (trackDuration < 0) {

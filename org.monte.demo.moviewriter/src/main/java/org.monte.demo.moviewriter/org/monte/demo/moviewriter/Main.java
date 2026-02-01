@@ -12,8 +12,8 @@ import org.monte.media.av.MovieWriter;
 import org.monte.media.av.MovieWriterSpi;
 import org.monte.media.av.Registry;
 import org.monte.media.av.codec.video.VideoFormatKeys.PixelFormat;
-import org.monte.media.color.Colors;
 import org.monte.media.h264.codec.video.H264EncoderSpi;
+import org.monte.media.image.colormodel.ColorModels;
 import org.monte.media.jcodec.h264.JCodecPictureCodecSpi;
 import org.monte.media.jcodec.mp4.JCodecMP4WriterSpi;
 import org.monte.media.math.Rational;
@@ -80,7 +80,7 @@ public class Main {
                     img = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
                     break;
                 } else {
-                    IndexColorModel palette = Colors.createMacColors();
+                    IndexColorModel palette = ColorModels.createMacColors();
                     img = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED, palette);
                     break;
                 }

@@ -4,7 +4,7 @@
  */
 package org.monte.media.av.codec.video;
 
-import org.monte.media.color.BitDepthConverters;
+import org.monte.media.image.BitDepthConverters;
 
 import javax.imageio.stream.ImageInputStream;
 import java.io.IOException;

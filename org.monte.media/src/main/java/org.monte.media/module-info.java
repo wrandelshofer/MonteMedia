@@ -73,10 +73,6 @@ module org.monte.media {
     exports org.monte.media.avi;
     exports org.monte.media.avi.codec.audio;
     exports org.monte.media.avi.codec.video;
-    exports org.monte.media.color;
-    exports org.monte.media.color.kmeans;
-    exports org.monte.media.color.kmeans.algo;
-    exports org.monte.media.color.dither;
     exports org.monte.media.exception;
     exports org.monte.media.exif;
     exports org.monte.media.image;
@@ -103,9 +99,9 @@ module org.monte.media {
     exports org.monte.media.qtff;
     exports org.monte.media.qtff.atom;
     exports org.monte.media.quicktime.codec.sprite;
-    exports org.monte.media.color.quant;
     exports org.monte.media.image.op;
     exports org.monte.media.image.algo;
+    exports org.monte.media.image.colormodel;
 
     uses org.monte.media.av.CodecSpi;
     uses org.monte.media.av.MovieWriterSpi;

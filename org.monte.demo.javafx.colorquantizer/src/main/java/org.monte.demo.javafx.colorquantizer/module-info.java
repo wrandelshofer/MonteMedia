@@ -13,6 +13,7 @@ module org.monte.demo.javafx.colorquantizer {
     requires java.desktop;
     requires org.monte.media;
     requires org.monte.media.amigaatari;
+    requires org.monte.media.color;
     requires javafx.controls;
     requires javafx.swing;
 

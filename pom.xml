@@ -77,6 +77,7 @@
         <module>org.monte.demo.sift</module>
         <module>org.monte.media.amigaatari</module>
         <module>org.monte.media.animconverter</module>
+        <module>org.monte.media.color</module>
         <module>org.monte.media.h264</module>
         <module>org.monte.media.javafx</module>
         <module>org.monte.media.jcodec</module>
@@ -435,6 +436,11 @@
             <dependency>
                 <groupId>ch.randelshofer</groupId>
                 <artifactId>org.monte.media.amigaatari</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.randelshofer</groupId>
+                <artifactId>org.monte.media.color</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>

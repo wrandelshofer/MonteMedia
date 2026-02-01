@@ -4,7 +4,7 @@
  */
 package org.monte.media.io;
 
-import javax.swing.BoundedRangeModel;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
@@ -69,7 +69,7 @@ public class BoundedRangeInputStream
         return nr;
     }
 
-    /// Overrides [FilterInputStream#skip()] to update the value after
+    /// Overrides [java.io.FilterInputStream#skip()] to update the value after
     /// the skip.
     public long skip(long n) throws IOException {
         long nr = in.skip(n);
@@ -77,7 +77,7 @@ public class BoundedRangeInputStream
         return nr;
     }
 
-    /// Overrides [FilterInputStream#reset()] to reset the progress
+    /// Overrides [java.io.FilterInputStream#reset()] to reset the progress
     /// monitor as well as the stream.
     @Override
     public synchronized void reset()
@@ -206,7 +206,7 @@ public class BoundedRangeInputStream
     /// Sliders and scrollbars use this property when a drag is underway.
     ///
     /// @param b true if the upcoming changes to the value property are part of a
-    ///                                     series
+    ///                                              series
     public void setValueIsAdjusting(boolean b) {
         valueIsAdjusting = b;
     }

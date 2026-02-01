@@ -10,6 +10,7 @@ import java.util.List;
 
 /// TreeNode.
 ///
+/// @param <T> the type of the `TreeNode`
 /// @author Werner Randelshofer
 public class TreeNode<T extends TreeNode<T>> {
 

@@ -9,7 +9,7 @@ import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.av.codec.video.ArrayBufferToImage;
 import org.monte.media.av.codec.video.VideoDecoderCore;
-import org.monte.media.color.Colors;
+import org.monte.media.image.colormodel.ColorModels;
 import org.monte.media.io.ByteArrayImageInputStream;
 import org.monte.media.util.ArrayUtil;
 import org.monte.media.util.ByteArrays;
@@ -261,7 +261,7 @@ public class AnimationDecoder extends org.monte.media.av.AbstractCodec {
                 if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
                     ColorModel cm = abti.getColorModel(in);
                     if (cm == null) {
-                        cm = Colors.createMacColors();
+                        cm = ColorModels.createMacColors();
                     }
                     img = new BufferedImage(cm, cm.createCompatibleWritableRaster(width, height), false, null);
                 } else {
@@ -278,7 +278,7 @@ public class AnimationDecoder extends org.monte.media.av.AbstractCodec {
                 if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
                     ColorModel cm = abti.getColorModel(in);
                     if (cm == null) {
-                        cm = Colors.createMacColors();
+                        cm = ColorModels.createMacColors();
                     }
                     img = new BufferedImage(cm, cm.createCompatibleWritableRaster(width, height), false, null);
                 } else {
@@ -295,7 +295,7 @@ public class AnimationDecoder extends org.monte.media.av.AbstractCodec {
                 if (img == null || img.getWidth() != width || img.getHeight() != height || img.getType() != imgType) {
                     ColorModel cm = abti.getColorModel(in);
                     if (cm == null) {
-                        cm = Colors.createMacColors();
+                        cm = ColorModels.createMacColors();
                     }
                     img = new BufferedImage(cm, cm.createCompatibleWritableRaster(width, height), false, null);
                 } else {
@@ -682,12 +682,12 @@ public class AnimationDecoder extends org.monte.media.av.AbstractCodec {
     /// @param in             The input stream.
     /// @param data           The image data.
     /// @param prev           The image data of the previous frame. This may be the same
-    ///                                                                   object as data.
+    ///                                                                                         object as data.
     /// @param width          The width of the image in data elements.
     /// @param height         The height of the image in data elements.
     /// @param offset         The offset to the first pixel in the data array.
     /// @param scanlineStride The number to append to offset to get to the next
-    ///                                                                   scanline.
+    ///                                                                                         scanline.
     public void decodeDelta16(ImageInputStream in, short[] data, short[] prev, int width, int height, int offset,
                               int scanlineStride)
             throws IOException {

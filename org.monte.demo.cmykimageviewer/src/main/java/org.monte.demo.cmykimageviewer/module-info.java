@@ -11,6 +11,7 @@ module org.monte.demo.cmykimageviewer {
     requires javafx.graphics;
 
     requires org.monte.media;
+    requires org.monte.media.color;
     requires org.monte.media.javafx;
 
     exports org.monte.demo.cmykimageviewer;

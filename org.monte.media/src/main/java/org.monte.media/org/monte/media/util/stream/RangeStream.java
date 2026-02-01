@@ -35,7 +35,7 @@ public class RangeStream {
     /// up into ranges down to the specified treshold.
     ///
     /// @param threshold for recursive splitting, a value smaller or equal 0
-    ///                                                    convert this stream back into a serial stream
+    ///                                                                     convert this stream back into a serial stream
     /// @return this stream
     public RangeStream parallel(int threshold) {
         this.threshold = threshold;
@@ -91,7 +91,7 @@ public class RangeStream {
         new Applier(consumer, threshold, startInclusive, endExclusive, null).invoke();
     }
 
-    /// Returns a range stream which will execute the the integers from
+    /// Returns a range stream which will execute the integers from
     /// startInclusive to endExclusive.
     ///
     /// @param startInclusive

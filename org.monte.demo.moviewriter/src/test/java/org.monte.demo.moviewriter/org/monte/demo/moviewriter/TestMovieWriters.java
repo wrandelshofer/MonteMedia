@@ -16,17 +16,12 @@ import org.monte.media.av.Registry;
 import org.monte.media.av.codec.video.VideoFormatKeys.PixelFormat;
 import org.monte.media.avi.AVIReader;
 import org.monte.media.avi.AVIWriter;
-import org.monte.media.color.Colors;
+import org.monte.media.image.colormodel.ColorModels;
 import org.monte.media.math.Rational;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.Stroke;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
@@ -89,7 +84,7 @@ public class TestMovieWriters {
                     img = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
                     break;
                 } else {
-                    IndexColorModel palette = Colors.createMacColors();
+                    IndexColorModel palette = ColorModels.createMacColors();
                     img = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED, palette);
                     break;
                 }

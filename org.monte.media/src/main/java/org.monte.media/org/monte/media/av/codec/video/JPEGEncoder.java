@@ -45,7 +45,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 ///
 /// Supported input/output formats:
 ///
-///   - @code VideoFormat} with `BufferedImage.class`, any
+///   - `VideoFormat` with `BufferedImage.class`, any
 ///     width, any height, any depth.
 ///   - `VideoFormat` with `byte[].class`, same width and height as input
 ///     format, depth=24.
