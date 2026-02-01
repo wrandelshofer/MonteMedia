@@ -14,7 +14,7 @@ module org.monte.demo.screenrecorder {
     requires java.prefs;
 
     requires org.monte.media;
-    requires org.monte.media.jcodec;
+    requires org.monte.media.h264;
     requires org.monte.media.swing;
     requires org.monte.media.screenrecorder;
 
