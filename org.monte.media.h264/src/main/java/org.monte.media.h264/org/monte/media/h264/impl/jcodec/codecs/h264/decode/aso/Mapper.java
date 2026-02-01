@@ -1,0 +1,29 @@
+/*
+ * @(#)Mapper.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+ */
+
+package org.monte.media.h264.impl.jcodec.codecs.h264.decode.aso;
+
+/// References:
+///
+/// JCodecProject. Copyright 2008-2019 JCodecProject.
+/// : [BSD 2-Clause License.](https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE)
+/// : [github.com](https://github.com/jcodec/jcodec)
+///
+/// @author The JCodec project
+public interface Mapper {
+    boolean leftAvailable(int index);
+
+    boolean topAvailable(int index);
+
+    int getAddress(int index);
+
+    int getMbX(int mbIndex);
+
+    int getMbY(int mbIndex);
+
+    boolean topRightAvailable(int mbIndex);
+
+    boolean topLeftAvailable(int mbIdx);
+}

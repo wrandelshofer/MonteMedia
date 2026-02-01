@@ -8,12 +8,12 @@ import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKey;
 import org.monte.media.av.FormatKeys.MediaType;
+import org.monte.media.image.FloatImages;
 import org.monte.media.image.algo.NearestNeighbourResampleAlgoFloat;
 import org.monte.media.image.op.GaussianKernelFactory;
 import org.monte.media.image.op.ScaleOp;
 
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import static org.monte.media.av.BufferFlag.DISCARD;
@@ -98,18 +98,19 @@ public class ScaleImageCodec extends org.monte.media.av.AbstractCodec {
     }
 
     private BufferedImage reuseOutputImage(BufferedImage imgIn, BufferedImage imgOut) {
-        if (imgOut == null
-                || imgOut.getColorModel() != imgIn.getColorModel()
-                || imgOut.getWidth() != outputFormat.get(WidthKey)
-                || imgOut.getHeight() != outputFormat.get(HeightKey)) {
-            return new BufferedImage(imgIn.getColorModel(),
-                    imgIn.getColorModel().createCompatibleWritableRaster(
-                            outputFormat.get(WidthKey), outputFormat.get(HeightKey)),
-                    imgIn.isAlphaPremultiplied(), null);
+        //   if (imgOut == null
+        //           || imgOut.getColorModel() != imgIn.getColorModel()
+        //           || imgOut.getWidth() != outputFormat.get(WidthKey)
+        //           || imgOut.getHeight() != outputFormat.get(HeightKey)) {
+        //       return new BufferedImage(imgIn.getColorModel(),
+        //               imgIn.getColorModel().createCompatibleWritableRaster(
+        //                       outputFormat.get(WidthKey), outputFormat.get(HeightKey)),
+        //               imgIn.isAlphaPremultiplied(), null);
 
-        }
+        //   }
 
-        return imgOut;
+        //   return imgOut;
+        return FloatImages.reuseDestImage(imgOut, outputFormat.get(WidthKey), outputFormat.get(HeightKey), imgIn.getColorModel());
     }
 
     private void upscaleImage(BufferedImage src, BufferedImage dst) {

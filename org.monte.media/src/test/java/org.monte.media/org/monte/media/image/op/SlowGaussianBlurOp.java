@@ -7,8 +7,7 @@ package org.monte.media.image.op;
 
 import org.monte.media.image.FloatImages;
 
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -42,7 +41,7 @@ public class SlowGaussianBlurOp implements BufferedImageOp {
         else if (!(dest.getRaster().getDataBuffer() instanceof DataBufferFloat)) {
             throw new IllegalArgumentException("dst must have data buffer float");
         }
-        src = FloatImages.reuseSourceImage(src, dest.getColorModel());
+        src = FloatImages.convertImage(src, dest.getColorModel(), null);
 
         var in = (DataBufferFloat) src.getRaster().getDataBuffer();
         var out = (DataBufferFloat) dest.getRaster().getDataBuffer();

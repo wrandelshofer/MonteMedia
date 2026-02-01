@@ -7,8 +7,7 @@ package org.monte.media.image.op;
 
 import org.monte.media.image.FloatImages;
 
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -59,7 +58,7 @@ public class ConvolveOp implements BufferedImageOp {
     /// @param dst The `BufferedImage` in which to store the results$
     /// @return the filtered image
     /// @throws IllegalArgumentException if `src` and`dst` are the same
-    ///                                                                                                                                                                                                                                                                       or if `dst` does not have a buffer of type [DataBufferFloat].
+    ///                                                                                                                                                                                                                                                                                                                                         or if `dst` does not have a buffer of type [DataBufferFloat].
     @Override
     public BufferedImage filter(BufferedImage src, BufferedImage dst) {
         if (src == null) {
@@ -73,7 +72,7 @@ public class ConvolveOp implements BufferedImageOp {
         else if (!(dst.getRaster().getDataBuffer() instanceof DataBufferFloat)) {
             throw new IllegalArgumentException("dst must have data buffer float");
         }
-        src = FloatImages.reuseSourceImage(src, dst.getColorModel());
+        src = FloatImages.convertImage(src, dst.getColorModel(), null);
 
         var in = (DataBufferFloat) src.getRaster().getDataBuffer();
         var out = (DataBufferFloat) dst.getRaster().getDataBuffer();

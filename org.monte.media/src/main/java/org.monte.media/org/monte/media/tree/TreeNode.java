@@ -5,7 +5,6 @@
 package org.monte.media.tree;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -45,6 +44,7 @@ public class TreeNode<T extends TreeNode<T>> {
         if (oldParent != null) {
             oldParent.remove(child);
         }
+        //noinspection unchecked
         child.setParent((T) this);
 
         children.add(child);
@@ -55,7 +55,7 @@ public class TreeNode<T extends TreeNode<T>> {
     }
 
     public void sortChildren(Comparator<T> comparator) {
-        Collections.sort(children, comparator);
+        children.sort(comparator);
     }
 
     public void removeAllChildren() {

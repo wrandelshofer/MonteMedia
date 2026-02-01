@@ -7,21 +7,14 @@ package org.monte.media.image.op;
 
 import org.monte.media.image.FloatImages;
 
-import java.awt.Point;
-import java.awt.RenderingHints;
-import java.awt.color.ColorSpace;
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BandedSampleModel;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ColorModel;
-import java.awt.image.ComponentColorModel;
-import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferFloat;
 import java.awt.image.Kernel;
-import java.awt.image.Raster;
-import java.awt.image.SampleModel;
 
 
 /// Sharpens an image by subtracting a gaussian blur from the image.
@@ -82,7 +75,7 @@ public class UnsharpMaskOp implements BufferedImageOp {
     /// @param dst The `BufferedImage` in which to store the results
     /// @return the filtered image
     /// @throws IllegalArgumentException if `src` and`dst` are the same
-    ///                                                                                                    or if `dst` does not have a buffer of type [DataBufferFloat].
+    ///                                                                                                                                                                                                                                        or if `dst` does not have a buffer of type [DataBufferFloat].
     @Override
     public BufferedImage filter(BufferedImage src, BufferedImage dst) {
         if (src == null) {
@@ -96,7 +89,7 @@ public class UnsharpMaskOp implements BufferedImageOp {
         else if (!(dst.getRaster().getDataBuffer() instanceof DataBufferFloat)) {
             throw new IllegalArgumentException("dst must have data buffer float");
         }
-        src = FloatImages.reuseSourceImage(src, dst.getColorModel());
+        src = FloatImages.convertImage(src, dst.getColorModel(), null);
         var dstH = convolveH.createCompatibleDestImage(src, dst.getColorModel());
         var dstV = convolveV.createCompatibleDestImage(src, dst.getColorModel());
         dstH = convolveH.filter(src, dstH);
@@ -106,7 +99,7 @@ public class UnsharpMaskOp implements BufferedImageOp {
         var blurred = (DataBufferFloat) dstV.getRaster().getDataBuffer();
         var out = (DataBufferFloat) dst.getRaster().getDataBuffer();
 
-        for (int bank = 0, n = blurred.getNumBanks(); bank < n; bank++) {
+        for (int bank = 0, n = Math.min(in.getNumBanks(), blurred.getNumBanks()); bank < n; bank++) {
             blend(in.getData(bank), blurred.getData(bank), out.getData(bank), amount, threshold);
         }
         return dst;
@@ -135,14 +128,7 @@ public class UnsharpMaskOp implements BufferedImageOp {
     public BufferedImage createCompatibleDestImage(BufferedImage src, ColorModel destCM) {
         int dstWidth = src.getWidth();
         int dstHeight = src.getHeight();
-        ColorSpace cs = destCM.getColorSpace();
-        ComponentColorModel cm = new ComponentColorModel(cs, false, false, ComponentColorModel.OPAQUE, DataBuffer.TYPE_FLOAT);
-        SampleModel sampleModel = new BandedSampleModel(DataBuffer.TYPE_FLOAT,
-                dstWidth, dstHeight, cs.getNumComponents());
-        return new BufferedImage(cm, Raster.createWritableRaster(
-                sampleModel, new DataBufferFloat(dstWidth * dstHeight, cm.getNumComponents()),
-                new Point(0, 0)), cm.isAlphaPremultiplied(), null);
-
+        return FloatImages.reuseDestImage(null, dstWidth, dstHeight, destCM);
     }
 
 

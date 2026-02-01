@@ -10,87 +10,95 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
+
 <GridPane fx:id="root" hgap="8.0" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
           minWidth="-Infinity" vgap="8.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="org.monte.demo.javafx.colorquantizer.SizeInspectorController">
-  <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="24.0"/>
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
-  </columnConstraints>
-  <rowConstraints>
-    <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
-    <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
-    <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
-    <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
-    <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
-    <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
-    <RowConstraints minHeight="10.0" vgrow="NEVER"/>
-    <RowConstraints minHeight="10.0" vgrow="NEVER"/>
-  </rowConstraints>
-  <children>
-    <CheckBox fx:id="cropCheckBox" mnemonicParsing="false" text="Crop: top left bottom right"
-              GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
-      <GridPane.margin>
-        <Insets top="16.0"/>
-      </GridPane.margin>
-    </CheckBox>
-    <TextField fx:id="cropTopField" alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity"
-               minHeight="-Infinity" minWidth="-Infinity" prefColumnCount="4" text="0" GridPane.columnIndex="1"
-               GridPane.rowIndex="2"/>
-    <TextField fx:id="cropLeftField" alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity"
-               minHeight="-Infinity" minWidth="-Infinity" prefColumnCount="4" text="0" GridPane.columnIndex="2"
-               GridPane.rowIndex="2"/>
-    <TextField fx:id="cropBottomField" alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity"
-               minHeight="-Infinity" minWidth="-Infinity" prefColumnCount="4" text="0" GridPane.columnIndex="3"
-               GridPane.rowIndex="2"/>
-    <TextField fx:id="cropRightField" alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity"
-               minHeight="-Infinity" minWidth="-Infinity" prefColumnCount="4" text="0" GridPane.columnIndex="4"
-               GridPane.rowIndex="2"/>
-    <CheckBox fx:id="scaleCheckBox" mnemonicParsing="false" text="Scale: width height" GridPane.columnSpan="2147483647"
-              GridPane.rowIndex="3">
-      <GridPane.margin>
-        <Insets top="16.0"/>
-      </GridPane.margin>
-    </CheckBox>
-    <TextField fx:id="scaleWidthField" alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity"
-               minHeight="-Infinity" minWidth="-Infinity" prefColumnCount="4" text="0" GridPane.columnIndex="1"
-               GridPane.rowIndex="4"/>
-    <TextField fx:id="scaleHeightField" alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity"
-               minHeight="-Infinity" minWidth="-Infinity" prefColumnCount="4" text="0" GridPane.columnIndex="2"
-               GridPane.rowIndex="4"/>
-    <CheckBox fx:id="preserveAspectRatioCheckBox" mnemonicParsing="false" text="Preserve aspect ratio"
-              GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="5">
-      <font>
-        <Font size="11.0"/>
-      </font>
-    </CheckBox>
-    <HBox spacing="4.0" GridPane.columnSpan="2147483647">
-      <children>
-        <Label text="Reference Image Size: "/>
-        <Label fx:id="widthLabel" text="0"/>
-        <Label text="x"/>
-        <Label fx:id="heightLabel" text="0"/>
-      </children>
-    </HBox>
-    <Spinner fx:id="zoomSpinner" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="10"/>
-    <Label text="Zoom" GridPane.columnSpan="2147483647" GridPane.rowIndex="9"/>
-    <Label text="Blur Radius Factor:" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
-    <TextField fx:id="scaleBlurRadiusFactorField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-               minWidth="-Infinity" prefColumnCount="4" GridPane.columnIndex="2" GridPane.rowIndex="6"/>
-    <Label text="Sharpen Amount:" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
-    <TextField fx:id="sharpenAmountField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-               minWidth="-Infinity" prefColumnCount="4" GridPane.columnIndex="2" GridPane.rowIndex="7"/>
-    <TextField fx:id="sharpenRadiusField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-               minWidth="-Infinity" prefColumnCount="4" GridPane.columnIndex="4" GridPane.rowIndex="7"/>
-    <Label text="Radius:" GridPane.columnIndex="3" GridPane.rowIndex="7"/>
-  </children>
-  <padding>
-    <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
-  </padding>
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="24.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
+        <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
+        <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
+        <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
+        <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
+        <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+        <RowConstraints minHeight="10.0" vgrow="NEVER"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+        <RowConstraints minHeight="10.0" vgrow="NEVER"/>
+        <RowConstraints minHeight="10.0" vgrow="NEVER"/>
+    </rowConstraints>
+    <children>
+        <CheckBox fx:id="cropCheckBox" mnemonicParsing="false" text="Crop: top left bottom right"
+                  GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+            <GridPane.margin>
+                <Insets top="16.0"/>
+            </GridPane.margin>
+        </CheckBox>
+        <TextField fx:id="cropTopField" alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity"
+                   minHeight="-Infinity" minWidth="-Infinity" prefColumnCount="4" text="0" GridPane.columnIndex="1"
+                   GridPane.rowIndex="2"/>
+        <TextField fx:id="cropLeftField" alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity"
+                   minHeight="-Infinity" minWidth="-Infinity" prefColumnCount="4" text="0" GridPane.columnIndex="2"
+                   GridPane.rowIndex="2"/>
+        <TextField fx:id="cropBottomField" alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity"
+                   minHeight="-Infinity" minWidth="-Infinity" prefColumnCount="4" text="0" GridPane.columnIndex="3"
+                   GridPane.rowIndex="2"/>
+        <TextField fx:id="cropRightField" alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity"
+                   minHeight="-Infinity" minWidth="-Infinity" prefColumnCount="4" text="0" GridPane.columnIndex="4"
+                   GridPane.rowIndex="2"/>
+        <CheckBox fx:id="scaleCheckBox" mnemonicParsing="false" text="Scale: width height"
+                  GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
+            <GridPane.margin>
+                <Insets top="16.0"/>
+            </GridPane.margin>
+        </CheckBox>
+        <TextField fx:id="scaleWidthField" alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity"
+                   minHeight="-Infinity" minWidth="-Infinity" prefColumnCount="4" text="0" GridPane.columnIndex="1"
+                   GridPane.rowIndex="4"/>
+        <TextField fx:id="scaleHeightField" alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity"
+                   minHeight="-Infinity" minWidth="-Infinity" prefColumnCount="4" text="0" GridPane.columnIndex="2"
+                   GridPane.rowIndex="4"/>
+        <CheckBox fx:id="preserveAspectRatioCheckBox" mnemonicParsing="false" text="Preserve aspect ratio"
+                  GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="5">
+            <font>
+                <Font size="11.0"/>
+            </font>
+        </CheckBox>
+        <HBox spacing="4.0" GridPane.columnSpan="2147483647">
+            <children>
+                <Label text="Reference Image Size: "/>
+                <Label fx:id="widthLabel" text="0"/>
+                <Label text="x"/>
+                <Label fx:id="heightLabel" text="0"/>
+            </children>
+        </HBox>
+        <Spinner fx:id="zoomSpinner" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="11"/>
+        <Label text="Zoom" GridPane.columnSpan="2147483647" GridPane.rowIndex="10"/>
+        <Label text="Blur Radius Factor:" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+        <TextField fx:id="scaleBlurRadiusFactorField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                   minWidth="-Infinity" prefColumnCount="4" GridPane.columnIndex="2" GridPane.rowIndex="6"/>
+        <Label text="Sharpen Amount:" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+        <TextField fx:id="sharpenAmountField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                   minWidth="-Infinity" prefColumnCount="4" GridPane.columnIndex="2" GridPane.rowIndex="7"/>
+        <TextField fx:id="sharpenRadiusField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                   minWidth="-Infinity" prefColumnCount="4" GridPane.columnIndex="4" GridPane.rowIndex="7"/>
+        <Label text="Radius:" GridPane.columnIndex="3" GridPane.rowIndex="7"/>
+        <CheckBox fx:id="scaleInLinearSpaceCheckBox" mnemonicParsing="false" text="Scale in linear color space"
+                  GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="8">
+            <padding>
+                <Insets top="8.0"/>
+            </padding>
+        </CheckBox>
+    </children>
+    <padding>
+        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+    </padding>
 </GridPane>

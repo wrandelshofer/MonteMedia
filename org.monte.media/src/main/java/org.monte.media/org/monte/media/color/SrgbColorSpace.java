@@ -93,6 +93,11 @@ public class SrgbColorSpace extends ParametricNonLinearRgbColorSpace {
     }
 
     @Override
+    public boolean isCS_sRGB() {
+        return true;
+    }
+
+    @Override
     public float[] toRGB(float[] colorvalue, float[] rgb) {
         System.arraycopy(colorvalue, 0, rgb, 0, 3);
         return rgb;

@@ -32,6 +32,7 @@ import org.monte.media.av.Buffer;
 import org.monte.media.av.Codec;
 import org.monte.media.av.CodecChain;
 import org.monte.media.av.Format;
+import org.monte.media.av.codec.video.ConvertColorSpaceCodec;
 import org.monte.media.av.codec.video.CropImageCodec;
 import org.monte.media.av.codec.video.ImageOpCodec;
 import org.monte.media.av.codec.video.ReplaceColorSpaceCodec;
@@ -46,9 +47,7 @@ import javax.imageio.spi.IIORegistry;
 import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.spi.ServiceRegistry;
 import javax.imageio.stream.FileImageOutputStream;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
@@ -71,6 +70,7 @@ import java.util.stream.IntStream;
 public class ColorQuantizerMainModel {
     private final ObjectProperty<ColorSpace> referenceImageColorSpace = new SimpleObjectProperty<>();
     private final BooleanProperty lockPaletteIndex0 = new SimpleBooleanProperty();
+    private final BooleanProperty scaleInLinearSpace = new SimpleBooleanProperty();
     private final BooleanProperty crop = new SimpleBooleanProperty();
     private final BooleanProperty scale = new SimpleBooleanProperty();
     private final BooleanProperty preserveAspectRatio = new SimpleBooleanProperty(true);
@@ -87,7 +87,7 @@ public class ColorQuantizerMainModel {
     private final DoubleProperty ditherIntensityFactor = new SimpleDoubleProperty(1.5);
     private final DoubleProperty scaleRadiusFactor = new SimpleDoubleProperty(0.5);
     private final DoubleProperty sharpenAmount = new SimpleDoubleProperty(1);
-    private final DoubleProperty sharpenRadius = new SimpleDoubleProperty(1.35);
+    private final DoubleProperty sharpenRadius = new SimpleDoubleProperty(0.75);
     private final StringProperty batchOutputFormat = new SimpleStringProperty("PNG");
     private final ObjectProperty<Color> palette0Color = new SimpleObjectProperty<>(Color.BLACK);
     private final ObjectProperty<Path> referenceFile = new SimpleObjectProperty<>();
@@ -140,7 +140,16 @@ public class ColorQuantizerMainModel {
         paletteMode.addListener(updateRenderedImage);
         lockPaletteIndex0.addListener(updateRenderedImage);
         palette0Color.addListener(updateRenderedImage);
+        scaleInLinearSpace.addListener(updateRenderedImage);
         paletteSize.addListener(updateRenderedImage);
+    }
+
+    public boolean isScaleInLinearSpace() {
+        return scaleInLinearSpace.get();
+    }
+
+    public BooleanProperty scaleInLinearSpaceProperty() {
+        return scaleInLinearSpace;
     }
 
     public double getScaleRadiusFactor() {
@@ -292,7 +301,7 @@ public class ColorQuantizerMainModel {
         ColorSpace cs = getReferenceImageColorSpace();
         if (cs != null) {
             var codec = new ReplaceColorSpaceCodec();
-            codec.setOutputFormat(new Format(ReplaceColorSpaceCodec.ColorSpaceKey, cs));
+            codec.setOutputFormat(new Format(ReplaceColorSpaceCodec.ReplaceColorSpaceKey, cs));
             codecs.add(codec);
         } else {
             cs = inputImg.getColorModel().getColorSpace();
@@ -307,6 +316,13 @@ public class ColorQuantizerMainModel {
             codecs.add(codec);
         }
         if (isScale()) {
+            if (isScaleInLinearSpace()) {
+                var codec = new ConvertColorSpaceCodec();
+                codec.setOutputFormat(new Format(ConvertColorSpaceCodec.ConvertColorSpaceKey,
+                        ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB)));
+                codecs.add(codec);
+            }
+
             var codec = new ScaleImageCodec();
             codec.setOutputFormat(new Format(
                     VideoFormatKeys.WidthKey, getScaledWidth(),
@@ -896,7 +912,7 @@ public class ColorQuantizerMainModel {
                 setColorCorrectedReferenceImage(newv);
             } else {
                 var codec = new ReplaceColorSpaceCodec();
-                codec.setOutputFormat(new Format(ReplaceColorSpaceCodec.ColorSpaceKey, getReferenceImageColorSpace()));
+                codec.setOutputFormat(new Format(ReplaceColorSpaceCodec.ReplaceColorSpaceKey, getReferenceImageColorSpace()));
                 var in = new Buffer();
                 in.data = newv;
                 var out = new Buffer();

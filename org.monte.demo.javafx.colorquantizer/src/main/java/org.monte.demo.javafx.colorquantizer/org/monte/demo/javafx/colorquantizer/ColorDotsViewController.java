@@ -32,7 +32,7 @@ import org.monte.media.color.OKLabColorSpace;
 import org.monte.media.color.SrgbColorSpace;
 import org.monte.media.math.Point3DFloat;
 
-import java.awt.Transparency;
+import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ComponentColorModel;
@@ -105,8 +105,6 @@ public class ColorDotsViewController {
     }
 
     private void buildBoundingBox() {
-        System.out.println("buildBox()");
-
         final PhongMaterial whiteMaterial = new PhongMaterial();
         whiteMaterial.setDiffuseColor(Color.DARKGREY);
         whiteMaterial.setSpecularColor(Color.WHITE);
@@ -151,7 +149,6 @@ public class ColorDotsViewController {
     }
 
     private void buildCamera(SubScene scene) {
-        System.out.println("buildCamera()");
         root.getChildren().add(cameraXform);
         cameraXform.getChildren().add(cameraXform2);
         cameraXform2.getChildren().add(cameraXform3);
@@ -327,11 +324,6 @@ public class ColorDotsViewController {
         }
         colorDotsGroup = new Xform(dots);
         world.getChildren().add(colorDotsGroup);
-
-        System.out.println("number of distinct colors " + done.size());
-        if (img.getColorModel() instanceof IndexColorModel icm) {
-            System.out.println("color palette size " + icm.getMapSize());
-        }
     }
 
 
@@ -394,11 +386,6 @@ public class ColorDotsViewController {
         }
         colorDotsGroup = new Xform(dots);
         world.getChildren().add(colorDotsGroup);
-        System.out.println("number of distinct colors " + done.size());
-        if (img.getColorModel() instanceof IndexColorModel icm) {
-            System.out.println("color palette size " + icm.getMapSize());
-        }
-
     }
 
     record ColorData(float[][] X, float[] xWeights) {

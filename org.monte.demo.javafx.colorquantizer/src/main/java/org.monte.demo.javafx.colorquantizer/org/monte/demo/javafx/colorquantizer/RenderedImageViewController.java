@@ -46,7 +46,7 @@ public class RenderedImageViewController {
         } else {
             new NearestNeighbourResampleAlgoFloat();
             var img = imageView.getImage();
-            int width = (int) img.getWidth();
+            int width = img == null ? 320 : (int) img.getWidth();
             int zoomValue = zoom.get();
             float scaleFactor = (float) Math.pow(2, zoomValue);
             imageView.setImage(resample(fxImg, scaleFactor));

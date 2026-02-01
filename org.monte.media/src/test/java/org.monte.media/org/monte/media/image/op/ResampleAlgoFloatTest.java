@@ -28,7 +28,7 @@ class ResampleAlgoFloatTest {
     public void shouldResampleImageUsingNearestNeighborAlgo() throws IOException {
         BufferedImage src = TestImageFactory.createHighFrequencyTestImage();
 
-        src = FloatImages.reuseSourceImage(src, src.getColorModel());
+        src = FloatImages.convertImage(src, src.getColorModel(), null);
         BufferedImage dst = FloatImages.reuseDestImage(null, dstWidth, dstHeight, src.getColorModel());
 
         ResampleAlgoFloat algo = new NearestNeighbourResampleAlgoFloat();
@@ -54,7 +54,7 @@ class ResampleAlgoFloatTest {
     public void shouldResampleImageUsingBiLinearAlgo() throws IOException {
         BufferedImage src = TestImageFactory.createHighFrequencyTestImage();
 
-        src = FloatImages.reuseSourceImage(src, src.getColorModel());
+        src = FloatImages.convertImage(src, src.getColorModel(), null);
         BufferedImage dst = FloatImages.reuseDestImage(null, dstWidth, dstHeight, src.getColorModel());
 
 

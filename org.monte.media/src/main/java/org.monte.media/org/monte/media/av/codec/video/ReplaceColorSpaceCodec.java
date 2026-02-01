@@ -29,7 +29,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_I
 public class ReplaceColorSpaceCodec extends org.monte.media.av.AbstractCodec {
 
     /// The color space of the media.
-    public final static FormatKey<ColorSpace> ColorSpaceKey = new FormatKey<>("colorSpace", ColorSpace.class);
+    public final static FormatKey<ColorSpace> ReplaceColorSpaceKey = new FormatKey<>("replaceColorSpace", ColorSpace.class);
 
     public ReplaceColorSpaceCodec() {
         super(new Format[]{
@@ -46,7 +46,7 @@ public class ReplaceColorSpaceCodec extends org.monte.media.av.AbstractCodec {
 
     @Override
     public Format setOutputFormat(Format f) {
-        if (!f.containsKey(ColorSpaceKey)) {
+        if (!f.containsKey(ReplaceColorSpaceKey)) {
             throw new IllegalArgumentException("Output format must specify ColorSpaceKey.");
         }
         return super.setOutputFormat(f);
@@ -65,9 +65,9 @@ public class ReplaceColorSpaceCodec extends org.monte.media.av.AbstractCodec {
             out.setFlag(DISCARD);
             return CODEC_FAILED;
         }
-        ColorSpace cs = outputFormat.get(ColorSpaceKey);
+        ColorSpace cs = outputFormat.get(ReplaceColorSpaceKey);
         if (cs == null) {
-            out.exception = new IllegalArgumentException("the output format must contain a " + ColorSpaceKey);
+            out.exception = new IllegalArgumentException("the output format must contain a " + ReplaceColorSpaceKey);
             return CODEC_FAILED;
         }
         BufferedImage imgOut;

@@ -146,7 +146,6 @@ public class BatchInspectorController {
     }
 
     private void onBatchStateChange(Observable observable, Worker.State oldv, Worker.State newv) {
-        System.out.println("batchStateChanged " + oldv + "->" + newv);
         switch (newv) {
             case SUCCEEDED, CANCELLED, FAILED -> onBatchTerminated();
         }

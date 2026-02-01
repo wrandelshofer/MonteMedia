@@ -9,7 +9,7 @@ import org.monte.media.image.FloatImages;
 import org.monte.media.image.algo.NearestNeighbourResampleAlgoFloat;
 import org.monte.media.image.algo.ResampleAlgoFloat;
 
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -35,7 +35,7 @@ public class ScaleOp implements BufferedImageOp {
     private final int srcWidth;
     private final int dstHeight;
     private final int dstWidth;
-    private final BoxGaussianOp gaussian;
+    private final BoxGaussianBlurOp gaussian;
     private final ResampleAlgoFloat resampler;
 
     /// Constructs a [ScaleOp] given the desired
@@ -57,7 +57,7 @@ public class ScaleOp implements BufferedImageOp {
     /// @param dstWidth           the width
     /// @param dstHeight          the height
     /// @param kernelRadiusFactor The factor with which the scale factor is multiplied
-    ///                                                                                                                                                                                       to compute the radius of the blur kernel.
+    ///                                                                                                                                                                                                                                                                                                                                                                                                       to compute the radius of the blur kernel.
     public ScaleOp(int srcWidth, int srcHeight, int dstWidth, int dstHeight,
                    float kernelRadiusFactor, SeparableKernelFactory kernelFactory, ResampleAlgoFloat resampler) {
         this.srcWidth = srcWidth;
@@ -72,7 +72,7 @@ public class ScaleOp implements BufferedImageOp {
             float radiusY = kernelRadiusFactor * heightFactor;
             float[] dataH = kernelFactory.createKernel(radiusX);
             float[] dataV = kernelFactory.createKernel(radiusY);
-            gaussian = new BoxGaussianOp(radiusX, radiusY);
+            gaussian = new BoxGaussianBlurOp(radiusX, radiusY);
         } else {
             gaussian = null;
         }
@@ -89,7 +89,7 @@ public class ScaleOp implements BufferedImageOp {
     /// @param dst The `BufferedImage` in which to store the results$
     /// @return the filtered image
     /// @throws IllegalArgumentException if `src` and`dst` are the same
-    ///                                                                                                                                                                                                       or if `dst` does not have a buffer of type [DataBufferFloat].
+    ///                                                                                                                                                                                                                                                                                                                                                                                                                                                                               or if `dst` does not have a buffer of type [DataBufferFloat].
     @Override
     public BufferedImage filter(BufferedImage src, BufferedImage dst) {
         if (src == null) {
@@ -99,10 +99,12 @@ public class ScaleOp implements BufferedImageOp {
             throw new IllegalArgumentException("src image cannot be the " +
                     "same as the dst image");
         }
-        if (dst == null || !(dst.getRaster().getDataBuffer() instanceof DataBufferFloat)) {
+        if (dst == null || !(dst.getRaster().getDataBuffer() instanceof DataBufferFloat)
+                || dst.getColorModel() != src.getColorModel()
+                || dst.getRaster().getDataBuffer().getNumBanks() != src.getRaster().getDataBuffer().getNumBanks()) {
             dst = createCompatibleDestImage(src, src.getColorModel());
         }
-        src = FloatImages.reuseSourceImage(src, dst.getColorModel());
+        src = FloatImages.convertImage(src, dst.getColorModel(), null);
         BufferedImage blurred;
         if (gaussian != null) {
             blurred = gaussian.createCompatibleDestImage(src, dst.getColorModel());
@@ -113,7 +115,7 @@ public class ScaleOp implements BufferedImageOp {
         var in = (DataBufferFloat) blurred.getRaster().getDataBuffer();
         var out = (DataBufferFloat) dst.getRaster().getDataBuffer();
 
-        for (int bank = 0, n = in.getNumBanks(); bank < n; bank++) {
+        for (int bank = 0, n = Math.min(in.getNumBanks(), out.getNumBanks()); bank < n; bank++) {
             resampler.resample(in.getData(bank), srcWidth, srcHeight, 0, srcWidth, out.getData(bank), dstWidth, dstHeight, 0, dstWidth);
         }
         return dst;

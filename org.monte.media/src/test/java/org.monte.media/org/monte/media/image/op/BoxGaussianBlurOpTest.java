@@ -21,7 +21,7 @@ public class BoxGaussianBlurOpTest {
     public void shouldConvolveImageUsingGaussian(float sigma) throws IOException {
         BufferedImage src = TestImageFactory.createHighFrequencyTestImage();
 
-        var op = new BoxGaussianOp(sigma);
+        var op = new BoxGaussianBlurOp(sigma);
         var dest = op.filter(src, null);
         BufferedImage destSRgb = new BufferedImage(dest.getWidth(), dest.getHeight(), BufferedImage.TYPE_INT_RGB);
         var g = destSRgb.createGraphics();

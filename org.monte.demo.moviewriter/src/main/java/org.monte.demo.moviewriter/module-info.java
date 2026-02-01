@@ -9,6 +9,7 @@ module org.monte.demo.moviewriter {
     requires java.desktop;
 
     requires org.monte.media;
+    requires org.monte.media.h264;
     requires org.monte.media.jcodec;
 
     exports org.monte.demo.moviewriter;

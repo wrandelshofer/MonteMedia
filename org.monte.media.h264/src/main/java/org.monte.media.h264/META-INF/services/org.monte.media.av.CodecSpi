@@ -1,0 +1,6 @@
+#
+# @(#)org.monte.media.av.CodecSpi
+# Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+#
+
+org.monte.media.h264.codec.video.H264EncoderSpi

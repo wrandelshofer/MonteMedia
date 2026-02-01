@@ -1,0 +1,62 @@
+/*
+ * @(#)H264EncoderUtils.java
+ * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+ */
+
+package org.monte.media.h264.impl.jcodec.codecs.h264.encode;
+
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
+/// Contains utility functions commonly used in H264 encoder
+///
+/// References:
+///
+/// JCodecProject. Copyright 2008-2019 JCodecProject.
+/// : [BSD 2-Clause License.](https://github.com/jcodec/jcodec/blob/7e5283408a75c3cdbefba98a57d546e170f0b7d0/LICENSE)
+/// : [github.com](https://github.com/jcodec/jcodec)
+///
+/// @author Stanislav Vitvitskyy
+public class H264EncoderUtils {
+    public static int median(int a, boolean ar, int b, boolean br, int c, boolean cr, int d, boolean dr, boolean aAvb,
+                             boolean bAvb, boolean cAvb, boolean dAvb) {
+        ar &= aAvb;
+        br &= bAvb;
+        cr &= cAvb;
+
+        if (!cAvb) {
+            c = d;
+            cr = dr;
+            cAvb = dAvb;
+        }
+
+        if (aAvb && !bAvb && !cAvb) {
+            b = c = a;
+            bAvb = cAvb = aAvb;
+        }
+
+        a = aAvb ? a : 0;
+        b = bAvb ? b : 0;
+        c = cAvb ? c : 0;
+
+        if (ar && !br && !cr)
+            return a;
+        else if (br && !ar && !cr)
+            return b;
+        else if (cr && !ar && !br)
+            return c;
+
+        return a + b + c - min(min(a, b), c) - max(max(a, b), c);
+    }
+
+    public static int mse(int[] orig, int[] enc, int w, int h) {
+        int sum = 0;
+        for (int i = 0, off = 0; i < h; i++) {
+            for (int j = 0; j < w; j++, off++) {
+                int diff = orig[off] - enc[off];
+                sum += diff * diff;
+            }
+        }
+        return sum / (w * h);
+    }
+}

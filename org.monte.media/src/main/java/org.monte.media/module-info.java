@@ -4,7 +4,7 @@
  */
 
 import org.monte.media.avi.codec.video.ZMBVDecoderSpi;
-import org.monte.media.mp4.codec.video.H264EncoderSpi;
+
 
 /// A library for processing still images, video, audio and meta-data.
 ///
@@ -92,7 +92,6 @@ module org.monte.media {
     exports org.monte.media.pgm;
     exports org.monte.media.quicktime;
     exports org.monte.media.quicktime.codec.audio;
-    exports org.monte.media.mp4.codec.video;
     exports org.monte.media.riff;
     exports org.monte.media.tree;
     exports org.monte.media.tiff;
@@ -132,8 +131,7 @@ module org.monte.media {
             org.monte.media.avi.codec.video.DIBEncoderSpi,
             org.monte.media.avi.codec.video.RunLengthDecoderSpi,
             org.monte.media.avi.codec.video.RunLengthEncoderSpi,
-            ZMBVDecoderSpi,
-            H264EncoderSpi;
+            ZMBVDecoderSpi;
 
     provides org.monte.media.av.MovieWriterSpi with
             org.monte.media.quicktime.QuickTimeWriterSpi,

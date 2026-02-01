@@ -87,8 +87,8 @@ public class LinearSrgbColorSpace extends ParametricLinearRgbColorSpace {
         float sign = Math.signum(nonlinear);
         float abs = Math.abs(nonlinear);
         if (abs < 0.04045f) {
-            return nonlinear / 12.92f;
+            return nonlinear * (float) (1d / 12.92d);
         }
-        return sign * (float) (Math.pow((abs + 0.055f) / 1.055f, 2.4f));
+        return sign * (float) (Math.pow((abs + 0.055f) * (float) (1d / 1.055d), 2.4f));
     }
 }

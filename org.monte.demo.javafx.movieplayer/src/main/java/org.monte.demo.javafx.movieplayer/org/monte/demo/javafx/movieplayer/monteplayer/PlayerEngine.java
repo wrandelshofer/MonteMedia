@@ -428,43 +428,44 @@ class PlayerEngine extends AbstractPlayer {
                     if (sourceDataLine != null) {
                         sourceDataLine.start();
                     }
-                    try {
-                        Rational playTime = playStartTime;
-                        long startNanoTime = System.nanoTime();
-                        SourceDataLine sourceDataLine1 = t.getSourceDataLine();
-                        while (true) {
+                    Rational playTime = playStartTime;
+                    long startNanoTime = System.nanoTime();
+                    SourceDataLine sourceDataLine1 = t.getSourceDataLine();
+                    while (true) {
+                        try {
                             updateBuffer(t, playTime);
                             int elapsedMovieMillis = playTime.subtract(playStartTime).multiply(1000).intValue();
                             int elapsedSystemMillis = (int) ((System.nanoTime() - startNanoTime) / 1_000_000L);
-                            try {
-                                int sleepMillis = (elapsedMovieMillis - elapsedSystemMillis);
-                                if (sleepMillis > JIFFIE) {
-                                    Thread.sleep(sleepMillis - JIFFIE);
-                                }
-                                Buffer outBuf = t.getOutBufferA();
-                                if (!player.isMute()) {
-                                    if (!outBuf.isFlag(BufferFlag.DISCARD) && outBuf.data instanceof byte[] byteArray) {
-                                        // Skip samples that are before render time
-                                        Rational bufferStartTime = outBuf.timeStamp;
-                                        int skipSamples;
-                                        skipSamples = Math.max(0, playTime.subtract(bufferStartTime).divide(outBuf.sampleDuration).intValue());
-                                        int remainingSamples = outBuf.sampleCount - skipSamples;
-                                        if (remainingSamples > 0) {
-                                            int sampleSize = outBuf.length / outBuf.sampleCount;
-                                            int samplesLength = sampleSize * remainingSamples;
-                                            int samplesOffset = outBuf.offset + skipSamples * sampleSize;
-                                            int written = sourceDataLine1.write(byteArray, samplesOffset, samplesLength);
-                                            //if (written != outBuf.length) {
-                                            //    System.err.println("sourceDataLine overrun. wrote " + written + " instead of " + outBuf.length);
-                                            //}
-                                        }
 
-                                    }
-                                    playTime = outBuf.getBufferEndTimestamp();
-                                }
-                            } catch (InterruptedException e) {
-                                // this happens when seeking and when the player is stopped
+                            int sleepMillis = (elapsedMovieMillis - elapsedSystemMillis - JIFFIE);
+                            if (sleepMillis > JIFFIE) {
+                                //noinspection BusyWait
+                                Thread.sleep(JIFFIE);
                             }
+                            Buffer outBuf = t.getOutBufferA();
+                            if (!player.isMute()) {
+                                if (!outBuf.isFlag(BufferFlag.DISCARD) && outBuf.data instanceof byte[] byteArray) {
+                                    // Skip samples that are before render time
+                                    Rational bufferStartTime = outBuf.timeStamp;
+                                    int skipSamples;
+                                    skipSamples = Math.max(0, playTime.subtract(bufferStartTime).divide(outBuf.sampleDuration).intValue());
+                                    int remainingSamples = outBuf.sampleCount - skipSamples;
+                                    if (remainingSamples > 0) {
+                                        int sampleSize = outBuf.length / outBuf.sampleCount;
+                                        int samplesLength = sampleSize * remainingSamples;
+                                        int samplesOffset = outBuf.offset + skipSamples * sampleSize;
+                                        int written = sourceDataLine1.write(byteArray, samplesOffset, samplesLength);
+                                        if (written != outBuf.length) {
+                                            System.err.println("sourceDataLine overrun. wrote " + written + " instead of " + outBuf.length);
+                                        }
+                                    }
+
+                                }
+                                playTime = outBuf.getBufferEndTimestamp();
+                            }
+                            //  } catch (InterruptedException e) {
+                            //      // this happens when seeking and when the player is stopped
+                            //  }
                             long currentNanoTime = System.nanoTime();
                             if (!(playTime.compareTo(playEndTime) <= 0 && getTargetState() == PlayerEngine.STARTED)) {
                                 break;
@@ -480,68 +481,18 @@ class PlayerEngine extends AbstractPlayer {
                                 playTime = newTargetTime;
                                 startNanoTime = currentNanoTime;
                             }
+                        } catch (InterruptedException e) {
+                            // this happens when seeking and when the player is stopped
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            break;
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
                 });
             }
             index++;
         }
 
-    }
-
-    private void renderAudioBuffersOld(Rational renderTime, long currentNanoTime) {
-        for (var track : media.getTracks()) {
-            if (!(track instanceof MonteAudioTrack) || ((MonteAudioTrack) track).getCodec() == null) {
-                continue;
-            }
-            MonteAudioTrack tr = (MonteAudioTrack) track;
-            Buffer outBuf = tr.getOutBufferA();
-
-            if (!outBuf.isFlag(BufferFlag.DISCARD)) {
-                Rational bufferStartTime = outBuf.timeStamp;
-                Rational bufferEndTime = outBuf.getBufferEndTimestamp();
-                boolean bufferTimeIntersectsPlayTime = renderTime.isInRange(bufferStartTime, bufferEndTime);
-                if (bufferTimeIntersectsPlayTime && tr.getSourceDataLine() != null && outBuf.data instanceof byte[] byteArray) {
-                    boolean isRenderTimeValid = tr.renderedUntilNanoTime + (1_000_000_000L / PLAYER_RATE) > currentNanoTime;
-                    int skipSamples;
-
-                    if (isRenderTimeValid && bufferStartTime.compareTo(tr.getRenderedStartTime()) == 0
-                            && bufferEndTime.compareTo(tr.getRenderedEndTime()) == 0) {
-                        // We have already played this sample
-                        skipSamples = outBuf.sampleCount;
-                    } else {
-                        // Skip samples that are before render time
-                        if (isRenderTimeValid) {
-                            skipSamples = Math.max(0, tr.getRenderedEndTime().subtract(bufferStartTime).divide(outBuf.sampleDuration).intValue());
-                        } else {
-                            skipSamples = Math.max(0, renderTime.subtract(bufferStartTime).divide(outBuf.sampleDuration).intValue());
-                        }
-                        Rational divide = new Rational(tr.renderedUntilNanoTime - currentNanoTime - 20_000_000, 1_000_000_000).divide(outBuf.sampleDuration);
-                        int skipRenderedSamples = divide.isNegative() ? 0 : divide.intValue();
-                        skipSamples = Math.max(skipRenderedSamples, skipSamples);
-                    }
-                    int numSamplesToPlay = outBuf.sampleCount - skipSamples;
-                    if (numSamplesToPlay > 0) {
-                        int sampleSize = outBuf.length / outBuf.sampleCount;
-                        int samplesLength = sampleSize * numSamplesToPlay;
-                        int samplesOffset = outBuf.offset + skipSamples * sampleSize;
-
-                        SourceDataLine sourceDataLine = tr.getSourceDataLine();
-                        int written = sourceDataLine.write(byteArray, samplesOffset, samplesLength);
-                        if (written != samplesLength) {
-                            System.err.println("sourceDataLine overrun. wrote " + written + " instead of " + samplesLength);
-                        }
-
-                        Rational clippedBufferDuration = outBuf.sampleDuration.multiply(numSamplesToPlay);
-                        tr.renderedUntilNanoTime = Math.max(tr.renderedUntilNanoTime, currentNanoTime) + (long) (clippedBufferDuration.doubleValue() * 1e9);
-                        tr.setRenderedStartTime(bufferStartTime);
-                        tr.setRenderedEndTime(bufferEndTime);
-                    }
-                }
-            }
-        }
     }
 
     private void updateBuffer(TrackInterface track, Rational playTime) throws IOException {
@@ -572,11 +523,6 @@ class PlayerEngine extends AbstractPlayer {
 
     private void renderBuffers(Rational renderTime, boolean playAudio, long currentNanoTime) throws IOException {
         renderedTime = renderTime;
-        renderVideoBuffers(renderTime);
-    }
-
-
-    private void renderVideoBuffers(Rational renderTime) {
         Platform.runLater(() -> {
             player.setCurrentTime(Duration.seconds(renderTime.doubleValue()));
             for (var track : media.getTracks()) {

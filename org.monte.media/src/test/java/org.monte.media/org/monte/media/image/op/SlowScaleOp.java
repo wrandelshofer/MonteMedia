@@ -9,7 +9,7 @@ import org.monte.media.image.FloatImages;
 import org.monte.media.image.algo.NearestNeighbourResampleAlgoFloat;
 import org.monte.media.image.algo.ResampleAlgoFloat;
 
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -59,7 +59,7 @@ public class SlowScaleOp implements BufferedImageOp {
     /// @param dstWidth           the width
     /// @param dstHeight          the height
     /// @param kernelRadiusFactor The factor with which the scale factor is multiplied
-    ///                                                                                                                                                             to compute the radius of the blur kernel.
+    ///                                                                                                                                                                                                                 to compute the radius of the blur kernel.
     public SlowScaleOp(int srcWidth, int srcHeight, int dstWidth, int dstHeight,
                        float kernelRadiusFactor, SeparableKernelFactory kernelFactory, ResampleAlgoFloat resampler) {
         this.srcWidth = srcWidth;
@@ -92,7 +92,7 @@ public class SlowScaleOp implements BufferedImageOp {
     /// @param dst The `BufferedImage` in which to store the results$
     /// @return the filtered image
     /// @throws IllegalArgumentException if `src` and`dst` are the same
-    ///                                                                                                                                                                                                       or if `dst` does not have a buffer of type [DataBufferFloat].
+    ///                                                                                                                                                                                                                                                                         or if `dst` does not have a buffer of type [DataBufferFloat].
     @Override
     public BufferedImage filter(BufferedImage src, BufferedImage dst) {
         if (src == null) {
@@ -105,7 +105,7 @@ public class SlowScaleOp implements BufferedImageOp {
         if (dst == null || !(dst.getRaster().getDataBuffer() instanceof DataBufferFloat)) {
             dst = createCompatibleDestImage(src, src.getColorModel());
         }
-        src = FloatImages.reuseSourceImage(src, dst.getColorModel());
+        src = FloatImages.convertImage(src, dst.getColorModel(), null);
         BufferedImage dstV;
         if (convolveH != null && convolveV != null) {
             var dstH = convolveH.createCompatibleDestImage(src, dst.getColorModel());
