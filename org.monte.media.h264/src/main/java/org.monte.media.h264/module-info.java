@@ -12,7 +12,7 @@ module org.monte.media.h264 {
     requires java.desktop;
     requires java.prefs;
     requires org.monte.media;
-    requires org.monte.media.swing;
+    requires org.monte.media.quicktime;
 
     exports org.monte.media.h264.codec.video;
 

@@ -26,13 +26,20 @@
     <file url="file://$PROJECT_DIR$/org.monte.demo.sift/src/main/java/org.monte.demo.sift" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.monte.media.amigaatari/src/main/java/org.monte.media.amigaatari" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.monte.media.animconverter/src/main/java/org.monte.media.animconverter" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/org.monte.media.avi/src/main/java/org.monte.media.avi" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.monte.media.color/src/main/java/org.monte.media.color" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/org.monte.media.exif/src/main/java/org.monte.media.tiff" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.monte.media.h264/src/main/java/org.monte.media.h264" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.monte.media.javafx/src/main/java/org.monte.media.javafx" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.monte.media.jcodec/src/main/java/org.monte.media.jcodec" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.monte.media.jmf/src/main/java/org.monte.media.jmf" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/org.monte.media.jpeg/src/main/java/org.monte.media.jpeg" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/org.monte.media.mp3/src/main/java/org.monte.media.mp3" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/org.monte.media.mp4/src/main/java/org.monte.media.mp4" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/org.monte.media.quicktime/src/main/java/org.monte.media.quicktime" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.monte.media.screenrecorder/src/main/java/org.monte.media.screenrecorder" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.monte.media.swing/src/main/java/org.monte.media.swing" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/org.monte.media.zipmovie/src/main/java/org.monte.media.zipmovie" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.monte.media/src/main/java/org.monte.media" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />

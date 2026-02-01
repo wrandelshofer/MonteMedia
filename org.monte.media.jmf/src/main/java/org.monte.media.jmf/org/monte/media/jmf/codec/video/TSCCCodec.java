@@ -5,7 +5,7 @@
 package org.monte.media.jmf.codec.video;
 
 import com.sun.media.format.AviVideoFormat;
-import org.monte.media.av.codec.video.TechSmithCodecCore;
+import org.monte.media.avi.codec.video.TechSmithCodecCore;
 import org.monte.media.io.ByteArrayImageOutputStream;
 import org.monte.media.util.ArrayUtil;
 
@@ -16,7 +16,7 @@ import javax.media.ResourceUnavailableException;
 import javax.media.format.IndexedColorFormat;
 import javax.media.format.RGBFormat;
 import javax.media.format.VideoFormat;
-import java.awt.Dimension;
+import java.awt.*;
 import java.io.IOException;
 
 /// JMF Codec for the TechSmith Screen-Capture format.

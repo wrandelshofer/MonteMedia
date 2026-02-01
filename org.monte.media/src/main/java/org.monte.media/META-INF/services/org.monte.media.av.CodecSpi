@@ -3,20 +3,5 @@
 # Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
 #
 
-org.monte.media.av.codec.video.JPEGDecoderSpi
-org.monte.media.av.codec.video.JPEGEncoderSpi
 org.monte.media.av.codec.video.PNGDecoderSpi
 org.monte.media.av.codec.video.PNGEncoderSpi
-org.monte.media.av.codec.video.TechSmithDecoderSpi
-org.monte.media.av.codec.video.TechSmithEncoderSpi
-org.monte.media.quicktime.codec.audio.QuickTimePCMAudioCodecSpi
-org.monte.media.quicktime.codec.video.AnimationDecoderSpi
-org.monte.media.quicktime.codec.video.AnimationEncoderSpi
-org.monte.media.quicktime.codec.video.RawDecoderSpi
-org.monte.media.quicktime.codec.video.RawEncoderSpi
-org.monte.media.avi.codec.audio.AVIPCMAudioCodecSpi
-org.monte.media.avi.codec.video.DIBDecoderSpi
-org.monte.media.avi.codec.video.DIBEncoderSpi
-org.monte.media.avi.codec.video.RunLengthDecoderSpi
-org.monte.media.avi.codec.video.RunLengthEncoderSpi
-org.monte.media.avi.codec.video.ZMBVDecoderSpi

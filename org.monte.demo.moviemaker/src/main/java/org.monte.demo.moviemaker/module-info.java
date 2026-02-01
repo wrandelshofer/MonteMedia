@@ -11,6 +11,8 @@ module org.monte.demo.moviemaker {
 
     requires org.monte.media;
     requires org.monte.media.swing;
+    requires org.monte.media.mp3;
+    requires org.monte.media.quicktime;
 
     exports org.monte.demo.moviemaker;
 }

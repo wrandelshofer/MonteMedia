@@ -1,0 +1,7 @@
+#
+# @(#)javax.imageio.spi.ImageReaderSpi
+# Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+#
+
+org.monte.media.jpeg.CMYKJPEGImageReaderSpi
+org.monte.media.mpo.MPOImageReaderSpi

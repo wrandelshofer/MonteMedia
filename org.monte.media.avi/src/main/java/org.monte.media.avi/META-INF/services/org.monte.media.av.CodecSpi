@@ -1,0 +1,13 @@
+#
+# @(#)org.monte.media.av.CodecSpi
+# Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+#
+
+org.monte.media.avi.codec.video.TechSmithDecoderSpi
+org.monte.media.avi.codec.video.TechSmithEncoderSpi
+org.monte.media.avi.codec.audio.AVIPCMAudioCodecSpi
+org.monte.media.avi.codec.video.DIBDecoderSpi
+org.monte.media.avi.codec.video.DIBEncoderSpi
+org.monte.media.avi.codec.video.RunLengthDecoderSpi
+org.monte.media.avi.codec.video.RunLengthEncoderSpi
+org.monte.media.avi.codec.video.ZMBVDecoderSpi

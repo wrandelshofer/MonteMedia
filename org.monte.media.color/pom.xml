@@ -15,8 +15,8 @@
     <artifactId>org.monte.media.color</artifactId>
     <packaging>jar</packaging>
 
-    <name>Monte Media Amiga Atari</name>
-    <description>A library for processing Amiga and Atari still images, video, audio and meta-data.</description>
+    <name>Monte Media Color</name>
+    <description>A library for processing colors.</description>
 
     <build>
         <sourceDirectory>${basedir}/src/main/java/org.monte.media.color</sourceDirectory>
@@ -45,10 +45,6 @@
         <dependency>
             <groupId>ch.randelshofer</groupId>
             <artifactId>org.monte.media</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ch.randelshofer</groupId>
-            <artifactId>org.monte.media.swing</artifactId>
         </dependency>
         <dependency>
             <groupId>org.openjdk.jmh</groupId>

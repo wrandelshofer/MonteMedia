@@ -17,7 +17,6 @@
     <name>Monte Media Library</name>
     <description>A library for processing still images, video, audio and meta-data.</description>
 
-
     <build>
         <sourceDirectory>${basedir}/src/main/java/org.monte.media</sourceDirectory>
         <testSourceDirectory>${basedir}/src/test/java/org.monte.media</testSourceDirectory>

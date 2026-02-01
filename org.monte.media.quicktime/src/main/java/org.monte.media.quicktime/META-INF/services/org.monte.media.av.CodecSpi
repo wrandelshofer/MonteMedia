@@ -1,0 +1,10 @@
+#
+# @(#)org.monte.media.av.CodecSpi
+# Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+#
+
+org.monte.media.quicktime.codec.audio.QuickTimePCMAudioCodecSpi
+org.monte.media.quicktime.codec.video.AnimationDecoderSpi
+org.monte.media.quicktime.codec.video.AnimationEncoderSpi
+org.monte.media.quicktime.codec.video.RawDecoderSpi
+org.monte.media.quicktime.codec.video.RawEncoderSpi

@@ -7,9 +7,7 @@ package org.monte.demo.mpoimagesplitter;
 import org.monte.media.mpo.MPOFiles;
 import org.monte.media.swing.BackgroundTask;
 
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
@@ -33,7 +31,7 @@ public class Main extends javax.swing.JPanel {
         /// Called when a drag operation has
         /// encountered the `DropTarget`.
         ///
-        /// @param dtde the `DropTargetDragEvent`
+        /// @param event the `DropTargetDragEvent`
         @Override
         public void dragEnter(DropTargetDragEvent event) {
             if (event.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {

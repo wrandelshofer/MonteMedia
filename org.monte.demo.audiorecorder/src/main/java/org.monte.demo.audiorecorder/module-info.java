@@ -9,6 +9,7 @@ module org.monte.demo.audiorecorder {
     requires java.desktop;
 
     requires org.monte.media;
+    requires org.monte.media.avi;
 
     exports org.monte.demo.audiorecorder;
 }

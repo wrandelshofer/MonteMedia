@@ -17,6 +17,7 @@ module org.monte.demo.screenrecorder {
     requires org.monte.media.h264;
     requires org.monte.media.swing;
     requires org.monte.media.screenrecorder;
+    requires org.monte.media.quicktime;
 
     exports org.monte.demo.screenrecorder;
 }

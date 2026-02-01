@@ -3,6 +3,3 @@
 # Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
 #
 
-org.monte.media.avi.AVIWriterSpi
-org.monte.media.quicktime.QuickTimeWriterSpi
-org.monte.media.zipmovie.ZipMovieWriterSpi

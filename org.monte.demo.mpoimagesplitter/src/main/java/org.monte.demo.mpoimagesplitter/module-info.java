@@ -10,6 +10,7 @@ module org.monte.demo.mpoimagesplitter {
 
     requires org.monte.media;
     requires org.monte.media.swing;
+    requires org.monte.media.jpeg;
 
     exports org.monte.demo.mpoimagesplitter;
 }

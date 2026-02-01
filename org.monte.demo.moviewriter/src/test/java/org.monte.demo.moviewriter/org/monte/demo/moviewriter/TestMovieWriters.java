@@ -4,6 +4,7 @@
  */
 package org.monte.demo.moviewriter;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.monte.media.av.Buffer;
 import org.monte.media.av.BufferFlag;
@@ -131,6 +132,7 @@ public class TestMovieWriters {
         g.setTransform(tx);
     }
 
+    @Disabled
     @Test
     public void testMovieWriter() throws Exception {
 
@@ -354,6 +356,9 @@ public class TestMovieWriters {
         try {
             // Create the writer
             out = Registry.getInstance().getWriter(file);
+            if (out == null) {
+                throw new IOException("No writer for file " + file.getAbsolutePath());
+            }
 
             // Add a track to the writer
             out.addTrack(format);

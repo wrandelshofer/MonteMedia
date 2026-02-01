@@ -4,5 +4,3 @@
 #
 
 org.monte.media.pgm.PGMImageReaderSpi
-org.monte.media.jpeg.CMYKJPEGImageReaderSpi
-org.monte.media.mpo.MPOImageReaderSpi

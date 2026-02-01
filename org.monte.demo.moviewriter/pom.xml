@@ -66,6 +66,22 @@
         </dependency>
         <dependency>
             <groupId>ch.randelshofer</groupId>
+            <artifactId>org.monte.media.mp4</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.randelshofer</groupId>
+            <artifactId>org.monte.media.avi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.randelshofer</groupId>
+            <artifactId>org.monte.media.quicktime</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.randelshofer</groupId>
+            <artifactId>org.monte.media.zipmovie</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.randelshofer</groupId>
             <artifactId>org.monte.media.jcodec</artifactId>
         </dependency>
     </dependencies>

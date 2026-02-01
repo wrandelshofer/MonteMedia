@@ -3,52 +3,73 @@
   ~ Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>ch.randelshofer</groupId>
-    <artifactId>org.monte.media.parent</artifactId>
-    <version>${revision}</version>
-  </parent>
-  <artifactId>org.monte.media.screenrecorder</artifactId>
-  <packaging>jar</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>ch.randelshofer</groupId>
+        <artifactId>org.monte.media.parent</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <artifactId>org.monte.media.screenrecorder</artifactId>
+    <packaging>jar</packaging>
 
-  <name>Monte Media screen recorder</name>
-  <description>A screen recorder in pure Java.</description>
+    <name>Monte Media screen recorder</name>
+    <description>A screen recorder in pure Java.</description>
 
-  <build>
-    <sourceDirectory>${basedir}/src/main/java/org.monte.media.screenrecorder</sourceDirectory>
-    <testSourceDirectory>${basedir}/src/test/java/org.monte.media.screenrecorder</testSourceDirectory>
-    <resources>
-      <resource>
-        <directory>${basedir}/src/main/java/org.monte.media.screenrecorder</directory>
-        <excludes>
-          <exclude>**/*.java</exclude>
-        </excludes>
-      </resource>
+    <build>
+        <sourceDirectory>${basedir}/src/main/java/org.monte.media.screenrecorder</sourceDirectory>
+        <testSourceDirectory>${basedir}/src/test/java/org.monte.media.screenrecorder</testSourceDirectory>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/java/org.monte.media.screenrecorder</directory>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </resource>
 
-    </resources>
-    <testResources>
-      <testResource>
-        <directory>${basedir}/src/test/java/org.monte.media.screenrecorder</directory>
-        <excludes>
-          <exclude>**/*.java</exclude>
-        </excludes>
-      </testResource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>${basedir}/src/test/java/org.monte.media.screenrecorder</directory>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </testResource>
 
-    </testResources>
+        </testResources>
 
-    <plugins></plugins>
-  </build>
-  <dependencies>
-    <dependency>
-      <groupId>ch.randelshofer</groupId>
-      <artifactId>org.monte.media</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>ch.randelshofer</groupId>
-      <artifactId>org.monte.media.swing</artifactId>
-    </dependency>
-  </dependencies>
+        <plugins></plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>ch.randelshofer</groupId>
+            <artifactId>org.monte.media</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.randelshofer</groupId>
+            <artifactId>org.monte.media.avi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.randelshofer</groupId>
+            <artifactId>org.monte.media.quicktime</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.randelshofer</groupId>
+            <artifactId>org.monte.media.mp4</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.randelshofer</groupId>
+            <artifactId>org.monte.media.mp3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.randelshofer</groupId>
+            <artifactId>org.monte.media.h264</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.randelshofer</groupId>
+            <artifactId>org.monte.media.swing</artifactId>
+        </dependency>
+    </dependencies>
 </project>

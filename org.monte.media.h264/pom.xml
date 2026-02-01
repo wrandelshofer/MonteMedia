@@ -47,7 +47,7 @@
         </dependency>
         <dependency>
             <groupId>ch.randelshofer</groupId>
-            <artifactId>org.monte.media.swing</artifactId>
+            <artifactId>org.monte.media.quicktime</artifactId>
         </dependency>
         <dependency>
             <groupId>org.openjdk.jmh</groupId>

@@ -77,16 +77,20 @@
         <module>org.monte.demo.sift</module>
         <module>org.monte.media.amigaatari</module>
         <module>org.monte.media.animconverter</module>
+        <module>org.monte.media.avi</module>
         <module>org.monte.media.color</module>
         <module>org.monte.media.h264</module>
         <module>org.monte.media.javafx</module>
         <module>org.monte.media.jcodec</module>
         <module>org.monte.media.jmf</module>
+        <module>org.monte.media.jpeg</module>
+        <module>org.monte.media.mp3</module>
+        <module>org.monte.media.mp4</module>
+        <module>org.monte.media.quicktime</module>
         <module>org.monte.media.screenrecorder</module>
         <module>org.monte.media.swing</module>
+        <module>org.monte.media.zipmovie</module>
         <module>org.monte.media</module>
-        <!--
-        -->
     </modules>
 
     <properties>
@@ -435,7 +439,37 @@
             </dependency>
             <dependency>
                 <groupId>ch.randelshofer</groupId>
+                <artifactId>org.monte.media.avi</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.randelshofer</groupId>
                 <artifactId>org.monte.media.amigaatari</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.randelshofer</groupId>
+                <artifactId>org.monte.media.jpeg</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.randelshofer</groupId>
+                <artifactId>org.monte.media.mp3</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.randelshofer</groupId>
+                <artifactId>org.monte.media.zipmovie</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.randelshofer</groupId>
+                <artifactId>org.monte.media.mp4</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.randelshofer</groupId>
+                <artifactId>org.monte.media.quicktime</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>

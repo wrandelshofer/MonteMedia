@@ -10,6 +10,7 @@ module org.monte.media.animconverter {
 
     requires org.monte.media;
     requires org.monte.media.amigaatari;
+    requires org.monte.media.quicktime;
 
     exports org.monte.media.animconverter;
 }
