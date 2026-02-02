@@ -24,6 +24,7 @@ public class CompressBlueNoiseData {
     private static void loadDataFromTextFile(InputStream in, float[][] data) throws IOException {
         try (InputStreamReader r = new InputStreamReader(in)) {
             var tt = new StreamPosTokenizer(r);
+            tt.slashStarComments(true);
             tt.parseExponents();
             int index = 0;
             while (tt.nextToken() != StreamTokenizer.TT_EOF) {
@@ -71,6 +72,14 @@ public class CompressBlueNoiseData {
         if (!isEqual) {
             File newHexFile = new File("target", filename + ".hex");
             try (var out = Files.newBufferedWriter(newHexFile.toPath())) {
+                out.write(
+                        """
+                                /*
+                                 * @(#)BlueNoiseData0_256.hex
+                                 * Copyright © 2026 Werner Randelshofer, Switzerland. MIT License.
+                                 */
+                                """
+                );
                 for (int i = 0; i < 256; i++) {
                     for (int j = 0; j < 256; j++) {
                         out.write(Integer.toHexString(Float.floatToIntBits(expected[i][j])));

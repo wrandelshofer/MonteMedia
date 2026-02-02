@@ -36,6 +36,7 @@ class BlueNoiseData256 {
         try (InputStreamReader r = new InputStreamReader(in)) {
             var tt = new StreamPosTokenizer(r);
             tt.resetSyntax();
+            tt.slashStarComments(true);
             tt.whitespaceChars(0, ' ');
             tt.wordChars('0', '9');
             tt.wordChars('a', 'z');
