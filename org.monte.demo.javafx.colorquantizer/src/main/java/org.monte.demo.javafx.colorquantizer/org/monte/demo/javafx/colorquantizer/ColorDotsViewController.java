@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+
 public class ColorDotsViewController {
     private final ObjectProperty<BufferedImage> image = new SimpleObjectProperty<>();
 
@@ -263,10 +264,26 @@ public class ColorDotsViewController {
         handleKeyboard(scene, borderPane);
         handleMouse(scene, borderPane);
 
-        colorSpaceProperty.addListener(o -> this.updateView());
-        imageProperty().addListener(o -> this.updateView());
+        colorSpaceProperty.addListener(o -> this.updateViewLater());
+        imageProperty().addListener(o -> this.updateViewLater());
     }
 
+    private boolean isTreeVisible() {
+        for (var n = getRoot(); n != null; n = n.getParent()) {
+            if (!n.isVisible()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void updateViewLater() {
+        if (!isTreeVisible()) {
+            borderPane.requestLayout();
+            return;
+        }
+        updateView();
+    }
 
     public void updateView() {
         if (getImage() == null) return;

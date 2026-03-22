@@ -23,6 +23,7 @@ import org.monte.media.amigabitmap.AmigaHAMColorModel;
 import org.monte.media.image.algo.NearestNeighbourResampleAlgoFloat;
 
 import java.awt.image.BufferedImage;
+import java.util.stream.IntStream;
 
 public class RenderedImageViewController {
     private ScrollPane root = new ScrollPane();
@@ -73,13 +74,14 @@ public class RenderedImageViewController {
         int tx = (int) (sx * 0.5f);
         int ty = (int) (sy * 0.5f);
 
-        for (int destY = 0; destY < dstHeight; destY++) {
+        //for (int destY = 0; destY < dstHeight; destY++) {
+        IntStream.range(0, dstHeight).forEach(destY -> {
             int srcY = (int) (destY * sy) + ty;
             for (int destX = 0; destX < dstWidth; destX++) {
                 int srcX = (int) (destX * sx) + tx;
                 dstPixels.setArgb(destX, destY, srcPixels.getArgb(srcX, srcY));
             }
-        }
+        });
     }
 
     public int getZoom() {

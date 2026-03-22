@@ -14,6 +14,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ColorModel;
 import java.awt.image.DataBufferFloat;
+import java.util.stream.IntStream;
 
 /// Approximates a Gaussian blur filter by applying three Box filters.
 ///
@@ -150,7 +151,9 @@ public class BoxGaussianBlurOp implements BufferedImageOp {
      */
     private static void transposeImage(float[] in, float[] out, int w, int h) {
         int block = 256 / 4;
-        for (int x = 0; x < w; x += block) {
+        //for (int x = 0; x < w; x += block) {
+        IntStream.range(0, w / block).forEach(i -> {
+            int x = i * block;
             for (int y = 0; y < h; y += block) {
                 int blockx = Math.min(w, x + block) - x;
                 int blocky = Math.min(h, y + block) - y;
@@ -160,7 +163,7 @@ public class BoxGaussianBlurOp implements BufferedImageOp {
                     }
                 }
             }
-        }
+        });
     }
 
     /// Applies a horizontal box filter.
@@ -187,7 +190,8 @@ public class BoxGaussianBlurOp implements BufferedImageOp {
         float iarr = 1f / (r + r + 1);
 
         // For each row i
-        for (var i = 0; i < h; i++) {
+        //for (var i = 0; i < h; i++) {
+        IntStream.range(0, h).forEach(i -> {
             int ti = i * w;// index in target channel
             int li = ti; // index of left-most value in source channel
             int ri = ti + r; // index of right-most value in source channel
@@ -209,6 +213,6 @@ public class BoxGaussianBlurOp implements BufferedImageOp {
                 val += lv - in[li++];
                 out[ti++] = val * iarr;
             }
-        }
+        });
     }
 }
