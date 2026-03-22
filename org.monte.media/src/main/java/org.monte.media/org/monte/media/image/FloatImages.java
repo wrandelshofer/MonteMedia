@@ -92,20 +92,27 @@ public class FloatImages {
         //if (destCS == ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB)) destCS = LinearSrgbColorSpace.getInstance();
         byte[] srcData = ((DataBufferByte) srcRast.getDataBuffer()).getData();
         float[] destPix = new float[3];
-        int[] bandOffsets = pism.getBandOffsets();
-        float[] destData0 = ((DataBufferFloat) dstRast.getDataBuffer()).getData(bandOffsets[0]);
-        float[] destData1 = ((DataBufferFloat) dstRast.getDataBuffer()).getData(bandOffsets[1]);
-        float[] destData2 = ((DataBufferFloat) dstRast.getDataBuffer()).getData(bandOffsets[2]);
+        PixelInterleavedSampleModel srcSampleModel = (PixelInterleavedSampleModel) srcRast.getSampleModel();
+        int[] srcBandOffsets = srcSampleModel.getBandOffsets();
+        int[] dstBankIndices = ((BandedSampleModel) dstRast.getSampleModel()).getBankIndices();
+        int numBands = srcSampleModel.getNumBands();
+        float[] destData0 = ((DataBufferFloat) dstRast.getDataBuffer()).getData(dstBankIndices[0]);
+        float[] destData1 = ((DataBufferFloat) dstRast.getDataBuffer()).getData(dstBankIndices[1]);
+        float[] destData2 = ((DataBufferFloat) dstRast.getDataBuffer()).getData(dstBankIndices[2]);
+        float[] destData3 = numBands == 4 ? ((DataBufferFloat) dstRast.getDataBuffer()).getData(dstBankIndices[3]) : null;
         for (int y = 0; y < h; y++) {
             int yindex = y * w;
             for (int x = 0; x < w; x++) {
-                destPix[0] = (srcData[(yindex + x) * 3] & 0xff) * (1f / 255f);
-                destPix[1] = (srcData[(yindex + x) * 3 + 1] & 0xff) * (1f / 255f);
-                destPix[2] = (srcData[(yindex + x) * 3 + 2] & 0xff) * (1f / 255f);
+                destPix[0] = (srcData[(yindex + x) * numBands + srcBandOffsets[0]] & 0xff) * (1f / 255f);
+                destPix[1] = (srcData[(yindex + x) * numBands + srcBandOffsets[1]] & 0xff) * (1f / 255f);
+                destPix[2] = (srcData[(yindex + x) * numBands + srcBandOffsets[2]] & 0xff) * (1f / 255f);
                 destPix = destCS.fromRGB(destPix);
                 destData0[(yindex + x)] = destPix[0];
                 destData1[(yindex + x)] = destPix[1];
                 destData2[(yindex + x)] = destPix[2];
+                if (numBands == 4) {
+                    destData3[(yindex + x)] = (srcData[(yindex + x) * numBands + srcBandOffsets[3]] & 0xff) * (1f / 256f);
+                }
             }
         }
     }
