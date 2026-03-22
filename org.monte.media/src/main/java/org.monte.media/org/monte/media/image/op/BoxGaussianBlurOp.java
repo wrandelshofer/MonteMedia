@@ -65,7 +65,7 @@ public class BoxGaussianBlurOp implements BufferedImageOp {
         int width = src.getWidth();
         int height = src.getHeight();
         for (int bank = 0, n = in.getNumBanks(); bank < n; bank++) {
-            gaussBlur_5(in.getData(bank), out.getData(bank), width, height, sigmaX, sigmaY);
+            gaussBlur(in.getData(bank), out.getData(bank), width, height, sigmaX, sigmaY);
         }
         return dest;
     }
@@ -117,21 +117,6 @@ public class BoxGaussianBlurOp implements BufferedImageOp {
         return sizes;
     }
 
-    /// Approximates a Gaussian filter by applying 3 Box filters.
-    ///
-    /// @param in  source channel, content will be destroyed
-    /// @param out target channel
-    /// @param w   width
-    /// @param h   height
-    /// @param rX  radius for x-axis
-    /// @param rY  radius for y-axis
-    private void gaussBlur_4(float[] in, float[] out, int w, int h, float rX, float rY) {
-        var bxsX = boxesForGauss(rX, 3);
-        var bxsY = boxesForGauss(rY, 3);
-        boxBlur_4(in, out, w, h, (bxsX[0] - 1) / 2, (bxsY[0] - 1) / 2);
-        boxBlur_4(out, in, w, h, (bxsX[1] - 1) / 2, (bxsY[1] - 1) / 2);
-        boxBlur_4(in, out, w, h, (bxsX[2] - 1) / 2, (bxsY[2] - 1) / 2);
-    }
 
     /// Approximates a Gaussian filter by applying 3 Box filters.
     ///
@@ -141,7 +126,7 @@ public class BoxGaussianBlurOp implements BufferedImageOp {
     /// @param h   height
     /// @param rX  radius for x-axis
     /// @param rY  radius for y-axis
-    private void gaussBlur_5(float[] in, float[] out, int w, int h, float rX, float rY) {
+    private void gaussBlur(float[] in, float[] out, int w, int h, float rX, float rY) {
         var bxsX = boxesForGauss(rX, 3);
         var bxsY = boxesForGauss(rY, 3);
         boxBlurHorizontal(in, out, w, h, (bxsX[0] - 1) / 2);
@@ -176,20 +161,6 @@ public class BoxGaussianBlurOp implements BufferedImageOp {
                 }
             }
         }
-    }
-
-    /// Applies a box filter.
-    ///
-    /// @param in  source channel, content will be destroyed
-    /// @param out target channel
-    /// @param w   width (scanline stride must be the same as the width)
-    /// @param h   height
-    /// @param rX  radius for x-axis
-    /// @param rY  radius for y-axis
-    private void boxBlur_4(float[] in, float[] out, int w, int h, int rX, int rY) {
-        System.arraycopy(in, 0, out, 0, in.length);
-        boxBlurHorizontal(out, in, w, h, rX);
-        boxBlurVertical(in, out, w, h, rY);
     }
 
     /// Applies a horizontal box filter.
@@ -237,47 +208,6 @@ public class BoxGaussianBlurOp implements BufferedImageOp {
             for (var j = w - r; j < w; j++) {
                 val += lv - in[li++];
                 out[ti++] = val * iarr;
-            }
-        }
-    }
-
-    /// Applies a vertical box filter.
-    ///
-    /// @param in  source channel
-    /// @param out target channel
-    /// @param w   width (scanline stride must be the same as the width)
-    /// @param h   height
-    /// @param r   radius for y-axis
-    private void boxBlurVertical(float[] in, float[] out, int w, int h, int r) {
-        float iarr = 1f / (r + r + 1);
-
-        // For each column i
-        for (var i = 0; i < w; i++) {
-            int ti = i, li = ti, ri = ti + r * w;
-            float fv = in[ti], lv = in[ti + w * (h - 1)];
-
-            float val = (r + 1) * fv;
-            for (var j = 0; j < r; j++) {
-                val += in[ti + j * w];
-            }
-            for (var j = 0; j <= r; j++) {
-                val += in[ri] - fv;
-                out[ti] = val * iarr;
-                ri += w;
-                ti += w;
-            }
-            for (var j = r + 1; j < h - r; j++) {
-                val += in[ri] - in[li];
-                out[ti] = val * iarr;
-                li += w;
-                ri += w;
-                ti += w;
-            }
-            for (var j = h - r; j < h; j++) {
-                val += lv - in[li];
-                out[ti] = val * iarr;
-                li += w;
-                ti += w;
             }
         }
     }
