@@ -65,7 +65,7 @@ public class BoxGaussianBlurOp implements BufferedImageOp {
         int width = src.getWidth();
         int height = src.getHeight();
         for (int bank = 0, n = in.getNumBanks(); bank < n; bank++) {
-            gaussBlur_4(in.getData(bank), out.getData(bank), width, height, sigmaX, sigmaY);
+            gaussBlur_5(in.getData(bank), out.getData(bank), width, height, sigmaX, sigmaY);
         }
         return dest;
     }
@@ -119,73 +119,163 @@ public class BoxGaussianBlurOp implements BufferedImageOp {
 
     /// Approximates a Gaussian filter by applying 3 Box filters.
     ///
-    /// @param scl source channel, content will be destroyed
-    /// @param tcl target channel
+    /// @param in  source channel, content will be destroyed
+    /// @param out target channel
     /// @param w   width
     /// @param h   height
     /// @param rX  radius for x-axis
     /// @param rY  radius for y-axis
-    private void gaussBlur_4(float[] scl, float[] tcl, int w, int h, float rX, float rY) {
+    private void gaussBlur_4(float[] in, float[] out, int w, int h, float rX, float rY) {
         var bxsX = boxesForGauss(rX, 3);
         var bxsY = boxesForGauss(rY, 3);
-        boxBlur_4(scl, tcl, w, h, (bxsX[0] - 1) / 2, (bxsY[0] - 1) / 2);
-        boxBlur_4(tcl, scl, w, h, (bxsX[1] - 1) / 2, (bxsY[1] - 1) / 2);
-        boxBlur_4(scl, tcl, w, h, (bxsX[2] - 1) / 2, (bxsY[2] - 1) / 2);
+        boxBlur_4(in, out, w, h, (bxsX[0] - 1) / 2, (bxsY[0] - 1) / 2);
+        boxBlur_4(out, in, w, h, (bxsX[1] - 1) / 2, (bxsY[1] - 1) / 2);
+        boxBlur_4(in, out, w, h, (bxsX[2] - 1) / 2, (bxsY[2] - 1) / 2);
     }
 
-    private void boxBlur_4(float[] scl, float[] tcl, int w, int h, int rX, int rY) {
-        System.arraycopy(scl, 0, tcl, 0, scl.length);
-        boxBlurH_4(tcl, scl, w, h, rX);
-        boxBlurT_4(scl, tcl, w, h, rY);
+    /// Approximates a Gaussian filter by applying 3 Box filters.
+    ///
+    /// @param in  source channel, content will be destroyed
+    /// @param out target channel
+    /// @param w   width
+    /// @param h   height
+    /// @param rX  radius for x-axis
+    /// @param rY  radius for y-axis
+    private void gaussBlur_5(float[] in, float[] out, int w, int h, float rX, float rY) {
+        var bxsX = boxesForGauss(rX, 3);
+        var bxsY = boxesForGauss(rY, 3);
+        boxBlurHorizontal(in, out, w, h, (bxsX[0] - 1) / 2);
+        boxBlurHorizontal(out, in, w, h, (bxsX[1] - 1) / 2);
+        boxBlurHorizontal(in, out, w, h, (bxsX[2] - 1) / 2);
+        transposeImage(out, in, w, h);
+        boxBlurHorizontal(in, out, h, w, (bxsY[0] - 1) / 2);
+        boxBlurHorizontal(out, in, h, w, (bxsY[1] - 1) / 2);
+        boxBlurHorizontal(in, out, h, w, (bxsY[2] - 1) / 2);
+        transposeImage(out, in, h, w);
+        System.arraycopy(in, 0, out, 0, in.length);
     }
 
-    private void boxBlurH_4(float[] scl, float[] tcl, int w, int h, int r) {
-        float iarr = 1f / (r + r + 1);
-        for (var i = 0; i < h; i++) {
-            int ti = i * w, li = ti, ri = ti + r;
-            float fv = scl[ti], lv = scl[ti + w - 1], val = (r + 1) * fv;
-            for (var j = 0; j < r; j++) {
-                val += scl[ti + j];
-            }
-            for (var j = 0; j <= r; j++) {
-                val += scl[ri++] - fv;
-                tcl[ti++] = val * iarr;
-            }
-            for (var j = r + 1; j < w - r; j++) {
-                val += scl[ri++] - scl[li++];
-                tcl[ti++] = val * iarr;
-            }
-            for (var j = w - r; j < w; j++) {
-                val += lv - scl[li++];
-                tcl[ti++] = val * iarr;
+    /**
+     * Transpose the image. The transpose is done in blocks to reduce the number of cache misses.
+     *
+     * @param in  the input array
+     * @param out the output array
+     * @param w   the width of the input image
+     * @param h   the height of hte input image
+     */
+    private static void transposeImage(float[] in, float[] out, int w, int h) {
+        int block = 256 / 4;
+        for (int x = 0; x < w; x += block) {
+            for (int y = 0; y < h; y += block) {
+                int blockx = Math.min(w, x + block) - x;
+                int blocky = Math.min(h, y + block) - y;
+                for (int xx = 0; xx < blockx; xx++) {
+                    for (int yy = 0; yy < blocky; yy++) {
+                        out[yy + xx * h] = in[yy * w + xx];
+                    }
+                }
             }
         }
     }
 
-    private void boxBlurT_4(float[] scl, float[] tcl, int w, int h, int r) {
+    /// Applies a box filter.
+    ///
+    /// @param in  source channel, content will be destroyed
+    /// @param out target channel
+    /// @param w   width (scanline stride must be the same as the width)
+    /// @param h   height
+    /// @param rX  radius for x-axis
+    /// @param rY  radius for y-axis
+    private void boxBlur_4(float[] in, float[] out, int w, int h, int rX, int rY) {
+        System.arraycopy(in, 0, out, 0, in.length);
+        boxBlurHorizontal(out, in, w, h, rX);
+        boxBlurVertical(in, out, w, h, rY);
+    }
+
+    /// Applies a horizontal box filter.
+    ///
+    /// We compute `bh[i,j], bh[i,j+1], bh[i,j+2], ...`.
+    /// But the neighboring values `bh[i,j]` and `bh[i,j+1]` are almost the same.
+    /// The only difference is in one left-most value and one right-most value.
+    /// So `bh[i,j+1] = bh[i,j] + f[i,j+r+1] − f[i,j−r]`.
+    ///
+    /// We will compute the one-dimensional blur by creating the accumulator.
+    /// First, we put the value of left-most cell into it.
+    /// Then we will compute next values just by editing the previous value in constant time.
+    ///  This 1D blur has the complexity O(n) (independent on r).
+    /// But it is performed twice to get box blur, which is performed 3 times to get gaussian blur.
+    /// So the complexity of this gaussian blur is 6 * O(n).
+    ///
+    /// @param in  source channel
+    /// @param out target channel
+    /// @param w   width (scanline stride must be the same as the width)
+    /// @param h   height
+    /// @param r   radius for x-axis
+    private void boxBlurHorizontal(float[] in, float[] out, int w, int h, int r) {
+        // Compute the inverse of the box area, so that we can use a multiplication instead of a division
         float iarr = 1f / (r + r + 1);
-        for (var i = 0; i < w; i++) {
-            int ti = i, li = ti, ri = ti + r * w;
-            float fv = scl[ti], lv = scl[ti + w * (h - 1)], val = (r + 1) * fv;
+
+        // For each row i
+        for (var i = 0; i < h; i++) {
+            int ti = i * w;// index in target channel
+            int li = ti; // index of left-most value in source channel
+            int ri = ti + r; // index of right-most value in source channel
+            float fv = in[ti], lv = in[ti + w - 1];
+
+            float val = (r + 1) * fv;
             for (var j = 0; j < r; j++) {
-                val += scl[ti + j * w];
+                val += in[ti + j];
             }
             for (var j = 0; j <= r; j++) {
-                val += scl[ri] - fv;
-                tcl[ti] = val * iarr;
+                val += in[ri++] - fv;
+                out[ti++] = val * iarr;
+            }
+            for (var j = r + 1; j < w - r; j++) {
+                val += in[ri++] - in[li++];
+                out[ti++] = val * iarr;
+            }
+            for (var j = w - r; j < w; j++) {
+                val += lv - in[li++];
+                out[ti++] = val * iarr;
+            }
+        }
+    }
+
+    /// Applies a vertical box filter.
+    ///
+    /// @param in  source channel
+    /// @param out target channel
+    /// @param w   width (scanline stride must be the same as the width)
+    /// @param h   height
+    /// @param r   radius for y-axis
+    private void boxBlurVertical(float[] in, float[] out, int w, int h, int r) {
+        float iarr = 1f / (r + r + 1);
+
+        // For each column i
+        for (var i = 0; i < w; i++) {
+            int ti = i, li = ti, ri = ti + r * w;
+            float fv = in[ti], lv = in[ti + w * (h - 1)];
+
+            float val = (r + 1) * fv;
+            for (var j = 0; j < r; j++) {
+                val += in[ti + j * w];
+            }
+            for (var j = 0; j <= r; j++) {
+                val += in[ri] - fv;
+                out[ti] = val * iarr;
                 ri += w;
                 ti += w;
             }
             for (var j = r + 1; j < h - r; j++) {
-                val += scl[ri] - scl[li];
-                tcl[ti] = val * iarr;
+                val += in[ri] - in[li];
+                out[ti] = val * iarr;
                 li += w;
                 ri += w;
                 ti += w;
             }
             for (var j = h - r; j < h; j++) {
-                val += lv - scl[li];
-                tcl[ti] = val * iarr;
+                val += lv - in[li];
+                out[ti] = val * iarr;
                 li += w;
                 ti += w;
             }

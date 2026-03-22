@@ -35,7 +35,7 @@ public class ScaleOp implements BufferedImageOp {
     private final int srcWidth;
     private final int dstHeight;
     private final int dstWidth;
-    private final BoxGaussianBlurOp gaussian;
+    private final BufferedImageOp gaussian;
     private final ResampleAlgoFloat resampler;
 
     /// Constructs a [ScaleOp] given the desired
@@ -46,7 +46,7 @@ public class ScaleOp implements BufferedImageOp {
     /// @param dstWidth  the width
     /// @param dstHeight the height
     public ScaleOp(int srcWidth, int srcHeight, int dstWidth, int dstHeight) {
-        this(srcWidth, srcHeight, dstWidth, dstHeight, 0.5f, new GaussianKernelFactory(), new NearestNeighbourResampleAlgoFloat());
+        this(srcWidth, srcHeight, dstWidth, dstHeight, 0.5f, new NearestNeighbourResampleAlgoFloat());
     }
 
     /// Constructs a [ScaleOp] given the desired
@@ -57,9 +57,9 @@ public class ScaleOp implements BufferedImageOp {
     /// @param dstWidth           the width
     /// @param dstHeight          the height
     /// @param kernelRadiusFactor The factor with which the scale factor is multiplied
-    ///                                                                                                                                                                                                                                                                                                                                                                                                                                                           to compute the radius of the blur kernel.
+    ///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             to compute the radius of the blur kernel.
     public ScaleOp(int srcWidth, int srcHeight, int dstWidth, int dstHeight,
-                   float kernelRadiusFactor, SeparableKernelFactory kernelFactory, ResampleAlgoFloat resampler) {
+                   float kernelRadiusFactor, ResampleAlgoFloat resampler) {
         this.srcWidth = srcWidth;
         this.srcHeight = srcHeight;
         this.dstWidth = dstWidth;
@@ -70,8 +70,6 @@ public class ScaleOp implements BufferedImageOp {
             float heightFactor = srcHeight / (float) dstHeight;
             float radiusX = kernelRadiusFactor * widthFactor;
             float radiusY = kernelRadiusFactor * heightFactor;
-            float[] dataH = kernelFactory.createKernel(radiusX);
-            float[] dataV = kernelFactory.createKernel(radiusY);
             gaussian = new BoxGaussianBlurOp(radiusX, radiusY);
         } else {
             gaussian = null;
@@ -89,7 +87,7 @@ public class ScaleOp implements BufferedImageOp {
     /// @param dst The `BufferedImage` in which to store the results$
     /// @return the filtered image
     /// @throws IllegalArgumentException if `src` and`dst` are the same
-    ///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 or if `dst` does not have a buffer of type [DataBufferFloat].
+    ///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     or if `dst` does not have a buffer of type [DataBufferFloat].
     @Override
     public BufferedImage filter(BufferedImage src, BufferedImage dst) {
         if (src == null) {

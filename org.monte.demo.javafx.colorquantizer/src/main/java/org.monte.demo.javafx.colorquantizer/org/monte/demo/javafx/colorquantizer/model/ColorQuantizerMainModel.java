@@ -73,6 +73,7 @@ public class ColorQuantizerMainModel {
     private final BooleanProperty scaleInLinearSpace = new SimpleBooleanProperty();
     private final BooleanProperty crop = new SimpleBooleanProperty();
     private final BooleanProperty scale = new SimpleBooleanProperty();
+    private final BooleanProperty sharpen = new SimpleBooleanProperty();
     private final BooleanProperty preserveAspectRatio = new SimpleBooleanProperty(true);
     private final IntegerProperty paletteSize = new SimpleIntegerProperty(16);
     private final IntegerProperty zoom = new SimpleIntegerProperty(0);
@@ -121,6 +122,7 @@ public class ColorQuantizerMainModel {
         cropBottom.addListener(updateScaledHeight);
 
         InvalidationListener updateRenderedImage = this::updateRenderedImage;
+        sharpen.addListener(updateRenderedImage);
         cropLeft.addListener(updateRenderedImage);
         scaleRadiusFactor.addListener(updateRenderedImage);
         sharpenAmount.addListener(updateRenderedImage);
@@ -297,6 +299,8 @@ public class ColorQuantizerMainModel {
         BufferedImage inputImg = getRawReferenceImage();
         if (inputImg == null) return null;
         List<Codec> codecs = new ArrayList<>();
+        int outputWidth = inputImg.getWidth();
+        int outputHeight = inputImg.getHeight();
 
         ColorSpace cs = getReferenceImageColorSpace();
         if (cs != null) {
@@ -316,6 +320,8 @@ public class ColorQuantizerMainModel {
             codecs.add(codec);
         }
         if (isScale()) {
+            outputWidth = getScaledWidth();
+            outputHeight = getScaledHeight();
             if (isScaleInLinearSpace()) {
                 var codec = new ConvertColorSpaceCodec();
                 codec.setOutputFormat(new Format(ConvertColorSpaceCodec.ConvertColorSpaceKey,
@@ -325,17 +331,17 @@ public class ColorQuantizerMainModel {
 
             var codec = new ScaleImageCodec();
             codec.setOutputFormat(new Format(
-                    VideoFormatKeys.WidthKey, getScaledWidth(),
-                    VideoFormatKeys.HeightKey, getScaledHeight(),
+                    VideoFormatKeys.WidthKey, outputWidth,
+                    VideoFormatKeys.HeightKey, outputHeight,
                     ScaleImageCodec.ScaleGaussianBlurFactorKey, getScaleRadiusFactor()
             ));
             codecs.add(codec);
         }
-        if (isScale() && getSharpenAmount() > 0 && getSharpenRadius() > 0) {
+        if (isSharpen() && getSharpenAmount() > 0 && getSharpenRadius() > 0) {
             var codec = new ImageOpCodec();
             codec.setOutputFormat(new Format(
-                    VideoFormatKeys.WidthKey, getScaledWidth(),
-                    VideoFormatKeys.HeightKey, getScaledHeight(),
+                    VideoFormatKeys.WidthKey, outputWidth,
+                    VideoFormatKeys.HeightKey, outputHeight,
                     ImageOpCodec.ImageOpKey, new UnsharpMaskOp((float) getSharpenRadius(), (float) getSharpenAmount(), 0.025f)));
             codecs.add(codec);
         }
@@ -771,6 +777,10 @@ public class ColorQuantizerMainModel {
         return scale.get();
     }
 
+    public boolean isSharpen() {
+        return sharpen.get();
+    }
+
     public BooleanProperty lockPaletteIndex0Property() {
         return lockPaletteIndex0;
     }
@@ -872,6 +882,10 @@ public class ColorQuantizerMainModel {
 
     public BooleanProperty scaleProperty() {
         return scale;
+    }
+
+    public BooleanProperty sharpenProperty() {
+        return sharpen;
     }
 
     private void scaledHeightChanged(Observable observable) {

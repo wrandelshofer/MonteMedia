@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 
 <GridPane fx:id="root" hgap="8.0" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
-          minWidth="-Infinity" vgap="8.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+          minWidth="-Infinity" vgap="8.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="org.monte.demo.javafx.colorquantizer.SizeInspectorController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="24.0"/>
@@ -29,8 +29,9 @@
         <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
         <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
         <RowConstraints minHeight="10.0" vgrow="NEVER"/>
+        <RowConstraints minHeight="-Infinity" vgrow="NEVER"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
         <RowConstraints minHeight="10.0" vgrow="NEVER"/>
         <RowConstraints minHeight="10.0" vgrow="NEVER"/>
@@ -80,22 +81,28 @@
                 <Label fx:id="heightLabel" text="0"/>
             </children>
         </HBox>
-        <Spinner fx:id="zoomSpinner" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="11"/>
-        <Label text="Zoom" GridPane.columnSpan="2147483647" GridPane.rowIndex="10"/>
+        <Spinner fx:id="zoomSpinner" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="12"/>
+        <Label text="Zoom" GridPane.columnSpan="2147483647" GridPane.rowIndex="11"/>
         <Label text="Blur Radius Factor:" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
         <TextField fx:id="scaleBlurRadiusFactorField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
                    minWidth="-Infinity" prefColumnCount="4" GridPane.columnIndex="2" GridPane.rowIndex="6"/>
-        <Label text="Sharpen Amount:" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+        <Label text="Sharpen Amount:" GridPane.columnIndex="1" GridPane.rowIndex="9"/>
         <TextField fx:id="sharpenAmountField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-                   minWidth="-Infinity" prefColumnCount="4" GridPane.columnIndex="2" GridPane.rowIndex="7"/>
+                   minWidth="-Infinity" prefColumnCount="4" GridPane.columnIndex="2" GridPane.rowIndex="9"/>
         <TextField fx:id="sharpenRadiusField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-                   minWidth="-Infinity" prefColumnCount="4" GridPane.columnIndex="4" GridPane.rowIndex="7"/>
-        <Label text="Radius:" GridPane.columnIndex="3" GridPane.rowIndex="7"/>
+                   minWidth="-Infinity" prefColumnCount="4" GridPane.columnIndex="4" GridPane.rowIndex="9"/>
+        <Label text="Radius:" GridPane.columnIndex="3" GridPane.rowIndex="9"/>
         <CheckBox fx:id="scaleInLinearSpaceCheckBox" mnemonicParsing="false" text="Scale in linear color space"
-                  GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="8">
+                  GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="7">
             <padding>
                 <Insets top="8.0"/>
             </padding>
+        </CheckBox>
+        <CheckBox fx:id="sharpenCheckBox" mnemonicParsing="false" text="Sharpen" GridPane.columnSpan="2147483647"
+                  GridPane.rowIndex="8">
+            <GridPane.margin>
+                <Insets top="16.0"/>
+            </GridPane.margin>
         </CheckBox>
     </children>
     <padding>

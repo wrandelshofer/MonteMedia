@@ -19,7 +19,8 @@ public class MonteMediaPlayer extends AbstractMediaPlayer {
         error.bind(media.errorProperty());
         totalDuration.bind(media.durationProperty());
 
-        engine = new PlayerEngine(this);
+        //engine = new TimedPlayerEngine(this);
+        engine = new ThreadedPlayerEngine(this);
         engine.realize();
     }
 

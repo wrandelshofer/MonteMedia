@@ -238,9 +238,9 @@ public class QuickTimeMeta extends AbstractMovie {
                 );
                 if (m.timeToSamples.size() == 1) {
                     TimeToSampleGroup ttsg = m.timeToSamples.get(0);
-                    format = format.append(FrameRateKey, new Rational(ttsg.getSampleDuration(), m.mediaTimeScale));
+                    format = format.append(FrameRateKey, new Rational(m.mediaTimeScale, ttsg.getSampleDuration()));
                 } else {
-                    format = format.append(FrameRateKey, new Rational(1, m.mediaTimeScale));
+                    format = format.append(FrameRateKey, new Rational(m.mediaTimeScale, 1));
                 }
                 break;
             }
@@ -1324,8 +1324,8 @@ public class QuickTimeMeta extends AbstractMovie {
         ///
         /// @param trackDuration Duration of this edit in the movie's timescale.
         /// @param mediaTime     Start time of this edit in the media's timescale.
-        ///                                                                                     Specify -1 for an empty edit. The last edit in a track should never
-        ///                                                                                     be an empty edit.
+        ///                                                                                                          Specify -1 for an empty edit. The last edit in a track should never
+        ///                                                                                                          be an empty edit.
         /// @param mediaRate     The relative rate at which to play this edit.
         public Edit(long trackDuration, int mediaTime, double mediaRate) {
             if (trackDuration < 0) {

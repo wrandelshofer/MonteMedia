@@ -77,6 +77,9 @@ public class SizeInspectorController {
     @FXML // fx:id="sharpenAmountField"
     private TextField sharpenAmountField; // Value injected by FXMLLoader
 
+    @FXML // fx:id="sharpenCheckBox"
+    private CheckBox sharpenCheckBox; // Value injected by FXMLLoader
+
     @FXML // fx:id="sharpenRadiusField"
     private TextField sharpenRadiusField; // Value injected by FXMLLoader
 
@@ -107,6 +110,7 @@ public class SizeInspectorController {
         assert scaleInLinearSpaceCheckBox != null : "fx:id=\"scaleInLinearSpaceCheckBox\" was not injected: check your FXML file 'SizeInspector.fxml'.";
         assert scaleWidthField != null : "fx:id=\"scaleWidthField\" was not injected: check your FXML file 'SizeInspector.fxml'.";
         assert sharpenAmountField != null : "fx:id=\"sharpenAmountField\" was not injected: check your FXML file 'SizeInspector.fxml'.";
+        assert sharpenCheckBox != null : "fx:id=\"sharpenCheckBox\" was not injected: check your FXML file 'SizeInspector.fxml'.";
         assert sharpenRadiusField != null : "fx:id=\"sharpenRadiusField\" was not injected: check your FXML file 'SizeInspector.fxml'.";
         assert widthLabel != null : "fx:id=\"widthLabel\" was not injected: check your FXML file 'SizeInspector.fxml'.";
         assert zoomSpinner != null : "fx:id=\"zoomSpinner\" was not injected: check your FXML file 'SizeInspector.fxml'.";
@@ -119,11 +123,12 @@ public class SizeInspectorController {
         cropRightField.disableProperty().bind(notCropping);
         cropLeftField.disableProperty().bind(notCropping);
         BooleanBinding notScaling = scaleCheckBox.selectedProperty().not();
+        BooleanBinding notSharpening = sharpenCheckBox.selectedProperty().not();
         scaleHeightField.disableProperty().bind(notScaling);
         scaleWidthField.disableProperty().bind(notScaling);
         scaleBlurRadiusFactorField.disableProperty().bind(notScaling);
-        sharpenAmountField.disableProperty().bind(notScaling);
-        sharpenRadiusField.disableProperty().bind(notScaling);
+        sharpenAmountField.disableProperty().bind(notSharpening);
+        sharpenRadiusField.disableProperty().bind(notSharpening);
         scaleInLinearSpaceCheckBox.disableProperty().bind(notScaling);
     }
 
@@ -132,6 +137,7 @@ public class SizeInspectorController {
             widthLabel.textProperty().unbind();
             heightLabel.textProperty().unbind();
             scaleCheckBox.selectedProperty().unbindBidirectional(oldv.scaleProperty());
+            sharpenCheckBox.selectedProperty().unbindBidirectional(oldv.sharpenProperty());
             scaleInLinearSpaceCheckBox.selectedProperty().unbindBidirectional(oldv.scaleInLinearSpaceProperty());
             cropCheckBox.selectedProperty().unbindBidirectional(oldv.cropProperty());
             scaleHeightField.textProperty().unbindBidirectional(oldv.scaledHeightProperty());
@@ -153,6 +159,7 @@ public class SizeInspectorController {
             widthLabel.textProperty().bind(newv.widthProperty().asString());
             heightLabel.textProperty().bind(newv.heightProperty().asString());
             scaleCheckBox.selectedProperty().bindBidirectional(newv.scaleProperty());
+            sharpenCheckBox.selectedProperty().bindBidirectional(newv.sharpenProperty());
             scaleInLinearSpaceCheckBox.selectedProperty().bindBidirectional(newv.scaleInLinearSpaceProperty());
             cropCheckBox.selectedProperty().bindBidirectional(newv.cropProperty());
             preserveAspectRatioCheckBox.selectedProperty().bindBidirectional(newv.preserveAspectRatioProperty());

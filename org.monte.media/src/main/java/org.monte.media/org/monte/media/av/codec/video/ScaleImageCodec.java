@@ -10,7 +10,6 @@ import org.monte.media.av.FormatKey;
 import org.monte.media.av.FormatKeys.MediaType;
 import org.monte.media.image.FloatImages;
 import org.monte.media.image.algo.NearestNeighbourResampleAlgoFloat;
-import org.monte.media.image.op.GaussianKernelFactory;
 import org.monte.media.image.op.ScaleOp;
 
 import java.awt.*;
@@ -123,7 +122,7 @@ public class ScaleImageCodec extends org.monte.media.av.AbstractCodec {
     private void downscaleImage(BufferedImage src, BufferedImage dst) {
         var scaleOp = new ScaleOp(src.getWidth(), src.getHeight(), dst.getWidth(), dst.getHeight(),
                 outputFormat.get(ScaleGaussianBlurFactorKey, 0.5).floatValue(),
-                new GaussianKernelFactory(), new NearestNeighbourResampleAlgoFloat());
+                new NearestNeighbourResampleAlgoFloat());
         BufferedImage tmp = scaleOp.filter(src, dst);
 
         if (tmp != dst) {

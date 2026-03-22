@@ -33,7 +33,6 @@ class ScaleOpTest {
 
         ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_sRGB);
         var op = new ScaleOp(src.getWidth(), src.getHeight(), dstWidth, dstHeight, blurRadiusFactor,
-                new GaussianKernelFactory(),
                 //new LanczosKernelFactory(),
                 new BilinearInterpolationResampleAlgoFloat());
         //new NearestNeighbourResampleAlgoFloat());

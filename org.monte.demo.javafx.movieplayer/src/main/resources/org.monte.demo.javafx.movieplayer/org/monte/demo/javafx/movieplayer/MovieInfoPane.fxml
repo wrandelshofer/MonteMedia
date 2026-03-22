@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+
+<TableView fx:id="tableView" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+           prefHeight="400.0" prefWidth="400.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/25"
+           fx:controller="org.monte.demo.javafx.movieplayer.MovieInfoController">
+    <columns>
+        <TableColumn fx:id="keyColumn" prefWidth="150.0" text="%inspector.keyColumn"/>
+        <TableColumn fx:id="valueColumn" prefWidth="250.0" text="%inspector.valueColumn"/>
+    </columns>
+</TableView>

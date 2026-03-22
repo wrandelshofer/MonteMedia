@@ -7,79 +7,98 @@
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
+
 <BorderPane fx:id="rootPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="120.0"
-            minWidth="240.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1"
+            minWidth="240.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.monte.demo.javafx.movieplayer.MainWindowController">
-  <top>
-    <MenuBar useSystemMenuBar="true" BorderPane.alignment="CENTER">
-      <menus>
-        <Menu mnemonicParsing="false" text="%file.menu">
-          <items>
-            <MenuItem mnemonicParsing="false" onAction="#newWindow" text="%file.new">
-              <accelerator>
-                <KeyCodeCombination alt="UP" code="N" control="UP" meta="DOWN" shift="UP" shortcut="UP"/>
-              </accelerator>
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#open" text="%file.open">
-              <accelerator>
-                <KeyCodeCombination alt="UP" code="O" control="UP" meta="DOWN" shift="UP" shortcut="UP"/>
-              </accelerator>
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#close" text="%file.close">
-              <accelerator>
-                <KeyCodeCombination alt="UP" code="W" control="UP" meta="DOWN" shift="UP" shortcut="UP"/>
-              </accelerator>
-            </MenuItem>
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="%play.menu">
-          <items>
-            <MenuItem mnemonicParsing="false" onAction="#togglePlayPause" text="%togglePlayPause.menuItem">
-              <accelerator>
-                <KeyCodeCombination alt="UP" code="P" control="UP" meta="DOWN" shift="UP" shortcut="UP"/>
-              </accelerator>
-            </MenuItem>
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="%view.menu">
-          <items>
-            <MenuItem mnemonicParsing="false" onAction="#zoomToActualSize" text="%view.zoomToActualSize">
-              <accelerator>
-                <KeyCodeCombination alt="UP" code="DIGIT0" control="UP" meta="DOWN" shift="UP" shortcut="UP"/>
-              </accelerator>
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#zoomToFit" text="%view.zoomToFit">
-              <accelerator>
-                <KeyCodeCombination alt="UP" code="DIGIT9" control="UP" meta="DOWN" shift="UP" shortcut="UP"/>
-              </accelerator>
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#zoomIn" text="%view.zoomIn">
-              <accelerator>
-                <KeyCodeCombination alt="UP" code="DIGIT1" control="UP" meta="DOWN" shift="UP" shortcut="UP"/>
-              </accelerator>
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#zoomOut" text="%view.zoomOut">
-              <accelerator>
-                <KeyCodeCombination alt="UP" code="DIGIT2" control="UP" meta="DOWN" shift="UP" shortcut="UP"/>
-              </accelerator>
-            </MenuItem>
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="%help.menu">
-          <items>
-            <MenuItem mnemonicParsing="false" onAction="#about" text="About"/>
-          </items>
-        </Menu>
-      </menus>
-    </MenuBar>
-  </top>
-  <center>
-    <VBox fx:id="vBox">
-      <children>
-        <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308"
-               maxWidth="1.7976931348623157E308" text="%mainWindow.onboardingText" textAlignment="CENTER"
-               wrapText="true" VBox.vgrow="ALWAYS"/>
-      </children>
-    </VBox>
-  </center>
+    <top>
+        <MenuBar useSystemMenuBar="true" BorderPane.alignment="CENTER">
+            <menus>
+                <Menu mnemonicParsing="false" text="%file.menu">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#newWindow" text="%file.new">
+                            <accelerator>
+                                <KeyCodeCombination alt="UP" code="N" control="UP" meta="DOWN" shift="UP"
+                                                    shortcut="UP"/>
+                            </accelerator>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#open" text="%file.open">
+                            <accelerator>
+                                <KeyCodeCombination alt="UP" code="O" control="UP" meta="DOWN" shift="UP"
+                                                    shortcut="UP"/>
+                            </accelerator>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#close" text="%file.close">
+                            <accelerator>
+                                <KeyCodeCombination alt="UP" code="W" control="UP" meta="DOWN" shift="UP"
+                                                    shortcut="UP"/>
+                            </accelerator>
+                        </MenuItem>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="%play.menu">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#togglePlayPause" text="%togglePlayPause.menuItem">
+                            <accelerator>
+                                <KeyCodeCombination alt="UP" code="P" control="UP" meta="DOWN" shift="UP"
+                                                    shortcut="UP"/>
+                            </accelerator>
+                        </MenuItem>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="%view.menu">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#zoomToActualSize" text="%view.zoomToActualSize">
+                            <accelerator>
+                                <KeyCodeCombination alt="UP" code="DIGIT0" control="UP" meta="DOWN" shift="UP"
+                                                    shortcut="UP"/>
+                            </accelerator>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#zoomToFit" text="%view.zoomToFit">
+                            <accelerator>
+                                <KeyCodeCombination alt="UP" code="DIGIT9" control="UP" meta="DOWN" shift="UP"
+                                                    shortcut="UP"/>
+                            </accelerator>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#zoomIn" text="%view.zoomIn">
+                            <accelerator>
+                                <KeyCodeCombination alt="UP" code="DIGIT1" control="UP" meta="DOWN" shift="UP"
+                                                    shortcut="UP"/>
+                            </accelerator>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#zoomOut" text="%view.zoomOut">
+                            <accelerator>
+                                <KeyCodeCombination alt="UP" code="DIGIT2" control="UP" meta="DOWN" shift="UP"
+                                                    shortcut="UP"/>
+                            </accelerator>
+                        </MenuItem>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="%window.menu">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#showInspector" text="%window.showInspector">
+                            <accelerator>
+                                <KeyCodeCombination alt="UP" code="I" control="UP" meta="DOWN" shift="UP"
+                                                    shortcut="UP"/>
+                            </accelerator>
+                        </MenuItem>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="%help.menu">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#about" text="About"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
+    <center>
+        <VBox fx:id="vBox">
+            <children>
+                <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308"
+                       maxWidth="1.7976931348623157E308" text="%mainWindow.onboardingText" textAlignment="CENTER"
+                       wrapText="true" VBox.vgrow="ALWAYS"/>
+            </children>
+        </VBox>
+    </center>
 </BorderPane>

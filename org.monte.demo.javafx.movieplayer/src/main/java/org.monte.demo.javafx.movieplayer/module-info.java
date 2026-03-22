@@ -17,6 +17,9 @@ module org.monte.demo.javafx.movieplayer {
     requires java.desktop;
     requires org.monte.media;
     requires org.monte.media.amigaatari;
+    requires org.monte.media.avi;
+    requires org.monte.media.jpeg;
+    requires org.monte.media.quicktime;
     requires javafx.base;
 
     exports org.monte.demo.javafx.movieplayer;

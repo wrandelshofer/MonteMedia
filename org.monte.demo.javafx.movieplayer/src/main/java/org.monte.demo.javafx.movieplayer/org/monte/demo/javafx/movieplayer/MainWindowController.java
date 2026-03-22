@@ -6,6 +6,8 @@
 package org.monte.demo.javafx.movieplayer;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -27,6 +29,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.monte.demo.javafx.movieplayer.fxplayer.FXMedia;
 import org.monte.demo.javafx.movieplayer.fxplayer.FXMediaPlayer;
 import org.monte.demo.javafx.movieplayer.model.MediaInterface;
@@ -38,6 +41,7 @@ import org.monte.demo.javafx.movieplayer.monteplayer.MonteMediaView;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class MainWindowController {
@@ -45,7 +49,6 @@ public class MainWindowController {
         JavaFX, MonteMedia
     }
 
-    private final ObjectProperty<Mode> mode = new SimpleObjectProperty<>(Mode.MonteMedia);
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
 
@@ -69,6 +72,8 @@ public class MainWindowController {
 
     @FXML // fx:id="statusBar"
     private HBox statusBar; // Value injected by FXMLLoader
+
+    private Stage infoStage;
 
     @FXML
     void close(ActionEvent event) {
@@ -140,6 +145,21 @@ public class MainWindowController {
     }
 
     @FXML
+    void showInspector(ActionEvent event) {
+        if (infoStage == null) {
+            infoStage = new Stage(StageStyle.UTILITY);
+            infoStage.titleProperty().bind(fileProperty().map(f -> f.getName()));
+            MovieInfoController movieInfoController = MovieInfoController.createMovieInfoController();
+            movieInfoController.mediaProperty().bind(mediaProperty());
+            infoStage.setScene(new Scene(movieInfoController.getRoot()));
+            infoStage.sizeToScene();
+            infoStage.getProperties().put("controller", movieInfoController);
+            Objects.requireNonNull(getStage()).setOnHidden(e -> infoStage.hide());
+        }
+        infoStage.show();
+    }
+
+    @FXML
     void zoomIn(ActionEvent event) {
         zoomTo((Math.round(getZoomPower() + 1)));
     }
@@ -207,7 +227,8 @@ public class MainWindowController {
     }
 
     private final ObjectProperty<File> file = new SimpleObjectProperty<>();
-    private final ObjectProperty<MediaPlayerInterface> player = new SimpleObjectProperty<>();
+    private final ReadOnlyObjectWrapper<MediaPlayerInterface> player = new ReadOnlyObjectWrapper<>();
+    private final ReadOnlyObjectWrapper<MediaInterface> media = new ReadOnlyObjectWrapper<>();
 
     private FileChooser getFileChooser() {
         if (fileChooser == null) {
@@ -228,6 +249,14 @@ public class MainWindowController {
         return file;
     }
 
+    public ReadOnlyObjectProperty<MediaPlayerInterface> playerProperty() {
+        return player.getReadOnlyProperty();
+    }
+
+    public ReadOnlyObjectProperty<MediaInterface> mediaProperty() {
+        return media.getReadOnlyProperty();
+    }
+
     private void createMoviePlayer() {
         createMoviePlayer(0);
     }
@@ -238,26 +267,28 @@ public class MainWindowController {
         if (oldPlayer != null) {
             oldPlayer.dispose();
             player.set(null);
+            media.set(null);
         }
-        MediaPlayerInterface player = switch (mode.get()) {
-            case JavaFX -> createFXMoviePlayer();
+        Mode[] modes = Mode.values();
+        MediaPlayerInterface newPlayer = switch (modes[retries % modes.length]) {
+            case Mode.JavaFX -> createFXMoviePlayer();
 
-            case MonteMedia -> createMonteMediaPlayer();
+            case Mode.MonteMedia -> createMonteMediaPlayer();
 
         };
 
-        if (player == null || player.getError() != null) {
-            retryCreateMoviePlayer(retries, player == null ? null : player.getError());
+        if (newPlayer == null || newPlayer.getError() != null) {
+            retryCreateMoviePlayer(retries, newPlayer == null ? null : newPlayer.getError());
         } else {
-            this.player.set(player);
-            player.setOnError(() -> retryCreateMoviePlayer(retries, player.getError()));
+            this.player.set(newPlayer);
+            media.set(newPlayer.getMedia());
+            newPlayer.setOnError(() -> retryCreateMoviePlayer(retries, newPlayer.getError()));
         }
     }
 
     private void retryCreateMoviePlayer(int retries, Throwable error) {
         Mode[] values = Mode.values();
         if (retries < values.length) {
-            mode.set(values[(mode.get().ordinal() + 1) % values.length]);
             createMoviePlayer(retries + 1);
         } else {
             ObservableList<Node> c = vBox.getChildren();
