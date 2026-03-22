@@ -152,7 +152,7 @@ public class BoxGaussianBlurOp implements BufferedImageOp {
     private static void transposeImage(float[] in, float[] out, int w, int h) {
         int block = 256 / 4;
         //for (int x = 0; x < w; x += block) {
-        IntStream.range(0, w / block).forEach(i -> {
+        IntStream.range(0, w / block).parallel().forEach(i -> {
             int x = i * block;
             for (int y = 0; y < h; y += block) {
                 int blockx = Math.min(w, x + block) - x;

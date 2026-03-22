@@ -5,25 +5,29 @@
 
 package org.monte.demo.javafx.colorquantizer;
 
+import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelBuffer;
+import javafx.scene.image.PixelFormat;
 import javafx.scene.image.PixelReader;
-import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import org.monte.media.amigabitmap.AmigaBitmapImageConverter;
 import org.monte.media.amigabitmap.AmigaHAMColorModel;
 import org.monte.media.image.algo.NearestNeighbourResampleAlgoFloat;
 
 import java.awt.image.BufferedImage;
-import java.util.stream.IntStream;
+import java.nio.IntBuffer;
+import java.util.concurrent.ForkJoinPool;
 
 public class RenderedImageViewController {
     private ScrollPane root = new ScrollPane();
@@ -57,15 +61,26 @@ public class RenderedImageViewController {
     private Image resample(Image input, float scaleFactor) {
         int srcWidth = (int) input.getWidth();
         int srcHeight = (int) input.getHeight();
-        int dstWidth = Math.max((int) (srcWidth * scaleFactor), 1);
-        int dstHeight = Math.max((int) (srcHeight * scaleFactor), 1);
-        WritableImage output = new WritableImage(dstWidth, dstHeight);
-        resample(input.getPixelReader(), srcWidth, srcHeight, 0, srcWidth,
-                output.getPixelWriter(), dstWidth, dstHeight, 0, dstWidth);
+        int width = Math.max((int) (srcWidth * scaleFactor), 1);
+        int height = Math.max((int) (srcHeight * scaleFactor), 1);
+        if ((double) width * height * 4.0 > Integer.MAX_VALUE) {
+            return null;
+        }
+
+        IntBuffer intBuffer = IntBuffer.allocate(width * height);
+        PixelFormat<IntBuffer> pixelFormat = PixelFormat.getIntArgbPreInstance();
+        PixelBuffer<IntBuffer> pixelBuffer = new PixelBuffer<>(width, height, intBuffer, pixelFormat);
+        Image output = new WritableImage(pixelBuffer);
+
+        var in = input.getPixelReader();
+        var out = intBuffer;
+        ForkJoinPool.commonPool().submit(() -> resample(in, srcWidth, srcHeight, 0, srcWidth,
+                out, pixelBuffer, width, height, 0, width));
+
         return output;
     }
 
-    public void resample(PixelReader srcPixels, int srcWidth, int srcHeight, int srcOffset, int srcScanline, PixelWriter dstPixels, int dstWidth, int dstHeight, int dstOffset, int dstScanline) {
+    public void resample(PixelReader srcPixels, int srcWidth, int srcHeight, int srcOffset, int srcScanline, IntBuffer dstPixels, PixelBuffer<IntBuffer> pixelBuffer, int dstWidth, int dstHeight, int dstOffset, int dstScanline) {
         // scale factors
         float sx = srcWidth / (float) dstWidth;
         float sy = srcHeight / (float) dstHeight;
@@ -74,14 +89,27 @@ public class RenderedImageViewController {
         int tx = (int) (sx * 0.5f);
         int ty = (int) (sy * 0.5f);
 
-        //for (int destY = 0; destY < dstHeight; destY++) {
-        IntStream.range(0, dstHeight).forEach(destY -> {
-            int srcY = (int) (destY * sy) + ty;
-            for (int destX = 0; destX < dstWidth; destX++) {
-                int srcX = (int) (destX * sx) + tx;
-                dstPixels.setArgb(destX, destY, srcPixels.getArgb(srcX, srcY));
+        int block = 256;
+
+        var dst = dstPixels.array();
+        for (int y = 0; y < dstHeight; y += block) {
+            //IntStream.range(0, dstHeight).parallel().forEach(y -> {
+            for (int x = 0; x < dstWidth; x += block) {
+                int blockx = Math.min(dstWidth, x + block) - x;
+                int blocky = Math.min(dstHeight, y + block) - y;
+                for (int yy = 0; yy < blocky; yy++) {
+                    int srcY = (int) ((y + yy) * sy) + ty;
+                    for (int xx = 0; xx < blockx; xx++) {
+                        int srcX = (int) ((x + xx) * sx) + tx;
+                        dst[(yy + y) * dstWidth + x + xx] = srcPixels.getArgb(srcX, srcY);
+                    }
+                }
+                final int finalX = x;
+                final int finalY = y;
+                Platform.runLater(() -> pixelBuffer.updateBuffer(pbuf -> new Rectangle2D(finalX, finalY, blockx, blocky)));
             }
-        });
+        }
+        Platform.runLater(() -> pixelBuffer.updateBuffer(pbuf -> null));
     }
 
     public int getZoom() {

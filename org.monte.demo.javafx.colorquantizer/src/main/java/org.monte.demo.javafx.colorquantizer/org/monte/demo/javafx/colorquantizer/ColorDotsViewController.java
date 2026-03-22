@@ -205,6 +205,9 @@ public class ColorDotsViewController {
                         moleculeGroup.setVisible(!moleculeGroup.isVisible());
                         break;
                 }
+                if (needsUpdate) {
+                    updateView();
+                }
             }
         });
     }
@@ -248,6 +251,9 @@ public class ColorDotsViewController {
                     cameraXform2.t.setX(cameraXform2.t.getX() + mouseDeltaX * MOUSE_SPEED * modifier * TRACK_SPEED);
                     cameraXform2.t.setY(cameraXform2.t.getY() + mouseDeltaY * MOUSE_SPEED * modifier * TRACK_SPEED);
                 }
+                if (needsUpdate) {
+                    updateView();
+                }
             }
         });
     }
@@ -277,15 +283,18 @@ public class ColorDotsViewController {
         return true;
     }
 
+    private boolean needsUpdate;
+
     public void updateViewLater() {
         if (!isTreeVisible()) {
-            borderPane.requestLayout();
+            needsUpdate = true;
             return;
         }
         updateView();
     }
 
     public void updateView() {
+        needsUpdate = false;
         if (getImage() == null) return;
         switch (getColorSpaceProperty()) {
             case SRGB -> {
