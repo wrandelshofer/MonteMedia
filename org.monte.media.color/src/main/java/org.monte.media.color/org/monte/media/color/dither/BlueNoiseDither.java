@@ -49,6 +49,16 @@ public class BlueNoiseDither implements Dither {
         return data[y & mask][x & mask];
     }
 
+    @Override
+    public int getWidth() {
+        return data[0].length;
+    }
+
+    @Override
+    public int getHeight() {
+        return data.length;
+    }
+
     public float[][] getData() {
         var d = new float[data.length][0];
         for (int i = 0; i < data.length; i++) {

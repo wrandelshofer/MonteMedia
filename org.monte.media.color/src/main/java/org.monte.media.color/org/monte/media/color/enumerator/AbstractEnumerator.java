@@ -1,8 +1,8 @@
 /*
  * @(#)AbstractEnumerator.java
- * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2026 Werner Randelshofer, Switzerland. MIT License.
  */
-package org.monte.demo.javafx.colorquantizer.model;
+package org.monte.media.color.enumerator;
 
 import java.util.Spliterators;
 
@@ -30,10 +30,10 @@ public abstract class AbstractEnumerator<E> extends Spliterators.AbstractSpliter
     /// additionalCharacteristics.
     ///
     /// @param est                       the estimated size of this spliterator if known, otherwise
-    ///                                                                                                                                                                      `Long.MAX_VALUE`.
+    ///                                                                                                                                                                                                                                                                         `Long.MAX_VALUE`.
     /// @param additionalCharacteristics properties of this spliterator's
-    ///                                                                                                                                                                      source or elements.  If `SIZED` is reported then this
-    ///                                                                                                                                                                      spliterator will additionally report `SUBSIZED`.
+    ///                                                                                                                                                                                                                                                                         source or elements.  If `SIZED` is reported then this
+    ///                                                                                                                                                                                                                                                                         spliterator will additionally report `SUBSIZED`.
     protected AbstractEnumerator(long est, int additionalCharacteristics) {
         super(est, additionalCharacteristics);
     }

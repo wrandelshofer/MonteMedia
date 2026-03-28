@@ -41,16 +41,11 @@ import org.monte.demo.javafx.colorquantizer.model.PaletteMode;
 import org.monte.media.color.Rec709ColorSpace;
 
 import java.awt.color.ColorSpace;
-import java.awt.color.ICC_ColorSpace;
-import java.awt.color.ICC_Profile;
-import java.awt.color.ICC_ProfileRGB;
-import java.awt.color.ProfileDataException;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -288,54 +283,7 @@ public class ColorInspectorController {
             inputImageColorSpaceLabel.textProperty().bind(newv.rawReferenceImageProperty().map(
                     img -> {
                         if (img == null) return "no image";
-                        if (img.getColorModel().getColorSpace() instanceof ICC_ColorSpace cs) {
-                            ICC_Profile p = cs.getProfile();
-                            IO.println("color space type: " + p.getColorSpaceType());
-                            if (p instanceof ICC_ProfileRGB prgb) {
-                                try {
-                                    IO.println("  gamma: " + prgb.getGamma(0) + "," + prgb.getGamma(1) + "," + prgb.getGamma(2));
-                                } catch (ProfileDataException e) {
-                                    IO.println("  gamma: " + e.getMessage());
-                                }
-                                try {
-                                    IO.println("  trc: " + Arrays.toString(prgb.getTRC(0)) + "," + Arrays.toString(prgb.getTRC(1)) + "," + Arrays.toString(prgb.getTRC(2)));
-                                } catch (ProfileDataException e) {
-                                    IO.println("  trc: " + e.getMessage());
-                                }
-                                float[] ciexyzWhite = prgb.getMediaWhitePoint();
-                                float sumWhite = ciexyzWhite[0] + ciexyzWhite[1] + ciexyzWhite[2];
-                                IO.println("  media white point XYZ: " + Arrays.toString(ciexyzWhite));
-                                IO.println("  media white point xy: " + (ciexyzWhite[0] / sumWhite) + "," + (ciexyzWhite[1] / sumWhite));
-                                float[][] matrix = prgb.getMatrix();
-                                IO.println("  matrix red  : " + matrix[0][0] + "," + matrix[1][0] + "," + matrix[2][0]);
-                                IO.println("  matrix green: " + matrix[0][1] + "," + matrix[1][1] + "," + matrix[2][1]);
-                                IO.println("  matrix blue : " + matrix[0][2] + "," + matrix[1][2] + "," + matrix[2][2]);
-                            }
-                            switch (p.getColorSpaceType()) {
-                                case ColorSpace.TYPE_RGB -> {
-                                    IO.println("  color space type: RGB");
-
-                                    IO.println("     max values RGB: " + Arrays.toString(new float[]{cs.getMaxValue(0), cs.getMaxValue(1), cs.getMaxValue(2)}));
-                                    IO.println("     min values RGB: " + Arrays.toString(new float[]{cs.getMinValue(0), cs.getMinValue(1), cs.getMinValue(2)}));
-                                    float[] ciexyzRed = cs.toCIEXYZ(new float[]{cs.getMaxValue(0), cs.getMinValue(1), cs.getMinValue(2)});
-                                    float[] ciexyzGreen = cs.toCIEXYZ(new float[]{cs.getMinValue(0), cs.getMaxValue(1), cs.getMinValue(2)});
-                                    float[] ciexyzBlue = cs.toCIEXYZ(new float[]{cs.getMinValue(0), cs.getMinValue(1), cs.getMaxValue(2)});
-                                    float sumRed = ciexyzRed[0] + ciexyzRed[1] + ciexyzRed[2];
-                                    float sumGreen = ciexyzGreen[0] + ciexyzGreen[1] + ciexyzGreen[2];
-                                    float sumBlue = ciexyzBlue[0] + ciexyzBlue[1] + ciexyzBlue[2];
-                                    IO.println("     red XYZ: " + Arrays.toString(ciexyzRed));
-                                    IO.println("     green XYZ: " + Arrays.toString(ciexyzGreen));
-                                    IO.println("     blue XYZ: " + Arrays.toString(ciexyzBlue));
-                                    IO.println("     red xy: " + (ciexyzRed[0] / sumRed) + "," + (ciexyzRed[1] / sumRed));
-                                    IO.println("     green xy: " + (ciexyzGreen[0] / sumGreen) + "," + (ciexyzGreen[1] / sumGreen));
-                                    IO.println("     blue xy: " + (ciexyzBlue[0] / sumBlue) + "," + (ciexyzBlue[1] / sumBlue));
-                                }
-                            }
-                            p.getData(ICC_Profile.icSigProfileDescriptionTag);
-                            return p.toString();
-                        } else {
-                            return img.getColorModel().getColorSpace().toString();
-                        }
+                        return img.getColorModel().getColorSpace().toString();
                     })
             );
             inputImageColorsLabel.textProperty().bind(newv.rawReferenceImageProperty().map(

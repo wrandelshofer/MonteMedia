@@ -32,6 +32,7 @@ public class BayerDither implements Dither {
             {(float) (63 / 31.5 - 1), (float) (31 / 31.5 - 1), (float) (55 / 31.5 - 1), (float) (23 / 31.5 - 1), (float) (61 / 31.5 - 1), (float) (29 / 31.5 - 1), (float) (53 / 31.5 - 1), (float) (21 / 31.5 - 1)},
     };
     private final float[][] data;
+    private final int sizeMask;
 
     /// Creates a new [BayerDither].
     ///
@@ -40,6 +41,7 @@ public class BayerDither implements Dither {
     public BayerDither(int size, float spread) {
         if (size != 4 && size != 8)
             throw new IllegalArgumentException("illegal size=" + size);
+        sizeMask = size - 1;
         this.data = new float[size][size];
         float[][] D = size == 4 ? DATA_4 : DATA_8;
         for (int i = 0; i < data.length; i++) {
@@ -51,7 +53,17 @@ public class BayerDither implements Dither {
 
     @Override
     public float get(int x, int y) {
-        return data[y & 3][x & 3];
+        return data[y & sizeMask][x & sizeMask];
+    }
+
+    @Override
+    public int getWidth() {
+        return sizeMask + 1;
+    }
+
+    @Override
+    public int getHeight() {
+        return sizeMask + 1;
     }
 
     public float[][] getData() {

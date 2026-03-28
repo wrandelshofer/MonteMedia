@@ -10,4 +10,14 @@ public class NoDither implements Dither {
     public float get(int x, int y) {
         return 0;
     }
+
+    @Override
+    public int getWidth() {
+        return 1;
+    }
+
+    @Override
+    public int getHeight() {
+        return 1;
+    }
 }

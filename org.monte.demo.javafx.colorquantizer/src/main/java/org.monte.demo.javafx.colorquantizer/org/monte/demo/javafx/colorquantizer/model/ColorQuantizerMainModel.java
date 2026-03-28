@@ -39,17 +39,24 @@ import org.monte.media.av.codec.video.ReplaceColorSpaceCodec;
 import org.monte.media.av.codec.video.ScaleImageCodec;
 import org.monte.media.av.codec.video.VideoFormatKeys;
 import org.monte.media.color.RgbBitConverters;
+import org.monte.media.color.icc.ICC_ProfileReader;
 import org.monte.media.color.quant.OctreeColorQuantizer;
 import org.monte.media.image.op.UnsharpMaskOp;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.spi.IIORegistry;
 import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.spi.ServiceRegistry;
 import javax.imageio.stream.FileImageOutputStream;
+import javax.imageio.stream.ImageInputStream;
 import java.awt.*;
 import java.awt.color.ColorSpace;
+import java.awt.color.ICC_ColorSpace;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.ComponentColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.DirectColorModel;
 import java.awt.image.IndexColorModel;
@@ -58,6 +65,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -75,7 +83,7 @@ public class ColorQuantizerMainModel {
     private final BooleanProperty scale = new SimpleBooleanProperty();
     private final BooleanProperty sharpen = new SimpleBooleanProperty();
     private final BooleanProperty preserveAspectRatio = new SimpleBooleanProperty(true);
-    private final IntegerProperty paletteSize = new SimpleIntegerProperty(16);
+    private final IntegerProperty paletteSize = new SimpleIntegerProperty(64);
     private final IntegerProperty zoom = new SimpleIntegerProperty(0);
     private final IntegerProperty width = new SimpleIntegerProperty();
     private final IntegerProperty height = new SimpleIntegerProperty();
@@ -85,7 +93,7 @@ public class ColorQuantizerMainModel {
     private final IntegerProperty cropTop = new SimpleIntegerProperty();
     private final IntegerProperty cropRight = new SimpleIntegerProperty();
     private final IntegerProperty cropBottom = new SimpleIntegerProperty();
-    private final DoubleProperty ditherIntensityFactor = new SimpleDoubleProperty(1.5);
+    private final DoubleProperty ditherIntensityFactor = new SimpleDoubleProperty(15);
     private final DoubleProperty scaleRadiusFactor = new SimpleDoubleProperty(0.5);
     private final DoubleProperty sharpenAmount = new SimpleDoubleProperty(1);
     private final DoubleProperty sharpenRadius = new SimpleDoubleProperty(0.75);
@@ -347,7 +355,7 @@ public class ColorQuantizerMainModel {
         }
 
         Format colorFormat = new Format(DirectColorModelEncoder.DitheringMethodKey, getDitheringMethod(),
-                DirectColorModelEncoder.DitheringFactorKey, getDitherIntensityFactor() / 255f);
+                DirectColorModelEncoder.DitheringFactorKey, getDitherIntensityFactor());
         switch (getColorMode()) {
             case _18_BIT_RGB -> {
                 var codec = new DirectColorModelEncoder();
@@ -551,54 +559,52 @@ public class ColorQuantizerMainModel {
 
             @Override
             protected BufferedImage call() throws Exception {
-                /*
-                BufferedImage newImage = null;
-                if (newv != null) {
-                    try (FileImageInputStream in = new FileImageInputStream(newv.toFile())) {
-                        var iter = ImageIO.getImageReaders(in);
-                        if (iter.hasNext()) {
-                            var reader = iter.next();
-                            in.seek(0L);
-                            reader.setInput(in);
-                            newImage = reader.read(0);
-                            var iioMeta = reader.getImageMetadata(0);
-                            //org.w3c.dom.Node node = iioMeta.getAsTree("javax_imageio_png_1.0");
-                            org.w3c.dom.Node node = iioMeta.getAsTree("javax_imageio_1.0");
-                            new PreorderSpliterator<>((Node n) -> () -> new Iterator<Node>() {
-                                final NodeList childNodes = n.getChildNodes();
-                                int index = 0;
 
-                                @Override
-                                public boolean hasNext() {
-                                    return index < childNodes.getLength();
-                                }
 
-                                @Override
-                                public Node next() {
-                                    return childNodes.item(index++);
-                                }
+                //var finalNewImage = newv == null ? null : ImageIO.read(newv.toFile());
+                try (ImageInputStream iis = ImageIO.createImageInputStream(newv.toFile())) {
+                    Iterator<ImageReader> it = ImageIO.getImageReaders(iis);
+                    if (!it.hasNext()) {
+                        return null;
+                    }
+                    ImageReader r = it.next();
+                    iis.seek(0L);
+                    r.setInput(iis);
+                    var newImage = r.read(0);
+                    var profile = new ICC_ProfileReader(r.getImageMetadata(0)).getProfile();
+                    if (profile != null && newImage.getColorModel() instanceof DirectColorModel dcm) {
+                        ColorModel colorModel = new DirectColorModel(new ICC_ColorSpace(profile),
+                                dcm.getPixelSize(),
+                                dcm.getRedMask(), dcm.getGreenMask(), dcm.getBlueMask(), dcm.getAlphaMask(),
+                                dcm.isAlphaPremultiplied(), dcm.getTransferType());
 
-                            }, node).forEachRemaining(x -> {
-                                NamedNodeMap attributes = x.getAttributes();
-                                System.out.println(x.getLocalName());
-                                for (int i = 0; i < attributes.getLength(); i++) {
-                                    Node item = attributes.item(i);
-                                    System.out.println("  " + item.getNodeName() + " " + item.getNodeValue());
-                                }
-                            });
+                        newImage = new BufferedImage(
+                                colorModel,
+                                newImage.getRaster(),
+                                newImage.isAlphaPremultiplied(),
+                                null
+                        );
+                    } else if (profile != null && newImage.getColorModel() instanceof ComponentColorModel dcm) {
+                        ColorModel colorModel = new ComponentColorModel(new ICC_ColorSpace(profile),
+                                dcm.hasAlpha(),
+                                dcm.isAlphaPremultiplied(), dcm.getTransparency(), dcm.getTransferType());
+
+                        newImage = new BufferedImage(
+                                colorModel,
+                                newImage.getRaster(),
+                                newImage.isAlphaPremultiplied(),
+                                null
+                        );
+                    }
+                    var finalNewImage = newImage;
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            setRawReferenceImage(finalNewImage);
                         }
-                    }
+                    });
+                    return finalNewImage;
                 }
-                */
-
-                var finalNewImage = newv == null ? null : ImageIO.read(newv.toFile());
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        setRawReferenceImage(finalNewImage);
-                    }
-                });
-                return finalNewImage;
             }
 
             @Override
@@ -608,6 +614,13 @@ public class ColorQuantizerMainModel {
             }
         });
     }
+
+    private void printImageMetadata(IIOMetadata iioMeta) {
+
+        var r = new ICC_ProfileReader(iioMeta);
+        IO.println(r.toString());
+    }
+
 
     public ObservableList<Path> getBatchInputFiles() {
         return batchInputFiles.get();

@@ -448,7 +448,8 @@ public class AmigaHAMColorModelEncoder extends AbstractCodec {
             ditheringMethod = DitheringMethod.BLUE_NOISE;
         }
 
-        float spread = f.get(DitheringFactorKey, 4.0).floatValue();
+        // Divide by 255f because we dither in the oklab domain
+        float spread = f.get(DitheringFactorKey, 4.0).floatValue() / 255f;
 
         switch (ditheringMethod) {
             case NONE -> {

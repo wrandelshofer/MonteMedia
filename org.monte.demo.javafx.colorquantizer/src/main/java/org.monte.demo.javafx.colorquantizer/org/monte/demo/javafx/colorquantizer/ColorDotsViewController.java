@@ -34,7 +34,6 @@ import org.monte.demo.javafx.colorquantizer.scene3d.Group3D;
 import org.monte.demo.javafx.colorquantizer.scene3d.IcosphereMeshBuilder;
 import org.monte.demo.javafx.colorquantizer.scene3d.RotateScene3DMouseHandler;
 import org.monte.media.color.OKLabColorSpace;
-import org.monte.media.color.SrgbColorSpace;
 import org.monte.media.math.Point3DFloat;
 
 import java.awt.*;
@@ -310,7 +309,8 @@ public class ColorDotsViewController {
 
     private void updateViewAsRgb() {
         //updateViewAsRgb(ColorSpace.getInstance(ColorSpace.CS_sRGB));
-        updateViewAsRgb(SrgbColorSpace.getInstance());
+        // updateViewAsRgb(SrgbColorSpace.getInstance());
+        updateViewAsRgb(getImage().getColorModel().getColorSpace());
         //updateViewAsRgb(Rec709ColorSpace.INSTANCE);
     }
 

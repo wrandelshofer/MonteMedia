@@ -1,8 +1,8 @@
 /*
  * @(#)BareEnumerator.java
- * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+ * Copyright © 2026 Werner Randelshofer, Switzerland. MIT License.
  */
-package org.monte.demo.javafx.colorquantizer.model;
+package org.monte.demo.javafx.colorquantizer.model.enumerator;
 
 import java.util.Iterator;
 

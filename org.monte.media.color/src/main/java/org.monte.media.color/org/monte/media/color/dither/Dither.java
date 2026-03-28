@@ -8,4 +8,8 @@ package org.monte.media.color.dither;
 public interface Dither {
 
     public float get(int x, int y);
+
+    int getWidth();
+
+    int getHeight();
 }

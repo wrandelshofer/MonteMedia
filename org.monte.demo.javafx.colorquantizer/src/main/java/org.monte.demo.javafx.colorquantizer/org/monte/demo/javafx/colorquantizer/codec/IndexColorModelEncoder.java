@@ -155,7 +155,7 @@ public class IndexColorModelEncoder extends AbstractCodec {
         int x = 0, y = 0;
 
         for (int i = 0, n = Math.min(in.length, out.length); i < n; i++) {
-            var pix = in[i];
+            int pix = in[i];
             labf = oklab.from24BitRGB(pix, labf);
             labf[0] += dither0.get(x, y);
             labf[1] += dither1.get(x, y);

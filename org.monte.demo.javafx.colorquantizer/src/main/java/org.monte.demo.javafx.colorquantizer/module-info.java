@@ -26,5 +26,7 @@ module org.monte.demo.javafx.colorquantizer {
     opens org.monte.demo.javafx.colorquantizer.codec to javafx.fxml;
     exports org.monte.demo.javafx.colorquantizer.scene3d to javafx.graphics;
     opens org.monte.demo.javafx.colorquantizer.scene3d to javafx.fxml;
+    exports org.monte.demo.javafx.colorquantizer.model.enumerator to javafx.graphics;
+    opens org.monte.demo.javafx.colorquantizer.model.enumerator to javafx.fxml;
 
 }
