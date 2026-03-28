@@ -34,13 +34,13 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.DataClassKey;
 /// Implements the Apple Closed Caption codec.
 ///
 /// Each sample consists of a `cdat` chunk.
-/// <pre>
+/// ```
 /// typedef struct {
 ///     uint32 size;
 ///     uint8[4] type;           // Must contain the ASCII characters "cdat".
 ///     byte[size-8] caption;  // ANSI/CTA-608-E S-2019 encoded String
 /// } cdatChunk;
-/// </pre>
+/// ```
 ///
 /// References:
 /// <dl>

@@ -69,7 +69,7 @@ public class BoundedRangeInputStream
         return nr;
     }
 
-    /// Overrides [java.io.FilterInputStream#skip()] to update the value after
+    /// Overrides [FilterInputStream#skip(long)] to update the value after
     /// the skip.
     public long skip(long n) throws IOException {
         long nr = in.skip(n);
@@ -114,9 +114,9 @@ public class BoundedRangeInputStream
     ///
     /// Sets the model's minimum to _newMinimum_. The other three properties
     /// may be changed as well, to ensure that:
-    /// <pre>
+    /// ```
     /// minimum &lt;= value &lt;= value+extent &lt;= maximum
-    /// </pre>
+    /// ```
     ///
     /// Notifies any listeners if the model changes.
     ///
@@ -142,9 +142,9 @@ public class BoundedRangeInputStream
     ///
     /// Sets the model's maximum to _newMaximum_. The other three properties
     /// may be changed as well, to ensure that
-    /// <pre>
+    /// ```
     /// minimum &lt;= value &lt;= value+extent &lt;= maximum
-    /// </pre>
+    /// ```
     ///
     /// Notifies any listeners if the model changes.
     ///
@@ -174,9 +174,9 @@ public class BoundedRangeInputStream
     /// Sets the model's current value to `newValue` if
     /// `newValue` satisfies the model's constraints. Those
     /// constraints are:
-    /// <pre>
+    /// ```
     /// minimum &lt;= value &lt;= value+extent &lt;= maximum
-    /// </pre> Otherwise, if `newValue` is less than
+    /// ``` Otherwise, if `newValue` is less than
     /// `minimum` it's set to `minimum`, if its greater
     /// than `maximum` then it's set to `maximum`, and if
     /// it's greater than `value+extent` then it's set to
@@ -206,7 +206,7 @@ public class BoundedRangeInputStream
     /// Sliders and scrollbars use this property when a drag is underway.
     ///
     /// @param b true if the upcoming changes to the value property are part of a
-    ///                                              series
+    ///                                                                series
     public void setValueIsAdjusting(boolean b) {
         valueIsAdjusting = b;
     }

@@ -16,14 +16,14 @@ import java.io.InputStream;
 /// in the next two bytes which are referred to as byte-pairs.
 ///
 /// ISO EBNF Grammar:
-/// <pre>
+/// ```
 ///     cc_data()      = cc_data_header , { cc_payload } ;
 ///     cc_data_header = uint16BE;
 ///     cc_payload         = cc_valid_and_type , cc_data_1, cc_data_2 ;
 ///     cc_valid_and_type  = uint8 ; (* validity and type of the two data bytes that follow it. *)
 ///     cc_data_1          = uint8 ; (* the first of two data bytes *)
 ///     cc_data_2          = uint8 ; (* the second of two data bytes *)
-/// </pre>
+/// ```
 /// References:
 /// <dl>
 ///     <dt>ANSI/CTA Standard. Digital Television (DTV) Closed Captioning. CTA-708-E S-2023. August 2013.</dt>

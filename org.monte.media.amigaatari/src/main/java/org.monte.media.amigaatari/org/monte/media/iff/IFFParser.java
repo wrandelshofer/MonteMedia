@@ -52,7 +52,7 @@ import java.util.HashSet;
 /// Third Edition, Addison Wesley".
 ///
 /// **Grammar for IFF streams**
-/// <pre>
+/// ```
 /// IFFFile     ::= 'FORM' FormGroup | 'CAT ' CatGroup | 'LIST' ListGroup
 /// <br>
 /// GroupChunk  ::= FormGroup | CatGroup | ListGroup | PropGroup | IFFStream
@@ -74,7 +74,7 @@ import java.util.HashSet;
 /// ChunkID     ::= ULONG
 /// pad         ::= a single byte of value 0.
 /// struct      ::= any C language struct built with primitive data types.
-/// </pre>
+/// ```
 ///
 /// **Examples**
 ///
@@ -83,7 +83,7 @@ import java.util.HashSet;
 /// To traverse the file structure you must first set up an IFFVisitor object
 /// that does something useful at each call to the visit method. Then create an
 /// instance of IFFParser and invoke the #interpret method.
-/// <pre>
+/// ```
 /// class IFFRawTraversal
 /// .	{
 /// .	static class Visitor
@@ -106,7 +106,7 @@ import java.util.HashSet;
 /// .		catch (AbortedException e)  { System.out.println(e); }
 /// .		}
 /// .	}
-/// </pre>
+/// ```
 ///
 /// **Traversing the IFF file and interpreting its content.**
 ///
@@ -123,7 +123,7 @@ import java.util.HashSet;
 /// information the visitor can obtain during interpretation is only valid during
 /// the actual #visit... call. Dont try to get information about properties or
 /// collections for chunks that the visitor is not visiting right now.
-/// <pre>
+/// ```
 /// class InterpretingAnILBMFile
 /// .	{
 /// .	static class Visitor
@@ -151,7 +151,7 @@ import java.util.HashSet;
 /// .		catch (AbortedException e)  { System.out.println(e); }
 /// .		}
 /// .	}
-/// </pre>
+/// ```
 ///
 /// @author Werner Randelshofer
 /// @see IFFVisitor
@@ -221,9 +221,9 @@ public class IFFParser
     /// during tree traversal.
     ///
     /// @throws ParseException Is thrown when an interpretation error occured.
-    ///                                               The stream is positioned where the error occured.
+    ///                                                                      The stream is positioned where the error occured.
     /// @throws AbortException Is thrown when the visitor decided to abort the
-    ///                                               interpretation.
+    ///                                                                      interpretation.
     public void parse(InputStream in, IFFVisitor v)
             throws ParseException, AbortException, IOException {
         this.in = new MC68000InputStream(in);
@@ -232,9 +232,9 @@ public class IFFParser
     }
 
     /// Parses an IFF-85 file.
-    /// <pre>
+    /// ```
     /// IFF = 'FORM' FormGroup | 'CAT ' CatGroup | 'LIST' ListGroup
-    /// </pre>
+    /// ```
     private void parseFile()
             throws ParseException, AbortException, IOException {
         int id = in.readLONG();
@@ -255,12 +255,12 @@ public class IFFParser
     }
 
     /// Parses a FORM group chunk.
-    /// <pre>
+    /// ```
     /// FormGroup = size FormType { 'FORM' FormGroup [Pad] |
     /// 'CAT ' CatGroup  [Pad] |
     /// 'LIST' ListGroup [Pad] |
     /// ChunkID LocalChunk [Pad] }
-    /// </pre>
+    /// ```
     private void parseFORM(HashMap<Integer, IFFChunk> props)
             throws ParseException, AbortException, IOException {
         long size = in.readULONG();
@@ -317,11 +317,11 @@ public class IFFParser
     }
 
     /// Parses a CAT group chunk.
-    /// <pre>
+    /// ```
     /// CatGroup = size CatType { 'FORM' FormGroup [Pad] |
     /// 'CAT ' CatGroup  [Pad] |
     /// 'LIST' ListGroup [Pad] }
-    /// </pre>
+    /// ```
     private void parseCAT(HashMap<Integer, IFFChunk> props)
             throws ParseException, AbortException, IOException {
         long size = in.readULONG();
@@ -365,11 +365,11 @@ public class IFFParser
     }
 
     /// Parses a LIST group chunk.
-    /// <pre>
+    /// ```
     /// ListGroup = size ListType { 'PROP' PropGroup [Pad] } { 'FORM' FormGroup [Pad] |
     /// 'CAT ' CatGroup  [Pad] |
     /// 'LIST' ListGroup [Pad] }
-    /// </pre>
+    /// ```
     @SuppressWarnings("unchecked")
     private void parseLIST(HashMap<Integer, IFFChunk> props)
             throws ParseException, AbortException, IOException {
@@ -423,9 +423,9 @@ public class IFFParser
     }
 
     /// Parses a PROP group chunk.
-    /// <pre>
+    /// ```
     /// PropGroup   ::= size PropType { ChunkID PropertyChunk [pad] }
-    /// </pre>
+    /// ```
     private IFFChunk parsePROP()
             throws ParseException, AbortException, IOException {
         long size = in.readULONG();
@@ -463,10 +463,10 @@ public class IFFParser
     }
 
     /// Parses a local chunk.
-    /// <pre>
+    /// ```
     /// LocalChunk  ::= size { DataChunk | PropertyChunk | CollectionChunk }
     /// DataChunk = PropertyChunk = CollectionChunk ::= { byte }*size
-    /// </pre>
+    /// ```
     private void parseLocalChunk(IFFChunk parent, int id)
             throws ParseException, AbortException, IOException {
         long size = in.readULONG();
@@ -595,9 +595,9 @@ public class IFFParser
     /// Post condition   - 	Data chunk declared
     ///
     /// @param type Type of the chunk. Must be formulated as a TypeID conforming
-    ///                         to the method #isFormType.
+    ///                                     to the method #isFormType.
     /// @param id   ID of the chunk. Must be formulated as a ChunkID conforming to
-    ///                         the method #isLocalChunkID.
+    ///                                     the method #isLocalChunkID.
     @SuppressWarnings("unchecked")
     public void declareDataChunk(int type, int id) {
         IFFChunk chunk = new IFFChunk(type, id);
@@ -629,9 +629,9 @@ public class IFFParser
     ///   - 	Group chunk declared
     ///
     /// @param type Type of the chunk. Must be formulated as a TypeID conforming
-    ///                         to the method #isFormType.
+    ///                                     to the method #isFormType.
     /// @param id   ID of the chunk. Must be formulated as a ChunkID conforming to
-    ///                         the method #isContentsType.
+    ///                                     the method #isContentsType.
     public void declareGroupChunk(int type, int id) {
         //IFFChunk chunk = new IFFChunk(type, id);
         if (groupChunks == null) {
@@ -660,9 +660,9 @@ public class IFFParser
     /// Post condition   - 	Group chunk declared
     ///
     /// @param type Type of the chunk. Must be formulated as a TypeID conforming
-    ///                         to the method #isFormType.
+    ///                                     to the method #isFormType.
     /// @param id   ID of the chunk. Must be formulated as a ChunkID conforming to
-    ///                         the method #isLocalChunkID.
+    ///                                     the method #isLocalChunkID.
     public void declarePropertyChunk(int type, int id) {
         IFFChunk chunk = new IFFChunk(type, id);
         if (propertyChunks == null) {
@@ -692,9 +692,9 @@ public class IFFParser
     ///   - 	Group chunk declared
     ///
     /// @param type Type of the chunk. Must be formulated as a TypeID conforming
-    ///                         to the method #isFormType.
+    ///                                     to the method #isFormType.
     /// @param id   ID of the chunk. Must be formulated as a ChunkID conforming to
-    ///                         the method #isLocalChunkID.
+    ///                                     the method #isLocalChunkID.
     public void declareCollectionChunk(int type, int id) {
         IFFChunk chunk = new IFFChunk(type, id);
         if (collectionChunks == null) {

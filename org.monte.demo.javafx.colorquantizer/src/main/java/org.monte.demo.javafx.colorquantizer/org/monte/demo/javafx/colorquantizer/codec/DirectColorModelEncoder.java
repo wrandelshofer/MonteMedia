@@ -16,14 +16,15 @@ import org.monte.media.color.dither.BayerDither;
 import org.monte.media.color.dither.BlueNoiseDither;
 import org.monte.media.color.dither.Dither;
 
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
+import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.awt.image.DataBufferShort;
 import java.awt.image.DataBufferUShort;
 import java.awt.image.DirectColorModel;
 import java.awt.image.WritableRaster;
+import java.util.stream.IntStream;
 
 import static org.monte.media.av.BufferFlag.DISCARD;
 import static org.monte.media.av.FormatKeys.EncodingKey;
@@ -34,7 +35,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_I
 
 /// Encodes a [BufferedImage] into a [BufferedImage] with a different [java.awt.image.DirectColorModel].
 public class DirectColorModelEncoder extends AbstractCodec {
-    private final OKLabColorSpace oklab = new OKLabColorSpace();
+    private final ColorSpace oklab = new OKLabColorSpace();
 
     /// Optional, the desired index color model.
     /// If this value is null, an index color model is computed.
@@ -155,17 +156,20 @@ public class DirectColorModelEncoder extends AbstractCodec {
         int x = 0, y = 0;
         for (int i = 0, n = Math.min(in.length, out.length); i < n; i++) {
             var pix = in[i];
-            rgbs[0] = (pix & 0xff0000) >> 16;
-            rgbs[1] = (pix & 0xff00) >> 8;
-            rgbs[2] = (pix & 0xff);
-            lab = oklab.fromRGB(rgbs, lab);
+            rgbs[0] = ((pix & 0xff0000) >> 16) * (1f / 255f);
+            ;
+            rgbs[1] = ((pix & 0xff00) >> 8) * (1f / 255f);
+            ;
+            rgbs[2] = ((pix & 0xff)) * (1f / 255f);
+            ;
+            lab = oklab.fromRGB(rgbs);
             lab[0] += dither0.get(x, y);
             lab[1] += dither1.get(x, y);
             lab[2] += dither2.get(x, y);
-            oklab.toRGB(lab, rgbs2);
-            var dpix = (Math.clamp((int) rgbs2[0], 0, 255) << 16)
-                    | (Math.clamp((int) rgbs2[1], 0, 255) << 8)
-                    | (Math.clamp((int) rgbs2[2], 0, 255));
+            rgbs2 = oklab.toRGB(lab);
+            var dpix = (Math.clamp((int) (rgbs2[0] * 255f), 0, 255) << 16)
+                    | (Math.clamp((int) (rgbs2[1] * 255f), 0, 255) << 8)
+                    | (Math.clamp((int) (rgbs2[2] * 255f), 0, 255));
             out[i] = Integer.compress(dpix, compressMask);
             x = x + 1;
             if (x > width) {
@@ -176,6 +180,10 @@ public class DirectColorModelEncoder extends AbstractCodec {
     }
 
     private void renderOutputImageShort(BufferedImage inputImage, BufferedImage outputImage, DirectColorModel dcm, Dither dither0, Dither dither1, Dither dither2) {
+        renderOutputImageShortMask(inputImage, outputImage, dcm, dither0, dither1, dither2);
+    }
+
+    private void renderOutputImageShortMask(BufferedImage inputImage, BufferedImage outputImage, DirectColorModel dcm, Dither dither0, Dither dither1, Dither dither2) {
         int width = inputImage.getWidth();
         int height = inputImage.getHeight();
         int[] in = new int[width * height];
@@ -188,37 +196,38 @@ public class DirectColorModelEncoder extends AbstractCodec {
         } else {
             return;
         }
-        float[] rgbs = new float[3];
-        float[] rgbs2 = new float[3];
-        float[] labf = new float[3];
-        int rm = dcm.getRedMask();
-        int gm = dcm.getGreenMask();
-        int bm = dcm.getBlueMask();
-        int compressMask =
-                (((1 << Integer.bitCount(rm)) - 1) << (24 - Integer.bitCount(rm)))
-                        | (((1 << Integer.bitCount(gm)) - 1) << (16 - Integer.bitCount(gm)))
-                        | (((1 << Integer.bitCount(bm)) - 1) << (8 - Integer.bitCount(bm)));
-        int x = 0, y = 0;
-        for (int i = 0, n = Math.min(in.length, out.length); i < n; i++) {
-            var pix = in[i];
-            rgbs[0] = (pix & 0xff0000) >> 16;
-            rgbs[1] = (pix & 0xff00) >> 8;
-            rgbs[2] = (pix & 0xff);
-            labf = oklab.fromRGB(rgbs, labf);
-            labf[0] += dither0.get(x, y);
-            labf[1] += dither1.get(x, y);
-            labf[2] += dither2.get(x, y);
-            oklab.toRGB(labf, rgbs2);
-            var dpix = (Math.clamp((int) rgbs2[0], 0, 255) << 16)
-                    | (Math.clamp((int) rgbs2[1], 0, 255) << 8)
-                    | (Math.clamp((int) rgbs2[2], 0, 255));
-            out[i] = (short) Integer.compress(dpix, compressMask);
-            x = x + 1;
-            if (x > width) {
-                x = 0;
-                y++;
+        int block = 64;
+        IntStream.range(0, height / block + 1).parallel().forEach(yy -> {
+            float[] rgbs = new float[3];
+            int rmask = dcm.getRedMask();
+            int gmask = dcm.getGreenMask();
+            int bmask = dcm.getBlueMask();
+            int rshift = Integer.numberOfTrailingZeros(rmask);
+            int gshift = Integer.numberOfTrailingZeros(gmask);
+            int bshift = Integer.numberOfTrailingZeros(bmask);
+            int rfactor = (1 << Integer.bitCount(rmask)) - 1;
+            int gfactor = (1 << Integer.bitCount(gmask)) - 1;
+            int bfactor = (1 << Integer.bitCount(bmask)) - 1;
+
+            for (int y = yy * block; y < Math.min(height, yy * block + block); y++) {
+                for (int x = 0; x < width; x++) {
+                    int i = y * width + x;
+                    var pix = in[i];
+                    rgbs[0] = ((pix & 0xff0000) >> 16) * (1f / 255f);
+                    rgbs[1] = ((pix & 0xff00) >> 8) * (1f / 255f);
+                    rgbs[2] = (pix & 0xff) * (1f / 255f);
+                    rgbs = oklab.fromRGB(rgbs);
+                    rgbs[0] += dither0.get(x, y);
+                    rgbs[1] += dither1.get(x, y);
+                    rgbs[2] += dither2.get(x, y);
+                    rgbs = oklab.toRGB(rgbs);
+                    var dpix = (Math.clamp((int) (rgbs[0] * rfactor), 0, rfactor) << rshift) & rmask
+                            | (Math.clamp((int) (rgbs[1] * gfactor), 0, gfactor) << gshift) & gmask
+                            | (Math.clamp((int) (rgbs[2] * bfactor), 0, bfactor) << bshift) & bmask;
+                    out[i] = (short) dpix;
+                }
             }
-        }
+        });
     }
 
     private BufferedImage reuseOutputImage(BufferedImage input, BufferedImage output, DirectColorModel dcm) {

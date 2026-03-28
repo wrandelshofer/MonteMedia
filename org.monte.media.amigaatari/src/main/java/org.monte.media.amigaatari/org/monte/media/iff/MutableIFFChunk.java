@@ -16,7 +16,7 @@ import java.io.IOException;
 /// MutableIFFChunk.
 ///
 /// Syntax of an IFF Chunk:
-/// <pre>
+/// ```
 /// Chunk        ::= ID #{ UBYTE* } [0]
 ///
 /// Property     ::= Chunk
@@ -30,7 +30,7 @@ import java.io.IOException;
 ///
 /// LIST         ::= "LIST" #{ ContentsType PROP* {FORM | LIST | CAT)* }
 /// PROP         ::= "PROP" #{ FormType Property* }
-/// </pre>
+/// ```
 /// In this extended regular expression notation the token "#" represents
 /// a count of the following braced data types. Literal items are shown in
 /// "quotes", [square bracketed items] are optional, and "*" means 0 or more

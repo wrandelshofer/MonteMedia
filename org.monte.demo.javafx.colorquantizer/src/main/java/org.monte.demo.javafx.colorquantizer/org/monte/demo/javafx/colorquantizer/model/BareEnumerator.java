@@ -18,7 +18,7 @@ import java.util.Iterator;
 /// [java.util.Spliterator] interface.
 ///
 /// Usage:
-/// <pre>
+/// ```
 /// {@literal
 ///  for (BareEnumerator<E> i = ...; i.moveNext(); ) {
 ///    var e = i.current();

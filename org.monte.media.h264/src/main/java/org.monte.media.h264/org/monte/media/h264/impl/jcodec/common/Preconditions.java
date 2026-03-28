@@ -38,7 +38,7 @@ package org.monte.media.h264.impl.jcodec.common;
 /// when the precondition check then succeeds (as it should almost always do in production). In some
 /// circumstances these wasted CPU cycles and allocations can add up to a real problem.
 /// Performance-sensitive precondition checks can always be converted to the customary form:
-/// <pre>
+/// ```
 /// `if (value < 0.0){throw new IllegalArgumentException("negative value: " + value);}`</pre>
 /// ### Other types of preconditions
 ///
@@ -94,7 +94,7 @@ public final class Preconditions {
     ///
     /// @param expression   a boolean expression
     /// @param errorMessage the exception message to use if the check fails; will be converted to a
-    ///                                                                                                                                                                                                         string using [#valueOf(Object)]
+    ///                                                                                                                                                                                                                             string using [#valueOf(Object)]
     /// @throws IllegalArgumentException if `expression` is false
     public static void checkArgument(boolean expression, Object errorMessage) {
         if (!expression) {
@@ -106,15 +106,15 @@ public final class Preconditions {
     ///
     /// @param expression           a boolean expression
     /// @param errorMessageTemplate a template for the exception message should the check fail. The
-    ///                                                                                                                                                                                                                                                             message is formed by replacing each `%s` placeholder in the template with an
-    ///                                                                                                                                                                                                                                                             argument. These are matched by position - the first `%s` gets
-    ///                                                                                                                                                                                                                                 `errorMessageArgs[0]`, etc. Unmatched arguments will be appended to the formatted message in
-    ///                                                                                                                                                                                                                                                             square braces. Unmatched placeholders will be left as-is.
+    ///                                                                                                                                                                                                                                                                                         message is formed by replacing each `%s` placeholder in the template with an
+    ///                                                                                                                                                                                                                                                                                         argument. These are matched by position - the first `%s` gets
+    ///                                                                                                                                                                                                                                                             `errorMessageArgs[0]`, etc. Unmatched arguments will be appended to the formatted message in
+    ///                                                                                                                                                                                                                                                                                         square braces. Unmatched placeholders will be left as-is.
     /// @param errorMessageArgs     the arguments to be substituted into the message template. Arguments
-    ///                                                                                                                                                                                                                                                             are converted to strings using [#valueOf(Object)].
+    ///                                                                                                                                                                                                                                                                                         are converted to strings using [#valueOf(Object)].
     /// @throws IllegalArgumentException if `expression` is false
     /// @throws NullPointerException     if the check fails and either `errorMessageTemplate` or
-    ///                                                                                                                                                                                                                                                                                                          `errorMessageArgs` is null (don't let this happen)
+    ///                                                                                                                                                                                                                                                                                                                                           `errorMessageArgs` is null (don't let this happen)
     public static void checkArgument(
             boolean expression,
             String errorMessageTemplate,
@@ -366,7 +366,7 @@ public final class Preconditions {
     ///
     /// @param expression   a boolean expression
     /// @param errorMessage the exception message to use if the check fails; will be converted to a
-    ///                                                                                                                                                                                     string using [#valueOf(Object)]
+    ///                                                                                                                                                                                                         string using [#valueOf(Object)]
     /// @throws IllegalStateException if `expression` is false
     public static void checkState(boolean expression, Object errorMessage) {
         if (!expression) {
@@ -379,15 +379,15 @@ public final class Preconditions {
     ///
     /// @param expression           a boolean expression
     /// @param errorMessageTemplate a template for the exception message should the check fail. The
-    ///                                                                                                                                                                                                                                                             message is formed by replacing each `%s` placeholder in the template with an
-    ///                                                                                                                                                                                                                                                             argument. These are matched by position - the first `%s` gets
-    ///                                                                                                                                                                                                                                 `errorMessageArgs[0]`, etc. Unmatched arguments will be appended to the formatted message in
-    ///                                                                                                                                                                                                                                                             square braces. Unmatched placeholders will be left as-is.
+    ///                                                                                                                                                                                                                                                                                         message is formed by replacing each `%s` placeholder in the template with an
+    ///                                                                                                                                                                                                                                                                                         argument. These are matched by position - the first `%s` gets
+    ///                                                                                                                                                                                                                                                             `errorMessageArgs[0]`, etc. Unmatched arguments will be appended to the formatted message in
+    ///                                                                                                                                                                                                                                                                                         square braces. Unmatched placeholders will be left as-is.
     /// @param errorMessageArgs     the arguments to be substituted into the message template. Arguments
-    ///                                                                                                                                                                                                                                                             are converted to strings using [#valueOf(Object)].
+    ///                                                                                                                                                                                                                                                                                         are converted to strings using [#valueOf(Object)].
     /// @throws IllegalStateException if `expression` is false
     /// @throws NullPointerException  if the check fails and either `errorMessageTemplate` or
-    ///                                                                                                                                                                                                                                                                               `errorMessageArgs` is null (don't let this happen)
+    ///                                                                                                                                                                                                                                                                                                             `errorMessageArgs` is null (don't let this happen)
     public static void checkState(
             boolean expression,
             String errorMessageTemplate,
@@ -656,7 +656,7 @@ public final class Preconditions {
     ///
     /// @param reference    an object reference
     /// @param errorMessage the exception message to use if the check fails; will be converted to a
-    ///                                                                                                                                                                                     string using [#valueOf(Object)]
+    ///                                                                                                                                                                                                         string using [#valueOf(Object)]
     /// @return the non-null reference that was validated
     /// @throws NullPointerException if `reference` is null
     public static <T> T checkNotNull(T reference, Object errorMessage) {
@@ -670,12 +670,12 @@ public final class Preconditions {
     ///
     /// @param reference            an object reference
     /// @param errorMessageTemplate a template for the exception message should the check fail. The
-    ///                                                                                                                                                                                                                                                             message is formed by replacing each `%s` placeholder in the template with an
-    ///                                                                                                                                                                                                                                                             argument. These are matched by position - the first `%s` gets
-    ///                                                                                                                                                                                                                                 `errorMessageArgs[0]`, etc. Unmatched arguments will be appended to the formatted message in
-    ///                                                                                                                                                                                                                                                             square braces. Unmatched placeholders will be left as-is.
+    ///                                                                                                                                                                                                                                                                                         message is formed by replacing each `%s` placeholder in the template with an
+    ///                                                                                                                                                                                                                                                                                         argument. These are matched by position - the first `%s` gets
+    ///                                                                                                                                                                                                                                                             `errorMessageArgs[0]`, etc. Unmatched arguments will be appended to the formatted message in
+    ///                                                                                                                                                                                                                                                                                         square braces. Unmatched placeholders will be left as-is.
     /// @param errorMessageArgs     the arguments to be substituted into the message template. Arguments
-    ///                                                                                                                                                                                                                                                             are converted to strings using [#valueOf(Object)].
+    ///                                                                                                                                                                                                                                                                                         are converted to strings using [#valueOf(Object)].
     /// @return the non-null reference that was validated
     /// @throws NullPointerException if `reference` is null
     public static <T> T checkNotNull(
@@ -1038,7 +1038,7 @@ public final class Preconditions {
     /// @param end   a user-supplied index identifying a ending position in an array, list or string
     /// @param size  the size of that array, list or string
     /// @throws IndexOutOfBoundsException if either index is negative or is greater than `size`,
-    ///                                                                                                                                                                                                                                                                                                                   or if `end` is less than `start`
+    ///                                                                                                                                                                                                                                                                                                                                                     or if `end` is less than `start`
     /// @throws IllegalArgumentException  if `size` is negative
     public static void checkPositionIndexes(int start, int end, int size) {
         // Carefully optimized for execution by hotspot (explanatory comment above)
@@ -1065,7 +1065,7 @@ public final class Preconditions {
     ///
     /// @param template a non-null string containing 0 or more `%s` placeholders.
     /// @param args     the arguments to be substituted into the message template. Arguments are converted
-    ///                                                                                                                                                 to strings using [#valueOf(Object)]. Arguments can be null.
+    ///                                                                                                                                                                 to strings using [#valueOf(Object)]. Arguments can be null.
     // Note that this is somewhat-improperly used from Verify.java as well.
     static String format(String template, Object... args) {
         if (args == null) {

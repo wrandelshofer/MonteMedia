@@ -13,6 +13,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ColorModel;
+import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferFloat;
 import java.awt.image.Kernel;
 import java.util.stream.IntStream;
@@ -20,7 +21,7 @@ import java.util.stream.IntStream;
 import static java.lang.Math.clamp;
 
 
-/// A convolution filter for images that have a data buffer of type [BufferedImage#TYPE_FLOAT].
+/// A convolution filter for images that have a data buffer of type [DataBuffer#TYPE_FLOAT].
 ///
 /// References:
 ///
@@ -58,7 +59,7 @@ public class ConvolveOp implements BufferedImageOp {
     /// @param dst The `BufferedImage` in which to store the results$
     /// @return the filtered image
     /// @throws IllegalArgumentException if `src` and`dst` are the same
-    ///                                                                                                                                                                                                                                                                                                                                                                                                           or if `dst` does not have a buffer of type [DataBufferFloat].
+    ///                                                                                                                                                                                                                                                                                                                                                                                                                                            or if `dst` does not have a buffer of type [DataBufferFloat].
     @Override
     public BufferedImage filter(BufferedImage src, BufferedImage dst) {
         if (src == null) {

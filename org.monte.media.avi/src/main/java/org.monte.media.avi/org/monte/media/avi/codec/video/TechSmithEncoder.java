@@ -88,7 +88,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 /// Marks a repetition.
 ///     `n` gives the number of times the given pixel is repeated. `n`
 ///     must be between 1 and 255.   Example:
-/// <pre>
+/// ```
 /// Compressed data         Expanded data
 ///
 /// 03 04                   04 04 04
@@ -100,7 +100,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 /// 00 00                   End of line
 /// 09 1E                   1E 1E 1E 1E 1E 1E 1E 1E 1E
 /// 00 01                   End of RLE bitmap
-/// </pre>
+/// ```
 ///
 /// References:
 /// <a

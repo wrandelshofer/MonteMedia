@@ -7,29 +7,24 @@ package org.monte.media.swing.plaf;
 
 import org.monte.media.swing.border.BackdropBorder;
 
-import javax.swing.AbstractButton;
-import javax.swing.ButtonModel;
-import javax.swing.JComponent;
+import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicButtonListener;
 import javax.swing.plaf.basic.BasicButtonUI;
 import javax.swing.plaf.basic.BasicGraphicsUtils;
-import java.awt.Component;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.event.FocusEvent;
 
 /// CustomButtonUI draws a BackdropBorder in the background of the button.
 /// This allows for easy visual customization of buttons.
 ///
 /// Usage:
-/// <pre>
+/// ```
 /// JButton b = new JButton();
 /// b.setUI((ButtonUI) CustomButtonUI.createUI(b));
 /// b.setBorder(new BackdropBorder(....));
-/// </pre>
+/// ```
 ///
 /// @author Werner Randelshofer
 public class CustomButtonUI

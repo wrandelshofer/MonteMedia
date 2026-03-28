@@ -123,9 +123,9 @@ public class ANIMOutputStream {
     /// The graphics mode is an or-combination of the monitor ID and the mode ID.
     ///
     /// Example:
-    /// <pre>
+    /// ```
     /// setCAMG(PAL_MONITOR_ID|HAM_MODE);
-    /// </pre>
+    /// ```
     ///
     /// Also sets the Jiffies for the Graphics Mode.
     public void setCAMG(int newValue) {
@@ -167,7 +167,7 @@ public class ANIMOutputStream {
     /// filters in succession to the same output stream.
     ///
     /// @throws IllegalStateException if the dimension of the video track has
-    ///                                                                                                                                                       not been specified or determined yet.
+    ///                                                                                                                                                                                     not been specified or determined yet.
     /// @throws IOException           if an I/O exception has occurred
     public void finish() throws IOException {
         ensureOpen();
@@ -270,7 +270,7 @@ public class ANIMOutputStream {
     }
 
     /// Writes the bitmap header (ILBM BMHD).
-    /// <pre>
+    /// ```
     /// typedef UBYTE Masking; // Choice of masking technique
     ///
     /// #define mskNone                 0
@@ -296,7 +296,7 @@ public class ANIMOutputStream {
     ///   UBYTE       xAspect, yAspect; // pixel aspect, a ratio width : height
     ///   UWORD       pageWidth, pageHeight; // source "page" size in pixels
     ///   } BitmapHeader;
-    /// </pre>
+    /// ```
     private void writeBMHD(IFFOutputStream out, AmigaBitmapImage img) throws IOException {
         AmigaDisplayInfo info = AmigaDisplayInfoDatabase.getInfo(camg);
         if (info == null) {
@@ -623,7 +623,7 @@ public class ANIMOutputStream {
     }
 
     /// Writes the anim header (ILBM ANHD).
-    /// <pre>
+    /// ```
     /// typedef UBYTE Operation; // Choice of compression algorithm.
     ///
     /// #define opDirect        0  // set directly (normal ILBM BODY)
@@ -690,7 +690,7 @@ public class ANIMOutputStream {
     /// UBYTE        pad[16];  // This is a pad for future use for future
     ///                        // compression modes.
     /// } AnimHeader;
-    /// </pre>
+    /// ```
     private void writeANHD(IFFOutputStream out, int width, int height, int compressionMode, int absTime, int relTime) throws IOException {
         out.pushDataChunk("ANHD");
 

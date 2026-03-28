@@ -21,17 +21,17 @@ import java.util.Objects;
 /// A CTA-608 screen has 32 columns and 15 rows.
 ///
 /// ISO EBNF Grammar:
-/// <pre>
+/// ```
 ///     ClosedCaptions = Cta608Token , { Cta608Token } ;
 ///     Cta608Token          = ( CmdToken | PacToken | CharsToken ) ;
 ///     CmdToken       = uint16BE ; (* has constant bits: .001.....0...... *)
 ///     PacToken       = uint16BE ; (* has constant bits: .001.....1...... *)
 ///     CharsToken     = uint16BE ; (* has a value greater or equal 0x0200 *)
-/// </pre>
+/// ```
 /// The stream consists of a sequence of `uint16BE`.
 ///
 /// Only the bits 0x7f7f contain data. The bits 0x8080 are parity bits.
-/// <pre>
+/// ```
 ///     CmdToken: Control command.
 ///     15     12 11     8   7     4   3     0
 ///     +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
@@ -49,7 +49,7 @@ import java.util.Objects;
 ///     +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
 ///     |P|.|.|.| |.|.|.|.| |P|.|.|.| |.|.|.|.|
 ///     +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
-/// </pre>
+/// ```
 ///
 /// References:
 /// <dl>

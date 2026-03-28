@@ -9,7 +9,7 @@ import org.monte.media.av.Format;
 import org.monte.media.av.FormatKey;
 import org.monte.media.av.FormatKeys.MediaType;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
@@ -24,7 +24,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_I
 /// Crops a buffered image.
 ///
 /// Usage:
-/// <pre>
+/// ```
 ///     var codec=new CropImageCodec();
 ///     codec.setOutputFormat(new Format(CropImageCodec.CropImageKey, new Rectangle(10,10,620,460)));
 ///     var in=new Buffer();
@@ -33,7 +33,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_I
 ///     var result=codec.process(in,out);
 ///     if (result != Codec.CODEC_OK) throw new RuntimeException("cropping failed",out.exception);
 ///     return (BufferedImage) out.data;
-/// </pre>
+/// ```
 ///
 /// @author Werner Randelshofer
 public class CropImageCodec extends org.monte.media.av.AbstractCodec {

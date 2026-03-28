@@ -8,11 +8,11 @@ package org.monte.media.color.kmeans;
 import java.util.Arrays;
 
 /// Implements a distance matrix for speeding up the search for the nearest cluster.
-/// <pre>
+/// ```
 /// Construct a K × K matrix M in which row i is a permutation of 1, 2, . . . , K that
 /// represents the clusters in increasing order of distance of their centers from ci;
-/// </pre>
-/// <pre>
+/// ```
+/// ```
 /// |  Let Sp be the cluster that xi was assigned to in the previous iteration;
 /// |  p= m[i];
 /// |  min dist = prev dist = ∥xi− cp∥2;
@@ -23,7 +23,7 @@ import java.util.Arrays;
 /// |  |  | There can be no other closer center. Stop checking;
 /// |  |  break;
 /// |  end
-/// </pre>
+/// ```
 /// References:
 /// <dl>
 /// <dt>M. Emre Celebi. Department of Computer Science.

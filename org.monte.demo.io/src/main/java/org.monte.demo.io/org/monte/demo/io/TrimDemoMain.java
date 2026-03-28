@@ -38,9 +38,9 @@ public class TrimDemoMain {
     /// Main function.
     ///  Takes one output file and one or more input files as
     /// arguments. Concatenates all input files into the output file.
-    /// <pre>
+    /// ```
     /// TrimDemo [-o outputfile] [-i inputfile...] [-s rational] [-e rational]
-    /// </pre>
+    /// ```
     ///
     /// @param args the command line arguments
     public static void main(String[] args) {

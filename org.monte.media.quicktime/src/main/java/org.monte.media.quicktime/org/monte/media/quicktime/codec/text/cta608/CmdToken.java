@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /// CTA-608 Control command.
-/// <pre>
+/// ```
 ///     control command
 ///     15     12 11     8   7     4   3     0
 ///     +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
@@ -24,7 +24,7 @@ import java.util.Map;
 ///     7      odd parity bit of bits 0-7 (shown as 'P')
 ///     6      always 0 (shown as '0')
 ///     10-8,5-0 control code (9 bits)
-/// </pre>
+/// ```
 ///
 /// References:
 /// <dl>

@@ -40,7 +40,8 @@ public class Main extends Application {
         TabPane tabPane = new TabPane();
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         tabPane.getTabs().add(new Tab("Image", imageView.getRoot()));
-        tabPane.getTabs().add(new Tab("Colors", colorDotsView.getRoot()));
+        Tab colorsTab = new Tab("Colors", colorDotsView.getRoot());
+        tabPane.getTabs().add(colorsTab);
         inspector = MainInspectorController.newInstance();
         BorderPane sp = new BorderPane();
         sp.setMouseTransparent(false);
@@ -60,6 +61,7 @@ public class Main extends Application {
         new DragSupport(colorDotsView.getRoot(), Clipboard::hasFiles, this::onFilesDropped);
 
         colorDotsView.imageProperty().bind(getModel().renderedImageProperty());
+        colorDotsView.getRoot().visibleProperty().bind(colorsTab.selectedProperty());
         imageView.imageProperty().bind(getModel().renderedImageProperty());
         imageView.zoomProperty().bind(getModel().zoomProperty());
         stage.titleProperty().bind(getModel().referenceFileProperty().map(p -> p == null ? null : p.getFileName().toString()));

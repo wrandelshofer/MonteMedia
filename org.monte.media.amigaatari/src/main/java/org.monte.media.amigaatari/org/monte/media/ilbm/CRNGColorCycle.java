@@ -11,7 +11,7 @@ package org.monte.media.ilbm;
 /// Third Edition,
 /// Addison-Wesley, Reading
 /// ISBN 0-201-56775-X
-/// <pre>
+/// ```
 /// //ILBM CRNG Color range cycling
 /// //--------------------------------------------
 ///
@@ -27,8 +27,8 @@ package org.monte.media.ilbm;
 ///  WORD set crngActive flags;     // bit0 set = active, bit 1 set = reverse
 ///  UBYTE low; UBYTE high;         // lower and upper color registers selected
 ///  } ilbmColorRegisterRangeChunk;
-/// </pre>
-/// <pre>
+/// ```
+/// ```
 /// ILBM CCRT Color cycling range and timing
 /// --------------------------------------------
 /// /
@@ -44,7 +44,7 @@ package org.monte.media.ilbm;
 /// WORD  pad;        /* future exp - store 0 here * /
 /// } ilbmColorCyclingAndTimingChunk;
 ///
-/// </pre>
+/// ```
 ///
 /// @author Werner Randelshofer
 public class CRNGColorCycle extends ColorCycle {

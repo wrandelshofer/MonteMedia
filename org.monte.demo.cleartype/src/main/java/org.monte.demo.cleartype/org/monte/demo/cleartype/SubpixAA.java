@@ -4,10 +4,7 @@
  */
 package org.monte.demo.cleartype;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.awt.image.ImageObserver;
@@ -182,7 +179,7 @@ public class SubpixAA {
     /// @param width  The desired width of the destination image.
     /// @param height The desired height of the destination image.
     /// @param method The Antialiasing method to be used must be one of
-    ///                                           `RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB`, `..._HBGR`,
+    ///                                                                       `RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB`, `..._HBGR`,
     public static Dimension getSourceDimension(int width, int height, Object method) {
         Dimension dim;
         if (method == HRGB ||//
@@ -248,7 +245,7 @@ public class SubpixAA {
     /// destination image.
     ///
     /// Intensity weights:
-    /// <pre>
+    /// ```
     ///
     ///            1
     ///            |
@@ -259,7 +256,7 @@ public class SubpixAA {
     ///  +----+----+----+----+
     ///  |    |    |    |    |
     /// 1/9  2/9  3/9  2/9  1/9
-    /// </pre>
+    /// ```
     ///
     /// @param src The source image.
     /// @param dst The destination image.
@@ -384,7 +381,7 @@ public class SubpixAA {
     /// destination image.
     ///
     /// Intensity weights:
-    /// <pre>
+    /// ```
     ///
     ///            1
     ///            |
@@ -395,7 +392,7 @@ public class SubpixAA {
     ///  +----+----+----+----+
     ///  |    |    |    |    |
     /// 1/9  2/9  3/9  2/9  1/9
-    /// </pre>
+    /// ```
     ///
     /// @param src The source image.
     /// @param dst The destination image.
@@ -519,7 +516,7 @@ public class SubpixAA {
     /// destination image.
     ///
     /// Intensity weights:
-    /// <pre>
+    /// ```
     ///
     ///            1
     ///            |
@@ -530,7 +527,7 @@ public class SubpixAA {
     ///  +----+----+----+----+
     ///  |    |    |    |    |
     /// 1/9  2/9  3/9  2/9  1/9
-    /// </pre>
+    /// ```
     ///
     /// @param src The source image.
     /// @param dst The destination image.
@@ -655,7 +652,7 @@ public class SubpixAA {
     /// destination image.
     ///
     /// Intensity weights:
-    /// <pre>
+    /// ```
     ///
     ///            1
     ///            |
@@ -666,7 +663,7 @@ public class SubpixAA {
     ///  +----+----+----+----+
     ///  |    |    |    |    |
     /// 1/9  2/9  3/9  2/9  1/9
-    /// </pre>
+    /// ```
     ///
     /// @param src The source image.
     /// @param dst The destination image.

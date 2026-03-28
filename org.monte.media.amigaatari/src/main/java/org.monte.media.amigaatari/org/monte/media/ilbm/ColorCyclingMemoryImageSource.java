@@ -4,8 +4,8 @@
  */
 package org.monte.media.ilbm;
 
-import javax.swing.Timer;
-import java.awt.Point;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -14,6 +14,7 @@ import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
 import java.awt.image.ImageConsumer;
+import java.awt.image.ImageProducer;
 import java.awt.image.IndexColorModel;
 import java.awt.image.MemoryImageSource;
 import java.awt.image.Raster;
@@ -74,7 +75,7 @@ public class ColorCyclingMemoryImageSource extends MemoryImageSource {
     /// @param off   the offset into the array of where to store the first pixel
     /// @param scan  the distance from one row of pixels to the next in the array
     /// @param props a list of properties that the [ImageProducer]
-    ///                                                                  uses to process an image
+    ///                                                                                            uses to process an image
     /// @see java.awt.Component#createImage
     public ColorCyclingMemoryImageSource(int w, int h, ColorModel cm,
                                          byte[] pix, int off, int scan,
@@ -109,7 +110,7 @@ public class ColorCyclingMemoryImageSource extends MemoryImageSource {
     /// @param off   the offset into the array of where to store the first pixel
     /// @param scan  the distance from one row of pixels to the next in the array
     /// @param props a list of properties that the [ImageProducer]
-    ///                                                     uses to process an image
+    ///                                                                               uses to process an image
     /// @see java.awt.Component#createImage
     public ColorCyclingMemoryImageSource(int w, int h, ColorModel cm,
                                          int[] pix, int off, int scan,
@@ -164,7 +165,7 @@ public class ColorCyclingMemoryImageSource extends MemoryImageSource {
     /// @param newmodel the specified [ColorModel]
     /// @param offset   the offset into the array
     /// @param scansize the distance from one row of pixels to the next in the
-    ///                                                                 array
+    ///                                                                                                 array
     /// @see #newPixels(int, int, int, int, boolean)
     /// @see #setAnimated
     @Override

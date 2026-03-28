@@ -147,12 +147,12 @@ public class ParametricLinearRgbColorSpace extends AbstractNamedColorSpace {
     }
 
     /// Converts a point from XZY coordinates in to xyY.
-    /// <pre>
+    /// ```
     ///     x = X / (X + Y + Z)
     ///     y = Y / (X + Y + Z)
     ///     z = Z / (X + Y + Z) = 1 - x - y
     ///     Y = Y
-    /// </pre>
+    /// ```
     ///
     /// References:
     /// <dl>

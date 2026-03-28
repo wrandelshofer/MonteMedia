@@ -347,7 +347,7 @@ public class ColorQuantizerMainModel {
         }
 
         Format colorFormat = new Format(DirectColorModelEncoder.DitheringMethodKey, getDitheringMethod(),
-                DirectColorModelEncoder.DitheringFactorKey, getDitherIntensityFactor());
+                DirectColorModelEncoder.DitheringFactorKey, getDitherIntensityFactor() / 255f);
         switch (getColorMode()) {
             case _18_BIT_RGB -> {
                 var codec = new DirectColorModelEncoder();
@@ -385,17 +385,17 @@ public class ColorQuantizerMainModel {
                 codecs.add(codec);
             }
             case AMIGA_HAM6 -> {
-                colorFormat = colorFormat.prepend(AmigaHAMColorModelEncoder.BitsPerColorKey, 12);
+                colorFormat = colorFormat.prepend(AmigaHAMColorModelEncoder.BitsPerColorKey, 4);
                 var codec = createHAMColorModelCodec(colorFormat, inputImg, getPaletteSize());
                 codecs.add(codec);
             }
             case AMIGA_HAM8 -> {
-                colorFormat = colorFormat.prepend(AmigaHAMColorModelEncoder.BitsPerColorKey, 24);
+                colorFormat = colorFormat.prepend(AmigaHAMColorModelEncoder.BitsPerColorKey, 8);
                 var codec = createHAMColorModelCodec(colorFormat, inputImg, getPaletteSize());
                 codecs.add(codec);
             }
             case AMIGA_HAM8_FLICKERFREE -> {
-                colorFormat = colorFormat.prepend(AmigaHAMColorModelEncoder.BitsPerColorKey, 18);
+                colorFormat = colorFormat.prepend(AmigaHAMColorModelEncoder.BitsPerColorKey, 6);
                 var codec = createHAMColorModelCodec(colorFormat, inputImg, getPaletteSize());
                 codecs.add(codec);
             }

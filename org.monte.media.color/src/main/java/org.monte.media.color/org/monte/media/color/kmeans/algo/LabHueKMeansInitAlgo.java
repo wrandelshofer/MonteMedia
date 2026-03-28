@@ -19,7 +19,7 @@ import java.util.List;
 /// This requires that data samples represent colors in a Lab space!
 ///
 /// At each brightness level, we create a histogram with 9 buckets:
-/// <pre>
+/// ```
 ///       -----------------
 ///     /light\  yellow /    \
 ///    /green \       /orange\
@@ -31,7 +31,7 @@ import java.util.List;
 ///    \cyan /        \purple/
 ///     \   /   blue   \    /
 ///       -----------------
-/// </pre>
+/// ```
 public class LabHueKMeansInitAlgo implements KMeansInitAlgo {
     private record Level(float[] avg, DoubleSummaryStatistics saturationStats, float[][] buckets, int[] bucketCount) {
         public Level() {

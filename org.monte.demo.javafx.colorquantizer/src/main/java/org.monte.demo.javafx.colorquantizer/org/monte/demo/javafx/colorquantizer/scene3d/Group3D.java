@@ -1,6 +1,6 @@
 /*
- * @(#)Xform.java
- * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+ * @(#)Group3D.java
+ * Copyright © 2026 Werner Randelshofer, Switzerland. MIT License.
  */
 
 /*
@@ -35,7 +35,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.monte.demo.javafx.colorquantizer;
+package org.monte.demo.javafx.colorquantizer.scene3d;
 
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -45,7 +45,7 @@ import javafx.scene.transform.Translate;
 
 import java.util.Collection;
 
-public class Xform extends Group {
+public class Group3D extends Group {
 
     public enum RotateOrder {
         XYZ, XZY, YXZ, YZX, ZXY, ZYX
@@ -74,17 +74,17 @@ public class Xform extends Group {
 
     public Scale s = new Scale();
 
-    public Xform() {
+    public Group3D() {
         super();
         getTransforms().addAll(t, rz, ry, rx, s);
     }
 
-    public Xform(Collection<Node> children) {
+    public Group3D(Collection<Node> children) {
         super(children);
         getTransforms().addAll(t, rz, ry, rx, s);
     }
 
-    public Xform(RotateOrder rotateOrder) {
+    public Group3D(RotateOrder rotateOrder) {
         super();
         // choose the order of rotations based on the rotateOrder
         switch (rotateOrder) {
@@ -240,7 +240,7 @@ public class Xform extends Group {
 
     @Override
     public String toString() {
-        return "Xform[" +
+        return "Group3D[" +
                 (t == null ? "" :
                         "t = (" +
                                 t.getX() + ", " +

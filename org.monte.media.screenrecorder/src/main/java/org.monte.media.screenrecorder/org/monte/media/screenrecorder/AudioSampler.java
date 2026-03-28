@@ -114,9 +114,9 @@ public class AudioSampler implements Sampler {
 
     /// Calculates the root-mean-square average of continuous samples. For
     /// four samples, the formula looks like this:
-    /// <pre>
+    /// ```
     /// rms = sqrt( (x0^2 + x1^2 + x2^2 + x3^2) / 4)
-    /// </pre> Resources:
+    /// ``` Resources:
     /// [jsresources.org](http://www.jsresources.org/faq_audio.html#calculate_power)
     ///
     /// @param data   an array with audio data samples

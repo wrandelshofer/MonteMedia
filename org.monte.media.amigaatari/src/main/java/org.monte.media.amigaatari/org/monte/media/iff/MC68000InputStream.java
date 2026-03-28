@@ -132,7 +132,7 @@ public class MC68000InputStream
     /// Marks the input stream.
     ///
     /// @param readlimit The maximum limit of bytes that can be read before the
-    ///                                                    mark position becomes invalid.
+    ///                                                                     mark position becomes invalid.
     public void mark(int readlimit) {
         in.mark(readlimit);
         mark = scan;
@@ -141,7 +141,7 @@ public class MC68000InputStream
     /// Repositions the stream at the previously marked position.
     ///
     /// @throws IOException If the stream has not been marked or if the mark
-    ///                                         has been invalidated.
+    ///                                                             has been invalidated.
     public void reset()
             throws IOException {
         in.reset();
@@ -161,7 +161,7 @@ public class MC68000InputStream
     ///
     /// @param n the number of bytes to be skipped.
     /// @throws EOFException if this input stream reaches the end before
-    ///                                           skipping all the bytes.
+    ///                                                                skipping all the bytes.
     public void skipFully(long n)
             throws IOException {
         int total = 0;
@@ -181,7 +181,7 @@ public class MC68000InputStream
     /// The run encoding scheme by _byteRun1_ is best described by pseudo
     /// code for the decoder _Unpacker_ (called _UnPackBits_ in the
     /// Macintosh toolbox.
-    /// <pre>
+    /// ```
     /// UnPacker:
     ///  LOOP until produced the desired number of bytes
     ///      Read the next source byte into n
@@ -191,7 +191,7 @@ public class MC68000InputStream
     ///          -128    ⇒ no operation
     ///      ENDCASE;
     ///   ENDLOOP;
-    /// </pre>
+    /// ```
     ///
     /// @param in  input
     /// @param out output

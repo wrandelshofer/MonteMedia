@@ -10,7 +10,7 @@ import java.util.Objects;
 /// CTA-608 Preamble address code and tab offsets (PAC).
 ///
 /// This is a 16-bit unsigned short in big-endian order (`uint16BE`).
-/// <pre>
+/// ```
 ///     15     12 11     8   7     4   3     0
 ///     +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+
 ///     |P|0|0|1| |C|r|r|r| |P|1|r|a| |a|a|a|u|
@@ -27,7 +27,7 @@ import java.util.Objects;
 ///     5      row position indicator high-bit (shown as 'r')
 ///     4-1    text attributes indicator (shown as 'aaaa')
 ///     u      underline indicator (shown as 'U')
-/// </pre>
+/// ```
 ///
 /// The screen area for a closed caption provides space for 15 rows with 32 columns of text.
 /// This allows to show up to 480 characters on the same screen.

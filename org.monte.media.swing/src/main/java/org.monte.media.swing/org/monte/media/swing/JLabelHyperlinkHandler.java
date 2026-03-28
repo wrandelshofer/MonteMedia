@@ -5,12 +5,11 @@
 package org.monte.media.swing;
 
 import javax.accessibility.AccessibleText;
-import javax.swing.JLabel;
+import javax.swing.*;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.html.HTML;
-import java.awt.Cursor;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -25,7 +24,7 @@ import java.util.ArrayList;
 /// The `command` contains the content of the href attribute in the hyperlink.
 ///
 /// Example:
-/// <pre>
+/// ```
 /// File f=new File(System.getProperty("user.home"));
 /// JLabel l=new JLabel("&lt;html&gt;Click this &lt;a href="\""+
 ///                      f.toURI();+
@@ -42,7 +41,7 @@ import java.util.ArrayList;
 ///              }
 ///      }
 /// });
-/// </pre>
+/// ```
 ///
 /// @author Werner Randelshofer
 public class JLabelHyperlinkHandler {

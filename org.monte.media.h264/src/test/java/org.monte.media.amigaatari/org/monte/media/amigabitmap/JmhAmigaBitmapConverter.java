@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 /// # VM version: JDK 26-ea, OpenJDK 64-Bit Server VM, 26-ea+12-1260
 /// # Intel(R) Core(TM) i7-8700B CPU @ 3.20GHz
-/// <pre>
+/// ```
 /// Benchmark                     (depth)  Mode  Cnt       Score       Error  Units
 /// m01ParallelExtractToBitmap          1  avgt    4    5799.860 ±    92.019  ns/op
 /// m01ParallelExtractToBitmap          2  avgt    4    9414.867 ±   167.481  ns/op

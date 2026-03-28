@@ -28,7 +28,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 /// Scales a buffered image.
 ///
 /// Usage:
-/// <pre>
+/// ```
 ///     var codec=new ScaleImageCodec();
 ///     codec.setOutputFormat(new Format(
 ///          VideoFormatKeys.WidthKey, 320,
@@ -40,7 +40,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 ///     var result=codec.process(in,out);
 ///     if (result != Codec.CODEC_OK) throw new RuntimeException("cropping failed",out.exception);
 ///     return (BufferedImage) out.data;
-/// </pre>
+/// ```
 ///
 /// @author Werner Randelshofer
 public class ScaleImageCodec extends org.monte.media.av.AbstractCodec {

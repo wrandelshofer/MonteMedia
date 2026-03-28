@@ -19,10 +19,10 @@ public class LinearEquations {
     ;
 
     /// Solves a linear system for x,y with cramer's rule.
-    /// <pre>
+    /// ```
     /// a*x + b*y = e
     /// c*x + d*y = f
-    /// </pre>
+    /// ```
     ///
     /// @param a
     /// @param b
@@ -38,11 +38,11 @@ public class LinearEquations {
     }
 
     /// Solves a linear system for x,y,z with cramer's rule.
-    /// <pre>
+    /// ```
     /// a*x + b*y + c*z = j
     /// d*x + e*y + f*z = k
     /// g*x + h*y + i*z = l
-    /// </pre>
+    /// ```
     ///
     /// @param a
     /// @param b
@@ -59,11 +59,11 @@ public class LinearEquations {
     }
 
     /// Computes the determinant of a 2x2 matrix using Sarrus' rule.
-    /// <pre>
+    /// ```
     /// | a, b, c |     |e, f|   |d, f|   |d, e|
     /// | d, e, f | = a*|h, i|-b*|g, i|+c*|g, h|=aei+bfg+cdh-ceg-bdi-afh
     /// | g, h, i |
-    /// </pre>
+    /// ```
     ///
     /// @param a
     /// @param b
@@ -85,10 +85,10 @@ public class LinearEquations {
     }
 
     /// Computes the determinant of a 3x3 matrix using Sarrus' rule.
-    /// <pre>
+    /// ```
     /// | a, b |
     /// | c, d | = a*d - b*c
-    /// </pre>
+    /// ```
     ///
     /// @param a
     /// @param b

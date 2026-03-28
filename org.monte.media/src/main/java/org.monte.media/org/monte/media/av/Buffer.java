@@ -83,7 +83,7 @@ public class Buffer {
     /// `data` and `header`, so that these fields in that buffer can
     /// be discarded without affecting the contents of this buffer.
     ///
-    /// Returns [#CODEC_FAILED] or [#CODEC_OK]
+    /// Returns [Codec#CODEC_FAILED] or [Codec#CODEC_OK]
     public int setDataTo(Buffer that) {
         this.offset = that.offset;
         this.length = that.length;

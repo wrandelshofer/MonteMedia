@@ -118,12 +118,12 @@ public class OKLabGamutMapper implements GamutMapper {
         return new LC(L_cusp, C_cusp);
     }
 
-    /// <pre>
+    /// ```
     /// Finds intersection of the line defined by
     /// L = L0 * (1 - t) + t * L1;
     /// C = t * C1;
     /// a and b must be normalized so a^2 + b^2 == 1
-    /// </pre>
+    /// ```
     private static float find_gamut_intersection(float a, float b, float L1, float C1, float L0) {
         // Find the cusp of the gamut triangle
         LC cusp = find_cusp(a, b);
@@ -208,11 +208,11 @@ public class OKLabGamutMapper implements GamutMapper {
         return t;
     }
 
-    /// <pre>
+    /// ```
     /// Finds the maximum saturation possible for a given hue that fits in sRGB
     /// Saturation here is defined as S = C/L
     /// a and b must be normalized so a^2 + b^2 == 1
-    /// </pre>
+    /// ```
     private static float compute_max_saturation(float a, float b) {
         // Max saturation will be when one of r, g or b goes below zero.
 

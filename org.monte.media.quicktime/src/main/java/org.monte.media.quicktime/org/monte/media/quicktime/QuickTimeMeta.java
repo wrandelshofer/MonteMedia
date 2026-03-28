@@ -768,7 +768,7 @@ public class QuickTimeMeta extends AbstractMovie {
         private final static int TrackInMovie = 0x2;// track in playback
         private final static int TrackInPreview = 0x4; // track in preview
         private final static int TrackInPoster = 0x8; // track in posterTrackEnable = 0x1, // enabled track
-        /// <pre>
+        /// ```
         /// // Enumeration for track header flags
         /// set {
         /// TrackEnable = 0x1, // enabled track
@@ -776,7 +776,7 @@ public class QuickTimeMeta extends AbstractMovie {
         /// TrackInPreview = 0x4, // track in preview
         /// TrackInPoster = 0x8 // track in poster
         /// } TrackHeaderFlags;
-        /// </pre>
+        /// ```
         protected int headerFlags = TrackEnable | TrackInMovie | TrackInPreview | TrackInPoster;
         /// Creation time of the track.
         protected Instant creationTime;
@@ -1324,8 +1324,8 @@ public class QuickTimeMeta extends AbstractMovie {
         ///
         /// @param trackDuration Duration of this edit in the movie's timescale.
         /// @param mediaTime     Start time of this edit in the media's timescale.
-        ///                                                                                                          Specify -1 for an empty edit. The last edit in a track should never
-        ///                                                                                                          be an empty edit.
+        ///                                                                                                                               Specify -1 for an empty edit. The last edit in a track should never
+        ///                                                                                                                               be an empty edit.
         /// @param mediaRate     The relative rate at which to play this edit.
         public Edit(long trackDuration, int mediaTime, double mediaRate) {
             if (trackDuration < 0) {
@@ -1356,12 +1356,12 @@ public class QuickTimeMeta extends AbstractMovie {
         /// Reference type. Can be "alis", "rsrc" or "url ".
         protected String referenceType;
         private final static int DataRefSelfReference = 0x1; //
-        /// <pre>
+        /// ```
         /// // Enumeration for reference flags
         /// set {
         /// DataRefSelfReference = 0x1, // data is in same file
         /// } TrackHeaderFlags;
-        /// </pre>
+        /// ```
         protected int referenceFlags = DataRefSelfReference;
         /// Reference data.
         protected byte[] data;

@@ -96,7 +96,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 ///
 ///
 /// Example:
-/// <pre>
+/// ```
 /// Compressed data         Expanded data
 ///
 /// 03 04                   04 04 04
@@ -108,7 +108,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 /// 00 00                   End of line
 /// 09 1E                   1E 1E 1E 1E 1E 1E 1E 1E 1E
 /// 00 01                   End of RLE bitmap
-/// </pre>
+/// ```
 ///
 /// References:
 /// [http://wiki.multimedia.cx/index.php?title=Microsoft_RLE](http://wiki.multimedia.cx/index.php?title=Microsoft_RLE)

@@ -9,8 +9,8 @@ package org.monte.media.exception;
 ///
 /// @author Werner Randelshofer
 public class AbortException extends Exception {
-
-    public static final long serialVersionUID = 1L;
+    @java.io.Serial
+    private static final long serialVersionUID = 1L;
 
     /// Creates a new exception.
     public AbortException() {
@@ -18,6 +18,8 @@ public class AbortException extends Exception {
     }
 
     /// Creates a new exception.
+    ///
+    /// @param message the message
     public AbortException(String message) {
         super(message);
     }

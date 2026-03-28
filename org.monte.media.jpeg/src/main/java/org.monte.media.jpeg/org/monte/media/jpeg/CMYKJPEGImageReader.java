@@ -39,9 +39,9 @@ import static org.monte.media.image.CMYKImages.createImageFromYCCK;
 ///
 /// For optimal performance with CMYK images, please run the JVM with the following
 /// VM option:
-/// <pre>
+/// ```
 /// -Dsun.java2d.cmm=sun.java2d.cmm.kcms.KcmsServiceProvider
-/// </pre>
+/// ```
 ///
 /// @author Werner Randelshofer
 public class CMYKJPEGImageReader extends ImageReader {
@@ -295,10 +295,10 @@ public class CMYKJPEGImageReader extends ImageReader {
     /// contains a CMYK JPEG image.
     ///
     /// @param in          An InputStream, preferably an ImageInputStream, in the JPEG File
-    ///                                       Interchange Format (JFIF).
+    ///                                                          Interchange Format (JFIF).
     /// @param cmykProfile An ICC_Profile for conversion from the CMYK color space
-    ///                                       to the RGB color space. If this parameter is null, a default profile is
-    ///                                       used.
+    ///                                                          to the RGB color space. If this parameter is null, a default profile is
+    ///                                                          used.
     /// @return a BufferedImage containing the decoded image
     /// @throws java.io.IOException
     public static BufferedImage readImageFromCMYK(InputStream in, ICC_Profile cmykProfile) throws IOException {
@@ -323,10 +323,10 @@ public class CMYKJPEGImageReader extends ImageReader {
     /// contains a RGBA JPEG image.
     ///
     /// @param in          An InputStream, preferably an ImageInputStream, in the JPEG File
-    ///                                       Interchange Format (JFIF).
+    ///                                                          Interchange Format (JFIF).
     /// @param rgbaProfile An ICC_Profile for conversion from the RGBA color space
-    ///                                       to the RGBA color space. If this parameter is null, a default profile is
-    ///                                       used.
+    ///                                                          to the RGBA color space. If this parameter is null, a default profile is
+    ///                                                          used.
     /// @return a BufferedImage containing the decoded image.
     /// @throws java.io.IOException
     public static BufferedImage readImageFromInvertedCMYK(InputStream in, ICC_Profile rgbaProfile) throws IOException {
@@ -379,10 +379,10 @@ public class CMYKJPEGImageReader extends ImageReader {
     /// contains a YCCK JPEG image.
     ///
     /// @param in          An InputStream, preferably an ImageInputStream, in the JPEG File
-    ///                                       Interchange Format (JFIF).
+    ///                                                          Interchange Format (JFIF).
     /// @param cmykProfile An ICC_Profile for conversion from the CMYK color space
-    ///                                       to the RGB color space. If this parameter is null, a default profile is
-    ///                                       used.
+    ///                                                          to the RGB color space. If this parameter is null, a default profile is
+    ///                                                          used.
     /// @return a BufferedImage containing the decoded image.
     /// @throws java.io.IOException
     public static BufferedImage readImageFromYCCK(InputStream in, ICC_Profile cmykProfile) throws IOException {
@@ -407,10 +407,10 @@ public class CMYKJPEGImageReader extends ImageReader {
     /// contains an inverted-YCCK JPEG image.
     ///
     /// @param in          An InputStream, preferably an ImageInputStream, in the JPEG File
-    ///                                       Interchange Format (JFIF).
+    ///                                                          Interchange Format (JFIF).
     /// @param cmykProfile An ICC_Profile for conversion from the CMYK color space
-    ///                                       to the RGB color space. If this parameter is null, a default profile is
-    ///                                       used.
+    ///                                                          to the RGB color space. If this parameter is null, a default profile is
+    ///                                                          used.
     /// @return a BufferedImage containing the decoded image.
     /// @throws java.io.IOException
     public static BufferedImage readImageFromInvertedYCCK(InputStream in, ICC_Profile cmykProfile) throws IOException {

@@ -94,9 +94,9 @@ public class ANIMMultiplexer extends ANIMOutputStream implements Multiplexer {
     /// The graphics mode is an or-combination of the monitor ID and the mode ID.
     ///
     /// Example:
-    /// <pre>
+    /// ```
     /// setCAMG(PAL_MONITOR_ID|HAM_MODE);
-    /// </pre>
+    /// ```
     ///
     /// Also sets the Jiffies for the Graphics Mode.
     public void setCAMG(int newValue) {

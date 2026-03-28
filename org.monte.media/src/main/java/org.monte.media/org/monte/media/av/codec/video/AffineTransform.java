@@ -9,11 +9,11 @@ import java.util.Arrays;
 import java.util.function.BiFunction;
 
 /// Affine transformation matrix.
-/// <pre>
+/// ```
 ///       [x']   [m00 m01 m02] [x]   [m00x+m01y+m02]
 ///       [y'] = [m10 m11 m12] [y] = [m10x+m11y+m12]
 ///       [1]   [0 0 1] [1]   [1]
-/// </pre>
+/// ```
 public class AffineTransform {
     public final static AffineTransform IDENTITY = new AffineTransform(1, 0, 0, 0, 1, 0);
 

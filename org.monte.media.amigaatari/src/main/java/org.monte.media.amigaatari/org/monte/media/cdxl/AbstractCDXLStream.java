@@ -7,7 +7,7 @@ package org.monte.media.cdxl;
 
 import java.io.IOException;
 
-/// <pre>
+/// ```
 /// // References:
 /// //
 /// // Carl Sassenrath & Ken Yeast, Pantaray, Inc. (Jan 1991).<br>
@@ -117,7 +117,7 @@ import java.io.IOException;
 ///     FIXED_LENGTH=0,
 ///     VARIABLE_LENGTH=1
 /// } AgaBlasterFrameLengthModeEnum;
-/// </pre>
+/// ```
 public class AbstractCDXLStream {
     enum PanStructureType {
         CUSTOM(0),

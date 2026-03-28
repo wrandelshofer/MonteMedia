@@ -19,17 +19,17 @@ import java.awt.image.ColorModel;
 /// scanline of the image.
 ///
 ///
-/// <pre>
+/// ```
 /// .+++..@...@.+..###...+++.     This sample uses 4 colors:
 /// +...+.@@.@@.+.#.....+...+     . = color 0 (all bits clear)
 /// +++++:@.@.@.+.#..##.+++++     + = color 1 (bit 0 set, bit 1 clear)
 /// +...+.@...@.+.#...#.+...+     @ = color 2 (bit 0 clear, bit 1 set)
 /// +...+.@...@.+..####.+...+     # = color 3 (all bits set)
-/// </pre>
+/// ```
 /// Fig 1. A sample image
 ///
 ///
-/// <pre>
+/// ```
 /// 01110000 00001001 11000111 0.......     This is the first bit-plane.
 /// 10001000 00001010 00001000 1.......     Each number represents a bit
 /// 11111000 00001010 01101111 1.......     in the storage layout. Eight
@@ -41,11 +41,11 @@ import java.awt.image.ColorModel;
 /// 00000010 10100010 01100000 0.......
 /// 00000010 00100010 00100000 0.......
 /// 00000010 00100001 11100000 0.......
-/// </pre>
+/// ```
 /// Fig 2. Contiguous bit-plane storage layout.
 ///
 ///
-/// <pre>
+/// ```
 /// 01110000 00001001 11000111 0.......     This is the first bit-plane.
 /// 00000010 00100001 11000000 0.......     This is the second bit-plane.
 ///
@@ -60,7 +60,7 @@ import java.awt.image.ColorModel;
 ///
 /// 10001000 00001001 11101000 1.......
 /// 00000010 00100001 11100000 0.......
-/// </pre>
+/// ```
 /// Fig 3. Interleaved bit-plane storage layout.
 ///
 /// For more details refer to "Amiga ROM Kernel Reference Manual: Libraries,
@@ -176,7 +176,7 @@ public class AmigaBitmapImage
     /// @param colorModel     Color model to be used for conversions from/to chunky pixels.
     /// @param bitStride      Number of data array elements between two bits of the same image pixel.
     /// @param scanlineStride Number of data array elements between a given pixel and the pixel in the same column of
-    ///                                                                   the next scanline.
+    ///                                                                                         the next scanline.
     public AmigaBitmapImage(int width, int height, int depth, ColorModel colorModel, int bitStride, int scanlineStride) {
         this.width = width;
         this.height = height;

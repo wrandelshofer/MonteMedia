@@ -24,13 +24,13 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-/// <pre>
+/// ```
 /// Benchmark              Mode  Cnt    Score    Error  Units
 /// LongGcdJmh.gcdCheck    avgt    4  244.845 ± 10.841  ns/op
 /// LongGcdJmh.gcdHermann  avgt    4  124.948 ±  0.389  ns/op
 /// LongGcdJmh.gcdStein1   avgt    4   90.703 ±  8.555  ns/op
 /// LongGcdJmh.gcdStein2   avgt    4   34.268 ±  0.185  ns/op
-/// </pre>
+/// ```
 @Measurement(iterations = 4)
 @Warmup(iterations = 2)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)

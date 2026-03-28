@@ -5,7 +5,7 @@
 
 package org.monte.media.color.kmeans.algo;
 
-/// Initialization algorithm for [KMeansClusteringAlgoDouble].
+/// Initialization algorithm for [KMeansClusteringAlgo].
 public interface KMeansInitAlgo {
     /// Selects K initial cluster centers given an array of data samples `X` and their weights `xWeights`.
     ///

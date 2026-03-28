@@ -75,7 +75,7 @@ public class SEQDecoder {
 
     /// Reads the SEQ Header. Assumes that the input stream is positioned
     /// At the start of the file.
-    /// <pre>
+    /// ```
     /// // Seq Header. 128 bytes.
     /// typedef struct {
     /// ubyte[2] magicNumber;       // [$FEDB or $FEDC]
@@ -85,7 +85,7 @@ public class SEQDecoder {
     /// ubyte[16] reserved[7];
     /// ubyte[6] reserved;
     /// } SeqHeader;
-    /// </pre>
+    /// ```
     private void readHeader() throws IOException {
         int magic = in.readUnsignedShort();
         if (magic != 0xfedb && magic != 0xfedc) {
@@ -113,7 +113,7 @@ public class SEQDecoder {
 
     /// Reads the SEQ Offsets. Assumes that the input stream is positioned
     /// at the beginning of the offsets and that the header has been read.
-    /// <pre>
+    /// ```
     /// typedef struct {
     ///  ULONG offset;
     /// } frofOffset;
@@ -121,7 +121,7 @@ public class SEQDecoder {
     /// typedef struct {
     ///  frofOffset[] frame;
     /// } FrameOffsets;
-    /// </pre>
+    /// ```
     private void readOffsets() throws IOException {
         offsets = new long[nFrames];
         for (int i = 0; i < nFrames; i++) {
@@ -141,7 +141,7 @@ public class SEQDecoder {
     /// Reads a video frame. Assumes that the input stream is positioned
     /// at the beginning of the frame and that the header and the offsets have
     /// been read.
-    /// <pre>
+    /// ```
     ///    typedef struct {
     ///    ubyte[2] type;              // (ignored?)
     ///    WORD enum frhdResolution resolution;        // [always 0]

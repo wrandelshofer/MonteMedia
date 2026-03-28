@@ -27,7 +27,7 @@ import java.util.Hashtable;
 /// Creates Image objects by reading an IFF PBM stream.
 ///
 /// **PBM regular expression**
-/// <pre>
+/// ```
 /// PBM ::= "FORM" #{ "PBM" BMHD [CMAP] [GRAB] [DEST] [SPRT] [CAMG] CRNG* CCRT* [BODY] }
 ///
 /// BMHD ::= "BMHD" #{ BitMapHeader }
@@ -40,7 +40,7 @@ import java.util.Hashtable;
 /// CRNG ::= "CRNG" #{ CRange }
 /// CCRT ::= "CCRT" #{ CycleInfo }
 /// BODY ::= "BODY" #{ UBYTE* } [0]
-/// </pre> The token "#" represents a
+/// ``` The token "#" represents a
 /// `ckSize` LONG count of the following braced data bytes. E.g., a
 /// BMHD's "#" should equal
 /// `sizeof(BitMapHeader)`. Literal strings are shown in "quotes",
@@ -238,7 +238,7 @@ public class PBMDecoder implements IFFVisitor {
     }
 
     /// Decodes the bitmap header (PBM BMHD).
-    /// <pre>
+    /// ```
     /// typedef UBYTE Masking; // Choice of masking technique
     ///
     /// #define mskNone                 0
@@ -264,7 +264,7 @@ public class PBMDecoder implements IFFVisitor {
     ///   UBYTE       xAspect, yAspect; // pixel aspect, a ratio width : height
     ///   WORD        pageWidth, pageHeight; // source "page" size in pixels
     ///   } BitmapHeader;
-    /// </pre>
+    /// ```
     protected void decodeBMHD(IFFChunk chunk)
             throws ParseException {
         if (chunk == null) {
@@ -333,7 +333,7 @@ public class PBMDecoder implements IFFVisitor {
     }
 
     /// Decodes the color range cycling (ILBM CRNG).
-    /// <pre>
+    /// ```
     /// #define RNG_NORATE  36   // Dpaint uses this rate to mean non-active
     ///  set {
     ///  active = 1, reverse = 2
@@ -346,7 +346,7 @@ public class PBMDecoder implements IFFVisitor {
     ///  WORD set crngActive flags;     // bit0 set = active, bit 1 set = reverse
     ///  UBYTE low; UBYTE high;         // lower and upper color registers selected
     ///  } ilbmColorRegisterRangeChunk;
-    /// </pre>
+    /// ```
     protected ColorCycle decodeCRNG(IFFChunk chunk)
             throws ParseException {
         ColorCycle cc;
@@ -376,7 +376,7 @@ public class PBMDecoder implements IFFVisitor {
     /// have the RNG _ACTIVE if it: <ol>   - contains at least one color
     ///     register   - has a defined rate   - has more than one color
     ///     and/or color register </ol>
-    /// <pre>
+    /// ```
     /// ILBM DRNG DPaint IV enhanced color cycle chunk
     /// --------------------------------------------
     ///
@@ -409,7 +409,7 @@ public class PBMDecoder implements IFFVisitor {
     ///     ilbmDRNGDColor[ntrue] trueColorCells;
     ///     ilbmDRNGDIndex[ntregs] colorRegisterCells;
     /// } ilbmDRangeChunk;
-    /// </pre>
+    /// ```
     protected ColorCycle decodeDRNG(IFFChunk chunk)
             throws ParseException {
         ColorCycle cc;
@@ -478,7 +478,7 @@ public class PBMDecoder implements IFFVisitor {
     ///  The run encoding scheme by _byteRun1_ is
     /// best described by pseudo code for the decoder _Unpacker_ (called
     /// _UnPackBits_ in the Macintosh toolbox.
-    /// <pre>
+    /// ```
     /// UnPacker:
     ///  LOOP until produced the desired number of bytes
     ///      Read the next source byte into n
@@ -488,7 +488,7 @@ public class PBMDecoder implements IFFVisitor {
     ///          -128    =&gt; no operation
     ///      ENDCASE;
     ///   ENDLOOP;
-    /// </pre>
+    /// ```
     ///
     /// @param in
     /// @param out

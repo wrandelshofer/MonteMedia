@@ -476,11 +476,11 @@ public class AVIInputStream extends AbstractAVIStream {
         return tr;
     }
 
-    /// <pre>
+    /// ```
     /// typedef struct {
     ///   cstring name;
     /// } STREAMNAME;
-    /// </pre>
+    /// ```
     ///
     /// @param tr
     /// @param data
@@ -490,7 +490,7 @@ public class AVIInputStream extends AbstractAVIStream {
     }
 
     /// Reads an AVI bitmap info header for a video track.
-    /// </pre>
+    /// ```
     /// // ----------------------
     /// // AVI Bitmap Info Header
     /// // ----------------------
@@ -532,7 +532,7 @@ public class AVIInputStream extends AbstractAVIStream {
     /// DWORD numberOfColorsImportant;
     /// RGBQUAD colors[numberOfColorsUsed];
     /// } BITMAPINFOHEADER;
-    /// </pre>
+    /// ```
     ///
     /// @param tr
     /// @param data
@@ -586,7 +586,7 @@ public class AVIInputStream extends AbstractAVIStream {
     ///
     ///  The format of a video track is defined in a "strf" chunk, which
     /// contains a `WAVEFORMATEX` struct.
-    /// <pre>
+    /// ```
     /// ----------------------
     /// AVI Wave Format Header
     /// ----------------------
@@ -613,7 +613,7 @@ public class AVIInputStream extends AbstractAVIStream {
     ///     // is ignored.
     ///   byte[cbSize] extra;
     /// } WAVEFORMATEX;
-    /// </pre>
+    /// ```
     ///
     /// @param tr
     /// @param data
@@ -646,7 +646,7 @@ public class AVIInputStream extends AbstractAVIStream {
 
     }
 
-    /// <pre>
+    /// ```
     /// // The values for this set have been taken from:
     /// // http://graphics.cs.uni-sb.de/NMM/dist-0.4.0/Docs/Doxygen/html/avifmt_8h.html
     /// set {
@@ -676,7 +676,7 @@ public class AVIInputStream extends AbstractAVIStream {
     ///       DWORD   size;
     ///       // Specifies the size of the data chunk, in bytes.
     /// } avioldindex_entry;
-    /// </pre>
+    /// ```
     ///
     /// @param tracks
     /// @param data

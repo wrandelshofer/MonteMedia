@@ -15,12 +15,12 @@ import java.io.IOException;
 /// PlainTextTransferable.
 ///
 /// Usage:
-/// <pre>
+/// ```
 /// String text = "bla";
 /// CompositeTransfer t = new CompositeTransferable();
 /// t.add(new StringTransferable(text));
 /// t.add(new PlainTextTransferable(text));
-/// </pre>
+/// ```
 ///
 /// @author Werner Randelshofer
 public class StringTransferable extends AbstractTransferable {

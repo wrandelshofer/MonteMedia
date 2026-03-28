@@ -5,19 +5,11 @@
 package org.monte.demo.moviereader;
 
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
@@ -34,7 +26,7 @@ public class ReadClosedCaptionsFromAMovieMain {
     /// Main method.
     ///
     /// Arguments:
-    /// <pre>
+    /// ```
     /// {@literal
     ///  <file>
     ///  }</pre>
@@ -62,13 +54,13 @@ public class ReadClosedCaptionsFromAMovieMain {
     private JFrame frame;
 
     /// Creates the frame.
-    /// <pre>
+    /// ```
     ///     +-----------------------+
     ///     |      ccLabel          |
     ///     +--------+--------------+
     ///     | slider |    ccNbLabel |
     ///     +--------+--------------+
-    /// </pre>
+    /// ```
     private void createFrame() {
         frame = new JFrame("please drop a file in this window");
         JPanel panel = new JPanel(new BorderLayout());

@@ -7,7 +7,7 @@ package org.monte.media.ilbm;
 import java.util.Arrays;
 
 /// Implements DRNG color cycling for an IFF ILBM image.
-/// <pre>
+/// ```
 /// ILBM DRNG DPaint IV enhanced color cycle chunk
 /// --------------------------------------------
 ///
@@ -40,7 +40,7 @@ import java.util.Arrays;
 ///     ilbmDRNGDColor[ntrue] trueColorCells;
 ///     ilbmDRNGDIndex[ntregs] colorRegisterCells;
 /// } ilbmDRangeChunk;
-/// </pre>
+/// ```
 ///
 /// @author Werner Randelshofer
 public class DRNGColorCycle extends ColorCycle {

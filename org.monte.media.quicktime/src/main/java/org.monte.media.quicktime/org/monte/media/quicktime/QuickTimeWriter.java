@@ -99,7 +99,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 ///
 /// **Example:** Writing 10 seconds of a movie with 640x480 pixel, 30 fps,
 /// PNG-encoded video and 16-bit stereo, 44100 Hz, PCM-encoded audio.
-/// <pre>
+/// ```
 /// MP4Writer w = new MP4Writer(new File("mymovie.mov"));
 /// w.addAudioTrack(new AudioFormat(AudioFormat.Encoding.PCM_SIGNED), 44100, 2, 16, 2, 44100, true)); // audio in track 0
 /// w.addVideoTrack(MP4Writer.VIDEO_PNG, 30, 640, 480);  // video in track 1
@@ -147,7 +147,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 ///      }
 /// }
 /// w.close();
-/// </pre>
+/// ```
 ///
 /// For information about the QuickTime file format see the "QuickTime File
 /// Format Specification", Apple Inc. 2010-08-03. (qtff)
@@ -284,16 +284,16 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
     ///
     /// @param format    The QuickTime video format.
     /// @param timeScale The media time scale. This is typically the frame rate.
-    ///                                                                     If the frame rate is not an integer fraction of a second, specify a
-    ///                                                                     multiple of the frame rate and specify a correspondingly multiplied
-    ///                                                                     sampleDuration when writing frames. For example, for a rate of 23.976 fps
-    ///                                                                     specify a time scale of 23976 and multiply the sampleDuration of a video
-    ///                                                                     frame by 1000.
+    ///                                                                                      If the frame rate is not an integer fraction of a second, specify a
+    ///                                                                                      multiple of the frame rate and specify a correspondingly multiplied
+    ///                                                                                      sampleDuration when writing frames. For example, for a rate of 23.976 fps
+    ///                                                                                      specify a time scale of 23976 and multiply the sampleDuration of a video
+    ///                                                                                      frame by 1000.
     /// @param width     The width of a video image. Must be larger than 0.
     /// @param height    The height of a video image. Must be larger than 0.
     /// @return Returns the track index.
     /// @throws IllegalArgumentException if the width or the height is smaller
-    ///                                                                                                                                     than 1.
+    ///                                                                                                                                                                      than 1.
     public int addVideoTrack(Format format, long timeScale, int width, int height) throws IOException {
         int tr = addVideoTrack(format.get(EncodingKey), format.get(CompressorNameKey), timeScale, width, height, 24, 30, format);
         setVideoColorTable(tr, format.get(PaletteKey));
@@ -307,7 +307,7 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
     /// @param height The height of a video image. Must be larger than 0.
     /// @return Returns the track index.
     /// @throws IllegalArgumentException if the width or the height is smaller
-    ///                                                                                                    than 1.
+    ///                                                                                                                                     than 1.
     public int addVideoTrack(Format format, int width, int height, int depth, int syncInterval) throws IOException {
         int tr = addVideoTrack(format.get(EncodingKey), format.get(CompressorNameKey),
                 format.get(MediaTimeScale, format.get(FrameRateKey).getDenominator() * format.get(FrameRateKey).getNumerator()), width, height, depth, syncInterval, format);
@@ -514,7 +514,7 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
     /// @param track    The track index.
     /// @param image    The image of the video frame.
     /// @param duration The sampleDuration of the video frame in media time scale
-    ///                                                 units.
+    ///                                                                 units.
     /// @throws IOException if writing the sample data failed.
     public void write(int track, BufferedImage image, long duration) throws IOException {
         Track tr = tracks.get(track);
@@ -558,11 +558,11 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
     /// @param data           The encoded sample data.
     /// @param off            The start offset in the data.
     /// @param len            The number of bytes to write. Must be dividable by
-    ///                                                                   sampleCount.
+    ///                                                                                         sampleCount.
     /// @param sampleDuration The sampleDuration of a sample. All samples must
-    ///                                                                   have the same sampleDuration.
+    ///                                                                                         have the same sampleDuration.
     /// @param isSync         Whether the samples are sync samples. All samples must
-    ///                                                                   either be sync samples or non-sync samples.
+    ///                                                                                         either be sync samples or non-sync samples.
     /// @throws IllegalArgumentException if the sampleDuration is less than 1.
     /// @throws IOException              if writing the sample data failed.
     @Deprecated

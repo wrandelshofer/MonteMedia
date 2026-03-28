@@ -50,7 +50,7 @@ public class ANIMKeyFrame
     /// The run encoding scheme by _byteRun1_ is best described by pseudo
     /// code for the decoder _Unpacker_ (called _UnPackBits_ in
     /// the Macintosh toolbox.
-    /// <pre>
+    /// ```
     /// UnPacker:
     ///  LOOP until produced the desired number of bytes
     ///      Read the next source byte into n
@@ -60,7 +60,7 @@ public class ANIMKeyFrame
     ///          -128    =&gt; no operation
     ///      ENDCASE;
     ///   ENDLOOP;
-    /// </pre>
+    /// ```
     public static int unpackByteRun1(byte[] in, byte[] out) {
         int iOut = 0; // output array index
         int iIn = 0; // input array index
@@ -98,23 +98,23 @@ public class ANIMKeyFrame
     /// Each plane is stored in a separate VDAT chunk.
     ///
     /// A VDAT chunk consists of an id, a length, and a body.
-    /// <pre>
+    /// ```
     /// struct {
     ///    uint16 id;  // The 4 ASCII characters "VDAT"
     ///    uint16 length,
     ///    byte[length] body
     /// }
-    /// </pre>
+    /// ```
     /// The body consists of a command list and a data list.
-    /// <pre>
+    /// ```
     /// struct {
     ///    uint16         cnt;        // Command count + 2
     ///    uint8[cnt-2] cmd;        // The commands
     ///    uint16[]       data;       // Data words
     /// }
-    /// </pre>
+    /// ```
     /// Pseudo code for the unpacker:
-    /// <pre>
+    /// ```
     /// UnPacker:
     ///  Read cnt;
     ///  LOOP cnt - 2 TIMES
@@ -133,7 +133,7 @@ public class ANIMKeyFrame
     ///      ENDCASE;
     ///      IF end of data reached THEN EXIT END;
     ///   ENDLOOP;
-    /// </pre>
+    /// ```
     public void unpackVertical(byte[] in, AmigaBitmapImage bm) {
         byte[] out = bm.getBitmap();
         int iIn = 0; // input index

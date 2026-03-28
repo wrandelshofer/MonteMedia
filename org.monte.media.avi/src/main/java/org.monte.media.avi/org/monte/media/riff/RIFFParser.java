@@ -26,9 +26,10 @@ import java.util.WeakHashMap;
 /// zero or more lists and chunks.
 ///
 /// The RIFF header has the following form:
-/// <pre>
+/// ```
 /// 'RIFF' fileSize fileType (data)
-/// </pre> where 'RIFF' is the literal FOURCC code 'RIFF', fileSize is a 4-byte
+/// ```
+/// where 'RIFF' is the literal FOURCC code 'RIFF', fileSize is a 4-byte
 /// value giving the size of the data in the file, and fileType is a FOURCC that
 /// identifies the specific file type. The value of fileSize includes the size of
 /// the fileType FOURCC plus the size of the data that follows, but does not
@@ -44,29 +45,31 @@ import java.util.WeakHashMap;
 /// entries, and other information.
 ///
 /// A chunk has the following form:
-/// <pre>
+/// ```
 /// ckID ckSize ckData
-/// </pre> where ckID is a FOURCC that identifies the data contained in the
+/// ```
+/// where ckID is a FOURCC that identifies the data contained in the
 /// chunk, ckData is a 4-byte value giving the size of the data in ckData, and
 /// ckData is zero or more bytes of data. The data is always padded to nearest
 /// WORD boundary. ckSize gives the size of the valid data in the chunk; it does
 /// not include the padding, the size of ckID, or the size of ckSize.
 ///
 /// A list has the following form:
-/// <pre>
+/// ```
 /// 'LIST' listSize listType listData
-/// </pre> where 'LIST' is the literal FOURCC code 'LIST', listSize is a 4-byte
+/// ```
+/// where 'LIST' is the literal FOURCC code 'LIST', listSize is a 4-byte
 /// value giving the size of the list, listType is a FOURCC code, and listData
 /// consists of chunks or lists, in any order. The value of listSize includes the
 /// size of listType plus the size of listData; it does not include the 'LIST'
 /// FOURCC or the size of listSize.
 ///
 /// For more information see:
-/// http://msdn.microsoft.com/archive/default.asp?url=/archive/en-us/directx9_c/directx/htm/avirifffilereference.asp
-/// http://msdn.microsoft.com/archive/default.asp?url=/archive/en-us/directx9_c/directx/htm/aboutriff.asp
+/// [AVI RIFF File Reference](http://msdn.microsoft.com/archive/default.asp?url=/archive/en-us/directx9_c/directx/htm/avirifffilereference.asp)
+/// [About RIFF](http://msdn.microsoft.com/archive/default.asp?url=/archive/en-us/directx9_c/directx/htm/aboutriff.asp)
 ///
 /// **Grammar for RIFF streams used by this parser**
-/// <pre>
+/// ```
 /// RIFFFile    ::= 'RIFF' FormGroup
 /// <br>
 /// GroupChunk  ::= FormGroup | ListGroup
@@ -83,7 +86,7 @@ import java.util.WeakHashMap;
 /// ChunkID     ::= FourCC
 /// pad         ::= (BYTE)0
 /// struct      ::= any C language struct built with primitive data types.
-/// </pre>
+/// ```
 ///
 /// **Examples**
 ///
@@ -92,7 +95,7 @@ import java.util.WeakHashMap;
 /// To traverse the file structure you must first set up a RIFFVisitor object
 /// that does something useful at each call to the visit method. Then create an
 /// instance of a RIFFParser and invoke the #interpret method.
-/// <pre>
+/// ```
 /// class RIFFRawTraversal
 /// .	{
 /// .	static class Visitor
@@ -115,7 +118,7 @@ import java.util.WeakHashMap;
 /// .		catch (AbortedException e)  { System.out.println(e); }
 /// .		}
 /// .	}
-/// </pre>
+/// ```
 ///
 /// **Traversing the RIFF file and interpreting its content.**
 ///
@@ -132,7 +135,7 @@ import java.util.WeakHashMap;
 /// information the visitor can obtain during interpretation is only valid during
 /// the actual #visit... call. Dont try to get information about properties or
 /// collections for chunks that the visitor is not visiting right now.
-/// <pre>
+/// ```
 /// class InterpretingAnILBMFile
 /// .	{
 /// .	static class Visitor
@@ -160,7 +163,7 @@ import java.util.WeakHashMap;
 /// .		catch (AbortedException e)  { System.out.println(e); }
 /// .		}
 /// .	}
-/// </pre>
+/// ```
 ///
 /// @author Werner Randelshofer
 /// @see RIFFVisitor
@@ -235,9 +238,9 @@ public class RIFFParser extends Object {
     /// during tree traversal.
     ///
     /// @throws ParseException Is thrown when an interpretation error occured.
-    ///                                                                      The stream is positioned where the error occured.
+    ///                                                                                                                    The stream is positioned where the error occured.
     /// @throws AbortException Is thrown when the visitor decided to abort the
-    ///                                               interpretation.
+    ///                                                                                             interpretation.
     public long parse(InputStream in, RIFFVisitor v)
             throws ParseException, AbortException, IOException {
         this.in = new RIFFPrimitivesInputStream(in);
@@ -252,9 +255,9 @@ public class RIFFParser extends Object {
     }
 
     /// Parses a RIFF file.
-    /// <pre>
+    /// ```
     /// RIFF = 'RIFF' FormGroup
-    /// </pre>
+    /// ```
     private void parseFile()
             throws ParseException, AbortException, IOException {
         int id = in.readFourCC();
@@ -277,11 +280,11 @@ public class RIFFParser extends Object {
     }
 
     /// Parses a FORM group.
-    /// <pre>
+    /// ```
     /// FormGroup ::= size GroupType { ChunkID LocalChunk [pad]
     /// | 'FORM' FormGroup  [pad] }
     /// | 'LIST' ListGroup  [pad] }
-    /// </pre>
+    /// ```
     private void parseFORM(HashMap<Integer, RIFFChunk> props)
             throws ParseException, AbortException, IOException {
         long size = in.readULONG();
@@ -336,9 +339,9 @@ public class RIFFParser extends Object {
     }
 
     /// Parses a LIST group.
-    /// <pre>
+    /// ```
     /// ListGroup ::= size GroupType { ChunkID LocalChunk [pad] | 'LIST ' ListGroup  [pad] }
-    /// </pre>
+    /// ```
     private void parseLIST(HashMap<Integer, RIFFChunk> props)
             throws ParseException, AbortException, IOException {
         long size = in.readULONG();
@@ -390,10 +393,10 @@ public class RIFFParser extends Object {
     }
 
     /// Parses a local chunk.
-    /// <pre>
+    /// ```
     /// LocalChunk  ::= size { DataChunk | PropertyChunk | CollectionChunk }
     /// DataChunk = PropertyChunk = CollectionChunk ::= { byte }...*size
-    /// </pre>
+    /// ```
     private void parseLocalChunk(RIFFChunk parent, int id)
             throws ParseException, AbortException, IOException {
         long size = in.readULONG();
@@ -439,10 +442,10 @@ public class RIFFParser extends Object {
     }
 
     /// This method is invoked when we encounter a parsing problem.
-    /// <pre>
+    /// ```
     /// LocalChunk  ::= size { DataChunk | PropertyChunk | CollectionChunk }
     /// DataChunk = PropertyChunk = CollectionChunk ::= { byte }...*size
-    /// </pre>
+    /// ```
     private void parseGarbage(RIFFChunk parent, int id, long size, long scan)
             throws ParseException, AbortException, IOException {
         //long size = in.readULONG();
@@ -553,9 +556,9 @@ public class RIFFParser extends Object {
     /// Post condition   - 	Data chunk declared
     ///
     /// @param type Type of the chunk. Must be formulated as a TypeID conforming
-    ///             to the method #isFormType.
+    ///                                     to the method #isFormType.
     /// @param id   ID of the chunk. Must be formulated as a ChunkID conforming to
-    ///             the method #isLocalChunkID.
+    ///                                     the method #isLocalChunkID.
     public void declareDataChunk(int type, int id) {
         RIFFChunk chunk = new RIFFChunk(type, id);
         if (dataChunks == null) {
@@ -574,9 +577,9 @@ public class RIFFParser extends Object {
     /// Post condition   - 	Group chunk declared
     ///
     /// @param type Type of the chunk. Must be formulated as a TypeID conforming
-    ///             to the method #isFormType.
+    ///                                     to the method #isFormType.
     /// @param id   ID of the chunk. Must be formulated as a ChunkID conforming to
-    ///             the method #isContentsType.
+    ///                                     the method #isContentsType.
     public void declareGroupChunk(int type, int id) {
         RIFFChunk chunk = new RIFFChunk(type, id);
         if (groupChunks == null) {
@@ -595,9 +598,9 @@ public class RIFFParser extends Object {
     /// Post condition   - 	Group chunk declared
     ///
     /// @param type Type of the chunk. Must be formulated as a TypeID conforming
-    ///             to the method #isFormType.
+    ///                                     to the method #isFormType.
     /// @param id   ID of the chunk. Must be formulated as a ChunkID conforming to
-    ///             the method #isLocalChunkID.
+    ///                                     the method #isLocalChunkID.
     public void declarePropertyChunk(int type, int id) {
         RIFFChunk chunk = new RIFFChunk(type, id);
         if (propertyChunks == null) {
@@ -616,9 +619,9 @@ public class RIFFParser extends Object {
     /// Post condition   - 	Collection chunk declared
     ///
     /// @param type Type of the chunk. Must be formulated as a TypeID conforming
-    ///             to the method #isFormType.
+    ///                                     to the method #isFormType.
     /// @param id   ID of the chunk. Must be formulated as a ChunkID conforming to
-    ///             the method #isLocalChunkID.
+    ///                                     the method #isLocalChunkID.
     public void declareCollectionChunk(int type, int id) {
         RIFFChunk chunk = new RIFFChunk(type, id);
         if (collectionChunks == null) {
@@ -639,7 +642,7 @@ public class RIFFParser extends Object {
     ///   - 	Stop chunk declared
     ///
     /// @param type Type of the chunk. Must be formulated as a TypeID conforming
-    ///             to the method #isFormType.
+    ///                                     to the method #isFormType.
     public void declareStopChunkType(int type) {
         if (stopChunkTypes == null) {
             stopChunkTypes = new HashSet<>();

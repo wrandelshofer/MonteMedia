@@ -17,7 +17,7 @@ import org.monte.media.eightsvx.LoopableAudioClip;
 /// as specified by the ANIM+SLA Sound Control collection chunk (ILBM SCTL).
 ///
 /// Here's the specification of the SCTL collection chunk:
-/// <pre>
+/// ```
 /// typedef UBYTE Command; // Choice of commands
 /// #define cmdPlaySound 1 // Start playing a sound
 /// #define cmdStopSound 2 // Stop the sound in a given channelMask
@@ -36,7 +36,7 @@ import org.monte.media.eightsvx.LoopableAudioClip;
 ///          frequency; // If non-zero, overrides the VHDR value
 /// Flags    flags;     // Flags, see above
 /// UBYTE    pad[4];       // For future use
-/// </pre>
+/// ```
 ///
 /// @author Werner Randelshofer
 public class ANIMAudioCommand {

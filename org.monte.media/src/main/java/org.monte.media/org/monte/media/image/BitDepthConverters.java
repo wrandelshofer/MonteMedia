@@ -12,11 +12,11 @@ public class BitDepthConverters {
     }
 
     /// Convert 12-bit RGB 444 to 24-bit RGB 888.
-    /// <pre>
+    /// ```
     /// RGB 444 BE:          . . . . . . . . . . . . R₃R₂R₁R₀G₃G₂G₁G₀B₃B₂B₁B₀
     /// Expand to 24 bit:    R₃R₂R₁R₀. . . . G₃G₂G₁G₀. . . . B₃B₂B₁B₀. . . .
     /// Replicate high bits: R₃R₂R₁R₀R₃R₂R₁R₀G₃G₂G₁G₀G₃G₂G₁G₀B₃B₂B₁B₀B₃B₂B₁B₀
-    /// </pre>
+    /// ```
     ///
     /// @param v a RGB 555 value
     /// @return the value converted to RGB 888
@@ -28,11 +28,11 @@ public class BitDepthConverters {
     }
 
     /// Convert 6-bit RGB 222 to 24-bit RGB 888.
-    /// <pre>
+    /// ```
     /// RGB 444 BE:          . . . . . . . . . . . . . . . . . . R₁R₀G₁G₀B₁B₀
     /// Expand to 24 bit:    R₁R₀. . . . . . G₁G₀. . . . . . B₁B₀. . . . . .
     /// Replicate high bits: R₁R₀R₁R₀R₁R₀R₁R₀G₁G₀G₁G₀G₁G₀G₁G₀B₁B₀B₁B₀B₁B₀B₁B₀
-    /// </pre>
+    /// ```
     ///
     /// @param v a RGB 555 value
     /// @return the value converted to RGB 888
@@ -44,11 +44,11 @@ public class BitDepthConverters {
     }
 
     /// Convert 15-bit RGB 555 to 24-bit RGB 888.
-    /// <pre>
+    /// ```
     /// RGB 555 BE:          . . . . . . . . . R₄R₃R₂R₁R₀G₄G₃G₂G₁G₀B₄B₃B₂B₁B₀
     /// Expand to 24 bit:    R₄R₃R₂R₁R₀. . . G₄G₃G₂G₁G₀. . . B₄B₃B₂B₁B₀. . .
     /// Replicate high bits: R₄R₃R₂R₁R₀R₄R₃R₂G₄G₃G₂G₁G₀G₄G₃G₂B₄B₃B₂B₁B₀B₄B₃B₂
-    /// </pre>
+    /// ```
     ///
     /// @param v a RGB 555 value
     /// @return the value converted to RGB 888
@@ -60,11 +60,11 @@ public class BitDepthConverters {
     }
 
     /// Convert 16-bit RGB 565 to 24-bit RGB 888.
-    /// <pre>
+    /// ```
     /// RGB 555 BE:          . . . . . . . . R₄R₃R₂R₁R₀G₅G₄G₃G₂G₁G₀B₄B₃B₂B₁B₀
     /// Expand to 24 bit:    R₄R₃R₂R₁R₀. . . G₅G₄G₃G₂G₁G₀. . B₄B₃B₂B₁B₀. . .
     /// Replicate high bits: R₄R₃R₂R₁R₀R₄R₃R₂G₅G₄G₃G₂G₁G₀G₅G₄B₄B₃B₂B₁B₀B₄B₃B₂
-    /// </pre>
+    /// ```
     ///
     /// @param v a RGB 555 value
     /// @return the value converted to RGB 888
@@ -75,10 +75,10 @@ public class BitDepthConverters {
     }
 
     /// Convert 24-bit RGB 888 to 12-bit RGB 444.
-    /// <pre>
+    /// ```
     /// RGB 888 BE:          R₇R₆R₅R₄R₃R₂R₁R₀G₇G₆G₅G₄G₃G₂G₁G₀B₇B₆B₅B₄B₃B₂B₁B₀
     /// Compress to 12 bit:  . . . . . . . . . . . . R₇R₆R₅R₄G₇G₆G₅G₄B₇B₆B₅B₄
-    /// </pre>
+    /// ```
     ///
     /// @param v a RGB 888 value
     /// @return the value converted to RGB 555
@@ -89,10 +89,10 @@ public class BitDepthConverters {
     }
 
     /// Convert 24-bit RGB 888 to 6-bit RGB 222.
-    /// <pre>
+    /// ```
     /// RGB 888 BE:          R₇R₆R₅R₄R₃R₂R₁R₀G₇G₆G₅G₄G₃G₂G₁G₀B₇B₆B₅B₄B₃B₂B₁B₀
     /// Compress to 12 bit:  . . . . . . . . . . . . . . . . . . R₇R₆G₇G₆B₇B₆
-    /// </pre>
+    /// ```
     ///
     /// @param v a RGB 888 value
     /// @return the value converted to RGB 555
@@ -103,10 +103,10 @@ public class BitDepthConverters {
     }
 
     /// Convert 24-bit RGB 888 to 15-bit RGB 555.
-    /// <pre>
+    /// ```
     /// RGB 888 BE:          R₇R₆R₅R₄R₃R₂R₁R₀G₇G₆G₅G₄G₃G₂G₁G₀B₇B₆B₅B₄B₃B₂B₁B₀
     /// Compress to 15 bit:  . . . . . . . . . R₇R₆R₅R₄R₃G₇G₆G₅G₄G₃B₇B₆B₅B₄B₃
-    /// </pre>
+    /// ```
     ///
     /// @param v a RGB 888 value
     /// @return the value converted to RGB 555
@@ -117,10 +117,10 @@ public class BitDepthConverters {
     }
 
     /// Convert 24-bit RGB 888 to 16-bit RGB 565.
-    /// <pre>
+    /// ```
     /// RGB 888 BE:          R₇R₆R₅R₄R₃R₂R₁R₀G₇G₆G₅G₄G₃G₂G₁G₀B₇B₆B₅B₄B₃B₂B₁B₀
     /// Compress to 16 bit:  . . . . . . . . R₇R₆R₅R₄R₃G₇G₆G₅G₄G₃G₂B₇B₆B₅B₄B₃
-    /// </pre>
+    /// ```
     ///
     /// @param v a RGB 888 value
     /// @return the value converted to RGB 555

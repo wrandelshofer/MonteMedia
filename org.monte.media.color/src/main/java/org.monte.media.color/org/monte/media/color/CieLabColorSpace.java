@@ -86,12 +86,12 @@ public class CieLabColorSpace extends AbstractNamedColorSpace {
     }
 
     /// Lab to XYZ.
-    /// <pre>
+    /// ```
     /// X = xr*Xw;
     /// Y = yr*Yw;
     /// Z = zr*Zw;
-    /// </pre> where
-    /// <pre>
+    /// ``` where
+    /// ```
     /// xr = fx^3, if fx^3 &gt; eps
     ///    = (116*fx - 16)/k, if fx^3 &lt;= eps
     ///
@@ -109,7 +109,7 @@ public class CieLabColorSpace extends AbstractNamedColorSpace {
     ///
     /// eps = 216/24389
     /// k = 24389/27
-    /// </pre>
+    /// ```
     ///
     /// Source: <a href="http://www.brucelindbloom.com/index.html?Equations.html"
     /// >http://www.brucelindbloom.com/index.html?Equations.html</a>
@@ -160,12 +160,12 @@ public class CieLabColorSpace extends AbstractNamedColorSpace {
     }
 
     /// XYZ to Lab.
-    /// <pre>
+    /// ```
     /// L = 116*fy - 16
     /// a = 500 * (fx - fy)
     /// b = 200 * (fy - fz)
-    /// </pre> where
-    /// <pre>
+    /// ``` where
+    /// ```
     /// fx = xr^(1/3), if xr &gt; eps
     ///    = (k*xr + 16) / 116 if xr &lt;= eps
     ///
@@ -181,7 +181,7 @@ public class CieLabColorSpace extends AbstractNamedColorSpace {
     ///
     /// eps = 216/24389
     /// k = 24389/27
-    /// </pre>
+    /// ```
     ///
     /// Source: <a href="http://www.brucelindbloom.com/index.html?Equations.html"
     /// >http://www.brucelindbloom.com/index.html?Equations.html</a>

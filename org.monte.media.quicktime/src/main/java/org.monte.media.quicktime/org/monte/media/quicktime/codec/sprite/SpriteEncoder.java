@@ -67,7 +67,7 @@ import static org.monte.media.quicktime.codec.sprite.SpriteFormatKeys.SpriteImag
 /// In a differenced frame, those sprite properties that change need to be specified.
 /// If none of a sprite's properties change in a given frame, then the sprite does not need an atom in the
 /// differenced frame.
-/// <pre>
+/// ```
 /// +------------------------------------------------------+
 /// | 'sean' Atom                                          |
 /// +------------------------------------------------------+
@@ -173,7 +173,7 @@ import static org.monte.media.quicktime.codec.sprite.SpriteFormatKeys.SpriteImag
 ///     y    translate y,    32-bit fixed-point number divided as 16.16
 ///     w    one,            32-bit fixed-point number divided as 2.30
 ///
-/// </pre>
+/// ```
 ///
 /// References:
 ///

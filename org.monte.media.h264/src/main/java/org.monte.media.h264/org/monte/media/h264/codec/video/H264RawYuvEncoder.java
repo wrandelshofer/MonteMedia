@@ -45,7 +45,7 @@ import static org.monte.media.h264.codec.video.PictureEncoder.ENCODING_PICTURE;
 /// This code has been derived from "World's Smallest h.264 Encoder".
 ///
 /// Stream format:
-/// <pre>
+/// ```
 /// +-----------------------------------+
 /// | sequence parameter set (SPS)      |
 /// +-----------------------------------+
@@ -69,13 +69,13 @@ import static org.monte.media.h264.codec.video.PictureEncoder.ENCODING_PICTURE;
 /// |   | slice stop bit              | |
 /// |   +-----------------------------+ |
 /// +-----------------------------------+
-/// </pre>
+/// ```
 /// Structs:
 ///
 /// The type `u(n)` indicates an unsigned integer of n bits,
 /// and `ue(v)` indicates an unsigned exponential-Golomb-coded value of a variable number of bits.
 /// ///
-/// <pre>
+/// ```
 /// Sequence Parameter Set (SPS)
 ///
 /// |Parameter Name               |Type |Value|Comments                             |
@@ -111,8 +111,8 @@ import static org.monte.media.h264.codec.video.PictureEncoder.ENCODING_PICTURE;
 /// |frame_cropping_flag          | u(1)|   0 |We will not do frame cropping.       |
 /// |vui_parameters_present_flag  | u(1)|   0 |We will not send VUI data.           |
 /// |rbsp_stop_one_bit            | u(1)|   1 |Stop bit.                            |
-/// </pre>
-/// <pre>
+/// ```
+/// ```
 /// Picture Parameter Set (PPS)
 ///
 /// |Parameter Name               |Type |Value|Comments                             |
@@ -149,8 +149,8 @@ import static org.monte.media.h264.codec.video.PictureEncoder.ENCODING_PICTURE;
 /// |pic_scaling_matrix_present_flag|u(1)|  0 |                                     |
 /// |pic_scaling_list_present_flag[i]|u(1)| 0 |                                     |
 /// |second_chroma_qp_index_offset| u(1)|   0 |                                     |
-/// </pre>
-/// <pre>
+/// ```
+/// ```
 /// Slice Header
 ///
 /// |Parameter Name               |Type |Value|Comments                             |
@@ -194,7 +194,7 @@ import static org.monte.media.h264.codec.video.PictureEncoder.ENCODING_PICTURE;
 /// |modification_of_pic_nums_idc |ue(v)|   0 |                                     |
 /// |abs_diff_pic_num_minus1      |ue(v)|   0 |                                     |
 /// |long_term_pic_num            |ue(v)|   0 |                                     |
-/// </pre>
+/// ```
 /// References:
 ///
 /// <dl>

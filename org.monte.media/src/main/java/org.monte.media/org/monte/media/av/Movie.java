@@ -17,14 +17,14 @@ import java.net.URI;
 /// A movie has a time dimension and a track dimension. The time dimension is
 /// the duration of the movie. The track dimension is a list of tracks.
 /// A track has a duration and a time offset.
-/// <pre>
+/// ```
 /// Movie duration: |------------------------------------------------|
 /// Track 0:         LOREMIPSUM
 /// Track 1:         ..............THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG
 /// Track 2:         .....FARFARAWAYBEHINDTHEMOUNTAINS
 /// Track 3:         .......................THENIGHTWASHOTANDWET
 ///    ...
-/// </pre>
+/// ```
 ///
 /// A track provides random access to decoded samples, either by index or
 /// by a time offset.
@@ -45,7 +45,7 @@ import java.net.URI;
 ///
 /// A sample provides encoded data for a specified duration. A sample is a
 /// sequence of bytes located in a file at a specific offset and length.
-/// <pre>
+/// ```
 /// Track 1:         THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG
 /// Edits:           (0)( 1 )(  2   )(   3   )(4)(  5  )
 ///
@@ -57,7 +57,7 @@ import java.net.URI;
 /// File B:          BLA..J.UM.PS.OV.
 /// File C:          ...ER.BLA.LA.ZYD...DOG
 /// File D:          BR..OWNF..OXB..LAT..HEB..LAB.LA..
-/// </pre>
+/// ```
 ///
 /// @author Werner Randelshofer
 public interface Movie {

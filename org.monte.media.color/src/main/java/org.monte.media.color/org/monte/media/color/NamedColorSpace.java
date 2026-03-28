@@ -67,9 +67,9 @@ public interface NamedColorSpace {
     /// @return color value
     default float[] from24BitRGB(int rgb, float[] colorvalue) {
         float[] rgbs = colorvalue == null || colorvalue.length < 3 ? new float[3] : colorvalue;
-        rgbs[0] = ((rgb & 0xff0000) >>> 16) / 255f;
-        rgbs[1] = ((rgb & 0x00ff00) >>> 8) / 255f;
-        rgbs[2] = ((rgb & 0x0000ff)) / 255f;
+        rgbs[0] = ((rgb & 0xff0000) >>> 16) * (1 / 255f);
+        rgbs[1] = ((rgb & 0x00ff00) >>> 8) * (1 / 255f);
+        rgbs[2] = ((rgb & 0x0000ff)) * (1 / 255f);
         return fromRGB(rgbs, colorvalue);
     }
 }

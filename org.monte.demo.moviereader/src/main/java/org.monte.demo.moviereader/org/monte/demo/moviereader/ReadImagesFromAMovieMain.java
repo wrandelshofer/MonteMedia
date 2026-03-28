@@ -5,19 +5,10 @@
 package org.monte.demo.moviereader;
 
 
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
@@ -35,7 +26,7 @@ public class ReadImagesFromAMovieMain {
     /// Main method.
     ///
     /// Arguments:
-    /// <pre>
+    /// ```
     /// {@literal
     ///  <file>
     ///  }</pre>
@@ -63,13 +54,13 @@ public class ReadImagesFromAMovieMain {
     private JFrame frame;
 
     /// Creates the frame.
-    /// <pre>
+    /// ```
     ///     +-----------------------+
     ///     |      videoLabel       |
     ///     +--------+--------------+
     ///     | slider | imageNbLabel |
     ///     +--------+--------------+
-    /// </pre>
+    /// ```
     private void createFrame() {
         frame = new JFrame("please drop a file in this window");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

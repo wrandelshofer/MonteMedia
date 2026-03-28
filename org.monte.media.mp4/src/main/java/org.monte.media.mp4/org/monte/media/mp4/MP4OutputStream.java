@@ -159,7 +159,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
     ///
     /// @param track The track number.
     /// @param icm   IndexColorModel. Specify null to use the standard Macintosh
-    ///                                                     color table.
+    ///                                                                  color table.
     public void setVideoColorTable(int track, ColorModel icm) {
         if (icm instanceof IndexColorModel) {
             VideoTrack t = (VideoTrack) tracks.get(track);
@@ -184,7 +184,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
     /// used to offset the start time of a track.
     ///
     /// @throws IllegalArgumentException If the edit list ends with an empty
-    ///                                                                                                    edit.
+    ///                                                                                                                                     edit.
     public void setEditList(int track, Edit[] editList) {
         if (editList != null && editList.length > 0 && editList[editList.length - 1].mediaTime == -1) {
             throw new IllegalArgumentException("Edit list must not end with empty edit.");
@@ -195,24 +195,24 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
     /// Adds a video track.
     ///
     /// @param compressionType The QuickTime "image compression format"
-    ///                                                                      4-Character code. A list of supported 4-Character codes is given in qtff,
-    ///                                                                      table 3-1, page 96.
+    ///                                                                                             4-Character code. A list of supported 4-Character codes is given in qtff,
+    ///                                                                                             table 3-1, page 96.
     /// @param compressorName  The QuickTime compressor name. Can be up to 32
-    ///                                                                      characters long.
+    ///                                                                                             characters long.
     /// @param timeScale       The media time scale between 1 and 2^32.
     /// @param width           The width of a video frame.
     /// @param height          The height of a video frame.
     /// @param depth           The number of bits per pixel.
     /// @param syncInterval    Interval for sync-samples. 0=automatic. 1=all frames
-    ///                                                                      are keyframes. Values larger than 1 specify that for every n-th frame is
-    ///                                                                      a keyframe. Apple's QuickTime will not work properly if there is not at
-    ///                                                                      least one keyframe every second.
+    ///                                                                                             are keyframes. Values larger than 1 specify that for every n-th frame is
+    ///                                                                                             a keyframe. Apple's QuickTime will not work properly if there is not at
+    ///                                                                                             least one keyframe every second.
     /// @param format
     /// @return Returns the track index.
     /// @throws IllegalArgumentException if `width` or `height` is
-    ///                                                                                                    smaller than 1, if the length of `compressionType` is not equal to
-    ///                                                                                                    4, if the length of the `compressorName` is not between 1 and 32,
-    ///                                                                                                    if the tiimeScale is not between 1 and 2^32.
+    ///                                                                                                                                     smaller than 1, if the length of `compressionType` is not equal to
+    ///                                                                                                                                     4, if the length of the `compressorName` is not between 1 and 32,
+    ///                                                                                                                                     if the tiimeScale is not between 1 and 2^32.
     public int addVideoTrack(String compressionType, String compressorName, long timeScale, int width, int height, int depth, int syncInterval, Format format) throws IOException {
         ensureStarted();
         if (compressionType == null || compressionType.length() != 4) {
@@ -244,24 +244,24 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
     /// Adds an audio track.
     ///
     /// @param compressionType     The QuickTime 4-character code. A list of
-    ///                                                                                  supported 4-Character codes is given in qtff, table 3-7, page 113.
+    ///                                                                                                             supported 4-Character codes is given in qtff, table 3-7, page 113.
     /// @param timeScale           The media time scale between 1 and 2^32.
     /// @param sampleRate          The sample rate. The integer portion must match the
-    ///                                                                                  `timeScale`.
+    ///                                                                                                             `timeScale`.
     /// @param numberOfChannels    The number of channels: 1 for mono, 2 for stereo.
     /// @param sampleSizeInBits    The number of bits in a sample: 8 or 16.
     /// @param isCompressed        Whether the sound is compressed.
     /// @param frameDuration       The frame duration, expressed in the media’s
-    ///                                                                                  timescale, where the timescale is equal to the sample rate. For
-    ///                                                                                  uncompressed formats, this field is always 1.
+    ///                                                                                                             timescale, where the timescale is equal to the sample rate. For
+    ///                                                                                                             uncompressed formats, this field is always 1.
     /// @param soundBytesPerPacket For uncompressed audio, the number of bytes in a sample
-    ///                                                                                  for a single channel (sampleSize divided by 8). For compressed audio, the
-    ///                                                                                  number of bytes in a frame.
+    ///                                                                                                             for a single channel (sampleSize divided by 8). For compressed audio, the
+    ///                                                                                                             number of bytes in a frame.
     /// @return Returns the track index.
     /// @throws IllegalArgumentException if the audioFormat is not 4 characters
-    ///                                                                                                    long, if the time scale is not between 1 and 2^32, if the integer portion
-    ///                                                                                                    of the sampleRate is not equal to the timeScale, if numberOfChannels is
-    ///                                                                                                    not 1 or 2.
+    ///                                                                                                                                     long, if the time scale is not between 1 and 2^32, if the integer portion
+    ///                                                                                                                                     of the sampleRate is not equal to the timeScale, if numberOfChannels is
+    ///                                                                                                                                     not 1 or 2.
     public int addAudioTrack(String compressionType, //
                              long timeScale, double sampleRate, //
                              int numberOfChannels, int sampleSizeInBits, //
@@ -346,7 +346,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
     ///
     /// @param track The track number.
     /// @param i     Interval between sync samples (keyframes). 0 = automatic. 1 =
-    ///                                        write all samples as sync samples. n = sync every n-th sample.
+    ///                                                     write all samples as sync samples. n = sync every n-th sample.
     public void setSyncInterval(int track, int i) {
         tracks.get(track).syncInterval = i;
     }
@@ -489,14 +489,14 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
     }
 
     /// Sets the transformation matrix of the specified track.
-    /// <pre>
+    /// ```
     /// {a, b, u,
     ///  c, d, v,
     ///  tx,ty,w} // X- and Y-Translation
     ///
     ///           [ a  b  u
     /// [x y 1] *   c  d  v   = [x' y'1]
-    /// </pre> tx ty w ]
+    /// ``` tx ty w ]
     ///
     /// @param track  The track number.
     /// @param matrix The transformation matrix.
@@ -562,7 +562,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
     /// @param track    The track index.
     /// @param in       The input stream which holds the encoded sample data.
     /// @param duration The duration of the video frame in media time scale
-    ///                                                 units.
+    ///                                                                 units.
     /// @param isSync   Whether the sample is a sync sample (keyframe).
     /// @throws IllegalArgumentException if the duration is less than 1.
     /// @throws IOException              if writing the sample data failed.
@@ -640,11 +640,11 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
     /// @param track          The track index.
     /// @param sampleCount    The number of samples.
     /// @param data           The encoded sample data. The length of data must be dividable
-    ///                                                                   by sampleCount.
+    ///                                                                                         by sampleCount.
     /// @param sampleDuration The duration of a sample. All samples must have the
-    ///                                                                   same duration.
+    ///                                                                                         same duration.
     /// @throws IllegalArgumentException if `sampleDuration` is less than 1
-    ///                                                                                                    or if the length of `data` is not dividable by `sampleCount`.
+    ///                                                                                                                                     or if the length of `data` is not dividable by `sampleCount`.
     /// @throws IOException              if writing the chunk failed.
     public void writeSamples(int track, int sampleCount, byte[] data, long sampleDuration, boolean isSync) throws IOException {
         writeSamples(track, sampleCount, data, 0, data.length, sampleDuration, isSync);
@@ -660,9 +660,9 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
     /// @param data           The encoded sample data.
     /// @param off            The start offset in the data.
     /// @param len            The number of bytes to write. Must be dividable by
-    ///                                                                   sampleCount.
+    ///                                                                                         sampleCount.
     /// @param sampleDuration The duration of a sample. All samples must have the
-    ///                                                                   same duration.
+    ///                                                                                         same duration.
     /// @throws IllegalArgumentException if the duration is less than 1.
     /// @throws IOException              if writing the sample data failed.
     public void writeSamples(int track, int sampleCount, byte[] data, int off, int len, long sampleDuration) throws IOException {
@@ -679,11 +679,11 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
     /// @param data           The encoded sample data.
     /// @param off            The start offset in the data.
     /// @param len            The number of bytes to write. Must be dividable by
-    ///                                                                   sampleCount.
+    ///                                                                                         sampleCount.
     /// @param sampleDuration The duration of a sample. All samples must have the
-    ///                                                                   same duration.
+    ///                                                                                         same duration.
     /// @param isSync         Whether the samples are sync samples. All samples must
-    ///                                                                   either be sync samples or non-sync samples.
+    ///                                                                                         either be sync samples or non-sync samples.
     /// @throws IllegalArgumentException if the duration is less than 1.
     /// @throws IOException              if writing the sample data failed.
     public void writeSamples(int track, int sampleCount, byte[] data, int off, int len, long sampleDuration, boolean isSync) throws IOException {
@@ -752,7 +752,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
     /// filters in succession to the same output stream.
     ///
     /// @throws IllegalStateException if the dimension of the video track has
-    ///                                                                                           not been specified or determined yet.
+    ///                                                                                                                         not been specified or determined yet.
     /// @throws IOException           if an I/O exception has occurred
     public void finish() throws IOException {
         ensureOpen();

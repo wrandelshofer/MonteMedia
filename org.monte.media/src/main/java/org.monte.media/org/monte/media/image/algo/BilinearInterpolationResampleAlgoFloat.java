@@ -6,7 +6,7 @@
 package org.monte.media.image.algo;
 
 /// Resamples an image by averaging 4 pixels of the source image.
-/// <pre>
+/// ```
 ///               │(⌊x⌋,⌊y⌋)    │(⌊x+1,⌊y⌋)    │
 ///              ─┼─────────────┼──────────────┼─
 ///               │        ╎β   │              │
@@ -21,7 +21,7 @@ package org.monte.media.image.algo;
 ///               │        XXXXX│XXXXXXXX      │
 ///               │             │              │
 ///              ─┼─────────────┼──────────────┼
-/// </pre>
+/// ```
 public class BilinearInterpolationResampleAlgoFloat implements ResampleAlgoFloat {
     @Override
     public void resample(float[] srcPixels, int srcWidth, int srcHeight, int srcOffset, int srcScanline, float[] dstPixels, int dstWidth, int dstHeight, int dstOffset, int dstScanline) {

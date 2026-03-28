@@ -679,11 +679,11 @@ public class EXIFReader {
     /// >http://download.java.net/media/jai-imageio/javadoc/1.1/com/sun/media/imageio/plugins/tiff/package-summary.html</a>:
     ///
     ///  The DTD for the native image metadata format is as follows:
-    /// <pre>
+    /// ```
     /// The DTD for the native image metadata format is as follows:
     /// &lt;!DOCTYPE "com_sun_media_imageio_plugins_tiff_image_1.0" [
     ///
-    ///&lt;!ELEMENT"com_sun_media_imageio_plugins_tiff_image_1.0"(TIFFIFD)*&gt;
+    /// &lt;!ELEMENT"com_sun_media_imageio_plugins_tiff_image_1.0"(TIFFIFD)*&gt;
     ///
     ///    &lt;!ELEMENT "TIFFIFD" (TIFFField | TIFFIFD)*&gt;
     ///      &lt;!-- An IFD (directory) containing fields --&gt;
@@ -822,7 +822,7 @@ public class EXIFReader {
     ///            &lt;!-- A list of comma-separated byte values --&gt;
     ///            &lt;!-- Data type: String --&gt;
     /// ]&gt;
-    /// </pre>
+    /// ```
     public IIOMetadataNode getIIOMetadataTree(String formatName, int imageIndex) {
         if (formatName != null && !formatName.equals("com_sun_media_imageio_plugins_tiff_image_1.0")) {
             throw new IllegalArgumentException("Unsupported formatName:" + formatName);

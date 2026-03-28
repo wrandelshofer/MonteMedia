@@ -7,13 +7,13 @@ package org.monte.media.color.kmeans.algo;
 
 import java.util.Arrays;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 import static java.lang.Math.fma;
 
 /// Implements a K-Means clustering algorithm.
-/// <pre>
 /// This implementation only works with 3-dimensional data.
-/// <pre>
+/// ```
 /// input : X= {x1, x2, . . . , xN } ∈ D (N × D input data set)
 /// output: C= {c1, c2, . . . , cK } ∈ D (K cluster centers)
 /// Select a random subset C of X as the initial set of cluster centers;
@@ -30,7 +30,7 @@ import static java.lang.Math.fma;
 /// |  |  ck = 1/|Sk| ∑ xi∈Sk * xi;
 /// |  end
 /// end
-/// </pre>
+/// ```
 /// References:
 /// <dl>
 /// <dt>M. Emre Celebi. Department of Computer Science.
@@ -50,7 +50,7 @@ public class Naive3DKMeansClusteringAlgo {
 
     /// Compute kMeans.
     ///
-    /// @param X             the input data set with float[N][D] data elements. D must be 3.
+    /// @param X             the input data set with `float[N][D]` data elements. N can be arbitrarily large. D must be 3.
     /// @param xWeights      the weights of the data elements
     /// @param K             the number of clusters
     /// @param numIterations the number of iterations
@@ -104,13 +104,16 @@ public class Naive3DKMeansClusteringAlgo {
 
 
     private boolean assignToNearestCluster(float[][] X, float[][] C, int[] clusterAssignment) {
-        boolean changed = false;
-        for (int i = 0; i < X.length; i++) {
+        int result = IntStream.range(0, X.length).parallel().map(i -> {
+            boolean changed = false;
+            //for (int i = 0; i < X.length; i++) {
             int c = findNearestCluster(X[i], C);
             changed |= clusterAssignment[i] != c;
             clusterAssignment[i] = c;
-        }
-        return changed;
+            // }
+            return changed ? 1 : 0;
+        }).max().orElse(0);
+        return result > 0;
     }
 
     private int findNearestCluster(float[] x, float[][] C) {

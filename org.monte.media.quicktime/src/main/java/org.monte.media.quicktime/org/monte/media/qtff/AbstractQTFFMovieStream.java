@@ -386,8 +386,8 @@ public class AbstractQTFFMovieStream {
         ///
         /// @param trackDuration Duration of this edit in the movie's timescale.
         /// @param mediaTime     Start time of this edit in the media's timescale.
-        ///                                                                Specify -1 for an empty edit. The last edit in a track should never
-        ///                                                                be an empty edit.
+        ///                                                                                     Specify -1 for an empty edit. The last edit in a track should never
+        ///                                                                                     be an empty edit.
         /// @param mediaRate     The relative rate at which to play this edit.
         public Edit(int trackDuration, int mediaTime, double mediaRate) {
             if (trackDuration < 0) {
@@ -410,10 +410,10 @@ public class AbstractQTFFMovieStream {
         ///
         /// @param trackDuration Duration of this edit in the movie's timescale.
         /// @param mediaTime     Start time of this edit in the media's timescale.
-        ///                                           Specify -1 for an empty edit. The last edit in a track should never
-        ///                                           be an empty edit.
+        ///                                                                Specify -1 for an empty edit. The last edit in a track should never
+        ///                                                                be an empty edit.
         /// @param mediaRate     The relative rate at which to play this edit given
-        ///                                           as a 16.16 fixed point value.
+        ///                                                                as a 16.16 fixed point value.
         public Edit(int trackDuration, int mediaTime, int mediaRate) {
             if (trackDuration < 0) {
                 throw new IllegalArgumentException("trackDuration must not be < 0:" + trackDuration);
@@ -452,7 +452,7 @@ public class AbstractQTFFMovieStream {
         public Edit[] editList;
         /// The format of the media in the track.
         public Format format;
-        /// <pre>
+        /// ```
         /// // Enumeration for track header flags
         /// set {
         /// TrackEnable = 0x1, // enabled track
@@ -460,7 +460,7 @@ public class AbstractQTFFMovieStream {
         /// TrackInPreview = 0x4, // track in preview
         /// TrackInPoster = 0x8 // track in poster
         /// } TrackHeaderFlags;
-        /// </pre>
+        /// ```
         public int headerFlags = TrackEnable | TrackInMovie | TrackInPreview | TrackInPoster;
         public double height;
         /// The transformation matrix of the track.

@@ -26,11 +26,15 @@ public interface Codec {
     int CODEC_OUTPUT_NOT_FILLED = 4;
 
     /// Lists all the input formats that this codec accepts.
+    ///
+    /// @return an array of the input formats
     Format[] getInputFormats();
 
     /// Lists all the output formats that this codec can generate
     /// with the provided input format. If the input format is null, returns
     /// all supported output formats.
+    ///
+    /// @return an array of the output formats
     Format[] getOutputFormats(Format input);
 
     /// Sets the input format.

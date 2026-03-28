@@ -60,7 +60,7 @@ public class MC68000OutputStream extends FilterOutputStream {
     /// The run encoding scheme in byteRun1 is best described by
     /// pseudo code for the decoder Unpacker (called UnPackBits in the
     /// Macintosh toolbox):
-    /// <pre>
+    /// ```
     /// UnPacker:
     ///    LOOP until produced the desired number of bytes
     ///       Read the next source byte into n
@@ -70,7 +70,7 @@ public class MC68000OutputStream extends FilterOutputStream {
     ///          -128       ⇒ no operation
     ///       ENDCASE
     ///    ENDLOOP
-    /// </pre>
+    /// ```
     public void writeByteRun1(byte[] data) throws IOException {
         writeByteRun1(data, 0, data.length);
     }

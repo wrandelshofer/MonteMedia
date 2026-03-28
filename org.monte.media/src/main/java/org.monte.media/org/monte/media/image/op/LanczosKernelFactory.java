@@ -39,11 +39,11 @@ public class LanczosKernelFactory implements SeparableKernelFactory {
     }
 
     /// Compute the Lanczos function for a given x value.
-    /// <pre>
+    /// ```
     /// L(x) = 1                                  : x == 0
     ///       a*sin(PI*x)*sin(PI*x/a)/(PI^2*x^2)  : -a <= x and x < a and x != 0
     ///       0                                   : otherwise
-    /// </pre>
+    /// ```
     ///
     /// @param a the support size of the Lanczos function
     /// @param x the x value

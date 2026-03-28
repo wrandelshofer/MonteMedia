@@ -49,7 +49,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 /// This codec enforces this.
 ///
 /// An encoded frame has the following format:
-/// <pre>
+/// ```
 /// Header:
 /// uint32 chunkSize
 ///
@@ -62,7 +62,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 ///   uint16 reserved 0x0000
 /// }
 /// n-bytes compressed lines
-/// </pre>
+/// ```
 ///
 /// The first 4 bytes defines the chunk length. This field also carries some
 /// other unknown flags, since at least one of the high bits is sometimes
@@ -74,12 +74,12 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 /// Next, there is a header of either 0x0000 or 0x0008. A header value onlyWith
 /// bit 3 set (header &amp; 0x0008) indicates that information follows revealing
 /// at which line the decode process is to begin:
-/// <pre>
+/// ```
 /// 2 bytes    starting line at which to begin updating frame
 /// 2 bytes    unknown
 /// 2 bytes    the number of lines to update
 /// 2 bytes    unknown
-/// </pre>
+/// ```
 ///
 /// If the header is 0x0000, then the decode begins from the first line and
 /// continues through the entire height of the image.
@@ -87,13 +87,13 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 /// After the header comes the individual RLE-compressed lines. An individual
 /// compressed line is comprised of a skip code, followed by a series of RLE
 /// codes and pixel data:
-/// <pre>
+/// ```
 ///  1 byte     skip code
 ///  1 byte     RLE code
 ///  n bytes    pixel data
 ///  1 byte     RLE code
 ///  n bytes    pixel data
-/// </pre> Each line begins onlyWith a byte that defines the number of pixels to
+/// ``` Each line begins onlyWith a byte that defines the number of pixels to
 /// skip in a particular line in the output line before outputting new pixel
 /// data. Actually, the skip count is set to one more than the number of pixels
 /// to skip. For example, a skip byte of 15 means "skip 14 pixels", while a skip
@@ -682,12 +682,12 @@ public class AnimationDecoder extends org.monte.media.av.AbstractCodec {
     /// @param in             The input stream.
     /// @param data           The image data.
     /// @param prev           The image data of the previous frame. This may be the same
-    ///                                                                                         object as data.
+    ///                                                                                                               object as data.
     /// @param width          The width of the image in data elements.
     /// @param height         The height of the image in data elements.
     /// @param offset         The offset to the first pixel in the data array.
     /// @param scanlineStride The number to append to offset to get to the next
-    ///                                                                                         scanline.
+    ///                                                                                                               scanline.
     public void decodeDelta16(ImageInputStream in, short[] data, short[] prev, int width, int height, int offset,
                               int scanlineStride)
             throws IOException {

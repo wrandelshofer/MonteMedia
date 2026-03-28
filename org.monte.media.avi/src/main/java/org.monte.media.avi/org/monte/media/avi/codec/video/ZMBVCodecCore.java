@@ -33,26 +33,26 @@ import static java.lang.Math.min;
 /// **Data Format**
 ///
 /// Byte 0 of a ZMBV data chunk contains the following flags:
-/// <pre>
+/// ```
 /// bits 7-2  undefined
 /// bit 1     palette change
 /// bit 0     1 = intraframe, 0 = interframe
-/// </pre>
+/// ```
 ///
 /// If the frame is an intra frame as indicated by bit 0 of byte 0, the next
 /// 6 bytes in the data chunk are formatted as follows:
-/// <pre>
+/// ```
 /// byte 1    major version
 /// byte 2    minor version
 /// byte 3    compression type (0 = uncompressed, 1 = zlib-compressed)
 /// byte 4    video format
 /// byte 5    block width
 /// byte 6    block height
-/// </pre>
+/// ```
 ///
 /// Presently, the only valid major/minor version pair is 0/1. A block width or
 /// height of 0 is invalid. These are the video modes presently defined:
-/// <pre>
+/// ```
 /// 0  none
 /// 1  1 bit/pixel, palettized
 /// 2  2 bits/pixel, palettized
@@ -62,7 +62,7 @@ import static java.lang.Math.min;
 /// 6  16 bits/pixel
 /// 7  24 bits/pixel
 /// 8  32 bits/pixel
-/// </pre>
+/// ```
 ///
 /// Presently, only modes 4 (8 bpp), 5 (15 bpp), 6 (16 bpp) and 8 (32 bpp) are
 /// supported.
@@ -96,7 +96,7 @@ import static java.lang.Math.min;
 /// 15/16 bpp and 32 bpp modes is done with little-endian integers.
 ///
 /// Interframe decoding can be done this way:
-/// <pre>
+/// ```
 /// for each block {
 ///   a = block_info[current_block][0];
 ///   b = block_info[current_block][1];
@@ -108,7 +108,7 @@ import static java.lang.Math.min;
 ///     XOR block with data read from stream.
 ///   }
 /// }
-/// </pre>
+/// ```
 ///
 /// References
 /// <a href="http://wiki.multimedia.cx/index.php?title=ZMBV"

@@ -284,7 +284,7 @@ public class StreamPosTokenizer
     /// characters:
     /// <blockquote><pre>
     ///      0 1 2 3 4 5 6 7 8 9 . -
-    /// </pre></blockquote>
+    /// ```</blockquote>
     ///
     /// has the "numeric" attribute.
     ///
@@ -339,8 +339,8 @@ public class StreamPosTokenizer
     /// treated as white space and serve only to separate tokens.
     ///
     /// @param flag `true` indicates that end-of-line characters
-    ///                                                 are separate tokens; `false` indicates that
-    ///                                                 end-of-line characters are white space.
+    ///                                                             are separate tokens; `false` indicates that
+    ///                                                             end-of-line characters are white space.
     /// @see java.io.StreamTokenizer#nextToken()
     /// @see java.io.StreamTokenizer#ttype
     /// @see java.io.StreamTokenizer#TT_EOL
@@ -357,7 +357,7 @@ public class StreamPosTokenizer
     /// are not treated specially.
     ///
     /// @param flag `true` indicates to recognize and ignore
-    ///                                     C-style comments.
+    ///                                                 C-style comments.
     public void slashStarComments(boolean flag) {
         slashStarCommentsP = flag;
     }
@@ -372,7 +372,7 @@ public class StreamPosTokenizer
     /// comments are not treated specially.
     ///
     /// @param flag `true` indicates to recognize and ignore
-    ///                                     C++-style comments.
+    ///                                                 C++-style comments.
     public void slashSlashComments(boolean flag) {
         slashSlashCommentsP = flag;
     }
@@ -388,7 +388,7 @@ public class StreamPosTokenizer
     /// `sval` field is not modified.
     ///
     /// @param fl `true` indicates that all word tokens should
-    ///                               be lowercased.
+    ///                                         be lowercased.
     /// @see java.io.StreamTokenizer#nextToken()
     /// @see java.io.StreamTokenizer#ttype
     /// @see java.io.StreamTokenizer#TT_WORD

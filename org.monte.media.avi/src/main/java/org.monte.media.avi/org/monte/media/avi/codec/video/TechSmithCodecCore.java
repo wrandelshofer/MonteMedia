@@ -79,7 +79,7 @@ import static java.lang.Math.min;
 ///
 ///
 /// Example:
-/// <pre>
+/// ```
 /// Compressed data         Expanded data
 ///
 /// 03 04                   04 04 04
@@ -91,7 +91,7 @@ import static java.lang.Math.min;
 /// 00 00                   End of line
 /// 09 1E                   1E 1E 1E 1E 1E 1E 1E 1E 1E
 /// 00 01                   End of RLE bitmap
-/// </pre>
+/// ```
 ///
 /// References:
 /// <a href="http://wiki.multimedia.cx/index.php?title=TechSmith_Screen_Capture_Codec"
@@ -253,7 +253,7 @@ public class TechSmithCodecCore extends VideoDecoderCore {
     /// @param length
     /// @param outDat
     /// @param prevDat              The pixels decoded in the previous frame. Since no double
-    ///                                                                                                                                                                                                     buffering is used, this can be the same array than `outDat`.
+    ///                                                                                                                                                                                                                                 buffering is used, this can be the same array than `outDat`.
     /// @param width
     /// @param height
     /// @param onlyDecodeIfKeyframe
@@ -333,7 +333,7 @@ public class TechSmithCodecCore extends VideoDecoderCore {
     /// @param length
     /// @param outDat
     /// @param prevDat              The pixels decoded in the previous frame. Since no double
-    ///                                                                                                                                                                         buffering is used, this can be the same array than `outDat`.
+    ///                                                                                                                                                                                                     buffering is used, this can be the same array than `outDat`.
     /// @param width
     /// @param height
     /// @param onlyDecodeIfKeyframe
@@ -481,12 +481,12 @@ public class TechSmithCodecCore extends VideoDecoderCore {
     /// Returns true if the provided array is probably ZLIB compressed.
     ///
     /// A zlib stream has the following structure:
-    /// <pre>
+    /// ```
     ///            0   1
     ///          +---+---+
     ///          |CMF|FLG|   (more-->)
     ///          +---+---+
-    /// </pre>
+    /// ```
     /// 'The FCHECK value must be such that CMF and FLG, when viewed as
     /// a 16-bit unsigned integer stored in MSB order (CMF*256 + FLG),
     /// is a multiple of 31.'
@@ -577,7 +577,7 @@ public class TechSmithCodecCore extends VideoDecoderCore {
     /// @param offset         The offset to the first pixel in the data array.
     /// @param width          The width of the image in data elements.
     /// @param scanlineStride The number to add to offset to get to the next
-    ///                                                                                                                                     scanline.
+    ///                                                                                                                                                           scanline.
     public void encodeDelta8(ImageOutputStream out, byte[] data, byte[] prev, int width, int height, int offset, int scanlineStride)
             throws IOException {
 
@@ -703,7 +703,7 @@ public class TechSmithCodecCore extends VideoDecoderCore {
     /// @param offset         The offset to the first pixel in the data array.
     /// @param width          The width of the image in data elements.
     /// @param scanlineStride The number to add to offset to get to the next
-    ///                                                                                                                                     scanline.
+    ///                                                                                                                                                           scanline.
     public void encodeDelta8to24(ImageOutputStream out, byte[] data, byte[] prev, int width, int height, int offset, int scanlineStride)
             throws IOException {
 
@@ -889,7 +889,7 @@ public class TechSmithCodecCore extends VideoDecoderCore {
     /// @param offset         The offset to the first pixel in the data array.
     /// @param width          The width of the image in data elements.
     /// @param scanlineStride The number to add to offset to get to the next
-    ///                                                                                                                                     scanline.
+    ///                                                                                                                                                           scanline.
     public void encodeKey8(ImageOutputStream out, byte[] data, int width, int height, int offset, int scanlineStride)
             throws IOException {
         ensureBBufCapacity(width, height, 1);
@@ -978,7 +978,7 @@ public class TechSmithCodecCore extends VideoDecoderCore {
     /// @param offset         The offset to the first pixel in the data array.
     /// @param width          The width of the image in data elements.
     /// @param scanlineStride The number to add to offset to get to the next
-    ///                                                                                                                                     scanline.
+    ///                                                                                                                                                           scanline.
     public void encodeKey8to24(ImageOutputStream out, byte[] data, int width, int height, int offset, int scanlineStride)
             throws IOException {
         ensureBBufCapacity(width, height, 3);
@@ -1076,7 +1076,7 @@ public class TechSmithCodecCore extends VideoDecoderCore {
     /// @param offset         The offset to the first pixel in the data array.
     /// @param width          The width of the image in data elements.
     /// @param scanlineStride The number to add to offset to get to the next
-    ///                                                                                                                                     scanline.
+    ///                                                                                                                                                           scanline.
     public void encodeDelta16(ImageOutputStream out, short[] data, short[] prev, int width, int height, int offset, int scanlineStride)
             throws IOException {
 
@@ -1196,7 +1196,7 @@ public class TechSmithCodecCore extends VideoDecoderCore {
     /// @param offset         The offset to the first pixel in the data array.
     /// @param width          The width of the image in data elements.
     /// @param scanlineStride The number to add to offset to get to the next
-    ///                                                                                                                                     scanline.
+    ///                                                                                                                                                           scanline.
     public void encodeKey24(ImageOutputStream out, int[] data, int width, int height, int offset, int scanlineStride)
             throws IOException {
         ensureBBufCapacity(width, height, 3);
@@ -1285,7 +1285,7 @@ public class TechSmithCodecCore extends VideoDecoderCore {
     /// @param offset         The offset to the first pixel in the data array.
     /// @param width          The width of the image in data elements.
     /// @param scanlineStride The number to add to offset to get to the next
-    ///                                                                                                                                     scanline.
+    ///                                                                                                                                                           scanline.
     public void encodeDelta24(ImageOutputStream out, int[] data, int[] prev, int width, int height, int offset, int scanlineStride)
             throws IOException {
         ensureBBufCapacity(width, height, 3);
@@ -1410,7 +1410,7 @@ public class TechSmithCodecCore extends VideoDecoderCore {
     /// @param offset         The offset to the first pixel in the data array.
     /// @param width          The width of the image in data elements.
     /// @param scanlineStride The number to add to offset to get to the next
-    ///                                                                                                                                     scanline.
+    ///                                                                                                                                                           scanline.
     public void encodeKey16(ImageOutputStream out, short[] data, int width, int height, int offset, int scanlineStride)
             throws IOException {
         ensureBBufCapacity(width, height, 2);

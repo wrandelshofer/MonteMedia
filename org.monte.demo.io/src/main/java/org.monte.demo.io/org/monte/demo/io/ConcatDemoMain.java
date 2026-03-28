@@ -26,9 +26,9 @@ public class ConcatDemoMain {
     /// Main function.
     ///  Takes one output file and one or more input files as
     /// arguments. Concatenates all input files into the output file.
-    /// <pre>
+    /// ```
     /// ConcatDemo [-o outputfile] [-i inputfile...]
-    /// </pre>
+    /// ```
     ///
     /// @param args the command line arguments
     public static void main(String[] args) {

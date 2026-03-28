@@ -6,16 +6,8 @@ package org.monte.media.image;
 
 import org.monte.media.util.stream.RangeStream;
 
-import javax.swing.ImageIcon;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Toolkit;
-import java.awt.Transparency;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.awt.image.ColorModel;
@@ -92,9 +84,9 @@ public class Images {
     /// is the default in JVMs is 4 times slower.
     ///
     /// Start the VM with the following options:
-    /// <pre>
+    /// ```
     /// -Dsun.java2d.cmm=sun.java2d.cmm.kcms.KcmsServiceProvider
-    /// </pre>
+    /// ```
     ///
     /// @param img an image
     /// @param cm  the destination color model

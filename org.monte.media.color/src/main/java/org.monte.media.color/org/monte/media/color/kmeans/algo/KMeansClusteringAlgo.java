@@ -17,7 +17,8 @@ public interface KMeansClusteringAlgo {
 
     /// Compute kMeans.
     ///
-    /// @param X             the input data set with float[N][D] data elements. D must be 3.
+    /// @param X             the input data set with `float[N][D]` data elements.
+    ///                                           N can be arbitrarily large. D must be 3 in most implementations.
     /// @param xWeights      the weights of the data elements
     /// @param K             the number of clusters
     /// @param numIterations the number of iterations

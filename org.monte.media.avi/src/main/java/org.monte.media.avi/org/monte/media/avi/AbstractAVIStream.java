@@ -159,7 +159,7 @@ public abstract class AbstractAVIStream {
         /// Creates a new sample.
         ///
         /// @param duration The number of media samples contained in the sample
-        ///                                                                 chunk.
+        ///                                                                                 chunk.
         /// @param offset   The offset in the AVI stream.
         /// @param length   The length in the AVI stream.
         public Sample(int chunkId, int duration, long offset, long length, boolean isSync) {
@@ -179,7 +179,7 @@ public abstract class AbstractAVIStream {
     ///  See <a
     /// href="http://msdn.microsoft.com/en-us/library/ms779638(VS.85).aspx">
     /// http://msdn.microsoft.com/en-us/library/ms779638(VS.85).aspx</a>
-    /// <pre>
+    /// ```
     /// -----------------
     /// AVI Stream Header
     /// -----------------
@@ -432,7 +432,7 @@ public abstract class AbstractAVIStream {
     ///  The format of a video track
     /// is defined in a "strf" chunk, which contains a `BITMAPINFOHEADER`
     /// struct.
-    /// <pre>
+    /// ```
     /// //----------------------
     /// // AVI Bitmap Info Header
     /// // ----------------------
@@ -543,7 +543,7 @@ public abstract class AbstractAVIStream {
     ///                      // maximum number of colors for the given bitdepth; that is,
     ///                      // 2^"bitCount" colors.
     /// } BITMAPINFOHEADER;
-    /// </pre>
+    /// ```
     protected class VideoTrack extends Track {
         // Video metadata
 
@@ -640,7 +640,7 @@ public abstract class AbstractAVIStream {
     ///
     ///  The format of a video track is defined in a "strf" chunk, which
     /// contains a `WAVEFORMATEX` struct.
-    /// <pre>
+    /// ```
     /// ----------------------
     /// AVI Wave Format Header
     /// ----------------------
@@ -834,7 +834,7 @@ public abstract class AbstractAVIStream {
     ///     // is ignored.
     ///   byte[cbSize] extra;
     /// } WAVEFORMATEX;
-    /// </pre>
+    /// ```
     protected class AudioTrack extends Track {
 
         // WAVEFORMATEX Structure
@@ -1062,7 +1062,7 @@ public abstract class AbstractAVIStream {
         /// Creates a new Chunk at the current position of the ImageOutputStream.
         ///
         /// @param chunkType The chunkType of the chunk. A string with a length
-        ///                                                    of 4 characters.
+        ///                                                                     of 4 characters.
         public Chunk(int chunkType) throws IOException {
             this.chunkType = chunkType;
             offset = getRelativeStreamPosition();
@@ -1351,7 +1351,7 @@ public abstract class AbstractAVIStream {
 
     ///
     /// Holds information about the entire movie.
-    /// <pre>
+    /// ```
     /// ---------------
     /// AVI Main Header
     /// ---------------
@@ -1400,7 +1400,7 @@ public abstract class AbstractAVIStream {
     ///     DWORD[]  reserved;
     ///             // Reserved. Set this array to zero.
     /// } AVIMAINHEADER;
-    /// </pre>
+    /// ```
     protected static class MainHeader {
 
         /// Specifies the number of microseconds (=10E-6 seconds) between frames.

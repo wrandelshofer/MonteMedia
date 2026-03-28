@@ -18,7 +18,6 @@ import javafx.scene.Node;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.SceneAntialiasing;
 import javafx.scene.SubScene;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -26,8 +25,14 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
+import javafx.scene.shape.MeshView;
+import javafx.scene.shape.Shape3D;
 import javafx.scene.shape.Sphere;
+import javafx.scene.shape.TriangleMesh;
 import org.monte.demo.javafx.colorquantizer.model.ModelColorSpace;
+import org.monte.demo.javafx.colorquantizer.scene3d.Group3D;
+import org.monte.demo.javafx.colorquantizer.scene3d.IcosphereMeshBuilder;
+import org.monte.demo.javafx.colorquantizer.scene3d.RotateScene3DMouseHandler;
 import org.monte.media.color.OKLabColorSpace;
 import org.monte.media.color.SrgbColorSpace;
 import org.monte.media.math.Point3DFloat;
@@ -49,33 +54,25 @@ public class ColorDotsViewController {
     private final ObjectProperty<BufferedImage> image = new SimpleObjectProperty<>();
 
     private static final double CAMERA_INITIAL_DISTANCE = -450;
-    private static final double CAMERA_INITIAL_X_ANGLE = 70.0;
-    private static final double CAMERA_INITIAL_Y_ANGLE = 320.0;
+    private static final double CAMERA_INITIAL_X_ANGLE = 0;
+    private static final double CAMERA_INITIAL_Y_ANGLE = 0.0;
     private static final double CAMERA_NEAR_CLIP = 0.1;
     private static final double CAMERA_FAR_CLIP = 10000.0;
     private static final double AXIS_LENGTH = 150.0;
-    private static final double CONTROL_MULTIPLIER = 0.1;
-    private static final double SHIFT_MULTIPLIER = 10.0;
-    private static final double MOUSE_SPEED = 0.1;
-    private static final double ROTATION_SPEED = 8.0;
-    private static final double TRACK_SPEED = 0.3;
-    final Xform axisGroup = new Xform();
-    final Xform boxGroup = new Xform();
-    Xform colorDotsGroup = new Xform();
-    final Xform moleculeGroup = new Xform();
-    final Xform world = new Xform();
+    private static final TriangleMesh DOT_MESH = new IcosphereMeshBuilder().icosahedron(1);
+    //private static final TriangleMesh DOT_MESH = new PyramidMeshBuilder().pyramid(2, 2, 2);
+
+    final Group3D boxGroup = new Group3D();
+    Group3D colorDotsGroup = new Group3D();
+
+    final Group3D world = new Group3D();
     final PerspectiveCamera camera = new PerspectiveCamera(true);
-    final Xform cameraXform = new Xform();
-    final Xform cameraXform2 = new Xform();
-    final Xform cameraXform3 = new Xform();
+    final Group3D cameraXform = new Group3D();
+    final Group3D cameraXform2 = new Group3D();
+    final Group3D cameraXform3 = new Group3D();
     private final ObjectProperty<ModelColorSpace> colorSpaceProperty = new SimpleObjectProperty<>(ModelColorSpace.SRGB);
     private final ListProperty<Color> palette = new SimpleListProperty<>(FXCollections.observableArrayList());
-    double mousePosX;
-    double mousePosY;
-    double mouseOldX;
-    double mouseOldY;
-    double mouseDeltaX;
-    double mouseDeltaY;
+
     private BorderPane borderPane = new BorderPane();
     private Group root = new Group();
     private SubScene scene = new SubScene(root, 1024, 768, true, SceneAntialiasing.BALANCED) {
@@ -154,7 +151,7 @@ public class ColorDotsViewController {
         cameraXform.getChildren().add(cameraXform2);
         cameraXform2.getChildren().add(cameraXform3);
         cameraXform3.getChildren().add(camera);
-        cameraXform3.setRotateZ(180.0);
+        //cameraXform3.setRotateZ(180.0);
 
         camera.setNearClip(CAMERA_NEAR_CLIP);
         camera.setFarClip(CAMERA_FAR_CLIP);
@@ -174,8 +171,12 @@ public class ColorDotsViewController {
         return colorSpaceProperty;
     }
 
-    public ModelColorSpace getColorSpaceProperty() {
+    public ModelColorSpace getColorSpace() {
         return colorSpaceProperty.get();
+    }
+
+    public void setColorSpace(ModelColorSpace v) {
+        colorSpaceProperty.set(v);
     }
 
     public ObservableList<Color> getPalette() {
@@ -186,74 +187,28 @@ public class ColorDotsViewController {
         return borderPane;
     }
 
-    private void handleKeyboard(SubScene scene, final Node root) {
-        root.setOnKeyPressed(new EventHandler<KeyEvent>() {
+    private void handleKeyboard(final Node root) {
+
+
+        root.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
-            public void handle(KeyEvent event) {
-                switch (event.getCode()) {
-                    case Z:
-                        cameraXform2.t.setX(0.0);
-                        cameraXform2.t.setY(0.0);
-                        camera.setTranslateZ(CAMERA_INITIAL_DISTANCE);
-                        cameraXform.ry.setAngle(CAMERA_INITIAL_Y_ANGLE);
-                        cameraXform.rx.setAngle(CAMERA_INITIAL_X_ANGLE);
-                        break;
-                    case X:
-                        axisGroup.setVisible(!axisGroup.isVisible());
-                        break;
-                    case V:
-                        moleculeGroup.setVisible(!moleculeGroup.isVisible());
-                        break;
-                }
-                if (needsUpdate) {
-                    updateView();
+            public void handle(MouseEvent event) {
+                if (event.getClickCount() == 2 && event.isShiftDown()) {
+                    setColorSpace(switch (getColorSpace()) {
+                        case SRGB -> ModelColorSpace.OKLAB;
+                        default -> ModelColorSpace.SRGB;
+                    });
                 }
             }
         });
     }
 
+
     private void handleMouse(SubScene scene, final Node root) {
         root.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent me) {
-                mousePosX = me.getSceneX();
-                mousePosY = me.getSceneY();
-                mouseOldX = me.getSceneX();
-                mouseOldY = me.getSceneY();
-            }
-        });
-        root.setOnMouseDragged(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent me) {
-                mouseOldX = mousePosX;
-                mouseOldY = mousePosY;
-                mousePosX = me.getSceneX();
-                mousePosY = me.getSceneY();
-                mouseDeltaX = (mousePosX - mouseOldX);
-                mouseDeltaY = (mousePosY - mouseOldY);
-
-                double modifier = 1.0;
-
-                if (me.isControlDown()) {
-                    modifier = CONTROL_MULTIPLIER;
-                }
-                if (me.isShiftDown()) {
-                    modifier = SHIFT_MULTIPLIER;
-                }
-                if (me.isPrimaryButtonDown()) {
-                    cameraXform.ry.setAngle(cameraXform.ry.getAngle() - mouseDeltaX * MOUSE_SPEED * modifier * ROTATION_SPEED);
-                    cameraXform.rx.setAngle(cameraXform.rx.getAngle() + mouseDeltaY * MOUSE_SPEED * modifier * ROTATION_SPEED);
-                } else if (me.isSecondaryButtonDown()) {
-                    double z = camera.getTranslateZ();
-                    double newZ = z + mouseDeltaX * MOUSE_SPEED * modifier;
-                    camera.setTranslateZ(newZ);
-                } else if (me.isMiddleButtonDown()) {
-                    cameraXform2.t.setX(cameraXform2.t.getX() + mouseDeltaX * MOUSE_SPEED * modifier * TRACK_SPEED);
-                    cameraXform2.t.setY(cameraXform2.t.getY() + mouseDeltaY * MOUSE_SPEED * modifier * TRACK_SPEED);
-                }
-                if (needsUpdate) {
-                    updateView();
-                }
+                borderPane.requestFocus();
             }
         });
     }
@@ -264,39 +219,40 @@ public class ColorDotsViewController {
         root.setMouseTransparent(false);
         borderPane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
         borderPane.setCenter(scene);
+        borderPane.setFocusTraversable(true);
         buildBoundingBox();
         buildColorDots();
         buildCamera(scene);
-        handleKeyboard(scene, borderPane);
+        handleKeyboard(borderPane);
         handleMouse(scene, borderPane);
+        new RotateScene3DMouseHandler(borderPane, world, camera);
+
 
         colorSpaceProperty.addListener(o -> this.updateViewLater());
         imageProperty().addListener(o -> this.updateViewLater());
-    }
-
-    private boolean isTreeVisible() {
-        for (var n = getRoot(); n != null; n = n.getParent()) {
-            if (!n.isVisible()) {
-                return false;
-            }
-        }
-        return true;
+        root.visibleProperty().addListener(o -> updateViewIfNeeded());
     }
 
     private boolean needsUpdate;
 
     public void updateViewLater() {
-        if (!isTreeVisible()) {
+        if (!root.isVisible()) {
             needsUpdate = true;
             return;
         }
         updateView();
     }
 
+    public void updateViewIfNeeded() {
+        if (needsUpdate) {
+            updateView();
+        }
+    }
+
     public void updateView() {
         needsUpdate = false;
         if (getImage() == null) return;
-        switch (getColorSpaceProperty()) {
+        switch (getColorSpace()) {
             case SRGB -> {
                 updateViewAsRgb();
             }
@@ -334,21 +290,20 @@ public class ColorDotsViewController {
             lab[1] = d0[i * 3 + 1];
             lab[2] = d0[i * 3 + 2];
             if (done.add(new Point3DFloat(lab[0], lab[1], lab[2]))) {
-
-
-                Sphere dot;
+                //Sphere dot= new Sphere(1.0, 5);
+                Shape3D dot = new MeshView(DOT_MESH);
                 final PhongMaterial colorMaterial;
-                dot = new Sphere(1.0, 8);
                 colorMaterial = new PhongMaterial();
                 dot.setMaterial(colorMaterial);
                 dots.add(dot);
                 dot.setTranslateX(-AXIS_LENGTH / 2 + AXIS_LENGTH * (lab[1] + 0.5f));
-                dot.setTranslateY(-AXIS_LENGTH / 2 + AXIS_LENGTH * lab[0]);
-                dot.setTranslateZ(-AXIS_LENGTH / 2 + AXIS_LENGTH * (lab[2] + 0.5f));
+                dot.setTranslateY(AXIS_LENGTH / 2 + AXIS_LENGTH * -lab[0]);
+                dot.setTranslateZ(AXIS_LENGTH / 2 + AXIS_LENGTH * -(lab[2] + 0.5f));
                 colorMaterial.setDiffuseColor(Color.rgb((rgb >>> 16) & 0xff, (rgb >>> 8) & 0xff, rgb & 0xff));
             }
         }
-        colorDotsGroup = new Xform(dots);
+        IO.println("OKLab #colors=" + dots.size());
+        colorDotsGroup = new Group3D(dots);
         world.getChildren().add(colorDotsGroup);
     }
 
@@ -398,11 +353,11 @@ public class ColorDotsViewController {
             csf[1] = pixels[i * 3 + 1];
             csf[2] = pixels[i * 3 + 2];
             if (done.add(new Point3DFloat(csf[0], csf[1], csf[2]))) {
-                Sphere dot;
-                dot = new Sphere(1.0, 8);
+                //Shape3D dot= new Sphere(1.0, 5);
+                Shape3D dot = new MeshView(DOT_MESH);
                 dot.setTranslateX(-AXIS_LENGTH / 2 + AXIS_LENGTH * csf[0]);
-                dot.setTranslateY(-AXIS_LENGTH / 2 + AXIS_LENGTH * csf[1]);
-                dot.setTranslateZ(-AXIS_LENGTH / 2 + AXIS_LENGTH * csf[2]);
+                dot.setTranslateY(AXIS_LENGTH / 2 + AXIS_LENGTH * -csf[1]);
+                dot.setTranslateZ(AXIS_LENGTH / 2 + AXIS_LENGTH * -csf[2]);
 
                 final PhongMaterial colorMaterial = new PhongMaterial();
                 colorMaterial.setDiffuseColor(Color.rgb((rgb >>> 16) & 0xff, (rgb >>> 8) & 0xff, rgb & 0xff));
@@ -410,7 +365,8 @@ public class ColorDotsViewController {
                 dots.add(dot);
             }
         }
-        colorDotsGroup = new Xform(dots);
+        IO.println("RGB #colors=" + dots.size());
+        colorDotsGroup = new Group3D(dots);
         world.getChildren().add(colorDotsGroup);
     }
 

@@ -17,10 +17,10 @@ import static java.lang.Math.PI;
 /// The `C` and `H` coordinates are projections of the
 /// `a*` and `b*` colors of the CIE
 /// `L*a*b*` color space into polar coordinates.
-/// <pre>
+/// ```
 /// a = C * cos(H)
 /// b = C * sin(H)
-/// </pre>
+/// ```
 public class ParametricLchColorSpace extends AbstractNamedColorSpace {
 
     @Serial

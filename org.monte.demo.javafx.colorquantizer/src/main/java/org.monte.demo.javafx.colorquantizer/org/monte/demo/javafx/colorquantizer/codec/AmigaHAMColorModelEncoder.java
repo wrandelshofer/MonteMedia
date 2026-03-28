@@ -27,6 +27,7 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
 import java.awt.image.IndexColorModel;
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 import static org.monte.media.av.BufferFlag.DISCARD;
 import static org.monte.media.av.FormatKeys.EncodingKey;
@@ -225,56 +226,61 @@ public class AmigaHAMColorModelEncoder extends AbstractCodec {
         icm.getRGBs(cmap);
         var M = new Simple3DDistanceMatrix(C.length);
         M.updateMatrix(C);
-        float[] lab = new float[3];
-        float[] rgbs2 = new float[3];
-        float[] tmpLab = new float[3];
+        int block = 64;
         int height = inputImage.getHeight();
-        int width = inputImage.getWidth();
-        var in = inputImage.getRGB(0, 0, width, height, null, 0, inputImage.getWidth());
-        var out = ((DataBufferByte) outputImage.getRaster().getDataBuffer()).getData();
-        int colorIndex = 0;
-        int i = 0;
-        for (int y = 0; y < height; y++) {
-            int register = cmap[0];
-            for (int x = 0; x < width; x++) {
-                var pix = in[i];
-                lab = oklab.from24BitRGB(pix, lab);
-                lab[0] += dither0.get(x, y);
-                lab[1] += dither1.get(x, y);
-                lab[2] += dither2.get(x, y);
-                colorIndex = M.findNearestCluster(lab, colorIndex);
-                var newPix = cmap[colorIndex];
-                oklab.toRGB(lab, rgbs2);
-                int ditheredPix = RgbBitConverters.rgbFloatToRgb24(rgbs2);
-                int redValue = (ditheredPix & 0xfc_00_00);
-                int greenValue = (ditheredPix & 0xfc_00);
-                int blueValue = (ditheredPix & 0xfc);
-                int hamRed = (register & 0x03ffff) | (redValue);
-                int hamGreen = (register & 0xff03ff) | (greenValue);
-                int hamBlue = (register & 0xffff03) | (blueValue);
-                float distanceNewPix = squaredDistance(lab, newPix, tmpLab);
-                float distanceRed = squaredDistance(lab, hamRed, tmpLab);
-                float distanceGreen = squaredDistance(lab, hamGreen, tmpLab);
-                float distanceBlue = squaredDistance(lab, hamBlue, tmpLab);
-                float minDistance = Math.min(Math.min(Math.min(distanceNewPix, distanceRed), distanceGreen), distanceBlue);
-                int command;
-                if (distanceNewPix == minDistance) {
-                    command = colorIndex;
-                    register = cmap[colorIndex];
-                } else if (distanceRed == minDistance) {
-                    command = (2 << 6) | (redValue >>> 18);
-                    register = hamRed;
-                } else if (distanceGreen == minDistance) {
-                    command = (3 << 6) | (greenValue >>> 10);
-                    register = hamGreen;
-                } else {
-                    command = (1 << 6) | (blueValue >>> 2);
-                    register = hamBlue;
-                }
+        IntStream.range(0, height / block + 1).parallel().forEach(yy -> {
 
-                out[i++] = (byte) command;
+            float[] lab = new float[3];
+            float[] rgbs2 = new float[3];
+            float[] tmpLab = new float[3];
+            int width = inputImage.getWidth();
+            var in = inputImage.getRGB(0, 0, width, height, null, 0, inputImage.getWidth());
+            var out = ((DataBufferByte) outputImage.getRaster().getDataBuffer()).getData();
+            int colorIndex = 0;
+
+            for (int y = yy * block; y < Math.min(height, yy * block + block); y++) {
+                int register = cmap[0];
+                for (int x = 0; x < width; x++) {
+                    int i = y * width + x;
+                    var pix = in[i];
+                    lab = oklab.from24BitRGB(pix, lab);
+                    lab[0] += dither0.get(x, y);
+                    lab[1] += dither1.get(x, y);
+                    lab[2] += dither2.get(x, y);
+                    colorIndex = M.findNearestCluster(lab, colorIndex);
+                    var newPix = cmap[colorIndex];
+                    oklab.toRGB(lab, rgbs2);
+                    int ditheredPix = RgbBitConverters.rgbFloatToRgb24(rgbs2);
+                    int redValue = (ditheredPix & 0xfc_00_00);
+                    int greenValue = (ditheredPix & 0xfc_00);
+                    int blueValue = (ditheredPix & 0xfc);
+                    int hamRed = (register & 0x03ffff) | (redValue);
+                    int hamGreen = (register & 0xff03ff) | (greenValue);
+                    int hamBlue = (register & 0xffff03) | (blueValue);
+                    float distanceNewPix = squaredDistance(lab, newPix, tmpLab);
+                    float distanceRed = squaredDistance(lab, hamRed, tmpLab);
+                    float distanceGreen = squaredDistance(lab, hamGreen, tmpLab);
+                    float distanceBlue = squaredDistance(lab, hamBlue, tmpLab);
+                    float minDistance = Math.min(Math.min(Math.min(distanceNewPix, distanceRed), distanceGreen), distanceBlue);
+                    int command;
+                    if (distanceNewPix == minDistance) {
+                        command = colorIndex;
+                        register = cmap[colorIndex];
+                    } else if (distanceRed == minDistance) {
+                        command = (2 << 6) | (redValue >>> 18);
+                        register = hamRed;
+                    } else if (distanceGreen == minDistance) {
+                        command = (3 << 6) | (greenValue >>> 10);
+                        register = hamGreen;
+                    } else {
+                        command = (1 << 6) | (blueValue >>> 2);
+                        register = hamBlue;
+                    }
+
+                    out[i] = (byte) command;
+                }
             }
-        }
+        });
     }
 
     private float squaredDistance(float[] lab, int pix, float[] tmp) {
@@ -344,51 +350,55 @@ public class AmigaHAMColorModelEncoder extends AbstractCodec {
         icm.getRGBs(cmap);
         var M = new Simple3DDistanceMatrix(C.length);
         M.updateMatrix(C);
-        float[] pixLab = new float[3];
-        float[] tmpLab = new float[3];
+        int block = 64;
         int height = inputImage.getHeight();
-        int width = inputImage.getWidth();
-        var in = inputImage.getRGB(0, 0, width, height, null, 0, inputImage.getWidth());
-        var out = ((DataBufferByte) outputImage.getRaster().getDataBuffer()).getData();
-        int colorIndex = 0;
-        int i = 0;
-        for (int y = 0; y < height; y++) {
-            int register = cmap[0];
-            for (int x = 0; x < width; x++) {
-                var pix = in[i];
-                pixLab = oklab.from24BitRGB(pix, pixLab);
-                colorIndex = M.findNearestCluster(pixLab, colorIndex);
-                var newPix = cmap[colorIndex];
+        IntStream.range(0, height / block + 1).parallel().forEach(yy -> {
+            float[] pixLab = new float[3];
+            float[] tmpLab = new float[3];
+            int width = inputImage.getWidth();
+            var in = inputImage.getRGB(0, 0, width, height, null, 0, inputImage.getWidth());
+            var out = ((DataBufferByte) outputImage.getRaster().getDataBuffer()).getData();
+            int colorIndex = 0;
 
-                int redValue = (pix & 0xfc_00_00);
-                int greenValue = (pix & 0xfc_00);
-                int blueValue = (pix & 0xfc);
-                int hamRed = (register & 0x03ffff) | (redValue);
-                int hamGreen = (register & 0xff03ff) | (greenValue);
-                int hamBlue = (register & 0xffff03) | (blueValue);
-                float distanceNewPix = squaredDistance(pixLab, newPix, tmpLab);
-                float distanceRed = squaredDistance(pixLab, hamRed, tmpLab);
-                float distanceGreen = squaredDistance(pixLab, hamGreen, tmpLab);
-                float distanceBlue = squaredDistance(pixLab, hamBlue, tmpLab);
-                float minDistance = Math.min(Math.min(Math.min(distanceNewPix, distanceRed), distanceGreen), distanceBlue);
-                int code;
-                if (distanceNewPix == minDistance) {
-                    code = colorIndex;
-                    register = cmap[colorIndex];
-                } else if (distanceRed == minDistance) {
-                    code = (2 << 6) | (redValue >>> 18);
-                    register = hamRed;
-                } else if (distanceGreen == minDistance) {
-                    code = (3 << 6) | (greenValue >>> 10);
-                    register = hamGreen;
-                } else {
-                    code = (1 << 6) | (blueValue >>> 2);
-                    register = hamBlue;
+            for (int y = yy * block; y < Math.min(height, yy * block + block); y++) {
+                int register = cmap[0];
+                for (int x = 0; x < width; x++) {
+                    int i = y * width + x;
+                    var pix = in[i];
+                    pixLab = oklab.from24BitRGB(pix, pixLab);
+                    colorIndex = M.findNearestCluster(pixLab, colorIndex);
+                    var newPix = cmap[colorIndex];
+
+                    int redValue = (pix & 0xfc_00_00);
+                    int greenValue = (pix & 0xfc_00);
+                    int blueValue = (pix & 0xfc);
+                    int hamRed = (register & 0x03ffff) | (redValue);
+                    int hamGreen = (register & 0xff03ff) | (greenValue);
+                    int hamBlue = (register & 0xffff03) | (blueValue);
+                    float distanceNewPix = squaredDistance(pixLab, newPix, tmpLab);
+                    float distanceRed = squaredDistance(pixLab, hamRed, tmpLab);
+                    float distanceGreen = squaredDistance(pixLab, hamGreen, tmpLab);
+                    float distanceBlue = squaredDistance(pixLab, hamBlue, tmpLab);
+                    float minDistance = Math.min(Math.min(Math.min(distanceNewPix, distanceRed), distanceGreen), distanceBlue);
+                    int code;
+                    if (distanceNewPix == minDistance) {
+                        code = colorIndex;
+                        register = cmap[colorIndex];
+                    } else if (distanceRed == minDistance) {
+                        code = (2 << 6) | (redValue >>> 18);
+                        register = hamRed;
+                    } else if (distanceGreen == minDistance) {
+                        code = (3 << 6) | (greenValue >>> 10);
+                        register = hamGreen;
+                    } else {
+                        code = (1 << 6) | (blueValue >>> 2);
+                        register = hamBlue;
+                    }
+
+                    out[i] = (byte) code;
                 }
-
-                out[i++] = (byte) code;
             }
-        }
+        });
     }
 
     private BufferedImage reuseInputImage(BufferedImage input) {
@@ -438,8 +448,7 @@ public class AmigaHAMColorModelEncoder extends AbstractCodec {
             ditheringMethod = DitheringMethod.BLUE_NOISE;
         }
 
-        // Divide by 255f because we dither in the oklab domain
-        float spread = f.get(DitheringFactorKey, 4.0).floatValue() / 255f;
+        float spread = f.get(DitheringFactorKey, 4.0).floatValue();
 
         switch (ditheringMethod) {
             case NONE -> {

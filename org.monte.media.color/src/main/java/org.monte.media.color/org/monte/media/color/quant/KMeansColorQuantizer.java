@@ -37,6 +37,7 @@ public class KMeansColorQuantizer implements ColorQuantizer {
     private final OKLabColorSpace cs = new OKLabColorSpace();
     private final List<float[]> samples = new ArrayList<>();
     private final List<Float> weights = new ArrayList<>();
+    ///  key = rgb, value = index into array samples and weights
     private final HashMap<Integer, Integer> done = new HashMap<>();
     private final KMeansInitAlgo initAlgo;
     private float[][] C;
@@ -60,8 +61,6 @@ public class KMeansColorQuantizer implements ColorQuantizer {
 
     public void addImage(BufferedImage image) {
         if (image == null) return;
-        int w = image.getWidth();
-        int h = image.getHeight();
 
         ColorData colorData = getColorDataOKLab(image);
         for (float[] x : colorData.X) {
@@ -132,6 +131,7 @@ public class KMeansColorQuantizer implements ColorQuantizer {
         List<Float> weightList = new ArrayList<>();
         float[] srgb = new float[3];
         float[] oklab = new float[3];
+
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 int rgb = image.getRGB(x, y);
@@ -143,9 +143,9 @@ public class KMeansColorQuantizer implements ColorQuantizer {
                     int g = (rgb & 0x00ff00) >> 8;
                     int b = (rgb & 0xff);
 
-                    srgb[0] = r / 255f;
-                    srgb[1] = g / 255f;
-                    srgb[2] = b / 255f;
+                    srgb[0] = r * (1 / 255f);
+                    srgb[1] = g * (1 / 255f);
+                    srgb[2] = b * (1 / 255f);
                     cs.fromRGB(srgb, oklab);
                     xList.add(new float[]{oklab[0], oklab[1], oklab[2]});
                     weightList.add(1.0f);

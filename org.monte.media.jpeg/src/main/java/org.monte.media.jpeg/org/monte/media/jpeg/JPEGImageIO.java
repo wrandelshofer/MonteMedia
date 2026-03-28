@@ -191,7 +191,7 @@ public class JPEGImageIO {
     /// contains a YUV or Gray JPEG image.
     ///
     /// @param in An InputStream, preferably an ImageInputStream, in the JPEG
-    ///           File Interchange Format (JFIF).
+    ///                     File Interchange Format (JFIF).
     /// @return a BufferedImage containing the decoded image converted into the
     /// RGB color space.
     /// @throws IOException
@@ -208,9 +208,9 @@ public class JPEGImageIO {
     /// contains a CMYK JPEG image.
     ///
     /// @param in          An InputStream, preferably an ImageInputStream, in the JPEG
-    ///                    File Interchange Format (JFIF).
+    ///                                       File Interchange Format (JFIF).
     /// @param cmykProfile An ICC_Profile for conversion from the CMYK color space
-    ///                    to the RGB color space. If this parameter is null, a default profile is used.
+    ///                                       to the RGB color space. If this parameter is null, a default profile is used.
     /// @return a BufferedImage containing the decoded image converted into the
     /// RGB color space.
     /// @throws IOException
@@ -232,9 +232,9 @@ public class JPEGImageIO {
     /// contains a YCCK JPEG image.
     ///
     /// @param in          An InputStream, preferably an ImageInputStream, in the JPEG
-    ///                    File Interchange Format (JFIF).
+    ///                                       File Interchange Format (JFIF).
     /// @param cmykProfile An ICC_Profile for conversion from the CMYK color space
-    ///                    to the RGB color space. If this parameter is null, a default profile is used.
+    ///                                       to the RGB color space. If this parameter is null, a default profile is used.
     /// @return a BufferedImage containing the decoded image converted into the
     /// RGB color space.
     /// @throws IOException
@@ -256,9 +256,9 @@ public class JPEGImageIO {
     /// contains an inverted-YCCK JPEG image.
     ///
     /// @param in          An InputStream, preferably an ImageInputStream, in the JPEG
-    ///                    File Interchange Format (JFIF).
+    ///                                       File Interchange Format (JFIF).
     /// @param cmykProfile An ICC_Profile for conversion from the CMYK color space
-    ///                    to the RGB color space. If this parameter is null, a default profile is used.
+    ///                                       to the RGB color space. If this parameter is null, a default profile is used.
     /// @return a BufferedImage containing the decoded image converted into the
     /// RGB color space.
     /// @throws IOException
@@ -278,9 +278,8 @@ public class JPEGImageIO {
     ///
     /// @param ycckRaster  A raster with (at least) 4 bands of samples.
     /// @param cmykProfile An ICC_Profile for conversion from the CMYK color space
-    ///                    to the RGB color space. If this parameter is null, a default profile is used.
+    ///                                       to the RGB color space. If this parameter is null, a default profile is used.
     /// @return a BufferedImage in the RGB color space.
-    /// @throws NullPointerException.
     public static BufferedImage createRGBImageFromYCCK(Raster ycckRaster, ICC_Profile cmykProfile) {
         BufferedImage image;
         if (cmykProfile != null) {
@@ -322,7 +321,7 @@ public class JPEGImageIO {
     ///
     /// @param ycckRaster  A raster with (at least) 4 bands of samples.
     /// @param cmykProfile An ICC_Profile for conversion from the CMYK color space
-    ///                    to the RGB color space. If this parameter is null, a default profile is used.
+    ///                                       to the RGB color space. If this parameter is null, a default profile is used.
     /// @return a BufferedImage in the RGB color space.
     public static BufferedImage createRGBImageFromInvertedYCCK(Raster ycckRaster, ICC_Profile cmykProfile) {
         BufferedImage image;
@@ -369,7 +368,7 @@ public class JPEGImageIO {
     ///
     /// @param cmykRaster  A raster with (at least) 4 bands of samples.
     /// @param cmykProfile An ICC_Profile for conversion from the CMYK color space
-    ///                    to the RGB color space. If this parameter is null, a default profile is used.
+    ///                                       to the RGB color space. If this parameter is null, a default profile is used.
     /// @return a BufferedImage in the RGB color space.
     public static BufferedImage createRGBImageFromCMYK(Raster cmykRaster, ICC_Profile cmykProfile) {
         BufferedImage image;
