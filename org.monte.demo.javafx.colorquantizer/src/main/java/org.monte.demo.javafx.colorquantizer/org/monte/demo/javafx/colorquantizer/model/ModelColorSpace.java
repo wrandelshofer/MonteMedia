@@ -5,4 +5,4 @@
 
 package org.monte.demo.javafx.colorquantizer.model;
 
-public enum ModelColorSpace {SRGB, OKLAB}
+public enum ModelColorSpace {RGB, LAB, XYZ}

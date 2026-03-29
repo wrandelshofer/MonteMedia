@@ -18,6 +18,7 @@ import javafx.scene.Node;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.SceneAntialiasing;
 import javafx.scene.SubScene;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -34,6 +35,7 @@ import org.monte.demo.javafx.colorquantizer.scene3d.Group3D;
 import org.monte.demo.javafx.colorquantizer.scene3d.IcosphereMeshBuilder;
 import org.monte.demo.javafx.colorquantizer.scene3d.RotateScene3DMouseHandler;
 import org.monte.media.color.OKLabColorSpace;
+import org.monte.media.image.FloatImages;
 import org.monte.media.math.Point3DFloat;
 
 import java.awt.*;
@@ -69,7 +71,7 @@ public class ColorDotsViewController {
     final Group3D cameraXform = new Group3D();
     final Group3D cameraXform2 = new Group3D();
     final Group3D cameraXform3 = new Group3D();
-    private final ObjectProperty<ModelColorSpace> colorSpaceProperty = new SimpleObjectProperty<>(ModelColorSpace.SRGB);
+    private final ObjectProperty<ModelColorSpace> colorSpaceProperty = new SimpleObjectProperty<>(ModelColorSpace.RGB);
     private final ListProperty<Color> palette = new SimpleListProperty<>(FXCollections.observableArrayList());
 
     private BorderPane borderPane = new BorderPane();
@@ -194,8 +196,9 @@ public class ColorDotsViewController {
             public void handle(MouseEvent event) {
                 if (event.getClickCount() == 2 && event.isShiftDown()) {
                     setColorSpace(switch (getColorSpace()) {
-                        case SRGB -> ModelColorSpace.OKLAB;
-                        default -> ModelColorSpace.SRGB;
+                        case RGB -> ModelColorSpace.XYZ;
+                        case XYZ -> ModelColorSpace.LAB;
+                        default -> ModelColorSpace.RGB;
                     });
                 }
             }
@@ -212,12 +215,18 @@ public class ColorDotsViewController {
         });
     }
 
+    private Label label;
+
     private void init() {
         root.getChildren().add(world);
         root.setDepthTest(DepthTest.ENABLE);
         root.setMouseTransparent(false);
         borderPane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
         borderPane.setCenter(scene);
+
+        label = new Label();
+        label.setTextFill(Color.WHITE);
+        borderPane.setTop(label);
         borderPane.setFocusTraversable(true);
         buildBoundingBox();
         buildColorDots();
@@ -226,7 +235,25 @@ public class ColorDotsViewController {
         handleMouse(scene, borderPane);
         new RotateScene3DMouseHandler(borderPane, world, camera);
 
+        label.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if (mouseEvent.getClickCount() == 2) {
+                    switch (getColorSpace()) {
+                        case RGB -> {
+                            setColorSpace(ModelColorSpace.XYZ);
+                        }
+                        case XYZ -> {
+                            setColorSpace(ModelColorSpace.LAB);
+                        }
+                        case LAB -> {
+                            setColorSpace(ModelColorSpace.RGB);
+                        }
+                    }
+                }
+            }
+        });
         colorSpaceProperty.addListener(o -> this.updateViewLater());
         imageProperty().addListener(o -> this.updateViewLater());
         root.visibleProperty().addListener(o -> updateViewIfNeeded());
@@ -249,24 +276,65 @@ public class ColorDotsViewController {
     }
 
     public void updateView() {
-        needsUpdate = false;
-        if (getImage() == null) return;
-        switch (getColorSpace()) {
-            case SRGB -> {
-                updateViewAsRgb();
+        try {
+            needsUpdate = false;
+            if (getImage() == null) return;
+            switch (getColorSpace()) {
+                case RGB -> {
+                    label.setText("RGB");
+                    updateView(getImage().getColorModel().getColorSpace(), 1, 1, 1, 0, 0, 0);
+                }
+                case XYZ -> {
+                    label.setText("XYZ");
+                    updateView(ColorSpace.getInstance(ColorSpace.CS_CIEXYZ), 1, 1, 1, 0, 0, 0);
+                }
+                case LAB -> {
+                    label.setText("LAB");
+                    updateView(new OKLabColorSpace(), 1, 1, 1, 0.5f, 0.5f, 0.5f);
+                }
             }
-            case OKLAB -> {
-                updateViewAsOKLab();
-            }
+        } catch (Throwable e) {
+            e.printStackTrace();
         }
     }
 
 
     private void updateViewAsOKLab() {
-        updateViewAsLab(new OKLabColorSpace());
+        updateViewAsLab_OLD(new OKLabColorSpace());
     }
 
-    private void updateViewAsLab(java.awt.color.ColorSpace cs) {
+    private void updateView(java.awt.color.ColorSpace cs, float xscale, float yscale, float zscale, float xoffset, float yoffset, float zoffset) {
+        world.getChildren().remove(colorDotsGroup);
+        List<Node> dots = new ArrayList<>();
+        var componentImage = toComponentImage(getImage(), cs);
+        float[][] banks = ((DataBufferFloat) componentImage.getRaster().getDataBuffer()).getBankData();
+        IO.println("banks #dim" + banks.length + " " + banks[0].length);
+        float[] colorvalue = new float[3];
+        HashSet<Point3DFloat> done = new HashSet<>();
+        for (int i = 0; i < banks[0].length; i++) {
+            colorvalue[0] = banks[0][i];
+            colorvalue[1] = banks[1][i];
+            colorvalue[2] = banks[2][i];
+
+            if (done.add(new Point3DFloat(colorvalue[0], colorvalue[1], colorvalue[2]))) {
+                Shape3D dot = new MeshView(DOT_MESH);
+                final PhongMaterial colorMaterial;
+                colorMaterial = new PhongMaterial();
+                dot.setMaterial(colorMaterial);
+                dots.add(dot);
+                dot.setTranslateX(-AXIS_LENGTH / 2 + AXIS_LENGTH * (colorvalue[1] + xoffset));
+                dot.setTranslateY(AXIS_LENGTH / 2 + AXIS_LENGTH * -colorvalue[0] + yoffset);
+                dot.setTranslateZ(AXIS_LENGTH / 2 + AXIS_LENGTH * -(colorvalue[2] + zoffset));
+                cs.toRGB(colorvalue);
+                colorMaterial.setDiffuseColor(Color.color(Math.clamp(colorvalue[0], 0, 1), Math.clamp(colorvalue[1], 0, 1), Math.clamp(colorvalue[2], 0, 1)));
+            }
+        }
+        IO.println("OKLab #colors=" + dots.size());
+        colorDotsGroup = new Group3D(dots);
+        world.getChildren().add(colorDotsGroup);
+    }
+
+    private void updateViewAsLab_OLD(java.awt.color.ColorSpace cs) {
         world.getChildren().remove(colorDotsGroup);
         BufferedImage img = getImage();
         int height = img.getHeight();
@@ -306,6 +374,10 @@ public class ColorDotsViewController {
         world.getChildren().add(colorDotsGroup);
     }
 
+    private static BufferedImage toComponentImage(BufferedImage image, ColorSpace cs) {
+        var cm = new ComponentColorModel(cs, false, false, ComponentColorModel.OPAQUE, DataBuffer.TYPE_FLOAT);
+        return FloatImages.convertImage(image, cm, null);
+    }
 
     private void updateViewAsRgb() {
         //updateViewAsRgb(ColorSpace.getInstance(ColorSpace.CS_sRGB));

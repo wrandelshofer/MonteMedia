@@ -38,8 +38,10 @@ import org.monte.media.av.codec.video.ImageOpCodec;
 import org.monte.media.av.codec.video.ReplaceColorSpaceCodec;
 import org.monte.media.av.codec.video.ScaleImageCodec;
 import org.monte.media.av.codec.video.VideoFormatKeys;
+import org.monte.media.color.ColorSpaces;
 import org.monte.media.color.RgbBitConverters;
 import org.monte.media.color.icc.ICC_ProfileReader;
+import org.monte.media.color.io.ColorManagedImageReader;
 import org.monte.media.color.quant.OctreeColorQuantizer;
 import org.monte.media.image.op.UnsharpMaskOp;
 
@@ -154,46 +156,6 @@ public class ColorQuantizerMainModel {
         paletteSize.addListener(updateRenderedImage);
     }
 
-    public boolean isScaleInLinearSpace() {
-        return scaleInLinearSpace.get();
-    }
-
-    public BooleanProperty scaleInLinearSpaceProperty() {
-        return scaleInLinearSpace;
-    }
-
-    public double getScaleRadiusFactor() {
-        return scaleRadiusFactor.get();
-    }
-
-    public DoubleProperty scaleRadiusFactorProperty() {
-        return scaleRadiusFactor;
-    }
-
-    public double getSharpenAmount() {
-        return sharpenAmount.get();
-    }
-
-    public DoubleProperty sharpenAmountProperty() {
-        return sharpenAmount;
-    }
-
-    public double getSharpenRadius() {
-        return sharpenRadius.get();
-    }
-
-    public DoubleProperty sharpenRadiusProperty() {
-        return sharpenRadius;
-    }
-
-    public ColorSpace getReferenceImageColorSpace() {
-        return referenceImageColorSpace.get();
-    }
-
-    public ObjectProperty<ColorSpace> referenceImageColorSpaceProperty() {
-        return referenceImageColorSpace;
-    }
-
     public ListProperty<Path> batchInputFilesProperty() {
         return batchInputFiles;
     }
@@ -204,6 +166,10 @@ public class ColorQuantizerMainModel {
 
     public StringProperty batchOutputFormatProperty() {
         return batchOutputFormat;
+    }
+
+    public ObjectProperty<BufferedImage> colorCorrectedReferenceImageProperty() {
+        return colorCorrectedReferenceImage;
     }
 
     public ObjectProperty<ColorMode> colorModeProperty() {
@@ -552,76 +518,6 @@ public class ColorQuantizerMainModel {
         return ditheringMethod;
     }
 
-    private void updateReferenceImage(Observable o) {
-        Path newv = getReferenceFile();
-        var cs = getReferenceImageColorSpace();
-        exec.submit(currentTask = new Task<BufferedImage>() {
-
-            @Override
-            protected BufferedImage call() throws Exception {
-
-
-                //var finalNewImage = newv == null ? null : ImageIO.read(newv.toFile());
-                try (ImageInputStream iis = ImageIO.createImageInputStream(newv.toFile())) {
-                    Iterator<ImageReader> it = ImageIO.getImageReaders(iis);
-                    if (!it.hasNext()) {
-                        return null;
-                    }
-                    ImageReader r = it.next();
-                    iis.seek(0L);
-                    r.setInput(iis);
-                    var newImage = r.read(0);
-                    var profile = new ICC_ProfileReader(r.getImageMetadata(0)).getProfile();
-                    if (profile != null && newImage.getColorModel() instanceof DirectColorModel dcm) {
-                        ColorModel colorModel = new DirectColorModel(new ICC_ColorSpace(profile),
-                                dcm.getPixelSize(),
-                                dcm.getRedMask(), dcm.getGreenMask(), dcm.getBlueMask(), dcm.getAlphaMask(),
-                                dcm.isAlphaPremultiplied(), dcm.getTransferType());
-
-                        newImage = new BufferedImage(
-                                colorModel,
-                                newImage.getRaster(),
-                                newImage.isAlphaPremultiplied(),
-                                null
-                        );
-                    } else if (profile != null && newImage.getColorModel() instanceof ComponentColorModel dcm) {
-                        ColorModel colorModel = new ComponentColorModel(new ICC_ColorSpace(profile),
-                                dcm.hasAlpha(),
-                                dcm.isAlphaPremultiplied(), dcm.getTransparency(), dcm.getTransferType());
-
-                        newImage = new BufferedImage(
-                                colorModel,
-                                newImage.getRaster(),
-                                newImage.isAlphaPremultiplied(),
-                                null
-                        );
-                    }
-                    var finalNewImage = newImage;
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            setRawReferenceImage(finalNewImage);
-                        }
-                    });
-                    return finalNewImage;
-                }
-            }
-
-            @Override
-            protected void failed() {
-                System.err.println("failed");
-                System.err.println(getException());
-            }
-        });
-    }
-
-    private void printImageMetadata(IIOMetadata iioMeta) {
-
-        var r = new ICC_ProfileReader(iioMeta);
-        IO.println(r.toString());
-    }
-
-
     public ObservableList<Path> getBatchInputFiles() {
         return batchInputFiles.get();
     }
@@ -710,14 +606,6 @@ public class ColorQuantizerMainModel {
         return paletteSize.get();
     }
 
-    public Path getReferenceFile() {
-        return referenceFile.get();
-    }
-
-    public void setReferenceFile(Path newValue) {
-        referenceFile.set(newValue);
-    }
-
     public BufferedImage getRawReferenceImage() {
         return rawReferenceImage.get();
     }
@@ -726,8 +614,16 @@ public class ColorQuantizerMainModel {
         rawReferenceImage.set(newValue);
     }
 
-    public void setColorCorrectedReferenceImage(BufferedImage newValue) {
-        colorCorrectedReferenceImage.set(newValue);
+    public Path getReferenceFile() {
+        return referenceFile.get();
+    }
+
+    public void setReferenceFile(Path newValue) {
+        referenceFile.set(newValue);
+    }
+
+    public ColorSpace getReferenceImageColorSpace() {
+        return referenceImageColorSpace.get();
     }
 
     public BufferedImage getRenderedImage() {
@@ -736,6 +632,10 @@ public class ColorQuantizerMainModel {
 
     public void setRenderedImage(BufferedImage newValue) {
         renderedImage.set(newValue);
+    }
+
+    public double getScaleRadiusFactor() {
+        return scaleRadiusFactor.get();
     }
 
     public int getScaledHeight() {
@@ -752,6 +652,14 @@ public class ColorQuantizerMainModel {
 
     public void setScaledWidth(int newValue) {
         scaledWidth.set(newValue);
+    }
+
+    public double getSharpenAmount() {
+        return sharpenAmount.get();
+    }
+
+    public double getSharpenRadius() {
+        return sharpenRadius.get();
     }
 
     public int getWidth() {
@@ -790,6 +698,10 @@ public class ColorQuantizerMainModel {
         return scale.get();
     }
 
+    public boolean isScaleInLinearSpace() {
+        return scaleInLinearSpace.get();
+    }
+
     public boolean isSharpen() {
         return sharpen.get();
     }
@@ -814,8 +726,14 @@ public class ColorQuantizerMainModel {
         return preserveAspectRatio;
     }
 
+    private void printImageMetadata(IIOMetadata iioMeta) {
+
+        var r = new ICC_ProfileReader(iioMeta);
+        IO.println(r.toString());
+    }
+
     private void process(Path p, Codec codec, String outputFormat, Path dir) throws IOException {
-        BufferedImage in = ImageIO.read(p.toFile());
+        BufferedImage in = ColorManagedImageReader.read(p.toFile());
         var src = new Buffer();
         var dst = new Buffer();
         src.data = in;
@@ -829,16 +747,16 @@ public class ColorQuantizerMainModel {
         saveImageFileAs((BufferedImage) dst.data, dir.resolve(p.getFileName()), outputFormat);
     }
 
-    public ObjectProperty<Path> referenceFileProperty() {
-        return referenceFile;
-    }
-
     public ObjectProperty<BufferedImage> rawReferenceImageProperty() {
         return rawReferenceImage;
     }
 
-    public ObjectProperty<BufferedImage> colorCorrectedReferenceImageProperty() {
-        return colorCorrectedReferenceImage;
+    public ObjectProperty<Path> referenceFileProperty() {
+        return referenceFile;
+    }
+
+    public ObjectProperty<ColorSpace> referenceImageColorSpaceProperty() {
+        return referenceImageColorSpace;
     }
 
     public ObjectProperty<BufferedImage> renderedImageProperty() {
@@ -893,12 +811,16 @@ public class ColorQuantizerMainModel {
         }
     }
 
+    public BooleanProperty scaleInLinearSpaceProperty() {
+        return scaleInLinearSpace;
+    }
+
     public BooleanProperty scaleProperty() {
         return scale;
     }
 
-    public BooleanProperty sharpenProperty() {
-        return sharpen;
+    public DoubleProperty scaleRadiusFactorProperty() {
+        return scaleRadiusFactor;
     }
 
     private void scaledHeightChanged(Observable observable) {
@@ -921,6 +843,22 @@ public class ColorQuantizerMainModel {
 
     public IntegerProperty scaledWidthProperty() {
         return scaledWidth;
+    }
+
+    public void setColorCorrectedReferenceImage(BufferedImage newValue) {
+        colorCorrectedReferenceImage.set(newValue);
+    }
+
+    public DoubleProperty sharpenAmountProperty() {
+        return sharpenAmount;
+    }
+
+    public BooleanProperty sharpenProperty() {
+        return sharpen;
+    }
+
+    public DoubleProperty sharpenRadiusProperty() {
+        return sharpenRadius;
     }
 
     public void submit(Task<?> task) {
@@ -952,6 +890,100 @@ public class ColorQuantizerMainModel {
             }
             changing--;
         }
+    }
+
+    private void updateReferenceImage(Observable o) {
+        Path newv = getReferenceFile();
+        var cs = getReferenceImageColorSpace();
+        exec.submit(currentTask = new Task<BufferedImage>() {
+
+            @Override
+            protected BufferedImage call() throws Exception {
+                try (ImageInputStream iis = ImageIO.createImageInputStream(newv.toFile());
+                     var reader = new ColorManagedImageReader()) {
+                    reader.setInput(iis);
+                    var newImage = reader.read(0);
+
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            setRawReferenceImage(newImage);
+                        }
+                    });
+                    return newImage;
+                }
+            }
+
+            @Override
+            protected void failed() {
+                System.err.println("failed");
+                System.err.println(getException());
+            }
+        });
+    }
+
+    private void updateReferenceImageOLD(Observable o) {
+        Path newv = getReferenceFile();
+        var cs = getReferenceImageColorSpace();
+        exec.submit(currentTask = new Task<BufferedImage>() {
+
+            @Override
+            protected BufferedImage call() throws Exception {
+
+
+                //var finalNewImage = newv == null ? null : ImageIO.read(newv.toFile());
+                try (ImageInputStream iis = ImageIO.createImageInputStream(newv.toFile())) {
+
+                    Iterator<ImageReader> it = ImageIO.getImageReaders(iis);
+                    if (!it.hasNext()) {
+                        return null;
+                    }
+                    ImageReader imageReader = it.next();
+                    iis.seek(0L);
+                    imageReader.setInput(iis, false, false);
+                    var newImage = imageReader.read(0);
+                    var profile = new ICC_ProfileReader(imageReader.getImageMetadata(0)).getProfile();
+                    if (profile != null && newImage.getColorModel() instanceof DirectColorModel dcm) {
+                        ColorModel colorModel = new DirectColorModel(new ICC_ColorSpace(profile),
+                                dcm.getPixelSize(),
+                                dcm.getRedMask(), dcm.getGreenMask(), dcm.getBlueMask(), dcm.getAlphaMask(),
+                                dcm.isAlphaPremultiplied(), dcm.getTransferType());
+
+                        newImage = new BufferedImage(
+                                colorModel,
+                                newImage.getRaster(),
+                                newImage.isAlphaPremultiplied(),
+                                null
+                        );
+                    } else if (profile != null && newImage.getColorModel() instanceof ComponentColorModel dcm) {
+                        ColorModel colorModel = new ComponentColorModel(new ICC_ColorSpace(profile),
+                                dcm.hasAlpha(),
+                                dcm.isAlphaPremultiplied(), dcm.getTransparency(), dcm.getTransferType());
+
+                        newImage = new BufferedImage(
+                                colorModel,
+                                newImage.getRaster(),
+                                newImage.isAlphaPremultiplied(),
+                                null
+                        );
+                    }
+                    var finalNewImage = newImage;
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            setRawReferenceImage(finalNewImage);
+                        }
+                    });
+                    return finalNewImage;
+                }
+            }
+
+            @Override
+            protected void failed() {
+                System.err.println("failed");
+                System.err.println(getException());
+            }
+        });
     }
 
     public void updateRenderedImage(Observable o) {
@@ -993,7 +1025,8 @@ public class ColorQuantizerMainModel {
                             setRenderedImage(renderedImg);
                         }
                     });
-                    System.out.println("updateRenderedImage elapsed=" + (System.nanoTime() - startTime) / 1_000_000 + "ms");
+                    System.out.println("ColorQuantizerMainModel updateRenderedImage elapsed=" + (System.nanoTime() - startTime) / 1_000_000 + "ms");
+                    System.out.println("  rendered image color space: " + ColorSpaces.toString(renderedImg.getColorModel().getColorSpace()));
                 } catch (Throwable t) {
                     t.printStackTrace();
                 }

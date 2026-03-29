@@ -19,7 +19,6 @@ import java.awt.image.PixelInterleavedSampleModel;
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
-import java.util.stream.IntStream;
 
 public class FloatImages {
 
@@ -101,8 +100,8 @@ public class FloatImages {
         float[] destData1 = ((DataBufferFloat) dstRast.getDataBuffer()).getData(dstBankIndices[1]);
         float[] destData2 = ((DataBufferFloat) dstRast.getDataBuffer()).getData(dstBankIndices[2]);
         float[] destData3 = numBands == 4 && dstBankIndices.length == 4 ? ((DataBufferFloat) dstRast.getDataBuffer()).getData(dstBankIndices[3]) : null;
-        //for (int y = 0; y < h; y++) {
-        IntStream.range(0, h).parallel().forEach(y -> {
+        for (int y = 0; y < h; y++) {
+            //IntStream.range(0, h).parallel().forEach(y -> {
             float[] destPix = new float[3];
             int yindex = y * w;
             for (int x = 0; x < w; x++) {
@@ -117,7 +116,8 @@ public class FloatImages {
                     destData3[(yindex + x)] = (srcData[(yindex + x) * numBands + srcBandOffsets[3]] & 0xff) * (1f / 256f);
                 }
             }
-        });
+            //});
+        }
     }
 
     private static void convertImagePixelInterleavedSameColorSpace(BufferedImage dest, PixelInterleavedSampleModel srcSampleModel, WritableRaster srcRast, int h, int w) {

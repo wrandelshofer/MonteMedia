@@ -5,6 +5,7 @@
 
 package org.monte.media.color;
 
+import org.monte.media.color.trc.ParametricToneMapper;
 import org.monte.media.math.Point2D;
 
 import static org.monte.media.color.ParametricLinearRgbColorSpace.ILLUMINANT_D65_XYZ;
@@ -72,6 +73,7 @@ import static org.monte.media.color.ParametricLinearRgbColorSpace.ILLUMINANT_D65
 /// : [wikipedia](https://en.wikipedia.org/wiki/Rec._709)
 public class Rec709ColorSpace extends ParametricNonLinearRgbColorSpace {
 
+
     // Rec. 709 instance without scaling
     public static Rec709ColorSpace getInstance() {
         class Holder {
@@ -88,50 +90,7 @@ public class Rec709ColorSpace extends ParametricNonLinearRgbColorSpace {
                         new Point2D(0.15, 0.06),
                         ILLUMINANT_D65_XYZ
                 ),
-                Rec709ColorSpace::toLinear,
-                Rec709ColorSpace::fromLinear
+                new ParametricToneMapper(2.22222f, 0.9099121f, 0.09008789f, 0.22222f, 0.08099365f)
         );
-    }
-
-    /// Convert an array of linear-light rec709 RGB  in the range [0.0, 1.0]
-    /// to gamma corrected form in the range [0.0, 1.0].
-    /// ITU-R BT.2020-2 p.4
-    public static float fromLinear(float linear) {
-        // apply gamma correction
-        float α = 1.099f;
-        float β = 0.018f;
-
-        float sign = Math.signum(linear);
-        float abs = Math.abs(linear);
-
-        float c;
-        if (abs < β) {
-            c = linear * 4.5f;
-        } else {
-            c = sign * ((float) Math.pow(abs, 0.45f) * α - α + 1);
-        }
-        return c;
-    }
-
-    /// Convert an array of rec709 RGB values in the range [0.0, 1.0]
-    /// to linear light (un-companded) form in the range [0.0, 1.0].
-    /// ITU-R BT.2020-2 p.4
-    public static float toLinear(float nonlinear) {
-
-
-        // revert the gamma correction
-        float α = 1.099f;
-        float β = 0.018f;
-
-        float sign = Math.signum(nonlinear);
-        float abs = Math.abs(nonlinear);
-
-        float cl;
-        if (abs < β * 4.5f) {
-            cl = nonlinear / 4.5f;
-        } else {
-            cl = sign * ((float) Math.pow((abs + α - 1) / α, 1 / 0.45f));
-        }
-        return cl;
     }
 }

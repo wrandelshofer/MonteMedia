@@ -5,6 +5,8 @@
 
 package org.monte.media.color;
 
+import org.monte.media.color.trc.GammaToneMapper;
+import org.monte.media.color.trc.ToneMapper;
 import org.monte.media.math.Matrix3;
 import org.monte.media.math.Matrix3Double;
 import org.monte.media.math.Point2D;
@@ -29,14 +31,14 @@ import java.awt.color.ColorSpace;
 /// : [w3.org](https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#d65-whitepoint)</dd>
 ///
 public class ParametricLinearRgbColorSpace extends AbstractNamedColorSpace {
-    /// The Bradford XYZ to Cone Response Domain Matrix [M<sub>A</sub>].
+    /// The Bradford XYZ to Cone Response Domain Matrix \[M<sub>A</sub>\].
     ///
     /// [brucelindbloom.com](http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html)
     public final static Matrix3Double BRADFORD_XYZ_TO_CONE_RESPONSE_DOMAIN = new Matrix3Double(
             0.8951000, 0.2664000, -0.1614000,
             -0.7502000, 1.7135000, 0.0367000,
             0.0389000, -0.0685000, 1.0296000);
-    /// The inverse Bradford XYZ to Cone Response Domain Matrix [M<sub>A</sub>]<sup>-1</sup>.
+    /// The inverse Bradford XYZ to Cone Response Domain Matrix \[M<sub>A</sub>\]<sup>-1</sup>`.
     ///
     /// [brucelindbloom.com](http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html)
     public final static Matrix3Double BRADFORD_CONE_RESPONSE_DOMAIN_TO_XYZ = BRADFORD_XYZ_TO_CONE_RESPONSE_DOMAIN.inv();
@@ -86,6 +88,7 @@ public class ParametricLinearRgbColorSpace extends AbstractNamedColorSpace {
     private final String name;
     private final float maxValue;
     private final float minValue;
+    protected final ToneMapper toneMapper = new GammaToneMapper(2.4f, 1.055f, 0.055f, 12.92f, 0.04045f);
 
     /// Creates a new instance.
     ///
@@ -220,11 +223,9 @@ public class ParametricLinearRgbColorSpace extends AbstractNamedColorSpace {
 
     @Override
     public float[] fromRGB(float[] rgb, float[] colorvalue) {
-        return fromLinearSrgbMatrix.mul(LinearSrgbColorSpace.toLinear(rgb, colorvalue), colorvalue);
-
-
-        // return fromCIEXYZ(SRGB_COLOR_SPACE.toCIEXYZ(rgb, colorvalue), colorvalue);
+        return fromLinearSrgbMatrix.mul(toneMapper.toLinear(rgb, colorvalue), colorvalue);
     }
+
 
     public Matrix3 getToXyzMatrix() {
         return toXyzMatrix;
@@ -246,8 +247,7 @@ public class ParametricLinearRgbColorSpace extends AbstractNamedColorSpace {
 
     @Override
     public float[] toRGB(float[] colorvalue, float[] rgb) {
-        return LinearSrgbColorSpace.fromLinear(toLinearSrgbMatrix.mul(colorvalue, rgb), rgb);
-        // return SRGB_COLOR_SPACE.fromCIEXYZ(toCIEXYZ(colorvalue, rgb), rgb);
+        return toneMapper.fromLinear(toLinearSrgbMatrix.mul(colorvalue, rgb), rgb);
     }
 
     @Override

@@ -5,6 +5,7 @@
 
 package org.monte.media.color;
 
+import org.monte.media.color.trc.GammaToneMapper;
 import org.monte.media.math.Point2D;
 
 import static org.monte.media.color.ParametricLinearRgbColorSpace.ILLUMINANT_D65_XYZ;
@@ -36,8 +37,7 @@ public class DisplayP3ColorSpace extends ParametricNonLinearRgbColorSpace {
                         new Point2D(0.265, 0.69),
                         new Point2D(0.15, 0.06),
                         ILLUMINANT_D65_XYZ
-                ), SrgbColorSpace::toLinear,
-                SrgbColorSpace::fromLinear
+                ), new GammaToneMapper(2.4f, 1.055f, 0.055f, 12.92f, 0.04045f)
         );
     }
 }

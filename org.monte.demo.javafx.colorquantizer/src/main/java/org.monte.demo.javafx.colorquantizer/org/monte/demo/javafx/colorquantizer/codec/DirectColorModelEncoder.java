@@ -144,7 +144,7 @@ public class DirectColorModelEncoder extends AbstractCodec {
             return;
         }
         int block = 64;
-        IntStream.range(0, height / block + 1).forEach(yy -> {
+        IntStream.range(0, height / block + 1).parallel().forEach(yy -> {
             float[] buf = new float[3];
             int rmask = dcm.getRedMask();
             int gmask = dcm.getGreenMask();
@@ -155,9 +155,6 @@ public class DirectColorModelEncoder extends AbstractCodec {
             int rfactor = (1 << Integer.bitCount(rmask)) - 1;
             int gfactor = (1 << Integer.bitCount(gmask)) - 1;
             int bfactor = (1 << Integer.bitCount(bmask)) - 1;
-            float rInvFactor = 1f / rfactor;
-            float gInvFactor = 1f / gfactor;
-            float bInvFactor = 1f / bfactor;
 
             for (int y = yy * block; y < Math.min(height, yy * block + block); y++) {
                 for (int x = 0; x < width; x++) {

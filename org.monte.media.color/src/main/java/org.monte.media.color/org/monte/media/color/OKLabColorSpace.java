@@ -4,6 +4,8 @@
  */
 package org.monte.media.color;
 
+import org.monte.media.color.trc.GammaToneMapper;
+import org.monte.media.color.trc.ToneMapper;
 import org.monte.media.math.Matrix3Double;
 
 import java.awt.color.ColorSpace;
@@ -125,6 +127,7 @@ public class OKLabColorSpace extends AbstractNamedColorSpace {
     private static final NamedColorSpace linearSrgb = new SrgbColorSpace().getLinearColorSpace();
     @Serial
     private static final long serialVersionUID = 1L;
+    private final ToneMapper toneMapper = new GammaToneMapper(2.4f, 1.055f, 0.055f, 12.92f, 0.04045f);
 
     public OKLabColorSpace() {
         super(ColorSpace.TYPE_Lab, 3);
@@ -137,11 +140,8 @@ public class OKLabColorSpace extends AbstractNamedColorSpace {
         return fromLinearRGB(linearSrgb.fromCIEXYZ(xyz, colorvalue), colorvalue);
     }
 
-    protected float[] fromLinear(float[] linear, float[] corrected) {
-        corrected[0] = SrgbColorSpace.fromLinear(linear[0]);
-        corrected[1] = SrgbColorSpace.fromLinear(linear[1]);
-        corrected[2] = SrgbColorSpace.fromLinear(linear[2]);
-        return corrected;
+    protected float[] fromLinear(float[] linear, float[] curved) {
+        return toneMapper.fromLinear(linear, curved);
     }
 
     public float[] fromLinearRGB(float[] rgb, float[] lab) {
@@ -191,11 +191,8 @@ public class OKLabColorSpace extends AbstractNamedColorSpace {
         return linearSrgb.toCIEXYZ(toLinearRGB(colorvalue, xyz), xyz);
     }
 
-    protected float[] toLinear(float[] corrected, float[] linear) {
-        linear[0] = SrgbColorSpace.toLinear(corrected[0]);
-        linear[1] = SrgbColorSpace.toLinear(corrected[1]);
-        linear[2] = SrgbColorSpace.toLinear(corrected[2]);
-        return linear;
+    protected float[] toLinear(float[] curved, float[] linear) {
+        return toneMapper.toLinear(curved, linear);
     }
 
     protected float[] toLinearRGB(float[] lab, float[] rgb) {

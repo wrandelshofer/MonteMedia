@@ -13,10 +13,12 @@ module org.monte.media.color {
 
     exports org.monte.media.color;
     exports org.monte.media.color.icc;
+    exports org.monte.media.color.io;
     exports org.monte.media.color.kmeans;
     exports org.monte.media.color.kmeans.algo;
     exports org.monte.media.color.dither;
     exports org.monte.media.color.octree;
     exports org.monte.media.color.quant;
     exports org.monte.media.color.enumerator;
+    exports org.monte.media.color.trc;
 }

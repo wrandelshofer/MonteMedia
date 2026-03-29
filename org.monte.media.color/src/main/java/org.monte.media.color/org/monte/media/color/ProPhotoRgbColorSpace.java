@@ -5,6 +5,7 @@
 
 package org.monte.media.color;
 
+import org.monte.media.color.trc.GammaToneMapper;
 import org.monte.media.math.Point2D;
 
 import static org.monte.media.color.ParametricLinearRgbColorSpace.ILLUMINANT_D50_XYZ;
@@ -14,6 +15,8 @@ import static org.monte.media.color.ParametricLinearRgbColorSpace.ILLUMINANT_D50
 /// The ProPhoto RGB color space, also known as ROMM RGB (Reference Output Medium Metric), is an output referred RGB
 /// color space developed by Kodak. It offers an especially large gamut designed for use with photographic output in
 /// mind.
+///
+/// Transfer curve is gamma 1.8 with a small linear portion.
 ///
 /// References:
 /// <dl>
@@ -40,44 +43,7 @@ public class ProPhotoRgbColorSpace extends ParametricNonLinearRgbColorSpace {
                         new Point2D(0.036598, 0.000105),
                         ILLUMINANT_D50_XYZ
                 ),
-                ProPhotoRgbColorSpace::toLinear,
-                ProPhotoRgbColorSpace::fromLinear
+                new GammaToneMapper(1.8f, 1 / 1.8f, 0f, 16f, 1 / 512f)
         );
-    }
-
-    /// Convert an array of linear-light prophoto-rgb  in the range 0.0-1.0
-    /// to gamma corrected form.
-    /// Transfer curve is gamma 1.8 with a small linear portion.
-    public static float fromLinear(float cl) {
-        float E = 1 / 512f;
-        float sign = Math.signum(cl);
-        float abs = Math.abs(cl);
-
-        float c;
-        if (abs < E) {
-            c = cl * 16f;
-        } else {
-            c = sign * (float) Math.pow(abs, 1 / 1.8);
-        }
-        return c;
-    }
-
-    /// Convert an array of prophoto-rgb values
-    /// where in-gamut colors are in the range [0.0-1.0]
-    /// to linear light (un-companded) form.
-    /// Transfer curve is gamma 1.8 with a small linear portion.
-    /// Extended transfer function.
-    public static float toLinear(float c) {
-        float E = 16 / 512f;
-        float sign = Math.signum(c);
-        float abs = Math.abs(c);
-
-        float cl;
-        if (abs <= E) {
-            cl = c / 16f;
-        } else {
-            cl = sign * (float) Math.pow(abs, 1.8);
-        }
-        return cl;
     }
 }

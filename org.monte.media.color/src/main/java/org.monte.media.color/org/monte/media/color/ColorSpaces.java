@@ -4,9 +4,13 @@
  */
 package org.monte.media.color;
 
+import org.monte.media.color.icc.ICC_ProfileReader;
+
 import java.awt.color.ColorSpace;
 import java.awt.color.ICC_ColorSpace;
 import java.awt.color.ICC_Profile;
+import java.awt.color.ICC_ProfileRGB;
+import java.util.Arrays;
 
 /// ColorSpaces.
 ///
@@ -29,6 +33,14 @@ public class ColorSpaces {
         ICC_Profile p = cs.getProfile();
         b.append(",colorSpaceType=").append(colorSpaceTypeToString(p.getColorSpaceType()));
         b.append(",profileClass=").append(profileClassToString(p.getProfileClass()));
+        if (cs.getProfile() instanceof ICC_ProfileRGB rgb) {
+            float[][] matrix = rgb.getMatrix();
+            var white = ICC_ProfileReader.toXY(rgb.getMediaWhitePoint());
+            var red = ICC_ProfileReader.toXY(matrix[0][0], matrix[1][0], matrix[2][0]);
+            var green = ICC_ProfileReader.toXY(matrix[0][1], matrix[1][1], matrix[2][1]);
+            var blue = ICC_ProfileReader.toXY(matrix[0][2], matrix[1][2], matrix[2][2]);
+            b.append(",whiteXY=" + Arrays.toString(white) + ",redXY=" + Arrays.toString(red) + ",greenXY=" + Arrays.toString(green) + ",blueXY=" + Arrays.toString(blue));
+        }
         /*
         b.append(",pcsType=");
         switch(p.getPCSType()) {
