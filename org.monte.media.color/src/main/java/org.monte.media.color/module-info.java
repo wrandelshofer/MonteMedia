@@ -20,5 +20,6 @@ module org.monte.media.color {
     exports org.monte.media.color.octree;
     exports org.monte.media.color.quant;
     exports org.monte.media.color.enumerator;
-    exports org.monte.media.color.trc;
+    exports org.monte.media.color.tonecurve;
+    exports org.monte.media.color.op;
 }

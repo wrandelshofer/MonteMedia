@@ -15,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 public class A98RgbColorSpaceTest extends AbstractNamedColorSpaceTest {
 
     @Override
-    protected A98RgbColorSpace getInstance() {
-        return new A98RgbColorSpace();
+    protected ParametricNonLinearRgbColorSpace getInstance() {
+        return A98RgbColorSpace.getInstance();
     }
 
     /**

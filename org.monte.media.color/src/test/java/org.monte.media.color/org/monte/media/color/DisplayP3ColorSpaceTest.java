@@ -15,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 public class DisplayP3ColorSpaceTest extends AbstractNamedColorSpaceTest {
 
     @Override
-    protected DisplayP3ColorSpace getInstance() {
-        return new DisplayP3ColorSpace();
+    protected ParametricNonLinearRgbColorSpace getInstance() {
+        return DisplayP3ColorSpace.getInstance();
     }
 
     /**

@@ -77,12 +77,12 @@ public class CieLabColorSpace extends AbstractNamedColorSpace {
 
     @Override
     public float[] toRGB(float[] colorvalue, float[] rgb) {
-        return new SrgbColorSpace().fromCIEXYZ(toCIEXYZ(colorvalue, rgb), rgb);
+        return SrgbColorSpace.getInstance().fromCIEXYZ(toCIEXYZ(colorvalue, rgb), rgb);
     }
 
     @Override
     public float[] fromRGB(float[] rgb, float[] component) {
-        return fromCIEXYZ(new SrgbColorSpace().toCIEXYZ(rgb, component), component);
+        return fromCIEXYZ(SrgbColorSpace.getInstance().toCIEXYZ(rgb, component), component);
     }
 
     /// Lab to XYZ.

@@ -5,7 +5,7 @@
 
 package org.monte.media.color;
 
-import org.monte.media.color.trc.GammaToneMapper;
+import org.monte.media.color.tonecurve.GammaToneMapper;
 import org.monte.media.math.Point2D;
 
 import static org.monte.media.color.ParametricLinearRgbColorSpace.ILLUMINANT_D65_XYZ;
@@ -22,22 +22,18 @@ import static org.monte.media.color.ParametricLinearRgbColorSpace.ILLUMINANT_D65
 ///     <dt>CSS Color Module Level 4. Sample code for Color Conversions.</dt>
 ///     <dd>[w3.org](https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#color-conversion-code)</dd>
 /// </dl>
-public class DisplayP3ColorSpace extends ParametricNonLinearRgbColorSpace {
-    public static DisplayP3ColorSpace getInstance() {
+public class DisplayP3ColorSpace {
+    public static ParametricNonLinearRgbColorSpace getInstance() {
         class Holder {
-            private static final DisplayP3ColorSpace INSTANCE = new DisplayP3ColorSpace();
+            private static final ParametricNonLinearRgbColorSpace INSTANCE = new ParametricNonLinearRgbColorSpace(
+                    "Display P3", new ParametricLinearRgbColorSpace("Linear Display P3",
+                    new Point2D(0.68, 0.32),
+                    new Point2D(0.265, 0.69),
+                    new Point2D(0.15, 0.06),
+                    ILLUMINANT_D65_XYZ
+            ), new GammaToneMapper(2.4f, 1.055f, 0.055f, 12.92f, 0.04045f)
+            );
         }
         return Holder.INSTANCE;
-    }
-
-
-    public DisplayP3ColorSpace() {
-        super("Display P3", new ParametricLinearRgbColorSpace("Linear Display P3",
-                        new Point2D(0.68, 0.32),
-                        new Point2D(0.265, 0.69),
-                        new Point2D(0.15, 0.06),
-                        ILLUMINANT_D65_XYZ
-                ), new GammaToneMapper(2.4f, 1.055f, 0.055f, 12.92f, 0.04045f)
-        );
     }
 }

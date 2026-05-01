@@ -19,7 +19,8 @@ import javafx.scene.transform.Affine;
 
 public class RotateScene3DMouseHandler {
     private final Node root;
-    private boolean dragged = false;
+    private boolean dragged;
+    private boolean pressed;
     private double prevX;
     private double prevY;
     private final Affine rootAffineTransform = new Affine();
@@ -127,10 +128,12 @@ public class RotateScene3DMouseHandler {
         prevX = e.getX();
         prevY = e.getY();
         dragged = false;
+        pressed = true;
         stop();
     }
 
     void onMouseClicked(MouseEvent e) {
+        pressed = dragged = false;
         if (e.getClickCount() == 2) {
             sceneRotationMatrix.makeIdentity();
             updateRoot(sceneRotationMatrix);
@@ -138,9 +141,14 @@ public class RotateScene3DMouseHandler {
     }
 
     void onMouseDragged(MouseEvent e) {
+        if (pressed) {
+            dragged = true;
+        }
+        if (!dragged) {
+            return;
+        }
         var x = e.getX();
         var y = e.getY();
-        dragged = true;
         start();
 
         var dxScreen = (this.prevY - y);
@@ -173,6 +181,7 @@ public class RotateScene3DMouseHandler {
     }
 
     void onMouseReleased(MouseEvent e) {
+        pressed = false;
         if (!dragged) {
             stop();
         }

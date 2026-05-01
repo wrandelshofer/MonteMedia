@@ -5,7 +5,7 @@
 
 package org.monte.media.color;
 
-import org.monte.media.color.trc.GammaToneMapper;
+import org.monte.media.color.tonecurve.GammaToneMapper;
 import org.monte.media.math.Point2D;
 
 import static org.monte.media.color.ParametricLinearRgbColorSpace.ILLUMINANT_D65_XYZ;
@@ -48,23 +48,19 @@ import static org.monte.media.color.ParametricLinearRgbColorSpace.ILLUMINANT_D65
 ///
 /// Wikipedia: Rec. 2020
 /// : [wikipedia](https://en.wikipedia.org/wiki/Rec_2020)
-public class Rec2020ColorSpace extends ParametricNonLinearRgbColorSpace {
-    public static Rec2020ColorSpace getInstance() {
+public class Rec2020ColorSpace {
+    public static ParametricNonLinearRgbColorSpace getInstance() {
         class Holder {
-            private static final Rec2020ColorSpace INSTANCE = new Rec2020ColorSpace();
+            private static final ParametricNonLinearRgbColorSpace INSTANCE = new ParametricNonLinearRgbColorSpace(
+                    "Rec. 2020", new ParametricLinearRgbColorSpace("Linear Rec. 2020",
+                    new Point2D(0.708, 0.292),
+                    new Point2D(0.170, 0.797),
+                    new Point2D(0.131, 0.046),
+                    ILLUMINANT_D65_XYZ
+            ),
+                    new GammaToneMapper(2.4f, 1.055f, 0.055f, 12.92f, 0.04045f)
+            );
         }
         return Holder.INSTANCE;
-    }
-
-
-    public Rec2020ColorSpace() {
-        super("Rec. 2020", new ParametricLinearRgbColorSpace("Linear Rec. 2020",
-                        new Point2D(0.708, 0.292),
-                        new Point2D(0.170, 0.797),
-                        new Point2D(0.131, 0.046),
-                        ILLUMINANT_D65_XYZ
-                ),
-                new GammaToneMapper(2.4f, 1.055f, 0.055f, 12.92f, 0.04045f)
-        );
     }
 }

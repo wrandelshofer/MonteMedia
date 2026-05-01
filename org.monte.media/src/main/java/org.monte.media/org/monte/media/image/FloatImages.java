@@ -6,7 +6,7 @@
 package org.monte.media.image;
 
 
-import java.awt.*;
+import java.awt.Point;
 import java.awt.color.ColorSpace;
 import java.awt.image.BandedSampleModel;
 import java.awt.image.BufferedImage;
@@ -20,6 +20,7 @@ import java.awt.image.Raster;
 import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
 
+/// FIXME Incorporate the code of this class into the [Images] class.
 public class FloatImages {
 
     /// Returns the provided source image if it has a float raster and the

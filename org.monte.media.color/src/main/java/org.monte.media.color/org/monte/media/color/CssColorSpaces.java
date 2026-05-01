@@ -24,12 +24,12 @@ public class CssColorSpaces {
     static {
         D65XyzColorSpace d65XyzColorSpace = new D65XyzColorSpace();
         COLOR_SPACES = Map.of(
-                "srgb", new SrgbColorSpace(),
-                "srgb-linear", new LinearSrgbColorSpace(),
-                "display-p3", new DisplayP3ColorSpace(),
-                "a98-rgb", new A98RgbColorSpace(),
-                "prophoto-rgb", new ProPhotoRgbColorSpace(),
-                "rec2020", new Rec2020ColorSpace(),
+                "srgb", SrgbColorSpace.getInstance(),
+                "srgb-linear", LinearSrgbColorSpace.getInstance(),
+                "display-p3", DisplayP3ColorSpace.getInstance(),
+                "a98-rgb", A98RgbColorSpace.getInstance(),
+                "prophoto-rgb", ProPhotoRgbColorSpace.getInstance(),
+                "rec2020", Rec2020ColorSpace.getInstance(),
                 "xyz", d65XyzColorSpace,
                 "xyz-d65", d65XyzColorSpace,
                 "xyz-d50", new D50XyzColorSpace()

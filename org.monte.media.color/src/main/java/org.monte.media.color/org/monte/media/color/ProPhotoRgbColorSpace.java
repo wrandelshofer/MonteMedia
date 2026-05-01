@@ -5,7 +5,7 @@
 
 package org.monte.media.color;
 
-import org.monte.media.color.trc.GammaToneMapper;
+import org.monte.media.color.tonecurve.GammaToneMapper;
 import org.monte.media.math.Point2D;
 
 import static org.monte.media.color.ParametricLinearRgbColorSpace.ILLUMINANT_D50_XYZ;
@@ -27,23 +27,19 @@ import static org.monte.media.color.ParametricLinearRgbColorSpace.ILLUMINANT_D50
 ///     <dt>CSS Color Module Level 4. Sample code for Color Conversions.</dt>
 ///     <dd>[w3.org](https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#color-conversion-code)</dd>
 /// </dl>
-public class ProPhotoRgbColorSpace extends ParametricNonLinearRgbColorSpace {
-    public static ProPhotoRgbColorSpace getInstance() {
+public class ProPhotoRgbColorSpace {
+    public static ParametricNonLinearRgbColorSpace getInstance() {
         class Holder {
-            private static final ProPhotoRgbColorSpace INSTANCE = new ProPhotoRgbColorSpace();
+            private static final ParametricNonLinearRgbColorSpace INSTANCE = new ParametricNonLinearRgbColorSpace(
+                    "ProPhoto RGB", new ParametricLinearRgbColorSpace("Linear ProPhoto RGB",
+                    new Point2D(0.734699, 0.265301),
+                    new Point2D(0.159597, 0.840403),
+                    new Point2D(0.036598, 0.000105),
+                    ILLUMINANT_D50_XYZ
+            ),
+                    new GammaToneMapper(1.8f, 1 / 1.8f, 0f, 16f, 1 / 512f)
+            );
         }
         return Holder.INSTANCE;
-    }
-
-
-    public ProPhotoRgbColorSpace() {
-        super("ProPhoto RGB", new ParametricLinearRgbColorSpace("Linear ProPhoto RGB",
-                        new Point2D(0.734699, 0.265301),
-                        new Point2D(0.159597, 0.840403),
-                        new Point2D(0.036598, 0.000105),
-                        ILLUMINANT_D50_XYZ
-                ),
-                new GammaToneMapper(1.8f, 1 / 1.8f, 0f, 16f, 1 / 512f)
-        );
     }
 }

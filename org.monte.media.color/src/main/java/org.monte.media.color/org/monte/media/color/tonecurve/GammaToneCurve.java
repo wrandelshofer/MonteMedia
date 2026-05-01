@@ -3,7 +3,7 @@
  * Copyright © 2026 Werner Randelshofer, Switzerland. MIT License.
  */
 
-package org.monte.media.color.trc;
+package org.monte.media.color.tonecurve;
 
 /// Holds the parameters of a [ParametricToneMapper].
 ///
@@ -21,5 +21,16 @@ package org.monte.media.color.trc;
 /// @param b     the `b` value
 /// @param c     the `c` value
 /// @param d     the `d` value
-public record GammaToneCurve(float gamma, float a, float b, float c, float d) {
+public record GammaToneCurve(float gamma, float a, float b, float c, float d) implements ToneCurve {
+    public GammaToneCurve(float gamma) {
+        this(gamma, 1, 0, 1, 0);
+    }
+
+    public GammaToneCurve(float gamma, float a, float b, float c, float d) {
+        this.gamma = gamma;
+        this.a = a;
+        this.b = b;
+        this.c = c;
+        this.d = d;
+    }
 }

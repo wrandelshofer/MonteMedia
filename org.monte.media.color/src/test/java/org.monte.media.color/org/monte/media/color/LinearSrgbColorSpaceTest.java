@@ -16,7 +16,7 @@ public class LinearSrgbColorSpaceTest extends AbstractNamedColorSpaceTest {
 
     @Override
     protected ParametricLinearRgbColorSpace getInstance() {
-        return (ParametricLinearRgbColorSpace) new SrgbColorSpace().getLinearColorSpace();
+        return (ParametricLinearRgbColorSpace) SrgbColorSpace.getInstance().getLinearColorSpace();
     }
 
     /**

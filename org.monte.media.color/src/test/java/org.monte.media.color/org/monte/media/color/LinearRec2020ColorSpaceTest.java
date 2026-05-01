@@ -9,7 +9,7 @@ public class LinearRec2020ColorSpaceTest extends AbstractNamedColorSpaceTest {
 
     @Override
     protected NamedColorSpace getInstance() {
-        return new Rec2020ColorSpace().getLinearColorSpace();
+        return Rec2020ColorSpace.getInstance().getLinearColorSpace();
     }
 
 }

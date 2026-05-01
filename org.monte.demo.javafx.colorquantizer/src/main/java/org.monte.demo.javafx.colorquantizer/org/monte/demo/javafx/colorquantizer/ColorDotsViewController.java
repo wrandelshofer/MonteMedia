@@ -12,17 +12,20 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.scene.AmbientLight;
 import javafx.scene.DepthTest;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.SceneAntialiasing;
 import javafx.scene.SubScene;
-import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
@@ -35,16 +38,17 @@ import org.monte.demo.javafx.colorquantizer.scene3d.Group3D;
 import org.monte.demo.javafx.colorquantizer.scene3d.IcosphereMeshBuilder;
 import org.monte.demo.javafx.colorquantizer.scene3d.RotateScene3DMouseHandler;
 import org.monte.media.color.OKLabColorSpace;
-import org.monte.media.image.FloatImages;
+import org.monte.media.color.op.ColorSpaceConvertOp;
 import org.monte.media.math.Point3DFloat;
 
-import java.awt.*;
+import java.awt.Transparency;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ComponentColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferFloat;
 import java.awt.image.IndexColorModel;
+import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -75,8 +79,8 @@ public class ColorDotsViewController {
     private final ListProperty<Color> palette = new SimpleListProperty<>(FXCollections.observableArrayList());
 
     private BorderPane borderPane = new BorderPane();
-    private Group root = new Group();
-    private SubScene scene = new SubScene(root, 1024, 768, true, SceneAntialiasing.BALANCED) {
+    private Group subSceneRoot = new Group();
+    private SubScene subScene = new SubScene(subSceneRoot, 1024, 768, true, SceneAntialiasing.BALANCED) {
         @Override
         public boolean isResizable() {
             return true;
@@ -104,8 +108,7 @@ public class ColorDotsViewController {
     }
 
     private void buildBoundingBox() {
-        final PhongMaterial whiteMaterial = new PhongMaterial();
-        whiteMaterial.setDiffuseColor(Color.DARKGREY);
+        final PhongMaterial whiteMaterial = createMaterial(Color.DARKGREY);
         whiteMaterial.setSpecularColor(Color.WHITE);
 
 
@@ -114,7 +117,7 @@ public class ColorDotsViewController {
             double signX = (i & 1) == 0 ? -1 : 1;
             double signY = (i & 2) == 0 ? -1 : 1;
             double signZ = (i & 4) == 0 ? -1 : 1;
-            Sphere corner = new Sphere(1.0);
+            Sphere corner = new Sphere(0.5);
             corner.setTranslateX(signX * AXIS_LENGTH / 2);
             corner.setTranslateY(signY * AXIS_LENGTH / 2);
             corner.setTranslateZ(signZ * AXIS_LENGTH / 2);
@@ -148,7 +151,7 @@ public class ColorDotsViewController {
     }
 
     private void buildCamera(SubScene scene) {
-        root.getChildren().add(cameraXform);
+        subSceneRoot.getChildren().add(cameraXform);
         cameraXform.getChildren().add(cameraXform2);
         cameraXform2.getChildren().add(cameraXform3);
         cameraXform3.getChildren().add(camera);
@@ -161,6 +164,9 @@ public class ColorDotsViewController {
         cameraXform.rx.setAngle(CAMERA_INITIAL_X_ANGLE);
 
         scene.setCamera(camera);
+        // Add an AmbientLight to the scene to ensure the objects are evenly lit, as if they were self-illuminating
+        AmbientLight ambient = new AmbientLight(Color.WHITE);
+        world.getChildren().add(ambient);
     }
 
     private void buildColorDots() {
@@ -215,54 +221,63 @@ public class ColorDotsViewController {
         });
     }
 
-    private Label label;
 
     private void init() {
-        root.getChildren().add(world);
-        root.setDepthTest(DepthTest.ENABLE);
-        root.setMouseTransparent(false);
+        subSceneRoot.getChildren().add(world);
+        subSceneRoot.setDepthTest(DepthTest.ENABLE);
+        subSceneRoot.setMouseTransparent(false);
         borderPane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
-        borderPane.setCenter(scene);
+        borderPane.setCenter(subScene);
 
-        label = new Label();
-        label.setTextFill(Color.WHITE);
-        borderPane.setTop(label);
+
         borderPane.setFocusTraversable(true);
         buildBoundingBox();
         buildColorDots();
-        buildCamera(scene);
+        buildCamera(subScene);
         handleKeyboard(borderPane);
-        handleMouse(scene, borderPane);
+        handleMouse(subScene, borderPane);
+        borderPane.visibleProperty().addListener((o, oldVal, newVal) -> {
+            IO.println("ColorDotsViewController borderPane visibleProperty(): " + newVal);
+            if (newVal) updateViewIfNeeded();
+        });
         new RotateScene3DMouseHandler(borderPane, world, camera);
 
-        label.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+        // Create the group
+        ToggleGroup group = new ToggleGroup();
 
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                if (mouseEvent.getClickCount() == 2) {
-                    switch (getColorSpace()) {
-                        case RGB -> {
-                            setColorSpace(ModelColorSpace.XYZ);
-                        }
-                        case XYZ -> {
-                            setColorSpace(ModelColorSpace.LAB);
-                        }
-                        case LAB -> {
-                            setColorSpace(ModelColorSpace.RGB);
-                        }
-                    }
-                }
+        // Create 3 ToggleButtons (or RadioButtons)
+        ToggleButton tb1 = new ToggleButton("RGB");
+        tb1.getProperties().put("colorSpace", ModelColorSpace.RGB);
+        ToggleButton tb2 = new ToggleButton("XYZ");
+        tb2.getProperties().put("colorSpace", ModelColorSpace.XYZ);
+        ToggleButton tb3 = new ToggleButton("OKLAB");
+        tb3.getProperties().put("colorSpace", ModelColorSpace.LAB);
+
+        // Add them to the group
+        tb1.setToggleGroup(group);
+        tb2.setToggleGroup(group);
+        tb3.setToggleGroup(group);
+
+        // Optional: Set a default selection
+        tb1.setSelected(true);
+        var hbox = new HBox(tb1, tb2, tb3);
+        borderPane.setBottom(hbox);
+
+        group.selectedToggleProperty().addListener((o, oldVal, newVal) -> {
+            if (newVal != null) {
+                setColorSpace((ModelColorSpace) newVal.getProperties().get("colorSpace"));
             }
         });
+
         colorSpaceProperty.addListener(o -> this.updateViewLater());
         imageProperty().addListener(o -> this.updateViewLater());
-        root.visibleProperty().addListener(o -> updateViewIfNeeded());
+        subSceneRoot.visibleProperty().addListener(o -> updateViewIfNeeded());
     }
 
     private boolean needsUpdate;
 
     public void updateViewLater() {
-        if (!root.isVisible()) {
+        if (!borderPane.isVisible()) {
             needsUpdate = true;
             return;
         }
@@ -281,16 +296,15 @@ public class ColorDotsViewController {
             if (getImage() == null) return;
             switch (getColorSpace()) {
                 case RGB -> {
-                    label.setText("RGB");
                     updateView(getImage().getColorModel().getColorSpace(), 1, 1, 1, 0, 0, 0);
                 }
                 case XYZ -> {
-                    label.setText("XYZ");
                     updateView(ColorSpace.getInstance(ColorSpace.CS_CIEXYZ), 1, 1, 1, 0, 0, 0);
                 }
                 case LAB -> {
-                    label.setText("LAB");
-                    updateView(new OKLabColorSpace(), 1, 1, 1, 0.5f, 0.5f, 0.5f);
+                    updateView(OKLabColorSpace.getInstance(), 1, 1, 1, 0.5f, 0.5f, 0.5f);
+                    // updateView(OKLchColorSpace.getInstance(), 1, 1, 1, 0.5f, 0.5f, 0f);
+                    //updateView(ColorSpace.getInstance(ColorSpace.CS_PYCC), 1, 1, 1, 0, 0, 0);
                 }
             }
         } catch (Throwable e) {
@@ -298,35 +312,46 @@ public class ColorDotsViewController {
         }
     }
 
-
-    private void updateViewAsOKLab() {
-        updateViewAsLab_OLD(new OKLabColorSpace());
-    }
-
     private void updateView(java.awt.color.ColorSpace cs, float xscale, float yscale, float zscale, float xoffset, float yoffset, float zoffset) {
         world.getChildren().remove(colorDotsGroup);
         List<Node> dots = new ArrayList<>();
         var componentImage = toComponentImage(getImage(), cs);
-        float[][] banks = ((DataBufferFloat) componentImage.getRaster().getDataBuffer()).getBankData();
-        IO.println("banks #dim" + banks.length + " " + banks[0].length);
-        float[] colorvalue = new float[3];
+        DataBuffer dataBuffer = componentImage.getRaster().getDataBuffer();
+//        var componentImage = getImage();
+//        DataBuffer dataBuffer = getImage().getRaster().getDataBuffer();
+        SampleModel sampleModel = componentImage.getRaster().getSampleModel();
+        int transferType = sampleModel.getTransferType();
+        float[] colorvalue = new float[componentImage.getColorModel().getNumComponents()];
+        int[] colorvalueInt = new int[componentImage.getColorModel().getNumComponents()];
+        float[] rgbvalue = new float[3];
         HashSet<Point3DFloat> done = new HashSet<>();
-        for (int i = 0; i < banks[0].length; i++) {
-            colorvalue[0] = banks[0][i];
-            colorvalue[1] = banks[1][i];
-            colorvalue[2] = banks[2][i];
+        int height = componentImage.getHeight();
+        int width = componentImage.getWidth();
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
 
-            if (done.add(new Point3DFloat(colorvalue[0], colorvalue[1], colorvalue[2]))) {
-                Shape3D dot = new MeshView(DOT_MESH);
-                final PhongMaterial colorMaterial;
-                colorMaterial = new PhongMaterial();
-                dot.setMaterial(colorMaterial);
-                dots.add(dot);
-                dot.setTranslateX(-AXIS_LENGTH / 2 + AXIS_LENGTH * (colorvalue[1] + xoffset));
-                dot.setTranslateY(AXIS_LENGTH / 2 + AXIS_LENGTH * -colorvalue[0] + yoffset);
-                dot.setTranslateZ(AXIS_LENGTH / 2 + AXIS_LENGTH * -(colorvalue[2] + zoffset));
-                cs.toRGB(colorvalue);
-                colorMaterial.setDiffuseColor(Color.color(Math.clamp(colorvalue[0], 0, 1), Math.clamp(colorvalue[1], 0, 1), Math.clamp(colorvalue[2], 0, 1)));
+                if (transferType == DataBuffer.TYPE_INT) {
+                    colorvalueInt = (int[]) sampleModel.getDataElements(x, y, colorvalueInt, dataBuffer);
+                    int rgb = componentImage.getColorModel().getRGB(colorvalueInt);
+                    colorvalue[0] = (float) ((rgb & 0xff0000) >>> 16) / 255f;
+                    colorvalue[1] = (float) ((rgb & 0xff00) >>> 8) / 255f;
+                    colorvalue[2] = (float) ((rgb & 0xff) >>> 0) / 255f;
+                } else if (transferType == DataBuffer.TYPE_FLOAT) {
+                    colorvalue = (float[]) sampleModel.getDataElements(x, y, colorvalue, dataBuffer);
+                }
+                if (done.add(new Point3DFloat(colorvalue[0], colorvalue[1], colorvalue[2]))) {
+                    System.arraycopy(colorvalue, 0, rgbvalue, 0, rgbvalue.length);
+                    rgbvalue = cs.toRGB(rgbvalue);
+                    Shape3D dot = new MeshView(DOT_MESH);
+                    Color color = Color.color(Math.clamp(rgbvalue[0], 0, 1), Math.clamp(rgbvalue[1], 0, 1), Math.clamp(rgbvalue[2], 0, 1));
+                    final PhongMaterial material = createMaterial(color);
+                    dot.setMaterial(material);
+
+                    dots.add(dot);
+                    dot.setTranslateX(-AXIS_LENGTH / 2 + AXIS_LENGTH * (colorvalue[1] + xoffset));
+                    dot.setTranslateY(AXIS_LENGTH / 2 + AXIS_LENGTH * -colorvalue[0] + yoffset);
+                    dot.setTranslateZ(AXIS_LENGTH / 2 + AXIS_LENGTH * -(colorvalue[2] + zoffset));
+                }
             }
         }
         IO.println("OKLab #colors=" + dots.size());
@@ -334,49 +359,12 @@ public class ColorDotsViewController {
         world.getChildren().add(colorDotsGroup);
     }
 
-    private void updateViewAsLab_OLD(java.awt.color.ColorSpace cs) {
-        world.getChildren().remove(colorDotsGroup);
-        BufferedImage img = getImage();
-        int height = img.getHeight();
-        int width = img.getWidth();
-        HashSet<Point3DFloat> done = new HashSet<>();
-        float[] lab = new float[3];
-        List<Node> dots = new ArrayList<>();
-        ComponentColorModel cm = new ComponentColorModel(cs, false, false, Transparency.OPAQUE, DataBuffer.TYPE_FLOAT);
-        WritableRaster raster = cm.createCompatibleWritableRaster(width, height);
-        var imgOkLab = new BufferedImage(cm, raster, false, null);
-        var g = imgOkLab.createGraphics();
-        g.drawImage(img, 0, 0, null);
-        g.dispose();
-        int[] rgbArray = new int[width * height];
-        img.getRGB(0, 0, width, height, rgbArray, 0, width);
-        var d0 = ((DataBufferFloat) raster.getDataBuffer()).getData(0);
-        for (int i = 0; i < rgbArray.length; i++) {
-            int rgb = rgbArray[i];
-            lab[0] = d0[i * 3];
-            lab[1] = d0[i * 3 + 1];
-            lab[2] = d0[i * 3 + 2];
-            if (done.add(new Point3DFloat(lab[0], lab[1], lab[2]))) {
-                //Sphere dot= new Sphere(1.0, 5);
-                Shape3D dot = new MeshView(DOT_MESH);
-                final PhongMaterial colorMaterial;
-                colorMaterial = new PhongMaterial();
-                dot.setMaterial(colorMaterial);
-                dots.add(dot);
-                dot.setTranslateX(-AXIS_LENGTH / 2 + AXIS_LENGTH * (lab[1] + 0.5f));
-                dot.setTranslateY(AXIS_LENGTH / 2 + AXIS_LENGTH * -lab[0]);
-                dot.setTranslateZ(AXIS_LENGTH / 2 + AXIS_LENGTH * -(lab[2] + 0.5f));
-                colorMaterial.setDiffuseColor(Color.rgb((rgb >>> 16) & 0xff, (rgb >>> 8) & 0xff, rgb & 0xff));
-            }
-        }
-        IO.println("OKLab #colors=" + dots.size());
-        colorDotsGroup = new Group3D(dots);
-        world.getChildren().add(colorDotsGroup);
-    }
 
     private static BufferedImage toComponentImage(BufferedImage image, ColorSpace cs) {
-        var cm = new ComponentColorModel(cs, false, false, ComponentColorModel.OPAQUE, DataBuffer.TYPE_FLOAT);
-        return FloatImages.convertImage(image, cm, null);
+        return new ColorSpaceConvertOp(cs).filter(image, null);
+        //var cm = new ComponentColorModel(cs, false, false, ComponentColorModel.OPAQUE, DataBuffer.TYPE_FLOAT);
+        // return Images.toImageWithColorModel_usingColorConvertOp(image, cm);
+        //return FloatImages.convertImage(image, cm, null);
     }
 
     private void updateViewAsRgb() {
@@ -431,15 +419,30 @@ public class ColorDotsViewController {
                 dot.setTranslateY(AXIS_LENGTH / 2 + AXIS_LENGTH * -csf[1]);
                 dot.setTranslateZ(AXIS_LENGTH / 2 + AXIS_LENGTH * -csf[2]);
 
-                final PhongMaterial colorMaterial = new PhongMaterial();
-                colorMaterial.setDiffuseColor(Color.rgb((rgb >>> 16) & 0xff, (rgb >>> 8) & 0xff, rgb & 0xff));
-                dot.setMaterial(colorMaterial);
+                final PhongMaterial material = createMaterial(Color.rgb((rgb >>> 16) & 0xff, (rgb >>> 8) & 0xff, rgb & 0xff));
+                dot.setMaterial(material);
                 dots.add(dot);
             }
         }
         IO.println("RGB #colors=" + dots.size());
         colorDotsGroup = new Group3D(dots);
         world.getChildren().add(colorDotsGroup);
+    }
+
+    private static PhongMaterial createMaterial(Color color) {
+        final PhongMaterial material = new PhongMaterial();
+
+        // Make the material self-illuminant - This is what we want, but it is very slow
+        /*
+        WritableImage selfIllumImage = new WritableImage(1, 1);
+        selfIllumImage.getPixelWriter().setColor(0, 0, color);
+        material.setSelfIlluminationMap(selfIllumImage);
+        material.setDiffuseColor(Color.BLACK);
+         */
+        material.setDiffuseColor(color);
+        material.setSpecularColor(color);
+
+        return material;
     }
 
     record ColorData(float[][] X, float[] xWeights) {

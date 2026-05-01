@@ -15,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 public class Rec2020ColorSpaceTest extends AbstractNamedColorSpaceTest {
 
     @Override
-    protected Rec2020ColorSpace getInstance() {
-        return new Rec2020ColorSpace();
+    protected ParametricNonLinearRgbColorSpace getInstance() {
+        return Rec2020ColorSpace.getInstance();
     }
 
     /**

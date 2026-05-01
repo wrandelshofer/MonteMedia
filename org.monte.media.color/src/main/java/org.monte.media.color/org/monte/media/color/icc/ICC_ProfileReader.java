@@ -6,6 +6,9 @@
 package org.monte.media.color.icc;
 
 import org.monte.media.color.enumerator.PreorderSpliterator;
+import org.monte.media.color.tonecurve.GammaToneCurve;
+import org.monte.media.color.tonecurve.ParametricToneCurve;
+import org.monte.media.color.tonecurve.PiecewiseToneCurve;
 import org.monte.media.io.ByteArrayImageInputStream;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -40,6 +43,7 @@ public class ICC_ProfileReader {
 
     public ICC_ProfileReader(ICC_Profile icp) {
         this.icp = icp;
+        readHeader();
     }
 
     private static String getStringData(ICC_Profile icp, int tag) {
@@ -53,6 +57,40 @@ public class ICC_ProfileReader {
         }
         return new String(data, 12, p, StandardCharsets.US_ASCII);
     }
+
+    private float[] illuminantD50;
+    private String cmmType;
+    private String deviceClass;
+    private String colorSpaceOfData;
+    private String connectionSpace;
+
+    private void readHeader() {
+        var data = icp.getData();
+
+        try (ICC_ProfileInputStream in = new ICC_ProfileInputStream(new ByteArrayImageInputStream(data))) {
+            // read the header
+            long profileSize = in.readUInt32();// must be data.length
+            cmmType = in.readFourCC();
+            long profileVersion = in.readUInt32();
+            deviceClass = in.readFourCC();
+            colorSpaceOfData = in.readFourCC();
+            connectionSpace = in.readFourCC();
+            OffsetDateTime creationDateTime = in.readDateTimeNumber();
+            String profileFileSignature = in.readFourCC();
+            String primaryPlatformTarget = in.readFourCC();
+            int profileFlags = in.readInt32();
+            String deviceManufacturer = in.readFourCC();
+            long deviceModel = in.readUInt32();
+            long deviceAttributes = in.readInt64();
+            long renderingIntent = in.readUInt32();
+            illuminantD50 = in.readXYZNumber();
+            String profileCreator = in.readFourCC();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static final int HEADER_SIZE = 128;
 
     /// ```
     /// typedef struct {
@@ -74,7 +112,7 @@ public class ICC_ProfileReader {
     ///    uint32 cmmFlags;
     ///    fourCC deviceManufacturer;
     ///    uint32 deviceModel;
-    ///    uint32 deviceAttributes;
+    ///    uint64 deviceAttributes;
     ///    uint32 renderingIntent;
     ///    xyzNumber illuminant;// must be illuminant D50 [0.9642, 1.0, 0.8249]
     ///    fourCC creator;
@@ -96,28 +134,12 @@ public class ICC_ProfileReader {
     ///    byte[] bytes;
     /// } taggedElementData
     /// ```
-    private static int[] getTagSignatures(ICC_Profile icp) {
+    private int[] getTagSignatures(ICC_Profile icp) {
         var data = icp.getData();
 
         try (ICC_ProfileInputStream in = new ICC_ProfileInputStream(new ByteArrayImageInputStream(data))) {
-            // read the header
-            long profileSize = in.readUnsignedInt();// must be data.length
-            String cmmType = in.readFourCC();
-            long profileVersion = in.readUnsignedInt();
-            String deviceClass = in.readFourCC();
-            String colorSpaceOfData = in.readFourCC();
-            String connectionSpace = in.readFourCC();
-            OffsetDateTime creationDateTime = in.readDateTimeNumber();
-            String profileFileSignature = in.readFourCC();
-            String primaryPlatformTarget = in.readFourCC();
-            int profileFlags = in.readInt32();
-            String deviceManufacturer = in.readFourCC();
-            long deviceModel = in.readUInt32();
-            long deviceAttributes = in.readInt64();
-            long renderingIntent = in.readUInt32();
-            float[] illuminantD50 = in.readXYZNumber();
-            String profileCreator = in.readFourCC();
-            in.skipBytes(44);
+            // skip the header
+            in.seek(HEADER_SIZE);
 
             // read the tag table
             long tagCount = in.readUInt32();
@@ -133,6 +155,26 @@ public class ICC_ProfileReader {
             // data is corrupt
             return new int[0];
         }
+    }
+
+    public float[] getIlluminantD50() {
+        return illuminantD50;
+    }
+
+    public String getCmmType() {
+        return cmmType;
+    }
+
+    public String getDeviceClass() {
+        return deviceClass;
+    }
+
+    public String getColorSpaceOfData() {
+        return colorSpaceOfData;
+    }
+
+    public String getConnectionSpace() {
+        return connectionSpace;
     }
 
     public static ICC_Profile read(IIOMetadata iioMeta) {
@@ -202,7 +244,7 @@ public class ICC_ProfileReader {
     /// ```
     /// } floatingPointArrayTag;
     ///
-    private static float[] readFloatingPointArrayTag(ICC_ProfileInputStream in) {
+    private static float[] readFloatingPointArray(ICC_ProfileInputStream in) {
         try {
             String typeDescriptor = in.readFourCC();//  typeDescriptor: "sf32"
             long reserved = in.readUInt32();
@@ -232,9 +274,9 @@ public class ICC_ProfileReader {
     ///   s15fixed16 d;
     ///
     /// ```
-    /// } toneReproductionCurveTag;
+    /// } parametricTRC;
     ///
-    private static Object readParametricToneReproductionCurveTag(ICC_ProfileInputStream in) {
+    private static Object readParametricTRC(ICC_ProfileInputStream in) {
         try {
             String typeDescriptor = in.readFourCC();//  typeDescriptor: "para"
             long reserved = in.readUInt32();
@@ -246,7 +288,7 @@ public class ICC_ProfileReader {
                 float b = in.readS15Fixed16Number();
                 float c = in.readS15Fixed16Number();
                 float d = in.readS15Fixed16Number();
-                return new GammaTRC(gamma, a, b, c, d);
+                return new ParametricToneCurve(gamma, a, b, c, d);
             }
 
         } catch (IOException e) {
@@ -260,38 +302,48 @@ public class ICC_ProfileReader {
     /// typedef struct {
     ///   fourCC typeDescriptor; // "curv"
     ///   uint32 reserved; // must be 0
-    ///
-    ///
+    ///   uint32 count;
+    ///   uint16[count] values;
     /// ```
     /// } toneReproductionCurveTag;
     ///
-    private static Object readPiecewiseToneReproductionCurveTag(ICC_ProfileInputStream in) {
+    /// If count is 1, then the value is an u8fixed8 number
+    /// that defines the gamma value of a gamma curve.
+    /// ```
+    /// f(x) = x^gamma
+    /// ```
+    ///
+    private static Object readPiecewiseTRC(ICC_ProfileInputStream in) {
         try {
             String typeDescriptor = in.readFourCC();//  typeDescriptor: "curv"
             long reserved = in.readUInt32();
             long count = in.readUInt32();
+            if (count == 1) {
+                float gamma = in.readU8Fixed8Number();
+                return new GammaToneCurve(gamma, 1, 0, 1, 0);
+            }
             char[] points = new char[(int) count];
             for (int i = 0; i < count; i++) {
                 points[i] = (char) in.readUInt16();
             }
-            return new PiecewiseTRC(points);
+            return new PiecewiseToneCurve(points);
         } catch (IOException e) {
             return e;
         }
     }
 
-    private static Object readTag(byte[] data) {
+    public static Object readTag(byte[] data) {
         try (var in = new ICC_ProfileInputStream(new ByteArrayImageInputStream(data))) {
             String type = in.readFourCC();
             in.seek(0);
             return switch (type) {
                 case "desc" -> readTextDescriptionTag(in);
                 case "mluc" -> readTextDescriptionTag(in);
-                case "para" -> readParametricToneReproductionCurveTag(in);
-                case "curv" -> readPiecewiseToneReproductionCurveTag(in);
-                case "sf32" -> readFloatingPointArrayTag(in);
-                case "XYZ " -> readXYZTag(in);
-                case "chrm" -> readFloatingPointArrayTag(in);
+                case "para" -> readParametricTRC(in);
+                case "curv" -> readPiecewiseTRC(in);
+                case "sf32" -> readFloatingPointArray(in);
+                case "XYZ " -> readXYZ(in);
+                case "chrm" -> readFloatingPointArray(in);
                 default -> null;
             };
         } catch (IOException e) {
@@ -349,9 +401,9 @@ public class ICC_ProfileReader {
     ///   s15Fixed16Number[3] XYZ;
     ///
     /// ```
-    /// } toneReproductionCurveTag;
+    /// } XYZTag;
     ///
-    private static float[] readXYZTag(ICC_ProfileInputStream in) {
+    private static float[] readXYZ(ICC_ProfileInputStream in) {
         try {
             String typeDescriptor = in.readFourCC();//  typeDescriptor: "XYZ "
             long reserved = in.readUInt32();
@@ -366,7 +418,7 @@ public class ICC_ProfileReader {
         }
     }
 
-    public static String toString(ICC_Profile icp) {
+    public String toString() {
         var buf = new StringBuffer();
         buf.append("ICC_Profile {").append('\n');
         if (icp == null) {
@@ -433,6 +485,11 @@ public class ICC_ProfileReader {
         return buf.toString();
     }
 
+    public Object getTag(int signature) {
+        byte[] data = icp.getData(signature);
+        return readTag(data);
+    }
+
     public static float[] toXY(float... XYZ) {
         float sum = XYZ[0] + XYZ[1] + XYZ[2];
         if (sum == 0) sum = 1;
@@ -441,26 +498,5 @@ public class ICC_ProfileReader {
 
     public ICC_Profile getProfile() {
         return icp;
-    }
-
-    public String toString() {
-        return toString(icp);
-    }
-
-    private record GammaTRC(float gamma, float a, float b, float c, float d) {
-    }
-
-    private record PiecewiseTRC(char[] points) {
-        @Override
-        public String toString() {
-            StringBuilder b = new StringBuilder();
-            b.append("PiecewiseTRC[points=");
-            for (int i = 0; i < points.length; i++) {
-                if (i != 0) b.append(", ");
-                b.append((int) points[i]);
-            }
-            b.append(']');
-            return b.toString();
-        }
     }
 }

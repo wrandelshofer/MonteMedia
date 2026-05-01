@@ -203,8 +203,8 @@ public class ParametricHlsColorSpace extends AbstractNamedColorSpace {
     }
 
     @Override
-    public float[] toRGB(float[] lch, float[] rgb) {
-        return rgbColorSpace.toRGB(hlsToRgb(lch, rgb), rgb);
+    public float[] toRGB(float[] colorvalue, float[] rgb) {
+        return rgbColorSpace.toRGB(hlsToRgb(colorvalue, rgb), rgb);
     }
 
 }

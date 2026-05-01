@@ -5,7 +5,7 @@
 
 package org.monte.media.color;
 
-import org.monte.media.color.trc.ParametricToneMapper;
+import org.monte.media.color.tonecurve.ParametricToneMapper;
 import org.monte.media.math.Point2D;
 
 import static org.monte.media.color.ParametricLinearRgbColorSpace.ILLUMINANT_D65_XYZ;
@@ -71,26 +71,23 @@ import static org.monte.media.color.ParametricLinearRgbColorSpace.ILLUMINANT_D65
 ///
 /// Wikipedia: Rec. 709
 /// : [wikipedia](https://en.wikipedia.org/wiki/Rec._709)
-public class Rec709ColorSpace extends ParametricNonLinearRgbColorSpace {
+public class Rec709ColorSpace {
 
 
     // Rec. 709 instance without scaling
-    public static Rec709ColorSpace getInstance() {
+    public static ParametricNonLinearRgbColorSpace getInstance() {
         class Holder {
-            private static final Rec709ColorSpace INSTANCE = new Rec709ColorSpace();
+            private static final ParametricNonLinearRgbColorSpace INSTANCE = new ParametricNonLinearRgbColorSpace(
+                    "Rec. 709", new ParametricLinearRgbColorSpace("Linear Rec. 709",
+                    new Point2D(0.640, 0.330),
+                    new Point2D(0.3, 0.6),
+                    new Point2D(0.15, 0.06),
+                    ILLUMINANT_D65_XYZ
+            ),
+                    new ParametricToneMapper(2.22222f, 0.9099121f, 0.09008789f, 0.22222f, 0.08099365f)
+            );
         }
         return Holder.INSTANCE;
     }
 
-
-    public Rec709ColorSpace() {
-        super("Rec. 709", new ParametricLinearRgbColorSpace("Linear Rec. 709",
-                        new Point2D(0.640, 0.330),
-                        new Point2D(0.3, 0.6),
-                        new Point2D(0.15, 0.06),
-                        ILLUMINANT_D65_XYZ
-                ),
-                new ParametricToneMapper(2.22222f, 0.9099121f, 0.09008789f, 0.22222f, 0.08099365f)
-        );
-    }
 }

@@ -14,8 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 public class ProPhotoRgbColorSpaceTest extends AbstractNamedColorSpaceTest {
 
     @Override
-    protected ProPhotoRgbColorSpace getInstance() {
-        return new ProPhotoRgbColorSpace();
+    protected ParametricNonLinearRgbColorSpace getInstance() {
+        return ProPhotoRgbColorSpace.getInstance();
     }
 
     /**

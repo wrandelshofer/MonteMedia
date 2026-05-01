@@ -5,6 +5,8 @@
 package org.monte.media.color;
 
 
+import java.awt.color.ColorSpace;
+
 /// Interface for `ColorSpace` classes which have a name.
 public interface NamedColorSpace {
     /// A color space with Luminance, Chroma, Hue components.
@@ -72,4 +74,7 @@ public interface NamedColorSpace {
         rgbs[2] = ((rgb & 0x0000ff)) * (1 / 255f);
         return fromRGB(rgbs, colorvalue);
     }
+
+    /// Returns an instance that extends the [ColorSpace] class.
+    ColorSpace toColorSpace();
 }

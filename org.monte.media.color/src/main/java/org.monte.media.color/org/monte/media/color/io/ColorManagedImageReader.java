@@ -18,14 +18,30 @@ import java.awt.image.ComponentColorModel;
 import java.awt.image.DirectColorModel;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Iterator;
 
 /// Reads an image with color management.
 public class ColorManagedImageReader implements AutoCloseable {
     private ImageReader imageReader;
-
+    private ImageInputStream imageInputStream;
 
     public ColorManagedImageReader() {
+    }
+
+    public void setInput(File file) {
+        try {
+            imageInputStream = ImageIO.createImageInputStream(file);
+            Iterator<ImageReader> imageReaders = ImageIO.getImageReaders(imageInputStream);
+            if (imageReaders.hasNext()) {
+                imageReader = imageReaders.next();
+                imageReader.setInput(imageInputStream, false, false);
+            } else {
+                imageReader = null;
+            }
+        } catch (IOException e) {
+            // bail
+        }
     }
 
     public void setInput(ImageInputStream iis) {
@@ -46,11 +62,19 @@ public class ColorManagedImageReader implements AutoCloseable {
         return imageReader.getNumImages(true);
     }
 
+    /**
+     * Reads the image with the color space as specified in the file.
+     *
+     * @param imageIndex the image index
+     * @return the image with the color space as specified in the file.
+     * @throws IOException
+     */
     public BufferedImage read(int imageIndex) throws IOException {
         BufferedImage image = imageReader.read(imageIndex);
         IIOMetadata imageMetadata = imageReader.getImageMetadata(imageIndex);
         return applyColorManagement(image, imageMetadata);
     }
+
 
     private BufferedImage applyColorManagement(BufferedImage image, IIOMetadata imageMetadata) {
         var profile = new ICC_ProfileReader(imageMetadata).getProfile();
@@ -70,7 +94,7 @@ public class ColorManagedImageReader implements AutoCloseable {
             ColorModel colorModel = new ComponentColorModel(new ICC_ColorSpace(profile),
                     dcm.hasAlpha(),
                     dcm.isAlphaPremultiplied(), dcm.getTransparency(), dcm.getTransferType());
-
+            IO.println(Arrays.toString(profile.getData()));
             return new BufferedImage(
                     colorModel,
                     image.getRaster(),
@@ -85,6 +109,15 @@ public class ColorManagedImageReader implements AutoCloseable {
     public void close() {
         if (imageReader != null) {
             imageReader.dispose();
+            imageReader = null;
+        }
+        if (imageInputStream != null) {
+            try {
+                imageInputStream.close();
+            } catch (IOException e) {
+                //bail
+            }
+            imageInputStream = null;
         }
     }
 

@@ -16,7 +16,8 @@ import org.monte.media.color.dither.BayerDither;
 import org.monte.media.color.dither.BlueNoiseDither;
 import org.monte.media.color.dither.Dither;
 
-import java.awt.*;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.awt.image.DataBufferShort;
@@ -44,6 +45,7 @@ public class DirectColorModelEncoder extends AbstractCodec {
     /// Optional, the desired number of colors in the index color model.
     /// This value is only used when no [#DirectColorModelKey] has been provided.
     public final static FormatKey<DitheringMethod> DitheringMethodKey = new FormatKey<>("ditheringMethod", DitheringMethod.class);
+
 
     public DirectColorModelEncoder() {
         super(new Format[]{
@@ -117,25 +119,41 @@ public class DirectColorModelEncoder extends AbstractCodec {
     }
 
     private void renderOutputImageWithoutDithering(BufferedImage inputImage, BufferedImage outputImage, DirectColorModel dcm) {
+        if (outputImage.getRaster().getDataBuffer() instanceof DataBufferInt) {
+            renderOutputImageIntWithoutDithering(inputImage, outputImage, dcm);
+            return;
+        }
         Graphics2D g = outputImage.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_DISABLE);
         g.drawImage(inputImage, 0, 0, null);
+        g.dispose();
+    }
+
+    private void renderOutputImageWithoutDitheringFake(BufferedImage inputImage, BufferedImage outputImage, DirectColorModel dcm) {
+        if (outputImage.getRaster().getDataBuffer() instanceof DataBufferInt) {
+            renderOutputImageIntWithoutDitheringFake(inputImage, outputImage, dcm);
+            return;
+        }
+        Graphics2D g = outputImage.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_DISABLE);
+        g.drawImage(inputImage, 0, 0, null);
+        g.dispose();
     }
 
     private void renderOutputImageWithDithering(BufferedImage inputImage, BufferedImage outputImage, DirectColorModel dcm, Dither dither0, Dither dither1, Dither dither2) {
         if (outputImage.getRaster().getDataBuffer() instanceof DataBufferInt) {
-            renderOutputImageInt(inputImage, outputImage, dcm, dither0, dither1, dither2);
-        }
-        if (outputImage.getRaster().getDataBuffer() instanceof DataBufferShort
+            renderOutputImageIntWithDithering(inputImage, outputImage, dcm, dither0, dither1, dither2);
+        } else if (outputImage.getRaster().getDataBuffer() instanceof DataBufferShort
                 || outputImage.getRaster().getDataBuffer() instanceof DataBufferUShort) {
-            renderOutputImageShort(inputImage, outputImage, dcm, dither0, dither1, dither2);
+            renderOutputImageShortWithDithering(inputImage, outputImage, dcm, dither0, dither1, dither2);
         }
     }
 
-    private void renderOutputImageInt(BufferedImage inputImage, BufferedImage outputImage, DirectColorModel dcm, Dither dither0, Dither dither1, Dither dither2) {
+    private void renderOutputImageIntWithDithering(BufferedImage inputImage, BufferedImage outputImage, DirectColorModel dcm, Dither dither0, Dither dither1, Dither dither2) {
         int width = inputImage.getWidth();
         int height = inputImage.getHeight();
         int[] in = new int[width * height];
+
         inputImage.getRGB(0, 0, width, height, in, 0, width);
         int[] out;
         if (outputImage.getRaster().getDataBuffer() instanceof DataBufferInt db) {
@@ -175,7 +193,82 @@ public class DirectColorModelEncoder extends AbstractCodec {
         });
     }
 
-    private void renderOutputImageShort(BufferedImage inputImage, BufferedImage outputImage, DirectColorModel dcm, Dither dither0, Dither dither1, Dither dither2) {
+    private void renderOutputImageIntWithoutDithering(BufferedImage inputImage, BufferedImage outputImage, DirectColorModel dcm) {
+        int width = inputImage.getWidth();
+        int height = inputImage.getHeight();
+        int[] in = new int[width * height];
+
+        inputImage.getRGB(0, 0, width, height, in, 0, width);
+        int[] out;
+        if (outputImage.getRaster().getDataBuffer() instanceof DataBufferInt db) {
+            out = db.getData();
+        } else {
+            return;
+        }
+        int block = 64;
+        // IntStream.range(0, height / block + 1).parallel().forEach(yy -> {
+        float[] rgbs = new float[3];
+        int rmask = dcm.getRedMask();
+        int gmask = dcm.getGreenMask();
+        int bmask = dcm.getBlueMask();
+        int rshift = Integer.numberOfTrailingZeros(rmask);
+        int gshift = Integer.numberOfTrailingZeros(gmask);
+        int bshift = Integer.numberOfTrailingZeros(bmask);
+        int rfactor = (1 << Integer.bitCount(rmask)) - 1;
+        int gfactor = (1 << Integer.bitCount(gmask)) - 1;
+        int bfactor = (1 << Integer.bitCount(bmask)) - 1;
+
+        //  for (int y = yy * block; y < Math.min(height, yy * block + block); y++) {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int i = y * width + x;
+                int pix = in[i];
+                rgbs[0] = ((pix & 0xff0000) >> 16) * (1f / 255f);
+                rgbs[1] = ((pix & 0xff00) >> 8) * (1f / 255f);
+                rgbs[2] = (pix & 0xff) * (1f / 255f);
+
+                var dpix = (Math.clamp((int) (rgbs[0] * rfactor), 0, rfactor) << rshift) & rmask
+                        | (Math.clamp((int) (rgbs[1] * gfactor), 0, gfactor) << gshift) & gmask
+                        | (Math.clamp((int) (rgbs[2] * bfactor), 0, bfactor) << bshift) & bmask;
+                out[i] = dpix;
+            }
+        }
+    }
+
+    private void renderOutputImageIntWithoutDitheringFake(BufferedImage inputImage, BufferedImage outputImage, DirectColorModel dcm) {
+        int width = inputImage.getWidth();
+        int height = inputImage.getHeight();
+        int[] in = new int[width * height];
+        //now we have converted the image to sRGB!
+        inputImage.getRGB(0, 0, width, height, in, 0, width);
+        int[] out;
+        if (outputImage.getRaster().getDataBuffer() instanceof DataBufferInt db) {
+            out = db.getData();
+        } else {
+            return;
+        }
+        int rmask = dcm.getRedMask();
+        int gmask = dcm.getGreenMask();
+        int bmask = dcm.getBlueMask();
+        int rshift = Integer.numberOfTrailingZeros(rmask);
+        int gshift = Integer.numberOfTrailingZeros(gmask);
+        int bshift = Integer.numberOfTrailingZeros(bmask);
+        int rfactor = (1 << Integer.bitCount(rmask)) - 1;
+        int gfactor = (1 << Integer.bitCount(gmask)) - 1;
+        int bfactor = (1 << Integer.bitCount(bmask)) - 1;
+
+        //  for (int y = yy * block; y < Math.min(height, yy * block + block); y++) {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int i = y * width + x;
+                int pix = in[i];
+                int dpix = (pix & 0xf0f0f0f0) | ((pix & 0xf0f0f0f0) >>> 8);
+                out[i] = 0xff00ff00 | pix;
+            }
+        }
+    }
+
+    private void renderOutputImageShortWithDithering(BufferedImage inputImage, BufferedImage outputImage, DirectColorModel dcm, Dither dither0, Dither dither1, Dither dither2) {
 
         int width = inputImage.getWidth();
         int height = inputImage.getHeight();
@@ -201,9 +294,6 @@ public class DirectColorModelEncoder extends AbstractCodec {
             int rfactor = (1 << Integer.bitCount(rmask)) - 1;
             int gfactor = (1 << Integer.bitCount(gmask)) - 1;
             int bfactor = (1 << Integer.bitCount(bmask)) - 1;
-            float rInvFactor = 1f / rfactor;
-            float gInvFactor = 1f / gfactor;
-            float bInvFactor = 1f / bfactor;
 
             for (int y = yy * block; y < Math.min(height, yy * block + block); y++) {
                 for (int x = 0; x < width; x++) {
@@ -232,7 +322,8 @@ public class DirectColorModelEncoder extends AbstractCodec {
         if (output != null
                 && output.getWidth() == w
                 && output.getHeight() == h
-                && output.getColorModel() == dcm) {
+                && output.getColorModel() == dcm
+                && output.getType() == input.getType()) {
             return output;
         }
         WritableRaster raster = dcm.createCompatibleWritableRaster(w, h);

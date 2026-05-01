@@ -5,7 +5,7 @@
 
 package org.monte.media.color;
 
-import org.monte.media.color.trc.GammaToneMapper;
+import org.monte.media.color.tonecurve.GammaToneMapper;
 import org.monte.media.math.Point2D;
 
 import static org.monte.media.color.ParametricLinearRgbColorSpace.ILLUMINANT_D65_XYZ;
@@ -16,48 +16,26 @@ import static org.monte.media.color.ParametricLinearRgbColorSpace.ILLUMINANT_D65
 /// It was designed to encompass most of the colors achievable on CMYK color printers, but by using RGB primary colors on
 /// a device such as a computer display.
 ///
+/// A gamma of 563/256, or 2.19921875, is used, without the linear segment near zero that is present in sRGB.
+///
 /// References:
-/// <dl>
-///     <dt>Wikipedia: Adobe RGB color space.</dt>
-///     <dd>[wikipedia](https://en.wikipedia.org/wiki/Adobe_RGB_color_space)</dd>
-///     <dt>CSS Color Module Level 4. The Predefined A98 RGB Color Space: the a98-rgb keyword.</dt>
-///     <dd>[w3.org](https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#predefined-a98-rgb3)</dd>
-/// </dl>
-public class A98RgbColorSpace extends ParametricNonLinearRgbColorSpace {
-    public static A98RgbColorSpace getInstance() {
+///
+/// Wikipedia: Adobe RGB color space
+/// [wikipedia](https://en.wikipedia.org/wiki/Adobe_RGB_color_space)
+///
+/// CSS Color Module Level 4. The Predefined A98 RGB Color Space: the a98-rgb keyword.
+/// [w3.org](https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#predefined-a98-rgb3)
+public class A98RgbColorSpace {
+    public static ParametricNonLinearRgbColorSpace getInstance() {
         class Holder {
-            private static final A98RgbColorSpace INSTANCE = new A98RgbColorSpace();
+            private static final ParametricNonLinearRgbColorSpace INSTANCE = new ParametricNonLinearRgbColorSpace(
+                    "A98 RGB", new ParametricLinearRgbColorSpace("Linear A98 RGB",
+                    new Point2D(0.64, 0.33),
+                    new Point2D(0.21, 0.71),
+                    new Point2D(0.15, 0.06),
+                    ILLUMINANT_D65_XYZ
+            ), new GammaToneMapper(563 / 256f, 1f, 0f, 1f, 0f));
         }
         return Holder.INSTANCE;
-    }
-
-
-    public A98RgbColorSpace() {
-        super("A98 RGB", new ParametricLinearRgbColorSpace("Linear A98 RGB",
-                new Point2D(0.64, 0.33),
-                new Point2D(0.21, 0.71),
-                new Point2D(0.15, 0.06),
-                ILLUMINANT_D65_XYZ
-        ), new GammaToneMapper(2.4f, 1.055f, 0.055f, 12.92f, 0.04045f));
-    }
-
-    /// Convert an array of a98-rgb values in the range 0.0 - 1.0
-    /// to linear light (un-companded) form.
-    /// Negative values are also now accepted.
-    public static float fromLinear(float val) {
-        float sign = val < 0 ? -1 : 1;
-        float abs = Math.abs(val);
-
-        return sign * (float) Math.pow(abs, 563 / 256f);
-    }
-
-    /// Convert an array of linear-light a98-rgb  in the range 0.0-1.0
-    /// to gamma corrected form.
-    /// Negative values are also now accepted.
-    public static float toLinear(float val) {
-        float sign = val < 0 ? -1 : 1;
-        float abs = Math.abs(val);
-
-        return sign * (float) Math.pow(abs, 256 / 563f);
     }
 }

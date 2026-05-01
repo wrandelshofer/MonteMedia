@@ -15,6 +15,7 @@ import org.monte.media.interpolator.BezierInterpolator;
 import org.monte.media.interpolator.SplineInterpolator;
 
 import java.awt.image.BufferedImage;
+import java.util.function.Function;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -28,6 +29,7 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_I
 import static org.monte.media.util.MathUtil.clamp;
 
 /// Adjusts the colors of a buffered image.
+/// FIXME Should take a [Function]`<float[],float[]>` as an argument.
 ///
 /// @author Werner Randelshofer
 public class ColorAdjustCodec extends org.monte.media.av.AbstractCodec {

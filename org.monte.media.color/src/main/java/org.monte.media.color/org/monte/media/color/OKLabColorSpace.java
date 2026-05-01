@@ -4,8 +4,8 @@
  */
 package org.monte.media.color;
 
-import org.monte.media.color.trc.GammaToneMapper;
-import org.monte.media.color.trc.ToneMapper;
+import org.monte.media.color.tonecurve.GammaToneMapper;
+import org.monte.media.color.tonecurve.ToneMapper;
 import org.monte.media.math.Matrix3Double;
 
 import java.awt.color.ColorSpace;
@@ -94,6 +94,14 @@ public class OKLabColorSpace extends AbstractNamedColorSpace {
             0.2119034982, +0.6806995451, +0.1073969566,
             0.0883024619, +0.2817188376, +0.6299787005
     );
+    /// The M1 matrix.
+    private static final Matrix3Double M1 = new Matrix3Double(
+            +0.8189330101, +0.3618667424, -0.1288597137,
+            +0.0329845436, +0.9293118715, +0.0361456387,
+            +0.0482003018, +0.2643662691, +0.6338517070
+    );
+    /// The inverse of the M1 matrix.
+    private static final Matrix3Double M1_INV = M1.inv();
     /// The M2 matrix.
     private static final Matrix3Double M2 = new Matrix3Double(
             0.2104542553, 0.7936177850, -0.0040720468,
@@ -124,7 +132,7 @@ public class OKLabColorSpace extends AbstractNamedColorSpace {
             -1.2684380046, +2.6097574011, -0.3413193965,
             -0.0041960863, -0.7034186147, +1.7076147010
     );
-    private static final NamedColorSpace linearSrgb = new SrgbColorSpace().getLinearColorSpace();
+    private static final NamedColorSpace linearSrgb = LinearSrgbColorSpace.getInstance();
     @Serial
     private static final long serialVersionUID = 1L;
     private final ToneMapper toneMapper = new GammaToneMapper(2.4f, 1.055f, 0.055f, 12.92f, 0.04045f);
@@ -134,10 +142,26 @@ public class OKLabColorSpace extends AbstractNamedColorSpace {
 
     }
 
+    @Override
+    public float[] toCIEXYZ(float[] lab, float[] xyz) {
+        var lms = M2_INV.mul(xyz, lab);
+        lms[0] = lms[0] * lms[0] * lms[0];
+        lms[1] = lms[1] * lms[1] * lms[1];
+        lms[2] = lms[2] * lms[2] * lms[2];
+        xyz = M1_INV.mul(lms, lab);
+        xyz = ParametricLinearRgbColorSpace.FROM_D65_TO_D50.mul(xyz, xyz);
+        return xyz;
+    }
 
     @Override
-    public float[] fromCIEXYZ(float[] xyz, float[] colorvalue) {
-        return fromLinearRGB(linearSrgb.fromCIEXYZ(xyz, colorvalue), colorvalue);
+    public float[] fromCIEXYZ(float[] xyz, float[] lab) {
+        xyz = ParametricLinearRgbColorSpace.FROM_D50_XYZ_TO_D65_XYZ.mul(xyz, xyz);
+        var lms = M1.mul(xyz, lab);
+        lms[0] = (float) Math.cbrt(lms[0]);
+        lms[1] = (float) Math.cbrt(lms[1]);
+        lms[2] = (float) Math.cbrt(lms[2]);
+        lab = M2.mul(lms, lab);
+        return lab;
     }
 
     protected float[] fromLinear(float[] linear, float[] curved) {
@@ -186,10 +210,6 @@ public class OKLabColorSpace extends AbstractNamedColorSpace {
         return "OKLAB";
     }
 
-    @Override
-    public float[] toCIEXYZ(float[] colorvalue, float[] xyz) {
-        return linearSrgb.toCIEXYZ(toLinearRGB(colorvalue, xyz), xyz);
-    }
 
     protected float[] toLinear(float[] curved, float[] linear) {
         return toneMapper.toLinear(curved, linear);

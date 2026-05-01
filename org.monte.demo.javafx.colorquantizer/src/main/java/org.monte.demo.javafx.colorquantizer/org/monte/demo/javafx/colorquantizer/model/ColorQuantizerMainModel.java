@@ -53,7 +53,9 @@ import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.spi.ServiceRegistry;
 import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageInputStream;
-import java.awt.*;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.color.ColorSpace;
 import java.awt.color.ICC_ColorSpace;
 import java.awt.image.BufferedImage;
@@ -331,19 +333,19 @@ public class ColorQuantizerMainModel {
                                 DataBuffer.TYPE_INT)));
                 codecs.add(codec);
             }
-            case _5_6_5_BIT_RGB -> {
-                var codec = new DirectColorModelEncoder();
-                codec.setOutputFormat(colorFormat.append(DirectColorModelEncoder.DirectColorModelKey,
-                        new DirectColorModel(cs, 16,
-                                0xf800, 0x07e0, 0x01f, 0x000, false,
-                                DataBuffer.TYPE_USHORT)));
-                codecs.add(codec);
-            }
             case _15_BIT_RGB -> {
                 var codec = new DirectColorModelEncoder();
                 codec.setOutputFormat(colorFormat.append(DirectColorModelEncoder.DirectColorModelKey,
                         new DirectColorModel(cs, 15,
                                 0x7c00, 0x03e0, 0x01f, 0x000, false,
+                                DataBuffer.TYPE_USHORT)));
+                codecs.add(codec);
+            }
+            case _5_6_5_BIT_RGB -> {
+                var codec = new DirectColorModelEncoder();
+                codec.setOutputFormat(colorFormat.append(DirectColorModelEncoder.DirectColorModelKey,
+                        new DirectColorModel(cs, 16,
+                                0xf800, 0x07e0, 0x01f, 0x000, false,
                                 DataBuffer.TYPE_USHORT)));
                 codecs.add(codec);
             }
@@ -899,9 +901,9 @@ public class ColorQuantizerMainModel {
 
             @Override
             protected BufferedImage call() throws Exception {
-                try (ImageInputStream iis = ImageIO.createImageInputStream(newv.toFile());
+                try (//ImageInputStream iis = new FileImageInputStream(newv.toFile());
                      var reader = new ColorManagedImageReader()) {
-                    reader.setInput(iis);
+                    reader.setInput(newv.toFile());
                     var newImage = reader.read(0);
 
                     Platform.runLater(new Runnable() {

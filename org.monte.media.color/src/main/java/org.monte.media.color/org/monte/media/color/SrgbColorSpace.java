@@ -6,7 +6,7 @@
 package org.monte.media.color;
 
 
-import org.monte.media.color.trc.GammaToneMapper;
+import org.monte.media.color.tonecurve.GammaToneMapper;
 
 /// The `sRGB` color space.
 ///
@@ -78,35 +78,15 @@ import org.monte.media.color.trc.GammaToneMapper;
 ///
 /// CSS Color Module Level 4. 18. Sample code for Color Conversions
 /// : [w3.org](https://www.w3.org/TR/2025/CRD-css-color-4-20250424/#color-conversion-code)
-public class SrgbColorSpace extends ParametricNonLinearRgbColorSpace {
-    public static SrgbColorSpace getInstance() {
+public class SrgbColorSpace {
+    public static ParametricNonLinearRgbColorSpace getInstance() {
         class Holder {
-            private static final SrgbColorSpace INSTANCE = new SrgbColorSpace();
+            private static final ParametricNonLinearRgbColorSpace INSTANCE = new ParametricNonLinearRgbColorSpace(
+                    "sRGB", LinearSrgbColorSpace.getInstance(),
+                    new GammaToneMapper(2.4f, 1.055f, 0.055f, 12.92f, 0.04045f)
+            );
         }
         return Holder.INSTANCE;
     }
 
-
-    public SrgbColorSpace() {
-        super("sRGB", new LinearSrgbColorSpace(),
-                new GammaToneMapper(2.4f, 1.055f, 0.055f, 12.92f, 0.04045f)
-        );
-    }
-
-    @Override
-    public boolean isCS_sRGB() {
-        return true;
-    }
-
-    @Override
-    public float[] toRGB(float[] colorvalue, float[] rgb) {
-        System.arraycopy(colorvalue, 0, rgb, 0, 3);
-        return rgb;
-    }
-
-    @Override
-    public float[] fromRGB(float[] rgb, float[] colorvalue) {
-        System.arraycopy(rgb, 0, colorvalue, 0, 3);
-        return colorvalue;
-    }
 }

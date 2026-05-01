@@ -19,7 +19,7 @@ import static java.lang.Math.min;
 /// </dl>
 public class OKLabGamutMapper implements GamutMapper {
     private OKLabColorSpace okLabColorSpace = new OKLabColorSpace();
-    private SrgbColorSpace srgbColorSpace = new SrgbColorSpace();
+    private ParametricNonLinearRgbColorSpace srgbColorSpace = SrgbColorSpace.getInstance();
 
     @Override
     public float[] map(float[] oklab, float[] srgb) {

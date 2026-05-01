@@ -40,7 +40,7 @@ public class ICC_ProfileInputStream extends FilterImageInputStream {
     }
 
     public float readS15Fixed16Number() throws IOException {
-        return readInt() / 65536.0f;
+        return readInt() / 65535.0f;
 
     }
 
@@ -53,11 +53,11 @@ public class ICC_ProfileInputStream extends FilterImageInputStream {
     }
 
     public float readU16Fixed16Number() throws IOException {
-        return readUnsignedInt() / 65536.0f;
+        return readUnsignedInt() / 65535.0f;
     }
 
     public float readU8Fixed8Number() throws IOException {
-        return readUnsignedShort() / 256.0f;
+        return readUnsignedShort() / 255.0f;
     }
 
     public int readUInt16() throws IOException {

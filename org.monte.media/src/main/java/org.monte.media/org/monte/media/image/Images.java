@@ -4,10 +4,16 @@
  */
 package org.monte.media.image;
 
-import org.monte.media.util.stream.RangeStream;
-
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.ImageIcon;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.awt.image.ColorModel;
@@ -70,13 +76,16 @@ public class Images {
     /// @return img
     public static BufferedImage toRGBImage(Image img) {
         BufferedImage src = toBufferedImage(img);
-        if (src.getColorModel().getColorSpace().getType() == RGB.getColorSpace().getType()) {
+        if (src.getColorModel().getColorSpace().isCS_sRGB()) {
             return src;
         }
         ColorModel dst = hasAlpha(src) ? ARGB : RGB;
-        return toImageWithColorModel_usingColorConvertOp(img, dst);
+        return toImageWithColorModel_usingDrawImage(img, dst);
     }
 
+    /// Do not use ColorConvertOp - It only works for 24-bit images!
+    ///
+    ///
     /// Converts the image into a buffered image with an RGB color model. This
     /// method returns the same image, if no conversion is needed.
     ///
@@ -101,18 +110,22 @@ public class Images {
 
         ColorConvertOp op = new ColorConvertOp(src.getColorModel().getColorSpace(), cm.getColorSpace(), null);
         BufferedImage dest = new BufferedImage(cm, cm.createCompatibleWritableRaster(w, h), cm.isAlphaPremultiplied(), new Hashtable<>());
-
         // split the image into bands and convert each band in parallel
-        //op.filter(src.getRaster(), dest.getRaster());
+        op.filter(src.getRaster(), dest.getRaster());
+        /*
         RangeStream.range(0, h).parallel().forEach((lo, hi) -> {
             Raster src1 = src.getRaster().createChild(0, lo, w, hi - lo, 0, 0, null);
-            WritableRaster dest1 = (WritableRaster) dest.getRaster().createChild(0, lo, w, hi - lo, 0, 0, null);
-            op.filter(src1, dest1);
-        });
+            WritableRaster raster = dest.getRaster();
+            Raster dest1 = raster.createChild(0, lo, w, hi - lo, 0, 0, null);
+            op.filter(src1, (WritableRaster) dest1);
+        });*/
 
         return dest;
     }
 
+    /// This works better than ColorConvertOp, but it does not work well in a parallel stream, because only one
+    /// thread can call `drawImage` at a time!
+    ///
     /// Converts the image into a buffered image with an RGB color model. This
     /// method returns the same image, if no conversion is needed.
     ///

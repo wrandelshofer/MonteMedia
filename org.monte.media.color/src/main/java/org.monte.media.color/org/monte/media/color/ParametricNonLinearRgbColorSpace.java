@@ -5,7 +5,7 @@
 
 package org.monte.media.color;
 
-import org.monte.media.color.trc.ToneMapper;
+import org.monte.media.color.tonecurve.ToneMapper;
 
 import java.awt.color.ColorSpace;
 

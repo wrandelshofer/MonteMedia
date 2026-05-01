@@ -4,16 +4,13 @@
  */
 package org.monte.media.color;
 
-public class OKLchColorSpace extends ParametricLchColorSpace {
-    public static OKLchColorSpace getInstance() {
+public class OKLchColorSpace {
+    public static ParametricLchColorSpace getInstance() {
         class Holder {
-            private static final OKLchColorSpace INSTANCE = new OKLchColorSpace();
+            private static final ParametricLchColorSpace INSTANCE = new ParametricLchColorSpace(
+                    "OKLCH", new OKLabColorSpace()
+            );
         }
         return Holder.INSTANCE;
-    }
-
-
-    public OKLchColorSpace() {
-        super("OKLCH", new OKLabColorSpace());
     }
 }

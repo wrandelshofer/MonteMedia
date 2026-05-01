@@ -3,7 +3,7 @@
  * Copyright © 2026 Werner Randelshofer, Switzerland. MIT License.
  */
 
-package org.monte.media.color.trc;
+package org.monte.media.color.tonecurve;
 
 
 /// Gamma tone curve mapper.
@@ -24,6 +24,7 @@ public final class GammaToneMapper implements ToneMapper {
     private final float dbagamma;
     private final float invgamma;
     private final float invc;
+    private final float inva;
 
     /// Creates a new instance.
     ///
@@ -48,26 +49,27 @@ public final class GammaToneMapper implements ToneMapper {
         this.dbagamma = (float) Math.pow((d + b) / a, gamma);
         this.invgamma = 1f / gamma;
         this.invc = 1f / c;
+        this.inva = 1f / a;
     }
 
     @Override
-    public float fromLinear(float y) {
+    public float fromLinear(int component, float y) {
         float sign = Math.signum(y);
         float abs = Math.abs(y);
-        if (abs > dbagamma) {
+        if (abs >= dbagamma) {
             return sign * (a * (float) Math.pow(abs, invgamma) - b);
         }
         return c * y;
     }
 
     @Override
-    public float toLinear(float x) {
+    public float toLinear(int component, float x) {
         float sign = Math.signum(x);
         float abs = Math.abs(x);
         if (abs < d) {
             return x * invc;
         }
-        return sign * (float) (Math.pow((abs + b) / a, gamma));
+        return sign * (float) (Math.pow((abs + b) * inva, gamma));
     }
 
     public GammaToneCurve getParameters() {

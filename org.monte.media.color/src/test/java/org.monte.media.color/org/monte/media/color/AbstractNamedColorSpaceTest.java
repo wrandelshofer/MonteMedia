@@ -75,8 +75,8 @@ public abstract class AbstractNamedColorSpaceTest {
         if (!(getInstance() instanceof ParametricNonLinearRgbColorSpace cs)) {
             return;
         }
-        FloatFunction toLinear = cs.getToneMapper()::toLinear;
-        FloatFunction fromLinear = cs.getToneMapper()::fromLinear;
+        FloatFunction toLinear = x -> cs.getToneMapper().toLinear(0, x);
+        FloatFunction fromLinear = y -> cs.getToneMapper().fromLinear(0, y);
 
         // should biject with values in range
         for (int i = 0; i < 256; i++) {
@@ -146,19 +146,19 @@ public abstract class AbstractNamedColorSpaceTest {
     public void shouldBijectWithXyzForAllSrgbValues() {
         NamedColorSpace cs = getInstance();
         AtomicInteger failures = new AtomicInteger();
+        int value = 0xee;
         IntStream.range(0, 1 << 24)
                 .parallel()
                 .forEach((rgb) -> {
                     float[] rgbf = new float[3];
                     float[] actualRgbf = new float[3];
-                    float[] componentf = new float[cs.getNumComponents()];
+                    float[] initialComponentf = new float[cs.getNumComponents()];
                     float[] actualComponentf = new float[cs.getNumComponents()];
                     float[] xyzf = new float[3];
                     RgbBitConverters.rgb24ToRgbFloat(rgb, rgbf);
-                    RgbBitConverters.rgb24ToRgbFloat(rgb, rgbf);
-                    cs.fromRGB(rgbf, componentf);
+                    cs.fromRGB(rgbf, initialComponentf);
 
-                    cs.toCIEXYZ(componentf, xyzf);
+                    cs.toCIEXYZ(initialComponentf, xyzf);
                     cs.fromCIEXYZ(xyzf, actualComponentf);
 
                     cs.toRGB(actualComponentf, actualRgbf);
@@ -167,57 +167,57 @@ public abstract class AbstractNamedColorSpaceTest {
                         float eps0 = (cs.getMaxValue(0) - cs.getMinValue(0)) * EPSILON;
                         float eps1 = (cs.getMaxValue(1) - cs.getMinValue(1)) * EPSILON;
                         float eps2 = (cs.getMaxValue(2) - cs.getMinValue(2)) * EPSILON;
-                        if (cs.getType() == NamedColorSpace.TYPE_LCH && almostEqual(cs.getMinValue(1), componentf[1], eps1)) {
+                        if (cs.getType() == NamedColorSpace.TYPE_LCH && almostEqual(cs.getMinValue(1), initialComponentf[1], eps1)) {
                             // When chroma is almost at min, then hue is powerless and can be ignored.
-                            assertEquals(componentf[0], actualComponentf[0], eps0, cs.getName(0));
-                            assertEquals(componentf[1], actualComponentf[1], eps1, cs.getName(1));
+                            assertEquals(initialComponentf[0], actualComponentf[0], eps0, cs.getName(0));
+                            assertEquals(initialComponentf[1], actualComponentf[1], eps1, cs.getName(1));
 
                         } else if (cs.getType() == NamedColorSpace.TYPE_LCH
-                                && (almostEqual(cs.getMinValue(2), componentf[2], eps2) || almostEqual(cs.getMaxValue(2), componentf[2], eps2))) {
+                                && (almostEqual(cs.getMinValue(2), initialComponentf[2], eps2) || almostEqual(cs.getMaxValue(2), initialComponentf[2], eps2))) {
                             // When hue is almost at min it is acceptable if it is at almost at max
-                            assertEquals(componentf[0], actualComponentf[0], eps0, cs.getName(0));
-                            assertEquals(componentf[1], actualComponentf[1], eps1, cs.getName(1));
-                            assertTrue(almostEqual(componentf[2], actualComponentf[2], eps2)
+                            assertEquals(initialComponentf[0], actualComponentf[0], eps0, cs.getName(0));
+                            assertEquals(initialComponentf[1], actualComponentf[1], eps1, cs.getName(1));
+                            assertTrue(almostEqual(initialComponentf[2], actualComponentf[2], eps2)
                                     || almostEqual(cs.getMinValue(2), actualComponentf[2], eps2)
                                     || almostEqual(cs.getMaxValue(2), actualComponentf[2], eps2), cs.getName(2));
 
-                        } else if (cs.getType() == ColorSpace.TYPE_HSV && almostEqual(cs.getMinValue(1), componentf[1], eps1)) {
+                        } else if (cs.getType() == ColorSpace.TYPE_HSV && almostEqual(cs.getMinValue(1), initialComponentf[1], eps1)) {
                             // When saturation is almost min, then hue is powerless and can be ignored.
-                            assertEquals(componentf[1], actualComponentf[1], eps1, cs.getName(1));
-                            assertEquals(componentf[2], actualComponentf[2], eps2, cs.getName(2));
-                        } else if (cs.getType() == ColorSpace.TYPE_HSV && almostEqual(cs.getMinValue(2), componentf[2], eps2)) {
+                            assertEquals(initialComponentf[1], actualComponentf[1], eps1, cs.getName(1));
+                            assertEquals(initialComponentf[2], actualComponentf[2], eps2, cs.getName(2));
+                        } else if (cs.getType() == ColorSpace.TYPE_HSV && almostEqual(cs.getMinValue(2), initialComponentf[2], eps2)) {
                             // When value is almost min, then hue is powerless and can be ignored.
-                            assertEquals(componentf[1], actualComponentf[1], eps1, cs.getName(1));
-                            assertEquals(componentf[2], actualComponentf[2], eps2, cs.getName(2));
+                            assertEquals(initialComponentf[1], actualComponentf[1], eps1, cs.getName(1));
+                            assertEquals(initialComponentf[2], actualComponentf[2], eps2, cs.getName(2));
                         } else if (cs.getType() == ColorSpace.TYPE_HSV
-                                && (almostEqual(cs.getMinValue(0), componentf[0], eps0) || almostEqual(cs.getMaxValue(0), componentf[0], eps0))) {
+                                && (almostEqual(cs.getMinValue(0), initialComponentf[0], eps0) || almostEqual(cs.getMaxValue(0), initialComponentf[0], eps0))) {
                             // When hue is almost at max it is acceptable if it is at almost at min
-                            assertEquals(componentf[1], actualComponentf[1], eps1, cs.getName(1));
-                            assertEquals(componentf[2], actualComponentf[2], eps2, cs.getName(2));
-                            assertTrue(almostEqual(componentf[0], actualComponentf[0], eps0)
+                            assertEquals(initialComponentf[1], actualComponentf[1], eps1, cs.getName(1));
+                            assertEquals(initialComponentf[2], actualComponentf[2], eps2, cs.getName(2));
+                            assertTrue(almostEqual(initialComponentf[0], actualComponentf[0], eps0)
                                             || almostEqual(cs.getMinValue(0), actualComponentf[0], eps0)
                                             || almostEqual(cs.getMaxValue(0), actualComponentf[0], eps0),
                                     cs.getName(0) + " wrap around max/min");
 
                         } else if (cs.getType() == ColorSpace.TYPE_HLS
-                                && (almostEqual(cs.getMinValue(1), componentf[1], eps1)
-                                || almostEqual(cs.getMaxValue(1), componentf[1], eps1))) {
+                                && (almostEqual(cs.getMinValue(1), initialComponentf[1], eps1)
+                                || almostEqual(cs.getMaxValue(1), initialComponentf[1], eps1))) {
                             // When lightness is almost min or almost max, then hue and saturation are powerless and can be ignored.
-                            assertEquals(componentf[1], actualComponentf[1], eps1, cs.getName(1));
-                        } else if (cs.getType() == ColorSpace.TYPE_HLS && almostEqual(cs.getMinValue(2), componentf[2], eps2)) {
+                            assertEquals(initialComponentf[1], actualComponentf[1], eps1, cs.getName(1));
+                        } else if (cs.getType() == ColorSpace.TYPE_HLS && almostEqual(cs.getMinValue(2), initialComponentf[2], eps2)) {
                             // When saturation is almost min, then hue is powerless and can be ignored.
-                            assertEquals(componentf[1], actualComponentf[1], eps1, cs.getName(1));
-                            assertEquals(componentf[2], actualComponentf[2], eps2, cs.getName(2));
+                            assertEquals(initialComponentf[1], actualComponentf[1], eps1, cs.getName(1));
+                            assertEquals(initialComponentf[2], actualComponentf[2], eps2, cs.getName(2));
                         } else if (cs.getType() == ColorSpace.TYPE_HLS
-                                && (almostEqual(cs.getMinValue(0), componentf[0], eps0) || almostEqual(cs.getMaxValue(0), componentf[0], eps0))) {
+                                && (almostEqual(cs.getMinValue(0), initialComponentf[0], eps0) || almostEqual(cs.getMaxValue(0), initialComponentf[0], eps0))) {
                             // When hue is almost at max it is acceptable if it is at almost at min
-                            assertEquals(componentf[1], actualComponentf[1], eps1, cs.getName(1));
-                            assertEquals(componentf[2], actualComponentf[2], eps2, cs.getName(2));
-                            assertTrue(almostEqual(componentf[0], actualComponentf[0], eps0)
+                            assertEquals(initialComponentf[1], actualComponentf[1], eps1, cs.getName(1));
+                            assertEquals(initialComponentf[2], actualComponentf[2], eps2, cs.getName(2));
+                            assertTrue(almostEqual(initialComponentf[0], actualComponentf[0], eps0)
                                     || almostEqual(cs.getMinValue(0), actualComponentf[0], eps0)
                                     || almostEqual(cs.getMaxValue(0), actualComponentf[0], eps0), cs.getName(0));
                         } else {
-                            assertEquals(componentf[0], actualComponentf[0], eps0, cs.getName(0));
+                            assertEquals(initialComponentf[0], actualComponentf[0], eps0, cs.getName(0));
                         }
                         int actualRgb = RgbBitConverters.rgbFloatToRgb24(actualRgbf);
                         assertEquals(rgb, actualRgb, "RGB");
@@ -226,7 +226,7 @@ public abstract class AbstractNamedColorSpaceTest {
                             String message =
                                     "\ninitial rgb : " + Integer.toHexString(rgb)
                                             + "\ninitial rgbf: " + Arrays.toString(rgbf)
-                                            + "\ninitial componentf: " + Arrays.toString(componentf)
+                                            + "\ninitial componentf: " + Arrays.toString(initialComponentf)
                                             + "\nxyz: " + Arrays.toString(xyzf)
                                             + "\nactual  componentf: " + Arrays.toString(actualComponentf)
                                             + "\nactual  rgbf: " + Arrays.toString(actualRgbf)
@@ -237,6 +237,7 @@ public abstract class AbstractNamedColorSpaceTest {
                         failures.incrementAndGet();
                     }
                 });
+
         assertTrue(failures.get() == 0, "too many failures=" + failures.get());
     }
 
@@ -272,5 +273,4 @@ public abstract class AbstractNamedColorSpaceTest {
         }
         assertArrayEquals(inputRgb, roundtripRgb, EPSILON, name + " rgb->component->XYZ->component->rgb");
     }
-
 }

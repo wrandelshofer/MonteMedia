@@ -10,6 +10,6 @@ public class LinearDisplayP3ColorSpaceTest extends AbstractNamedColorSpaceTest {
 
     @Override
     protected NamedColorSpace getInstance() {
-        return new DisplayP3ColorSpace().getLinearColorSpace();
+        return DisplayP3ColorSpace.getInstance().getLinearColorSpace();
     }
 }

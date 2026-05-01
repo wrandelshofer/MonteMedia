@@ -23,8 +23,10 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import org.monte.media.amigabitmap.AmigaBitmapImageConverter;
 import org.monte.media.amigabitmap.AmigaHAMColorModel;
+import org.monte.media.image.Images;
 import org.monte.media.image.algo.NearestNeighbourResampleAlgoFloat;
 
+import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.nio.IntBuffer;
 import java.util.concurrent.ForkJoinPool;
@@ -43,6 +45,8 @@ public class RenderedImageViewController {
         BufferedImage newImg = image.get();
         if (newImg != null && newImg.getColorModel() instanceof AmigaHAMColorModel) {
             newImg = AmigaBitmapImageConverter.newInstance().hamToRgb(newImg, null);
+        } else if (newImg != null && newImg.getColorModel().getColorSpace() != ColorSpace.getInstance(ColorSpace.CS_sRGB)) {
+            newImg = Images.toRGBImage(newImg);
         }
         Image fxImg = newImg == null ? null : SwingFXUtils.toFXImage(newImg, null);
 

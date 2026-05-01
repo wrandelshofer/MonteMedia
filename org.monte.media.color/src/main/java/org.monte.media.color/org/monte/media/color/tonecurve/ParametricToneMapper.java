@@ -3,7 +3,7 @@
  * Copyright © 2026 Werner Randelshofer, Switzerland. MIT License.
  */
 
-package org.monte.media.color.trc;
+package org.monte.media.color.tonecurve;
 
 /// Parametric tone curve mapper.
 /// ```
@@ -52,7 +52,7 @@ public final class ParametricToneMapper implements ToneMapper {
     }
 
     @Override
-    public float fromLinear(float y) {
+    public float fromLinear(int component, float y) {
         float sign = Math.signum(y);
         float abs = Math.abs(y);
         return (abs >= adbgamma)
@@ -61,7 +61,7 @@ public final class ParametricToneMapper implements ToneMapper {
     }
 
     @Override
-    public float toLinear(float x) {
+    public float toLinear(int component, float x) {
         float sign = Math.signum(x);
         float abs = Math.abs(x);
         return (abs >= d)

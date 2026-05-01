@@ -5,8 +5,8 @@
 
 package org.monte.media.color;
 
-import org.monte.media.color.trc.GammaToneMapper;
-import org.monte.media.color.trc.ToneMapper;
+import org.monte.media.color.tonecurve.GammaToneMapper;
+import org.monte.media.color.tonecurve.ToneMapper;
 import org.monte.media.math.Matrix3;
 import org.monte.media.math.Matrix3Double;
 import org.monte.media.math.Point2D;
@@ -76,13 +76,13 @@ public class ParametricLinearRgbColorSpace extends AbstractNamedColorSpace {
             ParametricLinearRgbColorSpace.ILLUMINANT_D65);
     private static final Matrix3Double FROM_D65_XYZ_TO_LINEAR_SRGB_MATRIX = FROM_LINEAR_SRGB_TO_D65_XYZ_MATRIX.inv();
 
-    /// The matrix for converting from linear RGB to XYZ.
+    /// The matrix for converting from components to XYZ.
     private final Matrix3 toXyzMatrix;
-    /// The matrix for converting from XYZ to linear RGB.
+    /// The matrix for converting from XYZ to components.
     private final Matrix3 fromXyzMatrix;
-    /// The matrix for converting from linear RGB to sRGB.
+    /// The matrix for converting from components to linear sRGB.
     private final Matrix3 toLinearSrgbMatrix;
-    /// The matrix for converting from sRGB to linear RGB.
+    /// The matrix for converting from linear sRGB to components.
     private final Matrix3 fromLinearSrgbMatrix;
     /// The name of the color space.
     private final String name;
@@ -134,14 +134,14 @@ public class ParametricLinearRgbColorSpace extends AbstractNamedColorSpace {
 
         Matrix3Double toD50XyzMatrixDouble;
         Matrix3Double toLinearSrgbMatrixDouble;
-        if (!whitePoint_XYZ.equals(ILLUMINANT_D50_XYZ)) {
-            Matrix3Double mA = computeChromaticAdaptationMatrix(whitePoint_XYZ, ILLUMINANT_D50_XYZ);
-            toD50XyzMatrixDouble = mA.mul(toXyzMatrixDouble);
-            toLinearSrgbMatrixDouble = FROM_D65_XYZ_TO_LINEAR_SRGB_MATRIX.mul(toXyzMatrixDouble);
-        } else {
+        if (whitePoint_XYZ.equals(ILLUMINANT_D50_XYZ)) {
             toD50XyzMatrixDouble = toXyzMatrixDouble;
             toLinearSrgbMatrixDouble = FROM_D65_XYZ_TO_LINEAR_SRGB_MATRIX.mul(
                     FROM_D50_XYZ_TO_D65_XYZ).mul(toXyzMatrixDouble);
+        } else {
+            Matrix3Double mA = computeChromaticAdaptationMatrix(whitePoint_XYZ, ILLUMINANT_D50_XYZ);
+            toD50XyzMatrixDouble = mA.mul(toXyzMatrixDouble);
+            toLinearSrgbMatrixDouble = FROM_D65_XYZ_TO_LINEAR_SRGB_MATRIX.mul(toXyzMatrixDouble);
         }
         this.toXyzMatrix = toD50XyzMatrixDouble;
         this.fromXyzMatrix = toD50XyzMatrixDouble.inv();
@@ -149,7 +149,7 @@ public class ParametricLinearRgbColorSpace extends AbstractNamedColorSpace {
         this.fromLinearSrgbMatrix = toLinearSrgbMatrixDouble.inv();
     }
 
-    /// Converts a point from XZY coordinates in to xyY.
+    /// Converts a point from XYZ coordinates in to xyY.
     /// ```
     ///     x = X / (X + Y + Z)
     ///     y = Y / (X + Y + Z)

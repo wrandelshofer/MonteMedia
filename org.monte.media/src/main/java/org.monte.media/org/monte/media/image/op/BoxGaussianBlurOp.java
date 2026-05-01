@@ -7,7 +7,8 @@ package org.monte.media.image.op;
 
 import org.monte.media.image.FloatImages;
 
-import java.awt.*;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -151,19 +152,20 @@ public class BoxGaussianBlurOp implements BufferedImageOp {
      */
     private static void transposeImage(float[] in, float[] out, int w, int h) {
         int block = 256 / 4;
-        //for (int x = 0; x < w; x += block) {
-        IntStream.range(0, w / block).parallel().forEach(i -> {
-            int x = i * block;
+        for (int x = 0; x < w; x += block) {
+            //  IntStream.range(0, Math.max(1, w / block)).parallel().forEach(i -> {
+            //    int x = i * block;
             for (int y = 0; y < h; y += block) {
                 int blockx = Math.min(w, x + block) - x;
                 int blocky = Math.min(h, y + block) - y;
-                for (int xx = 0; xx < blockx; xx++) {
-                    for (int yy = 0; yy < blocky; yy++) {
+                for (int xx = x; xx < x + blockx; xx++) {
+                    for (int yy = y; yy < y + blocky; yy++) {
                         out[yy + xx * h] = in[yy * w + xx];
                     }
                 }
             }
-        });
+            //});
+        }
     }
 
     /// Applies a horizontal box filter.
@@ -186,33 +188,40 @@ public class BoxGaussianBlurOp implements BufferedImageOp {
     /// @param h   height
     /// @param r   radius for x-axis
     private void boxBlurHorizontal(float[] in, float[] out, int w, int h, int r) {
+        if (r == 0) {
+            System.arraycopy(in, 0, out, 0, in.length);
+            return;
+        }
+
         // Compute the inverse of the box area, so that we can use a multiplication instead of a division
         float iarr = 1f / (r + r + 1);
 
-        // For each row i
-        //for (var i = 0; i < h; i++) {
-        IntStream.range(0, h).forEach(i -> {
-            int ti = i * w;// index in target channel
+        // For each row y
+        //for (var y = 0; y < h; y++) {
+        IntStream.range(0, h).parallel().forEach(y -> {
+            int ti = y * w;// index in target channel
             int li = ti; // index of left-most value in source channel
             int ri = ti + r; // index of right-most value in source channel
             float fv = in[ti], lv = in[ti + w - 1];
 
             float val = (r + 1) * fv;
-            for (var j = 0; j < r; j++) {
-                val += in[ti + j];
+            for (var x = 0; x < Math.min(r, w); x++) {
+                val += in[ti + x];
             }
-            for (var j = 0; j <= r; j++) {
+            for (var x = r; x <= Math.min(r * 2, w - 1); x++) {
                 val += in[ri++] - fv;
                 out[ti++] = val * iarr;
             }
-            for (var j = r + 1; j < w - r; j++) {
+            for (var x = Math.min(r + 1, w); x < w - r; x++) {
                 val += in[ri++] - in[li++];
                 out[ti++] = val * iarr;
             }
-            for (var j = w - r; j < w; j++) {
+            for (var x = Math.max(0, w - r); x < w; x++) {
                 val += lv - in[li++];
                 out[ti++] = val * iarr;
             }
+
         });
+        //     }
     }
 }

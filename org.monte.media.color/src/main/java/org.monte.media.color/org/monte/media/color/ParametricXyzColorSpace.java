@@ -37,7 +37,7 @@ public class ParametricXyzColorSpace extends AbstractNamedColorSpace {
 
     @Override
     public float[] fromRGB(float[] rgb, float[] colorvalue) {
-        return fromXyzMatrix.mul(SRGB_COLOR_SPACE.toCIEXYZ(rgb, colorvalue), colorvalue);
+        return fromXyzMatrix.mul(SrgbColorSpace.getInstance().toCIEXYZ(rgb, colorvalue), colorvalue);
     }
 
     @Override
@@ -47,6 +47,6 @@ public class ParametricXyzColorSpace extends AbstractNamedColorSpace {
 
     @Override
     public float[] toRGB(float[] colorvalue, float[] rgb) {
-        return SRGB_COLOR_SPACE.fromCIEXYZ(toXyzMatrix.mul(colorvalue, rgb), rgb);
+        return SrgbColorSpace.getInstance().fromCIEXYZ(toXyzMatrix.mul(colorvalue, rgb), rgb);
     }
 }
