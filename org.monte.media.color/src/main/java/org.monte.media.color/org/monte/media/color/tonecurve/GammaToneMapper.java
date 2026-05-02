@@ -53,7 +53,7 @@ public final class GammaToneMapper implements ToneMapper {
     }
 
     @Override
-    public float fromLinear(int component, float y) {
+    public float linearToCurved(int component, float y) {
         float sign = Math.signum(y);
         float abs = Math.abs(y);
         if (abs >= dbagamma) {
@@ -63,7 +63,7 @@ public final class GammaToneMapper implements ToneMapper {
     }
 
     @Override
-    public float toLinear(int component, float x) {
+    public float curvedToLinear(int component, float x) {
         float sign = Math.signum(x);
         float abs = Math.abs(x);
         if (abs < d) {

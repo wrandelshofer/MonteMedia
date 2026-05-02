@@ -13,12 +13,12 @@ public class MultiToneMapper implements ToneMapper {
     }
 
     @Override
-    public float fromLinear(int component, float y) {
-        return mappers[component].fromLinear(0, y);
+    public float linearToCurved(int component, float y) {
+        return mappers[component].linearToCurved(0, y);
     }
 
     @Override
-    public float toLinear(int component, float x) {
-        return mappers[component].toLinear(component, x);
+    public float curvedToLinear(int component, float x) {
+        return mappers[component].curvedToLinear(component, x);
     }
 }

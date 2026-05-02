@@ -26,8 +26,8 @@ class GammaToneMapperTest {
         var m = new GammaToneMapper(curve);
         for (int i = 0; i < 1000; i++) {
             float x = i / 1000f;
-            float y = m.toLinear(0, x);
-            float xx = m.fromLinear(0, y);
+            float y = m.curvedToLinear(0, x);
+            float xx = m.linearToCurved(0, y);
             assertEquals(x, xx, 1e-4f, "i=" + i);
 
         }

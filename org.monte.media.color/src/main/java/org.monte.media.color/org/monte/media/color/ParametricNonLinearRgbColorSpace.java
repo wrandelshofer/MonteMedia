@@ -29,7 +29,7 @@ public class ParametricNonLinearRgbColorSpace extends AbstractNamedColorSpace {
     }
 
     protected float[] fromLinear(float[] linear, float[] curved) {
-        return toneMapper.fromLinear(linear, curved);
+        return toneMapper.linearToCurved(linear, curved);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ParametricNonLinearRgbColorSpace extends AbstractNamedColorSpace {
     }
 
     protected float[] toLinear(float[] curved, float[] linear) {
-        return toneMapper.toLinear(curved, linear);
+        return toneMapper.curvedToLinear(curved, linear);
     }
 
     public ToneMapper getToneMapper() {

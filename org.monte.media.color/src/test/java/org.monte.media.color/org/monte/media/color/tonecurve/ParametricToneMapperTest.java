@@ -24,8 +24,8 @@ class ParametricToneMapperTest {
         var m = new ParametricToneMapper(curve);
         for (int i = 0; i < 1000; i++) {
             float x = i / 1000f;
-            float y = m.toLinear(0, x);
-            float xx = m.fromLinear(0, y);
+            float y = m.curvedToLinear(0, x);
+            float xx = m.linearToCurved(0, y);
             assertEquals(x, xx, 1e-4f, "i=" + i);
         }
     }
@@ -39,10 +39,10 @@ class ParametricToneMapperTest {
         for (int i = 0; i < 1000; i++) {
             float x = i / 1000f;
             float y = x;
-            float py = pm.toLinear(0, x);
-            float gy = gm.toLinear(0, x);
-            float px = pm.fromLinear(0, y);
-            float gx = gm.fromLinear(0, y);
+            float py = pm.curvedToLinear(0, x);
+            float gy = gm.curvedToLinear(0, x);
+            float px = pm.linearToCurved(0, y);
+            float gx = gm.linearToCurved(0, y);
             assertEquals(py, gy, 1e-4f, "i=" + i);
             assertEquals(px, gx, 1e-4f, "i=" + i);
         }

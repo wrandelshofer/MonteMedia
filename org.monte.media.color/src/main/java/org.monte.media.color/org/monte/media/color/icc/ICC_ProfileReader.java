@@ -30,7 +30,7 @@ import java.util.zip.Inflater;
 
 /// Reads an ICC_Profile from IIOMetadata
 public class ICC_ProfileReader {
-    private final static String[] RGB_NAMES = {"red  ", "green", "blue "};
+    public final static String[] RGB_NAMES = {"red", "green", "blue"};
     private final ICC_Profile icp;
 
     public ICC_ProfileReader(IIOMetadata meta) {
@@ -91,6 +91,10 @@ public class ICC_ProfileReader {
     }
 
     private static final int HEADER_SIZE = 128;
+
+    public int[] getTagSignatures() {
+        return getTagSignatures(icp);
+    }
 
     /// ```
     /// typedef struct {
@@ -380,7 +384,8 @@ public class ICC_ProfileReader {
             String asciiDescription = new String(byteBuf, 0, (int) asciiLength - 1, StandardCharsets.US_ASCII);
             in.skipBytes(3);
             String languageCode = in.readFourCC();
-            long unicodeLength = in.readUInt32();
+            int unused = in.readUInt16();
+            int unicodeLength = in.readUInt16();
             int scriptCodeCode = in.readUInt16();
             int macintoshLength = in.readUInt8();
             in.skipBytes(1);
@@ -446,8 +451,10 @@ public class ICC_ProfileReader {
             //buf.append("  white xy : ").append(Arrays.toString(toXY(p.getMediaWhitePoint()))).append('\n');
             var matrix = p.getMatrix();
             for (int i = 0; i < matrix.length; i++) {
-                buf.append("  ").append(RGB_NAMES[i]).append(" XYZ: ").append(matrix[0][i]).append(", ").append(matrix[1][i]).append(", ").append(matrix[2][i]).append(", ").append('\n');
-                //buf.append("  ").append(RGB_NAMES[i]).append(" xy : ").append(Arrays.toString(toXY(matrix[0][i], matrix[1][i], matrix[2][i]))).append(", ").append('\n');
+                //buf.append("  ").append(RGB_NAMES[i]).append(" XYZ: ").append(matrix[0][i]).append(", ").append(matrix[1][i]).append(", ").append(matrix[2][i]).append(", ").append('\n');
+                ////buf.append("  ").append(RGB_NAMES[i]).append(" xy : ").append(Arrays.toString(toXY(matrix[0][i], matrix[1][i], matrix[2][i]))).append(", ").append('\n');
+                //var xy = toXY(matrix[0][i], matrix[1][i], matrix[2][i]);
+                buf.append("  ").append(RGB_NAMES[i]).append(String.format(" XY/: %.3f %.3f %.3f\n", matrix[0][i], matrix[1][i], matrix[2][i]));
             }
             for (int i = 0; i < 3; i++) {
                 try {

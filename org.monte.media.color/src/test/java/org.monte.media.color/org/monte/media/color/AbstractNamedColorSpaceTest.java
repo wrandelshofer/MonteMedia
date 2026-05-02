@@ -75,8 +75,8 @@ public abstract class AbstractNamedColorSpaceTest {
         if (!(getInstance() instanceof ParametricNonLinearRgbColorSpace cs)) {
             return;
         }
-        FloatFunction toLinear = x -> cs.getToneMapper().toLinear(0, x);
-        FloatFunction fromLinear = y -> cs.getToneMapper().fromLinear(0, y);
+        FloatFunction toLinear = x -> cs.getToneMapper().curvedToLinear(0, x);
+        FloatFunction fromLinear = y -> cs.getToneMapper().linearToCurved(0, y);
 
         // should biject with values in range
         for (int i = 0; i < 256; i++) {

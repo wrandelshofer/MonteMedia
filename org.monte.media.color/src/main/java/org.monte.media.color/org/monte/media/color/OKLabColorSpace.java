@@ -165,7 +165,7 @@ public class OKLabColorSpace extends AbstractNamedColorSpace {
     }
 
     protected float[] fromLinear(float[] linear, float[] curved) {
-        return toneMapper.fromLinear(linear, curved);
+        return toneMapper.linearToCurved(linear, curved);
     }
 
     public float[] fromLinearRGB(float[] rgb, float[] lab) {
@@ -212,7 +212,7 @@ public class OKLabColorSpace extends AbstractNamedColorSpace {
 
 
     protected float[] toLinear(float[] curved, float[] linear) {
-        return toneMapper.toLinear(curved, linear);
+        return toneMapper.curvedToLinear(curved, linear);
     }
 
     protected float[] toLinearRGB(float[] lab, float[] rgb) {

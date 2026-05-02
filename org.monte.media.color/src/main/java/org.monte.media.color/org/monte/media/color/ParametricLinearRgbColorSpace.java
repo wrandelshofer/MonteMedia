@@ -223,7 +223,7 @@ public class ParametricLinearRgbColorSpace extends AbstractNamedColorSpace {
 
     @Override
     public float[] fromRGB(float[] rgb, float[] colorvalue) {
-        return fromLinearSrgbMatrix.mul(toneMapper.toLinear(rgb, colorvalue), colorvalue);
+        return fromLinearSrgbMatrix.mul(toneMapper.curvedToLinear(rgb, colorvalue), colorvalue);
     }
 
 
@@ -247,7 +247,7 @@ public class ParametricLinearRgbColorSpace extends AbstractNamedColorSpace {
 
     @Override
     public float[] toRGB(float[] colorvalue, float[] rgb) {
-        return toneMapper.fromLinear(toLinearSrgbMatrix.mul(colorvalue, rgb), rgb);
+        return toneMapper.linearToCurved(toLinearSrgbMatrix.mul(colorvalue, rgb), rgb);
     }
 
     @Override

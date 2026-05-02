@@ -39,15 +39,24 @@ import org.monte.demo.javafx.colorquantizer.model.ColorQuantizerMainModel;
 import org.monte.demo.javafx.colorquantizer.model.DitheringMethod;
 import org.monte.demo.javafx.colorquantizer.model.PaletteMode;
 import org.monte.media.color.Rec709ColorSpace;
+import org.monte.media.color.icc.ICC_ProfileReader;
 
 import java.awt.color.ColorSpace;
+import java.awt.color.ICC_ColorSpace;
+import java.awt.color.ICC_ProfileGray;
+import java.awt.color.ICC_ProfileRGB;
+import java.awt.color.ProfileDataException;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import static org.monte.media.color.icc.ICC_ProfileReader.RGB_NAMES;
+import static org.monte.media.color.icc.ICC_ProfileReader.toXY;
 
 public class ColorInspectorController {
     private final ListProperty<Color> palette = new SimpleListProperty<>(FXCollections.observableArrayList());
@@ -282,8 +291,7 @@ public class ColorInspectorController {
         if (newv != null) {
             inputImageColorSpaceLabel.textProperty().bind(newv.rawReferenceImageProperty().map(
                     img -> {
-                        if (img == null) return "no image";
-                        return img.getColorModel().getColorSpace().toString();
+                        return describeColorSpace(img);
                     })
             );
             inputImageColorsLabel.textProperty().bind(newv.rawReferenceImageProperty().map(
@@ -333,5 +341,54 @@ public class ColorInspectorController {
                 }
             });
         }
+    }
+
+    private static String describeColorSpace(BufferedImage img) {
+        if (img == null) return "no image";
+        ColorSpace cs = img.getColorModel().getColorSpace();
+        if (cs instanceof ICC_ColorSpace iccs) {
+            var r = new ICC_ProfileReader(iccs.getProfile());
+            var buf = new StringBuffer();
+            buf.append("IxCC_Profile {").append('\n');
+            var icp = iccs.getProfile();
+
+            if (icp instanceof ICC_ProfileGray p) {
+                buf.append("  white XYZ: ").append(Arrays.toString(p.getMediaWhitePoint())).append('\n');
+                //buf.append("  white xy : ").append(Arrays.toString(toXY(p.getMediaWhitePoint()))).append('\n');
+                try {
+                    float gamma = p.getGamma();
+                    buf.append("  gamma: ").append(gamma).append('\n');
+                } catch (ProfileDataException e) {
+                    // trc is not a gamma
+                }
+            } else if (icp instanceof ICC_ProfileRGB p) {
+                var whiteXYZ = p.getMediaWhitePoint();
+                var xy = toXY(whiteXYZ[0], whiteXYZ[1], whiteXYZ[2]);
+                //buf.append("  ").append("white").append(String.format(" XY: %.3f %.3f\n", xy[0], xy[1]));
+                buf.append("  ").append("white").append(String.format(" XYZ: %.3f %.3f %.3f\n", whiteXYZ[0], whiteXYZ[1], whiteXYZ[2]));
+                //buf.append("  white XYZ: ").append(Arrays.toString(p.getMediaWhitePoint())).append('\n');
+                //buf.append("  white xy : ").append(Arrays.toString(toXY(p.getMediaWhitePoint()))).append('\n');
+                var matrix = p.getMatrix();
+                for (int i = 0; i < matrix.length; i++) {
+                    xy = toXY(matrix[0][i], matrix[1][i], matrix[2][i]);
+                    // buf.append("  ").append(RGB_NAMES[i]).append(String.format(" XY: %.3f %.3f\n", xy[0], xy[1]));
+                    buf.append("  ").append(RGB_NAMES[i]).append(String.format(" XYZ: %.3f %.3f %.3f\n", matrix[0][i], matrix[1][i], matrix[2][i]));
+                }
+                for (int i = 0; i < 3; i++) {
+                    try {
+                        float gamma = p.getGamma(i);
+                        buf.append("  ").append(RGB_NAMES[i]).append(" gamma: ").append(gamma).append('\n');
+                    } catch (ProfileDataException e) {
+                        // trc is not a gamma
+                    }
+                }
+            } else {
+                buf.append(icp.toString()).append('\n');
+            }
+            buf.append('}');
+            IO.println(r.toString());
+            return buf.toString();
+        }
+        return cs.toString();
     }
 }

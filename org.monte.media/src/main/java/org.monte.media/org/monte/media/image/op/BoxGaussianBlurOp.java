@@ -152,9 +152,9 @@ public class BoxGaussianBlurOp implements BufferedImageOp {
      */
     private static void transposeImage(float[] in, float[] out, int w, int h) {
         int block = 256 / 4;
-        for (int x = 0; x < w; x += block) {
-            //  IntStream.range(0, Math.max(1, w / block)).parallel().forEach(i -> {
-            //    int x = i * block;
+        //for (int x = 0; x < w; x += block) {
+        IntStream.range(0, Math.ceilDiv(w, block)).parallel().forEach(i -> {
+            int x = i * block;
             for (int y = 0; y < h; y += block) {
                 int blockx = Math.min(w, x + block) - x;
                 int blocky = Math.min(h, y + block) - y;
@@ -164,8 +164,8 @@ public class BoxGaussianBlurOp implements BufferedImageOp {
                     }
                 }
             }
-            //});
-        }
+        });
+        // }
     }
 
     /// Applies a horizontal box filter.
