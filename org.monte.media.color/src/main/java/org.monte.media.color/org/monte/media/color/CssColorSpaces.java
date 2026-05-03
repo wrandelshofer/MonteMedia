@@ -29,7 +29,7 @@ public class CssColorSpaces {
                 "display-p3", DisplayP3ColorSpace.getInstance(),
                 "a98-rgb", A98RgbColorSpace.getInstance(),
                 "prophoto-rgb", ProPhotoRgbColorSpace.getInstance(),
-                "rec2020", Rec2020ColorSpace.getInstance(),
+                "rec2020", RecBT2020ColorSpace.getInstance(),
                 "xyz", d65XyzColorSpace,
                 "xyz-d65", d65XyzColorSpace,
                 "xyz-d50", new D50XyzColorSpace()

@@ -38,8 +38,14 @@ import org.monte.demo.javafx.colorquantizer.model.ColorMode;
 import org.monte.demo.javafx.colorquantizer.model.ColorQuantizerMainModel;
 import org.monte.demo.javafx.colorquantizer.model.DitheringMethod;
 import org.monte.demo.javafx.colorquantizer.model.PaletteMode;
-import org.monte.media.color.Rec709ColorSpace;
+import org.monte.media.color.ParametricLinearRgbColorSpace;
+import org.monte.media.color.ParametricNonLinearRgbColorSpace;
+import org.monte.media.color.RecBT1886ColorSpace;
+import org.monte.media.color.RecBT2020ColorSpace;
+import org.monte.media.color.RecBT2035ColorSpace;
+import org.monte.media.color.RecBT709ColorSpace;
 import org.monte.media.color.icc.ICC_ProfileReader;
+import org.monte.media.color.tonecurve.GammaToneMapper;
 
 import java.awt.color.ColorSpace;
 import java.awt.color.ICC_ColorSpace;
@@ -51,7 +57,6 @@ import java.awt.image.IndexColorModel;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -190,7 +195,10 @@ public class ColorInspectorController {
         colorSpaceComboBox.itemsProperty().set(FXCollections.observableArrayList(
                 null,
                 ColorSpace.getInstance(ColorSpace.CS_sRGB),
-                Rec709ColorSpace.getInstance()
+                RecBT709ColorSpace.getInstance(),
+                RecBT1886ColorSpace.getInstance(),
+                RecBT2020ColorSpace.getInstance(),
+                RecBT2035ColorSpace.getInstance()
         ));
         colorSpaceComboBox.setConverter(new StringConverter<ColorSpace>() {
             @Override
@@ -347,48 +355,78 @@ public class ColorInspectorController {
         if (img == null) return "no image";
         ColorSpace cs = img.getColorModel().getColorSpace();
         if (cs instanceof ICC_ColorSpace iccs) {
-            var r = new ICC_ProfileReader(iccs.getProfile());
-            var buf = new StringBuffer();
-            buf.append("IxCC_Profile {").append('\n');
-            var icp = iccs.getProfile();
+            return describeICC_ColorSpace(iccs);
+        } else if (cs instanceof ParametricNonLinearRgbColorSpace iccs) {
+            return describeParametricNonLinearRgbColorSpace(iccs);
+        }
+        return cs.toString();
+    }
 
-            if (icp instanceof ICC_ProfileGray p) {
-                buf.append("  white XYZ: ").append(Arrays.toString(p.getMediaWhitePoint())).append('\n');
-                //buf.append("  white xy : ").append(Arrays.toString(toXY(p.getMediaWhitePoint()))).append('\n');
+    private static String describeParametricNonLinearRgbColorSpace(ParametricNonLinearRgbColorSpace c) {
+        var lc = (ParametricLinearRgbColorSpace) c.getLinearColorSpace();
+        var buf = new StringBuffer();
+        buf.append(c.getName());
+        buf.append(" {").append('\n');
+        var toneMapper = c.getToneMapper();
+        buf.append("  ").append("white").append(String.format(" xy: %.3f %.3f\n", lc.getWhite().getX(), lc.getWhite().getY()));
+        buf.append("  ").append("red").append(String.format(" xy: %.3f %.3f\n", lc.getRed().getX(), lc.getRed().getY()));
+        buf.append("  ").append("green").append(String.format(" xy: %.3f %.3f\n", lc.getGreen().getX(), lc.getGreen().getY()));
+        buf.append("  ").append("blue").append(String.format(" xy: %.3f %.3f\n", lc.getBlue().getX(), lc.getBlue().getY()));
+        if (toneMapper instanceof GammaToneMapper gtm) {
+            buf.append("  gamma: ").append(gtm.getParameters().gamma())
+                    .append(" = 1/").append(1f / gtm.getParameters().gamma()).append('\n');
+        }
+
+        buf.append('}');
+        return buf.toString();
+
+    }
+
+    private static String describeICC_ColorSpace(ICC_ColorSpace iccs) {
+        var r = new ICC_ProfileReader(iccs.getProfile());
+        var buf = new StringBuffer();
+        buf.append(r.getTag(ICC_ProfileReader.icSigDescription));
+        buf.append(" {").append('\n');
+        var icp = iccs.getProfile();
+
+        if (icp instanceof ICC_ProfileGray p) {
+            //buf.append("  white XYZ: ").append(Arrays.toString(p.getMediaWhitePoint())).append('\n');
+            //buf.append("  white xy : ").append(Arrays.toString(toXY(p.getMediaWhitePoint()))).append('\n');
+            var xy = toXY(p.getMediaWhitePoint());
+            buf.append("  ").append("white").append(String.format(" xy: %.3f %.3f\n", xy[0], xy[1]));
+            try {
+                float gamma = p.getGamma();
+                buf.append("  gamma: ").append(gamma).append('\n');
+            } catch (ProfileDataException e) {
+                // trc is not a gamma
+            }
+        } else if (icp instanceof ICC_ProfileRGB p) {
+            var whiteXYZ = p.getMediaWhitePoint();
+            var xy = toXY(whiteXYZ[0], whiteXYZ[1], whiteXYZ[2]);
+            //buf.append("  ").append("white").append(String.format(" XY: %.3f %.3f\n", xy[0], xy[1]));
+            //buf.append("  ").append("white").append(String.format(" XYZ: %.3f %.3f %.3f\n", whiteXYZ[0], whiteXYZ[1], whiteXYZ[2]));
+            //buf.append("  white XYZ: ").append(Arrays.toString(p.getMediaWhitePoint())).append('\n');
+            //buf.append("  white xy : ").append(Arrays.toString(toXY(p.getMediaWhitePoint()))).append('\n');
+            xy = toXY(p.getMediaWhitePoint());
+            buf.append("  ").append("white").append(String.format(" xy: %.3f %.3f\n", xy[0], xy[1]));
+            var matrix = p.getMatrix();
+            for (int i = 0; i < matrix.length; i++) {
+                xy = toXY(matrix[0][i], matrix[1][i], matrix[2][i]);
+                buf.append("  ").append(RGB_NAMES[i]).append(String.format(" xy: %.3f %.3f\n", xy[0], xy[1]));
+                //buf.append("  ").append(RGB_NAMES[i]).append(String.format(" XYZ: %.3f %.3f %.3f\n", matrix[0][i], matrix[1][i], matrix[2][i]));
+            }
+            for (int i = 0; i < 3; i++) {
                 try {
-                    float gamma = p.getGamma();
-                    buf.append("  gamma: ").append(gamma).append('\n');
+                    float gamma = p.getGamma(i);
+                    buf.append("  ").append(RGB_NAMES[i]).append(" gamma: ").append(gamma).append('\n');
                 } catch (ProfileDataException e) {
                     // trc is not a gamma
                 }
-            } else if (icp instanceof ICC_ProfileRGB p) {
-                var whiteXYZ = p.getMediaWhitePoint();
-                var xy = toXY(whiteXYZ[0], whiteXYZ[1], whiteXYZ[2]);
-                //buf.append("  ").append("white").append(String.format(" XY: %.3f %.3f\n", xy[0], xy[1]));
-                buf.append("  ").append("white").append(String.format(" XYZ: %.3f %.3f %.3f\n", whiteXYZ[0], whiteXYZ[1], whiteXYZ[2]));
-                //buf.append("  white XYZ: ").append(Arrays.toString(p.getMediaWhitePoint())).append('\n');
-                //buf.append("  white xy : ").append(Arrays.toString(toXY(p.getMediaWhitePoint()))).append('\n');
-                var matrix = p.getMatrix();
-                for (int i = 0; i < matrix.length; i++) {
-                    xy = toXY(matrix[0][i], matrix[1][i], matrix[2][i]);
-                    // buf.append("  ").append(RGB_NAMES[i]).append(String.format(" XY: %.3f %.3f\n", xy[0], xy[1]));
-                    buf.append("  ").append(RGB_NAMES[i]).append(String.format(" XYZ: %.3f %.3f %.3f\n", matrix[0][i], matrix[1][i], matrix[2][i]));
-                }
-                for (int i = 0; i < 3; i++) {
-                    try {
-                        float gamma = p.getGamma(i);
-                        buf.append("  ").append(RGB_NAMES[i]).append(" gamma: ").append(gamma).append('\n');
-                    } catch (ProfileDataException e) {
-                        // trc is not a gamma
-                    }
-                }
-            } else {
-                buf.append(icp.toString()).append('\n');
             }
-            buf.append('}');
-            IO.println(r.toString());
-            return buf.toString();
+        } else {
+            buf.append(icp.toString()).append('\n');
         }
-        return cs.toString();
+        buf.append('}');
+        return buf.toString();
     }
 }

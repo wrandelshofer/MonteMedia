@@ -207,4 +207,9 @@ public class ParametricHlsColorSpace extends AbstractNamedColorSpace {
         return rgbColorSpace.toRGB(hlsToRgb(colorvalue, rgb), rgb);
     }
 
+    @Override
+    public int getEquivalentBuiltInColorSpace() {
+        return -1;
+    }
+
 }

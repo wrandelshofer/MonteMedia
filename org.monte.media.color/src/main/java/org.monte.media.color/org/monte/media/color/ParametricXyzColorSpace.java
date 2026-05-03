@@ -49,4 +49,9 @@ public class ParametricXyzColorSpace extends AbstractNamedColorSpace {
     public float[] toRGB(float[] colorvalue, float[] rgb) {
         return SrgbColorSpace.getInstance().fromCIEXYZ(toXyzMatrix.mul(colorvalue, rgb), rgb);
     }
+
+    @Override
+    public int getEquivalentBuiltInColorSpace() {
+        return -1;
+    }
 }

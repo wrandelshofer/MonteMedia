@@ -14,13 +14,19 @@ public class ParametricNonLinearRgbColorSpace extends AbstractNamedColorSpace {
     private final NamedColorSpace linearCS;
     private final String name;
     private final ToneMapper toneMapper;
+    private final int equivalentBuiltInColorSpace;
+
+    public int getEquivalentBuiltInColorSpace() {
+        return equivalentBuiltInColorSpace;
+    }
 
     public ParametricNonLinearRgbColorSpace(String name, NamedColorSpace linearCS,
-                                            ToneMapper toneMapper) {
+                                            ToneMapper toneMapper, int equivalentBuiltInColorSpace) {
         super(ColorSpace.TYPE_RGB, 3);
         this.linearCS = linearCS;
         this.name = name;
         this.toneMapper = toneMapper;
+        this.equivalentBuiltInColorSpace = equivalentBuiltInColorSpace;
     }
 
     @Override

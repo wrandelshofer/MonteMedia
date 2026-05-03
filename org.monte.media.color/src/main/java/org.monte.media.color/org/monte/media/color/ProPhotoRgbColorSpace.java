@@ -35,9 +35,9 @@ public class ProPhotoRgbColorSpace {
                     new Point2D(0.734699, 0.265301),
                     new Point2D(0.159597, 0.840403),
                     new Point2D(0.036598, 0.000105),
-                    ILLUMINANT_D50_XYZ
+                    ILLUMINANT_D50_XYZ, -1
             ),
-                    new GammaToneMapper(1.8f, 1 / 1.8f, 0f, 16f, 1 / 512f)
+                    new GammaToneMapper(1.8f, 1 / 1.8f, 0f, 16f, 1 / 512f), -1
             );
         }
         return Holder.INSTANCE;

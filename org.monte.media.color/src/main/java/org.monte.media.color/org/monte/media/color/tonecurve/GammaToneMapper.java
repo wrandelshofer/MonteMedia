@@ -36,6 +36,14 @@ public final class GammaToneMapper implements ToneMapper {
     /// Creates a new instance.
     ///
     /// @param gamma the gamma value
+    public GammaToneMapper(float gamma) {
+        this(gamma, 1f, 0f, 1f, 0f);
+    }
+
+
+    /// Creates a new instance.
+    ///
+    /// @param gamma the gamma value
     /// @param a     the a value
     /// @param b     the b value
     /// @param c     the c value

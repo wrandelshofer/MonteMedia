@@ -22,4 +22,5 @@ module org.monte.media.color {
     exports org.monte.media.color.enumerator;
     exports org.monte.media.color.tonecurve;
     exports org.monte.media.color.op;
+    exports org.monte.media.color.codec;
 }

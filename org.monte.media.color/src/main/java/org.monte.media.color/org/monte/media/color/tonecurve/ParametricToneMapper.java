@@ -35,6 +35,13 @@ public final class ParametricToneMapper implements ToneMapper {
     /// Creates a new instance.
     ///
     /// @param gamma the gamma value
+    public ParametricToneMapper(float gamma) {
+        this(gamma, 1f, 0f, 1f, 0f);
+    }
+
+    /// Creates a new instance.
+    ///
+    /// @param gamma the gamma value
     /// @param a     the `a` value
     /// @param b     the `b` value
     /// @param c     the `c` value

@@ -32,7 +32,6 @@ import org.monte.media.av.Buffer;
 import org.monte.media.av.Codec;
 import org.monte.media.av.CodecChain;
 import org.monte.media.av.Format;
-import org.monte.media.av.codec.video.ConvertColorSpaceCodec;
 import org.monte.media.av.codec.video.CropImageCodec;
 import org.monte.media.av.codec.video.ImageOpCodec;
 import org.monte.media.av.codec.video.ReplaceColorSpaceCodec;
@@ -40,27 +39,24 @@ import org.monte.media.av.codec.video.ScaleImageCodec;
 import org.monte.media.av.codec.video.VideoFormatKeys;
 import org.monte.media.color.ColorSpaces;
 import org.monte.media.color.RgbBitConverters;
+import org.monte.media.color.SrgbColorSpace;
+import org.monte.media.color.codec.ColorSpaceConvertCodec;
 import org.monte.media.color.icc.ICC_ProfileReader;
 import org.monte.media.color.io.ColorManagedImageReader;
 import org.monte.media.color.quant.OctreeColorQuantizer;
 import org.monte.media.image.op.UnsharpMaskOp;
 
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.spi.IIORegistry;
 import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.spi.ServiceRegistry;
 import javax.imageio.stream.FileImageOutputStream;
-import javax.imageio.stream.ImageInputStream;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.color.ColorSpace;
-import java.awt.color.ICC_ColorSpace;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.ComponentColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.DirectColorModel;
 import java.awt.image.IndexColorModel;
@@ -69,7 +65,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -78,6 +73,9 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
+
+import static org.monte.media.color.codec.ColorSpaceConvertCodec.ConvertColorSpaceKey;
+
 
 public class ColorQuantizerMainModel {
     private final ObjectProperty<ColorSpace> referenceImageColorSpace = new SimpleObjectProperty<>();
@@ -280,6 +278,7 @@ public class ColorQuantizerMainModel {
 
         ColorSpace cs = getReferenceImageColorSpace();
         if (cs != null) {
+            if (cs.isCS_sRGB()) cs = SrgbColorSpace.getInstance();
             var codec = new ReplaceColorSpaceCodec();
             codec.setOutputFormat(new Format(ReplaceColorSpaceCodec.ReplaceColorSpaceKey, cs));
             codecs.add(codec);
@@ -299,8 +298,8 @@ public class ColorQuantizerMainModel {
             outputWidth = getScaledWidth();
             outputHeight = getScaledHeight();
             if (isScaleInLinearSpace()) {
-                var codec = new ConvertColorSpaceCodec();
-                codec.setOutputFormat(new Format(ConvertColorSpaceCodec.ConvertColorSpaceKey,
+                var codec = new ColorSpaceConvertCodec();
+                codec.setOutputFormat(new Format(ConvertColorSpaceKey,
                         ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB)));
                 codecs.add(codec);
             }
@@ -389,6 +388,11 @@ public class ColorQuantizerMainModel {
                 codecs.add(codec);
             }
             case null, default -> {
+                if (!codecs.isEmpty()) {
+                    var c = new ColorSpaceConvertCodec();
+                    c.setOutputFormat(new Format(ConvertColorSpaceKey, ColorSpace.getInstance(ColorSpace.CS_sRGB)));
+                    codecs.add(c);
+                }
             }
         }
         return CodecChain.createCodecChain(codecs);
@@ -924,69 +928,6 @@ public class ColorQuantizerMainModel {
         });
     }
 
-    private void updateReferenceImageOLD(Observable o) {
-        Path newv = getReferenceFile();
-        var cs = getReferenceImageColorSpace();
-        exec.submit(currentTask = new Task<BufferedImage>() {
-
-            @Override
-            protected BufferedImage call() throws Exception {
-
-
-                //var finalNewImage = newv == null ? null : ImageIO.read(newv.toFile());
-                try (ImageInputStream iis = ImageIO.createImageInputStream(newv.toFile())) {
-
-                    Iterator<ImageReader> it = ImageIO.getImageReaders(iis);
-                    if (!it.hasNext()) {
-                        return null;
-                    }
-                    ImageReader imageReader = it.next();
-                    iis.seek(0L);
-                    imageReader.setInput(iis, false, false);
-                    var newImage = imageReader.read(0);
-                    var profile = new ICC_ProfileReader(imageReader.getImageMetadata(0)).getProfile();
-                    if (profile != null && newImage.getColorModel() instanceof DirectColorModel dcm) {
-                        ColorModel colorModel = new DirectColorModel(new ICC_ColorSpace(profile),
-                                dcm.getPixelSize(),
-                                dcm.getRedMask(), dcm.getGreenMask(), dcm.getBlueMask(), dcm.getAlphaMask(),
-                                dcm.isAlphaPremultiplied(), dcm.getTransferType());
-
-                        newImage = new BufferedImage(
-                                colorModel,
-                                newImage.getRaster(),
-                                newImage.isAlphaPremultiplied(),
-                                null
-                        );
-                    } else if (profile != null && newImage.getColorModel() instanceof ComponentColorModel dcm) {
-                        ColorModel colorModel = new ComponentColorModel(new ICC_ColorSpace(profile),
-                                dcm.hasAlpha(),
-                                dcm.isAlphaPremultiplied(), dcm.getTransparency(), dcm.getTransferType());
-
-                        newImage = new BufferedImage(
-                                colorModel,
-                                newImage.getRaster(),
-                                newImage.isAlphaPremultiplied(),
-                                null
-                        );
-                    }
-                    var finalNewImage = newImage;
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            setRawReferenceImage(finalNewImage);
-                        }
-                    });
-                    return finalNewImage;
-                }
-            }
-
-            @Override
-            protected void failed() {
-                System.err.println("failed");
-                System.err.println(getException());
-            }
-        });
-    }
 
     public void updateRenderedImage(Observable o) {
         var inputImg = getRawReferenceImage();

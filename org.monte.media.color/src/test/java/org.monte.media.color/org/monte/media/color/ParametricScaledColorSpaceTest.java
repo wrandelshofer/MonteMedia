@@ -9,6 +9,6 @@ public class ParametricScaledColorSpaceTest extends AbstractNamedColorSpaceTest 
 
     @Override
     protected NamedColorSpace getInstance() {
-        return new ParametricScaledColorSpace("sRGB*255", 255f, SrgbColorSpace.getInstance());
+        return new ParametricScaledColorSpace("sRGB*255", 255f, SrgbColorSpace.getInstance(), -1);
     }
 }

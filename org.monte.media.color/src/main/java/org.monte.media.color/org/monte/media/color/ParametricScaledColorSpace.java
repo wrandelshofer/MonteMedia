@@ -17,9 +17,15 @@ public class ParametricScaledColorSpace extends AbstractNamedColorSpace {
     private final String name;
     private final float scale;
     private final float inverseScale;
+    private final int equivalentBuiltInColorSpace;
 
-    public ParametricScaledColorSpace(String name, float scale, NamedColorSpace rgbColorSpace) {
+    public int getEquivalentBuiltInColorSpace() {
+        return equivalentBuiltInColorSpace;
+    }
+
+    public ParametricScaledColorSpace(String name, float scale, NamedColorSpace rgbColorSpace, int equivalentBuiltInColorSpace) {
         super(TYPE_RGB, 3);
+        this.equivalentBuiltInColorSpace = equivalentBuiltInColorSpace;
         assert (rgbColorSpace.getType() == TYPE_RGB);
         this.name = name;
         this.labColorSpace = rgbColorSpace;

@@ -35,28 +35,6 @@ public class ParametricLchColorSpace extends AbstractNamedColorSpace {
         this.labColorSpace = labColorSpace;
     }
 
-    /// LCH to XYZ.
-    ///
-    /// @param colorvalue LCH color value.
-    /// @return CIEXYZ color value.
-    @Override
-    public float[] toCIEXYZ(float[] colorvalue, float[] xyz) {
-        return labColorSpace.toCIEXYZ(lchToLab(colorvalue, xyz), xyz);
-    }
-
-    protected float[] lchToLab(float[] lch, float[] lab) {
-        double L = lch[0];
-        double C = lch[1];
-        double H = lch[2] * PI / 180;
-
-        double a = C * Math.cos(H);
-        double b = C * Math.sin(H);
-        lab[0] = (float) L;
-        lab[1] = (float) a;
-        lab[2] = (float) b;
-        return lab;
-    }
-
     /// XYZ to LCH.
     ///
     /// @param lch CIEXYZ color value.
@@ -66,6 +44,29 @@ public class ParametricLchColorSpace extends AbstractNamedColorSpace {
         return labToLch(labColorSpace.fromCIEXYZ(xyz, lch), lch);
     }
 
+    @Override
+    public float[] fromRGB(float[] rgb, float[] lch) {
+        return labToLch(labColorSpace.fromRGB(rgb, lch), lch);
+    }
+
+    @Override
+    public int getEquivalentBuiltInColorSpace() {
+        return -1;
+    }
+
+    @Override
+    public float getMaxValue(int component) {
+        return switch (component) {
+            case 0, 1 -> labColorSpace.getMaxValue(component);
+            case 2 -> 360f;
+            default -> throw new IllegalArgumentException("component:" + component);
+        };
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
 
     protected float[] labToLch(float[] lab, float[] lch) {
         double L = lab[0];
@@ -85,28 +86,30 @@ public class ParametricLchColorSpace extends AbstractNamedColorSpace {
         return lch;
     }
 
+    protected float[] lchToLab(float[] lch, float[] lab) {
+        double L = lch[0];
+        double C = lch[1];
+        double H = lch[2] * PI / 180;
+
+        double a = C * Math.cos(H);
+        double b = C * Math.sin(H);
+        lab[0] = (float) L;
+        lab[1] = (float) a;
+        lab[2] = (float) b;
+        return lab;
+    }
+
+    /// LCH to XYZ.
+    ///
+    /// @param colorvalue LCH color value.
+    /// @return CIEXYZ color value.
     @Override
-    public String getName() {
-        return name;
+    public float[] toCIEXYZ(float[] colorvalue, float[] xyz) {
+        return labColorSpace.toCIEXYZ(lchToLab(colorvalue, xyz), xyz);
     }
 
     @Override
     public float[] toRGB(float[] lch, float[] rgb) {
         return labColorSpace.toRGB(lchToLab(lch, rgb), rgb);
-    }
-
-    @Override
-    public float getMaxValue(int component) {
-        return switch (component) {
-            case 0, 1 -> labColorSpace.getMaxValue(component);
-            case 2 -> 360f;
-            default -> throw new IllegalArgumentException("component:" + component);
-        };
-    }
-
-
-    @Override
-    public float[] fromRGB(float[] rgb, float[] lch) {
-        return labToLch(labColorSpace.fromRGB(rgb, lch), lch);
     }
 }

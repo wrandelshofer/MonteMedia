@@ -17,7 +17,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.monte.media.color.Rec2020ColorSpace;
+import org.monte.media.color.RecBT2020ColorSpace;
 import org.monte.media.color.util.TestImageFactory;
 
 import javax.swing.Icon;
@@ -111,7 +111,7 @@ public class ColorSpaceAndBitDepthTest {
         DirectColorModel scm = (DirectColorModel) src.getColorModel();
 
         // Convert the image to REC2020
-        ColorSpace rec2020Space = Rec2020ColorSpace.getInstance().toColorSpace();
+        ColorSpace rec2020Space = RecBT2020ColorSpace.getInstance().toColorSpace();
         DirectColorModel cm = new DirectColorModel(rec2020Space, scm.getPixelSize(), scm.getRedMask(), scm.getGreenMask(), scm.getBlueMask(), scm.getAlphaMask(),
                 scm.isAlphaPremultiplied(), scm.getTransferType());
         BufferedImage img = toImageWithColorModel_usingColorConvertOp(src, cm);
@@ -179,7 +179,7 @@ public class ColorSpaceAndBitDepthTest {
         DirectColorModel scm = (DirectColorModel) src.getColorModel();
 
         // Convert the image to REC2020
-        ColorSpace rec2020Space = Rec2020ColorSpace.getInstance().toColorSpace();
+        ColorSpace rec2020Space = RecBT2020ColorSpace.getInstance().toColorSpace();
         DirectColorModel cm = new DirectColorModel(rec2020Space, scm.getPixelSize(), scm.getRedMask(), scm.getGreenMask(), scm.getBlueMask(), scm.getAlphaMask(),
                 scm.isAlphaPremultiplied(), scm.getTransferType());
         BufferedImage img = new BufferedImage(cm, cm.createCompatibleWritableRaster(src.getWidth(), src.getHeight()), cm.isAlphaPremultiplied(), null);

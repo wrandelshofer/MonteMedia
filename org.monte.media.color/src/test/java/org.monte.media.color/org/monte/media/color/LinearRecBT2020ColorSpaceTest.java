@@ -5,11 +5,11 @@
 
 package org.monte.media.color;
 
-public class LinearRec2020ColorSpaceTest extends AbstractNamedColorSpaceTest {
+public class LinearRecBT2020ColorSpaceTest extends AbstractNamedColorSpaceTest {
 
     @Override
     protected NamedColorSpace getInstance() {
-        return Rec2020ColorSpace.getInstance().getLinearColorSpace();
+        return RecBT2020ColorSpace.getInstance().getLinearColorSpace();
     }
 
 }

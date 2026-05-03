@@ -10,16 +10,28 @@ import org.monte.media.math.Point2D;
 
 import static org.monte.media.color.ParametricLinearRgbColorSpace.ILLUMINANT_D65_XYZ;
 
-/// Rec. 2020 Color Space.
+/// Recommentation ITU-R BT.2020-2 Color Space.
 ///
-/// The Rec. 2020 color space is used for Ultra High Definition, 4k and 8k television.
+/// The BT.2020-2color space is used for encoding Ultra High Definition, 4k
+/// and 8k television.
+///
+/// BT.2020-2 is intended for recording video in a bright environment.
+/// To present such a video in a dark environment, the BT.2035 color space
+/// is used on the BT.2020-2 encoded data (instead of doing a proper conversion
+/// from BT.2020-2 to XYZ and then to BT.2035).
+///
+/// In other words, BT.2020-2 is used for the transform from linear to curved
+/// (opto-electronic transfer function EOTF). And then later BT.1886 is used
+/// to perform the inverse operation/ from curved to linear
+/// (electro-optical transfer function OETF).
+///
 /// Chromatic coordinates:
 ///
 /// | Color       | x      | y      |
 /// |-------------|--------|--------|
-/// | Red (R)     | 0.640  | 0.330  |
-/// | Green (G)   | 0.300  | 0.600  |
-/// | Blue (B)    | 0.150  | 0.060  |
+/// | Red (R)     | 0.708  | 0.292  |
+/// | Green (G)   | 0.170  | 0.797  |
+/// | Blue (B)    | 0.131  | 0.046  |
 /// | White (D65) | 0.3127 | 0.3290 |
 ///
 /// Conceptual Gamma correction performed by the transfer function:
@@ -48,17 +60,17 @@ import static org.monte.media.color.ParametricLinearRgbColorSpace.ILLUMINANT_D65
 ///
 /// Wikipedia: Rec. 2020
 /// : [wikipedia](https://en.wikipedia.org/wiki/Rec_2020)
-public class Rec2020ColorSpace {
+public class RecBT2020ColorSpace {
     public static ParametricNonLinearRgbColorSpace getInstance() {
         class Holder {
             private static final ParametricNonLinearRgbColorSpace INSTANCE = new ParametricNonLinearRgbColorSpace(
-                    "Rec. 2020", new ParametricLinearRgbColorSpace("Linear Rec. 2020",
+                    "Rec. ITU-R BT.2020-2", new ParametricLinearRgbColorSpace("Linear Rec. 2020",
                     new Point2D(0.708, 0.292),
                     new Point2D(0.170, 0.797),
                     new Point2D(0.131, 0.046),
-                    ILLUMINANT_D65_XYZ
+                    ILLUMINANT_D65_XYZ, -1
             ),
-                    new GammaToneMapper(2.4f, 1.055f, 0.055f, 12.92f, 0.04045f)
+                    new GammaToneMapper(2.4f, 1.055f, 0.055f, 12.92f, 0.04045f), -1
             );
         }
         return Holder.INSTANCE;

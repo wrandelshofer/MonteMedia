@@ -33,4 +33,9 @@ public record GammaToneCurve(float gamma, float a, float b, float c, float d) im
         this.c = c;
         this.d = d;
     }
+
+    //FIXME CHECKME
+    public ParametricToneCurve toParametricToneCurve() {
+        return new ParametricToneCurve(gamma, 1 / a, b * a, 1 / c, d);
+    }
 }

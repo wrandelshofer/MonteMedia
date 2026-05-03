@@ -7,6 +7,6 @@ import java.awt.color.ColorSpace;
 @Disabled("BROKEN")
 public class JavaPyccColorSpaceTest extends AbstractNamedColorSpaceTest {
     protected NamedColorSpace getInstance() {
-        return new NamedColorSpaceAdapter("PYCC", ColorSpace.getInstance(ColorSpace.CS_PYCC));
+        return new NamedColorSpaceAdapter("PYCC", ColorSpace.getInstance(ColorSpace.CS_PYCC), -1);
     }
 }

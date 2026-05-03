@@ -31,6 +31,12 @@ import java.awt.color.ColorSpace;
 /// : [w3.org](https://www.w3.org/TR/2022/CRD-css-color-4-20221101/#d65-whitepoint)</dd>
 ///
 public class ParametricLinearRgbColorSpace extends AbstractNamedColorSpace {
+    private final int equivalentBuiltInColorSpace;
+
+    public int getEquivalentBuiltInColorSpace() {
+        return equivalentBuiltInColorSpace;
+    }
+
     /// The Bradford XYZ to Cone Response Domain Matrix \[M<sub>A</sub>\].
     ///
     /// [brucelindbloom.com](http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html)
@@ -61,6 +67,7 @@ public class ParametricLinearRgbColorSpace extends AbstractNamedColorSpace {
 
     /// The XYZ coordinates of the D50 white illuminant.
     public final static Point3DDouble ILLUMINANT_D50_XYZ = new Point3DDouble(0.96422, 1.00000, 0.82521);
+    public final static Point2D ILLUMINANT_D50 = convertXYZToxy(ILLUMINANT_D50_XYZ);
     /// The XYZ coordinates of the D65 white illuminant.
     public final static Point3DDouble ILLUMINANT_D65_XYZ = new Point3DDouble(0.95047, 1.00000, 1.08883);
     /// The XYZ coordinates of the E white illuminant.
@@ -89,6 +96,11 @@ public class ParametricLinearRgbColorSpace extends AbstractNamedColorSpace {
     private final float maxValue;
     private final float minValue;
     protected final ToneMapper toneMapper = new GammaToneMapper(2.4f, 1.055f, 0.055f, 12.92f, 0.04045f);
+    private final Point2D red;
+    private final Point2D green;
+    private final Point2D blue;
+    private final Point2D white;
+
 
     /// Creates a new instance.
     ///
@@ -97,11 +109,9 @@ public class ParametricLinearRgbColorSpace extends AbstractNamedColorSpace {
     /// @param fromXyzMatrix the matrix for conversion from CIE XYZ
     /// @param minValue
     /// @param maxValue
-    public ParametricLinearRgbColorSpace(String name,
-                                         Matrix3 toXyzMatrix,
-                                         Matrix3 fromXyzMatrix,
-                                         float minValue, float maxValue) {
+    public ParametricLinearRgbColorSpace(String name, Matrix3 toXyzMatrix, Matrix3 fromXyzMatrix, float minValue, float maxValue, int equivalentBuiltInColorSpace) {
         super(ColorSpace.TYPE_RGB, 3);
+        this.equivalentBuiltInColorSpace = equivalentBuiltInColorSpace;
         this.name = name;
         this.toXyzMatrix = toXyzMatrix;
         this.fromXyzMatrix = fromXyzMatrix;
@@ -109,6 +119,44 @@ public class ParametricLinearRgbColorSpace extends AbstractNamedColorSpace {
         this.fromLinearSrgbMatrix = fromXyzMatrix.toDouble().mul(FROM_LINEAR_SRGB_TO_D65_XYZ_MATRIX).toFloat();
         this.maxValue = maxValue;
         this.minValue = minValue;
+        red = green = blue = white = null;
+    }
+
+    /// Creates a new instance.
+    ///
+    /// @param name  the name of the color space
+    /// @param red   the CIE chroma (x,y) red primary
+    /// @param green the CIE chroma (x,y) green primary
+    /// @param blue  the CIE chroma (x,y) blue primary
+    /// @param white the white point (x,y)
+    public ParametricLinearRgbColorSpace(String name, Point2D red, Point2D green, Point2D blue, Point2D white, int equivalentBuiltInColorSpace) {
+        super(ColorSpace.TYPE_RGB, 3);
+        this.equivalentBuiltInColorSpace = equivalentBuiltInColorSpace;
+        this.name = name;
+        this.minValue = 0;
+        this.maxValue = 1;
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
+        this.white = white;
+
+        Matrix3Double toXyzMatrixDouble = computeToXyzMatrix(red, green, blue, white);
+
+        Matrix3Double toD50XyzMatrixDouble;
+        Matrix3Double toLinearSrgbMatrixDouble;
+        if (white.equals(ILLUMINANT_D50)) {
+            toD50XyzMatrixDouble = toXyzMatrixDouble;
+            toLinearSrgbMatrixDouble = FROM_D65_XYZ_TO_LINEAR_SRGB_MATRIX.mul(
+                    FROM_D50_XYZ_TO_D65_XYZ).mul(toXyzMatrixDouble);
+        } else {
+            Matrix3Double mA = computeToXyzMatrix(red, green, blue, white);
+            toD50XyzMatrixDouble = mA.mul(toXyzMatrixDouble);
+            toLinearSrgbMatrixDouble = FROM_D65_XYZ_TO_LINEAR_SRGB_MATRIX.mul(toXyzMatrixDouble);
+        }
+        this.toXyzMatrix = toD50XyzMatrixDouble;
+        this.fromXyzMatrix = toD50XyzMatrixDouble.inv();
+        this.toLinearSrgbMatrix = toLinearSrgbMatrixDouble;
+        this.fromLinearSrgbMatrix = toLinearSrgbMatrixDouble.inv();
     }
 
     /// Creates a new instance.
@@ -117,18 +165,22 @@ public class ParametricLinearRgbColorSpace extends AbstractNamedColorSpace {
     /// @param red            the CIE chroma (x,y) red primary
     /// @param green          the CIE chroma (x,y) green primary
     /// @param blue           the CIE chroma (x,y) blue primary
-    /// @param whitePoint_XYZ the white point (XYZ)
+    /// @param whitePoint_XYZ the white point (X,Y,Z)
     public ParametricLinearRgbColorSpace(String name,
                                          Point2D red,
                                          Point2D green,
                                          Point2D blue,
-                                         Point3DDouble whitePoint_XYZ) {
+                                         Point3DDouble whitePoint_XYZ, int equivalentBuiltInColorSpace) {
         super(ColorSpace.TYPE_RGB, 3);
+        this.equivalentBuiltInColorSpace = equivalentBuiltInColorSpace;
+        Point2D whitePoint_xy = convertXYZToxy(whitePoint_XYZ);
         this.name = name;
         this.minValue = 0;
         this.maxValue = 1;
-
-        Point2D whitePoint_xy = convertXYZToxy(whitePoint_XYZ);
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
+        this.white = whitePoint_xy;
 
         Matrix3Double toXyzMatrixDouble = computeToXyzMatrix(red, green, blue, whitePoint_xy);
 
@@ -162,11 +214,19 @@ public class ParametricLinearRgbColorSpace extends AbstractNamedColorSpace {
     ///     <dt>CIE 1931 color space. CIE xy chromaticity diagram and the CIE xyY color space</dt>
     ///     <dd><a href="https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_xy_chromaticity_diagram_and_the_CIE_xyY_color_space>wikipedia.org</a></dd>
     /// </dl>
-    private Point2D convertXYZToxy(Point3DDouble XYZ) {
+    private static Point2D convertXYZToxy(Point3DDouble XYZ) {
         double X = XYZ.getX();
         double Y = XYZ.getY();
         double sum = X + Y + XYZ.getZ();
         return new Point2D(X / sum, Y / sum);
+    }
+
+    private static Point3DDouble convertxyToXYZ(Point2D xy, double Y) {
+        double x = xy.getX();
+        double y = xy.getY();
+        double X = Y / y * x;
+        double Z = Y / y * (1 - x - y);
+        return new Point3DDouble(X, Y, Z);
     }
 
     /// Computes a matrix that converts from a linear RGB color to an XYZ color.
@@ -294,5 +354,21 @@ public class ParametricLinearRgbColorSpace extends AbstractNamedColorSpace {
                 0, 0, coneD.getZ() / coneS.getZ()
         );
         return BRADFORD_CONE_RESPONSE_DOMAIN_TO_XYZ.mul(s).mul(BRADFORD_XYZ_TO_CONE_RESPONSE_DOMAIN);
+    }
+
+    public Point2D getRed() {
+        return red;
+    }
+
+    public Point2D getGreen() {
+        return green;
+    }
+
+    public Point2D getBlue() {
+        return blue;
+    }
+
+    public Point2D getWhite() {
+        return white;
     }
 }

@@ -10,12 +10,21 @@ import org.monte.media.math.Point2D;
 
 import static org.monte.media.color.ParametricLinearRgbColorSpace.ILLUMINANT_D65_XYZ;
 
-/// Rec. 709 Color Space.
+/// Recommendation ITU-R BT.709-6 Color Space.
 ///
-/// The Rec. 709 color space is used for high definition television (HDTV).
-/// It uses the same primaries as sRGB but uses a different gamma curve.
-/// Rec. 709 is intended for use on a TV screen in a dark environment,
-/// whereas sRGB is intended for use on a computer screen in a bright environment.
+/// The BT.709-6 color space is used for encoding high definition television (HDTV).
+/// It has the same primaries as sRGB but uses a different gamma curve.
+///
+/// BT.709-6 is intended for recording video in a bright environment.
+/// To present such a video in a dark environment, the BT.1886 color space
+/// is used on the BT.709-6 encoded data (instead of doing a proper conversion
+/// from BT.709-6 to XYZ and then to BT.1886).
+///
+/// In other words, BT.709-6 is used for the transform from linear to curved
+/// (opto-electronic transfer function EOTF). And then later BT.1886 is used
+/// to perform the inverse operation/ from curved to linear
+/// (electro-optical transfer function OETF).
+///
 ///
 /// Chromatic coordinates:
 ///
@@ -30,15 +39,14 @@ import static org.monte.media.color.ParametricLinearRgbColorSpace.ILLUMINANT_D65
 /// Conceptual Gamma correction performed by the transfer function:
 ///
 /// ```
-/// gamma ~ 0.45
+/// opto-electronic transfer gamma ~ 0.45
+/// electro-optical transfer gamma ~ 1/0.45 = 2.222
 /// ```
 ///
-/// Transfer function: `fromLinear(L:float) -> V:float`
-/// The transfer function performs the opto-electronic transfer function (EOTF),
-/// and then scales them into the legal range.
-/// The EOTF converts linear RGB values (`ER`, `EG`, `EB`) to gamma corrected RGB
+/// Transfer function: `linearToCurved(L:float) -> V:float`
+/// The transfer function performs the opto-electronic transfer function (OETF).
+/// The OETF converts linear RGB values (`ER`, `EG`, `EB`) to gamma corrected RGB
 /// values (`EpR`, `EpG`, `EpB`).
-/// The scaling puts the values into the range from 16.0/255.0 to 235.0/255.0.
 ///
 /// ```
 /// V = 1.099 * L^0.45 - 0.099  for L >= 0.018
@@ -69,22 +77,21 @@ import static org.monte.media.color.ParametricLinearRgbColorSpace.ILLUMINANT_D65
 /// CSS Color Module Level 4. Sample code for Color Conversions
 /// : [w3.org](https://www.w3.org/TR/2025/CRD-css-color-4-20250424/#color-conversion-code)
 ///
-/// Wikipedia: Rec. 709
+/// Wikipedia: BT.709-6
 /// : [wikipedia](https://en.wikipedia.org/wiki/Rec._709)
-public class Rec709ColorSpace {
+public class RecBT709ColorSpace {
 
 
-    // Rec. 709 instance without scaling
     public static ParametricNonLinearRgbColorSpace getInstance() {
         class Holder {
             private static final ParametricNonLinearRgbColorSpace INSTANCE = new ParametricNonLinearRgbColorSpace(
-                    "Rec. 709", new ParametricLinearRgbColorSpace("Linear Rec. 709",
+                    "Rec. ITU-R BT.709-6", new ParametricLinearRgbColorSpace("Linear BT.709-6",
                     new Point2D(0.640, 0.330),
                     new Point2D(0.3, 0.6),
                     new Point2D(0.15, 0.06),
-                    ILLUMINANT_D65_XYZ
+                    ILLUMINANT_D65_XYZ, -1
             ),
-                    new ParametricToneMapper(2.22222f, 0.9099121f, 0.09008789f, 0.22222f, 0.08099365f)
+                    new ParametricToneMapper(2.22222f, 0.9099121f, 0.09008789f, 0.22222f, 0.08099365f), -1
             );
         }
         return Holder.INSTANCE;

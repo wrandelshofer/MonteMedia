@@ -30,8 +30,8 @@ public class DisplayP3ColorSpace {
                     new Point2D(0.68, 0.32),
                     new Point2D(0.265, 0.69),
                     new Point2D(0.15, 0.06),
-                    ILLUMINANT_D65_XYZ
-            ), new GammaToneMapper(2.4f, 1.055f, 0.055f, 12.92f, 0.04045f)
+                    ILLUMINANT_D65_XYZ, -1
+            ), new GammaToneMapper(2.4f, 1.055f, 0.055f, 12.92f, 0.04045f), -1
             );
         }
         return Holder.INSTANCE;

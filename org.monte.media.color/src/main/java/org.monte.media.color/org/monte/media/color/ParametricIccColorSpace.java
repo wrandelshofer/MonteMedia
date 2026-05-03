@@ -16,6 +16,11 @@ public class ParametricIccColorSpace extends AbstractNamedColorSpace {
     }
 
     @Override
+    public int getEquivalentBuiltInColorSpace() {
+        return -1;
+    }
+
+    @Override
     public String getName() {
         return "";
     }

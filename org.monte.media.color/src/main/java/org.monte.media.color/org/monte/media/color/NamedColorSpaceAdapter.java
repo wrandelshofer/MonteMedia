@@ -30,11 +30,18 @@ public class NamedColorSpaceAdapter extends AbstractNamedColorSpace {
     private static final long serialVersionUID = 0L;
     private final ColorSpace cs;
     private final String name;
+    private final int equivalentBuiltInColorSpace;
 
-    public NamedColorSpaceAdapter(String name, ColorSpace cs) {
+    public NamedColorSpaceAdapter(String name, ColorSpace cs, int equivalentBuiltInColorSpace) {
         super(cs.getType(), cs.getNumComponents());
         this.cs = cs;
         this.name = name;
+        this.equivalentBuiltInColorSpace = equivalentBuiltInColorSpace;
+    }
+
+    @Override
+    public int getEquivalentBuiltInColorSpace() {
+        return equivalentBuiltInColorSpace;
     }
 
     @Override

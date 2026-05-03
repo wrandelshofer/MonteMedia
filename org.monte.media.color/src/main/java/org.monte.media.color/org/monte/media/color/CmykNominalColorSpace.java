@@ -57,6 +57,11 @@ public class CmykNominalColorSpace extends AbstractNamedColorSpace {
     }
 
     @Override
+    public int getEquivalentBuiltInColorSpace() {
+        return -1;
+    }
+
+    @Override
     public float[] fromRGB(float[] rgbvalue, float[] colorvalue) {
         float r = rgbvalue[0];
         float g = rgbvalue[1];

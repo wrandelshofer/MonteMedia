@@ -30,6 +30,9 @@ import java.util.zip.Inflater;
 
 /// Reads an ICC_Profile from IIOMetadata
 public class ICC_ProfileReader {
+
+    public static final int icSigDescription = toSignature("desc");
+
     public final static String[] RGB_NAMES = {"red", "green", "blue"};
     private final ICC_Profile icp;
 
@@ -495,6 +498,15 @@ public class ICC_ProfileReader {
     public Object getTag(int signature) {
         byte[] data = icp.getData(signature);
         return readTag(data);
+    }
+
+    public Object getTag(String name) {
+        return getTag(toSignature(name));
+
+    }
+
+    public static int toSignature(String name) {
+        return (name.charAt(0) << 24) | (name.charAt(1) << 16) | (name.charAt(2) << 8) | (name.charAt(3));
     }
 
     public static float[] toXY(float... XYZ) {

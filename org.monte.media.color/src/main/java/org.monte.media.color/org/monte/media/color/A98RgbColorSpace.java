@@ -33,8 +33,8 @@ public class A98RgbColorSpace {
                     new Point2D(0.64, 0.33),
                     new Point2D(0.21, 0.71),
                     new Point2D(0.15, 0.06),
-                    ILLUMINANT_D65_XYZ
-            ), new GammaToneMapper(563 / 256f, 1f, 0f, 1f, 0f));
+                    ILLUMINANT_D65_XYZ, -1
+            ), new GammaToneMapper(563 / 256f, 1f, 0f, 1f, 0f), -1);
         }
         return Holder.INSTANCE;
     }

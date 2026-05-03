@@ -36,6 +36,10 @@ public class OKHlsColorSpace extends AbstractNamedColorSpace {
         return Holder.INSTANCE;
     }
 
+    @Override
+    public int getEquivalentBuiltInColorSpace() {
+        return -1;
+    }
 
     private final static OKLabColorSpace oklab = new OKLabColorSpace();
 

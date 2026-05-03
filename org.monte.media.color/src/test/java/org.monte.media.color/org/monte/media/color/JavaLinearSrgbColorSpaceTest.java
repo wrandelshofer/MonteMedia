@@ -10,6 +10,6 @@ import java.awt.color.ColorSpace;
 @Disabled("this test fails - the java implementation is mostly okay")
 public class JavaLinearSrgbColorSpaceTest extends AbstractNamedColorSpaceTest {
     protected NamedColorSpace getInstance() {
-        return new NamedColorSpaceAdapter("Linear RGB", ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB));
+        return new NamedColorSpaceAdapter("Linear RGB", ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB), -1);
     }
 }

@@ -75,6 +75,10 @@ public class OKLabColorSpace extends AbstractNamedColorSpace {
         return Holder.INSTANCE;
     }
 
+    @Override
+    public int getEquivalentBuiltInColorSpace() {
+        return -1;
+    }
 
     /// Concatenation of RGB_to_XYZ_D65 matrix and the M1 matrix.
     ///

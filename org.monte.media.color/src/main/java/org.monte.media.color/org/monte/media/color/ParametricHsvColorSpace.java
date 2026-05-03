@@ -39,7 +39,7 @@ public class ParametricHsvColorSpace extends AbstractNamedColorSpace {
     /// @param name          the name of the created color space
     /// @param rgbColorSpace the base RGB color space
     /// @throws IllegalArgumentException if `rgbColorSpace` has not type [#TYPE_RGB].
-    public ParametricHsvColorSpace(String name, NamedColorSpace rgbColorSpace) {
+    public ParametricHsvColorSpace(String name, NamedColorSpace rgbColorSpace, int equivalentBuiltInColorSpace) {
         super(TYPE_HSV, 3);
         assert (rgbColorSpace.getType() == TYPE_RGB);
         this.name = name;
@@ -181,6 +181,11 @@ public class ParametricHsvColorSpace extends AbstractNamedColorSpace {
     @Override
     public float[] toRGB(float[] lch, float[] rgb) {
         return rgbColorSpace.toRGB(hsvToRgb(lch, rgb), rgb);
+    }
+
+    @Override
+    public int getEquivalentBuiltInColorSpace() {
+        return -1;
     }
 
 }

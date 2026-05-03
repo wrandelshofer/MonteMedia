@@ -46,11 +46,11 @@ public class FloatImages {
             convertImagePixelInterleavedSameColorSpace(dest, srcSampleModel, srcRast, h, w);
         } else if (srcRast.getTransferType() == DataBuffer.TYPE_BYTE
                 && src.getColorModel().getColorSpace().isCS_sRGB()
-                && src.getSampleModel() instanceof PixelInterleavedSampleModel pism) {
-            convertImagePixelInterleavedFromSRGB(destCM, dest, pism, srcRast, h, w);
+                && src.getSampleModel() instanceof PixelInterleavedSampleModel sourceSampleModel) {
+            convertImagePixelInterleavedFromSRGB(destCM, dest, sourceSampleModel, srcRast, h, w);
         } else if (srcRast.getTransferType() == DataBuffer.TYPE_BYTE
-                && src.getSampleModel() instanceof PixelInterleavedSampleModel pism) {
-            convertImagePixelInterleavedDifferentColorSpace(src, destCM, dest, pism, srcRast, h, w);
+                && src.getSampleModel() instanceof PixelInterleavedSampleModel srcSampleModel) {
+            convertImagePixelInterleavedDifferentColorSpace(src, destCM, dest, srcSampleModel, srcRast, h, w);
         } else {
             // This is fast, but does not work well in a parallel stream.
             // With Graphics2D only one thread can call drawImage at a time.
@@ -62,13 +62,13 @@ public class FloatImages {
         return dest;
     }
 
-    private static void convertImagePixelInterleavedDifferentColorSpace(BufferedImage src, ColorModel destCM, BufferedImage dest, PixelInterleavedSampleModel pism, WritableRaster srcRast, int h, int w) {
+    private static void convertImagePixelInterleavedDifferentColorSpace(BufferedImage src, ColorModel destCM, BufferedImage dest, PixelInterleavedSampleModel srcSampleModel, WritableRaster srcRast, int h, int w) {
         WritableRaster dstRast = dest.getRaster();
         var srcCS = src.getColorModel().getColorSpace();
         var destCS = destCM.getColorSpace();
         byte[] srcData = ((DataBufferByte) srcRast.getDataBuffer()).getData();
         float[] destPix = new float[3];
-        int[] bandOffsets = pism.getBandOffsets();
+        int[] bandOffsets = ((BandedSampleModel) dest.getSampleModel()).getBandOffsets();
         float[] destData0 = ((DataBufferFloat) dstRast.getDataBuffer()).getData(bandOffsets[0]);
         float[] destData1 = ((DataBufferFloat) dstRast.getDataBuffer()).getData(bandOffsets[1]);
         float[] destData2 = ((DataBufferFloat) dstRast.getDataBuffer()).getData(bandOffsets[2]);

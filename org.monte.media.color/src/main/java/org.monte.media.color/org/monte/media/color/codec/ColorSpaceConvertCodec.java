@@ -1,19 +1,17 @@
 /*
- * @(#)CropImageCodec.java
- * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+ * @(#)ConvertColorSpaceCodec.java
+ * Copyright © 2026 Werner Randelshofer, Switzerland. MIT License.
  */
-package org.monte.media.av.codec.video;
+package org.monte.media.color.codec;
 
 import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKey;
 import org.monte.media.av.FormatKeys.MediaType;
-import org.monte.media.image.FloatImages;
+import org.monte.media.color.op.ColorSpaceConvertOp;
 
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
-import java.awt.image.ComponentColorModel;
-import java.awt.image.DataBuffer;
 
 import static org.monte.media.av.BufferFlag.DISCARD;
 import static org.monte.media.av.FormatKeys.EncodingKey;
@@ -27,12 +25,12 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_I
 /// This codec is useful if an image needs to be processed in another color space
 ///
 /// @author Werner Randelshofer
-public class ConvertColorSpaceCodec extends org.monte.media.av.AbstractCodec {
+public class ColorSpaceConvertCodec extends org.monte.media.av.AbstractCodec {
 
     /// The color space of the media.
     public final static FormatKey<ColorSpace> ConvertColorSpaceKey = new FormatKey<>("convertColorSpace", ColorSpace.class);
 
-    public ConvertColorSpaceCodec() {
+    public ColorSpaceConvertCodec() {
         super(new Format[]{
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
                                 EncodingKey, ENCODING_BUFFERED_IMAGE), //
@@ -67,14 +65,10 @@ public class ConvertColorSpaceCodec extends org.monte.media.av.AbstractCodec {
             return CODEC_FAILED;
         }
         ColorSpace cs = outputFormat.get(ConvertColorSpaceKey);
-        BufferedImage imgOut = null;
-        if (out.data instanceof BufferedImage b) {
-            imgOut = b;
-        }
-        var cm = new ComponentColorModel(cs, false, false, ComponentColorModel.OPAQUE, DataBuffer.TYPE_FLOAT);
-        imgOut = FloatImages.convertImage(imgIn, cm, imgOut);
+        var imgOut = new ColorSpaceConvertOp(cs).filter(imgIn, out.data instanceof BufferedImage img ? img : null);
         out.data = imgOut;
-
         return CODEC_OK;
     }
+
+
 }

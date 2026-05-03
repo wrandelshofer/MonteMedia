@@ -12,11 +12,11 @@ import org.monte.media.math.Matrix3Double;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 
-public class Rec2020ColorSpaceTest extends AbstractNamedColorSpaceTest {
+public class RecBT2020ColorSpaceTest extends AbstractNamedColorSpaceTest {
 
     @Override
     protected ParametricNonLinearRgbColorSpace getInstance() {
-        return Rec2020ColorSpace.getInstance();
+        return RecBT2020ColorSpace.getInstance();
     }
 
     /**

@@ -21,7 +21,7 @@ public class CieRgbColorSpace {
                     "Linear CIE RGB", new Point2D(0.73474284, 0.26525716),
                     new Point2D(0.27377903, 0.7174777),
                     new Point2D(0.16655563, 0.00891073),
-                    ILLUMINANT_E_XYZ);
+                    ILLUMINANT_E_XYZ, -1);
         }
         return Holder.INSTANCE;
     }

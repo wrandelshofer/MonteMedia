@@ -62,6 +62,16 @@ public interface NamedColorSpace {
         return toRGB(colorvalue, new float[3]);
     }
 
+    /// Returns one of the following values:
+    ///
+    /// - [ColorSpace#CS_sRGB]
+    /// - [ColorSpace#CS_LINEAR_RGB]
+    /// - [ColorSpace#CS_CIEXYZ]
+    /// - [ColorSpace#CS_PYCC]
+    /// - [ColorSpace#CS_GRAY]
+    /// - -1 if there is no equivalent built-in color space
+    int getEquivalentBuiltInColorSpace();
+
     /// Converts from 24 bit rgb to the color value.
     ///
     /// @param rgb        24 bit rgb

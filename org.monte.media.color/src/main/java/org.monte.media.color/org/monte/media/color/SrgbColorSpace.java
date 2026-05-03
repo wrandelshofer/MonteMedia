@@ -8,6 +8,8 @@ package org.monte.media.color;
 
 import org.monte.media.color.tonecurve.GammaToneMapper;
 
+import java.awt.color.ColorSpace;
+
 /// The `sRGB` color space.
 ///
 /// sRGB is a standard RGB (red, green, blue) color space that HP and Microsoft created cooperatively in 1996 to use
@@ -83,7 +85,8 @@ public class SrgbColorSpace {
         class Holder {
             private static final ParametricNonLinearRgbColorSpace INSTANCE = new ParametricNonLinearRgbColorSpace(
                     "sRGB", LinearSrgbColorSpace.getInstance(),
-                    new GammaToneMapper(2.4f, 1.055f, 0.055f, 12.92f, 0.04045f)
+                    new GammaToneMapper(2.4f, 1.055f, 0.055f, 12.92f, 0.04045f),
+                    ColorSpace.CS_sRGB
             );
         }
         return Holder.INSTANCE;

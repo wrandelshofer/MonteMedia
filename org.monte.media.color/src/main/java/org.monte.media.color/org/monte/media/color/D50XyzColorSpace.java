@@ -56,4 +56,9 @@ public class D50XyzColorSpace extends AbstractNamedColorSpace {
     public float[] toRGB(float[] colorvalue, float[] rgb) {
         return SrgbColorSpace.getInstance().fromCIEXYZ(colorvalue, rgb);
     }
+
+    @Override
+    public int getEquivalentBuiltInColorSpace() {
+        return -1;
+    }
 }

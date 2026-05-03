@@ -11,7 +11,7 @@ import javafx.stage.Window;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.monte.media.color.Rec2020ColorSpace;
+import org.monte.media.color.RecBT2020ColorSpace;
 import org.monte.media.color.util.FXImageSplitterStage;
 import org.monte.media.color.util.TestImageFactory;
 
@@ -26,7 +26,7 @@ public class FXColorSpaceConvertOpTest {
     void shouldConvertColorSpaceImage() {
         ColorSpaceConvertOp op = new ColorSpaceConvertOp();
         BufferedImage src = TestImageFactory.createRgbCubeFaces();
-        BufferedImage dst = TestImageFactory.createImage(Rec2020ColorSpace.getInstance(), src.getWidth(), src.getHeight(), 8);
+        BufferedImage dst = TestImageFactory.createImage(RecBT2020ColorSpace.getInstance(), src.getWidth(), src.getHeight(), 8);
         //BufferedImage dst = TestImageFactory.createImage(ColorSpace.getInstance(ColorSpace.CS_sRGB), src.getWidth(), src.getHeight(), 8);
         op.filter(src, dst);
         var frame = new FXImageSplitterStage();

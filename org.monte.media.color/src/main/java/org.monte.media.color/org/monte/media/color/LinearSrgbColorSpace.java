@@ -7,6 +7,8 @@ package org.monte.media.color;
 
 import org.monte.media.math.Point2D;
 
+import java.awt.color.ColorSpace;
+
 /// Linear `sRGB` Color Space.
 /// <dl>
 ///     <dt>Wikipedia: sRGB. Transformation</dt>
@@ -22,7 +24,7 @@ public class LinearSrgbColorSpace {
                     new Point2D(0.64, 0.33),
                     new Point2D(0.3, 0.6),
                     new Point2D(0.15, 0.06),
-                    ParametricLinearRgbColorSpace.ILLUMINANT_D65_XYZ
+                    ParametricLinearRgbColorSpace.ILLUMINANT_D65_XYZ, ColorSpace.CS_LINEAR_RGB
             );
         }
         return Holder.INSTANCE;
