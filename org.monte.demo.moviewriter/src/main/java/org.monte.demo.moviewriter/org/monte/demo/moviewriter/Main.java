@@ -15,6 +15,7 @@ import org.monte.media.av.codec.video.VideoFormatKeys.PixelFormat;
 import org.monte.media.h264.codec.video.H264EncoderSpi;
 import org.monte.media.image.colormodel.ColorModels;
 import org.monte.media.jcodec.h264.JCodecPictureCodecSpi;
+import org.monte.media.jcodec.h264.JCodecPictureCodecSpi;
 import org.monte.media.jcodec.mp4.JCodecMP4WriterSpi;
 import org.monte.media.math.Rational;
 import org.monte.media.mp4.MP4WriterSpi;
@@ -236,8 +237,8 @@ public class Main {
         Rational frameRate = new Rational(12, 1);
         format = format.prepend(MediaTypeKey, MediaType.VIDEO, //
                 FrameRateKey, frameRate,//
-                WidthKey, 640, //
-                HeightKey, 480);
+                WidthKey, 128, //
+                HeightKey, 96);
 
         // Create a buffered image for this format
         BufferedImage img = createImage(format);

@@ -1,29 +1,21 @@
 /*
- * @(#)JPEGEncoder.java
- * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+ * @(#)JPEGCodec.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
-package org.monte.media.jpeg.codec.video;
+package org.monte.media.av.codec.video;
 
 import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
-import org.monte.media.av.codec.video.ImageBufferToArray;
 import org.monte.media.io.ByteArrayImageInputStream;
-import org.monte.media.io.ByteArrayImageOutputStream;
 import org.monte.media.mjpg.MJPGImageReader;
 import org.monte.media.mjpg.MJPGImageReaderSpi;
-import org.monte.media.util.ArrayUtil;
 
-import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import static org.monte.media.av.BufferFlag.DISCARD;
-import static org.monte.media.av.BufferFlag.KEYFRAME;
 import static org.monte.media.av.FormatKeys.EncodingKey;
 import static org.monte.media.av.FormatKeys.MIME_AVI;
 import static org.monte.media.av.FormatKeys.MIME_JAVA;
@@ -38,22 +30,8 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_MJPG;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_JPEG;
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
-import static org.monte.media.av.codec.video.VideoFormatKeys.ProgressiveImageEncodingKey;
-import static org.monte.media.av.codec.video.VideoFormatKeys.QualityKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
-<<<<<<<< HEAD:org.monte.media.jpeg/src/main/java/org.monte.media.jpeg/org/monte/media/jpeg/codec/video/JPEGEncoder.java
-/// `JPEGCodec` encodes a BufferedImage as a byte[] array.
-///
-/// Supported input/output formats:
-///
-///   - `VideoFormat` with `BufferedImage.class`, any
-///     width, any height, any depth.
-///   - `VideoFormat` with `byte[].class`, same width and height as input
-///     format, depth=24.
-///
-/// @author Werner Randelshofer
-========
 /**
  * {@code JPEGCodec} encodes a BufferedImage as a byte[] array.
  * <p>
@@ -67,22 +45,24 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
  *
  * @author Werner Randelshofer
  */
->>>>>>>> main:org.monte.media/src/main/java/org.monte.media/org/monte/media/av/codec/video/JPEGEncoder.java
-public class JPEGEncoder extends org.monte.media.av.AbstractCodec {
+public class JPEGDecoder extends org.monte.media.av.AbstractCodec {
 
-    public JPEGEncoder() {
+    public JPEGDecoder() {
         super(new Format[]{
-                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
-                                EncodingKey, ENCODING_BUFFERED_IMAGE), //
-                },
-                new Format[]{
-                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,//
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
                                 EncodingKey, ENCODING_QUICKTIME_JPEG,//
                                 CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_JPEG, //
                                 DataClassKey, byte[].class, DepthKey, 24), //
                         //
                         new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_AVI,
                                 EncodingKey, ENCODING_AVI_MJPG, DataClassKey, byte[].class, DepthKey, 24), //
+                        //
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_QUICKTIME,
+                                EncodingKey, ENCODING_QUICKTIME_JPEG, DataClassKey, byte[].class, DepthKey, 24), //
+                },
+                new Format[]{
+                        new Format(MediaTypeKey, MediaType.VIDEO, MimeTypeKey, MIME_JAVA,
+                                EncodingKey, ENCODING_BUFFERED_IMAGE), //
                 }//
         );
         name = "JPEG Codec";
@@ -90,11 +70,7 @@ public class JPEGEncoder extends org.monte.media.av.AbstractCodec {
 
     @Override
     public int process(Buffer in, Buffer out) {
-        if (ENCODING_BUFFERED_IMAGE.equals(outputFormat.get(EncodingKey))) {
-            return decode(in, out);
-        } else {
-            return encode(in, out);
-        }
+        return decode(in, out);
     }
 
     @Override
@@ -110,47 +86,6 @@ public class JPEGEncoder extends org.monte.media.av.AbstractCodec {
             }
         }
         return this.outputFormat;
-    }
-
-    public int encode(Buffer in, Buffer out) {
-        out.setMetaTo(in);
-        out.format = outputFormat;
-        if (in.isFlag(DISCARD)) {
-            return CODEC_OK;
-        }
-        BufferedImage image = new ImageBufferToArray().getBufferedImage(in);
-        if (image == null) {
-            out.setFlag(DISCARD);
-            return CODEC_FAILED;
-        }
-        ByteArrayImageOutputStream tmp = new ByteArrayImageOutputStream(ArrayUtil.reuseByteArray(out.data, 32));
-        tmp.clear();
-
-        try {
-            ImageWriter iw = ImageIO.getImageWritersByMIMEType("image/jpeg").next();
-            ImageWriteParam iwParam = iw.getDefaultWriteParam();
-            iwParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-            float quality = outputFormat.get(QualityKey, 1f);
-            iwParam.setCompressionQuality(quality);
-            if (outputFormat.get(ProgressiveImageEncodingKey, Boolean.FALSE)) {
-                iwParam.setProgressiveMode(ImageWriteParam.MODE_DEFAULT);
-            }
-            iw.setOutput(tmp);
-            IIOImage img = new IIOImage(image, null, null);
-            iw.write(null, img, iwParam);
-            iw.dispose();
-
-            out.sampleCount = 1;
-            out.setFlag(KEYFRAME);
-            out.data = tmp.getBuffer();
-            out.offset = 0;
-            out.length = (int) tmp.getStreamPosition();
-            return CODEC_OK;
-        } catch (IOException ex) {
-            out.exception = ex;
-            out.setFlag(DISCARD);
-            return CODEC_FAILED;
-        }
     }
 
     public int decode(Buffer in, Buffer out) {

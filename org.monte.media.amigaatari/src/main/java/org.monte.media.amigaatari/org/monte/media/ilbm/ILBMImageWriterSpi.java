@@ -10,6 +10,7 @@ import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.ImageWriter;
 import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.stream.ImageOutputStream;
+import java.awt.image.IndexColorModel;
 import java.io.IOException;
 import java.util.Locale;
 
@@ -35,7 +36,13 @@ public class ILBMImageWriterSpi extends ImageWriterSpi {
 
     @Override
     public boolean canEncodeImage(ImageTypeSpecifier type) {
-        return true;
+        if (type.getColorModel() instanceof IndexColorModel icm
+                && !icm.hasAlpha()
+                && type.getNumBands() == 1
+                && icm.getPixelSize() > 0 && icm.getPixelSize() <= 8) {
+            return true;
+        }
+        return false;
     }
 
     @Override

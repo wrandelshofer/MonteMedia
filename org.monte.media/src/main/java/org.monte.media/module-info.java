@@ -29,6 +29,7 @@ module org.monte.media {
     exports org.monte.media.image.op;
     exports org.monte.media.image.algo;
     exports org.monte.media.image.colormodel;
+    exports org.monte.media.quicktime.codec.sprite;
 
     uses org.monte.media.av.CodecSpi;
     uses org.monte.media.av.MovieWriterSpi;

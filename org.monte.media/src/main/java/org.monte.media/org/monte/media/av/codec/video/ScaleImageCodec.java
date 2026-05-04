@@ -12,7 +12,8 @@ import org.monte.media.image.FloatImages;
 import org.monte.media.image.algo.NearestNeighbourResampleAlgoFloat;
 import org.monte.media.image.op.ScaleOp;
 
-import java.awt.*;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 import static org.monte.media.av.BufferFlag.DISCARD;

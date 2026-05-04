@@ -1,6 +1,6 @@
 /*
- * @(#)VideoEncoderCore.java
- * Copyright © 2025 Werner Randelshofer, Switzerland. MIT License.
+ * @(#)AbstractVideoCodecCore.java
+ * Copyright © 2023 Werner Randelshofer, Switzerland. MIT License.
  */
 package org.monte.media.av.codec.video;
 
@@ -8,9 +8,11 @@ import javax.imageio.stream.ImageOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-/// `VideoEncoderCore`.
-///
-/// @author Werner Randelshofer
+/**
+ * {@code VideoEncoderCore}.
+ *
+ * @author Werner Randelshofer
+ */
 public class VideoEncoderCore {
 
     protected byte[] byteBuf = new byte[4];

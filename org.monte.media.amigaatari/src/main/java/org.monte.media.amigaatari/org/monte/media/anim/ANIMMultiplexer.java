@@ -104,7 +104,7 @@ public class ANIMMultiplexer extends ANIMOutputStream implements Multiplexer {
     }
 
     public int getCAMG() {
-        return getCAMG();
+        return out.getCAMG();
     }
 
 }
