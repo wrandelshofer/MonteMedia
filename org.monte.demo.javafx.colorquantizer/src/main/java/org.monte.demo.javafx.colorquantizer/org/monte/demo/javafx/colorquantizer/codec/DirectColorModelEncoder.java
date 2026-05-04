@@ -13,7 +13,7 @@ import org.monte.media.av.FormatKey;
 import org.monte.media.av.FormatKeys;
 import org.monte.media.color.OKLabColorSpace;
 import org.monte.media.color.dither.BayerDither;
-import org.monte.media.color.dither.BlueNoiseDither128;
+import org.monte.media.color.dither.BlueNoiseDither;
 import org.monte.media.color.dither.Dither;
 
 import java.awt.Graphics2D;
@@ -86,9 +86,9 @@ public class DirectColorModelEncoder extends AbstractCodec {
                 dither0 = dither1 = dither2 = new BayerDither(8, spread);
             }
             case BLUE_NOISE -> {
-                dither0 = new BlueNoiseDither128(0, spread);
-                dither1 = new BlueNoiseDither128(1, spread);
-                dither2 = new BlueNoiseDither128(2, spread);
+                dither0 = new BlueNoiseDither(0, spread);
+                dither1 = new BlueNoiseDither(1, spread);
+                dither2 = new BlueNoiseDither(2, spread);
             }
         }
 

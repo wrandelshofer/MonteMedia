@@ -10,7 +10,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class BlueNoiseDither256Test {
+public class BlueNoiseDitherTest {
 
     @ParameterizedTest
     @ValueSource(ints = {0, 1, 2, 3})
@@ -27,7 +27,7 @@ public class BlueNoiseDither256Test {
 
 
     private static void checkMinMaxSum(int channel, float spread) {
-        BlueNoiseDither256 dither = new BlueNoiseDither256(channel, spread);
+        BlueNoiseDither dither = new BlueNoiseDither(channel, spread);
         float min = Float.POSITIVE_INFINITY;
         float max = Float.NEGATIVE_INFINITY;
         double sum = 0;

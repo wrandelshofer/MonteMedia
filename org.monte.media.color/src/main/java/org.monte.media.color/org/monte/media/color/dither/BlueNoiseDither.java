@@ -14,15 +14,15 @@ import static java.lang.Math.abs;
 /// Bart Wronski (2020). “Optimizing” blue noise dithering – backpropagation through Fourier transform and sorting.
 /// : [bartwronski.com](https://bartwronski.com/2020/04/26/optimizing-blue-noise-dithering-backpropagation-through-fourier-transform-and-sorting/)
 ///
-public class BlueNoiseDither256 implements Dither {
-    private final static float[][][] DATA_ALL = {BlueNoiseData256.DATA0, BlueNoiseData256.DATA1, BlueNoiseData256.DATA2, BlueNoiseData256.DATA3};
+public class BlueNoiseDither implements Dither {
+    private final static float[][][] DATA_ALL = {BlueNoiseData128.DATA0, BlueNoiseData128.DATA1, BlueNoiseData128.DATA2, BlueNoiseData128.DATA3};
     private final float[][] data;
     private final int mask;
 
     /// Creates a new [BayerDither].
     ///
     /// @param spread the multiplication factor applied to the matrix values. With spread=1 the values are in the range [-1,+1].
-    public BlueNoiseDither256(float spread) {
+    public BlueNoiseDither(float spread) {
         this(0, spread);
     }
 
@@ -30,7 +30,7 @@ public class BlueNoiseDither256 implements Dither {
     ///
     /// @param channel The color channel in the range [0,3] (for RGB+alpha, of for Lab+alpha)
     /// @param spread  the multiplication factor applied to the matrix values. With spread=1 the values are in the range [-1,+1].
-    public BlueNoiseDither256(int channel, float spread) {
+    public BlueNoiseDither(int channel, float spread) {
         float[][] DATA = DATA_ALL[abs(channel) % 4];
         if (spread == 1) this.data = DATA;
         else {

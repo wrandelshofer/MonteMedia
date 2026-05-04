@@ -49,53 +49,6 @@ public class CompressBlueNoiseData {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"BlueNoiseData0_256",
-            "BlueNoiseData1_256",
-            "BlueNoiseData2_256",
-            "BlueNoiseData3_256"})
-    public void testDataFile256(String filename) throws IOException, URISyntaxException {
-        float[][] expected = new float[256][256];
-        String floatFile = filename + ".txt";
-        try (InputStream in = CompressBlueNoiseData.class.getResourceAsStream(floatFile)) {
-            loadDataFromTextFile(in, expected);
-        }
-        float[][] actual = new float[256][256];
-        String hexFile = filename + ".hex";
-        try (InputStream in = CompressBlueNoiseData.class.getResourceAsStream(hexFile)) {
-            BlueNoiseData256.loadData(in, actual);
-        }
-
-        boolean isEqual = true;
-        for (int i = 0; i < 256; i++) {
-            isEqual &= Arrays.equals(expected[i], actual[i]);
-        }
-
-        if (!isEqual) {
-            File newHexFile = new File("target", filename + ".hex");
-            try (var out = Files.newBufferedWriter(newHexFile.toPath())) {
-                out.write(
-                        """
-                                /*
-                                 * @(#)BlueNoiseData0_256.hex
-                                 * Copyright © 2026 Werner Randelshofer, Switzerland. MIT License.
-                                 */
-                                """
-                );
-                for (int i = 0; i < 256; i++) {
-                    for (int j = 0; j < 256; j++) {
-                        out.write(Integer.toHexString(Float.floatToIntBits(expected[i][j])));
-                        out.write(' ');
-                    }
-                    out.write('\n');
-                }
-            }
-            System.out.println("data is not equal. New file " + newHexFile.getAbsolutePath());
-            fail();
-        }
-
-    }
-
-    @ParameterizedTest
     @ValueSource(strings = {"BlueNoiseData0_128",
             "BlueNoiseData1_128",
             "BlueNoiseData2_128",
@@ -110,7 +63,7 @@ public class CompressBlueNoiseData {
         String hexFile = filename + ".hex";
         try (InputStream in = CompressBlueNoiseData.class.getResourceAsStream(hexFile)) {
             if (in != null) {
-                BlueNoiseData256.loadData(in, actual);
+                BlueNoiseData128.loadData(in, actual);
             }
         }
 
