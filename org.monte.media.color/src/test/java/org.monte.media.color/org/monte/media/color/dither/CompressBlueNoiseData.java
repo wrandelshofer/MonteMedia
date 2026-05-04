@@ -27,17 +27,18 @@ public class CompressBlueNoiseData {
             tt.slashStarComments(true);
             tt.parseExponents();
             int index = 0;
+            int shift = 31 - Integer.numberOfLeadingZeros(data.length);
             while (tt.nextToken() != StreamTokenizer.TT_EOF) {
                 switch (tt.ttype) {
                     case StreamTokenizer.TT_NUMBER -> {
-                        data[index >> 8][index & 255] = Math.clamp((float) tt.nval, -1f, 1f);
+                        data[index >> shift][index & (data.length - 1)] = Math.clamp((float) tt.nval, -1f, 1f);
                         index++;
                     }
                     case StreamTokenizer.TT_WORD -> {
                         if (!"f".equals(tt.sval))
                             throw new IOException("Invalid data format at lineno=" + tt.lineno() + " tt.ttype=" + tt.ttype + (tt.ttype > 0 ? " tt.val='" + (char) tt.ttype + "'" : " tt.sval=" + tt.sval));
                     }
-                    case '{', '}', ',', ';' -> {
+                    case '[', ']', '{', '}', ',', ';' -> {
                     }
                     default ->
                             throw new IOException("Invalid data format at lineno=" + tt.lineno() + " tt.ttype=" + tt.ttype + (tt.ttype > 0 ? "  tt.val='" + (char) tt.ttype + "'" : " tt.sval=" + tt.sval));
@@ -52,7 +53,7 @@ public class CompressBlueNoiseData {
             "BlueNoiseData1_256",
             "BlueNoiseData2_256",
             "BlueNoiseData3_256"})
-    public void testDataFile(String filename) throws IOException, URISyntaxException {
+    public void testDataFile256(String filename) throws IOException, URISyntaxException {
         float[][] expected = new float[256][256];
         String floatFile = filename + ".txt";
         try (InputStream in = CompressBlueNoiseData.class.getResourceAsStream(floatFile)) {
@@ -82,6 +83,53 @@ public class CompressBlueNoiseData {
                 );
                 for (int i = 0; i < 256; i++) {
                     for (int j = 0; j < 256; j++) {
+                        out.write(Integer.toHexString(Float.floatToIntBits(expected[i][j])));
+                        out.write(' ');
+                    }
+                    out.write('\n');
+                }
+            }
+            System.out.println("data is not equal. New file " + newHexFile.getAbsolutePath());
+            fail();
+        }
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"BlueNoiseData0_128",
+            "BlueNoiseData1_128",
+            "BlueNoiseData2_128",
+            "BlueNoiseData3_128"})
+    public void testDataFile128(String filename) throws IOException, URISyntaxException {
+        float[][] expected = new float[128][128];
+        String floatFile = filename + ".txt";
+        try (InputStream in = CompressBlueNoiseData.class.getResourceAsStream(floatFile)) {
+            loadDataFromTextFile(in, expected);
+        }
+        float[][] actual = new float[128][128];
+        String hexFile = filename + ".hex";
+        try (InputStream in = CompressBlueNoiseData.class.getResourceAsStream(hexFile)) {
+            if (in != null) {
+                BlueNoiseData256.loadData(in, actual);
+            }
+        }
+
+        boolean isEqual = true;
+        for (int i = 0; i < 128; i++) {
+            isEqual &= Arrays.equals(expected[i], actual[i]);
+        }
+
+        if (!isEqual) {
+            File newHexFile = new File("target", filename + ".hex");
+            try (var out = Files.newBufferedWriter(newHexFile.toPath())) {
+                out.write(
+                        "/*\n" +
+                        " * @(#)" + filename +
+                        " * Copyright © 2026 Werner Randelshofer, Switzerland. MIT License.\n" +
+                        " */\n"
+                );
+                for (int i = 0; i < 128; i++) {
+                    for (int j = 0; j < 128; j++) {
                         out.write(Integer.toHexString(Float.floatToIntBits(expected[i][j])));
                         out.write(' ');
                     }

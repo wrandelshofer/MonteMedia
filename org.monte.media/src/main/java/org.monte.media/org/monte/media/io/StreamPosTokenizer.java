@@ -615,6 +615,8 @@ public class StreamPosTokenizer
                                 return ttype = TT_NUMBER;
                             }
                             neg = true;
+                        } else if (c == '+') {
+                            c = read();
                         }
                         v = 0;
                         while (true) {
