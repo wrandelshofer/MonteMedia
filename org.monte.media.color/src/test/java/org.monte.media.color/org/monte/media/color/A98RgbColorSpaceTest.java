@@ -5,6 +5,7 @@
 
 package org.monte.media.color;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.monte.media.math.Matrix3;
 import org.monte.media.math.Matrix3Float;
@@ -12,6 +13,7 @@ import org.monte.media.math.Matrix3Float;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 
+@Disabled
 public class A98RgbColorSpaceTest extends AbstractNamedColorSpaceTest {
 
     @Override

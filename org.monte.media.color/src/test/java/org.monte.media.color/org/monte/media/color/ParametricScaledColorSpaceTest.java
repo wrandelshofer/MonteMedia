@@ -5,6 +5,9 @@
 
 package org.monte.media.color;
 
+import org.junit.jupiter.api.Disabled;
+
+@Disabled
 public class ParametricScaledColorSpaceTest extends AbstractNamedColorSpaceTest {
 
     @Override

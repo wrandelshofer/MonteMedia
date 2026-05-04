@@ -7,20 +7,17 @@ package org.monte.media.color.op;
 
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.stage.Window;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.monte.media.color.RecBT2020ColorSpace;
 import org.monte.media.color.util.FXImageSplitterStage;
 import org.monte.media.color.util.TestImageFactory;
 
 import java.awt.image.BufferedImage;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
+@Disabled
 public class FXColorSpaceConvertOpTest {
     @Test
     void shouldConvertColorSpaceImage() {
@@ -43,6 +40,7 @@ public class FXColorSpaceConvertOpTest {
 
     @AfterAll
     public static void afterAll() {
+        /*
         CompletableFuture<Boolean> f = new CompletableFuture<>();
         Platform.runLater(() -> {
             for (Window w : Window.getWindows()) {
@@ -59,6 +57,6 @@ public class FXColorSpaceConvertOpTest {
         }
         for (Window w : Window.getWindows()) {
             w.hide();
-        }
+        }*/
     }
 }

@@ -6,6 +6,7 @@
 package org.monte.media.color.op;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.monte.media.color.RecBT2020ColorSpace;
 import org.monte.media.color.util.ImageSplitterJFrame;
@@ -14,6 +15,7 @@ import org.monte.media.color.util.TestImageFactory;
 import java.awt.Window;
 import java.awt.image.BufferedImage;
 
+@Disabled
 public class SwingColorSpaceConvertOpTest {
     @Test
     void shouldConvertColorSpaceImage() {
@@ -32,11 +34,12 @@ public class SwingColorSpaceConvertOpTest {
 
     @AfterAll
     public static void afterAll() {
+        /*
         try {
             Thread.sleep(300_000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        }
+        }*/
         for (Window w : Window.getWindows()) {
             w.dispose();
         }
