@@ -70,7 +70,7 @@ public class ANIMOutputStream {
     /// Commodore Amiga graphics mode.
     private int camg;
     private boolean debug = false;
-    private IFFOutputStream out = null;
+    protected IFFOutputStream out = null;
     /// Frame count.
     protected int frameCount = 0;
     /// Current absolute frame time.

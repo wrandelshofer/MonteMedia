@@ -1049,28 +1049,6 @@ public class QuickTimeDeserializer {
         }
     }
 
-    private IndexColorModel readVideoColorTable(QTFFImageInputStream in) throws IOException {
-
-        long seed = in.readUnsignedInt(); // Color table seed. A 32-bit integer that must be set to 0.
-        int flags = in.readUnsignedShort(); // Color table flags. A 16-bit integer that must be set to 0x8000.
-        int colorTableSize = in.readUnsignedShort() + 1;
-        // Color table size. A 16-bit integer that indicates the number of
-        // colors in the following color array. This is a zero-relative value;
-        // setting this field to 0 means that there is one color in the array.
-        int[] rgbs = new int[Math.min(256, colorTableSize)];
-        for (int i = 0; i < colorTableSize; ++i) {
-            // An array of colors. Each color is made of four unsigned 16-bit integers.
-            // The first integer must be set to 0, the second is the red value,
-            // the third is the green value, and the fourth is the blue value.
-            in.readUnsignedShort();
-            int red = in.readUnsignedShort();
-            int green = in.readUnsignedShort();
-            int blue = in.readUnsignedShort();
-            int rgb = ((red & 0xff00) << 8) | (green & 0xff00) | ((blue & 0xff00) >>> 8);
-            if (i < rgbs.length) rgbs[i] = rgb;
-        }
-        return new IndexColorModel(8, rgbs.length, rgbs, 0, false, -1, DataBuffer.TYPE_BYTE);
-    }
 
     private IndexColorModel readVideoColorTable(QTFFImageInputStream in) throws IOException {
 

@@ -42,7 +42,6 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.ProgressiveImageEnc
 import static org.monte.media.av.codec.video.VideoFormatKeys.QualityKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 
-<<<<<<<< HEAD:org.monte.media.jpeg/src/main/java/org.monte.media.jpeg/org/monte/media/jpeg/codec/video/JPEGEncoder.java
 /// `JPEGCodec` encodes a BufferedImage as a byte[] array.
 ///
 /// Supported input/output formats:
@@ -53,21 +52,6 @@ import static org.monte.media.av.codec.video.VideoFormatKeys.WidthKey;
 ///     format, depth=24.
 ///
 /// @author Werner Randelshofer
-========
-/**
- * {@code JPEGCodec} encodes a BufferedImage as a byte[] array.
- * <p>
- * Supported input/output formats:
- * <ul>
- * <li>@code VideoFormat} with {@code BufferedImage.class}, any
- * width, any height, any depth.</li>
- * <li>{@code VideoFormat} with {@code byte[].class}, same width and height as input
- * format, depth=24.</li>
- * </ul>
- *
- * @author Werner Randelshofer
- */
->>>>>>>> main:org.monte.media/src/main/java/org.monte.media/org/monte/media/av/codec/video/JPEGEncoder.java
 public class JPEGEncoder extends org.monte.media.av.AbstractCodec {
 
     public JPEGEncoder() {

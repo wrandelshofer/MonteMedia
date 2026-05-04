@@ -89,6 +89,8 @@ public class ANIMMultiplexer extends ANIMOutputStream implements Multiplexer {
         close();
     }
 
+    private int camg;
+
     /// Sets the Commodore Amiga Graphics Mode. The default value is 0.
     ///
     /// The graphics mode is an or-combination of the monitor ID and the mode ID.
@@ -100,11 +102,11 @@ public class ANIMMultiplexer extends ANIMOutputStream implements Multiplexer {
     ///
     /// Also sets the Jiffies for the Graphics Mode.
     public void setCAMG(int newValue) {
-        setCAMG(newValue);
+        this.camg = newValue;
     }
 
     public int getCAMG() {
-        return out.getCAMG();
+        return camg;
     }
 
 }
