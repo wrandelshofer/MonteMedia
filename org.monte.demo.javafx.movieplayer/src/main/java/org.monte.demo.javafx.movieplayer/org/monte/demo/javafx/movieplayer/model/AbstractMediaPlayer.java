@@ -68,7 +68,7 @@ public abstract class AbstractMediaPlayer implements MediaPlayerInterface {
     protected final ObjectProperty<Runnable> onRepeat = new SimpleObjectProperty<>();
     protected final ObjectProperty<Runnable> onStalled = new SimpleObjectProperty<>();
     protected final ObjectProperty<Runnable> onStopped = new SimpleObjectProperty<>();
-    protected final DoubleProperty rate = new SimpleDoubleProperty();
+    protected final DoubleProperty rate = new SimpleDoubleProperty(1.0);
     protected final ObjectProperty<Duration> startTime = new SimpleObjectProperty<>();
     protected final ReadOnlyObjectWrapper<MediaPlayer.Status> status = new ReadOnlyObjectWrapper<>() {
         @Override

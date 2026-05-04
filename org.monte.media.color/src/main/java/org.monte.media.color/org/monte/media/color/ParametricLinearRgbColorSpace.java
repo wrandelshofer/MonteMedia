@@ -149,7 +149,7 @@ public class ParametricLinearRgbColorSpace extends AbstractNamedColorSpace {
             toLinearSrgbMatrixDouble = FROM_D65_XYZ_TO_LINEAR_SRGB_MATRIX.mul(
                     FROM_D50_XYZ_TO_D65_XYZ).mul(toXyzMatrixDouble);
         } else {
-            Matrix3Double mA = computeToXyzMatrix(red, green, blue, white);
+            Matrix3Double mA = computeChromaticAdaptationMatrix(convertxyToXYZ(white, 1), ILLUMINANT_D50_XYZ);
             toD50XyzMatrixDouble = mA.mul(toXyzMatrixDouble);
             toLinearSrgbMatrixDouble = FROM_D65_XYZ_TO_LINEAR_SRGB_MATRIX.mul(toXyzMatrixDouble);
         }

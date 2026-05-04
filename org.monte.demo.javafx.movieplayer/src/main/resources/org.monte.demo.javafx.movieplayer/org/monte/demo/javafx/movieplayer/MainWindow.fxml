@@ -7,7 +7,6 @@
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
-
 <BorderPane fx:id="rootPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="120.0"
             minWidth="240.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.monte.demo.javafx.movieplayer.MainWindowController">
@@ -43,6 +42,10 @@
                                 <KeyCodeCombination alt="UP" code="P" control="UP" meta="DOWN" shift="UP"
                                                     shortcut="UP"/>
                             </accelerator>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#playFaster" text="%playFaster.menuItem">
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#playSlower" text="%playSlower.menuItem">
                         </MenuItem>
                     </items>
                 </Menu>

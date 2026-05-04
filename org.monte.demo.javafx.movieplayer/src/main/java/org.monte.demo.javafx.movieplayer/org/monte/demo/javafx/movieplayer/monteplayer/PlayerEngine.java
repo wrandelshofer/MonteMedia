@@ -14,4 +14,6 @@ public interface PlayerEngine extends Player {
     Rational getFrameAfter(Rational seconds);
 
     Rational getFrameBefore(Rational seconds);
+
+    void setRate(float rate);
 }

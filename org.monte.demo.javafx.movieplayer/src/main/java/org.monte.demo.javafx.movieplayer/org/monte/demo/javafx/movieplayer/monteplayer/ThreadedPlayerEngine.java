@@ -68,7 +68,26 @@ class ThreadedPlayerEngine extends AbstractPlayer implements PlayerEngine {
     /// Methods [#doPrefetched()] and [#doStarted()] retrieve the value (using `seekTime.getAndSet(null)`).
     /// And seek to the desired time.
     private final AtomicReference<Rational> seekTime = new AtomicReference<>();
+    private float rate = 1f;
 
+    public float getRate() {
+        return rate;
+    }
+
+    @Override
+    public void setRate(float rate) {
+        this.rate = rate;
+        boolean wasStarted = isActive();
+        stop();
+        for (var t : tracks) {
+            if (t instanceof MonteAudioTrack audioTrack) {
+                audioTrack.setRate(rate);
+            }
+        }
+        if (wasStarted) {
+            start();
+        }
+    }
 
     public ThreadedPlayerEngine(MonteMediaPlayer player) {
         this.player = player;
@@ -110,6 +129,8 @@ class ThreadedPlayerEngine extends AbstractPlayer implements PlayerEngine {
 
     }
 
+    private List<TrackInterface> tracks = new ArrayList<>();
+
     @Override
     protected void doRealizing() throws Exception {
         if (reader != null) {
@@ -119,7 +140,7 @@ class ThreadedPlayerEngine extends AbstractPlayer implements PlayerEngine {
         }
 
         reader = new SynchronizedMovieReader(Registry.getInstance().getReader(new File(new URI(media.getSource()))));
-        List<TrackInterface> tracks = new ArrayList<>();
+        tracks = new ArrayList<>();
         int mediaWidth = 0, mediaHeight = 0;
         int trackWidth = 0, trackHeight = 0;
         Format fileFormat = reader.getFileFormat();
@@ -187,12 +208,15 @@ class ThreadedPlayerEngine extends AbstractPlayer implements PlayerEngine {
             audioTrack.setCodec(codec1);
 
             Format actualOutputFormat = codec1.getOutputFormat();
+            float sampleRate = actualOutputFormat.get(SampleRateKey).floatValue();
             AudioFormat audioFormat = new AudioFormat(
-                    actualOutputFormat.get(AudioFormatKeys.SampleRateKey).floatValue(),
+                    sampleRate,
                     actualOutputFormat.get(AudioFormatKeys.SampleSizeInBitsKey),
                     actualOutputFormat.get(AudioFormatKeys.ChannelsKey),
-                    actualOutputFormat.get(SignedKey), actualOutputFormat.get(AudioFormatKeys.ByteOrderKey) == ByteOrder.BIG_ENDIAN);
+                    actualOutputFormat.get(SignedKey),
+                    actualOutputFormat.get(AudioFormatKeys.ByteOrderKey) == ByteOrder.BIG_ENDIAN);
             SourceDataLine sourceDataLine = AudioSystem.getSourceDataLine(audioFormat);
+            audioTrack.audioFormat = audioFormat;
             audioTrack.setSourceDataLine(sourceDataLine);
             sourceDataLine.open(audioFormat);
             sourceDataLine.start();
@@ -369,7 +393,7 @@ class ThreadedPlayerEngine extends AbstractPlayer implements PlayerEngine {
                         updateBuffer(t, playTime);
                     }
                 }
-                int elapsedMovieMillis = playTime.subtract(playStartTime).multiply(1000).intValue();
+                int elapsedMovieMillis = (int) (playTime.subtract(playStartTime).multiply(1000).floatValue() / rate);
                 int elapsedSystemMillis = (int) ((System.nanoTime() - startNanoTime) / 1_000_000L);
                 int sleepMillis = (elapsedMovieMillis - elapsedSystemMillis);
                 if (sleepMillis > JIFFIE) {
@@ -437,7 +461,7 @@ class ThreadedPlayerEngine extends AbstractPlayer implements PlayerEngine {
                     while (true) {
                         try {
                             updateBuffer(t, playTime);
-                            int elapsedMovieMillis = playTime.subtract(playStartTime).multiply(1000).intValue();
+                            int elapsedMovieMillis = (int) (playTime.subtract(playStartTime).multiply(1000).floatValue() * rate);
                             int elapsedSystemMillis = (int) ((System.nanoTime() - startNanoTime) / 1_000_000L);
 
                             int sleepMillis = (elapsedMovieMillis - elapsedSystemMillis - JIFFIE);
@@ -504,8 +528,7 @@ class ThreadedPlayerEngine extends AbstractPlayer implements PlayerEngine {
         }
         MonteTrackInterface tr = (MonteTrackInterface) track;
         Buffer outBuf = tr.getOutBufferA();
-        if (outBuf.timeStamp.compareTo(playTime) <= 0 &&
-                playTime.compareTo(outBuf.getBufferEndTimestamp()) < 0) {
+        if (outBuf.timeStamp.compareTo(playTime) <= 0 && playTime.compareTo(outBuf.getBufferEndTimestamp()) < 0) {
             return;
         }
 

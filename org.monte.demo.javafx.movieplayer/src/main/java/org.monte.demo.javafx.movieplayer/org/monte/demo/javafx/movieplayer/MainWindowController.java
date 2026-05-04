@@ -45,6 +45,23 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class MainWindowController {
+    int ratePower = 0;
+
+    public void playFaster(ActionEvent actionEvent) {
+        ratePower++;
+        playWithRate(ratePower);
+    }
+
+    public void playSlower(ActionEvent actionEvent) {
+        ratePower--;
+        playWithRate(ratePower);
+    }
+
+    private void playWithRate(int ratePower) {
+        MediaPlayerInterface p = getPlayer();
+        p.setRate(Math.pow(2, ratePower));
+    }
+
     enum Mode {
         JavaFX, MonteMedia
     }

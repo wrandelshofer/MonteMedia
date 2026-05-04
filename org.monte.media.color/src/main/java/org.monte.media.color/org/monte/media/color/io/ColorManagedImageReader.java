@@ -10,7 +10,6 @@ import org.monte.media.color.ParametricNonLinearRgbColorSpace;
 import org.monte.media.color.icc.ICC_ProfileReader;
 import org.monte.media.color.tonecurve.GammaToneMapper;
 import org.monte.media.color.tonecurve.ToneMapper;
-import org.monte.media.math.Matrix3Double;
 import org.monte.media.math.Point2D;
 import org.w3c.dom.NodeList;
 
@@ -96,14 +95,14 @@ public class ColorManagedImageReader implements AutoCloseable {
             IIOMetadataNode root = (IIOMetadataNode) imageMetadata.getAsTree("javax_imageio_png_1.0");
             NodeList gAMA = root.getElementsByTagName("gAMA");
             ToneMapper toneMapper = null;
-            Matrix3Double xyzMatrix = null;
             if (gAMA.getLength() > 0) {
                 IIOMetadataNode chrm = (IIOMetadataNode) gAMA.item(0);
                 float gamma = Float.parseFloat(chrm.getAttribute("value")) / 100000.0f;
-                toneMapper = new GammaToneMapper(gamma);
+                toneMapper = new GammaToneMapper(1 / gamma);
             }
             NodeList chrmNodes = root.getElementsByTagName("cHRM");
             ParametricLinearRgbColorSpace linearColorSpace = null;
+            ParametricLinearRgbColorSpace linx = null;
             if (chrmNodes.getLength() > 0) {
                 IIOMetadataNode chrm = (IIOMetadataNode) chrmNodes.item(0);
                 float whiteX = Float.parseFloat(chrm.getAttribute("whitePointX")) / 100000.0f;

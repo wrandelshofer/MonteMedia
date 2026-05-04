@@ -13,6 +13,8 @@ import org.monte.media.av.Codec;
 import org.monte.media.av.Format;
 import org.monte.media.math.Rational;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import java.util.Locale;
 import java.util.Map;
@@ -23,8 +25,8 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class MonteAudioTrack extends AbstractAudioTrack implements MonteTrackInterface {
-    protected long renderedUntilNanoTime;
-    private SourceDataLine sourceDataLine;
+    public AudioFormat audioFormat;
+    protected SourceDataLine sourceDataLine;
     private final AtomicReference<Rational> seekTime = new AtomicReference<>();
     /// The dispatcher.
     private ExecutorService dispatcher = Executors.newSingleThreadExecutor(new ThreadFactory() {
@@ -92,6 +94,24 @@ public class MonteAudioTrack extends AbstractAudioTrack implements MonteTrackInt
 
     public void setFormat(Format format) {
         this.format = format;
+    }
+
+    public void setRate(float rate) {
+        sourceDataLine.close();
+
+        AudioFormat f = new AudioFormat(
+                audioFormat.getSampleRate() * rate,
+                audioFormat.getSampleSizeInBits(),
+                audioFormat.getChannels(),
+                audioFormat.getEncoding() == AudioFormat.Encoding.PCM_SIGNED,
+                audioFormat.isBigEndian());
+        try {
+
+            sourceDataLine.open(f);
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void setSourceDataLine(SourceDataLine sourceDataLine) {

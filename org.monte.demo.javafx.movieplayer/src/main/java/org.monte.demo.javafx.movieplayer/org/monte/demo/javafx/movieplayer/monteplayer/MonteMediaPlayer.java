@@ -22,6 +22,10 @@ public class MonteMediaPlayer extends AbstractMediaPlayer {
         //engine = new TimedPlayerEngine(this);
         engine = new ThreadedPlayerEngine(this);
         engine.realize();
+
+        rateProperty().addListener((o, oldv, newv) -> {
+            engine.setRate(newv.floatValue());
+        });
     }
 
     @Override
