@@ -19,11 +19,11 @@ public class ICC_ProfileReaderTest {
     @ValueSource(strings = {"rgb-faces-sRGB.png", "rgb-faces-DisplayP3.png", "rgb-faces-Rec709.png", "rgb-faces-Rec2020.png", "rgb-faces-A98.png"})
     public void testRead(String filename) throws Exception {
         File file = new File("/Volumes/Projects/Java/MonteMedia/ExampleImages/" + filename);
-        IO.println("Reading " + filename);
+        System.out.println("Reading " + filename);
         var image = new ColorManagedImageReader().read(file);
         var cs = image.getColorModel().getColorSpace();
         if (cs instanceof ICC_ColorSpace iccs) {
-            IO.println(new ICC_ProfileReader(iccs.getProfile()).toString());
+            System.out.println(new ICC_ProfileReader(iccs.getProfile()).toString());
         }
     }
 }

@@ -735,7 +735,7 @@ public class ColorQuantizerMainModel {
     private void printImageMetadata(IIOMetadata iioMeta) {
 
         var r = new ICC_ProfileReader(iioMeta);
-        IO.println(r.toString());
+        System.out.println(r.toString());
     }
 
     private void process(Path p, Codec codec, String outputFormat, Path dir) throws IOException {

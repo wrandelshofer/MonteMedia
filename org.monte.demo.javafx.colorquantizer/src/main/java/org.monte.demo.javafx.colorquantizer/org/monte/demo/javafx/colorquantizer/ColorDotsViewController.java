@@ -237,7 +237,7 @@ public class ColorDotsViewController {
         handleKeyboard(borderPane);
         handleMouse(subScene, borderPane);
         borderPane.visibleProperty().addListener((o, oldVal, newVal) -> {
-            IO.println("ColorDotsViewController borderPane visibleProperty(): " + newVal);
+            System.out.println("ColorDotsViewController borderPane visibleProperty(): " + newVal);
             if (newVal) updateViewIfNeeded();
         });
         new RotateScene3DMouseHandler(borderPane, world, camera);
@@ -354,7 +354,7 @@ public class ColorDotsViewController {
                 }
             }
         }
-        IO.println("OKLab #colors=" + dots.size());
+        System.out.println("OKLab #colors=" + dots.size());
         colorDotsGroup = new Group3D(dots);
         world.getChildren().add(colorDotsGroup);
     }
@@ -424,7 +424,7 @@ public class ColorDotsViewController {
                 dots.add(dot);
             }
         }
-        IO.println("RGB #colors=" + dots.size());
+        System.out.println("RGB #colors=" + dots.size());
         colorDotsGroup = new Group3D(dots);
         world.getChildren().add(colorDotsGroup);
     }

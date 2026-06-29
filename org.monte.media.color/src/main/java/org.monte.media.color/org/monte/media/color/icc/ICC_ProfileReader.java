@@ -209,7 +209,6 @@ public class ICC_ProfileReader {
                     return read(data, isDeflate);
                 } else if ("unknown".equals(x.getLocalName()) && iioNode.getUserObject() instanceof byte[] data) {
                     if (data.length > 12 && "ICC_PROFILE\0".equals(new String(data, 0, 12, StandardCharsets.US_ASCII))) {
-                        IO.println("unknown is an ICC PROFILE");
                         byte[] dataCropped = Arrays.copyOfRange(data, 14, data.length);
                         return read(dataCropped, false);
 

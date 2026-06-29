@@ -76,7 +76,6 @@ public class ImageSplitterJPanel extends JPanel {
         // Draw first image (left side) clipped to splitX
         int width = getWidth();
         int height = getHeight();
-        IO.println("ImageSplitterJPanel.paintComponent() " + img1);
         if (img1 != null) {
             g2d.drawImage(img1, 0, 0, splitX, height, 0, 0, splitX, height, null);
         }

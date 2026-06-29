@@ -5,7 +5,6 @@
 
 package org.monte.demo.javafx.colorquantizer;
 
-import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -37,7 +36,9 @@ public class DragSupport {
         defaultBorder = new Border(new BorderStroke(
                 Color.TRANSPARENT, BorderStrokeStyle.SOLID, null, null));
         dragOverBorder = new Border(new BorderStroke(
-                Platform.getPreferences().getAccentColor(), BorderStrokeStyle.SOLID, null, null));
+                Color.LIGHTBLUE,
+                //Platform.getPreferences().getAccentColor(),
+                BorderStrokeStyle.SOLID, null, null));
         if (node instanceof Region region) {
             region.setBorder(defaultBorder);
         }
