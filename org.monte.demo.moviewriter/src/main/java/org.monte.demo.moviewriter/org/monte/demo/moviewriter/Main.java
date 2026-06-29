@@ -15,13 +15,16 @@ import org.monte.media.av.codec.video.VideoFormatKeys.PixelFormat;
 import org.monte.media.h264.codec.video.H264EncoderSpi;
 import org.monte.media.image.colormodel.ColorModels;
 import org.monte.media.jcodec.h264.JCodecPictureCodecSpi;
-import org.monte.media.jcodec.h264.JCodecPictureCodecSpi;
 import org.monte.media.jcodec.mp4.JCodecMP4WriterSpi;
 import org.monte.media.math.Rational;
 import org.monte.media.mp4.MP4WriterSpi;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -40,16 +43,7 @@ import static org.monte.media.av.FormatKeys.KeyFrameIntervalKey;
 import static org.monte.media.av.FormatKeys.MediaTypeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.DepthKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVC1;
-import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_DIB;
-import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_MJPG;
-import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_PNG;
-import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_RLE8;
-import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE;
 import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
-import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_ANIMATION;
-import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_JPEG;
-import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_PNG;
-import static org.monte.media.av.codec.video.VideoFormatKeys.ENCODING_QUICKTIME_RAW;
 import static org.monte.media.av.codec.video.VideoFormatKeys.HeightKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.MotionSearchRangeKey;
 import static org.monte.media.av.codec.video.VideoFormatKeys.PixelFormatKey;
@@ -90,16 +84,19 @@ public class Main {
     }
 
     private static void drawAnimationFrame(Graphics2D g, double second, int frameIndex, int frameCount, BufferedImage backgroundImage, Random rng) {
-        drawClock(g, 232, 240, 150, second);
-        drawVerticallyScrollingArea(g, 472, 251, 168, 108, second, backgroundImage);
-        drawHorizontallyScrollingArea(g, 472, 370, 168, 110, second, backgroundImage);
+        int width = backgroundImage.getWidth();
+        int height = backgroundImage.getHeight();
+        int columnWidth = 168;
+        int cx = (width - columnWidth) / 2;
+        int cy = height / 2;
+        drawClock(g, cx, cy, 150, second);
+        drawVerticallyScrollingArea(g, width - columnWidth, 251, columnWidth, 108, second, backgroundImage);
+        // drawHorizontallyScrollingArea(g, width - columnWidth, 370, columnWidth, 110, second, backgroundImage);
 
         g.setPaint(Color.WHITE);
         g.fillRect(472, 10, 168, 110);
         g.setPaint(Color.BLACK);
         g.drawString("Frame " + (frameIndex + 1) + " of " + frameCount, 473, 24);
-
-        drawRandomlyMovingBlock(g, 512, 48, 40, 40, 16, rng, backgroundImage, false);
     }
 
     private static void drawVerticallyScrollingArea(Graphics2D g, int x, int y, int width, int height, double second, BufferedImage backgroundImage) {
@@ -114,16 +111,6 @@ public class Main {
         }
     }
 
-    private static void drawRandomlyMovingBlock(Graphics2D g, int x, int y, int width, int height, int distance, Random rng, BufferedImage backgroundImage, boolean erase) {
-        if (erase) {
-            g.drawImage(backgroundImage,
-                    x, y, x + width + distance, y + height + distance,
-                    x, y, x + width + distance, y + height + distance,
-                    null);
-        }
-        g.setPaint(Color.BLACK);
-        g.fillRect(x + rng.nextInt(distance), y + rng.nextInt(distance), width, height);
-    }
 
     private static void drawHorizontallyScrollingArea(Graphics2D g, int x, int y, int width, int height, double second, BufferedImage backgroundImage) {
         // draws the background image vertically offset by one pixel every 12-th of a second
@@ -170,8 +157,7 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         System.out.println("MovieWriterDemo " + Main.class.getPackage().getImplementationVersion());
         System.out.println("This is a demo of the Monte Media library.");
-        System.out.println("Copyright © Werner Randelshofer. All Rights Reserved.");
-        System.out.println("License: MIT License");
+        System.out.println("Copyright © Werner Randelshofer, Switzerland. MIT License.");
         System.out.println();
 
         try {
@@ -182,7 +168,7 @@ public class Main {
             //   list.add(new TestData(new File("moviewriterdemo-h264raw.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24), new H264RawYuvEncoderSpi(), new MP4WriterSpi()));
             list.add(new TestData(new File("moviewriterdemo-h264-motion0.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0), new H264EncoderSpi(), new MP4WriterSpi()));
             list.add(new TestData(new File("moviewriterdemo-h264-motion0-jcodec.mp4"), baseFormat.prepend(EncodingKey, ENCODING_AVC1, DepthKey, 24, MotionSearchRangeKey, 0), new JCodecPictureCodecSpi(), new JCodecMP4WriterSpi()));
-
+/*
             list.add(new TestData(new File("moviewriterdemo-raw24.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_RAW, DepthKey, 24)));
             list.add(new TestData(new File("moviewriterdemo-rle8.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 8)));
             list.add(new TestData(new File("moviewriterdemo-rle16.mov"), baseFormat.prepend(EncodingKey, ENCODING_QUICKTIME_ANIMATION, DepthKey, 16)));
@@ -214,7 +200,7 @@ public class Main {
             list.add(new TestData(new File("moviewriterdemo-tscc8.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8)));
             list.add(new TestData(new File("moviewriterdemo-tscc8gray.avi"), baseFormat.prepend(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8, PixelFormatKey, PixelFormat.GRAY)));
             list.add(new TestData(new File("moviewriterdemo-tscc8gray.mov"), baseFormat.prepend(EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 8, PixelFormatKey, PixelFormat.GRAY)));
-
+*/
             for (TestData data : list) {
                 m.test(data.file, data.format, data.codecSpi, data.movieWriterSpi);
             }
@@ -224,9 +210,6 @@ public class Main {
     }
 
     private record TestData(File file, Format format, CodecSpi codecSpi, MovieWriterSpi movieWriterSpi) {
-        public TestData(File file, Format format) {
-            this(file, format, null, null);
-        }
     }
 
     private void test(File file, Format format, CodecSpi codecSpi, MovieWriterSpi movieWriterSpi) throws IOException {
@@ -237,8 +220,8 @@ public class Main {
         Rational frameRate = new Rational(12, 1);
         format = format.prepend(MediaTypeKey, MediaType.VIDEO, //
                 FrameRateKey, frameRate,//
-                WidthKey, 128, //
-                HeightKey, 96);
+                WidthKey, 640, //
+                HeightKey, 480);
 
         // Create a buffered image for this format
         BufferedImage img = createImage(format);

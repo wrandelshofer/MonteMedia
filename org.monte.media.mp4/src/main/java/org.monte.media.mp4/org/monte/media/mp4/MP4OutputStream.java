@@ -2172,9 +2172,6 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
     /// contain up to 256 colors. These optional atoms have a type value of
     /// 'ctab'. The color table atom contains a Macintosh color table data
     /// structure.
-    ///
-    /// @param stblAtom
-    /// @throws IOException
     protected void writeVideoColorTableAtom(VideoTrack t, CompositeAtom stblAtom) throws IOException {
         DataAtom leaf;
         QTFFImageOutputStream d;
