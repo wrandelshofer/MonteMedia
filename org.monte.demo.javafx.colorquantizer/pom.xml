@@ -18,11 +18,6 @@
     <name>Monte Media Demo JavaFX Movie Player</name>
     <description>A program that demonstrates how to play movies with the Monte Media library.</description>
 
-    <properties>
-        <maven.compiler.target>25</maven.compiler.target>
-        <maven.compiler.source>25</maven.compiler.source>
-    </properties>
-
     <build>
         <sourceDirectory>src/main/java/org.monte.demo.javafx.colorquantizer</sourceDirectory>
         <testSourceDirectory>${basedir}/src/test/java/org.monte.demo.colorquantizer</testSourceDirectory>

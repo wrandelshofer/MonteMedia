@@ -6,59 +6,54 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>ch.randelshofer</groupId>
-    <artifactId>org.monte.media.parent</artifactId>
-    <version>${revision}</version>
-  </parent>
-  <artifactId>org.monte.media.javafx</artifactId>
-  <packaging>jar</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>ch.randelshofer</groupId>
+        <artifactId>org.monte.media.parent</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <artifactId>org.monte.media.javafx</artifactId>
+    <packaging>jar</packaging>
 
-  <name>Monte Media JavaFX</name>
-  <description>Provides JavaFX classes for use with the Monte Media library.</description>
+    <name>Monte Media JavaFX</name>
+    <description>Provides JavaFX classes for use with the Monte Media library.</description>
 
-  <properties>
-    <maven.compiler.target>25</maven.compiler.target>
-    <maven.compiler.source>25</maven.compiler.source>
-  </properties>
+    <build>
+        <sourceDirectory>${basedir}/src/main/java/org.monte.media.javafx</sourceDirectory>
+        <testSourceDirectory>${basedir}/src/test/java/org.monte.media.javafx</testSourceDirectory>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/java/org.monte.media.javafx</directory>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </resource>
 
-  <build>
-    <sourceDirectory>${basedir}/src/main/java/org.monte.media.javafx</sourceDirectory>
-    <testSourceDirectory>${basedir}/src/test/java/org.monte.media.javafx</testSourceDirectory>
-    <resources>
-      <resource>
-        <directory>${basedir}/src/main/java/org.monte.media.javafx</directory>
-        <excludes>
-          <exclude>**/*.java</exclude>
-        </excludes>
-      </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>${basedir}/src/test/java/org.monte.media.javafx</directory>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </testResource>
 
-    </resources>
-    <testResources>
-      <testResource>
-        <directory>${basedir}/src/test/java/org.monte.media.javafx</directory>
-        <excludes>
-          <exclude>**/*.java</exclude>
-        </excludes>
-      </testResource>
+        </testResources>
 
-    </testResources>
-
-    <plugins></plugins>
-  </build>
-  <dependencies>
-    <dependency>
-      <groupId>ch.randelshofer</groupId>
-      <artifactId>org.monte.media</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.openjfx</groupId>
-      <artifactId>javafx-controls</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.openjfx</groupId>
-      <artifactId>javafx-swing</artifactId>
-    </dependency>
-  </dependencies>
+        <plugins></plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>ch.randelshofer</groupId>
+            <artifactId>org.monte.media</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+        </dependency>
+    </dependencies>
 </project>

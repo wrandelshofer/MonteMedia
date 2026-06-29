@@ -17,10 +17,6 @@
 
     <name>Monte Media Demo CMYK Image Viewer</name>
     <description>A program that demonstrates how to read CMYK JPEG images with the Monte Media library.</description>
-    <properties>
-        <maven.compiler.target>25</maven.compiler.target>
-        <maven.compiler.source>25</maven.compiler.source>
-    </properties>
 
     <build>
         <sourceDirectory>${basedir}/src/main/java/org.monte.demo.cmykimageviewer</sourceDirectory>
