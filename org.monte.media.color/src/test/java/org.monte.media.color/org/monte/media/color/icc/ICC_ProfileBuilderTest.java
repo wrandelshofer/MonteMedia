@@ -13,8 +13,6 @@ import java.awt.color.ICC_ColorSpace;
 import java.awt.color.ICC_Profile;
 import java.awt.color.ICC_ProfileRGB;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,7 +44,6 @@ class ICC_ProfileBuilderTest {
         w.setRedToneCurve(toneCurve);
 
         var profile = w.build();
-        Files.write(Path.of("/Users/wr/Downloads/WR-profile.icc"), profile.getData());
         var r = new ICC_ProfileReader(profile);
 
         if (profile instanceof ICC_ProfileRGB) {
