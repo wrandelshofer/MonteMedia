@@ -71,31 +71,41 @@ This project consists of the following modules:
 |--------------------------------|-------------------------------------------------------------------------------------------|
 | org.monte.media                | Library for processing still images, video, audio and meta-data.                          |
 | org.monte.media.screenrecorder | Screen recorder in pure Java (MP4, AVI and QuickTime) .                                   |
-| org.monte.media.jcodec         | Wrappers for the JCodec library                                                           |
-| org.monte.media.jmf            | Provides the following codecs to JMF: TSCC, ZMBV.                                         |
 | org.monte.media.amigaatari     | Additional codecs/container formats for processing Amiga and Atari audio and video files. |
 | org.monte.media.animconverter  | Converts Amiga IFF ANIM files to QuickTime.                                               |
+| org.monte.media.avi            | Provides readers/writers for AVI container format, and AVI-specific codecs                |
+| org.monte.media.color          | Provides utilities for processing colors in various color spaces                          |
+| org.monte.media.h264           | Provides a H.264 video encoder (Copy of JCodec library)                                   |
 | org.monte.media.javafx         | JavaFX components.                                                                        |
+| org.monte.media.jcodec         | Wrappers for the JCodec library                                                           |
+| org.monte.media.jmf            | Provides the following codecs to JMF: TSCC, ZMBV.                                         |
+| org.monte.media.jpeg           | Provides JPEG image and video codecs                                                      |
+| org.monte.media.mp3            | Provides MP3 audio codecs                                                                 |
+| org.monte.media.mp4            | Provides readers/writers for MP4 container format                                         |
+| org.monte.media.quicktime      | Provides readers/writers for QuickTime container format, and QuickTime-specific codecs    |
+| org.monte.media.screenrecorder | Provides a screen recorder application                                                    |
+| org.monte.media.zipmovie       | Provides readers/writers for storing video images in ZIP files                            |
 | org.monte.media.swing          | Swing components.                                                                         |
 
 The project also provides the following demonstration modules:
 
-| Module                            | Description                                                                 |
-|-----------------------------------|-----------------------------------------------------------------------------|
-| org.monte.demo.animmerger         | Demonstrates how to merge two Amiga IFF ANIM files.                         |
-| org.monte.demo.audiorecorder      | Demonstrates how to record audio into an AVI file.                          |
-| org.monte.demo.cleartype          | Demonstrates how to draw text with a ClearType antialiasing effect.         |
-| org.monte.demo.cmykimageviewer    | Demonstrates how to read a JPEG image with CMYK color model.                |
-| org.monte.demo.imageioviewer      | Demonstrates how to read images with ImageIO.                               |
-| org.monte.demo.io                 | Demonstrates how to read/trim/concat AVI video files.                       |
-| org.monte.demo.javafx.movieplayer | Demonstrates how to implement a movie player with the JavaFX library.       |
-| org.monte.demo.jmfavi             | Demonstrates how to write a TSCC encoded AVI file with the JMF library.     |
-| org.monte.demo.jmftsccdemo        | Demonstrates how to play back a TSCC encoded AVI file with the JMF library. |
-| org.monte.demo.moviconverter      | Demonstrates how to implement a movie conversion tool.                      |
-| org.monte.demo.moviemaker         | Demonstrates how to create a QuickTime movie from image and audio files.    |
-| org.monte.demo.moviewriter        | Demonstrates how to write video-only movie files.                           |
-| org.monte.demo.moviereader        | Demonstrates how to read video-only movie files.                            |
-| org.monte.demo.mpoimagesplitter   | Demonstrates how to split up a MPO file into JPEG files.                    |
-| org.monte.demo.rationalnumber     | Demonstrates how to work with rational numbers.                             |
-| org.monte.demo.screenrecorder     | Demonstrates how to implement a screen recorder.                            |
-| org.monte.demo.sift               | Demonstrates how to analyze the structure of an Amiga IFF file.             |
+| Module                               | Description                                                                 |
+|--------------------------------------|-----------------------------------------------------------------------------|
+| org.monte.demo.animmerger            | Demonstrates how to merge two Amiga IFF ANIM files.                         |
+| org.monte.demo.audiorecorder         | Demonstrates how to record audio into an AVI file.                          |
+| org.monte.demo.cleartype             | Demonstrates how to draw text with a ClearType antialiasing effect.         |
+| org.monte.demo.cmykimageviewer       | Demonstrates how to read a JPEG image with CMYK color model.                |
+| org.monte.demo.imageioviewer         | Demonstrates how to read images with ImageIO.                               |
+| org.monte.demo.io                    | Demonstrates how to read/trim/concat AVI video files.                       |
+| org.monte.demo.javafx.colorquantizer | Demonstrates how to reduce colors in a video.                               |
+| org.monte.demo.javafx.movieplayer    | Demonstrates how to implement a movie player with the JavaFX library.       |
+| org.monte.demo.jmfavi                | Demonstrates how to write a TSCC encoded AVI file with the JMF library.     |
+| org.monte.demo.jmftsccdemo           | Demonstrates how to play back a TSCC encoded AVI file with the JMF library. |
+| org.monte.demo.moviconverter         | Demonstrates how to implement a movie conversion tool.                      |
+| org.monte.demo.moviemaker            | Demonstrates how to create a QuickTime movie from image and audio files.    |
+| org.monte.demo.moviewriter           | Demonstrates how to write video-only movie files.                           |
+| org.monte.demo.moviereader           | Demonstrates how to read video-only movie files.                            |
+| org.monte.demo.mpoimagesplitter      | Demonstrates how to split up a MPO file into JPEG files.                    |
+| org.monte.demo.rationalnumber        | Demonstrates how to work with rational numbers.                             |
+| org.monte.demo.screenrecorder        | Demonstrates how to implement a screen recorder.                            |
+| org.monte.demo.sift                  | Demonstrates how to analyze the structure of an Amiga IFF file.             |
