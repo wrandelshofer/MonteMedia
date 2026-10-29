@@ -2079,12 +2079,7 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         d.writeType("nclx");
         d.writeUShort(1);//primaries index BT.709 and sRGB have the same primaries
 
-        ColorModel cm = t.format.get(VideoFormatKeys.PaletteKey);
-
-        int transferFunctionIndex = cm == null || cm.getColorSpace().isCS_sRGB()
-                ? 13 // sRGB
-                : 1 // BT.709
-                ;
+        int transferFunctionIndex = 1; //BT.709
         d.writeUShort(transferFunctionIndex);
         d.writeUShort(1);//matrix index BT.709 and sRGB have the same matrix
         d.writeByte(0);//full range flag
