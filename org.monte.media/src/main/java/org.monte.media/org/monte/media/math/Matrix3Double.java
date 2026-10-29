@@ -169,6 +169,6 @@ public record Matrix3Double(double a, double b, double c,
         double w = b * c;
         double e = fma(-b, c, w);
         double f = fma(a, d, -w);
-        return (f + e);
+        return f + e;
     }
 }
