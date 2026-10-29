@@ -635,7 +635,6 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
         ImageOutputStream mdatOut = mdatAtom.getOutputStream();
         mdatOut.write(data, off, len);
         t.addSample(new Sample(duration, offset, len), 1, isSync);
-
     }
 
     /// Writes multiple sync samples from a byte array into a track.
@@ -2477,5 +2476,12 @@ public class QuickTimeOutputStream extends AbstractQTFFMovieStream {
 
     public void setVideoColorTable(ColorModel videoColorTable) {
         this.movieVideoColorTable = videoColorTable;
+    }
+
+    public void writeAvcDecoderConfiguration(int track, AvcDecoderConfigurationRecord config) {
+        var t = tracks.get(track);
+        if (t instanceof VideoTrack vt) {
+            vt.avcDecoderConfigurationRecord = config;
+        }
     }
 }

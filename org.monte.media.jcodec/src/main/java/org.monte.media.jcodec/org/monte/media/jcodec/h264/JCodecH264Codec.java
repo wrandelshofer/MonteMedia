@@ -8,6 +8,8 @@ package org.monte.media.jcodec.h264;
 import org.jcodec.api.transcode.PixelStore;
 import org.jcodec.api.transcode.VideoFrameWithPacket;
 import org.jcodec.codecs.h264.H264Encoder;
+import org.jcodec.codecs.h264.H264Utils;
+import org.jcodec.codecs.h264.io.model.SeqParameterSet;
 import org.jcodec.common.VideoEncoder;
 import org.jcodec.common.io.NIOUtils;
 import org.jcodec.common.model.ColorSpace;
@@ -17,9 +19,17 @@ import org.monte.media.av.Buffer;
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys;
 import org.monte.media.jcodec.impl.AWTUtil;
+import org.monte.media.qtff.AvcDecoderConfigurationRecord;
+import org.monte.media.util.ArrayUtil;
+import org.monte.media.util.ByteArray;
 
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.monte.media.av.BufferFlag.DISCARD;
 import static org.monte.media.av.BufferFlag.KEYFRAME;
@@ -43,6 +53,7 @@ import static org.monte.media.jcodec.h264.JCodecPictureCodec.ENCODING_PICTURE;
 public class JCodecH264Codec extends org.monte.media.av.AbstractCodec {
     private VideoEncoder videoEncoder = null;
     private ByteBuffer byteBuffer;
+    private AvcDecoderConfigurationRecord header;
 
     public JCodecH264Codec() {
         super(new Format[]{
@@ -146,8 +157,11 @@ public class JCodecH264Codec extends org.monte.media.av.AbstractCodec {
         outputVideoPacket = Packet.createPacketWithData(videoFrame.getPacket(), NIOUtils.clone(encodedFrame.getData()));
         outputVideoPacket.setFrameType(encodedFrame.isKeyFrame() ? Packet.FrameType.KEY : Packet.FrameType.INTER);
 
+        // compute header
+        computeHeader(out, outputVideoPacket);
+
         out.setFlag(KEYFRAME, encodedFrame.isKeyFrame());
-        ByteBuffer packetBuf = outputVideoPacket.data;
+        ByteBuffer packetBuf = H264Utils.encodeMOVPacket(outputVideoPacket.data);
         if (out.data instanceof byte[] && ((byte[]) out.data).length >= packetBuf.remaining()) {
             byte[] byteArray = (byte[]) out.data;
             System.arraycopy(packetBuf.array(), packetBuf.position(), byteArray, 0, packetBuf.remaining());
@@ -159,7 +173,26 @@ public class JCodecH264Codec extends org.monte.media.av.AbstractCodec {
             out.length = packetBuf.remaining();
         }
 
+
         return CODEC_OK;
+    }
+
+    private void computeHeader(Buffer out, Packet outputVideoPacket) {
+        if (this.header == null) {
+            //Sequence Parameter Set (SPS): Once per stream
+            List<ByteBuffer> spsList = new ArrayList<>();
+            //Picture Parameter Set (PPS): Once per stream
+            List<ByteBuffer> ppsList = new ArrayList<>();
+            H264Utils.wipePSinplace(outputVideoPacket.data, spsList, ppsList);
+            if (!spsList.isEmpty()) {
+                SeqParameterSet p = H264Utils.readSPS(spsList.getFirst());
+                Function<ByteBuffer, ByteArray> byteBufferFunction = b -> new ByteArray(ArrayUtil.copyOf(b.array(), b.arrayOffset(), b.remaining()));
+                this.header = new AvcDecoderConfigurationRecord(p.profileIdc, 0, p.levelIdc, 4,
+                        spsList.stream().map(byteBufferFunction).collect(Collectors.toCollection(LinkedHashSet::new)),
+                        ppsList.stream().map(byteBufferFunction).collect(Collectors.toCollection(LinkedHashSet::new)));
+            }
+        }
+        out.header = this.header;
     }
 
     private VideoEncoder getEncoder(Format outputFormat) {

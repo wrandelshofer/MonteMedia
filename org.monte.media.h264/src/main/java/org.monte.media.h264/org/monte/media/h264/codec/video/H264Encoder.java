@@ -131,6 +131,25 @@ public class H264Encoder extends org.monte.media.av.AbstractCodec {
         outputVideoPacket.setFrameType(encodedFrame.isKeyFrame() ? Packet.FrameType.KEY : Packet.FrameType.INTER);
 
         // compute header
+        computeHeader(out, outputVideoPacket);
+
+        out.setFlag(KEYFRAME, encodedFrame.isKeyFrame());
+        ByteBuffer packetBuf = H264Utils.encodeMOVPacket(outputVideoPacket.data);
+        if (out.data instanceof byte[] && ((byte[]) out.data).length >= packetBuf.remaining()) {
+            byte[] byteArray = (byte[]) out.data;
+            System.arraycopy(packetBuf.array(), packetBuf.position(), byteArray, 0, packetBuf.remaining());
+            out.offset = 0;
+            out.length = packetBuf.remaining();
+        } else {
+            out.data = packetBuf.array().clone();
+            out.offset = packetBuf.position();
+            out.length = packetBuf.remaining();
+        }
+
+        return CODEC_OK;
+    }
+
+    private void computeHeader(Buffer out, Packet outputVideoPacket) {
         if (this.header == null) {
             //Sequence Parameter Set (SPS): Once per stream
             List<ByteBuffer> spsList = new ArrayList<>();
@@ -146,22 +165,6 @@ public class H264Encoder extends org.monte.media.av.AbstractCodec {
             }
         }
         out.header = this.header;
-        outputVideoPacket.data = H264Utils.encodeMOVPacket(outputVideoPacket.data);
-
-        out.setFlag(KEYFRAME, encodedFrame.isKeyFrame());
-        ByteBuffer packetBuf = outputVideoPacket.data;
-        if (out.data instanceof byte[] && ((byte[]) out.data).length >= packetBuf.remaining()) {
-            byte[] byteArray = (byte[]) out.data;
-            System.arraycopy(packetBuf.array(), packetBuf.position(), byteArray, 0, packetBuf.remaining());
-            out.offset = 0;
-            out.length = packetBuf.remaining();
-        } else {
-            out.data = packetBuf.array().clone();
-            out.offset = packetBuf.position();
-            out.length = packetBuf.remaining();
-        }
-
-        return CODEC_OK;
     }
 
     private VideoEncoder getEncoder(Format outputFormat) {

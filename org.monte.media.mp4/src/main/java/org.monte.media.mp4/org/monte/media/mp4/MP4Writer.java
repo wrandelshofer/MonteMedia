@@ -322,59 +322,59 @@ public class MP4Writer extends MP4OutputStream implements MovieWriter {
         TrackEncoder tre = getTrackEncoder(track);
 
         // Encode sample data
-        {
-            if (tre.outputBuffer == null) {
-                tre.outputBuffer = new Buffer();
-                tre.outputBuffer.format = tr.format;
-            }
-            Buffer outBuf;
-            if (tr.format.matchesWithout(buf.format, FrameRateKey)) {
-                outBuf = buf;
-            } else {
-                outBuf = tre.outputBuffer;
-                boolean isSync = tr.syncInterval != 0 && tr.sampleCount % tr.syncInterval == 0;
-                buf.setFlag(KEYFRAME, isSync);
+
+        if (tre.outputBuffer == null) {
+            tre.outputBuffer = new Buffer();
+            tre.outputBuffer.format = tr.format;
+        }
+        Buffer outBuf;
+        if (tr.format.matchesWithout(buf.format, FrameRateKey)) {
+            outBuf = buf;
+        } else {
+            outBuf = tre.outputBuffer;
+            boolean isSync = tr.syncInterval != 0 && tr.sampleCount % tr.syncInterval == 0;
+            buf.setFlag(KEYFRAME, isSync);
+            if (tre.codec == null) {
+                createCodec(track);
                 if (tre.codec == null) {
-                    createCodec(track);
-                    if (tre.codec == null) {
-                        throw new UnsupportedOperationException("No codec for this format " + tr.format);
-                    }
-                }
-
-                tre.codec.process(buf, outBuf);
-            }
-            if (outBuf.isFlag(DISCARD) || outBuf.sampleCount == 0) {
-                if (outBuf.exception != null) {
-                    throw outBuf.exception instanceof IOException e ? e : new IOException(outBuf.exception);
-                }
-                return;
-            }
-
-
-            // Compute sample sampleDuration in media time scale
-            long sampleDuration = Math.max(1, outBuf.sampleDuration.multiply(tr.mediaTimeScale).longValue());
-
-            // Adjust sample duration if we are drifting
-            if (buf.isFlag(BufferFlag.RELATIVE_TIME) && buf.sampleCount == 1) {
-                if (tr.sampleCount == 0) {
-                    tr.timestampOfFirstSample = buf.timeStamp;
-                } else {
-                    Rational driftedTimestamp = tr.timestampOfFirstSample.add(tr.mediaDuration, tr.mediaTimeScale);
-                    Rational timeDifference = buf.timeStamp.subtract(driftedTimestamp);
-                    long adjust = timeDifference.multiply(tr.mediaTimeScale).longValue();
-                    if (sampleDuration + adjust > 0) {
-                        sampleDuration += adjust;
-                    }
+                    throw new UnsupportedOperationException("No codec for this format " + tr.format);
                 }
             }
 
-            writeSamples(track, outBuf.sampleCount, (byte[]) outBuf.data, outBuf.offset, outBuf.length,
-                    sampleDuration, outBuf.isFlag(KEYFRAME));
+            tre.codec.process(buf, outBuf);
+        }
+        if (outBuf.isFlag(DISCARD) || outBuf.sampleCount == 0) {
+            if (outBuf.exception != null) {
+                throw outBuf.exception instanceof IOException e ? e : new IOException(outBuf.exception);
+            }
+            return;
+        }
 
-            if (outBuf.header instanceof AvcDecoderConfigurationRecord r && tr instanceof VideoTrack vtr) {
-                vtr.avcDecoderConfigurationRecord = r;
+
+        // Compute sample sampleDuration in media time scale
+        long sampleDuration = Math.max(1, outBuf.sampleDuration.multiply(tr.mediaTimeScale).longValue());
+
+        // Adjust sample duration if we are drifting
+        if (buf.isFlag(BufferFlag.RELATIVE_TIME) && buf.sampleCount == 1) {
+            if (tr.sampleCount == 0) {
+                tr.timestampOfFirstSample = buf.timeStamp;
+            } else {
+                Rational driftedTimestamp = tr.timestampOfFirstSample.add(tr.mediaDuration, tr.mediaTimeScale);
+                Rational timeDifference = buf.timeStamp.subtract(driftedTimestamp);
+                long adjust = timeDifference.multiply(tr.mediaTimeScale).longValue();
+                if (sampleDuration + adjust > 0) {
+                    sampleDuration += adjust;
+                }
             }
         }
+
+        writeSamples(track, outBuf.sampleCount, (byte[]) outBuf.data, outBuf.offset, outBuf.length,
+                sampleDuration, outBuf.isFlag(KEYFRAME));
+
+        if (outBuf.header instanceof AvcDecoderConfigurationRecord r && tr instanceof VideoTrack vtr) {
+            writeAvcDecoderConfiguration(track, r);
+        }
+
     }
 
 

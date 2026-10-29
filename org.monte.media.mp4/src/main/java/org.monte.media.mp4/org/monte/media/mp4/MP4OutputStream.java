@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.time.Instant;
 import java.util.Iterator;
@@ -619,18 +618,10 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         ensureStarted();
         long offset = getRelativeStreamPosition();
         ImageOutputStream mdatOut = mdatAtom.getOutputStream();
-        if (false) {
-            ByteBuffer bb = scrapeAvcDecoderConfigurationRecord(track, data, off, len, isSync);
-            mdatOut.write(bb.array(), bb.arrayOffset(), bb.remaining());
-        } else {
-            mdatOut.write(data, off, len);
-        }
+        mdatOut.write(data, off, len);
         t.addSample(new Sample(duration, offset, len), 1, isSync);
     }
 
-    private ByteBuffer scrapeAvcDecoderConfigurationRecord(int track, byte[] data, int off, int len, boolean isSync) {
-        return null;
-    }
 
     /// Writes multiple sync samples from a byte array into a track.
     ///  This
@@ -2037,12 +2028,20 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
     /// @param parent the composite atom
     /// @throws IOException on IO failure
     private void writeColrAtom(VideoTrack t, CompositeAtom parent) throws IOException {
-        /* colr atom */
+        /* colr information */
+        // https://mp4ra.org/registered-types/sample-entry-boxes
+        // https://mpeggroup.github.io/FileFormatConformance/?query=%3D%22colr%22
         /*---------*/
         /*
         typedef struct {
             magic colorParameterType; // An unsigned 32-bit field.
-                                     // The currently defined types are 'nclc' for video, and 'prof' for print.
+                                     // "nclx" (On-Screen Colors / Explicit Parameters): Stores numerical codes directly for standard color definitions:
+                                     //	• colour_primaries: Defines the chromaticity coordinates of the source (e.g., BT.709, BT.2020).
+                                     //	• transfer_characteristics: Defines the opto-electronic transfer function / gamma curve (e.g., BT.709, SMPTE ST 2084 / PQ for HDR).
+                                     //	• matrix_coefficients: Defines the luma-to-chroma conversion matrix (e.g., BT.709, BT.2020nc).
+                                     //	• full_range_flag: A single bit indicating whether video is full range (0–255) or limited/video range (16–235).
+                                     // "rICC" (Restricted ICC Profile): Embeds a restricted International Color Consortium (ICC) color profile.
+                                     //"prof" (Unrestricted ICC Profile): Embeds a full, unrestricted ICC color profile.
             uint16 primariesIndex; // A 16-bit unsigned integer containing an index into a table specifying the
                                    // CIE 1931 xy chromaticity coordinates of the white point and the red, green,
                                    // and blue primaries.
@@ -2068,21 +2067,30 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
                                  //      Recommendation ITU-R BT.709-2 (1125/60/2:1 only), SMPTE 274M-1995, 296M-1997 An image that shows the formula for matrix index 1. The formula is E’ with subscript Y is equal to zero point seven one five two E’ with subscript G, plus zero point zero seven two two E’ with subscript B, plus zero point two one two six E’ with subscript R.
                                  // https://developer.apple.com/documentation/quicktime-file-format/color_parameter_atom
 
+            ubyte full_range_flag; // Flags
+                                   // MSB == 0 indicates video is full range (0–255),
+                                   // MSB == 1 indicates limited/video range (16–235).
+
         } videoColrSampleDescriptionExtensionAtom;
         */
         DataAtom leaf = new DataAtom("colr", out);
         parent.add(leaf);
         QTFFImageOutputStream d = leaf.getOutputStream();
-        d.writeType("nclc");
-        d.writeUShort(1);//BT.709, sRGB
-        int transferFunctionIndex = (t.avcDecoderConfigurationRecord != null)
-                ? 1 // BT.709
-                : 13 // sRGB
+        d.writeType("nclx");
+        d.writeUShort(1);//primaries index BT.709 and sRGB have the same primaries
+
+        ColorModel cm = t.format.get(VideoFormatKeys.PaletteKey);
+
+        int transferFunctionIndex = cm == null || cm.getColorSpace().isCS_sRGB()
+                ? 13 // sRGB
+                : 1 // BT.709
                 ;
         d.writeUShort(transferFunctionIndex);
-        d.writeUShort(1);//BT.709
+        d.writeUShort(1);//matrix index BT.709 and sRGB have the same matrix
+        d.writeByte(0);//full range flag
         leaf.finish();
     }
+
 
     /// Writes the avcC atom. Also requires that we write the colr atom.
     ///
@@ -2357,5 +2365,12 @@ public class MP4OutputStream extends AbstractQTFFMovieStream {
         // Extensions must be atom-based fields
         // ------------------------------------
         d.write(t.stsdExtensions);
+    }
+
+    public void writeAvcDecoderConfiguration(int track, AvcDecoderConfigurationRecord config) {
+        var t = tracks.get(track);
+        if (t instanceof VideoTrack vt) {
+            vt.avcDecoderConfigurationRecord = config;
+        }
     }
 }

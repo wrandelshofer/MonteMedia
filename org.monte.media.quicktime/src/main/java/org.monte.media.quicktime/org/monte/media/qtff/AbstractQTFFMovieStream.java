@@ -6,6 +6,7 @@ package org.monte.media.qtff;
 
 import org.monte.media.av.Format;
 import org.monte.media.av.FormatKeys.MediaType;
+import org.monte.media.av.codec.video.VideoFormatKeys;
 import org.monte.media.math.Rational;
 import org.monte.media.qtff.atom.CompositeAtom;
 import org.monte.media.qtff.atom.WideDataAtom;
@@ -15,6 +16,7 @@ import java.awt.image.IndexColorModel;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /// This is the base class for low-level QuickTime stream IO.
 ///
@@ -497,6 +499,10 @@ public class AbstractQTFFMovieStream {
 
         public Track(MediaType mediaType) {
             this.mediaType = mediaType;
+        }
+
+        public boolean isH264() {
+            return format != null && Objects.equals(VideoFormatKeys.ENCODING_AVC1, format.get(VideoFormatKeys.EncodingKey, null));
         }
 
         public void addChunk(Chunk chunk, boolean isSyncSample) {

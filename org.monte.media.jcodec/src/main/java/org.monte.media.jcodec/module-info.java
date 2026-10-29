@@ -17,6 +17,7 @@ module org.monte.media.jcodec {
     exports org.monte.media.jcodec.mp4;
 
     requires org.monte.media;
+    requires org.monte.media.quicktime;
 
     provides org.monte.media.av.MovieWriterSpi with org.monte.media.jcodec.mp4.JCodecMP4WriterSpi;
     provides org.monte.media.av.CodecSpi with
